@@ -29,7 +29,8 @@ rule githash
   command = rc $root_srcdir/scripts/hash.rc $repo $out $args $in
 
 rule gittree
-  command = rc $root_srcdir/scripts/tree.rc $repo $out $in
+  command = rc $root_srcdir/scripts/tree.rc $repo $tag $in
+  restat = 1
 
 rule gitinit
   command = mkdir -p $repo && git -C $repo init --bare && touch $out

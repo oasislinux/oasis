@@ -105,6 +105,8 @@ for(pkg in $packages) subgen core/$pkg
 printf '%s\n' $root_perms >$outdir/root_perms.txt
 file .perms '$outdir'/root_perms.txt 644
 
-build '$outdir'/root_tree.txt gittree $root_inputs '| $repo.stamp'
+ninja_vars='tag = tree' {
+	build '$repo/refs/tags/tree' gittree $root_inputs '| $repo.stamp'
+}
 
 for(pkg in $packages) subninja core/$pkg/local.ninja
