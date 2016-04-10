@@ -106,7 +106,8 @@ printf '%s\n' $root_perms >$outdir/root_perms.txt
 file .perms '$outdir'/root_perms.txt 644
 
 ninja_vars='tag = tree' {
-	build '$repo/refs/tags/tree' gittree $root_inputs '|' '$repo.stamp' '$root_srcdir/scripts/tree.rc'
+	build '$repo.git/refs/tags/tree' gittree $root_inputs '|' '$repo.stamp' '$root_srcdir/scripts/tree.rc'
+	build '$repo.tar' gitarchive '|' '$repo.git/refs/tags/tree'
 }
 
 for(pkg in $packages) subninja core/$pkg/local.ninja

@@ -9,4 +9,4 @@ yacc = yacc
 python = python
 perl = perl
 
-repo = root.git
+repo = root

@@ -26,11 +26,14 @@ rule sed
   command = sed $expr >$out.tmp $in && mv $out.tmp $out
 
 rule githash
-  command = rc $root_srcdir/scripts/hash.rc $repo $out $args $in
+  command = rc $root_srcdir/scripts/hash.rc $repo.git $out $args $in
 
 rule gittree
-  command = rc $root_srcdir/scripts/tree.rc $repo $tag $in
+  command = rc $root_srcdir/scripts/tree.rc $repo.git $tag $in
   restat = 1
 
+rule gitarchive
+  command = git -C $repo.git archive -o $$PWD/$out $tag
+
 rule gitinit
-  command = mkdir -p $repo && git -C $repo init --bare && touch $out
+  command = mkdir -p $repo.git && git -C $repo.git init --bare && touch $out
