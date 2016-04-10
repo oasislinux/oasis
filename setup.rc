@@ -91,7 +91,7 @@ fn subgen {
 	{
 		echo 'outdir = '$dir
 		echo 'srcdir = $root_srcdir/'$dir
-		. ./gen.rc 
+		. ./gen.rc
 	} >$outdir/local.ninja
 	cd $root_srcdir
 
