@@ -8,6 +8,11 @@ mode=$3
 name=$4
 shift 4
 
+fn checkstatus {
+	s=$status if(! ~ $s '' '|') exit $s
+	status=()
+}
+
 hash=`{
 	switch($mode) {
 	case 120???
@@ -16,6 +21,7 @@ hash=`{
 		git -C $repo hash-object -w --stdin <$1
 	}
 }
+checkstatus
 
 printf '%s %s\t%s\n' $mode $hash $name >$out.tmp
 mv $out.tmp $out
