@@ -109,7 +109,9 @@ subgen .
 	include '$root_srcdir/config.ninja'
 	include '$root_srcdir/rules.ninja'
 
-	ninja_vars='generator = 1' build $"setup_outs gen '$root_srcdir/setup.rc' '|' $setup_ins
+	ninja_vars=( 'generator = 1' 'pool = console' ) {
+		build $"setup_outs gen '$root_srcdir/setup.rc' '|' $setup_ins
+	}
 
 	subninja local.ninja
 } >$root_outdir/build.ninja.tmp
