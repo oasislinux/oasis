@@ -33,7 +33,7 @@ fn myexe {
 	exe $exe '$outdir'/$exe.c.o '$outdir/libutil.a'
 	file bin/$exe '$outdir'/$exe 755
 	if(~ $#* 1) file share/man/man$1/$exe.$1 '$srcdir'/src/$exe.$1 644
-	true
+	status=()
 }
 
 myexe chvt 1

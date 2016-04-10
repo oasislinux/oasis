@@ -68,7 +68,7 @@ fn file {
 	root_inputs=( $root_inputs $out )
 
 	if(! ~ $3 755 644) root_perms=( $root_perms 100$3' '$1 )
-	true
+	status=()
 }
 
 fn dir {
