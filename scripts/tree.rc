@@ -1,0 +1,19 @@
+#!/bin/rc
+
+flag e +
+
+repo=$1
+out=$2
+shift 2
+
+ifs=() { oldpwd=`{pwd | head -c -1} }
+cd $repo
+
+git read-tree --empty
+cat $oldpwd/$* | git update-index --index-info
+tree=`{git write-tree}
+git update-ref refs/tags/tree $tree
+
+cd $oldpwd
+echo $tree >$out.tmp
+mv $out.tmp $out

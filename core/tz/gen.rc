@@ -1,0 +1,25 @@
+tzdata=(\
+	africa\
+	antarctica\
+	asia\
+	australasia\
+	europe\
+	northamerica\
+	southamerica\
+	pacificnew\
+	etcetera\
+	backward\
+	systemv\
+	factory\
+)
+
+rule zic '$zic -d $outdir/zoneinfo $in'
+
+for(data in $tzdata) {
+	zones=`{awk '{if ($1 == "Zone") print $2}' src/$data}
+	if(! ~ $#zones 0) {
+		outs='$outdir'/zoneinfo/$zones
+		build $"outs zic $srcdir/src/$data
+		for(zone in $zones) file share/zoneinfo/$zone '$outdir'/zoneinfo/$zone 644
+	}
+}

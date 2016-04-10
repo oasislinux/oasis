@@ -1,0 +1,127 @@
+cflags\
+	-D_DEFAULT_SOURCE\
+	-D_BSD_SOURCE\
+	-D_XOPEN_SOURCE'='700\
+	-D_FILE_OFFSET_BITS'='64\
+	-std'='c99 -Wall -pedantic\
+	-I '$outdir'
+
+cd src
+
+static_lib libutil.a libutil/*.c
+static_lib libutf.a libutf/*.c
+
+executables=(\
+	basename\
+	cal\
+	cat\
+	chgrp\
+	chmod\
+	chown\
+	chroot\
+	cksum\
+	cmp\
+	cols\
+	comm\
+	cp\
+	cron\
+	cut\
+	date\
+	dirname\
+	du\
+	echo\
+	ed\
+	env\
+	expand\
+	expr\
+	false\
+	find\
+	flock\
+	fold\
+	getconf\
+	grep\
+	head\
+	join\
+	hostname\
+	kill\
+	link\
+	ln\
+	logger\
+	logname\
+	ls\
+	md5sum\
+	mkdir\
+	mkfifo\
+	mktemp\
+	mv\
+	nice\
+	nl\
+	nohup\
+	od\
+	pathchk\
+	paste\
+	printenv\
+	printf\
+	pwd\
+	readlink\
+	renice\
+	rm\
+	rmdir\
+	sed\
+	seq\
+	setsid\
+	sha1sum\
+	sha224sum\
+	sha256sum\
+	sha384sum\
+	sha512sum\
+	sha512-224sum\
+	sha512-256sum\
+	sleep\
+	sort\
+	split\
+	sponge\
+	strings\
+	sync\
+	tail\
+	tar\
+	tee\
+	test\
+	tftp\
+	time\
+	touch\
+	tr\
+	true\
+	tsort\
+	tty\
+	uname\
+	unexpand\
+	uniq\
+	unlink\
+	uudecode\
+	uuencode\
+	wc\
+	which\
+	whoami\
+	xargs\
+	install\
+	yes\
+)
+
+getconf_hdrs=( confstr limits sysconf pathconf )^_l.h
+getconf_outs='$outdir'/$getconf_hdrs
+rule getconf_headers 'getconf=$$PWD/$srcdir/src/getconf.sh && cd $outdir && $$getconf'
+build $"getconf_outs getconf_headers '| $srcdir/src/getconf.sh'
+
+for(exe in $executables) {
+	if(~ $exe install) src=x$exe
+	if not src=$exe
+
+	cc $src.c '||' '$outdir/stamp'
+	link $exe $src.c.o libutil.a libutf.a
+
+	file bin/$exe '$outdir'/$exe 755
+	file share/man/man1/$exe.1 '$srcdir'/src/$src.1 644
+}
+
+stamp $getconf_hdrs

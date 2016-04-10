@@ -1,0 +1,60 @@
+cflags\
+	-I '$outdir' \
+	-I '$srcdir'/src/include/libfirm/adt\
+	-I '$srcdir'/src/include/libfirm\
+	-I '$srcdir'/src/ir/adt\
+	-I '$srcdir'/src/ir/ana\
+	-I '$srcdir'/src/ir/be/ia32\
+	-I '$srcdir'/src/ir/be\
+	-I '$srcdir'/src/ir/common\
+	-I '$srcdir'/src/ir/ident\
+	-I '$srcdir'/src/ir/ir\
+	-I '$srcdir'/src/ir/kaps\
+	-I '$srcdir'/src/ir/libcore\
+	-I '$srcdir'/src/ir/lower\
+	-I '$srcdir'/src/ir/lpp\
+	-I '$srcdir'/src/ir/opt\
+	-I '$srcdir'/src/ir/stat\
+	-I '$srcdir'/src/ir/tr\
+	-I '$srcdir'/src/ir/tv
+
+backends=( amd64 arm ia32 sparc TEMPLATE )
+
+rule irspec '$python $srcdir/src/scripts/gen_ir.py $srcdir/src/scripts/ir_spec.py $in >$out.tmp && mv $out.tmp $out'
+rule new_nodes '$perl $srcdir/src/ir/be/scripts/generate_new_opcodes.pl $in $outdir'
+rule regalloc_if '$perl $srcdir/src/ir/be/scripts/generate_regalloc_if.pl $in $outdir'
+rule emitter '$perl $srcdir/src/ir/be/scripts/generate_emitter.pl $in $outdir'
+
+cd src
+
+genhdrs=( nodes.h gen_irnode.h gen_proj_names.h )
+gensrcs=( gen_irnode.c gen_irio.c )
+for(gensrc in $genhdrs $gensrcs) {
+	build '$outdir'/$gensrc irspec '$srcdir'/src/scripts/templates/$gensrc
+}
+
+srcs=( ir/*/*.c '$outdir'/$gensrcs )
+objs=$srcs.o
+for(src in $srcs) cc $src '||' '$outdir/stamp'
+
+stampdeps=( $genhdrs )
+
+for(backend in $backends) {
+	types=( emitter regalloc_if new_nodes )
+	srcs=( ir/be/$backend/*.c '$outdir'/gen_$backend^_$types.c )
+	objs=( $objs $srcs.o )
+	stampdeps=( $stampdeps gen_$backend^_$types.h )
+	{
+		cflags -I '$srcdir'/src/ir/be/$backend
+		for(type in $types) {
+			outs=( '$outdir'/gen_$backend^_$type.^(c h) )\
+				build $"outs $type '$srcdir'/src/ir/be/$backend/$backend^_spec.pl
+		}
+		for(src in $srcs) cc $src '||' '$outdir/stamp'
+	} >$outdir/$backend.ninja
+	echo 'subninja $outdir'/$backend.ninja
+}
+
+ar libfirm.a $objs
+
+stamp $stampdeps

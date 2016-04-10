@@ -1,0 +1,62 @@
+From 51ab047274d90b1c6b7a26b2b41992b176543d05 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 10 Apr 2016 02:50:03 -0700
+Subject: [PATCH] Fix build with musl
+
+---
+ src/lib9/dirread.c | 34 ----------------------------------
+ 1 file changed, 34 deletions(-)
+
+diff --git a/src/lib9/dirread.c b/src/lib9/dirread.c
+index 40fbe3c..345f49c 100644
+--- a/src/lib9/dirread.c
++++ b/src/lib9/dirread.c
+@@ -6,45 +6,11 @@
+ 
+ extern int _p9dir(struct stat*, struct stat*, char*, Dir*, char**, char*);
+ 
+-#if defined(__linux__)
+-static int
+-mygetdents(int fd, struct dirent *buf, int n)
+-{
+-	off_t off;
+-	int nn;
+-
+-	/* This doesn't match the man page, but it works in Debian with a 2.2 kernel */
+-	off = p9seek(fd, 0, 1);
+-	nn = getdirentries(fd, (void*)buf, n, &off);
+-	return nn;
+-}
+-#elif defined(__APPLE__) 
+-static int
+-mygetdents(int fd, struct dirent *buf, int n)
+-{
+-	long off;
+-	return getdirentries(fd, (void*)buf, n, &off);
+-}
+-#elif defined(__FreeBSD__) || defined(__DragonFly__)
+-static int
+-mygetdents(int fd, struct dirent *buf, int n)
+-{
+-	off_t off;
+-	return getdirentries(fd, (void*)buf, n, &off);
+-}
+-#elif defined(__sun__) || defined(__NetBSD__) || defined(__OpenBSD__)
+ static int
+ mygetdents(int fd, struct dirent *buf, int n)
+ {
+ 	return getdents(fd, (void*)buf, n);
+ }
+-#elif defined(__AIX__)
+-static int
+-mygetdents(int fd, struct dirent *buf, int n)
+-{
+-	return getdirent(fd, (void*)buf, n);
+-}
+-#endif
+ 
+ #if defined(__DragonFly__)
+ static inline int d_reclen(struct dirent *de) { return _DIRENT_DIRSIZ(de); }
+-- 
+2.8.0
+

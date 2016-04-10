@@ -1,0 +1,27 @@
+[submodule "core/cparser/src"]
+	path = core/cparser/src
+	url = http://pp.ipd.kit.edu/git/cparser.git
+[submodule "core/file/src"]
+	path = core/file/src
+	url = https://github.com/file/file
+[submodule "core/libfirm/src"]
+	path = core/libfirm/src
+	url = http://pp.ipd.kit.edu/git/libfirm.git
+[submodule "core/loksh/src"]
+	path = core/loksh/src
+	url = https://github.com/dimkr/loksh
+[submodule "core/plan9port/src"]
+	path = core/plan9port/src
+	url = https://github.com/9fans/plan9port
+[submodule "core/sbase/src"]
+	path = core/sbase/src
+	url = git://git.suckless.org/sbase
+[submodule "core/tz/src"]
+	path = core/tz/src
+	url = https://github.com/eggert/tz
+[submodule "core/ubase/src"]
+	path = core/ubase/src
+	url = git://git.suckless.org/ubase
+[submodule "core/zlib/src"]
+	path = core/zlib/src
+	url = https://github.com/madler/zlib

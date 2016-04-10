@@ -1,0 +1,35 @@
+rule gen
+  command = rc $in -d $root_srcdir $$PWD
+  generator = 1
+
+# toolchain
+rule cc
+  command = $cc $cflags -c -o $out $in
+
+rule link
+  command = $cc $ldflags -o $out $in
+
+rule ar
+  command = $ar crsD $out $in
+
+rule stamp
+  command = touch $out
+
+rule copy
+  command = ln -f $in $out
+
+# misc tools
+rule yacc
+  command = oldpwd=$$PWD && cd $outdir && $yacc $yaccflags $$oldpwd/$in
+
+rule sed
+  command = sed $expr >$out.tmp $in && mv $out.tmp $out
+
+rule githash
+  command = rc $root_srcdir/scripts/hash.rc $repo $out $args $in
+
+rule gittree
+  command = rc $root_srcdir/scripts/tree.rc $repo $out $in
+
+rule gitinit
+  command = mkdir -p $repo && git -C $repo init --bare && touch $out

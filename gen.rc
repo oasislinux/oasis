@@ -1,0 +1,110 @@
+fn stamp {
+	build '$outdir/stamp' stamp '$outdir'/$*
+}
+
+fn cflags {
+	set cflags '$cflags' $*
+}
+
+fn cc {
+	src=$1 obj=$src.o {
+		shift
+		if(! ~ $src '$'*) {
+			src='$srcdir'/src/$src
+			obj='$outdir'/$obj
+		}
+		build $obj cc $src $*
+	}
+}
+
+fn link {
+	out='$outdir'/$1 objs=() {
+		shift
+		for(obj in $*) {
+			if(! ~ $obj '$'*) obj='$outdir'/$obj
+			objs=( $objs $obj )
+		}
+		build $out link $objs
+	}
+}
+
+fn ar {
+	out='$outdir'/$1 objs=() {
+		shift
+		for(obj in $*) {
+			if(! ~ $obj '$'*) obj='$outdir'/$obj
+			objs=( $objs $obj )
+		}
+		build $out ar $objs
+	}
+}
+
+fn static_lib {
+	out=$1 {
+		shift
+		for(src) cc $src
+		ar $out $*.o
+	}
+}
+
+fn exe {
+	out=$1 objs=() {
+		shift
+		for(src) {
+			if(~ $src *.c) {
+				cc $src
+				obj=$src.o
+			}
+			if not obj=$src
+			objs=( $objs $obj )
+		}
+		link $out $objs
+	}
+}
+
+fn file {
+	out='$hash_root'/$1
+	ninja_vars='args = 100'$3' '$1 build $out githash $2 '| $repo.stamp'
+	root_inputs=( $root_inputs $out )
+
+	if(! ~ $3 755 644) root_perms=( $root_perms 100$3' '$1 )
+	true
+}
+
+fn dir {
+	root_perms=( $root_perms '010'$2' '$1 )
+}
+
+fn sym {
+	out='$hash_root'/$1
+	ninja_vars='args = 120000 '$1' '$2 build $out githash '| $repo.stamp'
+	root_inputs=( $root_inputs $out )
+}
+
+root_inputs=()
+root_perms=()
+
+packages=(\
+	cparser\
+	file\
+	libfirm\
+	loksh\
+	plan9port\
+	sbase\
+	skeleton\
+	tz\
+	ubase\
+	zlib\
+)
+
+set hash_root '$repo.hash'
+build '$repo.stamp' gitinit
+
+for(pkg in $packages) subgen core/$pkg
+
+printf '%s\n' $root_perms >$outdir/root_perms.txt
+file .perms '$outdir'/root_perms.txt 644
+
+build '$outdir'/root_tree.txt gittree $root_inputs '| $repo.stamp'
+
+for(pkg in $packages) subninja core/$pkg/local.ninja

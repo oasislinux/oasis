@@ -1,0 +1,12 @@
+ar = ar
+cc = cc
+
+cflags = -O2 -march=native -pipe
+ldflags = -static
+
+zic = zic
+yacc = yacc
+python = python
+perl = perl
+
+repo = root.git

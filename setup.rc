@@ -1,0 +1,117 @@
+#!/bin/rc
+
+flag e +
+
+while(~ $1 -*) switch($1) {
+case -d
+	cd $2
+	shift 2
+}
+if(~ $#* 0) outdir=out
+if not outdir=$1
+
+mkdir -p $outdir
+
+ifs=() {
+	abs_srcdir=`{readlink -f . | head -c -1}
+	abs_outdir=`{readlink -f $outdir | head -c -1}
+}
+
+# find relative path from outdir to srcdir
+ifs=/ {
+	srcdir=`{printf %s $abs_srcdir}
+	outdir=`{printf %s $abs_outdir}
+}
+
+if(~ $#outdir 0) ifs=() { rel_srcdir=`{ifs=() pwd | head -c -1} }
+if not n=() {
+	for(i in `{awk 'BEGIN {for (i = 1; i <= '$#outdir'; i++) print i}'}) {
+		if(~$#n 0 && ! ~ $srcdir($i) $outdir($i)) {
+			ifs=() { rel_srcdir=`{printf /%s $srcdir($i-) | tail -c +2} }
+			n=$i
+		}
+		if(~ $#n 1) {
+			if(~ $#rel_srcdir 0) rel_srcdir=..
+			if not rel_srcdir=../$rel_srcdir
+		}
+	}
+}
+
+root_srcdir=$abs_srcdir
+root_outdir=$abs_outdir
+setup_outs=( build.ninja )
+setup_ins=()
+
+fn set {
+	var=$1 {
+		shift
+		printf '%s = %s\n' $var $"*
+	}
+}
+
+fn subninja {
+	echo subninja $*
+}
+
+fn include {
+	echo include $*
+}
+
+fn rule {
+	name=$1 {
+		shift
+		echo rule $name
+		for(var in 'command = '$* $ninja_vars) {
+			echo '  '$var
+		}
+	}
+}
+
+fn build {
+	out=$1 rule=$2 {
+		shift 2
+		echo build $out: $rule $*
+	}
+	for(var in $ninja_vars) echo '  '$var
+}
+
+fn subgen {
+	olddir=$dir
+	dir=$1
+	srcdir=$root_srcdir/$dir
+	outdir=$root_outdir/$dir
+
+	printf 'generating in %s\n' $dir >[1=2]
+
+	setup_outs=( $setup_outs $dir/local.ninja )
+	setup_ins=( $setup_ins '$root_srcdir'/$dir/gen.rc )
+
+	mkdir -p $outdir
+	cd $srcdir
+	{
+		echo 'outdir = '$dir
+		echo 'srcdir = $root_srcdir/'$dir
+		. ./gen.rc 
+	} >$outdir/local.ninja
+	cd $root_srcdir
+
+	dir=$olddir
+	srcdir=$root_srcdir/$dir
+	outdir=$root_outdir/$dir
+}
+
+subgen .
+
+{
+	set root_srcdir $rel_srcdir
+	set root_outdir .
+
+	include '$root_srcdir/config.ninja'
+	include '$root_srcdir/rules.ninja'
+
+	ninja_vars='generator = 1' build $"setup_outs gen '$root_srcdir/setup.rc' '|' $setup_ins
+
+	subninja local.ninja
+} >$root_outdir/build.ninja.tmp
+
+mv $root_outdir/^( build.ninja.tmp build.ninja )

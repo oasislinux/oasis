@@ -1,0 +1,25 @@
+cflags\
+	-DHAVE_HIDDEN\
+	-DHAVE_STDARG_H\
+	-DHAVE_UNISTD_H\
+	-D_LARGEFILE64_SOURCE
+
+static_lib libz.a\
+	adler32.c\
+	crc32.c\
+	deflate.c\
+	infback.c\
+	inffast.c\
+	inflate.c\
+	inftrees.c\
+	zutil.c\
+	\
+	compress.c\
+	uncompr.c\
+	gzclose.c\
+	gzlib.c\
+	gzread.c\
+	gzwrite.c
+
+build '$outdir'/include/zlib.h copy '$srcdir'/src/zlib.h
+stamp include/zlib.h

@@ -1,0 +1,21 @@
+#!/bin/rc
+
+flag e +
+
+repo=$1
+out=$2
+mode=$3
+name=$4
+shift 4
+
+hash=`{
+	switch($mode) {
+	case 120???
+		printf %s $1 | git -C $repo hash-object -w --stdin
+	case 100???
+		git -C $repo hash-object -w --stdin <$1
+	}
+}
+
+printf '%s %s\t%s\n' $mode $hash $name >$out.tmp
+mv $out.tmp $out

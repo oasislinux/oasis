@@ -1,0 +1,90 @@
+cflags\
+	-D_GNU_SOURCE\
+	-D_XOPEN_SOURCE'='700\
+	-D_FILE_OFFSET_BITS'='64\
+	-std'='c99 -Wall -Wextra\
+	-I '$outdir'
+
+build '$outdir/config.h' copy '$srcdir/src/config.def.h'
+
+static_lib libutil.a\
+	libutil/agetcwd.c\
+	libutil/agetline.c\
+	libutil/apathmax.c\
+	libutil/concat.c\
+	libutil/ealloc.c\
+	libutil/eprintf.c\
+	libutil/estrtol.c\
+	libutil/estrtoul.c\
+	libutil/explicit_bzero.c\
+	libutil/passwd.c\
+	libutil/proc.c\
+	libutil/putword.c\
+	libutil/recurse.c\
+	libutil/strlcat.c\
+	libutil/strlcpy.c\
+	libutil/strtonum.c\
+	libutil/tty.c
+
+fn myexe {
+	exe=$1
+	shift 1
+	cc $exe.c '||' '$outdir/stamp'
+	exe $exe '$outdir'/$exe.c.o '$outdir/libutil.a'
+	file bin/$exe '$outdir'/$exe 755
+	if(~ $#* 1) file share/man/man$1/$exe.$1 '$srcdir'/src/$exe.$1 644
+	true
+}
+
+myexe chvt 1
+myexe clear 1
+myexe ctrlaltdel 8
+myexe dd 1
+myexe df 1
+myexe dmesg 1
+myexe eject 1
+myexe fallocate 1
+myexe free 1
+myexe freeramdisk 8
+myexe fsfreeze 8
+myexe getty 8
+myexe halt 8
+myexe hwclock 8
+myexe id 1
+myexe insmod 8
+myexe killall5 8
+myexe last
+myexe lastlog 8
+myexe login 1
+myexe lsmod 8
+myexe lsusb 8
+myexe mesg 1
+myexe mknod 1
+myexe mkswap 8
+myexe mount 8
+myexe mountpoint 1
+myexe nologin 8
+myexe pagesize 1
+myexe passwd 1
+myexe pidof 1
+myexe pivot_root 8
+myexe ps 1
+myexe readahead 8
+myexe respawn 1
+myexe rmmod 8
+myexe stat 1
+myexe su 1
+myexe swaplabel 8
+myexe swapoff 8
+myexe swapon 8
+myexe switch_root 8
+myexe sysctl 8
+myexe truncate 1
+myexe umount 8
+myexe unshare 1
+myexe uptime 1
+myexe vtallow 1
+myexe watch 1
+myexe who 1
+
+stamp config.h

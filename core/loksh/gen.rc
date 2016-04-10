@@ -1,0 +1,31 @@
+cflags -I '$root_srcdir/include' -D_GNU_SOURCE
+exe ksh\
+	alloc.c\
+	c_ksh.c\
+	c_sh.c\
+	c_test.c\
+	c_ulimit.c\
+	edit.c\
+	emacs.c\
+	eval.c \
+	exec.c\
+	expr.c\
+	history.c\
+	io.c\
+	jobs.c\
+	lex.c\
+	mail.c\
+	main.c\
+	misc.c\
+	path.c\
+	shf.c\
+	syn.c\
+	table.c\
+	trap.c\
+	tree.c\
+	tty.c\
+	var.c\
+	version.c\
+	vi.c
+file bin/ksh '$outdir'/ksh 755
+sym bin/sh ksh
