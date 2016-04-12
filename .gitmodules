@@ -16,6 +16,9 @@
 [submodule "core/sbase/src"]
 	path = core/sbase/src
 	url = git://git.suckless.org/sbase
+[submodule "core/sinit/src"]
+	path = core/sinit/src
+	url = git://git.suckless.org/sinit
 [submodule "core/tz/src"]
 	path = core/tz/src
 	url = https://github.com/eggert/tz

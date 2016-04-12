@@ -91,6 +91,7 @@ packages=(\
 	loksh\
 	plan9port\
 	sbase\
+	sinit\
 	skeleton\
 	tz\
 	ubase\
