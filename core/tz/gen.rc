@@ -19,7 +19,7 @@ for(data in $tzdata) {
 	zones=`{awk '/^Zone/ {print $2}' src/$data}
 	if(! ~ $#zones 0) {
 		outs='$outdir'/zoneinfo/$zones
-		build $"outs zic $srcdir/src/$data
+		build $"outs zic '$srcdir'/src/$data
 		for(zone in $zones) file share/zoneinfo/$zone '$outdir'/zoneinfo/$zone 644
 	}
 	ifs='
