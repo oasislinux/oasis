@@ -49,6 +49,18 @@ fn set {
 	}
 }
 
+fn let {
+	vars=() {
+		while(! ~ $1 --) {
+			vars=( $vars $1' = '$2 )
+			shift 2
+		}
+		shift
+		$*
+		printf '  %s\n' $vars
+	}
+}
+
 fn subninja {
 	echo subninja $*
 }
@@ -60,10 +72,7 @@ fn include {
 fn rule {
 	name=$1 {
 		shift
-		echo rule $name
-		for(var in 'command = '$* $ninja_vars) {
-			echo '  '$var
-		}
+		let command $"* -- echo rule $name
 	}
 }
 
@@ -72,7 +81,6 @@ fn build {
 		shift 2
 		echo build $out: $rule $*
 	}
-	for(var in $ninja_vars) echo '  '$var
 }
 
 fn subgen {
@@ -109,9 +117,8 @@ subgen .
 	include '$root_srcdir/config.ninja'
 	include '$root_srcdir/rules.ninja'
 
-	ninja_vars=( 'generator = 1' 'pool = console' ) {
+	let generator 1 pool console --\
 		build $"setup_outs gen '$root_srcdir/setup.rc' '|' $setup_ins
-	}
 
 	subninja local.ninja
 } >$root_outdir/build.ninja.tmp

@@ -4,7 +4,7 @@ cflags\
 	-I '$srcdir'/src/src/lib9/fmt\
 	-I '$outdir'
 
-ninja_vars='yaccflags = -b x -d' outs=( '$outdir'/x.tab.^( c h ) )\
+outs=( '$outdir'/x.tab.^( c h ) ) let yaccflags '-b x -d' --\
 	build $"outs yacc '$srcdir'/src/src/cmd/rc/syn.y
 
 static_lib lib9.a src/lib9/^(\

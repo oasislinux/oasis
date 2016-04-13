@@ -64,7 +64,8 @@ fn exe {
 
 fn file {
 	out='$hash_root'/$1
-	ninja_vars='args = 100'$3' '$1 build $out githash $2 '|' '$repo.stamp' '$root_srcdir/scripts/hash.rc'
+	let args 100$3' '$1 --\
+		build $out githash $2 '|' '$repo.stamp' '$root_srcdir/scripts/hash.rc'
 	root_inputs=( $root_inputs $out )
 
 	if(! ~ $3 755 644) root_perms=( $root_perms 100$3' '$1 )
@@ -77,7 +78,8 @@ fn dir {
 
 fn sym {
 	out='$hash_root'/$1
-	ninja_vars='args = 120000 '$1' '$2 build $out githash '| $repo.stamp' '$root_srcdir/scripts/hash.rc'
+	let args 120000' '$1' '$2 --\
+		build $out githash '| $repo.stamp' '$root_srcdir/scripts/hash.rc'
 	root_inputs=( $root_inputs $out )
 }
 
@@ -106,9 +108,7 @@ for(pkg in $packages) subgen core/$pkg
 printf '%s\n' $root_perms >$outdir/root_perms.txt
 file .perms '$outdir'/root_perms.txt 644
 
-ninja_vars='tag = tree' {
-	build '$repo.git/refs/tags/tree' gittree $root_inputs '|' '$repo.stamp' '$root_srcdir/scripts/tree.rc'
-	build '$repo.tar' gitarchive '|' '$repo.git/refs/tags/tree'
-}
+let tag tree -- build '$repo.git/refs/tags/tree' gittree $root_inputs '|' '$repo.stamp' '$root_srcdir/scripts/tree.rc'
+let tag tree -- build '$repo.tar' gitarchive '|' '$repo.git/refs/tags/tree'
 
 for(pkg in $packages) subninja core/$pkg/local.ninja
