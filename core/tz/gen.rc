@@ -16,10 +16,13 @@ tzdata=(\
 rule zic '$zic -d $outdir/zoneinfo $in'
 
 for(data in $tzdata) {
-	zones=`{awk '{if ($1 == "Zone") print $2}' src/$data}
+	zones=`{awk '/^Zone/ {print $2}' src/$data}
 	if(! ~ $#zones 0) {
 		outs='$outdir'/zoneinfo/$zones
 		build $"outs zic $srcdir/src/$data
 		for(zone in $zones) file share/zoneinfo/$zone '$outdir'/zoneinfo/$zone 644
 	}
+	ifs='
+' { links=`{awk '/^Link/ {print $2 " " $3}' src/$data} }
+	for(line in $links) link=`{printf %s $line} sym share/zoneinfo/$link(2) $link(1)
 }
