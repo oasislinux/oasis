@@ -1,0 +1,137 @@
+# ninja constructs
+
+fn set {
+	var=$1 {
+		shift
+		printf '%s = %s\n' $var $"*
+	}
+}
+
+fn let {
+	vars=() {
+		while(! ~ $1 --) {
+			vars=( $vars $1' = '$2 )
+			shift 2
+		}
+		shift
+		$*
+		printf '  %s\n' $vars
+	}
+}
+
+fn subninja {
+	echo subninja $*
+}
+
+fn include {
+	echo include $*
+}
+
+fn rule {
+	name=$1 {
+		shift
+		let command $"* -- echo rule $name
+	}
+}
+
+fn build {
+	out=$1 rule=$2 {
+		shift 2
+		echo build $out: $rule $*
+	}
+}
+
+# higher-level rules
+
+fn stamp {
+	build '$outdir/stamp' stamp '$outdir'/$*
+}
+
+fn cflags {
+	set cflags '$cflags' $*
+}
+
+fn cc {
+	src=$1 obj=$src.o {
+		shift
+		if(! ~ $src '$'*) {
+			src='$srcdir'/src/$src
+			obj='$outdir'/$obj
+		}
+		build $obj cc $src $*
+	}
+}
+
+fn link {
+	out='$outdir'/$1 objs=() {
+		shift
+		for(obj in $*) {
+			if(! ~ $obj '$'*) obj='$outdir'/$obj
+			objs=( $objs $obj )
+		}
+		build $out link $objs
+	}
+}
+
+fn ar {
+	out='$outdir'/$1 objs=() {
+		shift
+		for(obj in $*) {
+			if(! ~ $obj '$'*) obj='$outdir'/$obj
+			objs=( $objs $obj )
+		}
+		build $out ar $objs
+	}
+}
+
+fn static_lib {
+	out=$1 {
+		shift
+		for(src) cc $src
+		ar $out $*.o
+	}
+}
+
+fn exe {
+	out=$1 objs=() {
+		shift
+		for(src) {
+			if(~ $src *.c) {
+				cc $src
+				obj=$src.o
+			}
+			if not obj=$src
+			objs=( $objs $obj )
+		}
+		link $out $objs
+	}
+}
+
+fn yacc {
+	outs='$outdir'/$1.tab.^( c h ) {
+		let yaccflags '-d -b '$1 -- build $"outs yacc $2
+	}
+}
+
+# packaging rules
+
+fn file {
+	out='$repo.hash'/$1
+	let args 100$3' '$1 --\
+		build $out githash $2 '|' '$repo.stamp' '$root_srcdir/scripts/hash.rc'
+	root_inputs=( $root_inputs $out )
+
+	if(! ~ $3 755 644) root_perms=( $root_perms 100$3' '$1 )
+	status=()
+}
+
+fn dir {
+	root_perms=( $root_perms '010'$2' '$1 )
+}
+
+fn sym {
+	out='$repo.hash'/$1
+	let args 120000' '$1' '$2 --\
+		build $out githash '| $repo.stamp' '$root_srcdir/scripts/hash.rc'
+	root_inputs=( $root_inputs $out )
+}

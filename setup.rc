@@ -42,46 +42,7 @@ root_outdir=$abs_outdir
 setup_outs=( build.ninja )
 setup_ins=()
 
-fn set {
-	var=$1 {
-		shift
-		printf '%s = %s\n' $var $"*
-	}
-}
-
-fn let {
-	vars=() {
-		while(! ~ $1 --) {
-			vars=( $vars $1' = '$2 )
-			shift 2
-		}
-		shift
-		$*
-		printf '  %s\n' $vars
-	}
-}
-
-fn subninja {
-	echo subninja $*
-}
-
-fn include {
-	echo include $*
-}
-
-fn rule {
-	name=$1 {
-		shift
-		let command $"* -- echo rule $name
-	}
-}
-
-fn build {
-	out=$1 rule=$2 {
-		shift 2
-		echo build $out: $rule $*
-	}
-}
+. ./ninja.rc
 
 fn subgen {
 	olddir=$dir
