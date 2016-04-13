@@ -4,8 +4,7 @@ cflags\
 	-I '$srcdir'/src/src/lib9/fmt\
 	-I '$outdir'
 
-outs=( '$outdir'/x.tab.^( c h ) ) let yaccflags '-b x -d' --\
-	build $"outs yacc '$srcdir'/src/src/cmd/rc/syn.y
+yacc x '$srcdir'/src/src/cmd/rc/syn.y
 
 static_lib lib9.a src/lib9/^(\
 	argv0.c\

@@ -62,6 +62,12 @@ fn exe {
 	}
 }
 
+fn yacc {
+	outs='$outdir'/$1.tab.^( c h ) {
+		let yaccflags '-d -b '$1 -- build $"outs yacc $2
+	}
+}
+
 fn file {
 	out='$hash_root'/$1
 	let args 100$3' '$1 --\
