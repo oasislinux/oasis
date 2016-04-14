@@ -1,0 +1,11 @@
+subgen cparser
+subgen file
+subgen libfirm
+subgen loksh
+subgen plan9port
+subgen sbase
+subgen sinit
+subgen skeleton
+subgen tz
+subgen ubase
+subgen zlib

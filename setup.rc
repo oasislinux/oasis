@@ -2,86 +2,93 @@
 
 flag e +
 
+fn usage {
+	{
+		echo 'usage: '$0' [-b builddir]'
+		echo '       '$0' [-n]'
+	} >[1=2]
+	exit 2
+}
+
+builddir=out
+norecurse=()
+
 while(~ $1 -*) switch($1) {
-case -d
-	cd $2
+case -b
+	builddir=$2
 	shift 2
+case -n
+	norecurse=1
+	shift
+case *
+	usage $0
 }
-if(~ $#* 0) outdir=out
-if not outdir=$1
-
-mkdir -p $outdir
-
-ifs=() {
-	abs_srcdir=`{readlink -f . | head -c -1}
-	abs_outdir=`{readlink -f $outdir | head -c -1}
-}
-
-# find relative path from outdir to srcdir
-ifs=/ {
-	srcdir=`{printf %s $abs_srcdir}
-	outdir=`{printf %s $abs_outdir}
-}
-
-if(~ $#outdir 0) ifs=() { rel_srcdir=`{ifs=() pwd | head -c -1} }
-if not n=() {
-	for(i in `{awk 'BEGIN {for (i = 1; i <= '$#outdir'; i++) print i}'}) {
-		if(~$#n 0 && ! ~ $srcdir($i) $outdir($i)) {
-			ifs=() { rel_srcdir=`{printf /%s $srcdir($i-) | tail -c +2} }
-			n=$i
-		}
-		if(~ $#n 1) {
-			if(~ $#rel_srcdir 0) rel_srcdir=..
-			if not rel_srcdir=../$rel_srcdir
-		}
-	}
-}
-
-root_srcdir=$abs_srcdir
-root_outdir=$abs_outdir
-setup_outs=( build.ninja )
-setup_ins=()
 
 . ./ninja.rc
 
 fn subgen {
-	olddir=$dir
-	dir=$1
-	srcdir=$root_srcdir/$dir
-	outdir=$root_outdir/$dir
-
-	printf 'generating in %s\n' $dir >[1=2]
-
-	setup_outs=( $setup_outs $dir/local.ninja )
-	setup_ins=( $setup_ins '$root_srcdir'/$dir/gen.rc )
-
-	mkdir -p $outdir
-	cd $srcdir
-	{
-		echo 'outdir = '$dir
-		echo 'srcdir = $root_srcdir/'$dir
-		. ./gen.rc
-	} >$outdir/local.ninja
-	cd $root_srcdir
-
-	dir=$olddir
-	srcdir=$root_srcdir/$dir
-	outdir=$root_outdir/$dir
+	dir=$pre$1 {
+		subninja $dir/local.ninja
+		gen_inputs=( $gen_inputs $dir/local.ninja )
+		tree_inputs=( $tree_inputs '$builddir'/$dir/root.tree )
+		tree_perms=( $tree_perms '$builddir'/$dir/root.perms )
+	}
+	if(~ $recurse 1) @ gen $1 &
+	status=()
 }
 
-subgen .
+fn gen {
+	if(~ $dir '' .) dir=$1
+	if not dir=$dir/$1
+
+	if(~ $dir .) { suf='' pre='' }
+	if not { suf=/$dir pre=$dir/ }
+
+	cd $1
+
+	tree_perms=()
+	perms_inputs=()
+	tree_inputs=()
+	gen_inputs=()
+
+	{
+		set srcdir $dir
+		set outdir '$builddir'$suf
+
+		ifs=() { old_pwd=`{pwd | head -c -1} }
+		. ./gen.rc
+
+		build '$srcdir'/local.ninja gen '|' setup.rc ninja.rc '$srcdir'/gen.rc $gen_inputs
+
+		if(! ~ $#tree_perms 0) {
+			printf '%s\n' $tree_perms >$old_pwd/local.perms
+			perms_inputs=( $perms_inputs '$srcdir'/local.perms )
+		}
+		if(~ $#perms_inputs 0) build '$outdir/root.perms' stamp
+		if not build '$outdir/root.perms' cat $perms_inputs
+		if(~ $#tree_inputs 0) build '$outdir/root.tree' stamp
+		if not build '$outdir/root.tree' cat $tree_inputs
+	} >local.ninja
+
+	wait
+}
+
+if(! ~ $#* 0) { gen $1 ; exit }
+
+if(~ $#norecurse 0) {
+	recurse=1
+	@ gen .
+}
 
 {
-	set root_srcdir $rel_srcdir
-	set root_outdir .
+	set builddir $builddir
 
-	include '$root_srcdir/config.ninja'
-	include '$root_srcdir/rules.ninja'
-
-	let generator 1 pool console --\
-		build $"setup_outs gen '$root_srcdir/setup.rc' '|' $setup_ins
+	include config.ninja
+	include rules.ninja
 
 	subninja local.ninja
-} >$root_outdir/build.ninja.tmp
 
-mv $root_outdir/^( build.ninja.tmp build.ninja )
+	build build.ninja gen '|' setup.rc ninja.rc local.ninja
+} >build.ninja.tmp
+
+mv build.ninja.tmp build.ninja

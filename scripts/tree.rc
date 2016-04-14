@@ -4,7 +4,7 @@ flag e +
 
 repo=$1
 tag=$2
-shift 2
+index=$3
 
 fn checkstatus {
 	s=$status if(! ~ $s '' '|') exit $s
@@ -15,6 +15,6 @@ ifs=() { oldpwd=`{pwd | head -c -1} }
 cd $repo
 
 git read-tree --empty
-cat $oldpwd/$* | git update-index --index-info
+git update-index --index-info <$oldpwd/$index
 tree=`{git write-tree} ; checkstatus
 git update-ref refs/tags/$tag $tree

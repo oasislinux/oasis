@@ -1,6 +1,6 @@
 cflags\
-	-I '$root_srcdir'/core/libfirm/src/include\
-	-I '$root_outdir'/core/libfirm\
+	-I core/libfirm/src/include\
+	-I '$builddir'/core/libfirm\
 	-I '$srcdir'/src/src\
 	-I '$outdir'
 
@@ -9,7 +9,7 @@ build '$outdir'/revision.h revision_hdr
 
 cd src
 srcs=src/^( main.c */*.c )
-for(src in $srcs) cc $src '|' '$outdir'/revision.h '||' '$root_outdir/core/libfirm/stamp'
-link cparser $srcs.o '$root_outdir'/core/libfirm/libfirm.a
+for(src in $srcs) cc $src '|' '$outdir'/revision.h '||' '$builddir/core/libfirm/stamp'
+link cparser $srcs.o '$builddir'/core/libfirm/libfirm.a
 file bin/cparser '$outdir'/cparser 755
 file share/man/man1/cparser.1 '$srcdir'/src/cparser.1 644

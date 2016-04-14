@@ -1,5 +1,5 @@
 rule gen
-  command = rc $in -d $root_srcdir $$PWD
+  command = rc ./setup.rc -n -b $builddir $srcdir
   generator = 1
 
 # toolchain
@@ -14,13 +14,16 @@ rule link
 rule ar
   command = $ar crsD $out $in
 
+# misc tools
 rule stamp
   command = touch $out
 
 rule copy
   command = ln -f $in $out
 
-# misc tools
+rule cat
+  command = cat $in >$out.tmp && mv $out.tmp $out
+
 rule yacc
   command = oldpwd=$$PWD && cd $outdir && $yacc $yaccflags $$oldpwd/$in
 
@@ -28,14 +31,14 @@ rule sed
   command = sed $expr >$out.tmp $in && mv $out.tmp $out
 
 rule githash
-  command = rc $root_srcdir/scripts/hash.rc $repo.git $out $args $in
+  command = rc ./scripts/hash.rc $builddir/$repo.git $out $args $in
 
 rule gittree
-  command = rc $root_srcdir/scripts/tree.rc $repo.git $tag $in
+  command = rc ./scripts/tree.rc $builddir/$repo.git $tag $in
   restat = 1
 
 rule gitarchive
-  command = git -C $repo.git archive -o $$PWD/$out $tag
+  command = git -C $builddir/$repo.git archive -o $$PWD/$out $tag
 
 rule gitinit
-  command = mkdir -p $repo.git && git -C $repo.git init --bare && touch $out
+  command = mkdir -p $builddir/$repo.git && git -C $builddir/$repo.git init --bare && touch $out

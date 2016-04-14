@@ -51,8 +51,8 @@ for(backend in $backends) {
 				build $"outs $type '$srcdir'/src/ir/be/$backend/$backend^_spec.pl
 		}
 		for(src in $srcs) cc $src '||' '$outdir/stamp'
-	} >$outdir/$backend.ninja
-	echo 'subninja $outdir'/$backend.ninja
+	} >../$backend.ninja
+	subninja '$srcdir'/$backend.ninja
 }
 
 ar libfirm.a $objs

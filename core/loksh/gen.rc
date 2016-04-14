@@ -1,4 +1,4 @@
-cflags -I '$root_srcdir/include' -D_GNU_SOURCE
+cflags -I include -D_GNU_SOURCE
 exe ksh\
 	alloc.c\
 	c_ksh.c\

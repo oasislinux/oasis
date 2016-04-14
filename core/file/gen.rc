@@ -103,7 +103,7 @@ srcs=(\
 	\
 	src/fmtcheck.c\
 ) {
-	for(src in $srcs) cc $src '|' '$outdir/include/magic.h' '||' core/zlib/stamp
+	for(src in $srcs) cc $src '|' '$outdir/include/magic.h' '||' '$builddir/core/zlib/stamp'
 	ar libmagic.a $srcs.o
 }
 

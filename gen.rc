@@ -1,29 +1,7 @@
-root_inputs=()
-root_perms=()
+subgen core
 
-packages=(\
-	cparser\
-	file\
-	libfirm\
-	loksh\
-	plan9port\
-	sbase\
-	sinit\
-	skeleton\
-	tz\
-	ubase\
-	zlib\
-)
+file .perms '$outdir'/root.perms 644
 
-set hash_root '$repo.hash'
-build '$repo.stamp' gitinit
-
-for(pkg in $packages) subgen core/$pkg
-
-printf '%s\n' $root_perms >$outdir/root_perms.txt
-file .perms '$outdir'/root_perms.txt 644
-
-let tag tree -- build '$repo.git/refs/tags/tree' gittree $root_inputs '|' '$repo.stamp' '$root_srcdir/scripts/tree.rc'
-let tag tree -- build '$repo.tar' gitarchive '|' '$repo.git/refs/tags/tree'
-
-for(pkg in $packages) subninja core/$pkg/local.ninja
+build '$builddir/$repo.stamp' gitinit
+let tag tree -- build '$builddir/$repo.git/refs/tags/tree' gittree '$outdir/root.tree' '|' '$builddir/$repo.stamp' ./scripts/tree.rc
+let tag tree -- build '$builddir/$repo.tar' gitarchive '|' '$builddir/$repo.git/refs/tags/tree'

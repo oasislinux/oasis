@@ -1,0 +1,5 @@
+/TEMPLATE.ninja
+/amd64.ninja
+/arm.ninja
+/ia32.ninja
+/sparc.ninja
