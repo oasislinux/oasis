@@ -11,7 +11,7 @@ fn usage {
 
 fn subgen {
 	subninja '$srcdir'/$1/local.ninja
-	gen_inputs=( $gen_inputs '$srcdir'/$1/local.ninja )
+	gen_inputs=( $gen_inputs '$outdir'/$1/gen.stamp )
 	tree_inputs=( $tree_inputs '$outdir'/$1/root.tree )
 	tree_perms=( $tree_perms '$outdir'/$1/root.perms )
 	if(~ $recurse 1) @ gen $1 &
@@ -39,7 +39,8 @@ fn gen {
 		ifs=() { old_pwd=`{pwd | head -c -1} }
 		. ./gen.rc
 
-		build '$srcdir'/local.ninja gen '|' setup.rc ninja.rc '$srcdir'/gen.rc $gen_inputs
+		build '$outdir'/gen.stamp stamp '|' '$srcdir'/local.ninja $gen_inputs
+		build '$srcdir'/local.ninja gen '|' setup.rc ninja.rc '$srcdir'/gen.rc
 
 		if(! ~ $#tree_perms 0) {
 			printf '%s\n' $tree_perms >$old_pwd/local.perms
