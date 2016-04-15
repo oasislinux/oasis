@@ -52,6 +52,9 @@ fn gen {
 		if not build '$outdir/root.tree' cat $tree_inputs
 	} >local.ninja
 
+	if(~ $recurse 1) echo 'generated '$dir >[1=2]
+	status=()
+
 	wait
 }
 
