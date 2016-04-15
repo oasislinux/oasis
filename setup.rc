@@ -7,6 +7,8 @@ fn usage {
 	exit 2
 }
 
+if(! ~ $#* 0 1) usage
+
 . ./ninja.rc
 
 fn subgen {
