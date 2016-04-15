@@ -10,12 +10,10 @@ fn usage {
 . ./ninja.rc
 
 fn subgen {
-	dir=$pre$1 {
-		subninja $dir/local.ninja
-		gen_inputs=( $gen_inputs $dir/local.ninja )
-		tree_inputs=( $tree_inputs '$builddir'/$dir/root.tree )
-		tree_perms=( $tree_perms '$builddir'/$dir/root.perms )
-	}
+	subninja '$srcdir'/$1/local.ninja
+	gen_inputs=( $gen_inputs '$srcdir'/$1/local.ninja )
+	tree_inputs=( $tree_inputs '$outdir'/$1/root.tree )
+	tree_perms=( $tree_perms '$outdir'/$1/root.perms )
 	if(~ $recurse 1) @ gen $1 &
 	status=()
 }
@@ -23,9 +21,6 @@ fn subgen {
 fn gen {
 	if(~ $dir '' .) dir=$1
 	if not dir=$dir/$1
-
-	if(~ $dir .) { suf='' pre='' }
-	if not { suf=/$dir pre=$dir/ }
 
 	cd $1
 
@@ -36,7 +31,10 @@ fn gen {
 
 	{
 		set srcdir $dir
-		set outdir '$builddir'$suf
+		outdir='$builddir' {
+			if(! ~ $dir .) outdir=$outdir/$dir
+			set outdir $outdir
+		}
 
 		ifs=() { old_pwd=`{pwd | head -c -1} }
 		. ./gen.rc
