@@ -3,25 +3,8 @@
 flag e +
 
 fn usage {
-	{
-		echo 'usage: '$0' [-b builddir]'
-		echo '       '$0' [-n]'
-	} >[1=2]
+	echo 'usage: '$0' [dir]' >[1=2]
 	exit 2
-}
-
-builddir=out
-norecurse=()
-
-while(~ $1 -*) switch($1) {
-case -b
-	builddir=$2
-	shift 2
-case -n
-	norecurse=1
-	shift
-case *
-	usage $0
 }
 
 . ./ninja.rc
@@ -75,20 +58,5 @@ fn gen {
 
 if(! ~ $#* 0) { gen $1 ; exit }
 
-if(~ $#norecurse 0) {
-	recurse=1
-	@ gen .
-}
-
-{
-	set builddir $builddir
-
-	include config.ninja
-	include rules.ninja
-
-	subninja local.ninja
-
-	build build.ninja gen '|' setup.rc ninja.rc local.ninja
-} >build.ninja.tmp
-
-mv build.ninja.tmp build.ninja
+recurse=1
+@ gen .

@@ -1,5 +1,5 @@
 rule gen
-  command = rc ./setup.rc -n -b $builddir $srcdir
+  command = rc ./setup.rc $srcdir
   generator = 1
 
 # toolchain

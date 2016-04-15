@@ -1,0 +1,7 @@
+include config.ninja
+include rules.ninja
+
+subninja local.ninja
+
+build build.ninja: stamp | local.ninja
+  generator = 1
