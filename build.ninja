@@ -3,5 +3,5 @@ include rules.ninja
 
 subninja local.ninja
 
-build build.ninja: stamp | $builddir/gen.stamp
+build build.ninja: phony phony/gen
   generator = 1
