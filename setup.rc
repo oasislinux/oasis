@@ -32,6 +32,7 @@ fn gen {
 	if not dir=$dir/$1
 
 	cd $1
+	ifs=() { oldcwd=`{pwd | head -c -1} }
 
 	tree_perms=()
 	perms_inputs=()
@@ -45,7 +46,6 @@ fn gen {
 			set outdir $outdir
 		}
 
-		ifs=() { oldcwd=`{pwd | head -c -1} }
 		. ./gen.rc
 
 		build 'phony/$srcdir/gen' phony '$srcdir'/local.ninja $gen_inputs
@@ -59,7 +59,8 @@ fn gen {
 		if not build '$outdir/root.perms' cat $perms_inputs
 		if(~ $#tree_inputs 0) build '$outdir/root.tree' stamp
 		if not build '$outdir/root.tree' cat $tree_inputs
-	} >local.ninja
+	} >local.ninja.tmp
+	mv $oldcwd/^( local.ninja.tmp local.ninja )
 
 	if(! ~ $quiet 1) echo 'generated '$dir >[1=2]
 	status=()
