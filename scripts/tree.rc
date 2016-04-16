@@ -11,10 +11,10 @@ fn checkstatus {
 	status=()
 }
 
-ifs=() { oldpwd=`{pwd | head -c -1} }
+ifs=() { oldcwd=`{pwd | head -c -1} }
 cd $repo
 
 git read-tree --empty
-git update-index --index-info <$oldpwd/$index
+git update-index --index-info <$oldcwd/$index
 tree=`{git write-tree} ; checkstatus
 git update-ref refs/tags/$tag $tree

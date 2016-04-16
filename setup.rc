@@ -45,14 +45,14 @@ fn gen {
 			set outdir $outdir
 		}
 
-		ifs=() { old_pwd=`{pwd | head -c -1} }
+		ifs=() { oldcwd=`{pwd | head -c -1} }
 		. ./gen.rc
 
 		build 'phony/$srcdir/gen' phony '$srcdir'/local.ninja $gen_inputs
 		build '$srcdir'/local.ninja gen '|' setup.rc ninja.rc '$srcdir'/gen.rc
 
 		if(! ~ $#tree_perms 0) {
-			printf '%s\n' $tree_perms >$old_pwd/local.perms
+			printf '%s\n' $tree_perms >$oldcwd/local.perms
 			perms_inputs=( $perms_inputs '$srcdir'/local.perms )
 		}
 		if(~ $#perms_inputs 0) build '$outdir/root.perms' stamp

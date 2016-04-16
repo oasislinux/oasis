@@ -25,7 +25,7 @@ rule cat
   command = cat $in >$out.tmp && mv $out.tmp $out
 
 rule yacc
-  command = oldpwd=$$PWD && cd $outdir && $yacc $yaccflags $$oldpwd/$in
+  command = oldcwd=$$PWD && cd $outdir && $yacc $yaccflags $$oldcwd/$in
 
 rule sed
   command = sed $expr >$out.tmp $in && mv $out.tmp $out
