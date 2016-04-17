@@ -106,20 +106,18 @@ executables=(\
 	yes\
 )
 
-getconf_hdrs=(confstr limits sysconf pathconf)^_l.h
-getconf_outs='$outdir'/$getconf_hdrs
-rule getconf_headers 'getconf=$$PWD/$srcdir/getconf.sh && cd $outdir && $$getconf'
-build $"getconf_outs getconf_headers '|' '$srcdir/getconf.sh'
+getconf_outs='$outdir'/^(confstr limits sysconf pathconf)^_l.h
+rule getconf 'getconf=$$PWD/$srcdir/getconf.sh && cd $outdir && $$getconf'
+build $"getconf_outs getconf '|' '$srcdir/getconf.sh'
+phony internal_headers $getconf_outs
 
 for(exe in $executables) {
 	if(~ $exe install) src=x$exe
 	if not src=$exe
 
-	cc $src.c '||' '$outdir/stamp'
+	cc $src.c '||' 'phony/$dir/internal_headers'
 	link $exe $src.c.o libutil.a libutf.a
 
 	file bin/$exe '$outdir'/$exe 755
 	file share/man/man1/$exe.1 '$srcdir'/$src.1 644
 }
-
-stamp $getconf_hdrs

@@ -22,4 +22,4 @@ static_lib libz.a\
 	gzwrite.c
 
 build '$outdir'/include/zlib.h copy '$srcdir'/zlib.h
-stamp include/zlib.h
+phony headers include/zlib.h

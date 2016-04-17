@@ -1,5 +1,6 @@
 cflags\
 	-I '$outdir' \
+	-I '$outdir'/include\
 	-I '$srcdir'/include/libfirm/adt\
 	-I '$srcdir'/include/libfirm\
 	-I '$srcdir'/ir/adt\
@@ -25,34 +26,34 @@ rule new_nodes '$perl $srcdir/ir/be/scripts/generate_new_opcodes.pl $in $outdir'
 rule regalloc_if '$perl $srcdir/ir/be/scripts/generate_regalloc_if.pl $in $outdir'
 rule emitter '$perl $srcdir/ir/be/scripts/generate_emitter.pl $in $outdir'
 
-genhdrs=(nodes.h gen_irnode.h gen_proj_names.h)
+genhdrs=(gen_irnode.h gen_proj_names.h)
 gensrcs=(gen_irnode.c gen_irio.c)
 for(gensrc in $genhdrs $gensrcs) {
 	build '$outdir'/$gensrc irspec '$srcdir'/scripts/templates/$gensrc
 }
 
+build '$outdir'/include/nodes.h irspec '$srcdir'/scripts/templates/nodes.h
+phony headers include/nodes.h
+
 srcs=(ir/*/*.c '$outdir'/$gensrcs)
 objs=$srcs.o
-for(src in $srcs) cc $src '||' '$outdir/stamp'
-
-stampdeps=($genhdrs)
+for(src in $srcs) cc $src '||' 'phony/$dir/internal_headers'
 
 for(backend in $backends) {
 	types=(emitter regalloc_if new_nodes)
 	srcs=(ir/be/$backend/*.c '$outdir'/gen_$backend^_$types.c)
 	objs=($objs $srcs.o)
-	stampdeps=($stampdeps gen_$backend^_$types.h)
+	genhdrs=($genhdrs gen_$backend^_$types.h)
 	{
 		cflags -I '$srcdir'/ir/be/$backend
 		for(type in $types) {
 			outs=('$outdir'/gen_$backend^_$type.^(c h))\
 				build $"outs $type '$srcdir'/ir/be/$backend/$backend^_spec.pl
 		}
-		for(src in $srcs) cc $src '||' '$outdir/stamp'
+		for(src in $srcs) cc $src '||' 'phony/$dir/internal_headers'
 	} >../$backend.ninja
 	subninja '$dir'/$backend.ninja
 }
+phony internal_headers $genhdrs 'phony/$dir/headers'
 
 ar libfirm.a $objs
-
-stamp $stampdeps

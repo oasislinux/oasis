@@ -15,7 +15,7 @@ rule ar
   command = $ar crsD $out $in
 
 # misc tools
-rule stamp
+rule touch
   command = touch $out
 
 rule copy

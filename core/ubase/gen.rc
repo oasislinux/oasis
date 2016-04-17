@@ -29,7 +29,7 @@ static_lib libutil.a\
 fn myexe {
 	exe=$1
 	shift 1
-	cc $exe.c '||' '$outdir/stamp'
+	cc $exe.c '||' '$outdir/config.h'
 	exe $exe '$outdir'/$exe.c.o '$outdir/libutil.a'
 	file bin/$exe '$outdir'/$exe 755
 	if(~ $#* 1) file share/man/man$1/$exe.$1 '$srcdir'/$exe.$1 644
@@ -86,5 +86,3 @@ myexe uptime 1
 myexe vtallow 1
 myexe watch 1
 myexe who 1
-
-stamp config.h

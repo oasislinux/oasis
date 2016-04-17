@@ -59,9 +59,9 @@ fn gen {
 			printf '%s\n' $tree_perms >$absdir/local.perms
 			perms_inputs=($perms_inputs '$dir'/local.perms)
 		}
-		if(~ $#perms_inputs 0) build '$outdir/root.perms' stamp
+		if(~ $#perms_inputs 0) build '$outdir/root.perms' touch
 		if not build '$outdir/root.perms' cat $perms_inputs
-		if(~ $#tree_inputs 0) build '$outdir/root.tree' stamp
+		if(~ $#tree_inputs 0) build '$outdir/root.tree' touch
 		if not build '$outdir/root.tree' cat $tree_inputs
 	} >local.ninja.tmp
 	mv $absdir/^(local.ninja.tmp local.ninja)

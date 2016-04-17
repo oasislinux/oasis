@@ -43,8 +43,15 @@ fn build {
 
 # higher-level rules
 
-fn stamp {
-	build '$outdir/stamp' stamp '$outdir'/$*
+fn phony {
+	name=$1 deps=() {
+		shift
+		for(dep) {
+			if(! ~ $dep '$'* phony/*) dep='$outdir'/$dep
+			deps=($deps $dep)
+		}
+		build phony/'$dir'/$name phony $deps
+	}
 }
 
 fn cflags {

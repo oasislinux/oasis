@@ -81,6 +81,8 @@ build '$outdir'/magic.mgc magic '|' '$outdir'/$magic_outs
 
 let expr s@X.YY@`{echo $version | tr -d .}^@ --\
 	build '$outdir'/include/magic.h sed '$srcdir'/src/magic.h.in
+phony headers include/magic.h
+
 let expr '-e s@__CSECTION__@1@g -e s@__FSECTION__@5@g -e s@__VERSION__@'$version'@g -e s@__MAGIC__@/share/file/magic@g' --\
 	build '$outdir'/file.1 sed '$srcdir'/doc/file.man
 
@@ -103,7 +105,7 @@ srcs=(\
 	\
 	src/fmtcheck.c\
 ) {
-	for(src in $srcs) cc $src '|' '$outdir/include/magic.h' '||' '$builddir/core/zlib/stamp'
+	for(src in $srcs) cc $src '||' 'phony/$dir/headers' phony/core/zlib/headers
 	ar libmagic.a $srcs.o
 }
 
