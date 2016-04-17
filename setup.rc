@@ -20,9 +20,9 @@ if(! ~ $#* 0 1) usage
 
 fn subgen {
 	subninja '$dir'/$1/local.ninja
-	gen_inputs=( $gen_inputs phony/'$dir'/$1/gen )
-	tree_inputs=( $tree_inputs '$outdir'/$1/root.tree )
-	tree_perms=( $tree_perms '$outdir'/$1/root.perms )
+	gen_inputs=($gen_inputs phony/'$dir'/$1/gen)
+	tree_inputs=($tree_inputs '$outdir'/$1/root.tree)
+	tree_perms=($tree_perms '$outdir'/$1/root.perms)
 	if(~ $recurse 1 || ! [ -f $1/local.ninja ]) @ gen $1 &
 	status=()
 }
@@ -57,14 +57,14 @@ fn gen {
 
 		if(! ~ $#tree_perms 0) {
 			printf '%s\n' $tree_perms >$absdir/local.perms
-			perms_inputs=( $perms_inputs '$dir'/local.perms )
+			perms_inputs=($perms_inputs '$dir'/local.perms)
 		}
 		if(~ $#perms_inputs 0) build '$outdir/root.perms' stamp
 		if not build '$outdir/root.perms' cat $perms_inputs
 		if(~ $#tree_inputs 0) build '$outdir/root.tree' stamp
 		if not build '$outdir/root.tree' cat $tree_inputs
 	} >local.ninja.tmp
-	mv $absdir/^( local.ninja.tmp local.ninja )
+	mv $absdir/^(local.ninja.tmp local.ninja)
 
 	if(! ~ $quiet 1) echo 'generated '$dir >[1=2]
 

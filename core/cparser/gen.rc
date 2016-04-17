@@ -7,7 +7,7 @@ cflags\
 rule revision_hdr 'echo ''#define cparser_REVISION ""'' >$out.tmp && mv $out.tmp $out'
 build '$outdir'/revision.h revision_hdr
 
-srcs=src/^( main.c */*.c )
+srcs=src/^(main.c */*.c)
 for(src in $srcs) cc $src '|' '$outdir'/revision.h '||' '$builddir/core/libfirm/stamp'
 link cparser $srcs.o '$builddir'/core/libfirm/libfirm.a
 file bin/cparser '$outdir'/cparser 755

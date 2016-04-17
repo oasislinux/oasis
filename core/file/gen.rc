@@ -69,11 +69,11 @@ cflags\
 # tm_gmtoff
 
 cd magic
-magic_outs=magic/^( Header Localstuff )
+magic_outs=magic/^(Header Localstuff)
 for(src in Header Localstuff) build '$outdir'/magic/$src copy '$srcdir'/magic/$src
 cd Magdir
 srcs=*
-magic_outs=( $magic_outs magic/$srcs )
+magic_outs=($magic_outs magic/$srcs)
 for(src in $srcs) build '$outdir'/magic/$src copy '$srcdir'/magic/Magdir/$src
 
 rule magic 'cd $outdir && file -C -m magic'

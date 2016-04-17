@@ -18,34 +18,34 @@ cflags\
 	-I '$srcdir'/ir/tr\
 	-I '$srcdir'/ir/tv
 
-backends=( amd64 arm ia32 sparc TEMPLATE )
+backends=(amd64 arm ia32 sparc TEMPLATE)
 
 rule irspec '$python $srcdir/scripts/gen_ir.py $srcdir/scripts/ir_spec.py $in >$out.tmp && mv $out.tmp $out'
 rule new_nodes '$perl $srcdir/ir/be/scripts/generate_new_opcodes.pl $in $outdir'
 rule regalloc_if '$perl $srcdir/ir/be/scripts/generate_regalloc_if.pl $in $outdir'
 rule emitter '$perl $srcdir/ir/be/scripts/generate_emitter.pl $in $outdir'
 
-genhdrs=( nodes.h gen_irnode.h gen_proj_names.h )
-gensrcs=( gen_irnode.c gen_irio.c )
+genhdrs=(nodes.h gen_irnode.h gen_proj_names.h)
+gensrcs=(gen_irnode.c gen_irio.c)
 for(gensrc in $genhdrs $gensrcs) {
 	build '$outdir'/$gensrc irspec '$srcdir'/scripts/templates/$gensrc
 }
 
-srcs=( ir/*/*.c '$outdir'/$gensrcs )
+srcs=(ir/*/*.c '$outdir'/$gensrcs)
 objs=$srcs.o
 for(src in $srcs) cc $src '||' '$outdir/stamp'
 
-stampdeps=( $genhdrs )
+stampdeps=($genhdrs)
 
 for(backend in $backends) {
-	types=( emitter regalloc_if new_nodes )
-	srcs=( ir/be/$backend/*.c '$outdir'/gen_$backend^_$types.c )
-	objs=( $objs $srcs.o )
-	stampdeps=( $stampdeps gen_$backend^_$types.h )
+	types=(emitter regalloc_if new_nodes)
+	srcs=(ir/be/$backend/*.c '$outdir'/gen_$backend^_$types.c)
+	objs=($objs $srcs.o)
+	stampdeps=($stampdeps gen_$backend^_$types.h)
 	{
 		cflags -I '$srcdir'/ir/be/$backend
 		for(type in $types) {
-			outs=( '$outdir'/gen_$backend^_$type.^(c h) )\
+			outs=('$outdir'/gen_$backend^_$type.^(c h))\
 				build $"outs $type '$srcdir'/ir/be/$backend/$backend^_spec.pl
 		}
 		for(src in $srcs) cc $src '||' '$outdir/stamp'

@@ -106,7 +106,7 @@ executables=(\
 	yes\
 )
 
-getconf_hdrs=( confstr limits sysconf pathconf )^_l.h
+getconf_hdrs=(confstr limits sysconf pathconf)^_l.h
 getconf_outs='$outdir'/$getconf_hdrs
 rule getconf_headers 'getconf=$$PWD/$srcdir/getconf.sh && cd $outdir && $$getconf'
 build $"getconf_outs getconf_headers '|' '$srcdir/getconf.sh'
