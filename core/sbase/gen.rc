@@ -9,115 +9,122 @@ cflags\
 static_lib libutil.a libutil/*.c
 static_lib libutf.a libutf/*.c
 
-executables=(\
-	basename\
-	cal\
-	cat\
-	chgrp\
-	chmod\
-	chown\
-	chroot\
-	cksum\
-	cmp\
-	cols\
-	comm\
-	cp\
-	cron\
-	cut\
-	date\
-	dirname\
-	du\
-	echo\
-	ed\
-	env\
-	expand\
-	expr\
-	false\
-	find\
-	flock\
-	fold\
-	getconf\
-	grep\
-	head\
-	join\
-	hostname\
-	kill\
-	link\
-	ln\
-	logger\
-	logname\
-	ls\
-	md5sum\
-	mkdir\
-	mkfifo\
-	mktemp\
-	mv\
-	nice\
-	nl\
-	nohup\
-	od\
-	pathchk\
-	paste\
-	printenv\
-	printf\
-	pwd\
-	readlink\
-	renice\
-	rm\
-	rmdir\
-	sed\
-	seq\
-	setsid\
-	sha1sum\
-	sha224sum\
-	sha256sum\
-	sha384sum\
-	sha512sum\
-	sha512-224sum\
-	sha512-256sum\
-	sleep\
-	sort\
-	split\
-	sponge\
-	strings\
-	sync\
-	tail\
-	tar\
-	tee\
-	test\
-	tftp\
-	time\
-	touch\
-	tr\
-	true\
-	tsort\
-	tty\
-	uname\
-	unexpand\
-	uniq\
-	unlink\
-	uudecode\
-	uuencode\
-	wc\
-	which\
-	whoami\
-	xargs\
-	install\
-	yes\
-)
-
 getconf_outs='$outdir'/^(confstr limits sysconf pathconf)^_l.h
 rule getconf 'getconf=$$PWD/$srcdir/getconf.sh && cd $outdir && $$getconf'
 build $"getconf_outs getconf '|' '$srcdir/getconf.sh'
-phony internal_headers $getconf_outs
+phony getconf $getconf_outs
 
-for(exe in $executables) {
-	if(~ $exe install) src=x$exe
-	if not src=$exe
+fn x {
+	exe=$1
+	shift
 
-	cc $src.c '||' 'phony/$dir/internal_headers'
+	src=$exe
+	deps=()
+	switch($exe) {
+	case install
+		src=xinstall
+	case getconf
+		deps=('||' 'phony/$dir/getconf')
+	}
+
+	cc $src.c $deps
 	link $exe $src.c.o libutil.a libutf.a
 
 	file bin/$exe '$outdir'/$exe 755
 	file share/man/man1/$exe.1 '$srcdir'/$src.1 644
 }
+
+x basename
+x cal
+x cat
+x chgrp
+x chmod
+x chown
+x chroot
+x cksum
+x cmp
+x cols
+x comm
+x cp
+x cron
+x cut
+x date
+x dirname
+x du
+x echo
+x ed
+x env
+x expand
+x expr
+x false
+x find
+x flock
+x fold
+x getconf
+x grep
+x head
+x hostname
+x install
+x join
+x kill
+x link
+x ln
+x logger
+x logname
+x ls
+x md5sum
+x mkdir
+x mkfifo
+x mktemp
+x mv
+x nice
+x nl
+x nohup
+x od
+x paste
+x pathchk
+x printenv
+x printf
+x pwd
+x readlink
+x renice
+x rm
+x rmdir
+x sed
+x seq
+x setsid
+x sha1sum
+x sha224sum
+x sha256sum
+x sha384sum
+x sha512-224sum
+x sha512-256sum
+x sha512sum
+x sleep
+x sort
+x split
+x sponge
+x strings
+x sync
+x tail
+x tar
+x tee
+x test
+x tftp
+x time
+x touch
+x tr
+x true
+x tsort
+x tty
+x uname
+x unexpand
+x uniq
+x unlink
+x uudecode
+x uuencode
+x wc
+x which
+x whoami
+x xargs
+x yes
