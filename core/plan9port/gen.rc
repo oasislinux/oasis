@@ -7,6 +7,7 @@ cflags\
 yacc x '$srcdir'/src/cmd/rc/syn.y
 
 static_lib lib9.a src/lib9/^(\
+	_p9dir.c\
 	argv0.c\
 	atexit.c\
 	atoi.c\
@@ -25,7 +26,6 @@ static_lib lib9.a src/lib9/^(\
 	fmt/fmtlocale.c\
 	fmt/fmtstr.c\
 	fmt/fprint.c\
-	fmtlock2.c\
 	fmt/nan64.c\
 	fmt/runefmtstr.c\
 	fmt/smprint.c\
@@ -36,6 +36,7 @@ static_lib lib9.a src/lib9/^(\
 	fmt/vseprint.c\
 	fmt/vsmprint.c\
 	fmt/vsnprint.c\
+	fmtlock2.c\
 	get9root.c\
 	getcallerpc-x86_64.c\
 	getenv.c\
@@ -45,7 +46,6 @@ static_lib lib9.a src/lib9/^(\
 	mallocz.c\
 	notify.c\
 	open.c\
-	_p9dir.c\
 	pipe.c\
 	postnote.c\
 	qlock.c\
@@ -65,28 +65,27 @@ static_lib lib9.a src/lib9/^(\
 	write.c\
 )
 
-srcs=(\
+srcs=('$outdir'/x.tab.c src/cmd/rc/^(\
 	code.c\
 	exec.c\
 	getflags.c\
 	glob.c\
+	havefork.c\
 	here.c\
 	io.c\
 	lex.c\
 	pcmd.c\
 	pfnc.c\
+	plan9ish.c\
 	simple.c\
 	subr.c\
 	trap.c\
 	tree.c\
 	unixcrap.c\
 	var.c\
-	plan9ish.c\
-	havefork.c\
-)
-for(src in $srcs) cc src/cmd/rc/$src '||' '$outdir'/x.tab.h
-cc '$outdir'/x.tab.c
-link rc src/cmd/rc/$srcs.o x.tab.c.o lib9.a
+))
+for(src in $srcs) cc $src '||' '$outdir'/x.tab.h
+link rc $srcs.o lib9.a
 
 file bin/rc '$outdir'/rc 755
 file share/man/man1/rc.1 '$srcdir'/man/man1/rc.1 644
