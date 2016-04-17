@@ -1,10 +1,10 @@
 cflags\
-	-I '$srcdir'/src/include\
-	-I '$srcdir'/src/src/cmd/rc\
-	-I '$srcdir'/src/src/lib9/fmt\
+	-I '$srcdir'/include\
+	-I '$srcdir'/src/cmd/rc\
+	-I '$srcdir'/src/lib9/fmt\
 	-I '$outdir'
 
-yacc x '$srcdir'/src/src/cmd/rc/syn.y
+yacc x '$srcdir'/src/cmd/rc/syn.y
 
 static_lib lib9.a src/lib9/^(\
 	argv0.c\
@@ -90,7 +90,7 @@ srcs=(\
 }
 
 file bin/rc '$outdir'/rc 755
-file share/man/man1/rc.1 '$srcdir'/src/man/man1/rc.1 644
-file lib/rcmain '$srcdir'/src/rcmain 644
+file share/man/man1/rc.1 '$srcdir'/man/man1/rc.1 644
+file lib/rcmain '$srcdir'/rcmain 644
 
 stamp x.tab.h

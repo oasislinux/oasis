@@ -1,36 +1,34 @@
 cflags\
 	-I '$outdir' \
-	-I '$srcdir'/src/include/libfirm/adt\
-	-I '$srcdir'/src/include/libfirm\
-	-I '$srcdir'/src/ir/adt\
-	-I '$srcdir'/src/ir/ana\
-	-I '$srcdir'/src/ir/be/ia32\
-	-I '$srcdir'/src/ir/be\
-	-I '$srcdir'/src/ir/common\
-	-I '$srcdir'/src/ir/ident\
-	-I '$srcdir'/src/ir/ir\
-	-I '$srcdir'/src/ir/kaps\
-	-I '$srcdir'/src/ir/libcore\
-	-I '$srcdir'/src/ir/lower\
-	-I '$srcdir'/src/ir/lpp\
-	-I '$srcdir'/src/ir/opt\
-	-I '$srcdir'/src/ir/stat\
-	-I '$srcdir'/src/ir/tr\
-	-I '$srcdir'/src/ir/tv
+	-I '$srcdir'/include/libfirm/adt\
+	-I '$srcdir'/include/libfirm\
+	-I '$srcdir'/ir/adt\
+	-I '$srcdir'/ir/ana\
+	-I '$srcdir'/ir/be/ia32\
+	-I '$srcdir'/ir/be\
+	-I '$srcdir'/ir/common\
+	-I '$srcdir'/ir/ident\
+	-I '$srcdir'/ir/ir\
+	-I '$srcdir'/ir/kaps\
+	-I '$srcdir'/ir/libcore\
+	-I '$srcdir'/ir/lower\
+	-I '$srcdir'/ir/lpp\
+	-I '$srcdir'/ir/opt\
+	-I '$srcdir'/ir/stat\
+	-I '$srcdir'/ir/tr\
+	-I '$srcdir'/ir/tv
 
 backends=( amd64 arm ia32 sparc TEMPLATE )
 
-rule irspec '$python $srcdir/src/scripts/gen_ir.py $srcdir/src/scripts/ir_spec.py $in >$out.tmp && mv $out.tmp $out'
-rule new_nodes '$perl $srcdir/src/ir/be/scripts/generate_new_opcodes.pl $in $outdir'
-rule regalloc_if '$perl $srcdir/src/ir/be/scripts/generate_regalloc_if.pl $in $outdir'
-rule emitter '$perl $srcdir/src/ir/be/scripts/generate_emitter.pl $in $outdir'
-
-cd src
+rule irspec '$python $srcdir/scripts/gen_ir.py $srcdir/scripts/ir_spec.py $in >$out.tmp && mv $out.tmp $out'
+rule new_nodes '$perl $srcdir/ir/be/scripts/generate_new_opcodes.pl $in $outdir'
+rule regalloc_if '$perl $srcdir/ir/be/scripts/generate_regalloc_if.pl $in $outdir'
+rule emitter '$perl $srcdir/ir/be/scripts/generate_emitter.pl $in $outdir'
 
 genhdrs=( nodes.h gen_irnode.h gen_proj_names.h )
 gensrcs=( gen_irnode.c gen_irio.c )
 for(gensrc in $genhdrs $gensrcs) {
-	build '$outdir'/$gensrc irspec '$srcdir'/src/scripts/templates/$gensrc
+	build '$outdir'/$gensrc irspec '$srcdir'/scripts/templates/$gensrc
 }
 
 srcs=( ir/*/*.c '$outdir'/$gensrcs )
@@ -45,14 +43,14 @@ for(backend in $backends) {
 	objs=( $objs $srcs.o )
 	stampdeps=( $stampdeps gen_$backend^_$types.h )
 	{
-		cflags -I '$srcdir'/src/ir/be/$backend
+		cflags -I '$srcdir'/ir/be/$backend
 		for(type in $types) {
 			outs=( '$outdir'/gen_$backend^_$type.^(c h) )\
-				build $"outs $type '$srcdir'/src/ir/be/$backend/$backend^_spec.pl
+				build $"outs $type '$srcdir'/ir/be/$backend/$backend^_spec.pl
 		}
 		for(src in $srcs) cc $src '||' '$outdir/stamp'
 	} >../$backend.ninja
-	subninja '$srcdir'/$backend.ninja
+	subninja '$dir'/$backend.ninja
 }
 
 ar libfirm.a $objs

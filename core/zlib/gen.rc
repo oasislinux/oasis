@@ -21,5 +21,5 @@ static_lib libz.a\
 	gzread.c\
 	gzwrite.c
 
-build '$outdir'/include/zlib.h copy '$srcdir'/src/zlib.h
+build '$outdir'/include/zlib.h copy '$srcdir'/zlib.h
 stamp include/zlib.h

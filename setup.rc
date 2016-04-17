@@ -19,8 +19,8 @@ if(! ~ $#* 0 1) usage
 . ./ninja.rc
 
 fn subgen {
-	subninja '$srcdir'/$1/local.ninja
-	gen_inputs=( $gen_inputs phony/'$srcdir'/$1/gen )
+	subninja '$dir'/$1/local.ninja
+	gen_inputs=( $gen_inputs phony/'$dir'/$1/gen )
 	tree_inputs=( $tree_inputs '$outdir'/$1/root.tree )
 	tree_perms=( $tree_perms '$outdir'/$1/root.perms )
 	if(~ $recurse 1 || ! [ -f $1/local.ninja ]) @ gen $1 &
@@ -32,35 +32,39 @@ fn gen {
 	if not dir=$dir/$1
 
 	cd $1
-	ifs=() { oldcwd=`{pwd | head -c -1} }
 
 	tree_perms=()
 	perms_inputs=()
 	tree_inputs=()
 	gen_inputs=()
 
+	ifs=() { absdir=`{pwd | head -c -1} }
 	{
-		set srcdir $dir
-		outdir='$builddir' {
-			if(! ~ $dir .) outdir=$outdir/$dir
-			set outdir $outdir
+		set dir $dir
+		if(~ $dir .) set outdir '$builddir'
+		if not set outdir '$builddir/$dir'
+
+		if([ -d src ]) {
+			cd src
+			if(~ $dir .) set srcdir src
+			if not set srcdir '$dir/src'
 		}
 
-		. ./gen.rc
+		. $absdir/gen.rc
 
-		build 'phony/$srcdir/gen' phony '$srcdir'/local.ninja $gen_inputs
-		build '$srcdir'/local.ninja gen '|' setup.rc ninja.rc '$srcdir'/gen.rc
+		build 'phony/$dir/gen' phony '$dir/local.ninja' $gen_inputs
+		build '$dir/local.ninja' gen '|' setup.rc ninja.rc '$dir/gen.rc'
 
 		if(! ~ $#tree_perms 0) {
-			printf '%s\n' $tree_perms >$oldcwd/local.perms
-			perms_inputs=( $perms_inputs '$srcdir'/local.perms )
+			printf '%s\n' $tree_perms >$absdir/local.perms
+			perms_inputs=( $perms_inputs '$dir'/local.perms )
 		}
 		if(~ $#perms_inputs 0) build '$outdir/root.perms' stamp
 		if not build '$outdir/root.perms' cat $perms_inputs
 		if(~ $#tree_inputs 0) build '$outdir/root.tree' stamp
 		if not build '$outdir/root.tree' cat $tree_inputs
 	} >local.ninja.tmp
-	mv $oldcwd/^( local.ninja.tmp local.ninja )
+	mv $absdir/^( local.ninja.tmp local.ninja )
 
 	if(! ~ $quiet 1) echo 'generated '$dir >[1=2]
 	status=()

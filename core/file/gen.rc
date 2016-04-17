@@ -68,21 +68,21 @@ cflags\
 # strlcpy, strlcat, strcasestr, fmtcheck, getopt_long, sig_t, tm_zone,
 # tm_gmtoff
 
-cd src/magic
+cd magic
 magic_outs=magic/^( Header Localstuff )
-for(src in Header Localstuff) build '$outdir'/magic/$src copy '$srcdir'/src/magic/$src
+for(src in Header Localstuff) build '$outdir'/magic/$src copy '$srcdir'/magic/$src
 cd Magdir
 srcs=*
 magic_outs=( $magic_outs magic/$srcs )
-for(src in $srcs) build '$outdir'/magic/$src copy '$srcdir'/src/magic/Magdir/$src
+for(src in $srcs) build '$outdir'/magic/$src copy '$srcdir'/magic/Magdir/$src
 
 rule magic 'cd $outdir && file -C -m magic'
 build '$outdir'/magic.mgc magic '|' '$outdir'/$magic_outs
 
 let expr s@X.YY@`{echo $version | tr -d .}^@ --\
-	build '$outdir'/include/magic.h sed '$srcdir'/src/src/magic.h.in
+	build '$outdir'/include/magic.h sed '$srcdir'/src/magic.h.in
 let expr '-e s@__CSECTION__@1@g -e s@__FSECTION__@5@g -e s@__VERSION__@'$version'@g -e s@__MAGIC__@/share/file/magic@g' --\
-	build '$outdir'/file.1 sed '$srcdir'/src/doc/file.man
+	build '$outdir'/file.1 sed '$srcdir'/doc/file.man
 
 srcs=(\
 	src/magic.c\

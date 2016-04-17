@@ -55,7 +55,7 @@ fn cc {
 	src=$1 obj=$src.o {
 		shift
 		if(! ~ $src '$'*) {
-			src='$srcdir'/src/$src
+			src='$srcdir'/$src
 			obj='$outdir'/$obj
 		}
 		build $obj cc $src $*

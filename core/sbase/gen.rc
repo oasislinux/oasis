@@ -6,8 +6,6 @@ cflags\
 	-std'='c99 -Wall -pedantic\
 	-I '$outdir'
 
-cd src
-
 static_lib libutil.a libutil/*.c
 static_lib libutf.a libutf/*.c
 
@@ -110,8 +108,8 @@ executables=(\
 
 getconf_hdrs=( confstr limits sysconf pathconf )^_l.h
 getconf_outs='$outdir'/$getconf_hdrs
-rule getconf_headers 'getconf=$$PWD/$srcdir/src/getconf.sh && cd $outdir && $$getconf'
-build $"getconf_outs getconf_headers '|' '$srcdir/src/getconf.sh'
+rule getconf_headers 'getconf=$$PWD/$srcdir/getconf.sh && cd $outdir && $$getconf'
+build $"getconf_outs getconf_headers '|' '$srcdir/getconf.sh'
 
 for(exe in $executables) {
 	if(~ $exe install) src=x$exe
@@ -121,7 +119,7 @@ for(exe in $executables) {
 	link $exe $src.c.o libutil.a libutf.a
 
 	file bin/$exe '$outdir'/$exe 755
-	file share/man/man1/$exe.1 '$srcdir'/src/$src.1 644
+	file share/man/man1/$exe.1 '$srcdir'/$src.1 644
 }
 
 stamp $getconf_hdrs
