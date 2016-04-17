@@ -3,6 +3,7 @@
 /* features */
 #define BUILTIN_ELF 1
 #define ELFCORE 1
+#define HAVE_LIBZ 1
 #define HAVE_ZLIB_H 1
 
 /* headers */

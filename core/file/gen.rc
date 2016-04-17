@@ -6,7 +6,7 @@ cflags\
 	-D_GNU_SOURCE\
 	-Wall\
 	-I include\
-	-I core/zlib/include\
+	-I '$builddir'/core/zlib/include\
 	-I '$dir' \
 	-I '$outdir'/include
 
@@ -51,7 +51,7 @@ srcs=(\
 	ar libmagic.a $srcs.o
 }
 
-exe file src/file.c libmagic.a
+exe file src/file.c libmagic.a '$builddir/core/zlib/libz.a'
 
 file bin/file '$outdir'/file 755
 file share/man/man1/file.1 '$outdir'/file.1 644
