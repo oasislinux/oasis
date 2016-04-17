@@ -1,72 +1,14 @@
 version=5.25
 cflags\
-	-DHAVE_ASCTIME_R'='1\
-	-DHAVE_CTIME_R'='1\
-	-DHAVE_FORK'='1\
-	-DHAVE_FREELOCALE'='1\
-	-DHAVE_GETLINE'='1\
-	-DHAVE_GETOPT_H'='1\
-	-DHAVE_GMTIME_R'='1\
-	-DHAVE_INTTYPES_H'='1\
-	-DHAVE_LIMITS_H'='1\
-	-DHAVE_LOCALE_H'='1\
-	-DHAVE_LOCALTIME_R'='1\
-	-DHAVE_MBRTOWC'='1\
-	-DHAVE_MBSTATE_T'='1\
-	-DHAVE_MKOSTEMP'='1\
-	-DHAVE_MKSTEMP'='1\
-	-DHAVE_MMAP'='1\
-	-DHAVE_NEWLOCALE'='1\
-	-DHAVE_PREAD'='1\
-	-DHAVE_SIGNAL_H'='1\
-	-DHAVE_STDDEF_H'='1\
-	-DHAVE_STDINT_H'='1\
-	-DHAVE_STDLIB_H'='1\
-	-DHAVE_STRERROR'='1\
-	-DHAVE_STRINGS_H'='1\
-	-DHAVE_STRING_H'='1\
-	-DHAVE_STRNDUP'='1\
-	-DHAVE_STRTOF'='1\
-	-DHAVE_STRTOUL'='1\
-	-DHAVE_STRUCT_OPTION'='1\
-	-DHAVE_STRUCT_STAT_ST_RDEV'='1\
-	-DHAVE_STRUCT_TM_TM_GMTOFF'='1\
-	-DHAVE_STRUCT_TM_TM_ZONE'='1\
-	-DHAVE_SYS_MMAN_H'='1\
-	-DHAVE_SYS_TIME_H'='1\
-	-DHAVE_SYS_WAIT_H'='1\
-	-DHAVE_UNISTD_H'='1\
-	-DHAVE_USELOCALE'='1\
-	-DHAVE_UTIME'='1\
-	-DHAVE_UTIMES'='1\
-	-DHAVE_UTIME_H'='1\
-	-DHAVE_WCHAR_H'='1\
-	-DHAVE_WCTYPE_H'='1\
-	-DHAVE_WCWIDTH'='1\
-	-DHAVE_ZLIB_H'='1\
-	\
-	-DHAVE_ASPRINTF'='1\
-	-DHAVE_GETOPT_LONG'='1\
-	-DHAVE_MEMORY_H'='1\
-	-DHAVE_SIG_T'='1\
-	-DHAVE_STRCASESTR'='1\
-	-DHAVE_STRLCAT'='1\
-	-DHAVE_STRLCPY'='1\
-	-DHAVE_VASPRINTF'='1\
-	-DHAVE_VISIBILITY'='1\
-	\
-	-DBUILTIN_ELF'='1\
-	-DELFCORE'='1\
+	-DHAVE_CONFIG_H\
 	-DVERSION'='\"$version\"\
 	-DMAGIC'='\"/share/file/magic\"\
 	-D_GNU_SOURCE\
 	-Wall\
+	-I include\
 	-I core/zlib/include\
+	-I '$dir' \
 	-I '$outdir'/include
-
-# TODO: check for visibility, xlocale.h, memory.h, vasprintf, asprintf,
-# strlcpy, strlcat, strcasestr, fmtcheck, getopt_long, sig_t, tm_zone,
-# tm_gmtoff
 
 cd magic
 magic_outs=magic/^(Header Localstuff)
