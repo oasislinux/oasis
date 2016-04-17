@@ -28,24 +28,24 @@ phony headers include/magic.h
 let expr '-e s@__CSECTION__@1@g -e s@__FSECTION__@5@g -e s@__VERSION__@'$version'@g -e s@__MAGIC__@/share/file/magic@g' --\
 	build '$outdir'/file.1 sed '$srcdir'/doc/file.man
 
-srcs=(\
-	src/magic.c\
-	src/apprentice.c\
-	src/softmagic.c\
-	src/ascmagic.c\
-	src/encoding.c\
-	src/compress.c\
-	src/is_tar.c\
-	src/readelf.c\
-	src/print.c\
-	src/fsmagic.c\
-	src/funcs.c\
-	src/apptype.c\
-	src/cdf.c\
-	src/cdf_time.c\
-	src/readcdf.c\
+srcs=src/^(\
+	magic.c\
+	apprentice.c\
+	softmagic.c\
+	ascmagic.c\
+	encoding.c\
+	compress.c\
+	is_tar.c\
+	readelf.c\
+	print.c\
+	fsmagic.c\
+	funcs.c\
+	apptype.c\
+	cdf.c\
+	cdf_time.c\
+	readcdf.c\
 	\
-	src/fmtcheck.c\
+	fmtcheck.c\
 ) {
 	for(src in $srcs) cc $src '||' 'phony/$dir/headers' phony/core/zlib/headers
 	ar libmagic.a $srcs.o
