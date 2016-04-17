@@ -20,7 +20,7 @@ if(! ~ $#* 0 1) usage
 
 fn subgen {
 	subninja '$dir'/$1/local.ninja
-	gen_inputs=($gen_inputs phony/'$dir'/$1/gen)
+	gen_inputs=($gen_inputs phony/'$dir'/$1/ninja)
 	tree_inputs=($tree_inputs '$outdir'/$1/root.tree)
 	tree_perms=($tree_perms '$outdir'/$1/root.perms)
 	if(~ $recurse 1 || ! [ -f $1/local.ninja ]) @ gen $1 &
@@ -52,8 +52,8 @@ fn gen {
 
 		. $absdir/gen.rc
 
-		build 'phony/$dir/gen' phony '$dir/local.ninja' $gen_inputs
 		build '$dir/local.ninja' gen '|' setup.rc ninja.rc '$dir/gen.rc'
+		phony ninja '$dir/local.ninja' $gen_inputs
 
 		if(! ~ $#tree_perms 0) {
 			printf '%s\n' $tree_perms >$absdir/local.perms
