@@ -67,7 +67,6 @@ fn gen {
 	mv $absdir/^( local.ninja.tmp local.ninja )
 
 	if(! ~ $quiet 1) echo 'generated '$dir >[1=2]
-	status=()
 
 	wait
 }
