@@ -1,0 +1,18 @@
+#!/bin/rc
+
+flag e +
+
+fn checkstatus {}
+
+posix_defines=`{mktemp}
+checkstatus
+
+fn sigexit {
+	status=() rm $posix_defines
+}
+
+awk '{if($1 == "#define") print $2 ; if($2 == "#undef") print $3}' include/config-posix.h >$posix_defines
+defines=`{awk '{if($1 == "#undef") print $2}' $1 | grep -F -x -v -f $posix_defines}
+checkstatus
+
+printf '#undef %s\n' $defines
