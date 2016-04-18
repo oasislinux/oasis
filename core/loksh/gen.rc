@@ -1,4 +1,4 @@
-cflags -I include -D_GNU_SOURCE
+cflags -I include -idirafter core/openbsd/src/sys -D_GNU_SOURCE
 exe ksh\
 	alloc.c\
 	c_ksh.c\
