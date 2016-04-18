@@ -1,4 +1,4 @@
-version=5.25
+version=5.26
 cflags\
 	-DHAVE_CONFIG_H\
 	-DVERSION'='\"$version\"\
@@ -41,6 +41,7 @@ srcs=src/^(\
 	fsmagic.c\
 	funcs.c\
 	apptype.c\
+	der.c\
 	cdf.c\
 	cdf_time.c\
 	readcdf.c\
