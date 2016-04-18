@@ -1,6 +1,8 @@
 include config.ninja
 include rules.ninja
 
+include toolchain/$toolchain.ninja
+
 subninja local.ninja
 
 build build.ninja: phony phony/ninja

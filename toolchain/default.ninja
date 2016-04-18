@@ -1,0 +1,5 @@
+ar = ar
+cc = cc
+
+cflags = -O2 -march=native -pipe
+ldflags = -static

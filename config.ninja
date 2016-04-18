@@ -1,10 +1,7 @@
 builddir = out
 
-ar = ar
-cc = cc
-
-cflags = -O2 -march=native -pipe
-ldflags = -static
+toolchain = default
+host_toolchain = default
 
 zic = zic
 lex = lex
