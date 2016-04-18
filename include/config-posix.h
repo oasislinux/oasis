@@ -49,6 +49,7 @@
 #define HAVE_FORK 1
 #define HAVE_FREELOCALE 1
 #define HAVE_GETLINE 1
+#define HAVE_GETSUBOPT 1
 #define HAVE_GMTIME_R 1
 #define HAVE_LOCALTIME_R 1
 #define HAVE_MALLOC 1
@@ -56,6 +57,7 @@
 #define HAVE_MEMSET 1
 #define HAVE_MKSTEMP 1
 #define HAVE_MMAP 1
+#define HAVE_STRPTIME 1
 #define HAVE_NEWLOCALE 1
 #define HAVE_PREAD 1
 #define HAVE_REALLOC 1

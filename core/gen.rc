@@ -5,6 +5,7 @@ subgen file
 subgen kbd
 subgen libfirm
 subgen loksh
+subgen mdocml
 subgen openbsd
 subgen perp
 subgen plan9port
