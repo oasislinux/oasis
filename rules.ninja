@@ -24,6 +24,9 @@ rule copy
 rule cat
   command = cat $in >$out.tmp && mv $out.tmp $out
 
+rule gzip
+  command = gzip -c -9 -n $in >$out.tmp && mv $out.tmp $out
+
 rule lex
   command = $lex -t $in >$out.tmp && mv $out.tmp $out
 
