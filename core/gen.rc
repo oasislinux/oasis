@@ -1,3 +1,4 @@
+subgen bzip2
 subgen cparser
 subgen file
 subgen libfirm
