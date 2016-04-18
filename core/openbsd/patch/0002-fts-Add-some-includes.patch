@@ -1,0 +1,46 @@
+From 3346d32277e367ad3b229dfec4b5f11ebafed9fb Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 18 Apr 2016 01:25:29 -0700
+Subject: [PATCH] fts: Add some includes
+
+---
+ include/fts.h      | 2 ++
+ lib/libc/gen/fts.c | 2 ++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/include/fts.h b/include/fts.h
+index eaf6be0..a5b3aff 100644
+--- a/include/fts.h
++++ b/include/fts.h
+@@ -35,6 +35,8 @@
+ #ifndef	_FTS_H_
+ #define	_FTS_H_
+ 
++#include <sys/cdefs.h>
++
+ typedef struct {
+ 	struct _ftsent *fts_cur;	/* current node */
+ 	struct _ftsent *fts_child;	/* linked list of children */
+diff --git a/lib/libc/gen/fts.c b/lib/libc/gen/fts.c
+index caf679e..dc6d3d7 100644
+--- a/lib/libc/gen/fts.c
++++ b/lib/libc/gen/fts.c
+@@ -31,6 +31,7 @@
+ 
+ #include <sys/param.h>	/* ALIGN */
+ #include <sys/stat.h>
++#include <sys/types.h>
+ 
+ #include <dirent.h>
+ #include <errno.h>
+@@ -39,6 +40,7 @@
+ #include <limits.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <time.h>
+ #include <unistd.h>
+ 
+ #define MAXIMUM(a, b)	(((a) > (b)) ? (a) : (b))
+-- 
+2.8.0
+

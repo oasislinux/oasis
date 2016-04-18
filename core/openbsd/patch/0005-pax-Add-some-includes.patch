@@ -1,0 +1,63 @@
+From 9b164bcbe8ce53a6e3840dfb9da9b25a73103f47 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 18 Apr 2016 01:27:29 -0700
+Subject: [PATCH] pax: Add some includes
+
+---
+ bin/pax/ar_subs.c   | 1 +
+ bin/pax/file_subs.c | 1 +
+ bin/pax/gen_subs.c  | 1 +
+ bin/pax/sel_subs.c  | 1 +
+ 4 files changed, 4 insertions(+)
+
+diff --git a/bin/pax/ar_subs.c b/bin/pax/ar_subs.c
+index b95b1c2..91b8436 100644
+--- a/bin/pax/ar_subs.c
++++ b/bin/pax/ar_subs.c
+@@ -44,6 +44,7 @@
+ #include <errno.h>
+ #include <unistd.h>
+ #include <stdlib.h>
++#include <time.h>
+ #include "pax.h"
+ #include "extern.h"
+ 
+diff --git a/bin/pax/file_subs.c b/bin/pax/file_subs.c
+index 1f27d28..b7239c8 100644
+--- a/bin/pax/file_subs.c
++++ b/bin/pax/file_subs.c
+@@ -36,6 +36,7 @@
+ 
+ #include <sys/time.h>
+ #include <sys/stat.h>
++#include <sys/types.h>
+ #include <err.h>
+ #include <errno.h>
+ #include <fcntl.h>
+diff --git a/bin/pax/gen_subs.c b/bin/pax/gen_subs.c
+index cd857dc..ae5843e 100644
+--- a/bin/pax/gen_subs.c
++++ b/bin/pax/gen_subs.c
+@@ -43,6 +43,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <vis.h>
++#include <time.h>
+ #include "pax.h"
+ #include "extern.h"
+ 
+diff --git a/bin/pax/sel_subs.c b/bin/pax/sel_subs.c
+index fc9194d..7bdbe46 100644
+--- a/bin/pax/sel_subs.c
++++ b/bin/pax/sel_subs.c
+@@ -44,6 +44,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
++#include <time.h>
+ #include "pax.h"
+ #include "sel_subs.h"
+ #include "extern.h"
+-- 
+2.8.0
+

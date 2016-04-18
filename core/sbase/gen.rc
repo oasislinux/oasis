@@ -107,7 +107,7 @@ x sponge
 x strings
 x sync
 x tail
-x tar
+# use tar from OpenBSD
 x tee
 x test
 x tftp

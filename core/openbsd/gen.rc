@@ -1,0 +1,15 @@
+cflags\
+	-D'''DEF_WEAK(n)=''' \
+	-I '$dir'/include\
+	-idirafter '$srcdir'/include
+
+lib libbsd.a\
+	lib/libc/gen/^(fts.c vis.c)\
+	lib/libc/stdlib/^(reallocarray strtonum)^.c\
+	lib/libc/string/strmode.c
+
+exe pax bin/pax/*.c libbsd.a
+
+file bin/pax '$outdir'/pax 755
+for(alias in tar cpio) sym bin/$alias pax
+for(man in pax tar cpio) file share/man/man1/$man.1 '$srcdir'/bin/pax/$man.1 644

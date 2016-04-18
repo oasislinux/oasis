@@ -1,0 +1,52 @@
+From d9671f40b5ffc56b2c6ef449bd5eaaefdf538518 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 17 Apr 2016 23:46:28 -0700
+Subject: [PATCH] pax: Use setpwent and setgrent
+
+---
+ bin/pax/cache.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/bin/pax/cache.c b/bin/pax/cache.c
+index a0d38cb..8f2fc2a 100644
+--- a/bin/pax/cache.c
++++ b/bin/pax/cache.c
+@@ -191,7 +191,7 @@ name_uid(uid_t uid, int frc)
+ 	 * No entry for this uid, we will add it
+ 	 */
+ 	if (!pwopn) {
+-		setpassent(1);
++		setpwent();
+ 		++pwopn;
+ 	}
+ 	if (ptr == NULL)
+@@ -257,7 +257,7 @@ name_gid(gid_t gid, int frc)
+ 	 * No entry for this gid, we will add it
+ 	 */
+ 	if (!gropn) {
+-		setgroupent(1);
++		setgrent();
+ 		++gropn;
+ 	}
+ 	if (ptr == NULL)
+@@ -324,7 +324,7 @@ uid_name(char *name, uid_t *uid)
+ 	}
+ 
+ 	if (!pwopn) {
+-		setpassent(1);
++		setpwent();
+ 		++pwopn;
+ 	}
+ 
+@@ -387,7 +387,7 @@ gid_name(char *name, gid_t *gid)
+ 	}
+ 
+ 	if (!gropn) {
+-		setgroupent(1);
++		setgrent();
+ 		++gropn;
+ 	}
+ 	if (ptr == NULL)
+-- 
+2.8.0
+
