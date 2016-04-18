@@ -106,7 +106,7 @@ fn objects {
 	}
 }
 
-fn static_lib {
+fn lib {
 	objects ar $*
 }
 

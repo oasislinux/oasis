@@ -4,7 +4,7 @@ cflags\
 	-DHAVE_UNISTD_H\
 	-D_LARGEFILE64_SOURCE
 
-static_lib libz.a\
+lib libz.a\
 	adler32.c\
 	crc32.c\
 	deflate.c\

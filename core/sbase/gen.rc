@@ -6,8 +6,8 @@ cflags\
 	-std'='c99 -Wall -pedantic\
 	-I '$outdir'
 
-static_lib libutil.a libutil/*.c
-static_lib libutf.a libutf/*.c
+lib libutil.a libutil/*.c
+lib libutf.a libutf/*.c
 
 getconf_outs='$outdir'/^(confstr limits sysconf pathconf)^_l.h
 rule getconf 'getconf=$$PWD/$srcdir/getconf.sh && cd $outdir && $$getconf'

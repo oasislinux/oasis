@@ -7,7 +7,7 @@ cflags\
 
 build '$outdir/config.h' copy '$srcdir/config.def.h'
 
-static_lib libutil.a\
+lib libutil.a\
 	libutil/agetcwd.c\
 	libutil/agetline.c\
 	libutil/apathmax.c\

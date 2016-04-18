@@ -6,7 +6,7 @@ cflags\
 
 yacc x '$srcdir'/src/cmd/rc/syn.y
 
-static_lib lib9.a src/lib9/^(\
+lib lib9.a src/lib9/^(\
 	_p9dir.c\
 	argv0.c\
 	atexit.c\
