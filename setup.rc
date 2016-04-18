@@ -22,7 +22,7 @@ fn subgen {
 	subninja '$dir'/$1/local.ninja
 	gen_inputs=($gen_inputs phony/'$dir'/$1/ninja)
 	tree_inputs=($tree_inputs '$outdir'/$1/root.tree)
-	tree_perms=($tree_perms '$outdir'/$1/root.perms)
+	perms_inputs=($perms_inputs '$outdir'/$1/root.perms)
 	if(~ $recurse 1 || ! [ -f $1/local.ninja ]) @ gen $1 &
 	status=()
 }
