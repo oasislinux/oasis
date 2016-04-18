@@ -3,6 +3,7 @@ subgen cparser
 subgen file
 subgen libfirm
 subgen loksh
+subgen perp
 subgen plan9port
 subgen sbase
 subgen sinit

@@ -94,6 +94,10 @@ fn ar {
 fn objects {
 	rule=$1 out=$2 deps=() objs=() {
 		shift 2
+		if(~ $1 -d) {
+			deps=('||' $2)
+			shift 2
+		}
 		for(src) {
 			if(~ $src *.c) {
 				cc $src $deps
