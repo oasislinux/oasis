@@ -91,34 +91,27 @@ fn ar {
 	}
 }
 
-fn static_lib {
-	out=$1 objs=() {
-		shift
+fn objects {
+	rule=$1 out=$2 deps=() objs=() {
+		shift 2
 		for(src) {
 			if(~ $src *.c) {
-				cc $src
+				cc $src $deps
 				obj=$src.o
 			}
 			if not obj=$src
 			objs=($objs $obj)
 		}
-		ar $out $objs
+		$rule $out $objs
 	}
 }
 
+fn static_lib {
+	objects ar $*
+}
+
 fn exe {
-	out=$1 objs=() {
-		shift
-		for(src) {
-			if(~ $src *.c) {
-				cc $src
-				obj=$src.o
-			}
-			if not obj=$src
-			objs=($objs $obj)
-		}
-		link $out $objs
-	}
+	objects link $*
 }
 
 fn yacc {
