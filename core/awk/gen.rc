@@ -1,0 +1,20 @@
+cflags '-std=c90' -I '$outdir' -I '$srcdir'
+
+yacc gram '$srcdir'/awkgram.y
+build '$outdir'/ytab.h copy '$outdir'/gram.tab.h
+
+{
+	include 'toolchain/$host_toolchain.ninja'
+	cflags -I '$outdir'
+	exe maketab -d '$outdir'/ytab.h maketab.c
+} >../tools.ninja
+subninja '$dir/tools.ninja'
+
+rule maketab '(cd $outdir && ./maketab) >$out.tmp && mv $out.tmp $out'
+build '$outdir'/proctab.c maketab '|' '$outdir'/maketab
+
+exe awk -d '$outdir'/ytab.h\
+	b.c main.c parse.c tran.c lib.c run.c lex.c\
+	'$outdir'/^(gram.tab.c proctab.c)
+file bin/awk '$outdir'/awk 755
+file share/man/man1/awk.1 '$srcdir'/awk.1 644

@@ -31,3 +31,6 @@
 [submodule "core/zlib/src"]
 	path = core/zlib/src
 	url = https://github.com/madler/zlib
+[submodule "core/awk/src"]
+	path = core/awk/src
+	url = https://github.com/onetrueawk/awk
