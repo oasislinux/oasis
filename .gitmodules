@@ -16,6 +16,9 @@
 [submodule "core/loksh/src"]
 	path = core/loksh/src
 	url = https://github.com/dimkr/loksh
+[submodule "core/pigz/src"]
+	path = core/pigz/src
+	url = https://github.com/madler/pigz
 [submodule "core/plan9port/src"]
 	path = core/plan9port/src
 	url = https://github.com/9fans/plan9port
