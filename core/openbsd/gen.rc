@@ -8,8 +8,13 @@ lib libbsd.a\
 	lib/libc/stdlib/^(reallocarray strtonum)^.c\
 	lib/libc/string/strmode.c
 
+# pax
 exe pax bin/pax/*.c libbsd.a
-
 file bin/pax '$outdir'/pax 755
 for(alias in tar cpio) sym bin/$alias pax
 for(man in pax tar cpio) file share/man/man1/$man.1 '$srcdir'/bin/pax/$man.1 644
+
+# yacc
+exe yacc usr.bin/yacc/*.c '$outdir'/libbsd.a
+file bin/yacc '$outdir'/yacc 755
+file share/man/man1/yacc.1 '$srcdir'/usr.bin/yacc/yacc.1 644
