@@ -3,5 +3,5 @@ subgen core
 file .perms '$outdir'/root.perms 644
 
 build '$builddir/$repo.stamp' gitinit
-let tag tree -- build '$builddir/$repo.git/refs/tags/tree' gittree '$outdir/root.tree' '|' '$builddir/$repo.stamp' ./scripts/tree.rc
-let tag tree -- build '$builddir/$repo.tar' gitarchive '|' '$builddir/$repo.git/refs/tags/tree'
+build '$builddir/$repo.git/refs/tags/$repo_tag' gittree '$outdir/root.tree' '|' '$builddir/$repo.stamp' ./scripts/tree.rc
+build '$builddir/$repo.tar' gitarchive '|' '$builddir/$repo.git/refs/tags/$repo_tag'

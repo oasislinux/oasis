@@ -40,11 +40,11 @@ rule githash
   command = rc ./scripts/hash.rc $builddir/$repo.git $out $args $in
 
 rule gittree
-  command = rc ./scripts/tree.rc $builddir/$repo.git $tag $in
+  command = rc ./scripts/tree.rc $builddir/$repo.git $repo_tag $in
   restat = 1
 
 rule gitarchive
-  command = git -C $builddir/$repo.git archive -o $$PWD/$out $tag
+  command = git -C $builddir/$repo.git archive -o $$PWD/$out $repo_tag
 
 rule gitinit
   command = mkdir -p $builddir/$repo.git && git -C $builddir/$repo.git init --bare && touch $out
