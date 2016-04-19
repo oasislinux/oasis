@@ -1,3 +1,6 @@
+[submodule "core/awk/src"]
+	path = core/awk/src
+	url = https://github.com/onetrueawk/awk
 [submodule "core/cparser/src"]
 	path = core/cparser/src
 	url = http://pp.ipd.kit.edu/git/cparser.git
@@ -31,6 +34,3 @@
 [submodule "core/zlib/src"]
 	path = core/zlib/src
 	url = https://github.com/madler/zlib
-[submodule "core/awk/src"]
-	path = core/awk/src
-	url = https://github.com/onetrueawk/awk
