@@ -6,10 +6,7 @@ repo=$1
 tag=$2
 index=$3
 
-fn checkstatus {
-	s=$status if(! ~ $s '' '|') exit $s
-	status=()
-}
+fn checkstatus {}
 
 ifs=() { oldcwd=`{pwd | head -c -1} }
 cd $repo

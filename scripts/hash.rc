@@ -8,10 +8,7 @@ mode=$3
 name=$4
 shift 4
 
-fn checkstatus {
-	s=$status if(! ~ $s '' '|') exit $s
-	status=()
-}
+fn checkstatus {}
 
 hash=`{
 	switch($mode) {
