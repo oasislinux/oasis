@@ -11,3 +11,4 @@ perl = perl
 
 repo = root
 repo_tag = tree
+repo_branch = master
