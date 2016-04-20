@@ -12,6 +12,7 @@ lib libz.a\
 	inffast.c\
 	inflate.c\
 	inftrees.c\
+	trees.c\
 	zutil.c\
 	\
 	compress.c\
