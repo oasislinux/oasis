@@ -37,3 +37,6 @@
 [submodule "core/zlib/src"]
 	path = core/zlib/src
 	url = https://github.com/madler/zlib
+[submodule "core/iproute2/src"]
+	path = core/iproute2/src
+	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
