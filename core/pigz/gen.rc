@@ -1,6 +1,6 @@
 cflags -Wall -Wextra -I '$builddir'/core/zlib/include
 
-exe pigz\
+exe pigz -d phony/core/zlib/headers\
 	pigz.c yarn.c try.c\
 	zopfli/src/zopfli/^(deflate.c blocksplitter.c tree.c lz77.c cache.c hash.c util.c squeeze.c katajainen.c)\
 	'$builddir'/core/zlib/libz.a
