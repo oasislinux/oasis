@@ -2,6 +2,7 @@ subgen awk
 subgen bzip2
 subgen cparser
 subgen file
+subgen git
 subgen iproute2
 subgen kbd
 subgen libfirm
