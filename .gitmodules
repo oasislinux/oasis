@@ -7,6 +7,9 @@
 [submodule "core/file/src"]
 	path = core/file/src
 	url = https://github.com/file/file
+[submodule "core/iproute2/src"]
+	path = core/iproute2/src
+	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
 [submodule "core/kbd/src"]
 	path = core/kbd/src
 	url = https://git.kernel.org/pub/scm/linux/kernel/git/legion/kbd.git
@@ -37,6 +40,3 @@
 [submodule "core/zlib/src"]
 	path = core/zlib/src
 	url = https://github.com/madler/zlib
-[submodule "core/iproute2/src"]
-	path = core/iproute2/src
-	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
