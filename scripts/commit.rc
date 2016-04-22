@@ -13,6 +13,6 @@ cd $repo
 if([ -f refs/heads/$branch ]) parent=(-p $branch)
 if not parent=()
 
-ifs=() { message='oasis built by '`{id -un | head -c -1} }
+message='oasis built by '`{id -un}
 commit=`{echo $message | git commit-tree $tag $parent} ; checkstatus
 git update-ref refs/heads/$branch $commit

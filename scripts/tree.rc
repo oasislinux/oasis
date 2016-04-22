@@ -8,7 +8,7 @@ index=$3
 
 fn checkstatus {}
 
-ifs=() { oldcwd=`{pwd | head -c -1} }
+oldcwd=`{pwd}
 cd $repo
 
 git read-tree --empty

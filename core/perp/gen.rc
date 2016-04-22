@@ -76,9 +76,7 @@ for(exe in run^(args argv0 choom detach deux env file limit lock pause session t
 for(exe in cat^(args env limits uid)) x $exe runtools/$exe.c
 
 for(man in */man/*.[1-9]) {
-	ifs=() {
-		sect=`{printf %s $man | tail -c 1}
-		base=`{basename $man | head -c -1}
-	}
+	sect=`{printf %s $man | tail -c 1}
+	base=`{basename $man}
 	file share/man/man$sect/$base.$sect '$srcdir'/$man 644
 }

@@ -38,7 +38,7 @@ fn gen {
 	tree_inputs=()
 	gen_inputs=()
 
-	ifs=() { absdir=`{pwd | head -c -1} }
+	absdir=`{pwd}
 	{
 		set dir $dir
 		if(~ $dir .) set outdir '$builddir'
