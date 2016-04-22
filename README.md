@@ -8,3 +8,4 @@ To build it, you need a POSIX system with following tools:
 * gzip (or compatible tool)
 * ninja
 * rc
+* zic
