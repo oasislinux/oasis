@@ -6,6 +6,7 @@ subgen git
 subgen iproute2
 subgen kbd
 subgen libfirm
+subgen libressl
 subgen loksh
 subgen mdocml
 subgen openbsd

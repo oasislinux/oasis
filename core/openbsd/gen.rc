@@ -1,12 +1,24 @@
 cflags\
-	-D'''DEF_WEAK(n)=''' \
+	-D '''DEF_WEAK(n)=''' \
 	-I '$dir'/include\
+	-I '$builddir'/core/libressl/include\
 	-idirafter '$srcdir'/include
 
-lib libbsd.a\
-	lib/libc/gen/^(fts.c vis.c)\
-	lib/libc/stdlib/^(reallocarray strtonum)^.c\
-	lib/libc/string/strmode.c
+# Link arc4random.c to '$outdir' so that it doesn't include the local
+# arc4random.h
+build '$outdir'/crypt/arc4random.c copy '$srcdir'/lib/libc/crypt/arc4random.c
+build '$outdir'/crypt/arc4random.h copy '$srcdir'/lib/libcrypto/crypto/arc4random_linux.h
+build '$outdir'/crypt/chacha_private.h copy '$srcdir'/lib/libc/crypt/chacha_private.h
+cc '$outdir'/crypt/arc4random.c '||' '$outdir'/crypt/^(arc4random.h chacha_private.h)
+
+lib libbsd.a -d phony/core/libressl/headers\
+	lib/libc/^(\
+		gen/^(fts.c vis.c)\
+		stdlib/^(reallocarray.c strtonum.c)\
+		string/^(explicit_bzero.c strmode.c timingsafe_memcmp.c)\
+	)\
+	lib/libcrypto/crypto/getentropy_linux.c\
+	'$outdir'/crypt/arc4random.c.o
 
 # pax
 exe pax bin/pax/*.c libbsd.a

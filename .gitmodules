@@ -19,6 +19,9 @@
 [submodule "core/libfirm/src"]
 	path = core/libfirm/src
 	url = http://pp.ipd.kit.edu/git/libfirm.git
+[submodule "core/libressl/src"]
+	path = core/libressl/src
+	url = https://github.com/libressl-portable/openbsd
 [submodule "core/loksh/src"]
 	path = core/loksh/src
 	url = https://github.com/dimkr/loksh

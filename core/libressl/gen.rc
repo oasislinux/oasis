@@ -1,0 +1,299 @@
+cflags\
+	-D LIBRESSL_INTERNAL\
+	-D OPENSSL_NO_HW_PADLOCK\
+	-I core/openbsd/include\
+	-I '$outdir'/include\
+	-I '$outdir'/internal\
+	-I '$srcdir'/src/lib/libssl/src/crypto\
+	-I '$srcdir'/src/lib/libssl/src/crypto/asn1\
+	-I '$srcdir'/src/lib/libssl/src/crypto/evp\
+	-I '$srcdir'/src/lib/libssl/src/crypto/modes
+
+srchdrs=(\
+	libssl/src/crypto/^(\
+		aes/aes.h\
+		asn1/asn1.h\
+		asn1/asn1_mac.h\
+		asn1/asn1t.h\
+		bf/blowfish.h\
+		bio/bio.h\
+		bn/bn.h\
+		buffer/buffer.h\
+		camellia/camellia.h\
+		cast/cast.h\
+		chacha/chacha.h\
+		cmac/cmac.h\
+		cms/cms.h\
+		comp/comp.h\
+		conf/conf.h\
+		conf/conf_api.h\
+		crypto.h\
+		des/des.h\
+		dh/dh.h\
+		dsa/dsa.h\
+		dso/dso.h\
+		ec/ec.h\
+		ecdh/ecdh.h\
+		ecdsa/ecdsa.h\
+		engine/engine.h\
+		err/err.h\
+		evp/evp.h\
+		gost/gost.h\
+		hmac/hmac.h\
+		idea/idea.h\
+		krb5/krb5_asn.h\
+		lhash/lhash.h\
+		md4/md4.h\
+		md5/md5.h\
+		modes/modes.h\
+		objects/objects.h\
+		ocsp/ocsp.h\
+		opensslfeatures.h\
+		opensslv.h\
+		ossl_typ.h\
+		pem/pem.h\
+		pem/pem2.h\
+		pkcs12/pkcs12.h\
+		pkcs7/pkcs7.h\
+		poly1305/poly1305.h\
+		rand/rand.h\
+		rc2/rc2.h\
+		rc4/rc4.h\
+		ripemd/ripemd.h\
+		rsa/rsa.h\
+		sha/sha.h\
+		stack/safestack.h\
+		stack/stack.h\
+		ts/ts.h\
+		txt_db/txt_db.h\
+		ui/ui.h\
+		ui/ui_compat.h\
+		whrlpool/whrlpool.h\
+		x509/x509.h\
+		x509/x509_vfy.h\
+		x509v3/x509v3.h\
+	)\
+	libssl/src/ssl/^(srtp.h ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h)\
+	libcrypto/crypto/^(\
+		arch/amd64/opensslconf.h\
+	)\
+)
+hdr=()
+for(srchdr in $srchdrs) {
+	hdr='$outdir'/include/openssl/`{basename $srchdr}
+	hdrs=($hdrs $hdr)
+	build $hdr copy '$srcdir'/src/lib/$srchdr
+}
+
+objects_script='$srcdir'/src/lib/libssl/src/crypto/objects/objects.pl
+rule obj_mac perl $objects_script' $in $out'
+obj_mac_hdr='$outdir'/include/openssl/obj_mac.h
+build $obj_mac_hdr obj_mac '$srcdir'/src/lib/libssl/src/crypto/objects/^(objects.txt obj_mac.num) '|' $objects_script
+
+phony headers $hdrs $obj_mac_hdr
+
+obj_dat_script='$srcdir'/src/lib/libssl/src/crypto/objects/obj_dat.pl
+obj_dat_hdr='$outdir'/internal/obj_dat.h
+rule obj_dat perl $obj_dat_script' $in $out'
+build $obj_dat_hdr obj_dat $obj_mac_hdr '|' $obj_dat_script
+
+phony internal_headers phony/'$dir'/headers $obj_dat_hdr
+
+# src/lib/libcrypto/crypto/Makefile
+lib libcrypto.a -d 'phony/$dir/headers' src/lib/libssl/src/crypto/^(\
+	cryptlib.c malloc-wrapper.c mem_dbg.c cversion.c ex_data.c cpt_err.c\
+	o_time.c o_str.c o_init.c\
+	mem_clr.c\
+	aes/^(\
+		aes_misc.c aes_ecb.c aes_cfb.c aes_ofb.c\
+		aes_ctr.c aes_ige.c aes_wrap.c\
+	)\
+	asn1/^(\
+		a_object.c a_bitstr.c a_time.c a_int.c a_octet.c\
+		a_print.c a_type.c a_dup.c a_d2i_fp.c a_i2d_fp.c\
+		a_enum.c a_utf8.c a_sign.c a_digest.c a_verify.c a_mbstr.c a_strex.c\
+		x_algor.c x_val.c x_pubkey.c x_sig.c x_req.c x_attrib.c x_bignum.c\
+		x_long.c x_name.c x_x509.c x_x509a.c x_crl.c x_info.c x_spki.c nsseq.c\
+		x_nx509.c d2i_pu.c d2i_pr.c i2d_pu.c i2d_pr.c\
+		t_req.c t_x509.c t_x509a.c t_crl.c t_pkey.c t_spki.c t_bitst.c\
+		tasn_new.c tasn_fre.c tasn_enc.c tasn_dec.c tasn_utl.c tasn_typ.c\
+		tasn_prn.c ameth_lib.c\
+		f_int.c f_string.c n_pkey.c\
+		f_enum.c x_pkey.c a_bool.c x_exten.c bio_asn1.c bio_ndef.c asn_mime.c\
+		asn1_gen.c asn1_par.c asn1_lib.c asn1_err.c a_bytes.c a_strnid.c\
+		evp_asn1.c asn_pack.c p5_pbe.c p5_pbev2.c p8_pkey.c asn_moid.c\
+		a_set.c\
+		a_time_tm.c\
+	)\
+	bf/^(bf_skey.c bf_ecb.c bf_cfb64.c bf_ofb64.c)\
+	bio/^(\
+		bio_lib.c bio_cb.c bio_err.c\
+		bss_mem.c bss_null.c bss_fd.c\
+		bss_file.c bss_sock.c bss_conn.c\
+		bf_null.c bf_buff.c b_print.c b_dump.c\
+		b_posix.c b_sock.c bss_acpt.c bf_nbio.c bss_log.c bss_bio.c\
+		bss_dgram.c\
+	)\
+	bn/^(\
+		bn_add.c bn_div.c bn_exp.c bn_lib.c bn_ctx.c bn_mul.c bn_mod.c\
+		bn_print.c bn_rand.c bn_shift.c bn_word.c bn_blind.c\
+		bn_kron.c bn_sqrt.c bn_gcd.c bn_prime.c bn_err.c bn_sqr.c\
+		bn_recp.c bn_mont.c bn_mpi.c bn_exp2.c bn_gf2m.c bn_nist.c\
+		bn_depr.c bn_const.c bn_x931p.c\
+	)\
+	buffer/^(buffer.c buf_err.c buf_str.c)\
+	camellia/^(cmll_cfb.c cmll_ctr.c cmll_ecb.c cmll_ofb.c)\
+	cast/^(c_skey.c c_ecb.c c_enc.c c_cfb64.c c_ofb64.c)\
+	chacha/chacha.c\
+	cmac/^(cmac.c cm_ameth.c cm_pmeth.c)\
+	comp/^(comp_lib.c comp_err.c c_rle.c c_zlib.c)\
+	conf/^(\
+		conf_err.c conf_lib.c conf_api.c conf_def.c conf_mod.c\
+		conf_mall.c conf_sap.c\
+	)\
+	des/^(\
+		cbc_cksm.c cbc_enc.c cfb64enc.c cfb_enc.c\
+		ecb3_enc.c ecb_enc.c  enc_read.c enc_writ.c\
+		fcrypt.c ofb64enc.c ofb_enc.c  pcbc_enc.c\
+		qud_cksm.c rand_key.c set_key.c xcbc_enc.c\
+		str2key.c  cfb64ede.c ofb64ede.c ede_cbcm_enc.c\
+	)\
+	dh/^(\
+		dh_asn1.c dh_gen.c dh_key.c dh_lib.c dh_check.c dh_err.c dh_depr.c\
+		dh_ameth.c dh_pmeth.c dh_prn.c\
+	)\
+	dsa/^(\
+		dsa_gen.c dsa_key.c dsa_lib.c dsa_asn1.c dsa_vrf.c dsa_sign.c\
+		dsa_err.c dsa_ossl.c dsa_depr.c dsa_ameth.c dsa_pmeth.c dsa_prn.c\
+	)\
+	dso/^(\
+		dso_dlfcn.c dso_err.c dso_lib.c dso_null.c\
+		dso_openssl.c\
+	)\
+	ec/^(\
+		ec_lib.c ecp_smpl.c ecp_mont.c ecp_nist.c ec_cvt.c ec_mult.c\
+		ec_err.c ec_curve.c ec_check.c ec_print.c ec_asn1.c ec_key.c\
+		ec2_smpl.c ec2_mult.c ec_ameth.c ec_pmeth.c eck_prn.c\
+		ecp_nistp224.c ecp_nistp256.c ecp_nistp521.c ecp_nistputil.c\
+		ecp_oct.c ec2_oct.c ec_oct.c\
+	)\
+	ecdh/^(ech_lib.c ech_key.c ech_err.c)\
+	ecdsa/^(ecs_lib.c ecs_asn1.c ecs_ossl.c ecs_sign.c ecs_vrf.c ecs_err.c)\
+	engine/^(\
+		eng_err.c eng_lib.c eng_list.c eng_init.c eng_ctrl.c\
+		eng_table.c eng_pkey.c eng_fat.c eng_all.c\
+		tb_rsa.c tb_dsa.c tb_ecdsa.c tb_dh.c tb_ecdh.c tb_rand.c tb_store.c\
+		tb_cipher.c tb_digest.c tb_pkmeth.c tb_asnmth.c\
+		eng_openssl.c eng_cnf.c eng_dyn.c\
+	)\
+	err/^(err.c err_all.c err_prn.c)\
+	evp/^(\
+		encode.c digest.c evp_enc.c evp_key.c\
+		e_des.c e_bf.c e_idea.c e_des3.c e_camellia.c\
+		e_rc4.c e_aes.c names.c\
+		e_xcbc_d.c e_rc2.c e_cast.c\
+		m_null.c m_md4.c m_md5.c m_sha1.c m_wp.c\
+		m_dss.c m_dss1.c m_ripemd.c m_ecdsa.c\
+		p_open.c p_seal.c p_sign.c p_verify.c p_lib.c p_enc.c p_dec.c\
+		bio_md.c bio_b64.c bio_enc.c evp_err.c e_null.c\
+		c_all.c evp_lib.c\
+		evp_pkey.c evp_pbe.c p5_crpt.c p5_crpt2.c\
+		e_old.c pmeth_lib.c pmeth_fn.c pmeth_gn.c m_sigver.c\
+		e_aes_cbc_hmac_sha1.c e_rc4_hmac_md5.c\
+		e_chacha.c evp_aead.c e_chacha20poly1305.c\
+		e_gost2814789.c m_gost2814789.c m_gostr341194.c m_streebog.c\
+	)\
+	gost/^(\
+		gost2814789.c gost89_keywrap.c gost89_params.c gost89imit_ameth.c\
+		gost89imit_pmeth.c gost_asn1.c gost_err.c gostr341001.c\
+		gostr341001_ameth.c gostr341001_key.c gostr341001_params.c\
+		gostr341001_pmeth.c gostr341194.c streebog.c\
+	)\
+	hmac/^(hmac.c hm_ameth.c hm_pmeth.c)\
+	idea/^(i_cbc.c i_cfb64.c i_ofb64.c i_ecb.c i_skey.c)\
+	krb5/krb5_asn.c\
+	lhash/^(lhash.c lh_stats.c)\
+	md4/^(md4_dgst.c md4_one.c)\
+	md5/^(md5_dgst.c md5_one.c)\
+	modes/^(cbc128.c ctr128.c cts128.c cfb128.c ofb128.c gcm128.c ccm128.c xts128.c)\
+	objects/^(o_names.c obj_dat.c obj_lib.c obj_err.c obj_xref.c)\
+	ocsp/^(\
+		ocsp_asn.c ocsp_ext.c ocsp_ht.c ocsp_lib.c ocsp_cl.c\
+		ocsp_srv.c ocsp_prn.c ocsp_vfy.c ocsp_err.c\
+	)\
+	pem/^(\
+		pem_sign.c pem_seal.c pem_info.c pem_lib.c pem_all.c pem_err.c\
+		pem_x509.c pem_xaux.c pem_oth.c pem_pk8.c pem_pkey.c pvkfmt.c\
+	)\
+	pkcs12/^(\
+		p12_add.c p12_asn.c p12_attr.c p12_crpt.c p12_crt.c p12_decr.c\
+		p12_init.c p12_key.c p12_kiss.c p12_mutl.c\
+		p12_utl.c p12_npas.c pk12err.c p12_p8d.c p12_p8e.c\
+	)\
+	pkcs7/^(\
+		pk7_asn1.c pk7_lib.c pkcs7err.c pk7_doit.c pk7_smime.c pk7_attr.c\
+		pk7_mime.c bio_pk7.c\
+	)\
+	poly1305/poly1305.c\
+	rand/^(randfile.c rand_lib.c rand_err.c)\
+	rc2/^(rc2_ecb.c rc2_skey.c rc2_cbc.c rc2cfb64.c rc2ofb64.c)\
+	ripemd/^(rmd_dgst.c rmd_one.c)\
+	rsa/^(\
+		rsa_eay.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c\
+		rsa_pk1.c rsa_ssl.c rsa_none.c rsa_oaep.c rsa_chk.c\
+		rsa_pss.c rsa_x931.c rsa_asn1.c rsa_depr.c rsa_ameth.c rsa_prn.c\
+		rsa_pmeth.c rsa_crpt.c\
+	)\
+	sha/^(sha1dgst.c sha1_one.c sha256.c sha512.c)\
+	stack/stack.c\
+	ts/^(\
+		ts_err.c ts_req_utils.c ts_req_print.c ts_rsp_utils.c ts_rsp_print.c\
+		ts_rsp_sign.c ts_rsp_verify.c ts_verify_ctx.c ts_lib.c ts_conf.c\
+		ts_asn1.c\
+	)\
+	txt_db/txt_db.c\
+	ui/^(ui_err.c ui_lib.c ui_openssl.c ui_util.c)\
+	whrlpool/wp_dgst.c\
+	x509/^(\
+		x509_def.c x509_d2.c x509_r2x.c x509_cmp.c\
+		x509_obj.c x509_req.c x509spki.c x509_vfy.c\
+		x509_set.c x509cset.c x509rset.c x509_err.c\
+		x509name.c x509_v3.c x509_ext.c x509_att.c\
+		x509type.c x509_lu.c x_all.c x509_txt.c\
+		x509_trs.c by_file.c by_dir.c by_mem.c x509_vpm.c\
+	)\
+	x509v3/^(\
+		v3_bcons.c v3_bitst.c v3_conf.c v3_extku.c v3_ia5.c v3_lib.c\
+		v3_prn.c v3_utl.c v3err.c v3_genn.c v3_alt.c v3_skey.c v3_akey.c v3_pku.c\
+		v3_int.c v3_enum.c v3_sxnet.c v3_cpols.c v3_crld.c v3_purp.c v3_info.c\
+		v3_ocsp.c v3_akeya.c v3_pmaps.c v3_pcons.c v3_ncons.c v3_pcia.c v3_pci.c\
+		pcy_cache.c pcy_node.c pcy_data.c pcy_map.c pcy_tree.c pcy_lib.c\
+	)\
+	\
+	aes/^(aes_core.c aes_cbc.c)\
+	bf/^(bf_enc.c)\
+	bn/^(bn_asm.c)\
+	camellia/^(camellia.c cmll_cbc.c cmll_misc.c)\
+	des/^(des_enc.c fcrypt_b.c)\
+	rc4/^(rc4_enc.c rc4_skey.c)\
+	whrlpool/^(wp_block.c)\
+)
+
+# src/lib/libssl/ssl/Makefile
+lib libssl.a src/lib/libssl/src/ssl/^(\
+	s3_srvr.c s3_clnt.c s3_lib.c s3_pkt.c s3_both.c \
+	s23_srvr.c s23_clnt.c s23_lib.c s23_pkt.c \
+	t1_meth.c t1_srvr.c t1_clnt.c t1_lib.c t1_enc.c \
+	d1_meth.c d1_srvr.c d1_clnt.c d1_lib.c d1_pkt.c \
+	d1_both.c d1_enc.c d1_srtp.c \
+	ssl_lib.c ssl_err2.c ssl_cert.c ssl_sess.c \
+	ssl_ciph.c ssl_stat.c ssl_rsa.c \
+	ssl_asn1.c ssl_txt.c ssl_algs.c \
+	bio_ssl.c ssl_err.c t1_reneg.c \
+	pqueue.c\
+	\
+	s3_cbc.c\
+	bs_ber.c bs_cbb.c bs_cbs.c\
+)
+
+file share/libressl/cert.pem '$srcdir'/src/lib/libcrypto/cert.pem 644
