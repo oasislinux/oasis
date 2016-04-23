@@ -29,3 +29,4 @@ exe ksh\
 	vi.c
 file bin/ksh '$outdir'/ksh 755
 sym bin/sh ksh
+for(name in ksh sh) file share/man/man1/$name.1 '$srcdir'/$name.1 644
