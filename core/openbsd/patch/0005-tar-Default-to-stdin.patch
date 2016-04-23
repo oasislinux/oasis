@@ -1,4 +1,4 @@
-From aa22c87e415d844f17991477187d607dac4a9371 Mon Sep 17 00:00:00 2001
+From 0578803f33e11349628ff98a2834bb0dae6fc4f4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Apr 2016 01:16:12 -0700
 Subject: [PATCH] tar: Default to stdin

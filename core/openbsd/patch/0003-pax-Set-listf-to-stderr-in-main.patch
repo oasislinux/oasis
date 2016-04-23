@@ -1,4 +1,4 @@
-From 67cc439f1b0db14d106ea1b6b96d66c6b6c7e15a Mon Sep 17 00:00:00 2001
+From 922ea08ad2487192bf46b077ec62d6924973c492 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Apr 2016 00:13:51 -0700
 Subject: [PATCH] pax: Set listf to stderr in main
