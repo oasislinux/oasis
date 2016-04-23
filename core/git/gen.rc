@@ -1,9 +1,10 @@
 version=2.8.1
 cflags\
-	-DNO_SYS_POLL_H\
-	-DNO_OPENSSL\
-	-D'SHA1_HEADER=\"block-sha1/sha1.h\"' \
+	-D NO_SYS_POLL_H\
+	-D 'SHA1_HEADER=\<openssl/sha.h\>' \
 	-I '$builddir'/core/zlib/include\
+	-I '$builddir'/core/libressl/include\
+	-I '$builddir'/core/curl/include\
 	-I '$srcdir' \
 	-I '$outdir'
 
@@ -18,7 +19,8 @@ let cflags '$cflags -DETC_GITCONFIG=\"/etc/gitconfig\"' -- cc config.c
 let cflags '$cflags -DGIT_EXEC_PATH=\"libexec/git-core\" -DPREFIX=\"\"' -- cc exec_cmd.c
 
 # src/Makefile:/^LIB_OBJS.*\.o$
-lib libgit.a -d phony/core/zlib/headers\
+deps=phony/core/^(curl libressl zlib)^/headers
+lib libgit.a -d $"deps\
 	abspath.c\
 	advice.c\
 	alias.c\
@@ -178,7 +180,6 @@ lib libgit.a -d phony/core/zlib/headers\
 	xdiff-interface.c\
 	zlib.c\
 	\
-	block-sha1/sha1.c\
 	thread-utils.c
 
 # src/Makefile:/^XDIFF_OBJS.*\.o$
@@ -192,12 +193,20 @@ lib libxdiff.a xdiff/^(\
 	xhistogram.c\
 )
 
-libs=(libgit.a libxdiff.a '$builddir'/core/zlib/libz.a)
+libs=(\
+	libgit.a libxdiff.a\
+	'$builddir'/core/^(\
+		curl/libcurl.a\
+		libressl/^(libssl.a libcrypto.a)\
+		openbsd/libbsd.a\
+		zlib/libz.a\
+	)\
+)
 
 extra_cflags=(\
-	-D'GIT_HTML_PATH=\"share/doc/git-doc\"' \
-	-D'GIT_MAN_PATH=\"share/man\"' \
-	-D'GIT_INFO_PATH=\"share/info\"' \
+	-D 'GIT_HTML_PATH=\"share/doc/git-doc\"' \
+	-D 'GIT_MAN_PATH=\"share/man\"' \
+	-D 'GIT_INFO_PATH=\"share/info\"' \
 )
 let cflags '$cflags '$"extra_cflags -- cc git.c
 let cflags '$cflags '$"extra_cflags -- cc builtin/help.c
@@ -307,11 +316,14 @@ exe git git.c.o builtin/^(\
 	worktree.c\
 	write-tree.c\
 ) $libs
+file bin/git '$outdir'/git 755
 
 fn x {
 	name=$1
 	shift
-	exe git-$name $name.c $* $libs
+	if(~ $#* 0) srcs=$name.c
+	if not srcs=$*
+	exe git-$name $srcs $libs
 	file libexec/git-core/git-$name '$outdir'/git-$name 755
 }
 
@@ -327,9 +339,8 @@ x show-index
 x upload-pack
 # git-remote-testsvn is intentionally omitted.
 
-# TODO: Build with curl and libressl.
-
-file bin/git '$outdir'/git 755
+x remote-http remote-curl.c http.c http-walker.c
+for(remote in https ftp ftps) sym libexec/git-core/git-remote-$remote git-remote-http
 
 # templates
 dir share/git-core/templates/branches 755
