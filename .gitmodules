@@ -4,6 +4,9 @@
 [submodule "core/cparser/src"]
 	path = core/cparser/src
 	url = http://pp.ipd.kit.edu/git/cparser.git
+[submodule "core/curl/src"]
+	path = core/curl/src
+	url = https://github.com/curl/curl
 [submodule "core/file/src"]
 	path = core/file/src
 	url = https://github.com/file/file
