@@ -17,7 +17,7 @@ let cflags '$cflags -DGIT_LOCALE_PATH=\"/share/locale\"' -- cc gettext.c
 let cflags '$cflags -DETC_GITCONFIG=\"/etc/gitconfig\"' -- cc config.c
 let cflags '$cflags -DGIT_EXEC_PATH=\"libexec/git-core\" -DPREFIX=\"\"' -- cc exec_cmd.c
 
-# LIB_OBJS
+# src/Makefile:/^LIB_OBJS.*\.o$
 lib libgit.a -d phony/core/zlib/headers\
 	abspath.c\
 	advice.c\
@@ -181,7 +181,7 @@ lib libgit.a -d phony/core/zlib/headers\
 	block-sha1/sha1.c\
 	thread-utils.c
 
-# XDIFF_OBJS
+# src/Makefile:/^XDIFF_OBJS.*\.o$
 lib libxdiff.a xdiff/^(\
 	xdiffi.c\
 	xprepare.c\
@@ -201,7 +201,7 @@ extra_cflags=(\
 )
 let cflags '$cflags '$"extra_cflags -- cc git.c
 let cflags '$cflags '$"extra_cflags -- cc builtin/help.c
-# BUILTIN_OBJS
+# src/Makefile:/^BUILTIN_OBJS.*\.o$
 exe git git.c.o builtin/^(\
 	add.c\
 	am.c\
@@ -315,7 +315,7 @@ fn x {
 	file libexec/git-core/git-$name '$outdir'/git-$name 755
 }
 
-# PROGRAM_OBJS
+# src/Makefile:/^PROGRAM_OBJS.*\.o$
 x credential-store
 x daemon
 x fast-import
