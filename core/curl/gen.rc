@@ -44,9 +44,10 @@ lib libcurl.a -d $"deps lib/^(\
 	)\
 )
 
+build '$outdir'/tool_hugehelp.c.o cc '$dir'/tool_hugehelp.c
+
 # src/src/Makefile.inc:/^CURL_CFILES
 exe curl -d '$outdir'/include/curl/curlbuild.h\
-	'$dir'/tool_hugehelp.c\
 	src/^(\
 		slist_wc.c\
 		tool_binmode.c\
@@ -88,6 +89,7 @@ exe curl -d '$outdir'/include/curl/curlbuild.h\
 		tool_writeout.c\
 		tool_xattr.c\
 	)\
+	tool_hugehelp.c.o\
 	libcurl.a\
 	'$builddir'/^(\
 		core/libressl/libssl.a\
