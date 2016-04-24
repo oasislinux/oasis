@@ -129,3 +129,6 @@ x which
 x whoami
 x xargs
 x yes
+
+# TODO: Hard links?
+sym bin/[ test
