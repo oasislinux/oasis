@@ -1,0 +1,35 @@
+#!/bin/rc
+
+flag e +
+
+ifs='
+'
+
+cd `{dirname $0}
+
+if([ -d src ]) rm -rf src
+
+if(! sha256sum -c sha256 >[2]/dev/null) {
+	curl -L -O -K url
+	sha256sum -c sha256
+}
+
+for(archive in `{awk '{print $2}' sha256}) {
+	switch($archive) {
+	case *.gz
+		tool=zcat
+	case *.bz2
+		tool=bzcat
+	case *.xz
+		tool=xzcat
+	case *
+		tool=()
+	}
+	if(! ~ $#tool 0) $tool $archive | pax -r -s '/^\.\|[^\/]*/src/'
+}
+
+if([ -d patch ]) {
+	if(! dir=`{git rev-parse --show-prefix}^src >[2]/dev/null) dir=src
+	git apply -v --directory $dir patch/*
+}
+status=()
