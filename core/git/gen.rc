@@ -18,7 +18,7 @@ let cflags '$cflags -DGIT_LOCALE_PATH=\"/share/locale\"' -- cc gettext.c
 let cflags '$cflags -DETC_GITCONFIG=\"/etc/gitconfig\"' -- cc config.c
 let cflags '$cflags -DGIT_EXEC_PATH=\"libexec/git-core\" -DPREFIX=\"\"' -- cc exec_cmd.c
 
-# src/Makefile:/^LIB_OBJS.*\.o$
+# src/Makefile:/^LIB_OBJS.\+=
 deps=phony/core/^(curl libressl zlib)^/headers
 lib libgit.a -d $"deps\
 	abspath.c\
@@ -182,7 +182,7 @@ lib libgit.a -d $"deps\
 	\
 	thread-utils.c
 
-# src/Makefile:/^XDIFF_OBJS.*\.o$
+# src/Makefile:/^XDIFF_OBJS.\+=
 lib libxdiff.a xdiff/^(\
 	xdiffi.c\
 	xprepare.c\
@@ -210,7 +210,7 @@ extra_cflags=(\
 )
 let cflags '$cflags '$"extra_cflags -- cc git.c
 let cflags '$cflags '$"extra_cflags -- cc builtin/help.c
-# src/Makefile:/^BUILTIN_OBJS.*\.o$
+# src/Makefile:/^BUILTIN_OBJS.\+=
 exe git git.c.o builtin/^(\
 	add.c\
 	am.c\
@@ -327,7 +327,7 @@ fn x {
 	file libexec/git-core/git-$name '$outdir'/git-$name 755
 }
 
-# src/Makefile:/^PROGRAM_OBJS.*\.o$
+# src/Makefile:/^PROGRAM_OBJS./+=
 x credential-store
 x daemon
 x fast-import
@@ -341,6 +341,40 @@ x upload-pack
 
 x remote-http remote-curl.c http.c http-walker.c
 for(remote in https ftp ftps) sym libexec/git-core/git-remote-$remote git-remote-http
+
+rule sh_gen 'sed -f $dir/sh_gen.sed $in >$out.tmp && mv $out.tmp $out'
+fn x {
+	name=$1
+	mode=$2
+	shift
+	build '$outdir'/git-$name sh_gen '$srcdir'/git-$name.sh '|' '$dir'/sh_gen.sed
+	file libexec/git-core/git-$name '$outdir'/git-$name $mode
+}
+
+# src/Makefile:/^SCRIPT_SH.\+=
+x bisect 755
+x difftool--helper 755
+x filter-branch 755
+x merge-octopus 755
+x merge-one-file 755
+x merge-resolve 755
+x mergetool 755
+x quiltimport 755
+x rebase 755
+x remote-testgit 755
+x request-pull 755
+x stash 755
+x submodule 755
+x web--browse 755
+
+# src/Makefile:/^SCRIPT_LIB.\+=
+x mergetool--lib 644
+x parse-remote 644
+x rebase--am 644
+x rebase--interactive 644
+x rebase--merge 644
+x sh-setup 644
+x sh-i18n 644
 
 # templates
 dir share/git-core/templates/branches 755
