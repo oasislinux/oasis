@@ -10,6 +10,7 @@ subgen libfirm
 subgen libressl
 subgen loksh
 subgen mdocml
+subgen msmtp
 subgen openbsd
 subgen perp
 subgen pigz

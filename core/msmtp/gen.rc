@@ -1,0 +1,30 @@
+cflags\
+	-D HAVE_CONFIG_H\
+	-D 'SYSCONFDIR=\"/etc\"' \
+	-I include\
+	-I '$builddir'/core/libressl/include\
+	-I '$dir' \
+
+exe msmtp src/^(\
+	conf.c\
+	list.c\
+	msmtp.c\
+	net.c\
+	netrc.c\
+	readbuf.c\
+	smtp.c\
+	stream.c\
+	tools.c\
+	xalloc.c\
+	aliases.c\
+	\
+	tls.c\
+	\
+	base64.c md5.c md5-apps.c\
+) '$builddir'/core/^(\
+	libressl/^(libssl.a libcrypto.a)\
+	openbsd/libbsd.a\
+)
+
+file bin/msmtp '$outdir'/msmtp 755
+file share/man/man1/msmtp.1 '$srcdir'/doc/msmtp.1 644

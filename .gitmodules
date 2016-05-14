@@ -28,6 +28,9 @@
 [submodule "core/loksh/src"]
 	path = core/loksh/src
 	url = https://github.com/dimkr/loksh
+[submodule "core/msmtp/src"]
+	path = core/msmtp/src
+	url = git://git.code.sf.net/p/msmtp/code
 [submodule "core/pigz/src"]
 	path = core/pigz/src
 	url = https://github.com/madler/pigz

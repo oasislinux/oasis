@@ -1,0 +1,40 @@
+From 9d34ef4ef327bacc6d0b14c4367054f9036bb0fc Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 13 May 2016 23:01:44 -0700
+Subject: [PATCH] Use _Static_assert instead of checking for size of long long
+
+---
+ configure.ac | 1 -
+ src/conf.c   | 4 +---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 81af350..d4259fd 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -49,7 +49,6 @@ AC_CHECK_HEADERS([sysexits.h netdb.h arpa/inet.h sys/socket.h sys/wait.h])
+ AC_CHECK_FUNCS([fmemopen fseeko fseeko64 getpass getservbyname link mkstemp strndup syslog vasprintf])
+ AC_SEARCH_LIBS([nanosleep], [rt posix4])
+ AC_SEARCH_LIBS([socket], [socket])
+-AC_CHECK_SIZEOF([long long])
+ 
+ dnl pkg-config (required to detect libraries)
+ PKG_PROG_PKG_CONFIG([])
+diff --git a/src/conf.c b/src/conf.c
+index 7347ccd..86afec4 100644
+--- a/src/conf.c
++++ b/src/conf.c
+@@ -36,9 +36,7 @@
+ #include <ctype.h>
+ #include <errno.h>
+ 
+-#if (SIZEOF_LONG_LONG * CHAR_BIT) < 64
+-# error "long long has fewer than 64 bits"
+-#endif
++_Static_assert(sizeof(long long) * CHAR_BIT >= 64, "long long has fewer than 64 bits");
+ 
+ #include "gettext.h"
+ #define _(string) gettext(string)
+-- 
+2.6.2
+
