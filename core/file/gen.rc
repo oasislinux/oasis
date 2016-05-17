@@ -1,4 +1,4 @@
-version=5.26
+version=5.27
 cflags\
 	-DHAVE_CONFIG_H\
 	-DVERSION'='\"$version\"\
