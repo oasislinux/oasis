@@ -9,28 +9,22 @@ cflags\
 
 lib libcommon.a src/^(getfd.c xmalloc.c kbd_error.c)
 lib libfont.a src/^(kdfontop.c kdmapop.c loadunimap.c psffontop.c utf8.c)
-
-yacc parser '$srcdir'/src/libkeymap/parser.y
-build '$outdir'/parser.h copy '$outdir'/parser.tab.h
-build '$outdir'/analyze.c lex '$srcdir'/src/libkeymap/analyze.l
-
-for(src in '$outdir'/^(analyze.c parser.tab.c)) cc $src '||' '$outdir'/parser.h
-lib libkeymap.a \
-	'$outdir'/^(analyze.c.o parser.tab.c.o)\
-	src/libkeymap/^(\
-		array.c\
-		findfile.c\
-		common.c\
-		kernel.c\
-		dump.c\
-		kmap.c\
-		diacr.c\
-		func.c\
-		summary.c\
-		loadkeys.c\
-		modifiers.c\
-		ksyms.c\
-	)
+lib libkeymap.a src/libkeymap/^(\
+	analyze.c\
+	array.c\
+	common.c\
+	diacr.c\
+	dump.c\
+	findfile.c\
+	func.c\
+	kernel.c\
+	kmap.c\
+	ksyms.c\
+	loadkeys.c\
+	modifiers.c\
+	parser.c\
+	summary.c\
+)
 
 # old: loadunimap mapscrn
 # optional: clrunmap getunimap setlogcons setvesablank setpalette screendump
