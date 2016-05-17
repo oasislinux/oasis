@@ -27,9 +27,6 @@ rule cat
 rule gzip
   command = gzip -c -9 -n $in >$out.tmp && mv $out.tmp $out
 
-rule lex
-  command = $lex -t $in >$out.tmp && mv $out.tmp $out
-
 rule yacc
   command = oldcwd=$$PWD && cd $outdir && $yacc $yaccflags $$oldcwd/$in
 
