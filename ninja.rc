@@ -99,7 +99,7 @@ fn objects {
 			shift 2
 		}
 		for(src) {
-			if(~ $src *.c) {
+			if(~ $src *.[cS] *.cc *.cpp) {
 				cc $src $deps
 				obj=$src.o
 			}

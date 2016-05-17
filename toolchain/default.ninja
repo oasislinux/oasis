@@ -1,5 +1,7 @@
 ar = ar
 cc = cc
+cxx = c++
 
 cflags = -O2 -march=native -pipe
+cxxflags = $cflags
 ldflags = -static -s
