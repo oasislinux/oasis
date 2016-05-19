@@ -1,0 +1,30 @@
+From 9a9c3e05e66f1a1fde22f95d70ff2810a580d49d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 14 May 2016 16:31:40 -0700
+Subject: [PATCH] Revert "Fix showing directories when -R flag is set in ls(1)"
+
+This reverts commit bb83eade399e7d6f3642ae3a5e2cdebab6f222a1.
+
+This commit causes the loop through dents at the end of main to
+continue past the end of the dents array, causing a crash when
+called with multiple directory arguments.
+---
+ ls.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ls.c b/ls.c
+index 8cc285b..a59cc0a 100644
+--- a/ls.c
++++ b/ls.c
+@@ -278,7 +278,7 @@ lsdir(const char *path, const struct entry *dir)
+ 	if (!Uflag)
+ 		qsort(ents, n, sizeof(*ents), entcmp);
+ 
+-	if (ds++)
++	if (ds > 1 && (path[0] || dir->name[0] != '.'))
+ 		printf("%s:\n", dir->name);
+ 	for (i = 0; i < n; i++)
+ 		output(&ents[i]);
+-- 
+2.8.1
+

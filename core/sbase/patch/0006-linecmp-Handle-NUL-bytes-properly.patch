@@ -1,0 +1,41 @@
+From 3ad1087dc420ded3cb279fd0c2039b12994328a8 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 14 May 2016 15:27:31 -0700
+Subject: [PATCH] linecmp: Handle NUL bytes properly
+
+Test case:
+
+if [ "$(printf 'a\na\0b' | ./sort -u)" = "$(printf 'a\na\0b')" ] ; then
+	echo pass
+else
+	echo fail
+fi
+---
+ libutil/linecmp.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/libutil/linecmp.c b/libutil/linecmp.c
+index f5a6cf9..08fc0e3 100644
+--- a/libutil/linecmp.c
++++ b/libutil/linecmp.c
+@@ -10,15 +10,8 @@ linecmp(struct line *a, struct line *b)
+ {
+ 	int res = 0;
+ 
+-	if (!(res = memcmp(a->data, b->data, MIN(a->len, b->len)))) {
+-		if (a->len > b->len) {
+-			res = a->data[b->len];
+-		} else if (b->len > a->len) {
+-			res = -b->data[a->len];
+-		} else {
+-			res = 0;
+-		}
+-	}
++	if (!(res = memcmp(a->data, b->data, MIN(a->len, b->len))))
++		res = a->len - b->len;
+ 
+ 	return res;
+ }
+-- 
+2.8.1
+

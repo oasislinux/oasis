@@ -1,0 +1,45 @@
+From ec8d61a6fd614ee6742cd46bf7ffc6b67391c766 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 14 May 2016 18:13:22 -0700
+Subject: [PATCH] ls: Don't show directory name with single directory operand
+
+This fixes the issue b107489bf2cda579ca53551206270b9eee80c059 tried
+to fix, but doesn't break -R (which
+bb83eade399e7d6f3642ae3a5e2cdebab6f222a1 tried to fix).
+---
+ ls.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/ls.c b/ls.c
+index 55dfe40..42811c5 100644
+--- a/ls.c
++++ b/ls.c
+@@ -53,6 +53,7 @@ static int Uflag = 0;
+ static int uflag = 0;
+ static int first = 1;
+ static char sort = 0;
++static int showdirs;
+ 
+ static void ls(const char *, const struct entry *, int);
+ 
+@@ -277,7 +278,7 @@ lsdir(const char *path, const struct entry *dir)
+ 	if (!Uflag)
+ 		qsort(ents, n, sizeof(*ents), entcmp);
+ 
+-	if (path[0] || dir->name[0] != '.')
++	if (path[0] || showdirs)
+ 		printf("%s:\n", dir->name);
+ 	for (i = 0; i < n; i++)
+ 		output(&ents[i]);
+@@ -469,6 +470,8 @@ main(int argc, char *argv[])
+ 			}
+ 		}
+ 
++		showdirs = ds > 1 || (ds && fs);
++
+ 		qsort(fents, fs, sizeof(ent), entcmp);
+ 		qsort(dents, ds, sizeof(ent), entcmp);
+ 
+-- 
+2.8.1
+

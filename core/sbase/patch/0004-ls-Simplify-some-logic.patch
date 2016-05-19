@@ -1,0 +1,74 @@
+From 19d79dc27a724fd9553e8a99511854fb1dbc3c58 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 14 May 2016 18:25:11 -0700
+Subject: [PATCH] ls: Simplify some logic
+
+- After first iteration, set first to 0 instead of !first.
+- If Hflag || Lflag, then mkent used stat instead of lstat, so the
+  entity cannot be a symlink.
+- Print path prefix along with directory name.
+- In the 'if (Rflag)' block, just use 1 instead of Rflag.
+---
+ ls.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/ls.c b/ls.c
+index 42811c5..b5c4b00 100644
+--- a/ls.c
++++ b/ls.c
+@@ -279,7 +279,7 @@ lsdir(const char *path, const struct entry *dir)
+ 		qsort(ents, n, sizeof(*ents), entcmp);
+ 
+ 	if (path[0] || showdirs)
+-		printf("%s:\n", dir->name);
++		printf("%s%s:\n", path, dir->name);
+ 	for (i = 0; i < n; i++)
+ 		output(&ents[i]);
+ 
+@@ -296,7 +296,7 @@ lsdir(const char *path, const struct entry *dir)
+ 			if (S_ISLNK(ent->mode) && S_ISDIR(ent->tmode) && !Lflag)
+ 				continue;
+ 
+-			ls(prefix, ent, Rflag);
++			ls(prefix, ent, 1);
+ 		}
+ 	}
+ 
+@@ -346,11 +346,10 @@ ls(const char *path, const struct entry *ent, int listdir)
+ 			eprintf("getcwd:");
+ 
+ 		if (first)
+-			first = !first;
++			first = 0;
+ 		else
+ 			putchar('\n');
+ 
+-		fputs(path, stdout);
+ 		lsdir(path, ent);
+ 		tree[treeind].ino = 0;
+ 
+@@ -451,8 +450,8 @@ main(int argc, char *argv[])
+ 	case 1:
+ 		mkent(&ent, argv[0], 1, Hflag || Lflag);
+ 		ls("", &ent, (!dflag && S_ISDIR(ent.mode)) ||
+-		    ((S_ISLNK(ent.mode) && S_ISDIR(ent.tmode)) &&
+-		    ((Hflag || Lflag) || !(dflag || Fflag || lflag))));
++		    (S_ISLNK(ent.mode) && S_ISDIR(ent.tmode) &&
++		     !(dflag || Fflag || lflag)));
+ 
+ 		break;
+ 	default:
+@@ -460,8 +459,8 @@ main(int argc, char *argv[])
+ 			mkent(&ent, argv[i], 1, Hflag || Lflag);
+ 
+ 			if ((!dflag && S_ISDIR(ent.mode)) ||
+-			    ((S_ISLNK(ent.mode) && S_ISDIR(ent.tmode)) &&
+-			    ((Hflag || Lflag) || !(dflag || Fflag || lflag)))) {
++			    (S_ISLNK(ent.mode) && S_ISDIR(ent.tmode) &&
++			     !(dflag || Fflag || lflag))) {
+ 				dents = ereallocarray(dents, ++ds, sizeof(*dents));
+ 				memcpy(&dents[ds - 1], &ent, sizeof(ent));
+ 			} else {
+-- 
+2.8.1
+
