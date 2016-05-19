@@ -375,6 +375,33 @@ exe bin/rc -d '$outdir'/rc/x.tab.h '$outdir'/rc/x.tab.c src/cmd/rc/^(\
 	var.c\
 ) lib9.a
 
-file bin/rc '$outdir'/rc 755
-file share/man/man1/rc.1 '$srcdir'/man/man1/rc.1 644
+# src/src/cmd/sam/mkfile:/^OFILES
+exe bin/sam src/cmd/sam/^(\
+	sam.c\
+	address.c\
+	buff.c\
+	cmd.c\
+	disk.c\
+	error.c\
+	file.c\
+	io.c\
+	list.c\
+	mesg.c\
+	moveto.c\
+	multi.c\
+	rasp.c\
+	regexp.c\
+	shell.c\
+	string.c\
+	sys.c\
+	unix.c\
+	util.c\
+	xec.c\
+) libplumb.a lib9.a
+
+for(exe in rc sam) {
+	file bin/$exe '$outdir'/bin/$exe 755
+	file share/man/man1/$exe.1 '$srcdir'/man/man1/$exe.1 644
+}
+
 file lib/rcmain '$srcdir'/rcmain 644
