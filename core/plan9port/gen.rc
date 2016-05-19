@@ -1,3 +1,5 @@
+arch=x86_64
+
 cflags\
 	-D __Linux26__\
 	-D PLAN9PORT\
