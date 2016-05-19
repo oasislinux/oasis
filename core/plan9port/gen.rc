@@ -6,8 +6,6 @@ cflags\
 	-I '$srcdir'/src/lib9/fmt\
 	-I '$outdir'
 
-yacc x '$srcdir'/src/cmd/rc/syn.y
-
 # src/src/lib9/mkfile:/^OFILES
 lib lib9.a src/lib9/^(\
 	fmt/^(\
@@ -166,7 +164,9 @@ lib lib9.a src/lib9/^(\
 	zoneinfo.c\
 )
 
-srcs=('$outdir'/x.tab.c src/cmd/rc/^(\
+# src/src/cmd/rc/mkfile:/^OFILES
+yacc rc/x '$srcdir'/src/cmd/rc/syn.y
+exe bin/rc -d '$outdir'/rc/x.tab.h '$outdir'/rc/x.tab.c src/cmd/rc/^(\
 	code.c\
 	exec.c\
 	getflags.c\
@@ -184,9 +184,7 @@ srcs=('$outdir'/x.tab.c src/cmd/rc/^(\
 	tree.c\
 	unixcrap.c\
 	var.c\
-))
-for(src in $srcs) cc $src '||' '$outdir'/x.tab.h
-link rc $srcs.o lib9.a
+) lib9.a
 
 file bin/rc '$outdir'/rc 755
 file share/man/man1/rc.1 '$srcdir'/man/man1/rc.1 644
