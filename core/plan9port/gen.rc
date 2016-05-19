@@ -8,63 +8,162 @@ cflags\
 
 yacc x '$srcdir'/src/cmd/rc/syn.y
 
+# src/src/lib9/mkfile:/^OFILES
 lib lib9.a src/lib9/^(\
+	fmt/^(\
+		dofmt.c\
+		fltfmt.c\
+		fmt.c\
+		fmtfd.c\
+		fmtfdflush.c\
+		fmtlocale.c\
+		fmtnull.c\
+		fmtprint.c\
+		fmtquote.c\
+		fmtrune.c\
+		fmtstr.c\
+		fmtvprint.c\
+		fprint.c\
+		nan64.c\
+		print.c\
+		runefmtstr.c\
+		runeseprint.c\
+		runesmprint.c\
+		runesnprint.c\
+		runesprint.c\
+		runevseprint.c\
+		runevsmprint.c\
+		runevsnprint.c\
+		seprint.c\
+		smprint.c\
+		snprint.c\
+		sprint.c\
+		strtod.c\
+		vfprint.c\
+		vseprint.c\
+		vsmprint.c\
+		vsnprint.c\
+		charstod.c\
+		pow10.c\
+	)\
+	fmtlock2.c\
+	\
+	utf/^(\
+		rune.c\
+		runestrcat.c\
+		runestrchr.c\
+		runestrcmp.c\
+		runestrcpy.c\
+		runestrdup.c\
+		runestrlen.c\
+		runestrecpy.c\
+		runestrncat.c\
+		runestrncmp.c\
+		runestrncpy.c\
+		runestrrchr.c\
+		runestrstr.c\
+		runetype.c\
+		utfecpy.c\
+		utflen.c\
+		utfnlen.c\
+		utfrrune.c\
+		utfrune.c\
+		utfutf.c\
+	)\
+	\
+	_exits.c\
+	_p9dialparse.c\
 	_p9dir.c\
+	announce.c\
 	argv0.c\
 	atexit.c\
 	atoi.c\
+	atol.c\
+	atoll.c\
+	atnotify.c\
 	await.c\
+	cistrcmp.c\
+	cistrncmp.c\
+	cistrstr.c\
+	cleanname.c\
+	convD2M.c\
+	convM2D.c\
+	convM2S.c\
+	convS2M.c\
 	create.c\
+	crypt.c\
+	ctime.c\
+	dial.c\
 	dirfstat.c\
+	dirfwstat.c\
+	dirmodefmt.c\
 	dirread.c\
 	dirstat.c\
+	dirwstat.c\
 	dup.c\
+	encodefmt.c\
 	errstr.c\
-	fmt/dofmt.c\
-	fmt/fltfmt.c\
-	fmt/fmt.c\
-	fmt/fmtfd.c\
-	fmt/fmtfdflush.c\
-	fmt/fmtlocale.c\
-	fmt/fmtstr.c\
-	fmt/fprint.c\
-	fmt/nan64.c\
-	fmt/runefmtstr.c\
-	fmt/smprint.c\
-	fmt/snprint.c\
-	fmt/sprint.c\
-	fmt/strtod.c\
-	fmt/vfprint.c\
-	fmt/vseprint.c\
-	fmt/vsmprint.c\
-	fmt/vsnprint.c\
-	fmtlock2.c\
+	exec.c\
+	execl.c\
+	exitcode.c\
+	fcallfmt.c\
 	get9root.c\
-	getcallerpc-x86_64.c\
+	getcallerpc-$arch.c\
 	getenv.c\
+	getfields.c\
+	getnetconn.c\
+	getns.c\
+	getuser.c\
+	getwd.c\
 	jmp.c\
+	lrand.c\
+	lnrand.c\
 	main.c\
 	malloc.c\
+	malloctag.c\
 	mallocz.c\
+	nan.c\
+	needsrcquote.c\
+	needstack.c\
+	netcrypt.c\
+	netmkaddr.c\
 	notify.c\
+	nrand.c\
+	nulldir.c\
 	open.c\
+	opentemp.c\
+	pin.c\
 	pipe.c\
+	post9p.c\
 	postnote.c\
 	qlock.c\
+	quote.c\
+	rand.c\
+	read9pmsg.c\
+	readcons.c\
 	readn.c\
 	rfork.c\
+	searchpath.c\
 	seek.c\
+	sendfd.c\
+	sleep.c\
 	strdup.c\
 	strecpy.c\
 	sysfatal.c\
+	syslog.c\
+	sysname.c\
+	time.c\
+	tm2sec.c\
 	tokenize.c\
+	truerand.c\
+	u16.c\
+	u32.c\
+	u64.c\
 	unsharp.c\
-	utf/rune.c\
-	utf/utflen.c\
-	utf/utfnlen.c\
-	utf/utfrune.c\
 	wait.c\
+	waitpid.c\
 	write.c\
+	zoneinfo.c\
 )
 
 srcs=('$outdir'/x.tab.c src/cmd/rc/^(\
