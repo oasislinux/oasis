@@ -1,4 +1,6 @@
 cflags\
+	-D __Linux26__\
+	-D PLAN9PORT\
 	-I '$srcdir'/include\
 	-I '$srcdir'/src/cmd/rc\
 	-I '$srcdir'/src/lib9/fmt\
