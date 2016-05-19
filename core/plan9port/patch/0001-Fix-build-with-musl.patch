@@ -1,4 +1,4 @@
-From 51ab047274d90b1c6b7a26b2b41992b176543d05 Mon Sep 17 00:00:00 2001
+From bc48772672bdb1436455e078b17df47a63813394 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 10 Apr 2016 02:50:03 -0700
 Subject: [PATCH] Fix build with musl
@@ -58,5 +58,5 @@ index 40fbe3c..345f49c 100644
  #if defined(__DragonFly__)
  static inline int d_reclen(struct dirent *de) { return _DIRENT_DIRSIZ(de); }
 -- 
-2.8.0
+2.8.1
 
