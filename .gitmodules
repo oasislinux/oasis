@@ -55,3 +55,6 @@
 [submodule "core/zlib/src"]
 	path = core/zlib/src
 	url = https://github.com/madler/zlib
+[submodule "desktop/plan9fonts/src"]
+	path = desktop/plan9fonts/src
+	url = https://github.com/rtrn/plan9fonts
