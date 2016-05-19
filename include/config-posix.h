@@ -88,21 +88,58 @@
 /* #undef HAVE_VFORK_H */ /* vfork comes from unistd.h */
 
 /* types */
-#define HAVE_LONGLONG 1
-#define HAVE_SIG_ATOMIC_T 1
-#define HAVE_STRUCT_SOCKADDR_STORAGE 1
-#define HAVE_STRUCT_TIMEVAL 1
-#define HAVE_MODE_T 1
-#define HAVE_UINTMAX_T 1
+#define HAVE_BLKCNT_T 1
+#define HAVE_BLKSIZE_T 1
+#define HAVE_CLOCKID_T 1
+#define HAVE_CLOCK_T 1
+#define HAVE_DEV_T 1
+#define HAVE_FSBLKCNT_T 1
+#define HAVE_FSFILCNT_T 1
+#define HAVE_GID_T 1
+#define HAVE_ID_T 1
+#define HAVE_INO_T 1
 #define HAVE_INTMAX_T 1
-#define HAVE_STRUCT_IN6_ADDR
-#define HAVE_STRUCT_ADDRINFO
-#define HAVE_STRUCT_TIMESPEC
-#define HAVE_STRUCT_SOCKADDR_IN6
-#define HAVE_STRUCT_STAT_ST_RDEV 1
+#define HAVE_KEY_T 1
+#define HAVE_LONGLONG 1
+#define HAVE_MODE_T 1
+#define HAVE_NLINK_T 1
+#define HAVE_OFF_T 1
+#define HAVE_PID_T 1
+#define HAVE_PTHREAD_ATTR_T 1
+#define HAVE_PTHREAD_BARRIERATTR_T 1
+#define HAVE_PTHREAD_BARRIER_T 1
+#define HAVE_PTHREAD_CONDATTR_T 1
+#define HAVE_PTHREAD_COND_T 1
+#define HAVE_PTHREAD_KEY_T 1
+#define HAVE_PTHREAD_MUTEXATTR_T 1
+#define HAVE_PTHREAD_MUTEX_T 1
+#define HAVE_PTHREAD_ONCE_T 1
+#define HAVE_PTHREAD_RWLOCKATTR_T 1
+#define HAVE_PTHREAD_RWLOCK_T 1
+#define HAVE_PTHREAD_SPINLOCK_T 1
+#define HAVE_PTHREAD_T 1
 #define HAVE_SA_FAMILY_T 1
+#define HAVE_SIG_ATOMIC_T 1
 #define HAVE_SIZE_T 1
 #define HAVE_SSIZE_T 1
+#define HAVE_STRUCT_ADDRINFO
+#define HAVE_STRUCT_IN6_ADDR
+#define HAVE_STRUCT_SOCKADDR_IN6
+#define HAVE_STRUCT_SOCKADDR_STORAGE 1
+#define HAVE_STRUCT_STAT_ST_RDEV 1
+#define HAVE_STRUCT_TIMESPEC
+#define HAVE_STRUCT_TIMEVAL 1
+#define HAVE_SUSECONDS_T 1
+#define HAVE_TIMER_T 1
+#define HAVE_TIME_T 1
+#define HAVE_TRACE_ATTR_T 1
+#define HAVE_TRACE_EVENT_ID_T 1
+#define HAVE_TRACE_EVENT_SET_T 1
+#define HAVE_TRACE_ID_T 1
+#define HAVE_UID_T 1
+#define HAVE_UINTMAX_T 1
+#define HAVE_UINTPTR_T 1
+#define HAVE_USECONDS_T 1
 /* #undef const */
 /* #undef gid_t */
 /* #undef in_addr_t */
