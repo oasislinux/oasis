@@ -12,7 +12,7 @@ rule link
   command = $cc $ldflags -o $out $in
 
 rule ar
-  command = rm -f $out && $ar crsD $out $in
+  command = rm -f $out && $ar crs $out $in
 
 # misc tools
 rule touch
