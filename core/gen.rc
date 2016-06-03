@@ -13,6 +13,7 @@ subgen mdocml
 subgen msmtp
 subgen ninja
 subgen openbsd
+subgen openssh
 subgen perp
 subgen pigz
 subgen plan9port

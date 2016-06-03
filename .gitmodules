@@ -34,6 +34,9 @@
 [submodule "core/ninja/src"]
 	path = core/ninja/src
 	url = https://github.com/ninja-build/ninja
+[submodule "core/openssh/src"]
+	path = core/openssh/src
+	url = https://github.com/openssh/openssh-portable
 [submodule "core/pigz/src"]
 	path = core/pigz/src
 	url = https://github.com/madler/pigz
