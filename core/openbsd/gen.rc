@@ -6,20 +6,19 @@ cflags\
 
 # Link arc4random.c to '$outdir' so that it doesn't include the local
 # arc4random.h
-build '$outdir'/crypt/arc4random.c copy '$srcdir'/lib/libc/crypt/arc4random.c
-build '$outdir'/crypt/arc4random.h copy '$srcdir'/lib/libcrypto/crypto/arc4random_linux.h
-build '$outdir'/crypt/chacha_private.h copy '$srcdir'/lib/libc/crypt/chacha_private.h
-cc '$outdir'/crypt/arc4random.c '||' '$outdir'/crypt/^(arc4random.h chacha_private.h)
+build '$outdir'/lib/libc/crypt/arc4random.c copy '$srcdir'/lib/libc/crypt/arc4random.c
+build '$outdir'/lib/libc/crypt/arc4random.h copy '$srcdir'/lib/libcrypto/crypto/arc4random_linux.h
+build '$outdir'/lib/libc/crypt/chacha_private.h copy '$srcdir'/lib/libc/crypt/chacha_private.h
+cc '$outdir'/lib/libc/crypt/arc4random.c '||' '$outdir'/crypt/^(arc4random.h chacha_private.h)
 
 lib libbsd.a -d phony/core/libressl/headers\
 	lib/libc/^(\
-		crypt/arc4random_uniform.c\
+		crypt/^(arc4random.c.o arc4random_uniform.c)\
 		gen/^(fts.c vis.c)\
 		stdlib/^(reallocarray.c strtonum.c)\
 		string/^(explicit_bzero.c strmode.c timingsafe_memcmp.c)\
 	)\
-	lib/libcrypto/crypto/getentropy_linux.c\
-	crypt/arc4random.c.o
+	lib/libcrypto/crypto/getentropy_linux.c
 
 # pax
 exe pax bin/pax/*.c libbsd.a
