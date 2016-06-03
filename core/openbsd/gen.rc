@@ -21,13 +21,20 @@ lib libbsd.a -d phony/core/libressl/headers\
 	lib/libcrypto/crypto/getentropy_linux.c
 
 # pax
-exe pax bin/pax/*.c libbsd.a
+exe pax bin/pax/^(\
+	ar_io.c ar_subs.c buf_subs.c cache.c cpio.c file_subs.c ftree.c\
+	gen_subs.c getoldopt.c options.c pat_rep.c pax.c sel_subs.c tables.c\
+	tar.c tty_subs.c\
+) libbsd.a
 file bin/pax '$outdir'/pax 755
 for(alias in tar cpio) sym bin/$alias pax
 for(man in pax tar cpio) file share/man/man1/$man.1 '$srcdir'/bin/pax/$man.1 644
 
 # yacc
-exe yacc usr.bin/yacc/*.c '$outdir'/libbsd.a
+exe yacc usr.bin/yacc/^(\
+	closure.c error.c lalr.c lr0.c main.c mkpar.c output.c reader.c\
+	skeleton.c symtab.c verbose.c warshall.c\
+) libbsd.a
 file bin/yacc '$outdir'/yacc 755
 file share/man/man1/yacc.1 '$srcdir'/usr.bin/yacc/yacc.1 644
 
