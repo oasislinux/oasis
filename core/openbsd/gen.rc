@@ -18,7 +18,7 @@ lib libbsd.a -d phony/core/libressl/headers\
 		string/^(explicit_bzero.c strmode.c timingsafe_memcmp.c)\
 	)\
 	lib/libcrypto/crypto/getentropy_linux.c\
-	'$outdir'/crypt/arc4random.c.o
+	crypt/arc4random.c.o
 
 # pax
 exe pax bin/pax/*.c libbsd.a
