@@ -29,7 +29,7 @@ lib libutil.a\
 
 fn myexe {
 	exe=$1
-	shift 1
+	shift
 	cc $exe.c '||' '$outdir/config.h'
 	exe $exe '$outdir'/$exe.c.o '$outdir/libutil.a'
 	file bin/$exe '$outdir'/$exe 755
