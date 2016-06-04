@@ -99,3 +99,11 @@ exe sshd\
 	)
 file bin/sshd '$outdir'/sshd 755
 file share/man/man8/sshd.8 '$srcdir'/sshd.8 644
+
+exe ssh-keygen ssh-keygen.c libssh.a libopenbsd-compat.a '$builddir'/^(\
+	core/libressl/^(libssl.a libcrypto.a)\
+	core/openbsd/libbsd.a\
+	core/zlib/libz.a\
+)
+file bin/ssh-keygen '$outdir'/ssh-keygen 755
+file share/man/man1/ssh-keygen.1 '$srcdir'/ssh-keygen.1 644
