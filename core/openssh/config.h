@@ -1,5 +1,17 @@
 #include <config-posix.h>
 
+#define ASKPASS_PROGRAM "/bin/ssh-askpass"
+#define LOGIN_PROGRAM "/bin/login"
+#define _PATH_BTMP "/var/log/btmp"
+#define _PATH_PASSWD_PROG "/bin/passwd"
+#define _PATH_SFTP_SERVER "/libexec/sftp-server"
+#define _PATH_SSH_ASKPASS_DEFAULT "/bin/ssh-askpass"
+#define _PATH_SSH_KEY_SIGN "/libexec/ssh-keysign"
+#define _PATH_SSH_PIDDIR "/run"
+#define _PATH_SSH_PKCS11_HELPER "/libexec/ssh-pkcs11-helper"
+#define _PATH_SSH_PROGRAM "/bin/ssh"
+#define _PATH_XAUTH "/dev/null/xauth"
+
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 /* #undef AIX_GETNAMEINFO_HACK */
 /* #undef AIX_LOGINFAILED_4ARG */
@@ -61,7 +73,7 @@
 #define HAVE_ADDR_V6_IN_UTMPX 1
 #define HAVE_ARC4RANDOM 1
 #define HAVE_ARC4RANDOM_BUF 1
-#define HAVE_ARC4RANDOM_STIR 1
+/* #undef HAVE_ARC4RANDOM_STIR */
 #define HAVE_ARC4RANDOM_UNIFORM 1
 #define HAVE_ASPRINTF 1
 /* #undef HAVE_ATTRIBUTE__BOUNDED__ */
@@ -459,9 +471,6 @@
 #endif
 /* #undef _FILE_OFFSET_BITS */
 /* #undef _LARGE_FILES */
-#define _PATH_BTMP "/var/log/btmp"
-#define _PATH_PASSWD_PROG "/bin/passwd"
-#define _PATH_SSH_PIDDIR "/var/run"
 /* #undef __res_state */
 #ifndef __cplusplus
 /* #undef inline */
