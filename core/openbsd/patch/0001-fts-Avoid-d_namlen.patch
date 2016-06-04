@@ -1,4 +1,4 @@
-From dffe7fa7b5c16e95af5b7a274e256197c716c41b Mon Sep 17 00:00:00 2001
+From 29d959c4d9abdfd126f771e1c4b07da7cf26d7d6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 17 Apr 2016 23:50:15 -0700
 Subject: [PATCH] fts: Avoid d_namlen
@@ -46,5 +46,5 @@ index e042b9f..caf679e 100644
  			/*
  			 * If we wrap, free up the current structure and
 -- 
-2.8.0
+2.8.1
 

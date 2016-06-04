@@ -1,4 +1,4 @@
-From 3346d32277e367ad3b229dfec4b5f11ebafed9fb Mon Sep 17 00:00:00 2001
+From bbc201a46b66522423d83f69b1106ad859bcefba Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Apr 2016 01:25:29 -0700
 Subject: [PATCH] fts: Add some includes
@@ -42,5 +42,5 @@ index caf679e..dc6d3d7 100644
  
  #define MAXIMUM(a, b)	(((a) > (b)) ? (a) : (b))
 -- 
-2.8.0
+2.8.1
 

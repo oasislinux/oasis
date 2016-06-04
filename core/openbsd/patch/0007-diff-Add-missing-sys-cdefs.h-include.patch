@@ -1,0 +1,24 @@
+From d7eab8f491d466c891b72b724087ec14c55225ae Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 4 Jun 2016 14:48:20 -0700
+Subject: [PATCH] diff: Add missing sys/cdefs.h include
+
+---
+ usr.bin/diff/diff.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/usr.bin/diff/diff.c b/usr.bin/diff/diff.c
+index 2b075f1..80c7f84 100644
+--- a/usr.bin/diff/diff.c
++++ b/usr.bin/diff/diff.c
+@@ -20,6 +20,7 @@
+  * Materiel Command, USAF, under agreement number F39502-99-1-0512.
+  */
+ 
++#include <sys/cdefs.h>
+ #include <sys/stat.h>
+ 
+ #include <ctype.h>
+-- 
+2.8.1
+
