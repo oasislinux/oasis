@@ -9,7 +9,7 @@ cflags\
 build '$outdir'/lib/libc/crypt/arc4random.c copy '$srcdir'/lib/libc/crypt/arc4random.c
 build '$outdir'/lib/libc/crypt/arc4random.h copy '$srcdir'/lib/libcrypto/crypto/arc4random_linux.h
 build '$outdir'/lib/libc/crypt/chacha_private.h copy '$srcdir'/lib/libc/crypt/chacha_private.h
-cc '$outdir'/lib/libc/crypt/arc4random.c '||' '$outdir'/crypt/^(arc4random.h chacha_private.h)
+cc '$outdir'/lib/libc/crypt/arc4random.c '||' '$outdir'/lib/libc/crypt/^(arc4random.h chacha_private.h)
 
 lib libbsd.a -d phony/core/libressl/headers\
 	lib/libc/^(\
