@@ -14,3 +14,5 @@ exe make\
 	rule.c signame.c strcache.c variable.c version.c vpath.c\
 	hash.c remote-stub.c\
 	libglob.a
+file bin/make '$outdir'/make 755
+file share/man/man1/make.1 '$srcdir'/make.1 644
