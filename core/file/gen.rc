@@ -49,7 +49,7 @@ lib libmagic.a -d 'phony/$dir/headers phony/core/zlib/headers' src/^(\
 	fmtcheck.c\
 )
 
-exe file src/file.c libmagic.a '$builddir/core/zlib/libz.a'
+exe file -d 'phony/$dir/headers' src/file.c libmagic.a '$builddir/core/zlib/libz.a'
 
 file bin/file '$outdir'/file 755
 file share/man/man1/file.1 '$outdir'/file.1 644
