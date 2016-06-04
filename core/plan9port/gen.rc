@@ -6,7 +6,7 @@ cflags\
 	-I '$srcdir'/include\
 	-I '$srcdir'/src/cmd/rc\
 	-I '$srcdir'/src/lib9/fmt\
-	-I '$outdir'
+	-I '$outdir'/rc
 
 # src/src/lib9/mkfile:/^OFILES
 lib lib9.a src/lib9/^(\
