@@ -1,5 +1,6 @@
 subgen core
 subgen desktop
+subgen devel
 
 file .perms '$outdir'/root.perms 644
 

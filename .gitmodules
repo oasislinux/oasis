@@ -61,3 +61,6 @@
 [submodule "desktop/plan9fonts/src"]
 	path = desktop/plan9fonts/src
 	url = https://github.com/rtrn/plan9fonts
+[submodule "devel/make/src"]
+	path = devel/make/src
+	url = git://git.sv.gnu.org/make.git
