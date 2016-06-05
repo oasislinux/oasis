@@ -64,3 +64,6 @@
 [submodule "devel/make/src"]
 	path = devel/make/src
 	url = git://git.sv.gnu.org/make.git
+[submodule "extra/the_silver_searcher/src"]
+	path = extra/the_silver_searcher/src
+	url = https://github.com/ggreer/the_silver_searcher

@@ -1,0 +1,12 @@
+cflags\
+	-D _GNU_SOURCE\
+	-I include\
+	-I '$builddir'/extra/pcre/include\
+	-I '$dir'
+
+exe ag -d phony/extra/pcre/headers src/^(\
+        ignore.c log.c options.c print.c print_w32.c scandir.c search.c lang.c\
+        util.c decompress.c main.c\
+) '$builddir'/extra/pcre/libpcre.a
+file bin/ag '$outdir'/ag 755
+file share/man/man1/ag.1 '$srcdir'/doc/ag.1 644
