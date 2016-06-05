@@ -1,0 +1,43 @@
+From 489fd212950383b7c9375581f04095843ef67e83 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 4 Jun 2016 23:26:43 -0700
+Subject: [PATCH] od: Don't advance past end of type string
+
+Also, use sizeof(int) when no length is specified.
+---
+ od.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/od.c b/od.c
+index b88e514..529f636 100644
+--- a/od.c
++++ b/od.c
+@@ -251,9 +251,9 @@ main(int argc, char *argv[])
+ 				t->format = *s;
+ 				/* todo: allow multiple digits */
+ 				if (*(s+1) > '0' && *(s+1) <= '9') {
+-					t->len = *(++s) - '0';
++					t->len = *(s+1) - '0';
+ 				} else {
+-					switch (*(++s)) {
++					switch (*(s+1)) {
+ 					case 'C':
+ 						t->len = sizeof(char);
+ 						break;
+@@ -267,9 +267,12 @@ main(int argc, char *argv[])
+ 						t->len = sizeof(long);
+ 						break;
+ 					default:
+-						t->len = 4;
++						t->len = sizeof(int);
++						goto insert;
+ 					}
+ 				}
++				++s;
++			insert:
+ 				TAILQ_INSERT_TAIL(&head, t, entry);
+ 				break;
+ 			default:
+-- 
+2.8.1
+

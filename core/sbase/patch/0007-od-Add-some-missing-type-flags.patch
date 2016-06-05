@@ -1,0 +1,67 @@
+From 8f5bc3b12e214eb94e607202e26d8377ca30519c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 4 Jun 2016 23:26:08 -0700
+Subject: [PATCH] od: Add some missing type flags
+
+---
+ od.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/od.c b/od.c
+index 5a625b6..b88e514 100644
+--- a/od.c
++++ b/od.c
+@@ -197,6 +197,18 @@ main(int argc, char *argv[])
+ 			usage();
+ 		addr_format = s[0];
+ 		break;
++	case 'b':
++		t = emalloc(sizeof(struct type));
++		t->format = 'o';
++		t->len = 1;
++		TAILQ_INSERT_TAIL(&head, t, entry);
++		break;
++	case 'd':
++		t = emalloc(sizeof(struct type));
++		t->format = 'u';
++		t->len = 2;
++		TAILQ_INSERT_TAIL(&head, t, entry);
++		break;
+ 	case 'E':
+ 	case 'e':
+ 		big_endian = (ARGC() == 'E');
+@@ -209,6 +221,18 @@ main(int argc, char *argv[])
+ 		if ((max = parseoffset(EARGF(usage()))) < 0)
+ 			usage();
+ 		break;
++	case 'o':
++		t = emalloc(sizeof(struct type));
++		t->format = 'o';
++		t->len = 2;
++		TAILQ_INSERT_TAIL(&head, t, entry);
++		break;
++	case 's':
++		t = emalloc(sizeof(struct type));
++		t->format = 'd';
++		t->len = 2;
++		TAILQ_INSERT_TAIL(&head, t, entry);
++		break;
+ 	case 't':
+ 		s = EARGF(usage());
+ 		for (; *s; s++) {
+@@ -256,6 +280,12 @@ main(int argc, char *argv[])
+ 	case 'v':
+ 		/* always set - use uniq(1) to handle duplicate lines */
+ 		break;
++	case 'x':
++		t = emalloc(sizeof(struct type));
++		t->format = 'x';
++		t->len = 2;
++		TAILQ_INSERT_TAIL(&head, t, entry);
++		break;
+ 	default:
+ 		usage();
+ 	} ARGEND
+-- 
+2.8.1
+
