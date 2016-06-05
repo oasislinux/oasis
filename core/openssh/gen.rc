@@ -76,6 +76,9 @@ exe ssh\
 file bin/ssh '$outdir'/ssh 755
 file share/man/man1/ssh.1 '$srcdir'/ssh.1 644
 
+cc sftp-server.c
+cc sftp-common.c
+
 exe sshd\
 	sshd.c auth-rhosts.c auth-passwd.c auth-rsa.c auth-rh-rsa.c\
 	audit.c audit-bsm.c audit-linux.c platform.c\
@@ -87,7 +90,7 @@ exe sshd\
 	monitor_mm.c monitor.c monitor_wrap.c auth-krb5.c\
 	auth2-gss.c gss-serv.c gss-serv-krb5.c\
 	loginrec.c auth-pam.c auth-shadow.c auth-sia.c md5crypt.c\
-	sftp-server.c sftp-common.c\
+	sftp-server.c.o sftp-common.c.o\
 	sandbox-null.c sandbox-rlimit.c sandbox-systrace.c sandbox-darwin.c\
 	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c\
 	sandbox-solaris.c\
@@ -111,3 +114,9 @@ file share/man/man1/ssh-keygen.1 '$srcdir'/ssh-keygen.1 644
 exe scp scp.c libssh.a libopenbsd-compat.a libssh.a '$builddir'/core/openbsd/libbsd.a
 file bin/scp '$outdir'/scp 755
 file share/man/man1/scp.1 '$srcdir'/scp.1 644
+
+exe sftp-server\
+	sftp-common.c.o sftp-server.c.o sftp-server-main.c\
+	libssh.a libopenbsd-compat.a '$builddir'/core/openbsd/libbsd.a
+file libexec/sftp-server '$outdir'/sftp-server 755
+file share/man/man8/sftp-server.8 '$srcdir'/sftp-server.8 644
