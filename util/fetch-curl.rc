@@ -29,7 +29,8 @@ for(archive in `{awk '{print $2}' sha256}) {
 }
 
 if([ -d patch ]) {
-	if(! dir=`{git rev-parse --show-prefix}^src >[2]/dev/null) dir=src
+	if(prefix=`{git rev-parse --show-prefix >[2]/dev/null}) dir=$prefix^src
+	if not dir=src
 	git apply -v --directory $dir patch/*
 }
 status=()
