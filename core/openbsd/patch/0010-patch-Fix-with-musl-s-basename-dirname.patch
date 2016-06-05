@@ -1,0 +1,46 @@
+From 4eaf0cae80ad349f877a6c29d71d7dcdfa077481 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 4 Jun 2016 20:13:35 -0700
+Subject: [PATCH] patch: Fix with musl's basename/dirname
+
+---
+ usr.bin/patch/backupfile.c | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/usr.bin/patch/backupfile.c b/usr.bin/patch/backupfile.c
+index 1d7858a..243d00e 100644
+--- a/usr.bin/patch/backupfile.c
++++ b/usr.bin/patch/backupfile.c
+@@ -53,21 +53,22 @@ static void	invalid_arg(const char *, const char *, int);
+ char *
+ find_backup_file_name(const char *file)
+ {
+-	char	*dir, *base_versions;
++	char	*path, *base_versions;
+ 	int	highest_backup;
+ 
+ 	if (backup_type == simple)
+ 		return concat(file, simple_backup_suffix);
+-	base_versions = concat(basename(file), ".~");
+-	if (base_versions == NULL)
++	path = strdup(file);
++	if (path == NULL)
+ 		return NULL;
+-	dir = dirname(file);
+-	if (dir == NULL) {
+-		free(base_versions);
++	base_versions = concat(basename(path), ".~");
++	if (base_versions == NULL) {
++		free(path);
+ 		return NULL;
+ 	}
+-	highest_backup = max_backup_version(base_versions, dir);
++	highest_backup = max_backup_version(base_versions, dirname(path));
+ 	free(base_versions);
++	free(path);
+ 	if (backup_type == numbered_existing && highest_backup == 0)
+ 		return concat(file, simple_backup_suffix);
+ 	return make_version_name(file, highest_backup + 1);
+-- 
+2.8.1
+
