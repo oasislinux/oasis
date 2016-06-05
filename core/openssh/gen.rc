@@ -107,3 +107,7 @@ exe ssh-keygen ssh-keygen.c libssh.a libopenbsd-compat.a '$builddir'/^(\
 )
 file bin/ssh-keygen '$outdir'/ssh-keygen 755
 file share/man/man1/ssh-keygen.1 '$srcdir'/ssh-keygen.1 644
+
+exe scp scp.c libssh.a libopenbsd-compat.a libssh.a '$builddir'/core/openbsd/libbsd.a
+file bin/scp '$outdir'/scp 755
+file share/man/man1/scp.1 '$srcdir'/scp.1 644
