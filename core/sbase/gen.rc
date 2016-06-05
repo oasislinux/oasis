@@ -132,3 +132,7 @@ x yes
 
 # TODO: Hard links?
 sym bin/[ test
+
+# TODO: binutils' config/lib-ld.m4 should use AC_REQUIRE([AC_PROG_EGREP]) and
+# $EGREP instead of egrep.
+file bin/egrep '$dir'/egrep 755
