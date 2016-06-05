@@ -1,0 +1,25 @@
+From 0d285d78276b91b101391a4dab53b0585d2812f8 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 4 Jun 2016 18:40:37 -0700
+Subject: [PATCH] patch: Avoid d_namlen
+
+---
+ usr.bin/patch/backupfile.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/usr.bin/patch/backupfile.c b/usr.bin/patch/backupfile.c
+index d9e40bc..1d7858a 100644
+--- a/usr.bin/patch/backupfile.c
++++ b/usr.bin/patch/backupfile.c
+@@ -95,7 +95,7 @@ max_backup_version(const char *file, const char *dir)
+ 	file_name_length = strlen(file);
+ 
+ 	while ((dp = readdir(dirp)) != NULL) {
+-		if (dp->d_namlen <= file_name_length)
++		if (strlen(dp->d_name) <= file_name_length)
+ 			continue;
+ 
+ 		this_version = version_number(file, dp->d_name, file_name_length);
+-- 
+2.8.1
+

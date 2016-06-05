@@ -2,7 +2,8 @@ cflags\
 	-D '''DEF_WEAK(n)=''' \
 	-I '$dir'/include\
 	-I '$builddir'/core/libressl/include\
-	-idirafter '$srcdir'/include
+	-idirafter '$srcdir'/include\
+	-idirafter '$srcdir'/sys
 
 # Link arc4random.c to '$outdir' so that it doesn't include the local
 # arc4random.h
@@ -47,3 +48,8 @@ file share/man/man1/fmt.1 '$srcdir'/usr.bin/fmt/fmt.1 644
 exe diff usr.bin/diff/^(diff.c diffdir.c diffreg.c xmalloc.c) libbsd.a
 file bin/diff '$outdir'/diff 755
 file share/man/man1/diff.1 '$srcdir'/usr.bin/diff/diff.1 644
+
+# patch
+exe patch usr.bin/patch/^(patch.c pch.c inp.c util.c backupfile.c mkpath.c ed.c) libbsd.a
+file bin/patch '$outdir'/patch 755
+file share/man/man1/patch.1 '$srcdir'/usr.bin/patch/patch.1 644
