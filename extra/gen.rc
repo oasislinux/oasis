@@ -1,3 +1,4 @@
+subgen libevent
 subgen libfuse
 subgen pcre
 subgen sshfs
