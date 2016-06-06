@@ -16,7 +16,14 @@ cflags\
 	-idirafter core/openbsd/src/sys\
 	-include config.h
 
-lib libtransmission.a -d phony/extra/libevent/headers libtransmission/^(\
+deps=phony/^(\
+	core/curl\
+	core/libressl\
+	core/zlib\
+	extra/libevent\
+)^/headers
+
+lib libtransmission.a -d $"deps libtransmission/^(\
 	announcer.c\
 	announcer-http.c\
 	announcer-udp.c\
@@ -142,10 +149,10 @@ libs=(\
 	)\
 )
 
-exe transmission-daemon daemon/^(daemon.c daemon-posix.c) $libs
+exe transmission-daemon -d $"deps daemon/^(daemon.c daemon-posix.c) $libs
 file bin/transmission-daemon '$outdir'/transmission-daemon 755
 file share/man/man1/transmission-daemon.1 '$srcdir'/daemon/transmission-daemon.1 644
 
-exe transmission-remote daemon/remote.c libtransmission.a $libs
+exe transmission-remote -d $"deps daemon/remote.c libtransmission.a $libs
 file bin/transmission-remote '$outdir'/transmission-remote 755
 file share/man/man1/transmission-remote.1 '$srcdir'/daemon/transmission-remote.1 644
