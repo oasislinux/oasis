@@ -64,6 +64,9 @@
 [submodule "devel/make/src"]
 	path = devel/make/src
 	url = git://git.sv.gnu.org/make.git
+[submodule "extra/libfuse/src"]
+	path = extra/libfuse/src
+	url = https://github.com/libfuse/libfuse
 [submodule "extra/the_silver_searcher/src"]
 	path = extra/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher
