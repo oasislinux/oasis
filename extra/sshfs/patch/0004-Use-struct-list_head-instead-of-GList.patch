@@ -1,0 +1,62 @@
+From b119ab7e98c0ae325027c47515f9d360c9c10800 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 5 Jun 2016 17:30:20 -0700
+Subject: [PATCH] Use struct list_head instead of GList
+
+---
+ sshfs.c | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
+
+diff --git a/sshfs.c b/sshfs.c
+index 6836cf4..bb792ab 100644
+--- a/sshfs.c
++++ b/sshfs.c
+@@ -2175,13 +2175,13 @@ static int sshfs_req_pending(struct request *req)
+ static int sftp_readdir_async(struct buffer *handle, fuse_cache_dirh_t h,
+ 			      fuse_cache_dirfil_t filler)
+ {
++	int done = 0;
+ 	int err = 0;
+ 	int outstanding = 0;
+ 	int max = READDIR_START;
+-	GList *list = NULL;
+-
+-	int done = 0;
++	struct list_head list;
+ 
++	list_init(&list);
+ 	while (!done || outstanding) {
+ 		struct request *req;
+ 		struct buffer name;
+@@ -2196,16 +2196,14 @@ static int sftp_readdir_async(struct buffer *handle, fuse_cache_dirh_t h,
+ 				break;
+ 			}
+ 
+-			list = g_list_append(list, req);
++			list_add(&req->list, &list);
+ 			outstanding++;
+ 		}
+ 
+ 		if (outstanding) {
+-			GList *first;
+ 			/* wait for response to next request */
+-			first = g_list_first(list);
+-			req = first->data;
+-			list = g_list_delete_link(list, first);
++			req = list_entry(list.prev, struct request, list);
++			list_del(&req->list);
+ 			outstanding--;
+ 
+ 			if (done) {
+@@ -2239,7 +2237,7 @@ static int sftp_readdir_async(struct buffer *handle, fuse_cache_dirh_t h,
+ 			}
+ 		}
+ 	}
+-	assert(list == NULL);
++	assert(list_empty(&list));
+ 
+ 	return err;
+ }
+-- 
+2.8.1
+

@@ -1,3 +1,4 @@
 subgen libfuse
 subgen pcre
+subgen sshfs
 subgen the_silver_searcher

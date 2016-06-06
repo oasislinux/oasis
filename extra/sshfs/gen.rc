@@ -1,0 +1,12 @@
+cflags\
+	-D '_FILE_OFFSET_BITS=64' \
+	-D 'FUSE_USE_VERSION=26' \
+	-I extra/libfuse/src/include\
+	-I '$dir'
+
+let expr 's,__UNMOUNT_COMMAND__,''fusermount -u'',' --\
+	build '$outdir'/sshfs.1 sed '$srcdir'/sshfs.1.in
+
+exe sshfs sshfs.c nocache.c '$builddir'/extra/libfuse/libfuse.a
+file bin/sshfs '$outdir'/sshfs 755
+file share/man/man1/sshfs.1 '$outdir'/sshfs.1 644

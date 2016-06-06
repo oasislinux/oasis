@@ -1,0 +1,34 @@
+From 27806ddaac633e9d71b061b57f74d02ff8aac889 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 5 Jun 2016 18:21:02 -0700
+Subject: [PATCH] Add missing includes
+
+stddef.h for offsetof
+sys/param.h for MIN
+---
+ sshfs.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/sshfs.c b/sshfs.c
+index 22c18a7..319bffe 100644
+--- a/sshfs.c
++++ b/sshfs.c
+@@ -17,6 +17,7 @@
+ #endif
+ #include <assert.h>
+ #include <stdbool.h>
++#include <stddef.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+@@ -37,6 +38,7 @@
+ #include <sys/socket.h>
+ #include <sys/utsname.h>
+ #include <sys/mman.h>
++#include <sys/param.h>
+ #include <sys/poll.h>
+ #include <netinet/in.h>
+ #include <netinet/tcp.h>
+-- 
+2.8.1
+

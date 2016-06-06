@@ -1,0 +1,33 @@
+From d5a42cdc54068a731cd6a3803574dee4056e84fa Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 5 Jun 2016 17:28:40 -0700
+Subject: [PATCH] Use bool instead of gboolean
+
+---
+ sshfs.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sshfs.c b/sshfs.c
+index 99dcc25..6836cf4 100644
+--- a/sshfs.c
++++ b/sshfs.c
+@@ -16,6 +16,7 @@
+ #  include <fuse_darwin.h>
+ #endif
+ #include <assert.h>
++#include <stdbool.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+@@ -1970,7 +1971,7 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+ 
+ 	err = -EIO;
+ 	if (sftp_send_iov(type, req->id, iov, count) == -1) {
+-		gboolean rmed;
++		bool rmed;
+ 
+ 		pthread_mutex_lock(&sshfs.lock);
+ 		rmed = !!request_table_lookup(&sshfs.reqtab, req->id);
+-- 
+2.8.1
+

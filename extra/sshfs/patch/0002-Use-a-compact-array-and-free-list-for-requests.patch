@@ -1,0 +1,292 @@
+From fff5db303ec32476cf1457a1388110820b0b53e5 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 5 Jun 2016 17:25:36 -0700
+Subject: [PATCH] Use a compact array and free list for requests
+
+---
+ sshfs.c | 125 +++++++++++++++++++++++++++++++++++++++++-----------------------
+ 1 file changed, 80 insertions(+), 45 deletions(-)
+
+diff --git a/sshfs.c b/sshfs.c
+index ce30a0f..99dcc25 100644
+--- a/sshfs.c
++++ b/sshfs.c
+@@ -170,6 +170,17 @@ struct request {
+ 	struct list_head list;
+ };
+ 
++union request_entry {
++	struct request *req;
++	uintptr_t next;
++};
++
++struct request_table {
++	union request_entry *entries;
++	int len, cap;
++	uint32_t free;
++};
++
+ struct sshfs_io {
+ 	int num_reqs;
+ 	pthread_cond_t finished;
+@@ -244,7 +255,7 @@ struct sshfs {
+ 	int slave;
+ 	char *host;
+ 	char *base_path;
+-	GHashTable *reqtab;
++	struct request_table reqtab;
+ 	pthread_mutex_t lock;
+ 	pthread_mutex_t lock_write;
+ 	int processing_thread_started;
+@@ -1239,12 +1250,6 @@ static int do_write(struct iovec *iov, size_t count)
+ 	return 0;
+ }
+ 
+-static uint32_t sftp_get_id(void)
+-{
+-	static uint32_t idctr;
+-	return idctr++;
+-}
+-
+ static void buf_to_iov(const struct buffer *buf, struct iovec *iov)
+ {
+ 	iov->iov_base = buf->p;
+@@ -1337,6 +1342,43 @@ static void request_free(struct request *req)
+ 	g_free(req);
+ }
+ 
++static int request_table_insert(struct request_table *reqtab, struct request *req)
++{
++	union request_entry *entries;
++	size_t cap;
++
++	if (reqtab->free) {
++		req->id = reqtab->free;
++		reqtab->free = reqtab->entries[req->id-1].next >> 1;
++	} else {
++		if (reqtab->len == reqtab->cap) {
++			cap = reqtab->cap * 2 + 1;
++			entries = realloc(reqtab->entries, cap * sizeof(reqtab->entries[0]));
++			if (!entries)
++				return -1;
++			reqtab->cap = cap;
++			reqtab->entries = entries;
++		}
++		req->id = ++reqtab->len;
++	}
++
++	reqtab->entries[req->id-1].req = req;
++	return 0;
++}
++
++static struct request *request_table_lookup(struct request_table *reqtab, uint32_t id)
++{
++	if (reqtab->entries[id-1].next & 1)
++		return NULL;
++	return reqtab->entries[id-1].req;
++}
++
++static void request_table_remove(struct request_table *reqtab, uint32_t id)
++{
++	reqtab->entries[id-1].next = (reqtab->free << 1) | 1;
++	reqtab->free = id;
++}
++
+ static void chunk_free(struct read_chunk *chunk)
+ {
+ 	while (!list_empty(&chunk->reqs)) {
+@@ -1366,21 +1408,6 @@ static void chunk_put_locked(struct read_chunk *chunk)
+ 	pthread_mutex_unlock(&sshfs.lock);
+ }
+ 
+-static int clean_req(void *key_, struct request *req)
+-{
+-	(void) key_;
+-
+-	req->error = -EIO;
+-	if (req->want_reply)
+-		sem_post(&req->ready);
+-	else {
+-		if (req->end_func)
+-			req->end_func(req);
+-		request_free(req);
+-	}
+-	return TRUE;
+-}
+-
+ static int process_one_request(void)
+ {
+ 	int res;
+@@ -1397,8 +1424,7 @@ static int process_one_request(void)
+ 		return -1;
+ 
+ 	pthread_mutex_lock(&sshfs.lock);
+-	req = (struct request *)
+-		g_hash_table_lookup(sshfs.reqtab, GUINT_TO_POINTER(id));
++	req = request_table_lookup(&sshfs.reqtab, id);
+ 	if (req == NULL)
+ 		fprintf(stderr, "request %i not found\n", id);
+ 	else {
+@@ -1410,7 +1436,7 @@ static int process_one_request(void)
+ 		    sshfs.outstanding_len <= sshfs.max_outstanding_len) {
+ 			pthread_cond_broadcast(&sshfs.outstanding_cond);
+ 		}
+-		g_hash_table_remove(sshfs.reqtab, GUINT_TO_POINTER(id));
++		request_table_remove(&sshfs.reqtab, id);
+ 	}
+ 	pthread_mutex_unlock(&sshfs.lock);
+ 	if (req != NULL) {
+@@ -1471,6 +1497,9 @@ static void close_conn(void)
+ 
+ static void *process_requests(void *data_)
+ {
++	int i;
++	struct request *req;
++
+ 	(void) data_;
+ 
+ 	while (1) {
+@@ -1481,7 +1510,20 @@ static void *process_requests(void *data_)
+ 	pthread_mutex_lock(&sshfs.lock);
+ 	sshfs.processing_thread_started = 0;
+ 	close_conn();
+-	g_hash_table_foreach_remove(sshfs.reqtab, (GHRFunc) clean_req, NULL);
++	for (i = 0; i < sshfs.reqtab.len; ++i) {
++		if (sshfs.reqtab.entries[i].next & 1)
++			continue;
++		req = sshfs.reqtab.entries[i].req;
++		req->error = -EIO;
++		if (req->want_reply)
++			sem_post(&req->ready);
++		else {
++			if (req->end_func)
++				req->end_func(req);
++			request_free(req);
++		}
++		request_table_remove(&sshfs.reqtab, i + 1);
++	}
+ 	sshfs.connver ++;
+ 	sshfs.outstanding_len = 0;
+ 	pthread_cond_broadcast(&sshfs.outstanding_cond);
+@@ -1626,7 +1668,6 @@ static int sftp_error_to_errno(uint32_t error)
+ static void sftp_detect_uid()
+ {
+ 	int flags;
+-	uint32_t id = sftp_get_id();
+ 	uint32_t replid;
+ 	uint8_t type;
+ 	struct buffer buf;
+@@ -1636,7 +1677,7 @@ static void sftp_detect_uid()
+ 	buf_init(&buf, 5);
+ 	buf_add_string(&buf, ".");
+ 	buf_to_iov(&buf, &iov[0]);
+-	if (sftp_send_iov(SSH_FXP_STAT, id, iov, 1) == -1)
++	if (sftp_send_iov(SSH_FXP_STAT, 0, iov, 1) == -1)
+ 		goto out;
+ 	buf_clear(&buf);
+ 	if (sftp_read(&type, &buf) == -1)
+@@ -1647,7 +1688,7 @@ static void sftp_detect_uid()
+ 	}
+ 	if (buf_get_uint32(&buf, &replid) == -1)
+ 		goto out;
+-	if (replid != id) {
++	if (replid != 0) {
+ 		fprintf(stderr, "bad reply ID\n");
+ 		goto out;
+ 	}
+@@ -1684,7 +1725,6 @@ out:
+ static int sftp_check_root(const char *base_path)
+ {
+ 	int flags;
+-	uint32_t id = sftp_get_id();
+ 	uint32_t replid;
+ 	uint8_t type;
+ 	struct buffer buf;
+@@ -1696,7 +1736,7 @@ static int sftp_check_root(const char *base_path)
+ 	buf_init(&buf, 0);
+ 	buf_add_string(&buf, remote_dir);
+ 	buf_to_iov(&buf, &iov[0]);
+-	if (sftp_send_iov(SSH_FXP_LSTAT, id, iov, 1) == -1)
++	if (sftp_send_iov(SSH_FXP_LSTAT, 0, iov, 1) == -1)
+ 		goto out;
+ 	buf_clear(&buf);
+ 	if (sftp_read(&type, &buf) == -1)
+@@ -1707,7 +1747,7 @@ static int sftp_check_root(const char *base_path)
+ 	}
+ 	if (buf_get_uint32(&buf, &replid) == -1)
+ 		goto out;
+-	if (replid != id) {
++	if (replid != 0) {
+ 		fprintf(stderr, "bad reply ID\n");
+ 		goto out;
+ 	}
+@@ -1898,7 +1938,6 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+                              struct request **reqp)
+ {
+ 	int err;
+-	uint32_t id;
+ 	struct request *req = g_new0(struct request, 1);
+ 
+ 	req->want_reply = want_reply;
+@@ -1909,8 +1948,6 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+ 	pthread_mutex_lock(&sshfs.lock);
+ 	if (begin_func)
+ 		begin_func(req);
+-	id = sftp_get_id();
+-	req->id = id;
+ 	err = start_processing_thread();
+ 	if (err) {
+ 		pthread_mutex_unlock(&sshfs.lock);
+@@ -1921,21 +1958,24 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+ 	while (sshfs.outstanding_len > sshfs.max_outstanding_len)
+ 		pthread_cond_wait(&sshfs.outstanding_cond, &sshfs.lock);
+ 
+-	g_hash_table_insert(sshfs.reqtab, GUINT_TO_POINTER(id), req);
++	if (request_table_insert(&sshfs.reqtab, req) < 0)
++		abort();
+ 	if (sshfs.debug) {
+ 		gettimeofday(&req->start, NULL);
+ 		sshfs.num_sent++;
+ 		sshfs.bytes_sent += req->len;
+ 	}
+-	DEBUG("[%05i] %s\n", id, type_name(type));
++	DEBUG("[%05i] %s\n", req->id, type_name(type));
+ 	pthread_mutex_unlock(&sshfs.lock);
+ 
+ 	err = -EIO;
+-	if (sftp_send_iov(type, id, iov, count) == -1) {
++	if (sftp_send_iov(type, req->id, iov, count) == -1) {
+ 		gboolean rmed;
+ 
+ 		pthread_mutex_lock(&sshfs.lock);
+-		rmed = g_hash_table_remove(sshfs.reqtab, GUINT_TO_POINTER(id));
++		rmed = !!request_table_lookup(&sshfs.reqtab, req->id);
++		if (rmed)
++			request_table_remove(&sshfs.reqtab, req->id);
+ 		pthread_mutex_unlock(&sshfs.lock);
+ 
+ 		if (!rmed && !want_reply) {
+@@ -2125,7 +2165,7 @@ static int sftp_readdir_send(struct request **req, struct buffer *handle)
+ 
+ static int sshfs_req_pending(struct request *req)
+ {
+-	if (g_hash_table_lookup(sshfs.reqtab, GUINT_TO_POINTER(req->id)))
++	if (request_table_lookup(&sshfs.reqtab, req->id))
+ 		return 1;
+ 	else
+ 		return 0;
+@@ -3314,11 +3354,6 @@ static int processing_init(void)
+ 	pthread_mutex_init(&sshfs.lock, NULL);
+ 	pthread_mutex_init(&sshfs.lock_write, NULL);
+ 	pthread_cond_init(&sshfs.outstanding_cond, NULL);
+-	sshfs.reqtab = g_hash_table_new(NULL, NULL);
+-	if (!sshfs.reqtab) {
+-		fprintf(stderr, "failed to create hash table\n");
+-		return -1;
+-	}
+ 	return 0;
+ }
+ 
+-- 
+2.8.1
+

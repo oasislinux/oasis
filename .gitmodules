@@ -67,6 +67,9 @@
 [submodule "extra/libfuse/src"]
 	path = extra/libfuse/src
 	url = https://github.com/libfuse/libfuse
+[submodule "extra/sshfs/src"]
+	path = extra/sshfs/src
+	url = https://github.com/libfuse/sshfs
 [submodule "extra/the_silver_searcher/src"]
 	path = extra/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher
