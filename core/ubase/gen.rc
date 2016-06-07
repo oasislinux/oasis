@@ -28,10 +28,15 @@ lib libutil.a\
 	libutil/tty.c
 
 fn x {
+	if(~ $1 -m) {
+		mode=$2
+		shift 2
+	}
+	if not mode=755
 	exe=$1
 	shift
 	exe $exe -d '$outdir'/config.h $exe.c libutil.a
-	file bin/$exe '$outdir'/$exe 755
+	file bin/$exe '$outdir'/$exe $mode
 	if(~ $#* 1) file share/man/man$1/$exe.$1 '$srcdir'/$exe.$1 644
 	status=()
 }
@@ -73,7 +78,7 @@ x readahead 8
 x respawn 1
 x rmmod 8
 x stat 1
-x su 1
+x -m 4755 su 1
 x swaplabel 8
 x swapoff 8
 x swapon 8
