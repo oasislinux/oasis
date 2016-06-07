@@ -1,6 +1,6 @@
 cflags\
-	-I core/libfirm/src/include\
-	-I '$builddir'/core/libfirm/include\
+	-I devel/libfirm/src/include\
+	-I '$builddir'/devel/libfirm/include\
 	-I '$srcdir'/src\
 	-I '$outdir'
 
@@ -8,7 +8,7 @@ rule revision_hdr 'echo ''#define cparser_REVISION ""'' >$out.tmp && mv $out.tmp
 build '$outdir'/revision.h revision_hdr
 
 srcs=src/^(main.c */*.c)
-for(src in $srcs) cc $src '||' '$outdir'/revision.h phony/core/libfirm/headers
-link cparser $srcs.o '$builddir'/core/libfirm/libfirm.a
+for(src in $srcs) cc $src '||' '$outdir'/revision.h phony/devel/libfirm/headers
+link cparser $srcs.o '$builddir'/devel/libfirm/libfirm.a
 file bin/cparser '$outdir'/cparser 755
 file share/man/man1/cparser.1 '$srcdir'/cparser.1 644

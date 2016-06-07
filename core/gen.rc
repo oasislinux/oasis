@@ -1,12 +1,10 @@
 subgen awk
 subgen bzip2
-subgen cparser
 subgen curl
 subgen file
 subgen git
 subgen iproute2
 subgen kbd
-subgen libfirm
 subgen libressl
 subgen loksh
 subgen mdocml
