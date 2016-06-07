@@ -20,4 +20,5 @@ subgen sinit
 subgen skeleton
 subgen tz
 subgen ubase
+subgen xz
 subgen zlib

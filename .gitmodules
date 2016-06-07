@@ -52,6 +52,9 @@
 [submodule "core/zlib/src"]
 	path = core/zlib/src
 	url = https://github.com/madler/zlib
+[submodule "core/xz/src"]
+	path = core/xz/src
+	url = http://git.tukaani.org/xz.git
 [submodule "desktop/plan9fonts/src"]
 	path = desktop/plan9fonts/src
 	url = https://github.com/rtrn/plan9fonts

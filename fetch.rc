@@ -88,6 +88,7 @@ fetch core/sbase git
 fetch core/sinit git
 fetch core/tz git
 fetch core/ubase git
+fetch core/xz git
 fetch core/zlib git
 fetch desktop/plan9fontsn git
 fetch devel/cparser git
