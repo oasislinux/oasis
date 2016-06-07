@@ -32,8 +32,6 @@ struct perm {
 
 extern char **environ;
 
-static int vflag;
-
 static dev_t rootdev;
 static struct perm *perms;
 static int perms_len;
@@ -120,22 +118,6 @@ readperms(void)
 		die("child process failed");
 }
 
-static int
-mkdir_v(const char *name, mode_t mode)
-{
-	if (vflag)
-		fprintf(stderr, "mkdir(\"%s\", %#o)\n", name, mode);
-	return mkdir(name, mode);
-}
-
-static int
-chmod_v(const char *name, mode_t mode)
-{
-	if (vflag)
-		fprintf(stderr, "chmod(\"%s\", %#o)\n", name, mode);
-	return chmod(name, mode);
-}
-
 static void
 fixperm(struct perm *p)
 {
@@ -146,7 +128,7 @@ fixperm(struct perm *p)
 			die("lstat:");
 		if (!S_ISDIR(p->mode))
 			die("file missing and not a directory: %s", p->name);
-		if (mkdir_v(p->name, p->mode & ~S_IFMT) < 0)
+		if (mkdir(p->name, p->mode & ~S_IFMT) < 0)
 			die("mkdir:");
 		return;
 	}
@@ -154,7 +136,7 @@ fixperm(struct perm *p)
 		return;
 	if ((st.st_mode&S_IFMT) != (p->mode&S_IFMT))
 		die("conflicting modes: .perms=%#o, filesystem=%#o", p->mode, st.st_mode);
-	if (chmod_v(p->name, p->mode & ~S_IFMT) < 0)
+	if (chmod(p->name, p->mode & ~S_IFMT) < 0)
 		die("chmod:");
 }
 
@@ -184,7 +166,7 @@ defperm(const char *name)
 		mode = st.st_mode&S_IXUSR ? 0755 : 0644;
 		if ((st.st_mode&~S_IFMT) == mode)
 			return;
-		if (chmod_v(name, mode) < 0)
+		if (chmod(name, mode) < 0)
 			die("chmod:");
 		break;
 	case S_IFLNK:
@@ -230,12 +212,6 @@ nextline:
 
 int main(int argc, char *argv[]) {
 	struct stat st;
-
-	if (argc > 1 && strcmp(argv[1], "-v") == 0) {
-		vflag = 1;
-		--argc;
-		++argv;
-	}
 
 	if (chdir("/") < 0)
 		die("chdir:");
