@@ -239,8 +239,6 @@ int main(int argc, char *argv[]) {
 		exit(2);
 	}
 
-	if (chdir("/") < 0)
-		die("chdir:");
 	if (stat(".", &st) < 0)
 		die("stat:");
 	rootdev = st.st_dev;	
