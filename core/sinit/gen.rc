@@ -1,6 +1,5 @@
-cflags -Wall -Wextra -I '$outdir'
-build '$outdir'/config.h copy '$srcdir'/config.def.h
-cc sinit.c '||' '$outdir'/config.h
+cflags -Wall -Wextra -I '$dir'
+cc sinit.c
 link sinit sinit.c.o
 
 file bin/sinit '$outdir'/sinit 755
