@@ -1,7 +1,6 @@
 cflags -Wall -Wextra -I '$dir'
-cc sinit.c
-link sinit sinit.c.o
 
+exe sinit sinit.c
 file bin/sinit '$outdir'/sinit 755
 file share/man/man8/sinit.8 '$srcdir'/sinit.8 644
 
