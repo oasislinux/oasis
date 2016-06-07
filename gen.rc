@@ -3,6 +3,8 @@ subgen desktop
 subgen devel
 subgen extra
 
+subgen util
+
 file .perms '$outdir'/root.perms 644
 
 build '$builddir/$repo.stamp' gitinit
