@@ -1,11 +1,11 @@
 cflags\
+	-D 'DATADIR=''"/share/kbd"''' \
 	-I include\
 	-I '$dir' \
 	-I '$srcdir' \
 	-I '$srcdir'/src\
 	-I '$srcdir'/src/libkeymap\
-	-I '$srcdir'/src/libkeymap/keymap\
-	-DDATADIR'='\"share\"
+	-I '$srcdir'/src/libkeymap/keymap
 
 lib libcommon.a src/^(getfd.c xmalloc.c kbd_error.c)
 lib libfont.a src/^(kdfontop.c kdmapop.c loadunimap.c psffontop.c utf8.c)
@@ -39,7 +39,7 @@ fn x {
 	file bin/$exe '$outdir'/$exe 755
 	if(~ $sect ?~) {
 		sect=`{printf %s $sect | cut -c -1}
-		let expr s,@DATADIR@,/share,g --\
+		let expr s,@DATADIR@,/share/kbd,g --\
 			build '$outdir'/$exe.$sect sed '$srcdir'/docs/man/man$sect/$exe.$sect.in
 		man='$outdir'/$exe.$sect
 	}
