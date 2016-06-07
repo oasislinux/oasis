@@ -224,7 +224,7 @@ int main(int argc, char *argv[]) {
 		}
 		old = "ORIG_HEAD";
 		new = "HEAD";
-	} else if (strcmp(argv[0], "post-checkout") == 0) {
+	} else if (strcmp(argv0, "post-checkout") == 0) {
 		if (argc != 4) {
 			fprintf(stderr, "usage: %s old new flag\n", argv0);
 			exit(2);
