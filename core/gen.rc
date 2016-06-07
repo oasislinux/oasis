@@ -8,7 +8,6 @@ subgen kbd
 subgen libressl
 subgen loksh
 subgen mdocml
-subgen msmtp
 subgen ninja
 subgen openbsd
 subgen openssh

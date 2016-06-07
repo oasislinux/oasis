@@ -1,5 +1,6 @@
 subgen libevent
 subgen libfuse
+subgen msmtp
 subgen pcre
 subgen sshfs
 subgen the_silver_searcher

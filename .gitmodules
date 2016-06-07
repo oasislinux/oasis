@@ -22,9 +22,6 @@
 [submodule "core/loksh/src"]
 	path = core/loksh/src
 	url = https://github.com/dimkr/loksh
-[submodule "core/msmtp/src"]
-	path = core/msmtp/src
-	url = git://git.code.sf.net/p/msmtp/code
 [submodule "core/ninja/src"]
 	path = core/ninja/src
 	url = https://github.com/ninja-build/ninja
@@ -73,6 +70,9 @@
 [submodule "extra/libfuse/src"]
 	path = extra/libfuse/src
 	url = https://github.com/libfuse/libfuse
+[submodule "extra/msmtp/src"]
+	path = extra/msmtp/src
+	url = git://git.code.sf.net/p/msmtp/code
 [submodule "extra/sshfs/src"]
 	path = extra/sshfs/src
 	url = https://github.com/libfuse/sshfs
