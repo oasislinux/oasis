@@ -1,6 +1,6 @@
-/* 
+/*
 See LICENSE file for copyright and license details.
- 
+
 This program is a git hook to fix the permissions of files based on a .perms
 file in the repository
 
@@ -241,7 +241,7 @@ int main(int argc, char *argv[]) {
 
 	if (stat(".", &st) < 0)
 		die("stat:");
-	rootdev = st.st_dev;	
+	rootdev = st.st_dev;
 
 	readperms();
 	readchanges(old, new);
