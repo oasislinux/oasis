@@ -26,14 +26,14 @@ exe bin/ip ip/^(\
 	link_iptnl.c link_gre6.c iplink_bond.c iplink_bond_slave.c iplink_hsr.c\
 	iplink_bridge.c iplink_bridge_slave.c ipfou.c iplink_ipvlan.c\
 	iplink_geneve.c iplink_vrf.c iproute_lwtunnel.c\
-) '$outdir'/libnetlink.a
+) libnetlink.a
 
 exe bin/bridge\
 	bridge/^(bridge.c fdb.c monitor.c link.c mdb.c vlan.c)\
-	'$outdir'/libnetlink.a
+	libnetlink.a
 
 yacc ssfilter '$srcdir'/misc/ssfilter.y
-exe bin/ss misc/ss.c '$outdir'/ssfilter.tab.c '$outdir'/libnetlink.a
+exe bin/ss misc/ss.c '$outdir'/ssfilter.tab.c libnetlink.a
 
 for(exe in bin/^(ip bridge ss)) file $exe '$outdir'/$exe 755
 for(man in man/man8/^(bridge ip* ss)^.8) file share/$man '$srcdir'/$man 644
