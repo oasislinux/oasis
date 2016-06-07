@@ -9,7 +9,7 @@ cflags\
 cc lib/mount_util.c
 
 exe fusermount util/fusermount.c lib/mount_util.c.o
-file bin/fusermount '$outdir'/fusermount 755
+file bin/fusermount '$outdir'/fusermount 4755
 file share/man/man1/fusermount.1 '$srcdir'/doc/fusermount.1 644
 
 lib libfuse.a lib/^(\
