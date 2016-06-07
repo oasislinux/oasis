@@ -1,8 +1,8 @@
 /* 
 See LICENSE file for copyright and license details.
  
-This program is a git post-checkout hook to fix the permissions of files based
-on a .perms file in the repository
+This program is a git hook to fix the permissions of files based on a .perms
+file in the repository
 
 TODO: We should read the old .perms file, and remove any directories listed
 there that are not present in the new .perms file.
@@ -13,6 +13,7 @@ of errors, but continue on to the next file.
 #define _POSIX_C_SOURCE 200809L
 #include <errno.h>
 #include <fcntl.h>
+#include <libgen.h>
 #include <spawn.h>
 #include <stdarg.h>
 #include <stdbool.h>
@@ -32,6 +33,7 @@ struct perm {
 
 extern char **environ;
 
+static char *argv0;
 static dev_t rootdev;
 static struct perm *perms;
 static int perms_len;
@@ -211,7 +213,31 @@ nextline:
 }
 
 int main(int argc, char *argv[]) {
+	char *old, *new;
 	struct stat st;
+
+	argv0 = basename(argv[0]);
+	if (strcmp(argv0, "post-merge") == 0) {
+		if (argc != 2) {
+			fprintf(stderr, "usage: %s flag\n", argv0);
+			exit(2);
+		}
+		old = "ORIG_HEAD";
+		new = "HEAD";
+	} else if (strcmp(argv[0], "post-checkout") == 0) {
+		if (argc != 4) {
+			fprintf(stderr, "usage: %s old new flag\n", argv0);
+			exit(2);
+		}
+		old = argv[1];
+		new = argv[2];
+	} else if (argc == 1) {
+		old = NULL;
+		new = "HEAD";
+	} else {
+		fprintf(stderr, "usage: %s\n", argv0);
+		exit(2);
+	}
 
 	if (chdir("/") < 0)
 		die("chdir:");
@@ -220,7 +246,7 @@ int main(int argc, char *argv[]) {
 	rootdev = st.st_dev;	
 
 	readperms();
-	readchanges(argc == 4 ? argv[1] : NULL, argc == 3 ? argv[2] : "HEAD");
+	readchanges(old, new);
 
 	return 0;
 }
