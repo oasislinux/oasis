@@ -77,7 +77,6 @@ fetch core/kbd git
 fetch core/libressl git
 fetch core/loksh git
 fetch core/mdocml curl
-fetch core/msmtp git
 fetch core/ninja git
 fetch core/openbsd curl
 fetch core/openssh git
@@ -90,12 +89,13 @@ fetch core/tz git
 fetch core/ubase git
 fetch core/xz git
 fetch core/zlib git
-fetch desktop/plan9fontsn git
+fetch desktop/plan9fonts git
 fetch devel/cparser git
 fetch devel/libfirm git
 fetch devel/make git
 fetch extra/libevent git
 fetch extra/libfuse git
+fetch extra/msmtp git
 fetch extra/pcre curl
 fetch extra/sshfs git
 fetch extra/the_silver_searcher git
