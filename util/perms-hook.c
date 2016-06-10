@@ -230,6 +230,8 @@ int main(int argc, char *argv[]) {
 			exit(2);
 		}
 		old = argv[1];
+		if (strcmp(old, "0000000000000000000000000000000000000000") == 0)
+			old = NULL;
 		new = argv[2];
 	} else if (argc == 1) {
 		old = NULL;
