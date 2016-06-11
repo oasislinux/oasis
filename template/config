@@ -1,0 +1,3 @@
+[core]
+	sharedRepository = 0600
+	sparseCheckout = true
