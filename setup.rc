@@ -59,7 +59,7 @@ fn gen {
 	} >local.ninja.tmp
 	mv $absdir/^(local.ninja.tmp local.ninja)
 
-	echo 'generated '$dir
+	echo 'generated '$dir >[1=2]
 
 	wait
 }
