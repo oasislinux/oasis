@@ -9,11 +9,11 @@
 #define PACKAGE "libnl"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "libnl"
-#define PACKAGE_STRING "libnl 3.2.25"
+#define PACKAGE_STRING "libnl 3.2.27"
 #define PACKAGE_TARNAME "libnl"
 #define PACKAGE_URL "http://www.infradead.org/~tgr/libnl/"
-#define PACKAGE_VERSION "3.2.25"
-#define VERSION "3.2.25"
+#define PACKAGE_VERSION "3.2.27"
+#define VERSION "3.2.27"
 /* #undef const */
 #ifndef __cplusplus
 /* #undef inline */

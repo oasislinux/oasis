@@ -75,7 +75,7 @@
 	url = https://github.com/libfuse/libfuse
 [submodule "extra/libnl/src"]
 	path = extra/libnl/src
-	url = https://github.com/tgraf/libnl
+	url = https://github.com/thom311/libnl
 [submodule "extra/msmtp/src"]
 	path = extra/msmtp/src
 	url = git://git.code.sf.net/p/msmtp/code

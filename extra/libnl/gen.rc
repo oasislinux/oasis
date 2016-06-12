@@ -3,7 +3,8 @@ cflags\
 	-D 'SYSCONFDIR=''"/etc/libnl"''' \
 	-isystem include\
 	-I '$dir'/internal\
-	-I '$srcdir'/include
+	-I '$srcdir'/include\
+	-I '$srcdir'/include/linux-private
 
 
 lib libnl-3.a lib/^(\
