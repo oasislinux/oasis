@@ -2,7 +2,7 @@ cflags\
 	-D _GNU_SOURCE\
 	-D 'SYSCONFDIR=''"/etc/libnl"''' \
 	-isystem include\
-	-I '$dir' \
+	-I '$dir'/internal\
 	-I '$srcdir'/include
 
 
