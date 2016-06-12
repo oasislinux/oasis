@@ -58,7 +58,7 @@
 /* #undef SUPPORT_PCRE32 */
 #define SUPPORT_PCRE8 /**/
 #define SUPPORT_PCREGREP_JIT /**/
-/* #undef SUPPORT_UCP */
+#define SUPPORT_UCP /**/
 #define SUPPORT_UTF /**/
 /* #undef SUPPORT_VALGRIND */
 #define VERSION "8.38"
