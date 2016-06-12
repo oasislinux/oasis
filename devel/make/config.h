@@ -68,10 +68,10 @@
 #define PACKAGE "make"
 #define PACKAGE_BUGREPORT "bug-make@gnu.org"
 #define PACKAGE_NAME "GNU make"
-#define PACKAGE_STRING "GNU make 4.2"
+#define PACKAGE_STRING "GNU make 4.2.1"
 #define PACKAGE_TARNAME "make"
 #define PACKAGE_URL "http://www.gnu.org/software/make/"
-#define PACKAGE_VERSION "4.2"
+#define PACKAGE_VERSION "4.2.1"
 #define PATH_SEPARATOR_CHAR ':'
 #define SCCS_GET "get"
 /* #undef SCCS_GET_MINUS_G */
@@ -97,7 +97,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "4.2"
+#define VERSION "4.2.1"
 /* #undef WINDOWS32 */
 /* #undef WITH_DMALLOC */
 #ifndef _DARWIN_USE_64_BIT_INODE
