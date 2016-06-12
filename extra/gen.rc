@@ -1,6 +1,7 @@
 subgen hostap
 subgen libevent
 subgen libfuse
+subgen libnl
 subgen msmtp
 subgen pcre
 subgen sshfs
