@@ -376,6 +376,10 @@ x rebase--merge 644
 x sh-setup 644
 x sh-i18n 644
 
+for(exe in git-^(receive-pack shell upload-archive upload-pack)) {
+	sym bin/$exe ../libexec/git-core/$exe
+}
+
 # templates
 dir share/git-core/templates/branches 755
 file share/git-core/templates/description '$srcdir'/templates/this--description 644
