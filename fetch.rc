@@ -93,6 +93,7 @@ fetch desktop/plan9fonts git
 fetch devel/cparser git
 fetch devel/libfirm git
 fetch devel/make git
+fetch extra/hostap git
 fetch extra/libevent git
 fetch extra/libfuse git
 fetch extra/msmtp git

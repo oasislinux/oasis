@@ -1,0 +1,70 @@
+cflags\
+	-D CONFIG_ELOOP_POLL\
+	-D CONFIG_NO_CONFIG_WRITE\
+	-D CONFIG_NO_CONFIG_BLOBS\
+	-D CONFIG_TDLS\
+	-D CONFIG_PEERKEY\
+	-D CONFIG_CTRL_IFACE\
+	-D CONFIG_CTRL_IFACE_UNIX\
+	-D CONFIG_SHA256\
+	-I '$builddir'/core/libressl/include\
+	-I '$srcdir'/src\
+	-I '$srcdir'/src/utils
+
+exe bin/wpa_supplicant -d phony/core/libressl/headers\
+	src/common/^(\
+		hw_features_common.c\
+		ieee802_11_common.c\
+		wpa_common.c\
+	)\
+	src/crypto/^(\
+		aes-omac1.c\
+		crypto_openssl.c\
+		random.c\
+		sha1-prf.c\
+		sha256-prf.c\
+		tls_none.c\
+	)\
+	src/drivers/^(\
+		driver_common.c\
+		drivers.c\
+	)\
+	src/l2_packet/l2_packet_linux.c\
+	src/rsn_supp/^(\
+		peerkey.c\
+		pmksa_cache.c\
+		preauth.c\
+		tdls.c\
+		wpa.c\
+		wpa_ie.c\
+	)\
+	src/utils/^(\
+		common.c\
+		eloop.c\
+		os_unix.c\
+		radiotap.c\
+		wpa_debug.c\
+		wpabuf.c\
+	)\
+	wpa_supplicant/^(\
+		blacklist.c\
+		bss.c\
+		config.c\
+		config_file.c\
+		ctrl_iface.c\
+		ctrl_iface_unix.c\
+		eap_register.c\
+		events.c\
+		main.c\
+		notify.c\
+		scan.c\
+		wmm_ac.c\
+		wpa_supplicant.c\
+		wpas_glue.c\
+	)\
+	'$builddir'/^(\
+		core/libressl/libcrypto.a\
+		core/openbsd/libbsd.a\
+	)
+
+file bin/wpa_supplicant '$outdir'/bin/wpa_supplicant 755
