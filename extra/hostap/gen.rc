@@ -1,15 +1,19 @@
 cflags\
-	-D CONFIG_ELOOP_POLL\
-	-D CONFIG_NO_CONFIG_WRITE\
-	-D CONFIG_NO_CONFIG_BLOBS\
-	-D CONFIG_TDLS\
-	-D CONFIG_PEERKEY\
 	-D CONFIG_CTRL_IFACE\
 	-D CONFIG_CTRL_IFACE_UNIX\
+	-D CONFIG_DRIVER_NL80211\
+	-D CONFIG_ELOOP_POLL\
+	-D CONFIG_LIBNL20\
+	-D CONFIG_LIBNL32\
+	-D CONFIG_NO_CONFIG_BLOBS\
+	-D CONFIG_NO_CONFIG_WRITE\
+	-D CONFIG_PEERKEY\
 	-D CONFIG_SHA256\
-	-I '$builddir'/core/libressl/include\
-	-I '$srcdir'/src\
-	-I '$srcdir'/src/utils
+	-D CONFIG_TDLS\
+	-isystem '$builddir'/core/libressl/include\
+	-isystem extra/libnl/src/include\
+	-I '$srcdir'/src/utils\
+	-I '$srcdir'/src
 
 exe bin/wpa_supplicant -d phony/core/libressl/headers\
 	src/common/^(\
@@ -27,7 +31,15 @@ exe bin/wpa_supplicant -d phony/core/libressl/headers\
 	)\
 	src/drivers/^(\
 		driver_common.c\
+		driver_nl80211.c\
+		driver_nl80211_capa.c\
+		driver_nl80211_event.c\
+		driver_nl80211_monitor.c\
+		driver_nl80211_scan.c\
 		drivers.c\
+		linux_ioctl.c\
+		netlink.c\
+		rfkill.c\
 	)\
 	src/l2_packet/l2_packet_linux.c\
 	src/rsn_supp/^(\
@@ -65,6 +77,7 @@ exe bin/wpa_supplicant -d phony/core/libressl/headers\
 	'$builddir'/^(\
 		core/libressl/libcrypto.a\
 		core/openbsd/libbsd.a\
+		extra/libnl/^(libnl-3.a libnl-genl-3.a)\
 	)
 
 file bin/wpa_supplicant '$outdir'/bin/wpa_supplicant 755
