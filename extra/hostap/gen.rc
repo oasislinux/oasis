@@ -1,15 +1,5 @@
 cflags\
-	-D CONFIG_CTRL_IFACE\
-	-D CONFIG_CTRL_IFACE_UNIX\
-	-D CONFIG_DRIVER_NL80211\
-	-D CONFIG_ELOOP_POLL\
-	-D CONFIG_LIBNL20\
-	-D CONFIG_LIBNL32\
-	-D CONFIG_NO_CONFIG_BLOBS\
-	-D CONFIG_NO_CONFIG_WRITE\
-	-D CONFIG_PEERKEY\
-	-D CONFIG_SHA256\
-	-D CONFIG_TDLS\
+	-include '$dir'/config.h\
 	-isystem '$builddir'/core/libressl/include\
 	-isystem '$builddir'/extra/libnl/include\
 	-I '$srcdir'/src/utils\
