@@ -16,6 +16,9 @@ cflags\
 	-I '$srcdir'/src
 
 deps=phony/^(core/libressl extra/libnl)^/headers
+
+lib libcommon.a -d $"deps src/utils/^(common.c eloop.c os_unix.c wpa_debug.c)
+
 exe bin/wpa_supplicant -d $"deps\
 	src/common/^(\
 		hw_features_common.c\
@@ -51,14 +54,7 @@ exe bin/wpa_supplicant -d $"deps\
 		wpa.c\
 		wpa_ie.c\
 	)\
-	src/utils/^(\
-		common.c\
-		eloop.c\
-		os_unix.c\
-		radiotap.c\
-		wpa_debug.c\
-		wpabuf.c\
-	)\
+	src/utils/^(radiotap.c wpabuf.c)\
 	wpa_supplicant/^(\
 		blacklist.c\
 		bss.c\
@@ -75,10 +71,17 @@ exe bin/wpa_supplicant -d $"deps\
 		wpa_supplicant.c\
 		wpas_glue.c\
 	)\
+	libcommon.a\
 	'$builddir'/^(\
 		core/libressl/libcrypto.a\
 		core/openbsd/libbsd.a\
 		extra/libnl/^(libnl-3.a libnl-genl-3.a)\
 	)
-
 file bin/wpa_supplicant '$outdir'/bin/wpa_supplicant 755
+
+exe bin/wpa_cli -d $"deps\
+	src/common/wpa_ctrl.c\
+	src/utils/edit_simple.c\
+	wpa_supplicant/wpa_cli.c\
+	libcommon.a
+file bin/wpa_cli '$outdir'/bin/wpa_cli 755
