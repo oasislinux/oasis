@@ -10,6 +10,12 @@ deps=phony/^(core/libressl extra/libnl)^/headers
 lib libcommon.a -d $"deps src/utils/^(common.c eloop.c os_unix.c wpa_debug.c)
 
 exe bin/wpa_supplicant -d $"deps\
+	src/ap/^(\
+		wpa_auth.c\
+		wpa_auth_ie.c\
+		pmksa_cache_auth.c\
+		peerkey_auth.c\
+	)\
 	src/common/^(\
 		hw_features_common.c\
 		ieee802_11_common.c\
@@ -54,6 +60,7 @@ exe bin/wpa_supplicant -d $"deps\
 		ctrl_iface_unix.c\
 		eap_register.c\
 		events.c\
+		ibss_rsn.c\
 		main.c\
 		notify.c\
 		scan.c\
