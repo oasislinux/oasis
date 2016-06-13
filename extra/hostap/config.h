@@ -8,4 +8,5 @@
 #define CONFIG_NO_CONFIG_WRITE
 #define CONFIG_PEERKEY
 #define CONFIG_SHA256
+#define CONFIG_SME
 #define CONFIG_TDLS

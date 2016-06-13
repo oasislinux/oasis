@@ -57,6 +57,7 @@ exe bin/wpa_supplicant -d $"deps\
 		main.c\
 		notify.c\
 		scan.c\
+		sme.c\
 		wmm_ac.c\
 		wpa_supplicant.c\
 		wpas_glue.c\
