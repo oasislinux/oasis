@@ -1,4 +1,5 @@
 #define CONFIG_CTRL_IFACE
+#define CONFIG_CTRL_IFACE_DIR "/run/wpa_supplicant"
 #define CONFIG_CTRL_IFACE_UNIX
 #define CONFIG_DRIVER_NL80211
 #define CONFIG_ELOOP_POLL
