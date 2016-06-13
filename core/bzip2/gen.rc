@@ -3,3 +3,4 @@ lib libbz2.a blocksort.c huffman.c crctable.c randtable.c compress.c decompress.
 exe bzip2 bzip2.c libbz2.a
 file bin/bzip2 '$outdir'/bzip2 755
 file share/man/man1/bzip2.1  '$srcdir'/bzip2.1 644
+sym bin/bzcat bzip2
