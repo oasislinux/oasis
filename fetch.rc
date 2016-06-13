@@ -68,6 +68,7 @@ fn fetch {
 }
 
 fetch core/awk git
+fetch core/bc curl
 fetch core/bzip2 curl
 fetch core/curl git
 fetch core/file git

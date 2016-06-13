@@ -1,4 +1,5 @@
 subgen awk
+subgen bc
 subgen bzip2
 subgen curl
 subgen file
