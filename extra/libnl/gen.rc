@@ -2,15 +2,50 @@ cflags\
 	-D _GNU_SOURCE\
 	-D 'SYSCONFDIR=''"/etc/libnl"''' \
 	-isystem include\
-	-I '$dir'/internal\
+	-I '$dir' \
+	-I '$outdir'/include\
 	-I '$srcdir'/include\
 	-I '$srcdir'/include/linux-private
 
+hdrs=include/netlink/^(\
+	addr.h\
+	attr.h\
+	cache.h\
+	data.h\
+	errno.h\
+	handlers.h\
+	genl/^(ctrl.h genl.h)\
+	hash.h\
+	list.h\
+	msg.h\
+	netlink.h\
+	netlink-compat.h\
+	netlink-kernel.h\
+	object.h\
+	socket.h\
+	types.h\
+	utils.h\
+)
+for(hdr in $hdrs) build '$outdir'/$hdr copy '$srcdir'/$hdr
+exprs=(\
+	-e s,@PACKAGE_STRING@,'''libnl 3.2.27''',\
+	-e s,@PACKAGE_VERSION@,3.2.27,\
+	-e s,@MAJ_VERSION@,3,\
+	-e s,@MIN_VERSION@,2,\
+	-e s,@MIC_VERSION@,27,\
+	-e s,@LT_CURRENT@,222,\
+	-e s,@LT_REVISION@,0,\
+	-e s,@LT_AGE@,22,\
+) let expr $"exprs --\
+	build '$outdir'/include/netlink/version.h sed '$srcdir'/include/netlink/version.h.in
+hdrs=($hdrs include/netlink/version.h)
+phony headers '$outdir'/$hdrs
 
-lib libnl-3.a lib/^(\
+lib libnl-3.a -d 'phony/$dir/headers' lib/^(\
 	addr.c attr.c cache.c cache_mngr.c cache_mngt.c data.c\
 	error.c handlers.c msg.c nl.c object.c socket.c utils.c\
 	version.c hash.c hashtable.c\
 )
 
-lib libnl-genl-3.a lib/genl/^(ctrl.c family.c genl.c mngt.c)
+lib libnl-genl-3.a -d 'phony/$dir/headers' \
+	lib/genl/^(ctrl.c family.c genl.c mngt.c)

@@ -11,11 +11,12 @@ cflags\
 	-D CONFIG_SHA256\
 	-D CONFIG_TDLS\
 	-isystem '$builddir'/core/libressl/include\
-	-isystem extra/libnl/src/include\
+	-isystem '$builddir'/extra/libnl/include\
 	-I '$srcdir'/src/utils\
 	-I '$srcdir'/src
 
-exe bin/wpa_supplicant -d phony/core/libressl/headers\
+deps=phony/^(core/libressl extra/libnl)^/headers
+exe bin/wpa_supplicant -d $"deps\
 	src/common/^(\
 		hw_features_common.c\
 		ieee802_11_common.c\
