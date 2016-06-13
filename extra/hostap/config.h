@@ -1,3 +1,4 @@
+#define CONFIG_BACKEND_FILE
 #define CONFIG_CTRL_IFACE
 #define CONFIG_CTRL_IFACE_DIR "/run/wpa_supplicant"
 #define CONFIG_CTRL_IFACE_UNIX
