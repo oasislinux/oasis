@@ -18,6 +18,9 @@ rule ar
 rule touch
   command = touch $out
 
+rule empty
+  command = >$out
+
 rule copy
   command = ln -f $in $out
 
