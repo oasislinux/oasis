@@ -59,24 +59,22 @@ lib libasagna.a -d 'phony/$dir/internal_headers' lasagna/^(\
 )
 
 fn x {
-	exe=$1
-	shift
-	exe $exe $* libasagna.a
+	subdir=$1
+	exe=$2
+	shift 2
+	exe $exe $subdir/$* libasagna.a
+	if(! ~ $exe cat*)
+		file share/man/man8/$exe.8 '$srcdir'/$subdir/man/$exe.8 644
 	file bin/$exe '$outdir'/$exe 755
 }
 
-x perpd perp/^(\
-	perpd.c\
-	perpd_conn.c\
-	perpd_svdef.c\
-)
+x perp perpd perpd.c perpd_conn.c perpd_svdef.c
+for(exe in perp^(boot ctl hup ls ok stat)) x perp $exe $exe.c
+tools=(\
+	run^(args argv0 choom detach deux env file limit lock pause session tool trap uid)\
+	cat^(args env limits uid)\
+) for(exe in $tools) x runtools $exe $exe.c
 
-for(exe in perp^(boot ctl hup ls ok stat)) x $exe perp/$exe.c
-for(exe in run^(args argv0 choom detach deux env file limit lock pause session trap tool uid)) x $exe runtools/$exe.c
-for(exe in cat^(args env limits uid)) x $exe runtools/$exe.c
-
-for(man in */man/*.[1-9]) {
-	sect=`{printf %s $man | tail -c 1}
-	base=`{basename $man}
-	file share/man/man$sect/$base.$sect '$srcdir'/$man 644
-}
+file share/man/man5/perpetrate.5 '$srcdir'/perp/man/perpetrate.5
+file share/man/man8/perp_intro.8 '$srcdir'/perp/man/perp_intro.8
+file share/man/man5/runtools_intro.8 '$srcdir'/runtools/man/runtools_intro.8
