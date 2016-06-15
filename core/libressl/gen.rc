@@ -72,11 +72,11 @@ srchdrs=(\
 		x509/x509.h\
 		x509/x509_vfy.h\
 		x509v3/x509v3.h\
+		\
+		objects/obj_mac.h\
 	)\
 	libssl/src/ssl/^(srtp.h ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h)\
-	libcrypto/crypto/^(\
-		arch/amd64/opensslconf.h\
-	)\
+	libcrypto/crypto/arch/amd64/opensslconf.h\
 )
 hdr=()
 for(srchdr in $srchdrs) {
@@ -84,20 +84,7 @@ for(srchdr in $srchdrs) {
 	hdrs=($hdrs $hdr)
 	build $hdr copy '$srcdir'/src/lib/$srchdr
 }
-
-objects_script='$srcdir'/src/lib/libssl/src/crypto/objects/objects.pl
-rule obj_mac perl $objects_script' $in $out'
-obj_mac_hdr='$outdir'/include/openssl/obj_mac.h
-build $obj_mac_hdr obj_mac '$srcdir'/src/lib/libssl/src/crypto/objects/^(objects.txt obj_mac.num) '|' $objects_script
-
-phony headers $hdrs $obj_mac_hdr
-
-obj_dat_script='$srcdir'/src/lib/libssl/src/crypto/objects/obj_dat.pl
-obj_dat_hdr='$outdir'/internal/obj_dat.h
-rule obj_dat perl $obj_dat_script' $in $out'
-build $obj_dat_hdr obj_dat $obj_mac_hdr '|' $obj_dat_script
-
-phony internal_headers phony/'$dir'/headers $obj_dat_hdr
+phony headers $hdrs
 
 # src/lib/libcrypto/crypto/Makefile
 lib libcrypto.a -d 'phony/$dir/headers' src/lib/libssl/src/crypto/^(\
