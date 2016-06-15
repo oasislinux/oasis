@@ -9,6 +9,9 @@ there that are not present in the new .perms file.
 
 TODO: Once we start processing the list of changed files, we should keep track
 of errors, but continue on to the next file.
+
+TODO: We should also set permissions of potentially newly created parent
+directories.
 */
 #define _POSIX_C_SOURCE 200809L
 #include <errno.h>
