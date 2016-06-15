@@ -9,7 +9,7 @@
 #define HAVE_STRUCT_STAT_ST_ATIM 1
 /* #undef HAVE_STRUCT_STAT_ST_ATIMESPEC */
 #define HAVE_VMSPLICE 1
-#define ICONV_CONST 
+#define ICONV_CONST
 /* #undef IGNORE_MTAB */
 #define LT_OBJDIR ".libs/"
 #define PACKAGE "fuse"
