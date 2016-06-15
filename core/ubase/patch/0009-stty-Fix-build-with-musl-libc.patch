@@ -1,0 +1,53 @@
+From 7bf3cab74f99163de9aced05a424e359fbeecb82 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 14 Jun 2016 22:19:18 -0700
+Subject: [PATCH] stty: Fix build with musl libc
+
+---
+ stty.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/stty.c b/stty.c
+index 9aa52b5..3fc5844 100644
+--- a/stty.c
++++ b/stty.c
+@@ -1,5 +1,6 @@
+ /* See LICENSE file for copyright and license details. */
+ #include <sys/ioctl.h>
++#include <sys/ttydefaults.h>
+ 
+ #include <ctype.h>
+ #include <errno.h>
+@@ -37,7 +38,9 @@ raw(int unset, struct termios *m)
+ {
+ 	if (!unset) {
+ 		m->c_iflag = 0;
++#ifdef XCASE
+ 		m->c_lflag &= ~XCASE;
++#endif
+ 		m->c_cc[VMIN] = 1;
+ 		m->c_cc[VTIME] = 0;
+ 	} else {
+@@ -149,7 +152,9 @@ struct line {
+ 
+ static const struct mode modes[] = {
+ 	{"clocal",   CTRL,  CLOCAL,  0,       0,      BOOL},
++#ifdef CMSPAR
+ 	{"cmspar",   CTRL,  CMSPAR,  0,       0,      BOOL},
++#endif
+ 	{"cread",    CTRL,  CREAD,   0,       0,      BOOL | SANE},
+ 	{"crtscts",  CTRL,  CRTSCTS, 0,       0,      BOOL},
+ 	{"cs5",      CTRL,  CS5,     CSIZE,   0,      0},
+@@ -222,7 +227,9 @@ static const struct mode modes[] = {
+ 	{"noflsh",   LOCAL, NOFLSH,  0,       0,      BOOL | INSANE},
+ 	{"prterase", LOCAL, ECHOPRT, 0,       0,      BOOL | DUP},
+ 	{"tostop",   LOCAL, TOSTOP,  0,       0,      BOOL | INSANE},
++#ifdef XCASE
+ 	{"xcase",    LOCAL, XCASE,   0,       0,      BOOL | INSANE | LCASE},
++#endif
+ 
+ 	{"cbreak",   COMB,  0,       CBREAK,  0,      BOOL | DUP},
+ 	{"cooked",   COMB,  COOKED,  0,       cooked, BOOL | DUP},
+-- 
+2.8.1
+

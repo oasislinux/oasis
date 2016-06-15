@@ -1,0 +1,35 @@
+From 70b734d269da4a0c92381f4e892e3c42f959e298 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Mattias=20Andr=C3=A9e?= <maandree@kth.se>
+Date: Wed, 30 Mar 2016 16:46:08 +0200
+Subject: [PATCH] stty: fix casting bug
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Mattias Andrée <maandree@kth.se>
+---
+ stty.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/stty.c b/stty.c
+index 3e90b8f..9f4307b 100644
+--- a/stty.c
++++ b/stty.c
+@@ -629,11 +629,11 @@ displaysettings(struct termios *m, int all)
+ 	printtoken("\n");
+ 
+ 	if (all || m->c_line != 0)
+-		printtoken("line = %u;", (unsigned long)(m->c_line));
++		printtoken("line = %u;", (unsigned)(m->c_line));
+ 	if (all || (m->c_cc[VMIN] != 1 && !(m->c_lflag & ICANON)))
+-		printtoken("min = %u;", (unsigned long)(m->c_cc[VMIN]));
++		printtoken("min = %u;", (unsigned)(m->c_cc[VMIN]));
+ 	if (all || (m->c_cc[VTIME] != 0 && !(m->c_lflag & ICANON)))
+-		printtoken("time = %u;", (unsigned long)(m->c_cc[VTIME]));
++		printtoken("time = %u;", (unsigned)(m->c_cc[VTIME]));
+ 	printtoken("\n");
+ 
+ 	for (; kbd->op; kbd++)
+-- 
+2.8.1
+

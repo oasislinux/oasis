@@ -1,4 +1,4 @@
-From d893d74e564d3f7fcaf9dfcdd485ebad0f01b602 Mon Sep 17 00:00:00 2001
+From 8dee43a5ff31bbe2b463ca66b168202501a14a92 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 12 Jun 2016 20:51:43 -0700
 Subject: [PATCH] mount: Don't pass {,no}auto to kernel

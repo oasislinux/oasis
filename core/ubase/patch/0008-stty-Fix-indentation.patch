@@ -1,0 +1,79 @@
+From bfa40d29da6608660ed453ccc2b679831eeb0e1b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 14 Jun 2016 22:04:15 -0700
+Subject: [PATCH] stty: Fix indentation
+
+---
+ stty.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/stty.c b/stty.c
+index 9da517c..9aa52b5 100644
+--- a/stty.c
++++ b/stty.c
+@@ -21,7 +21,7 @@
+  *    convenience and compatibility with other implementations.
+  */
+ 
+-#define CC_MAX  255
++#define CC_MAX 255
+ 
+ static int output_size_requested = 0;
+ static int output_speed_requested = 0;
+@@ -282,9 +282,9 @@ static const struct intvalued ints[] = {
+ #define B(baud) {#baud, B##baud}
+ static const struct speed speeds[] = {
+ 	B(0),       B(50),      B(75),      B(110),     B(134),     B(150),     B(200),     B(300),
+-        B(600),     B(1200),    B(1800),    B(2400),    B(4800),    B(9600),    B(19200),   B(38400),
+-        B(57600),   B(115200),  B(230400),  B(460800),  B(500000),  B(576000),  B(921600),  B(1000000),
+-        B(1152000), B(1500000), B(2000000), B(2500000), B(3000000), B(3500000), B(4000000),
++	B(600),     B(1200),    B(1800),    B(2400),    B(4800),    B(9600),    B(19200),   B(38400),
++	B(57600),   B(115200),  B(230400),  B(460800),  B(500000),  B(576000),  B(921600),  B(1000000),
++	B(1152000), B(1500000), B(2000000), B(2500000), B(3000000), B(3500000), B(4000000),
+ 	{"134.5", B134},
+ 	{"exta",  B19200},
+ 	{"extb",  B38400},
+@@ -403,16 +403,16 @@ parseoperand_mode(char *arg, struct termios *mode)
+ 		return -1;
+ 
+ 	switch (op->type) {
+-        case CTRL:
+-        case IN:
+-        case OUT:
+-        case LOCAL:
+-        case SPEC:
++	case CTRL:
++	case IN:
++	case OUT:
++	case LOCAL:
++	case SPEC:
+ 		setoperand_mode(unset, op, mode);
+ 		return 0;
+-        case COMB:
++	case COMB:
+ 		break;
+-        default:
++	default:
+ 		abort();
+ 	}
+ 
+@@ -689,11 +689,11 @@ displaysettings(struct termios *m, int all)
+ 
+ 	for (; mod->op; mod++) {
+ 		switch (mod->type) {
+-	        case CTRL:  bitsp = &m->c_cflag; break;
+-        	case IN:    bitsp = &m->c_iflag; break;
+-        	case OUT:   bitsp = &m->c_oflag; break;
+-        	case LOCAL: bitsp = &m->c_lflag; break;
+-        	default:    bitsp = 0;           break;
++		case CTRL:  bitsp = &m->c_cflag; break;
++		case IN:    bitsp = &m->c_iflag; break;
++		case OUT:   bitsp = &m->c_oflag; break;
++		case LOCAL: bitsp = &m->c_lflag; break;
++		default:    bitsp = 0;           break;
+ 		}
+ 		if (!bitsp || (mod->flags & DUP))
+ 			continue;
+-- 
+2.8.1
+
