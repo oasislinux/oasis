@@ -7,3 +7,4 @@ subgen pcre
 subgen sshfs
 subgen the_silver_searcher
 subgen transmission
+subgen unzip

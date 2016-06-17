@@ -1,0 +1,27 @@
+From 638801fa4a9ffb16839d6dd42e70afc3e989e510 Mon Sep 17 00:00:00 2001
+From: Steven Schweda <sms@antinode.info>
+Date: Thu, 16 Jun 2016 22:41:56 -0700
+Subject: [PATCH] Increase size of cfactorstr array to avoid buffer overflow
+
+From 07-increase-size-of-cfactorstr in
+unzip_6.0-16+deb8u2.debian.tar.xz.
+---
+ list.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/list.c b/list.c
+index 15e0011..5de41e5 100644
+--- a/list.c
++++ b/list.c
+@@ -97,7 +97,7 @@ int list_files(__G)    /* return PK-type error code */
+ {
+     int do_this_file=FALSE, cfactor, error, error_in_archive=PK_COOL;
+ #ifndef WINDLL
+-    char sgn, cfactorstr[10];
++    char sgn, cfactorstr[12];
+     int longhdr=(uO.vflag>1);
+ #endif
+     int date_format;
+-- 
+2.8.1
+

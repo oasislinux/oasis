@@ -103,3 +103,4 @@ fetch extra/pcre curl
 fetch extra/sshfs git
 fetch extra/the_silver_searcher git
 fetch extra/transmission curl
+fetch extra/unzip curl

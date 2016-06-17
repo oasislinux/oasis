@@ -1,0 +1,13 @@
+cflags\
+	-include '$dir'/config.h\
+	-isystem core/bzip2/src\
+	-I '$srcdir'
+
+exe unzip\
+        unzip.c crc32.c crypt.c envargs.c explode.c\
+	extract.c fileio.c globals.c inflate.c list.c match.c\
+	process.c ttyio.c ubz2err.c unreduce.c unshrink.c zipinfo.c\
+	unix/unix.c\
+	'$builddir'/core/bzip2/libbz2.a
+file bin/unzip '$outdir'/unzip 755
+file share/man/man1/unzip.1 '$srcdir'/man/unzip.1 644
