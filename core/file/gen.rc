@@ -1,7 +1,6 @@
 version=5.28
 cflags\
 	-DHAVE_CONFIG_H\
-	-DVERSION'='\"$version\"\
 	-DMAGIC'='\"/share/file/magic\"\
 	-D_GNU_SOURCE\
 	-Wall\
