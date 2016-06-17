@@ -69,7 +69,12 @@ fn x {
 }
 
 x perp perpd perpd.c perpd_conn.c perpd_svdef.c
-for(exe in perp^(boot ctl hup ls ok stat) tinylog) x perp $exe $exe.c
+
+let cflags '$cflags -D ''TINYLOG_ZIP="/bin/gzip"'' -D ''ZIP_EXT=".gz"''' --\
+	cc perp/tinylog.c
+x perp tinylog tinylog.c.o
+
+for(exe in perp^(boot ctl hup ls ok stat)) x perp $exe $exe.c
 tools=(\
 	run^(args argv0 choom detach deux env file limit lock pause session tool trap uid)\
 	cat^(args env limits uid)\
