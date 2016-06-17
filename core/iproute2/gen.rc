@@ -36,4 +36,15 @@ yacc ssfilter '$srcdir'/misc/ssfilter.y
 exe bin/ss misc/ss.c '$outdir'/ssfilter.tab.c libnetlink.a
 
 for(exe in bin/^(ip bridge ss)) file $exe '$outdir'/$exe 755
-for(man in man/man8/^(bridge ip* ss)^.8) file share/$man '$srcdir'/$man 644
+man=(\
+	bridge ip ss\
+	ip-^(\
+                addrlabel fou gue l2tp maddress monitor mroute neighbour\
+                netconf netns ntable rule tcp_metrics token tunnel xfrm\
+	)\
+) for(man in man/man8/$man.8) file share/$man '$srcdir'/$man 644
+for(man in ip-address ip-link ip-route) {
+	let expr 's,@SYSCONFDIR@,/etc,g' --\
+		build '$outdir'/$man.8 sed '$srcdir'/man/man8/$man.8.in
+	file share/man/man8/$man.8 '$outdir'/$man.8 644
+}
