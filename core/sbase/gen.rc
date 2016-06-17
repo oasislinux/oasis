@@ -7,8 +7,64 @@ cflags\
 	-D_FILE_OFFSET_BITS'='64\
 	-I '$outdir'
 
-lib libutil.a libutil/*.c
-lib libutf.a libutf/*.c
+lib libutil.a libutil/^(\
+	concat.c\
+	cp.c\
+	crypt.c\
+	ealloc.c\
+	enmasse.c\
+	eprintf.c\
+	eregcomp.c\
+	estrtod.c\
+	fnck.c\
+	fshut.c\
+	getlines.c\
+	human.c\
+	linecmp.c\
+	md5.c\
+	memmem.c\
+	mkdirp.c\
+	mode.c\
+	parseoffset.c\
+	putword.c\
+	reallocarray.c\
+	recurse.c\
+	rm.c\
+	sha1.c\
+	sha224.c\
+	sha256.c\
+	sha384.c\
+	sha512.c\
+	sha512-224.c\
+	sha512-256.c\
+	strcasestr.c\
+	strlcat.c\
+	strlcpy.c\
+	strsep.c\
+	strtonum.c\
+	unescape.c\
+)
+lib libutf.a libutf/^(\
+	rune.c\
+	runetype.c\
+	utf.c\
+	utftorunestr.c\
+	fgetrune.c\
+	fputrune.c\
+	isalnumrune.c\
+	isalpharune.c\
+	isblankrune.c\
+	iscntrlrune.c\
+	isdigitrune.c\
+	isgraphrune.c\
+	isprintrune.c\
+	ispunctrune.c\
+	isspacerune.c\
+	istitlerune.c\
+	isxdigitrune.c\
+	lowerrune.c\
+	upperrune.c\
+)
 
 getconf_outs='$outdir'/^(confstr limits sysconf pathconf)^_l.h
 rule getconf 'getconf=$$PWD/$srcdir/getconf.sh && cd $outdir && $$getconf'
