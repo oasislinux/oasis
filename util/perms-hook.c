@@ -161,11 +161,19 @@ specialperms(void)
 }
 
 static void
-defperm(const char *name)
+setperm(const char *name)
 {
+	int i;
 	struct stat st;
 	mode_t mode;
 
+	for (i = 0; i < perms_len; ++i) {
+		if (strcmp(name, perms[i].name) == 0) {
+			if (!perms[i].applied)
+				specialperm(&perms[i]);
+			return;
+		}
+	}
 	if (lstat(name, &st) < 0)
 		die("lstat:");
 	if (st.st_dev != rootdev)
@@ -194,7 +202,7 @@ readchanges(char *old, char *new)
 	pid_t pid;
 	char *line = NULL;
 	size_t size = 0;
-	int i, st;
+	int st;
 
 	f = spawn(old ? argv_diff : argv_new, &pid);
 nextline:
@@ -203,13 +211,7 @@ nextline:
 			specialperms();
 			continue;
 		}
-		for (i = 0; i < perms_len; ++i) {
-			if (!perms[i].applied && strcmp(line, perms[i].name) == 0) {
-				specialperm(&perms[i]);
-				goto nextline;
-			}
-		}
-		defperm(line);
+		setperm(line);
 	}
 	fclose(f);
 
