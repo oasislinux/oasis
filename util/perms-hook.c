@@ -138,6 +138,37 @@ mkdir_v(const char *path, mode_t mode)
 	return mkdir(path, mode);
 }
 
+static int
+defperm(const char *name)
+{
+	struct stat st;
+	mode_t mode;
+
+	if (lstat(name, &st) < 0)
+		return -1;
+	if (st.st_dev != rootdev) {
+		errno = EXDEV;
+		return -1;
+	}
+	switch (st.st_mode & S_IFMT) {
+	case S_IFREG:
+		mode = st.st_mode&S_IXUSR ? 0755 : 0644;
+		break;
+	case S_IFDIR:
+		mode = 0755;
+		break;
+	case S_IFLNK:
+		return 0;
+	default:
+		die("unexpected file type %#o: %s", st.st_mode, name);
+	}
+	if ((st.st_mode&~S_IFMT) == mode)
+		return 0;
+	if (chmod_v(name, mode) < 0)
+		die("chmod:");
+	return 0;
+}
+
 static void
 specialperm(struct perm *p)
 {
@@ -179,8 +210,6 @@ static int
 setperm(const char *name)
 {
 	int i;
-	struct stat st;
-	mode_t mode;
 
 	for (i = 0; i < perms_len; ++i) {
 		if (strcmp(name, perms[i].name) == 0) {
@@ -189,29 +218,7 @@ setperm(const char *name)
 			return 0;
 		}
 	}
-	if (lstat(name, &st) < 0)
-		return -1;
-	if (st.st_dev != rootdev) {
-		errno = EXDEV;
-		return -1;
-	}
-	switch (st.st_mode & S_IFMT) {
-	case S_IFREG:
-		mode = st.st_mode&S_IXUSR ? 0755 : 0644;
-		break;
-	case S_IFDIR:
-		mode = 0755;
-		break;
-	case S_IFLNK:
-		return 0;
-	default:
-		die("unexpected file type %#o: %s", st.st_mode, name);
-	}
-	if ((st.st_mode&~S_IFMT) == mode)
-		return 0;
-	if (chmod_v(name, mode) < 0)
-		die("chmod:");
-	return 0;
+	return defperm(name);
 }
 
 static void
