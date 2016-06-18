@@ -83,9 +83,10 @@ spawn(char **argv, pid_t *pid)
 }
 
 static void
-readperms(void)
+readperms(const char *rev)
 {
-	static char *argv[] = {"git", "show", ":" PERMS_FILE, 0};
+	char object[20 + sizeof(PERMS_FILE)];
+	char *argv[] = {"git", "show", object, 0};
 	FILE *f;
 	pid_t pid;
 	char *line = NULL, *s, *mode;
@@ -93,6 +94,8 @@ readperms(void)
 	ssize_t n;
 	int st;
 
+	if (snprintf(object, sizeof(object), "%s:%s", rev, PERMS_FILE) >= (int)sizeof(object))
+		die("revision is too large: %s", rev);
 	f = spawn(argv, &pid);
 	while ((n = getline(&line, &size, f)) >= 0) {
 		if (line[n-1] == '\n')
@@ -298,7 +301,7 @@ int main(int argc, char *argv[]) {
 		die("stat:");
 	rootdev = st.st_dev;
 
-	readperms();
+	readperms(new);
 	readchanges(old, new);
 
 	return 0;
