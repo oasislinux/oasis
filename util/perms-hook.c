@@ -123,6 +123,20 @@ readperms(void)
 		die("child process failed");
 }
 
+static int
+chmod_v(const char *path, mode_t mode)
+{
+	printf("chmod(\"%s\", %#o)", path, mode);
+	return chmod(path, mode);
+}
+
+static int
+mkdir_v(const char *path, mode_t mode)
+{
+	printf("mkdir(\"%s\", %#o)", path, mode);
+	return mkdir(path, mode);
+}
+
 static void
 specialperm(struct perm *p)
 {
@@ -133,7 +147,7 @@ specialperm(struct perm *p)
 			die("lstat:");
 		if (!S_ISDIR(p->mode))
 			die("file missing and not a directory: %s", p->name);
-		if (mkdir(p->name, p->mode & ~S_IFMT) < 0)
+		if (mkdir_v(p->name, p->mode & ~S_IFMT) < 0)
 			die("mkdir:");
 		goto applied;
 	}
@@ -143,7 +157,7 @@ specialperm(struct perm *p)
 		goto applied;
 	if ((st.st_mode&S_IFMT) != (p->mode&S_IFMT))
 		die("conflicting modes: .perms=%#o, filesystem=%#o", p->mode, st.st_mode);
-	if (chmod(p->name, p->mode & ~S_IFMT) < 0)
+	if (chmod_v(p->name, p->mode & ~S_IFMT) < 0)
 		die("chmod:");
 applied:
 	p->applied = true;
@@ -183,7 +197,7 @@ setperm(const char *name)
 		mode = st.st_mode&S_IXUSR ? 0755 : 0644;
 		if ((st.st_mode&~S_IFMT) == mode)
 			return;
-		if (chmod(name, mode) < 0)
+		if (chmod_v(name, mode) < 0)
 			die("chmod:");
 		break;
 	case S_IFLNK:
