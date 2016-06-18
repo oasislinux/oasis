@@ -9,10 +9,10 @@ cflags\
 	-I '$srcdir'/lib\
 	-I '$srcdir'/src
 
-hdrs=include/curl/^(curlbuild.h *.h)
+hdrs=include/curl/^(curl.h curlrules.h curlver.h easy.h mprintf.h multi.h stdcheaders.h typecheck-gcc.h)
+for(hdr in $hdrs) build '$outdir'/$hdr copy '$srcdir'/$hdr
 build '$outdir'/include/curl/curlbuild.h copy '$srcdir'/include/curl/curlbuild.h.dist
-for(hdr in include/curl/*.h) build '$outdir'/$hdr copy '$srcdir'/$hdr
-phony headers $hdrs
+phony headers $hdrs '$outdir'/include/curl/curlbuild.h
 
 # src/lib/Makefile.inc:/^CSOURCES
 deps=phony/core/^(libressl zlib)^/headers
