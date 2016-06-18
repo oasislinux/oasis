@@ -80,6 +80,6 @@ tools=(\
 	cat^(args env limits uid)\
 ) for(exe in $tools) x runtools $exe $exe.c
 
-file share/man/man5/perpetrate.5 '$srcdir'/perp/man/perpetrate.5
-file share/man/man8/perp_intro.8 '$srcdir'/perp/man/perp_intro.8
-file share/man/man5/runtools_intro.8 '$srcdir'/runtools/man/runtools_intro.8
+file share/man/man5/perpetrate.5 '$srcdir'/perp/man/perpetrate.5 644
+file share/man/man8/perp_intro.8 '$srcdir'/perp/man/perp_intro.8 644
+file share/man/man5/runtools_intro.8 '$srcdir'/runtools/man/runtools_intro.8 644
