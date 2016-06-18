@@ -11,3 +11,5 @@ build '$builddir/$repo.stamp' gitinit
 build '$builddir/$repo.git/refs/tags/$repo_tag' gittree '$outdir/root.tree' '|' '$builddir/$repo.stamp' ./scripts/tree.rc
 build '$builddir/$repo.tar' gitarchive '|' '$builddir/$repo.git/refs/tags/$repo_tag'
 build '$builddir/$repo.git/refs/heads/master' gitcommit '|' '$builddir/$repo.git/refs/tags/$repo_tag'
+
+echo default '$builddir/$repo.git/refs/heads/master'
