@@ -9,9 +9,6 @@ there that are not present in the new .perms file.
 
 TODO: Once we start processing the list of changed files, we should keep track
 of errors, but continue on to the next file.
-
-TODO: We should also set permissions of potentially newly created parent
-directories.
 */
 #define _POSIX_C_SOURCE 200809L
 #include <errno.h>
@@ -176,7 +173,7 @@ specialperms(void)
 	}
 }
 
-static void
+static int
 setperm(const char *name)
 {
 	int i;
@@ -187,26 +184,32 @@ setperm(const char *name)
 		if (strcmp(name, perms[i].name) == 0) {
 			if (!perms[i].applied)
 				specialperm(&perms[i]);
-			return;
+			return 0;
 		}
 	}
 	if (lstat(name, &st) < 0)
-		die("lstat:");
-	if (st.st_dev != rootdev)
-		return;
+		return -1;
+	if (st.st_dev != rootdev) {
+		errno = EXDEV;
+		return -1;
+	}
 	switch (st.st_mode & S_IFMT) {
 	case S_IFREG:
 		mode = st.st_mode&S_IXUSR ? 0755 : 0644;
-		if ((st.st_mode&~S_IFMT) == mode)
-			return;
-		if (chmod_v(name, mode) < 0)
-			die("chmod:");
+		break;
+	case S_IFDIR:
+		mode = 0755;
 		break;
 	case S_IFLNK:
-		return;
+		return 0;
 	default:
 		die("unexpected file type %#o: %s", st.st_mode, name);
 	}
+	if ((st.st_mode&~S_IFMT) == mode)
+		return 0;
+	if (chmod_v(name, mode) < 0)
+		die("chmod:");
+	return 0;
 }
 
 static void
@@ -216,18 +219,43 @@ readchanges(char *old, char *new)
 	char *argv_new[] = {"git", "ls-tree", "--name-only", "--full-tree", "-z", "-r", new, 0};
 	FILE *f;
 	pid_t pid;
-	char *line = NULL;
-	size_t size = 0;
-	int st;
+	struct {
+		char *buf;
+		size_t size;
+	} lines[2] = {0};
+	ssize_t n;
+	int cur = 0, st;
+	char *path, *diff, *s;
 
 	f = spawn(old ? argv_diff : argv_new, &pid);
-nextline:
-	while (getdelim(&line, &size, '\0', f) >= 0) {
-		if (strcmp(line, PERMS_FILE) == 0) {
+	while ((n = getdelim(&lines[cur].buf, &lines[cur].size, '\0', f)) >= 0) {
+		path = lines[cur].buf;
+		if (strcmp(path, PERMS_FILE) == 0) {
 			specialperms();
 			continue;
 		}
-		setperm(line);
+		if (setperm(path) < 0) switch (errno) {
+		case ENOENT:
+			continue;
+		case EXDEV:
+			break;
+		default:
+			die("setperm %s:", path);
+		}
+		/* find the first difference from the previous path */
+		diff = path;
+		if (lines[!cur].buf)
+			for (s = lines[!cur].buf; *s && *s == *diff; ++s, ++diff);
+		/* set permissions on each parent directory after that difference */
+		for (s = path + n; s > diff; --s) {
+			if (*s != '/')
+				continue;
+			*s = '\0';
+			if (setperm(path) < 0)
+				die("setperm %s:", path);
+			*s = '/';
+		}
+		cur = !cur;
 	}
 	fclose(f);
 
