@@ -1,1 +1,12 @@
-../../libexec/oasis/perms-hook
+#!/bin/sh
+
+old=$1
+new=$2
+
+if [ "$old" = 0000000000000000000000000000000000000000 ] ; then
+	set "$new"
+else
+	set "$old" "$new"
+fi
+
+exec ./libexec/oasis/perms-hook "$@"

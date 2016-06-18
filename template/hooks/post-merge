@@ -1,1 +1,3 @@
-../../libexec/oasis/perms-hook
+#!/bin/sh
+
+exec ./libexec/oasis/perms-hook ORIG_HEAD HEAD

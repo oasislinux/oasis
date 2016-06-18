@@ -1,8 +1,8 @@
 /*
 See LICENSE file for copyright and license details.
 
-This program is a git hook to fix the permissions of files based on a .perms
-file in the repository
+This program is meant to be run by a git hook to fix the permissions of files
+based on a .perms file in the repository
 
 TODO: We should read the old .perms file, and remove any directories listed
 there that are not present in the new .perms file.
@@ -35,7 +35,6 @@ struct perm {
 
 extern char **environ;
 
-static char *argv0;
 static dev_t rootdev;
 static struct perm *perms;
 static int perms_len;
@@ -272,28 +271,21 @@ int main(int argc, char *argv[]) {
 	char *old, *new;
 	struct stat st;
 
-	argv0 = basename(argv[0]);
-	if (strcmp(argv0, "post-merge") == 0) {
-		if (argc != 2) {
-			fprintf(stderr, "usage: %s flag\n", argv0);
-			exit(2);
-		}
-		old = "ORIG_HEAD";
-		new = "HEAD";
-	} else if (strcmp(argv0, "post-checkout") == 0) {
-		if (argc != 4) {
-			fprintf(stderr, "usage: %s old new flag\n", argv0);
-			exit(2);
-		}
-		old = argv[1];
-		if (strcmp(old, "0000000000000000000000000000000000000000") == 0)
-			old = NULL;
-		new = argv[2];
-	} else if (argc == 1) {
+	switch (argc) {
+	case 1:
 		old = NULL;
 		new = "HEAD";
-	} else {
-		fprintf(stderr, "usage: %s\n", argv0);
+		break;
+	case 2:
+		old = NULL;
+		new = argv[1];
+		break;
+	case 3:
+		old = argv[1];
+		new = argv[2];
+		break;
+	default:
+		fprintf(stderr, "usage: %s [[old] new]\n", basename(argv[0]));
 		exit(2);
 	}
 
