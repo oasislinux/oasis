@@ -86,7 +86,7 @@ spawn(char **argv, pid_t *pid)
 static void
 readperms(void)
 {
-	static char *argv[] = { "git", "show", ":.perms", 0 };
+	static char *argv[] = {"git", "show", ":.perms", 0};
 	FILE *f;
 	pid_t pid;
 	char *line = NULL, *s, *mode;
@@ -184,8 +184,8 @@ defperm(const char *name)
 static void
 readchanges(char *old, char *new)
 {
-	char *argv_diff[] = { "git", "diff", "--name-only", "-z", old, new, 0 };
-	char *argv_new[] = { "git", "ls-tree", "--name-only", "--full-tree", "-z", "-r", new, 0 };
+	char *argv_diff[] = {"git", "diff", "--name-only", "-z", old, new, 0};
+	char *argv_new[] = {"git", "ls-tree", "--name-only", "--full-tree", "-z", "-r", new, 0};
 	FILE *f;
 	pid_t pid;
 	char *line = NULL;
