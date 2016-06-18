@@ -135,14 +135,18 @@ specialperm(struct perm *p)
 			die("file missing and not a directory: %s", p->name);
 		if (mkdir(p->name, p->mode & ~S_IFMT) < 0)
 			die("mkdir:");
-		return;
+		goto applied;
 	}
-	if (st.st_dev != rootdev || st.st_mode == p->mode)
+	if (st.st_dev != rootdev)
 		return;
+	if (st.st_mode == p->mode)
+		goto applied;
 	if ((st.st_mode&S_IFMT) != (p->mode&S_IFMT))
 		die("conflicting modes: .perms=%#o, filesystem=%#o", p->mode, st.st_mode);
 	if (chmod(p->name, p->mode & ~S_IFMT) < 0)
 		die("chmod:");
+applied:
+	p->applied = true;
 }
 
 static void
