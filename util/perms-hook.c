@@ -114,7 +114,7 @@ readperms(const char *rev)
 		perms[perms_len].mode = strtoul(mode, &s, 8);
 		perms[perms_len].applied = false;
 		if (*s)
-			die("invalid mode: %s\n", mode);
+			die("invalid mode: %s", mode);
 		++perms_len;
 	}
 	fclose(f);
