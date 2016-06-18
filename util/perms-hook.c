@@ -127,14 +127,14 @@ readperms(const char *rev)
 static int
 chmod_v(const char *path, mode_t mode)
 {
-	printf("chmod(\"%s\", %#o)", path, mode);
+	printf("chmod(\"%s\", %#o)\n", path, mode);
 	return chmod(path, mode);
 }
 
 static int
 mkdir_v(const char *path, mode_t mode)
 {
-	printf("mkdir(\"%s\", %#o)", path, mode);
+	printf("mkdir(\"%s\", %#o)\n", path, mode);
 	return mkdir(path, mode);
 }
 
