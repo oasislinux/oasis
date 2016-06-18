@@ -28,6 +28,8 @@ directories.
 #include <sys/wait.h>
 #include <unistd.h>
 
+#define PERMS_FILE ".perms"
+
 struct perm {
 	mode_t mode;
 	char *name;
@@ -86,7 +88,7 @@ spawn(char **argv, pid_t *pid)
 static void
 readperms(void)
 {
-	static char *argv[] = {"git", "show", ":.perms", 0};
+	static char *argv[] = {"git", "show", ":" PERMS_FILE, 0};
 	FILE *f;
 	pid_t pid;
 	char *line = NULL, *s, *mode;
@@ -101,7 +103,7 @@ readperms(void)
 		mode = s = line;
 		s = strchr(s, ' ');
 		if (!s || s == mode)
-			die("malformed .perms file");
+			die("malformed permissions file: %s", PERMS_FILE);
 		*s++ = '\0';
 		perms = realloc(perms, (perms_len + 1) * sizeof(*perms));
 		if (!perms)
@@ -221,7 +223,7 @@ readchanges(char *old, char *new)
 	f = spawn(old ? argv_diff : argv_new, &pid);
 nextline:
 	while (getdelim(&line, &size, '\0', f) >= 0) {
-		if (strcmp(line, ".perms") == 0) {
+		if (strcmp(line, PERMS_FILE) == 0) {
 			specialperms();
 			continue;
 		}
