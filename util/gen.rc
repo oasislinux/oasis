@@ -1,6 +1,5 @@
 set srcdir '$dir'
-
-include 'toolchain/$host_toolchain.ninja'
 cflags -Wall -Wextra '-std=c11' -pedantic
 
 exe perms-hook perms-hook.c
+file libexec/oasis/perms-hook '$outdir'/perms-hook 755
