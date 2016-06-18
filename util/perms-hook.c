@@ -31,7 +31,7 @@ directories.
 struct perm {
 	mode_t mode;
 	char *name;
-	bool fixed;
+	bool applied;
 };
 
 extern char **environ;
@@ -110,7 +110,7 @@ readperms(void)
 		if (!perms[perms_len].name)
 			die("strdup:");
 		perms[perms_len].mode = strtoul(mode, &s, 8);
-		perms[perms_len].fixed = false;
+		perms[perms_len].applied = false;
 		if (*s)
 			die("invalid mode: %s\n", mode);
 		++perms_len;
@@ -124,7 +124,7 @@ readperms(void)
 }
 
 static void
-fixperm(struct perm *p)
+specialperm(struct perm *p)
 {
 	struct stat st;
 
@@ -146,13 +146,13 @@ fixperm(struct perm *p)
 }
 
 static void
-fixperms(void)
+specialperms(void)
 {
 	int i;
 
 	for (i = 0; i < perms_len; ++i) {
-		if (!perms[i].fixed)
-			fixperm(&perms[i]);
+		if (!perms[i].applied)
+			specialperm(&perms[i]);
 	}
 }
 
@@ -196,12 +196,12 @@ readchanges(char *old, char *new)
 nextline:
 	while (getdelim(&line, &size, '\0', f) >= 0) {
 		if (strcmp(line, ".perms") == 0) {
-			fixperms();
+			specialperms();
 			continue;
 		}
 		for (i = 0; i < perms_len; ++i) {
-			if (!perms[i].fixed && strcmp(line, perms[i].name) == 0) {
-				fixperm(&perms[i]);
+			if (!perms[i].applied && strcmp(line, perms[i].name) == 0) {
+				specialperm(&perms[i]);
 				goto nextline;
 			}
 		}
