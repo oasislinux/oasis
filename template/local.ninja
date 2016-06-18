@@ -1,6 +1,0 @@
-dir = template
-outdir = $builddir/$dir
-build $outdir/config: copy $dir/config
-build $outdir/info/sparse-checkout: copy $dir/info/sparse-checkout
-build $outdir/hooks/post-merge: copy $builddir/util/perms-hook
-build $outdir/hooks/post-checkout: copy $builddir/util/perms-hook

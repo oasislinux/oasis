@@ -4,7 +4,6 @@ subgen devel
 subgen extra
 
 subgen util
-subninja template/local.ninja
 
 file .perms '$outdir'/root.perms 644
 
