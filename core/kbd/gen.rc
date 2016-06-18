@@ -66,11 +66,10 @@ x 1 showkey
 # keymap data
 cd data
 keymaps=(\
-include sun amiga atari\
-i386/^(azerty bepo dvorak fgGIod qwerty qwertz include olpc colemak)\
-mac/^(include all)\
-)
-for(keymap in keymaps/$keymaps/*) {
+	include sun amiga atari\
+	i386/^(azerty bepo dvorak fgGIod qwerty qwertz include olpc colemak)\
+	mac/^(include all)\
+) for(keymap in keymaps/$keymaps/*) {
 	build '$outdir'/$keymap.gz gzip '$srcdir'/data/$keymap
 	file share/kbd/$keymap.gz '$outdir'/$keymap.gz 644
 }
