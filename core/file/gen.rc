@@ -9,10 +9,9 @@ cflags\
 	-I '$dir' \
 	-I '$outdir'/include
 
-cd magic
 magic_outs=magic/^(Header Localstuff)
 for(src in Header Localstuff) build '$outdir'/magic/$src copy '$srcdir'/magic/$src
-cd Magdir
+cd magic/Magdir
 srcs=*
 magic_outs=($magic_outs magic/$srcs)
 for(src in $srcs) build '$outdir'/magic/$src copy '$srcdir'/magic/Magdir/$src
