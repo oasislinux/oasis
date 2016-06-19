@@ -4,8 +4,10 @@ See LICENSE file for copyright and license details.
 This program is meant to be run by a git hook to fix the permissions of files
 based on a .perms file in the repository
 
-TODO: Once we start processing the list of changed files, we should keep track
-of errors, but continue on to the next file.
+Security considerations:
+If the repository previously contained a world or group readable directory which
+has become secret, the names of the new files in that directory will become
+temporarily visible because git checks out the files before this program is run.
 */
 #define _POSIX_C_SOURCE 200809L
 #include <errno.h>
@@ -27,7 +29,7 @@ of errors, but continue on to the next file.
 struct perm {
 	mode_t mode;
 	char *name;
-	bool applied;
+	bool attempted;
 };
 
 struct special {
@@ -39,6 +41,27 @@ extern char **environ;
 
 static dev_t rootdev;
 static struct special oldsp, newsp;
+static int failure;
+
+static void
+verror(char *fmt, va_list ap)
+{
+	failure = 1;
+	vfprintf(stderr, fmt, ap);
+	if (fmt[0] && fmt[strlen(fmt)-1] == ':')
+		fprintf(stderr, " %s", strerror(errno));
+	fputc('\n', stderr);
+}
+
+static void
+error(char *fmt, ...)
+{
+	va_list ap;
+
+	va_start(ap, fmt);
+	verror(fmt, ap);
+	va_end(ap);
+}
 
 static noreturn void
 die(char *fmt, ...)
@@ -46,12 +69,8 @@ die(char *fmt, ...)
 	va_list ap;
 
 	va_start(ap, fmt);
-	vfprintf(stderr, fmt, ap);
+	verror(fmt, ap);
 	va_end(ap);
-
-	if (fmt[0] && fmt[strlen(fmt)-1] == ':')
-		fprintf(stderr, " %s", strerror(errno));
-	fputc('\n', stderr);
 
 	exit(1);
 }
@@ -112,7 +131,7 @@ readspecial(struct special *sp, const char *rev)
 		if (!sp->perms[sp->len].name)
 			die("strdup:");
 		sp->perms[sp->len].mode = strtoul(mode, &s, 8);
-		sp->perms[sp->len].applied = false;
+		sp->perms[sp->len].attempted = false;
 		if (*s)
 			die("invalid mode: %s", mode);
 		++sp->len;
@@ -161,39 +180,40 @@ defperm(const char *name)
 	case S_IFLNK:
 		return 0;
 	default:
-		die("unexpected file type %#o: %s", st.st_mode, name);
+		errno = EINVAL;
+		return -1;
 	}
 	if ((st.st_mode&~S_IFMT) == mode)
 		return 0;
-	if (chmod_v(name, mode) < 0)
-		die("chmod:");
-	return 0;
+	return chmod_v(name, mode);
 }
 
-static void
+static int
 specialperm(struct perm *p)
 {
 	struct stat st;
 
+	if (p->attempted)
+		return 0;
+	p->attempted = true;
 	if (lstat(p->name, &st) < 0) {
-		if (errno != ENOENT)
-			die("lstat:");
-		if (!S_ISDIR(p->mode))
-			die("file missing and not a directory: %s", p->name);
+		if (errno != ENOENT || !S_ISDIR(p->mode))
+			return -1;
 		if (mkdir_v(p->name, p->mode & ~S_IFMT) < 0)
-			die("mkdir:");
-		goto applied;
+			return -1;
+		return 0;
 	}
-	if (st.st_dev != rootdev)
-		return;
+	if (st.st_dev != rootdev) {
+		errno = EXDEV;
+		return -1;
+	}
 	if (st.st_mode == p->mode)
-		goto applied;
-	if ((st.st_mode&S_IFMT) != (p->mode&S_IFMT))
-		die("conflicting modes: .perms=%#o, filesystem=%#o", p->mode, st.st_mode);
-	if (chmod_v(p->name, p->mode & ~S_IFMT) < 0)
-		die("chmod:");
-applied:
-	p->applied = true;
+		return 0;
+	if ((st.st_mode&S_IFMT) != (p->mode&S_IFMT)) {
+		errno = EINVAL;
+		return -1;
+	}
+	return chmod_v(p->name, p->mode & ~S_IFMT);
 }
 
 static void
@@ -210,8 +230,8 @@ specialperms(void)
 		else
 			n = strcmp(oldsp.perms[i].name, newsp.perms[j].name);
 		if (n >= 0) {
-			if (!newsp.perms[j].applied)
-				specialperm(&newsp.perms[j]);
+			if (specialperm(&newsp.perms[j]) < 0 && errno != EXDEV)
+				error("specialperm:");
 			--j;
 			if (n == 0)
 				--i;
@@ -224,7 +244,7 @@ specialperms(void)
 				case ENOTEMPTY:
 					break;
 				default:
-					die("rmdir:");
+					error("rmdir:");
 			}
 			break;
 		default:
@@ -233,7 +253,7 @@ specialperms(void)
 				case EXDEV:
 					break;
 				default:
-					die("defperm:");
+					error("defperm:");
 			}
 		}
 		--i;
@@ -246,11 +266,8 @@ setperm(const char *name)
 	int i;
 
 	for (i = 0; i < newsp.len; ++i) {
-		if (strcmp(name, newsp.perms[i].name) == 0) {
-			if (!newsp.perms[i].applied)
-				specialperm(&newsp.perms[i]);
-			return 0;
-		}
+		if (strcmp(name, newsp.perms[i].name) == 0)
+			return specialperm(&newsp.perms[i]);
 	}
 	return defperm(name);
 }
@@ -283,7 +300,7 @@ readchanges(char *old, char *new)
 		case EXDEV:
 			break;
 		default:
-			die("setperm %s:", path);
+			error("setperm %s:", path);
 		}
 		/* find the first difference from the previous path */
 		diff = path;
@@ -295,7 +312,7 @@ readchanges(char *old, char *new)
 				continue;
 			*s = '\0';
 			if (setperm(path) < 0)
-				die("setperm %s:", path);
+				error("setperm %s:", path);
 			*s = '/';
 		}
 		cur = !cur;
@@ -342,5 +359,5 @@ int main(int argc, char *argv[]) {
 	umask(0);
 	readchanges(old, new);
 
-	return 0;
+	return failure;
 }
