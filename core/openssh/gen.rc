@@ -64,15 +64,19 @@ lib libssh.a -d $"deps\
 	kexdhs.c kexgexs.c kexecdhs.c kexc25519s.c\
 	platform-pledge.c
 
-exe ssh\
-	ssh.c readconf.c clientloop.c sshtty.c\
-	sshconnect.c sshconnect1.c sshconnect2.c mux.c\
+libs=(\
 	libssh.a libopenbsd-compat.a\
 	'$builddir'/^(\
 		core/libressl/^(libssl.a libcrypto.a)\
 		core/openbsd/libbsd.a\
 		core/zlib/libz.a\
-	)
+	)\
+)
+
+exe ssh\
+	ssh.c readconf.c clientloop.c sshtty.c\
+	sshconnect.c sshconnect1.c sshconnect2.c mux.c\
+	$libs
 file bin/ssh '$outdir'/ssh 755
 file share/man/man1/ssh.1 '$srcdir'/ssh.1 644
 
@@ -94,26 +98,17 @@ exe sshd\
 	sandbox-null.c sandbox-rlimit.c sandbox-systrace.c sandbox-darwin.c\
 	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c\
 	sandbox-solaris.c\
-	libssh.a libopenbsd-compat.a\
-	'$builddir'/^(\
-		core/libressl/^(libssl.a libcrypto.a)\
-		core/openbsd/libbsd.a\
-		core/zlib/libz.a\
-	)
+	$libs
 file bin/sshd '$outdir'/sshd 755
 file share/man/man8/sshd.8 '$srcdir'/sshd.8 644
-
-exe ssh-keygen ssh-keygen.c libssh.a libopenbsd-compat.a '$builddir'/^(\
-	core/libressl/^(libssl.a libcrypto.a)\
-	core/openbsd/libbsd.a\
-	core/zlib/libz.a\
-)
-file bin/ssh-keygen '$outdir'/ssh-keygen 755
-file share/man/man1/ssh-keygen.1 '$srcdir'/ssh-keygen.1 644
 
 exe scp scp.c libssh.a libopenbsd-compat.a libssh.a '$builddir'/core/openbsd/libbsd.a
 file bin/scp '$outdir'/scp 755
 file share/man/man1/scp.1 '$srcdir'/scp.1 644
+
+exe ssh-keygen ssh-keygen.c $libs
+file bin/ssh-keygen '$outdir'/ssh-keygen 755
+file share/man/man1/ssh-keygen.1 '$srcdir'/ssh-keygen.1 644
 
 exe sftp-server\
 	sftp-common.c.o sftp-server.c.o sftp-server-main.c\
