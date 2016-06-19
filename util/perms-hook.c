@@ -337,6 +337,7 @@ int main(int argc, char *argv[]) {
 	if (old)
 		readspecial(&oldsp, old);
 	readspecial(&newsp, new);
+	umask(0);
 	readchanges(old, new);
 
 	return 0;
