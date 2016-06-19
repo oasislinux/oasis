@@ -330,8 +330,10 @@ int main(int argc, char *argv[]) {
 		exit(2);
 	}
 
+	if (stat(".git", &st) < 0)
+		die("stat .git:");
 	if (stat(".", &st) < 0)
-		die("stat:");
+		die("stat .:");
 	rootdev = st.st_dev;
 
 	if (old)
