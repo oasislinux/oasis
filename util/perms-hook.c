@@ -4,9 +4,6 @@ See LICENSE file for copyright and license details.
 This program is meant to be run by a git hook to fix the permissions of files
 based on a .perms file in the repository
 
-TODO: We should read the old .perms file, and remove any directories listed
-there that are not present in the new .perms file.
-
 TODO: Once we start processing the list of changed files, we should keep track
 of errors, but continue on to the next file.
 */
@@ -33,11 +30,15 @@ struct perm {
 	bool applied;
 };
 
+struct special {
+	struct perm *perms;
+	int len;
+};
+
 extern char **environ;
 
 static dev_t rootdev;
-static struct perm *perms;
-static int perms_len;
+static struct special oldsp, newsp;
 
 static noreturn void
 die(char *fmt, ...)
@@ -82,7 +83,7 @@ spawn(char **argv, pid_t *pid)
 }
 
 static void
-readperms(const char *rev)
+readspecial(struct special *sp, const char *rev)
 {
 	char object[20 + sizeof(PERMS_FILE)];
 	char *argv[] = {"git", "show", object, 0};
@@ -104,17 +105,17 @@ readperms(const char *rev)
 		if (!s || s == mode)
 			die("malformed permissions file: %s", PERMS_FILE);
 		*s++ = '\0';
-		perms = realloc(perms, (perms_len + 1) * sizeof(*perms));
-		if (!perms)
+		sp->perms = realloc(sp->perms, (sp->len + 1) * sizeof(*sp->perms));
+		if (!sp->perms)
 			die("realloc:");
-		perms[perms_len].name = strdup(s);
-		if (!perms[perms_len].name)
+		sp->perms[sp->len].name = strdup(s);
+		if (!sp->perms[sp->len].name)
 			die("strdup:");
-		perms[perms_len].mode = strtoul(mode, &s, 8);
-		perms[perms_len].applied = false;
+		sp->perms[sp->len].mode = strtoul(mode, &s, 8);
+		sp->perms[sp->len].applied = false;
 		if (*s)
 			die("invalid mode: %s", mode);
-		++perms_len;
+		++sp->len;
 	}
 	fclose(f);
 
@@ -198,11 +199,44 @@ applied:
 static void
 specialperms(void)
 {
-	int i;
+	int i = oldsp.len - 1, j = newsp.len - 1, n;
 
-	for (i = 0; i < perms_len; ++i) {
-		if (!perms[i].applied)
-			specialperm(&perms[i]);
+	/* process in reverse order so that directory removals can succeed */
+	while (i >= 0 || j >= 0) {
+		if (i < 0)
+			n = 1;
+		else if (j < 0)
+			n = -1;
+		else
+			n = strcmp(oldsp.perms[i].name, newsp.perms[j].name);
+		if (n >= 0) {
+			if (!newsp.perms[j].applied)
+				specialperm(&newsp.perms[j]);
+			--j;
+			if (n == 0)
+				--i;
+			continue;
+		}
+		switch (oldsp.perms[i].mode&S_IFMT) {
+		case S_IFDIR:
+			if (rmdir(oldsp.perms[i].name) < 0) switch (errno) {
+				case ENOENT:
+				case ENOTEMPTY:
+					break;
+				default:
+					die("rmdir:");
+			}
+			break;
+		default:
+			if (defperm(oldsp.perms[i].name) < 0) switch (errno) {
+				case ENOENT:
+				case EXDEV:
+					break;
+				default:
+					die("defperm:");
+			}
+		}
+		--i;
 	}
 }
 
@@ -211,10 +245,10 @@ setperm(const char *name)
 {
 	int i;
 
-	for (i = 0; i < perms_len; ++i) {
-		if (strcmp(name, perms[i].name) == 0) {
-			if (!perms[i].applied)
-				specialperm(&perms[i]);
+	for (i = 0; i < newsp.len; ++i) {
+		if (strcmp(name, newsp.perms[i].name) == 0) {
+			if (!newsp.perms[i].applied)
+				specialperm(&newsp.perms[i]);
 			return 0;
 		}
 	}
@@ -300,7 +334,9 @@ int main(int argc, char *argv[]) {
 		die("stat:");
 	rootdev = st.st_dev;
 
-	readperms(new);
+	if (old)
+		readspecial(&oldsp, old);
+	readspecial(&newsp, new);
 	readchanges(old, new);
 
 	return 0;
