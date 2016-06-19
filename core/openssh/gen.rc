@@ -106,6 +106,14 @@ exe scp scp.c libssh.a libopenbsd-compat.a libssh.a '$builddir'/core/openbsd/lib
 file bin/scp '$outdir'/scp 755
 file share/man/man1/scp.1 '$srcdir'/scp.1 644
 
+exe ssh-add ssh-add.c $libs
+file bin/ssh-add '$outdir'/ssh-add 755
+file share/man/man1/ssh-add.1 '$srcdir'/ssh-add.1 644
+
+exe ssh-agent ssh-agent.c ssh-pkcs11-client.c $libs
+file bin/ssh-agent '$outdir'/ssh-agent 755
+file share/man/man1/ssh-agent.1 '$srcdir'/ssh-agent.1 644
+
 exe ssh-keygen ssh-keygen.c $libs
 file bin/ssh-keygen '$outdir'/ssh-keygen 755
 file share/man/man1/ssh-keygen.1 '$srcdir'/ssh-keygen.1 644
