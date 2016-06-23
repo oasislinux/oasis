@@ -104,7 +104,7 @@ spawn(char **argv, pid_t *pid)
 static void
 readspecial(struct special *sp, const char *rev)
 {
-	char object[20 + sizeof(PERMS_FILE)];
+	char object[41 + sizeof(PERMS_FILE)];
 	char *argv[] = {"git", "show", object, 0};
 	FILE *f;
 	pid_t pid;
