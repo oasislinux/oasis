@@ -1,4 +1,4 @@
-From e1b37bd0bbb61e8b425972ee0321ba501b1d4ea2 Mon Sep 17 00:00:00 2001
+From 4d8a47a8754e549dc75d5201547762718de8ce52 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 18:24:31 -0700
 Subject: [PATCH] Remove remaining uses of glib
@@ -8,7 +8,7 @@ Subject: [PATCH] Remove remaining uses of glib
  1 file changed, 5 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index 3448f4d..d548c98 100644
+index 9af8814..44c13d1 100644
 --- a/sshfs.c
 +++ b/sshfs.c
 @@ -42,7 +42,6 @@
@@ -19,7 +19,7 @@ index 3448f4d..d548c98 100644
  #include <pwd.h>
  #include <grp.h>
  #include <limits.h>
-@@ -3985,11 +3984,7 @@ int main(int argc, char *argv[])
+@@ -4011,11 +4010,7 @@ int main(int argc, char *argv[])
  	if (!realpath(*exec_path, sshfs_program_path)) {
  		memset(sshfs_program_path, 0, PATH_MAX);
  	}
@@ -32,5 +32,5 @@ index 3448f4d..d548c98 100644
  	sshfs.blksize = 4096;
  	/* SFTP spec says all servers should allow at least 32k I/O */
 -- 
-2.8.1
+2.9.0
 
