@@ -8,6 +8,9 @@ rule cc
   depfile = $out.d
   deps = gcc
 
+rule as
+  command = $as $asflags -o $out $in
+
 rule link
   command = $cc $ldflags -o $out $in
 

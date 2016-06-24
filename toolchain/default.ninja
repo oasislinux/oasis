@@ -1,4 +1,5 @@
 ar = ar
+as = as
 cc = cc
 cxx = c++
 

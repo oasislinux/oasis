@@ -67,6 +67,9 @@
 [submodule "devel/make/src"]
 	path = devel/make/src
 	url = git://git.sv.gnu.org/make.git
+[submodule "devel/mc/src"]
+	path = devel/mc/src
+	url = https://github.com/oridb/mc
 [submodule "extra/hostap/src"]
 	path = extra/hostap/src
 	url = git://w1.fi/hostap.git

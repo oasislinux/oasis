@@ -1,0 +1,50 @@
+cflags\
+	-I '$outdir' \
+	-I '$srcdir' \
+	-I '$srcdir'/mi\
+	-I '$srcdir'/parse\
+	-I '$srcdir'/util
+
+yacc gram '$srcdir'/parse/gram.y
+build '$outdir'/gram.h copy '$outdir'/gram.tab.h
+
+lib libparse.a -d '$outdir'/gram.h '$outdir'/gram.tab.c parse/^(\
+	dump.c\
+	err.c\
+	export.c\
+	fold.c\
+	infer.c\
+	names.c\
+	node.c\
+	specialize.c\
+	stab.c\
+	tok.c\
+	type.c\
+	use.c\
+)
+lib libmi.a mi/^(cfg.c flatten.c dfcheck.c match.c reaching.c)
+lib libutil.a util/^(alloc.c bitset.c htab.c pack.c util.c)
+
+exe bin/6m 6/^(\
+	blob.c\
+	gen.c\
+	gengas.c\
+	genp9.c\
+	isel.c\
+	locs.c\
+	main.c\
+	ra.c\
+	peep.c\
+	simp.c\
+	typeinfo.c\
+) libmi.a libparse.a libutil.a
+file bin/6m '$outdir'/bin/6m 755
+file share/man/man1/mc.1 '$srcdir'/doc/mc.1 644
+
+exe bin/muse muse/muse.c libparse.a libutil.a
+file bin/muse '$outdir'/bin/muse 755
+file share/man/man1/muse.1 '$srcdir'/doc/muse.1 644
+
+build '$outdir'/_myrrt.s cat '$srcdir'/rt/^(start-linux.s common.s abort-linux.s)
+build '$outdir'/_myrrt.o as '$outdir'/_myrrt.s
+file lib/myr/_myrrt.o '$outdir'/_myrrt.o 644
