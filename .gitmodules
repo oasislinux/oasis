@@ -4,6 +4,9 @@
 [submodule "core/curl/src"]
 	path = core/curl/src
 	url = https://github.com/curl/curl
+[submodule "core/e2fsprogs/src"]
+	path = core/e2fsprogs/src
+	url = https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git
 [submodule "core/file/src"]
 	path = core/file/src
 	url = https://github.com/file/file

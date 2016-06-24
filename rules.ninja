@@ -37,7 +37,10 @@ rule yacc
   command = oldcwd=$$PWD && cd $outdir && $yacc $yaccflags $$oldcwd/$in
 
 rule sed
-  command = sed $expr >$out.tmp $in && mv $out.tmp $out
+  command = sed $expr $in >$out.tmp && mv $out.tmp $out
+
+rule awk
+  command = awk $expr $in >$out.tmp && mv $out.tmp $out
 
 rule githash
   command = rc ./scripts/hash.rc $builddir/$repo.git $out $args $in

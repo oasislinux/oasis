@@ -2,6 +2,7 @@ subgen awk
 subgen bc
 subgen bzip2
 subgen curl
+subgen e2fsprogs
 subgen file
 subgen git
 subgen iproute2
