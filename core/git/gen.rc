@@ -1,7 +1,5 @@
-version=2.9.0
 cflags\
-	-D NO_SYS_POLL_H\
-	-D 'SHA1_HEADER=\<openssl/sha.h\>' \
+	-include '$dir'/config.h\
 	-I '$builddir'/core/zlib/include\
 	-I '$builddir'/core/libressl/include\
 	-I '$builddir'/core/curl/include\
@@ -12,14 +10,11 @@ rule cmdlist 'oldcwd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$oldcwd/$in >
 cmd_docs=Documentation/git-*.txt
 build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/$cmd_docs
 
-let cflags '$cflags -DETC_GITATTRIBUTES=\"/etc/gitattributes\"' -- cc attr.c
-let cflags '$cflags -DGIT_VERSION=\"'$version'\" -DGIT_USER_AGENT=\"git/'$version'\"' -- cc version.c
-let cflags '$cflags -DGIT_LOCALE_PATH=\"/share/locale\"' -- cc gettext.c
-let cflags '$cflags -DETC_GITCONFIG=\"/etc/gitconfig\"' -- cc config.c
-let cflags '$cflags -DGIT_EXEC_PATH=\"libexec/git-core\" -DPREFIX=\"\"' -- cc exec_cmd.c
+deps=phony/core/^(curl libressl zlib)^/headers
+
+let cflags '$cflags ''-DPREFIX=""''' -- cc exec_cmd.c
 
 # src/Makefile:/^LIB_OBJS.\+=
-deps=phony/core/^(curl libressl zlib)^/headers
 lib libgit.a -d $"deps\
 	abspath.c\
 	advice.c\
@@ -29,7 +24,7 @@ lib libgit.a -d $"deps\
 	archive-zip.c\
 	archive.c\
 	argv-array.c\
-	attr.c.o\
+	attr.c\
 	base85.c\
 	bisect.c\
 	blob.c\
@@ -43,7 +38,7 @@ lib libgit.a -d $"deps\
 	commit.c\
 	compat/obstack.c\
 	compat/terminal.c\
-	config.c.o\
+	config.c\
 	connect.c\
 	connected.c\
 	convert.c\
@@ -73,7 +68,7 @@ lib libgit.a -d $"deps\
 	exec_cmd.c.o\
 	fetch-pack.c\
 	fsck.c\
-	gettext.c.o\
+	gettext.c\
 	gpg-interface.c\
 	graph.c\
 	grep.c\
@@ -168,7 +163,7 @@ lib libgit.a -d $"deps\
 	userdiff.c\
 	utf8.c\
 	varint.c\
-	version.c.o\
+	version.c\
 	versioncmp.c\
 	walker.c\
 	wildmatch.c\
@@ -203,15 +198,8 @@ libs=(\
 	)\
 )
 
-extra_cflags=(\
-	-D 'GIT_HTML_PATH=\"share/doc/git-doc\"' \
-	-D 'GIT_MAN_PATH=\"share/man\"' \
-	-D 'GIT_INFO_PATH=\"share/info\"' \
-)
-let cflags '$cflags '$"extra_cflags -- cc git.c
-let cflags '$cflags '$"extra_cflags -- cc builtin/help.c
 # src/Makefile:/^BUILTIN_OBJS.\+=
-exe git git.c.o builtin/^(\
+exe git git.c builtin/^(\
 	add.c\
 	am.c\
 	annotate.c\
@@ -251,7 +239,7 @@ exe git git.c.o builtin/^(\
 	get-tar-commit-id.c\
 	grep.c\
 	hash-object.c\
-	help.c.o\
+	help.c\
 	index-pack.c\
 	init-db.c\
 	interpret-trailers.c\
