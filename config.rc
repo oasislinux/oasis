@@ -1,0 +1,8 @@
+fn fs {
+	switch($1) {
+	case core/*
+		! ~ $2 include/* lib/*.a
+	case *
+		false
+	}
+}

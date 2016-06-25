@@ -1,5 +1,7 @@
 #!/bin/rc
 
+. ./config.rc
+
 flag e +
 
 fn usage {
@@ -45,7 +47,7 @@ fn gen {
 
 		. $absdir/gen.rc
 
-		build '$dir/local.ninja' gen '|' setup.rc ninja.rc '$dir/gen.rc'
+		build '$dir/local.ninja' gen '|' setup.rc config.rc ninja.rc '$dir/gen.rc'
 		phony ninja '$dir/local.ninja' $gen_inputs
 
 		if(! ~ $#tree_perms 0) {

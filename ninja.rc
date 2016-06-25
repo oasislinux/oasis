@@ -127,26 +127,31 @@ fn yacc {
 # packaging rules
 
 fn file {
-	out='$builddir/$repo.hash'/$1
-	mode=`{printf %4s $3 | tr ' ' 0 | tail -c 4}
-	let args 10$mode' '$1 --\
-		build $out githash $2 '|' '$builddir/$repo.stamp' scripts/hash.rc
-	tree_inputs=($tree_inputs $out)
+	if(fs $dir $1) {
+		out='$builddir/$repo.hash'/$1
+		mode=`{printf %4s $3 | tr ' ' 0 | tail -c 4}
+		let args 10$mode' '$1 --\
+			build $out githash $2 '|' '$builddir/$repo.stamp' scripts/hash.rc
+		tree_inputs=($tree_inputs $out)
 
-	if(! ~ $mode 0755 0644) tree_perms=($tree_perms 10$mode' '$1)
+		if(! ~ $mode 0755 0644) tree_perms=($tree_perms 10$mode' '$1)
+	}
 	status=()
 }
 
 fn dir {
-	tree_perms=($tree_perms '040'$2' '$1)
+	if(fs $dir $1) tree_perms=($tree_perms '040'$2' '$1)
 	status=()
 }
 
 fn sym {
-	out='$builddir/$repo.hash'/$1
-	let args 120000' '$1' '$2 --\
-		build $out githash '|' '$builddir/$repo.stamp' scripts/hash.rc
-	tree_inputs=($tree_inputs $out)
+	if(fs $dir $1) {
+		out='$builddir/$repo.hash'/$1
+		let args 120000' '$1' '$2 --\
+			build $out githash '|' '$builddir/$repo.stamp' scripts/hash.rc
+		tree_inputs=($tree_inputs $out)
+	}
+	status=()
 }
 
 status=()
