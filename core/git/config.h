@@ -1,3 +1,4 @@
+#define DEFAULT_GIT_TEMPLATE_DIR "share/git-core/templates"
 #define ETC_GITATTRIBUTES "/etc/gitattributes"
 #define ETC_GITCONFIG "/etc/gitconfig"
 #define GIT_EXEC_PATH "libexec/git-core"
