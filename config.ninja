@@ -3,11 +3,11 @@ builddir = out
 toolchain = default
 host_toolchain = default
 
-zic = zic
 lex = lex
-yacc = yacc
-python = python
 perl = perl
+python = python
+yacc = yacc
+zic = zic
 
 repo = root
 repo_tag = tree
