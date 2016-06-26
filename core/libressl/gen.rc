@@ -78,11 +78,13 @@ srchdrs=(\
 	libssl/src/ssl/^(srtp.h ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h)\
 	libcrypto/crypto/arch/amd64/opensslconf.h\
 )
-hdr=()
+hdrs=()
 for(srchdr in $srchdrs) {
-	hdr='$outdir'/include/openssl/`{basename $srchdr}
+	base=`{basename $srchdr}
+	hdr='$outdir'/include/openssl/$base
 	hdrs=($hdrs $hdr)
 	build $hdr copy '$srcdir'/src/lib/$srchdr
+	file include/openssl/$base '$srcdir'/src/lib/$hdr 644
 }
 phony headers $hdrs
 
@@ -265,6 +267,7 @@ lib libcrypto.a -d 'phony/$dir/headers' src/lib/libssl/src/crypto/^(\
 	rc4/^(rc4_enc.c rc4_skey.c)\
 	whrlpool/^(wp_block.c)\
 )
+file lib/libcrypto.a '$outdir'/libcrypto.a 644
 
 # src/lib/libssl/ssl/Makefile
 lib libssl.a src/lib/libssl/src/ssl/^(\
@@ -282,5 +285,6 @@ lib libssl.a src/lib/libssl/src/ssl/^(\
 	s3_cbc.c\
 	bs_ber.c bs_cbb.c bs_cbs.c\
 )
+file lib/libssl.a '$outdir'/libssl.a 644
 
 file share/libressl/cert.pem '$srcdir'/src/lib/libcrypto/cert.pem 644
