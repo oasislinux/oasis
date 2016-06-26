@@ -97,6 +97,7 @@ fetch devel/cparser git
 fetch devel/libfirm git
 fetch devel/make git
 fetch devel/mc git
+fetch devel/qbe git
 fetch extra/hostap git
 fetch extra/libevent git
 fetch extra/libfuse git

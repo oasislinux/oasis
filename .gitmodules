@@ -59,13 +59,13 @@
 [submodule "core/xz/src"]
 	path = core/xz/src
 	url = http://git.tukaani.org/xz.git
-[submodule "desktop/plan9fonts/src"]
-	path = desktop/plan9fonts/src
-	url = https://github.com/rtrn/plan9fonts
 [submodule "desktop/libpciaccess/src"]
 	path = desktop/libpciaccess/src
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
 	ignore = all
+[submodule "desktop/plan9fonts/src"]
+	path = desktop/plan9fonts/src
+	url = https://github.com/rtrn/plan9fonts
 [submodule "devel/cparser/src"]
 	path = devel/cparser/src
 	url = http://pp.ipd.kit.edu/git/cparser.git
@@ -78,6 +78,9 @@
 [submodule "devel/mc/src"]
 	path = devel/mc/src
 	url = https://github.com/oridb/mc
+[submodule "devel/qbe/src"]
+	path = devel/qbe/src
+	url = git://c9x.me/qbe.git
 [submodule "extra/hostap/src"]
 	path = extra/hostap/src
 	url = git://w1.fi/hostap.git
