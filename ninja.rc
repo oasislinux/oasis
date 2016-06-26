@@ -127,6 +127,7 @@ fn yacc {
 # packaging rules
 
 fn file {
+	~ $#* 3
 	if(fs $dir $1) {
 		out='$builddir/$repo.hash'/$1
 		mode=`{printf %4s $3 | tr ' ' 0 | tail -c 4}
@@ -140,11 +141,13 @@ fn file {
 }
 
 fn dir {
+	~ $#* 2
 	if(fs $dir $1) tree_perms=($tree_perms '040'$2' '$1)
 	status=()
 }
 
 fn sym {
+	~ $#* 2
 	if(fs $dir $1) {
 		out='$builddir/$repo.hash'/$1
 		let args 120000' '$1' '$2 --\
