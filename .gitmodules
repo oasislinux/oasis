@@ -16,6 +16,7 @@
 [submodule "core/iproute2/src"]
 	path = core/iproute2/src
 	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
+	ignore = all
 [submodule "core/kbd/src"]
 	path = core/kbd/src
 	url = https://git.kernel.org/pub/scm/linux/kernel/git/legion/kbd.git
@@ -39,6 +40,7 @@
 [submodule "core/plan9port/src"]
 	path = core/plan9port/src
 	url = https://github.com/9fans/plan9port
+	ignore = all
 [submodule "core/sbase/src"]
 	path = core/sbase/src
 	url = git://git.suckless.org/sbase
