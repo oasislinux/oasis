@@ -19,9 +19,11 @@
 [submodule "core/kbd/src"]
 	path = core/kbd/src
 	url = https://git.kernel.org/pub/scm/linux/kernel/git/legion/kbd.git
+	ignore = all
 [submodule "core/libressl/src"]
 	path = core/libressl/src
 	url = https://github.com/libressl-portable/openbsd
+	ignore = all
 [submodule "core/loksh/src"]
 	path = core/loksh/src
 	url = https://github.com/dimkr/loksh
@@ -40,6 +42,7 @@
 [submodule "core/sbase/src"]
 	path = core/sbase/src
 	url = git://git.suckless.org/sbase
+	ignore = all
 [submodule "core/sinit/src"]
 	path = core/sinit/src
 	url = git://git.suckless.org/sinit
@@ -49,6 +52,7 @@
 [submodule "core/ubase/src"]
 	path = core/ubase/src
 	url = git://git.suckless.org/ubase
+	ignore = all
 [submodule "core/zlib/src"]
 	path = core/zlib/src
 	url = https://github.com/madler/zlib
@@ -61,6 +65,7 @@
 [submodule "desktop/libpciaccess/src"]
 	path = desktop/libpciaccess/src
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
+	ignore = all
 [submodule "devel/cparser/src"]
 	path = devel/cparser/src
 	url = http://pp.ipd.kit.edu/git/cparser.git
@@ -88,9 +93,11 @@
 [submodule "extra/msmtp/src"]
 	path = extra/msmtp/src
 	url = git://git.code.sf.net/p/msmtp/code
+	ignore = all
 [submodule "extra/sshfs/src"]
 	path = extra/sshfs/src
 	url = https://github.com/libfuse/sshfs
+	ignore = all
 [submodule "extra/the_silver_searcher/src"]
 	path = extra/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher
