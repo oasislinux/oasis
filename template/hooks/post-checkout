@@ -2,8 +2,11 @@
 
 old=$1
 new=$2
+flag=$3
 
-if [ "$old" = 0000000000000000000000000000000000000000 ] ; then
+# If HEAD didn't change or if this is just a file checkout, do a complete
+# permissions fix.
+elif [ "$old" = 0000000000000000000000000000000000000000 ] || [ "$old" = "$new" ] || [ "$flag" = 0 ] ; then
 	set "$new"
 else
 	set "$old" "$new"
