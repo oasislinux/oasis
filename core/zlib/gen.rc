@@ -21,8 +21,12 @@ lib libz.a\
 	gzlib.c\
 	gzread.c\
 	gzwrite.c
+file lib/libz.a '$outdir'/libz.a 644
 
 # Only expose the headers needed to build with zlib.
 hdrs=(zlib.h zconf.h)
-for(hdr in $hdrs) build '$outdir'/include/$hdr copy '$srcdir'/$hdr
+for(hdr in $hdrs) {
+	build '$outdir'/include/$hdr copy '$srcdir'/$hdr
+	file include/$hdr '$srcdir'/$hdr 644
+}
 phony headers include/$hdrs
