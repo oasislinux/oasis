@@ -90,14 +90,14 @@ Build oasis.
 Prepare root repository.
 
 	cd $ROOT
-	git init --template src/oasis/out/template
+	git init --template src/oasis/template
 	git remote add local src/oasis/out/root.git
 	git fetch local
 	git checkout master
 
 Prepare your `/etc` repository.
 
-	git clone --template src/oasis/out/template https://github.com/michaelforney/oasis-etc etc
+	git clone --template src/oasis/template --config 'oasis.root=..' https://github.com/michaelforney/oasis-etc etc
 
 Set up your system configuration.
 
