@@ -91,6 +91,7 @@ fetch core/tz git
 fetch core/ubase git
 fetch core/xz git
 fetch core/zlib git
+fetch desktop/libpciaccess git
 fetch desktop/plan9fonts git
 fetch devel/cparser git
 fetch devel/libfirm git

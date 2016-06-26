@@ -58,6 +58,9 @@
 [submodule "desktop/plan9fonts/src"]
 	path = desktop/plan9fonts/src
 	url = https://github.com/rtrn/plan9fonts
+[submodule "desktop/libpciaccess/src"]
+	path = desktop/libpciaccess/src
+	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
 [submodule "devel/cparser/src"]
 	path = devel/cparser/src
 	url = http://pp.ipd.kit.edu/git/cparser.git

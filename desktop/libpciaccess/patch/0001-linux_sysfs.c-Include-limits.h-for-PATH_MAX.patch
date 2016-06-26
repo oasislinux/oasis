@@ -1,0 +1,30 @@
+From a371658cdd5df0ca35cce64de9694edd27106a06 Mon Sep 17 00:00:00 2001
+From: Felix Janda <felix.janda@posteo.de>
+Date: Fri, 1 May 2015 16:36:50 +0200
+Subject: [PATCH] linux_sysfs.c: Include <limits.h> for PATH_MAX
+
+Fixes compilation with musl libc.
+
+Tested-by: Bernd Kuhls <bernd.kuhls@t-online.de>
+Signed-off-by: Felix Janda <felix.janda@posteo.de>
+Reviewed-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+---
+ src/linux_sysfs.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/linux_sysfs.c b/src/linux_sysfs.c
+index 50d94cf..3f95e53 100644
+--- a/src/linux_sysfs.c
++++ b/src/linux_sysfs.c
+@@ -45,6 +45,7 @@
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
++#include <limits.h>
+ #include <sys/mman.h>
+ #include <dirent.h>
+ #include <errno.h>
+-- 
+2.9.0
+
