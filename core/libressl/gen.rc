@@ -84,7 +84,7 @@ for(srchdr in $srchdrs) {
 	hdr='$outdir'/include/openssl/$base
 	hdrs=($hdrs $hdr)
 	build $hdr copy '$srcdir'/src/lib/$srchdr
-	file include/openssl/$base '$srcdir'/src/lib/$hdr 644
+	file include/openssl/$base '$srcdir'/src/lib/$srchdr 644
 }
 phony headers $hdrs
 
