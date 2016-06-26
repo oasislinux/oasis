@@ -61,6 +61,9 @@
 [submodule "core/xz/src"]
 	path = core/xz/src
 	url = http://git.tukaani.org/xz.git
+[submodule "desktop/expat/src"]
+	path = desktop/expat/src
+	url = git://git.code.sf.net/p/expat/code_git
 [submodule "desktop/libpciaccess/src"]
 	path = desktop/libpciaccess/src
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git

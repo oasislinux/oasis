@@ -1,2 +1,3 @@
+subgen expat
 subgen libpciaccess
 subgen plan9fonts
