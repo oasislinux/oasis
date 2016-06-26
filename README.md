@@ -103,8 +103,10 @@ Set up your system configuration.
 
 	cd etc
 	ln -s ../share/zoneinfo/$TIMEZONE localtime
-	{ echo "/dev/$ROOTPART / ext4 rw,relatime 0 1"
-	  echo "/dev/$BOOTPART /boot ext2 rw,relatime,noauto 0 0" } >>fstab
+	cat >>fstab <<EOF
+	/dev/$ROOTPART / ext4 rw,relatime 0 1
+	/dev/$BOOTPART /boot ext2 rw,relatime,noauto 0 0
+	EOF
 
 Prepare for `chroot`.
 
