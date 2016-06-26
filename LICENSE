@@ -31,6 +31,7 @@ desktop/expat/expat_config.h
 desktop/libdrm/config.h
 desktop/libffi/fficonfig.h
 desktop/libpciaccess/config.h
+desktop/pixman/config.h
 desktop/wayland/config.h
 devel/make/config.h
 devel/mc/config.h

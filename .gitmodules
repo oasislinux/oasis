@@ -74,6 +74,9 @@
 	path = desktop/libpciaccess/src
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
 	ignore = all
+[submodule "desktop/pixman/src"]
+	path = desktop/pixman/src
+	url = https://anongit.freedesktop.org/git/pixman.git
 [submodule "desktop/plan9fonts/src"]
 	path = desktop/plan9fonts/src
 	url = https://github.com/rtrn/plan9fonts

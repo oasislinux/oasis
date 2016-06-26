@@ -95,6 +95,7 @@ fetch desktop/expat git
 fetch desktop/libpciaccess git
 fetch desktop/libdrm git
 fetch desktop/libffi git
+fetch desktop/pixman git
 fetch desktop/plan9fonts git
 fetch desktop/wayland git
 fetch devel/cparser git

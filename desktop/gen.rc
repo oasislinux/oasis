@@ -4,5 +4,6 @@ subgen expat
 subgen libdrm
 subgen libffi
 subgen libpciaccess
+subgen pixman
 subgen plan9fonts
 subgen wayland
