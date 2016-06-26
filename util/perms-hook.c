@@ -224,12 +224,12 @@ specialperms(void)
 	/* process in reverse order so that directory removals can succeed */
 	while (i >= 0 || j >= 0) {
 		if (i < 0)
-			n = 1;
-		else if (j < 0)
 			n = -1;
+		else if (j < 0)
+			n = 1;
 		else
 			n = strcmp(oldsp.perms[i].name, newsp.perms[j].name);
-		if (n >= 0) {
+		if (n <= 0) {
 			if (specialperm(&newsp.perms[j]) < 0 && errno != EXDEV)
 				error("specialperm:");
 			--j;
