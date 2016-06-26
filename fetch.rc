@@ -93,6 +93,7 @@ fetch core/xz git
 fetch core/zlib git
 fetch desktop/expat git
 fetch desktop/libpciaccess git
+fetch desktop/libdrm git
 fetch desktop/plan9fonts git
 fetch devel/cparser git
 fetch devel/libfirm git

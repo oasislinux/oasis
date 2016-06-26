@@ -28,6 +28,7 @@ core/sinit/config.h
 core/tz/version.h
 core/xz/config.h
 desktop/expat/expat_config.h
+desktop/libdrm/config.h
 desktop/libpciaccess/config.h
 devel/make/config.h
 devel/mc/config.h

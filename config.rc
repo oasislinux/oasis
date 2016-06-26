@@ -6,3 +6,7 @@ fn fs {
 		false
 	}
 }
+
+# depends on your video card
+# config_video_drivers=intel
+# config_video_drivers=nouveau

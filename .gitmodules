@@ -64,6 +64,9 @@
 [submodule "desktop/expat/src"]
 	path = desktop/expat/src
 	url = git://git.code.sf.net/p/expat/code_git
+[submodule "desktop/libdrm/src"]
+	path = desktop/libdrm/src
+	url = https://cgit.freedesktop.org/mesa/drm
 [submodule "desktop/libpciaccess/src"]
 	path = desktop/libpciaccess/src
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
