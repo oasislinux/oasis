@@ -66,6 +66,7 @@ patches).
 
 These instructions use some references to environment variables. You are meant to replace those with appropriate values for your system.
 
+* `EDITOR`: Your text editor.
 * `DRIVE`: Your boot disk device.
 * `ROOTPART`: Your / partition device.
 * `BOOTPART`: Your /boot partition device.
@@ -77,6 +78,10 @@ mount any sub-filesystems you want at this time (for example, `/boot`).
 	cd $ROOT
 	git clone https://github.com/michaelforney/oasis src/oasis
 	cd src/oasis
+
+Next, configure `config.rc` to your liking.
+
+	$EDITOR config.rc
 
 Now, fetch and extract the sources for the various packages.
 
