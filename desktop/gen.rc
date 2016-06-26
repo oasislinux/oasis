@@ -1,5 +1,8 @@
+rule wayland_proto 'wayland-scanner $type $in $out.tmp && mv $out.tmp $out'
+
 subgen expat
 subgen libdrm
 subgen libffi
 subgen libpciaccess
 subgen plan9fonts
+subgen wayland
