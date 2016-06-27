@@ -67,6 +67,10 @@
 [submodule "desktop/libdrm/src"]
 	path = desktop/libdrm/src
 	url = https://cgit.freedesktop.org/mesa/drm
+[submodule "desktop/libevdev/src"]
+	path = desktop/libevdev/src
+	url = https://anongit.freedesktop.org/git/libevdev.git
+	ignore = all
 [submodule "desktop/libffi/src"]
 	path = desktop/libffi/src
 	url = https://github.com/libffi/libffi
