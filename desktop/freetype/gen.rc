@@ -1,0 +1,41 @@
+cflags\
+	-Wall\
+	-D FT2_BUILD_LIBRARY\
+	-D FT_CONFIG_OPTION_SYSTEM_ZLIB\
+	-D HAVE_FCNTL_H\
+	-D HAVE_STDINT_H\
+	-D HAVE_UNISTD_H\
+	-isystem '$builddir'/core/zlib/include\
+	-I '$srcdir'/builds/unix\
+	-I '$srcdir'/include/freetype/config\
+	-I '$srcdir'/include
+
+cc src/gzip/ftgzip.c '||' phony/core/zlib/headers
+lib libfreetype.a builds/unix/ftsystem.c src/^(\
+	base/^(\
+		ftdebug.c ftbase.c ftbbox.c ftbdf.c ftbitmap.c ftcid.c\
+		ftfntfmt.c ftfstype.c ftgasp.c ftglyph.c ftgxval.c ftlcdfil.c\
+		ftmm.c ftotval.c ftpatent.c ftpfr.c ftstroke.c ftsynth.c\
+		fttype1.c ftwinfnt.c ftinit.c\
+	)\
+	autofit/autofit.c\
+	bdf/bdf.c\
+	bzip2/ftbzip2.c\
+	cache/ftcache.c\
+	cff/cff.c\
+	cid/type1cid.c\
+	gzip/ftgzip.c.o\
+	lzw/ftlzw.c\
+	pcf/pcf.c\
+	pfr/pfr.c\
+	psaux/psaux.c\
+	pshinter/pshinter.c\
+	psnames/psnames.c\
+	raster/raster.c\
+	sfnt/sfnt.c\
+	smooth/smooth.c\
+	truetype/truetype.c\
+	type1/type1.c\
+	type42/type42.c\
+	winfonts/winfnt.c\
+)

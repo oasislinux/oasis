@@ -92,6 +92,7 @@ fetch core/ubase git
 fetch core/xz git
 fetch core/zlib git
 fetch desktop/expat git
+fetch desktop/freetype git
 fetch desktop/libpciaccess git
 fetch desktop/libdrm git
 fetch desktop/libffi git
