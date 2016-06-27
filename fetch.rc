@@ -94,6 +94,7 @@ fetch core/zlib git
 fetch desktop/expat git
 fetch desktop/freetype git
 fetch desktop/libpciaccess git
+fetch desktop/libevdev git
 fetch desktop/libdrm git
 fetch desktop/libffi git
 fetch desktop/pixman git
