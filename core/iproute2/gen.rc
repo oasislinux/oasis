@@ -44,7 +44,7 @@ man=(\
 	)\
 ) for(man in man/man8/$man.8) file share/$man '$srcdir'/$man 644
 for(man in ip-address ip-link ip-route) {
-	let expr 's,@SYSCONFDIR@,/etc,g' --\
-		build '$outdir'/$man.8 sed '$srcdir'/man/man8/$man.8.in
+	build '$outdir'/$man.8 sed '$srcdir'/man/man8/$man.8.in ; with\
+		expr s,@SYSCONFDIR@,/etc,g
 	file share/man/man8/$man.8 '$outdir'/$man.8 644
 }

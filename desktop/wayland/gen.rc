@@ -6,12 +6,12 @@ cflags\
 	-I '$outdir'/include \
 	-I '$srcdir'/src
 
-exprs=(\
+build '$outdir'/wayland-version.h sed '$srcdir'/src/wayland-version.h.in ; exprs=(\
 	-e s,@WAYLAND_VERSION_MAJOR@,1,\
 	-e s,@WAYLAND_VERSION_MINOR@,11,\
 	-e s,@WAYLAND_VERSION_MICRO@,0,\
 	-e s,@WAYLAND_VERSION@,1.11.0,\
-) let expr $"exprs -- build '$outdir'/wayland-version.h sed '$srcdir'/src/wayland-version.h.in
+) with expr $"exprs
 
 cc src/wayland-util.c
 cc src/wayland-os.c
@@ -22,8 +22,9 @@ exe wayland-scanner -d phony/desktop/expat/headers\
 	'$builddir'/desktop/expat/libexpat.a
 
 for(type in client server) {
-	let type $type-header -- build '$outdir'/include/wayland-$type-protocol.h\
+	build '$outdir'/include/wayland-$type-protocol.h\
 		wayland_proto '$srcdir'/protocol/wayland.xml
+	with type $type-header
 }
 hdrs=wayland-^(client-core client egl-core egl server-core server util version)^.h
 for(hdr in $hdrs) build '$outdir'/include/$hdr copy '$srcdir'/src/$hdr
@@ -31,8 +32,9 @@ build '$outdir'/include/wayland-cursor.h copy '$srcdir'/cursor/wayland-cursor.h
 
 phony headers include/^($hdrs wayland-^(cursor.h (client server)^-protocol.h))
 
-let type code -- build '$outdir'/wayland-protocol.c\
+build '$outdir'/wayland-protocol.c\
 	wayland_proto '$srcdir'/protocol/wayland.xml
+with type code
 cc '$outdir'/wayland-protocol.c
 
 lib libwayland-server.a -d 'phony/$dir/headers' src/^(\

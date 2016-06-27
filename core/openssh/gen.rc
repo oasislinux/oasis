@@ -7,14 +7,13 @@ cflags\
 	-I '$srcdir' \
 	-I '$srcdir'/openbsd-compat\
 
-defs=(\
+build '$outdir'/umac128.c.o cc '$srcdir'/umac.c ; defs=(\
 	'-DUMAC_OUTPUT_LEN=16' \
 	'-Dumac_new=umac128_new' \
 	'-Dumac_update=umac128_update' \
 	'-Dumac_final=umac128_final' \
 	'-Dumac_delete=umac128_delete' \
-) let cflags '$cflags '$"defs --\
-	build '$outdir'/umac128.c.o cc '$srcdir'/umac.c
+) with cflags '$cflags '$"defs
 
 lib libopenbsd-compat.a openbsd-compat/^(\
 	base64.c basename.c bcrypt_pbkdf.c bindresvport.c blowfish.c daemon.c\

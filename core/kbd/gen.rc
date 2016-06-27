@@ -39,8 +39,8 @@ fn x {
 	file bin/$exe '$outdir'/$exe 755
 	if(~ $sect ?~) {
 		sect=`{printf %s $sect | cut -c -1}
-		let expr s,@DATADIR@,/share/kbd,g --\
-			build '$outdir'/$exe.$sect sed '$srcdir'/docs/man/man$sect/$exe.$sect.in
+		build '$outdir'/$exe.$sect sed '$srcdir'/docs/man/man$sect/$exe.$sect.in ; with\
+			expr s,@DATADIR@,/share/kbd,g
 		man='$outdir'/$exe.$sect
 	}
 	if not man='$srcdir'/docs/man/man$sect/$exe.$sect

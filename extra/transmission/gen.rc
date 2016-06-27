@@ -106,8 +106,8 @@ subninja '$dir'/libnatpmp.ninja
 		-idirafter core/openbsd/src/sys
 
 	hdr='$outdir'/miniupnp/miniupnpcstrings.h
-	let expr '-e s,OS/version,Linux, -e s,version,,' --\
-		build $hdr sed '$srcdir'/third-party/miniupnp/miniupnpcstrings.h.in
+	build $hdr sed '$srcdir'/third-party/miniupnp/miniupnpcstrings.h.in ; with\
+		expr '-e s,OS/version,Linux, -e s,version,,'
 
 	lib libminiupnp.a -d $hdr third-party/miniupnp/^(\
 		connecthostport.c\

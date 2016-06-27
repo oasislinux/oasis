@@ -12,7 +12,7 @@ build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/$
 
 deps=phony/core/^(curl libressl zlib)^/headers
 
-let cflags '$cflags ''-DPREFIX=""''' -- cc exec_cmd.c
+cc exec_cmd.c ; with cflags '$cflags ''-DPREFIX=""'''
 
 # src/Makefile:/^LIB_OBJS.\+=
 lib libgit.a -d $"deps\

@@ -16,14 +16,14 @@ set subst\
 
 fn et {
 	et=$1 src='$outdir'/$2 hdr='$outdir'/$3
-	let expr '-f $srcdir/lib/et/et_c.awk -v outfile=/dev/stdout outfn='`{basename $src} --\
-		build $src awk $et '|' '$srcdir'/lib/et/et_c.awk
-	let expr '-f $srcdir/lib/et/et_h.awk -v outfile=/dev/stdout outfn='`{basename $hdr} --\
-		build $hdr awk $et '|' '$srcdir'/lib/et/et_h.awk
+	build $src awk $et '|' '$srcdir'/lib/et/et_c.awk ; with\
+		expr '-f $srcdir/lib/et/et_c.awk -v outfile=/dev/stdout outfn='`{basename $src}
+	build $hdr awk $et '|' '$srcdir'/lib/et/et_h.awk ; with\
+		expr '-f $srcdir/lib/et/et_h.awk -v outfile=/dev/stdout outfn='`{basename $hdr}
 }
 
 fn subst {
-	let expr '$subst' -- build '$outdir'/$1 sed '$srcdir'/$2
+	build '$outdir'/$1 sed '$srcdir'/$2 ; with expr '$subst'
 }
 
 fn man {

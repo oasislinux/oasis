@@ -4,8 +4,8 @@ cflags\
 	-I include\
 	-idirafter core/openbsd/src/sys
 
-let expr '-f $srcdir/make-event-config.sed' --\
-	build '$outdir'/include/event2/event-config.h sed '$dir'/config.h
+build '$outdir'/include/event2/event-config.h sed '$dir'/config.h ; with\
+	expr '-f $srcdir/make-event-config.sed'
 
 phony headers '$outdir'/include/event2/event-config.h
 

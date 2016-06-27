@@ -17,8 +17,8 @@ rule rlimit '$outdir/mk_rlimit >$out.tmp && mv $out.tmp $out'
 build '$outdir'/rlimit_defs.c.in rlimit '|' '$outdir'/mk_rlimit
 
 rule sysstr '$outdir/mksysstr $type >$out.tmp && mv $out.tmp $out'
-let type errno -- build '$outdir'/sysstr_errno.c.in sysstr '|' '$outdir'/mksysstr
-let type signo -- build '$outdir'/sysstr_signo.c.in sysstr '|' '$outdir'/mksysstr
+build '$outdir'/sysstr_errno.c.in sysstr '|' '$outdir'/mksysstr ; with type errno
+build '$outdir'/sysstr_signo.c.in sysstr '|' '$outdir'/mksysstr ; with type signo
 
 phony internal_headers outvec_STDOUT.h rlimit_defs.c.in sysstr_^(errno signo)^.c.in
 
@@ -70,8 +70,8 @@ fn x {
 
 x perp perpd perpd.c perpd_conn.c perpd_svdef.c
 
-let cflags '$cflags -D ''TINYLOG_ZIP="/bin/gzip"'' -D ''ZIP_EXT=".gz"''' --\
-	cc perp/tinylog.c
+cc perp/tinylog.c ; with\
+	cflags '$cflags -D ''TINYLOG_ZIP="/bin/gzip"'' -D ''ZIP_EXT=".gz"'''
 x perp tinylog tinylog.c.o
 
 for(exe in perp^(boot ctl hup ls ok stat)) x perp $exe $exe.c
