@@ -1,4 +1,6 @@
 cflags -I include -idirafter core/openbsd/src/sys -D_GNU_SOURCE
+
+cc emacs.c '||' '$builddir'/core/openbsd/fetch.stamp
 exe ksh\
 	alloc.c\
 	c_ksh.c\
@@ -6,7 +8,7 @@ exe ksh\
 	c_test.c\
 	c_ulimit.c\
 	edit.c\
-	emacs.c\
+	emacs.c.o\
 	eval.c \
 	exec.c\
 	expr.c\
