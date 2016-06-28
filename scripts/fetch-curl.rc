@@ -18,11 +18,11 @@ if(! sha256sum -c sha256 >[2]/dev/null) {
 
 for(archive in `{awk '{print $2}' sha256}) {
 	switch($archive) {
-	case *.gz
+	case *.tar.gz
 		tool=zcat
-	case *.bz2
+	case *.tar.bz2
 		tool=bzcat
-	case *.xz
+	case *.tar.xz
 		tool=xzcat
 	case *
 		tool=()
