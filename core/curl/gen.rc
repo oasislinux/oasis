@@ -48,7 +48,7 @@ lib libcurl.a -d $"deps lib/^(\
 	)\
 )
 
-build '$outdir'/tool_hugehelp.c.o cc '$dir'/tool_hugehelp.c
+build '$outdir'/tool_hugehelp.c.o cc '$dir'/tool_hugehelp.c '||' '$srcdir'/src/tool_hugehelp.h
 
 # src/src/Makefile.inc:/^CURL_CFILES
 exe curl -d '$outdir'/include/curl/curlbuild.h\
