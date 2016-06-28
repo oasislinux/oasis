@@ -12,6 +12,6 @@ cd $1
 git submodule update --init --checkout src
 if([ -d patch ]) {
 	patches=patch/*
-	git -C src am ../$patches
+	git -C src am '--whitespace=nowarn' ../$patches
 }
 status=()
