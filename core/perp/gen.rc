@@ -7,7 +7,7 @@ cflags\
 	exe mk_outvec lasagna/outvec/mk_outvec.c
 	exe mk_rlimit lasagna/rlimit/mk_rlimit.c
 	exe mksysstr lasagna/sysstr/mksysstr.c
-} >../tools.ninja
+} >tools.ninja
 subninja '$dir/tools.ninja'
 
 rule outvec '$outdir/mk_outvec >$out.tmp && mv $out.tmp $out'

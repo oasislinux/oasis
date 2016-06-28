@@ -45,7 +45,7 @@ exe file -d 'phony/$dir/headers' src/file.c libmagic.a '$builddir/core/zlib/libz
 file bin/file '$outdir'/file 755
 file share/man/man1/file.1 '$outdir'/file.1 644
 
-srcs=`{grep -v '^#' ../magic.txt}
+srcs=`{grep -v '^#' magic.txt}
 for(src in $srcs) build '$outdir'/magic/$src copy '$srcdir'/magic/Magdir/$src
 for(src in Header Localstuff) build '$outdir'/magic/$src copy '$srcdir'/magic/$src
 magic_outs=magic/^(Header Localstuff $srcs)

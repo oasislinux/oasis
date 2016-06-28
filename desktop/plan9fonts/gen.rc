@@ -1,4 +1,4 @@
-for(f in `{grep -v '^#' ../fonts.txt}) {
+for(f in `{grep -v '^#' fonts.txt}) {
 	file share/fonts/plan9/$f '$srcdir'/$f 644
 }
 

@@ -20,13 +20,13 @@ tzdata=(\
 	factory\
 )
 for(data in $tzdata) {
-	zones=`{awk '/^Zone/ {print $2}' $data}
+	zones=`{awk '/^Zone/ {print $2}' src/$data}
 	if(! ~ $#zones 0) {
 		outs='$outdir'/zoneinfo/$zones
 		build $"outs zic '$srcdir'/$data
 		for(zone in $zones) file share/zoneinfo/$zone '$outdir'/zoneinfo/$zone 644
 	}
-	links=`{awk '/^Link/ {print $2 " " $3}' $data}
+	links=`{awk '/^Link/ {print $2 " " $3}' src/$data}
 	for(line in $links) {
 		# TODO: Figure out how to do this better. Maybe just readlink
 		# the symlinks constructed by zic?

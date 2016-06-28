@@ -43,11 +43,7 @@ fn gen {
 		if(~ $dir .) set outdir '$builddir'
 		if not set outdir '$builddir/$dir'
 
-		if([ -d src ]) {
-			cd src
-			if(~ $dir .) set srcdir src
-			if not set srcdir '$dir/src'
-		}
+		if([ -e .rev ]) set srcdir '$dir'/src
 
 		. $absdir/gen.rc
 
@@ -70,7 +66,7 @@ fn gen {
 	wait
 }
 
-if(! ~ $#* 0) { gen $1 ; exit }
+if(! ~ $#* 0) {gen $1 ; exit}
 
 recurse=1
 @ gen .
