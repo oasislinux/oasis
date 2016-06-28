@@ -2,12 +2,13 @@
 
 flag e +
 
-if(! ~ $#* 1) {
-	echo 'usage: fetch-curl.rc dir' >[1=2]
+if(~ $#* 0) {
+	echo 'usage: fetch-curl.rc dir pattern...' >[1=2]
 	exit 2
 }
 
 cd $1
+shift
 
 if([ -e src ]) rm -rf src
 
@@ -27,7 +28,13 @@ for(archive in `{awk '{print $2}' sha256}) {
 	case *
 		tool=()
 	}
-	if(! ~ $#tool 0) $tool $archive | pax -r -s '/^\.\|[^\/]*/src/'
+	pats=()
+	while(! ~ $1 '' ';') {
+		pats=($pats $1)
+		shift
+	}
+	shift
+	if(! ~ $#tool 0) $tool $archive | pax -r -s '/^\.\|[^\/]*/src/' $pats
 }
 
 if([ -d patch ]) {

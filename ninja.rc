@@ -160,6 +160,11 @@ fn fetch {
 		# Use a phony rule and stamp file to prevent ninja from making
 		# parent directories.
 		build '$outdir'/fetch.stamp fetch$1 '|' '$dir'/.rev
+		shift
+		if(! ~ $#* 0) {
+			*=''''$*''''
+			with args $"*
+		}
 		build $"allsrcs phony '$outdir'/fetch.stamp
 	}
 	status=()

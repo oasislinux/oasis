@@ -62,13 +62,13 @@ rule gitinit
   command = mkdir -p $builddir/$repo.git && git -C $builddir/$repo.git init --bare && touch $out
 
 rule fetchcurl
-  command = rc ./scripts/fetch-curl.rc $dir && touch $out
+  command = rc ./scripts/fetch-curl.rc $dir $args && touch $out
   restat = 1
   generator = 1
   pool = console
 
 rule fetchgit
-  command = rc ./scripts/fetch-git.rc $dir && touch $out
+  command = rc ./scripts/fetch-git.rc $dir $args && touch $out
   restat = 1
   generator = 1
   pool = console
