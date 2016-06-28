@@ -54,4 +54,11 @@ exe yacc usr.bin/yacc/^(\
 file bin/yacc '$outdir'/yacc 755
 file share/man/man1/yacc.1 '$srcdir'/usr.bin/yacc/yacc.1 644
 
-fetch curl
+srcpats=./^(\
+	bin/pax\
+	include\
+	lib/^(libc/^(crypt gen stdlib string) libcrypto/crypto)\
+	usr.bin/^(diff fmt patch yacc)\
+)^/'*'
+syspats='./sys/sys/*'
+fetch curl $srcpats ';' $syspats
