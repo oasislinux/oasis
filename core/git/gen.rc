@@ -7,8 +7,7 @@ cflags\
 	-I '$outdir'
 
 rule cmdlist 'oldcwd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$oldcwd/$in >$$oldcwd/$out.tmp && mv $$oldcwd/$out.tmp $$oldcwd/$out'
-cmd_docs=Documentation/git-*.txt
-build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/$cmd_docs
+build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/Documentation/`{grep -v '^#' ../commands.txt}
 
 deps=phony/core/^(curl libressl zlib)^/headers
 
