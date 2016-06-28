@@ -91,12 +91,6 @@
 	path = desktop/wayland/src
 	url = https://anongit.freedesktop.org/git/wayland/wayland.git
 	ignore = all
-[submodule "devel/cparser/src"]
-	path = devel/cparser/src
-	url = http://pp.ipd.kit.edu/git/cparser.git
-[submodule "devel/libfirm/src"]
-	path = devel/libfirm/src
-	url = http://pp.ipd.kit.edu/git/libfirm.git
 [submodule "devel/make/src"]
 	path = devel/make/src
 	url = git://git.sv.gnu.org/make.git

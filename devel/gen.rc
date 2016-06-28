@@ -1,5 +1,3 @@
-subgen cparser
-subgen libfirm
 subgen make
 subgen mc
 subgen qbe
