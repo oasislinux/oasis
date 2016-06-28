@@ -11,6 +11,9 @@ fn usage {
 
 if(! ~ $#* 0 1) usage
 
+nl='
+'
+
 . ./ninja.rc
 
 fn subgen {
@@ -28,6 +31,7 @@ fn gen {
 
 	cd $1
 
+	allsrcs=()
 	tree_perms=()
 	perms_inputs=()
 	tree_inputs=()

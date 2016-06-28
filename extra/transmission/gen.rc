@@ -156,3 +156,5 @@ file share/man/man1/transmission-daemon.1 '$srcdir'/daemon/transmission-daemon.1
 exe transmission-remote -d $"deps daemon/remote.c libtransmission.a $libs
 file bin/transmission-remote '$outdir'/transmission-remote 755
 file share/man/man1/transmission-remote.1 '$srcdir'/daemon/transmission-remote.1 644
+
+fetch curl

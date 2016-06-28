@@ -6,3 +6,5 @@ exe pigz -d phony/core/zlib/headers\
 	'$builddir'/core/zlib/libz.a
 file bin/pigz '$outdir'/pigz 755
 for(alias in gzip gunzip zcat) sym bin/$alias pigz
+
+fetch git

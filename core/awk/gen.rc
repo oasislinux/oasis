@@ -18,3 +18,5 @@ exe awk -d '$outdir'/ytab.h\
 	'$outdir'/^(gram.tab.c proctab.c)
 file bin/awk '$outdir'/awk 755
 file share/man/man1/awk.1 '$srcdir'/awk.1 644
+
+fetch git

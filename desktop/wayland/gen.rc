@@ -52,3 +52,5 @@ lib libwayland-client.a -d 'phony/$dir/headers' src/^(\
 	wayland-client.c\
 	wayland-util.c.o\
 ) wayland-protocol.c.o
+
+fetch git

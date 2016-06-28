@@ -92,3 +92,5 @@ x uptime 1
 x vtallow 1
 x watch 1
 x who 1
+
+fetch git

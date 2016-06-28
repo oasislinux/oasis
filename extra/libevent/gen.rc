@@ -18,3 +18,5 @@ lib libevent.a -d 'phony/$dir/headers' \
 	epoll.c signal.c\
 	\
 	event_tagging.c http.c evdns.c evrpc.c
+
+fetch git

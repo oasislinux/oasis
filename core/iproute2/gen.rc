@@ -48,3 +48,5 @@ for(man in ip-address ip-link ip-route) {
 		expr s,@SYSCONFDIR@,/etc,g
 	file share/man/man8/$man.8 '$outdir'/$man.8 644
 }
+
+fetch git

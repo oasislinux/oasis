@@ -1,0 +1,17 @@
+#!/bin/rc
+
+flag e +
+
+if(! ~ $#* 1) {
+	echo 'usage: fetch-git.rc dir' >[1=2]
+	exit 2
+}
+
+cd $1
+
+git submodule update --init --checkout src
+if([ -d patch ]) {
+	patches=patch/*
+	git -C src am ../$patches
+}
+status=()

@@ -2,3 +2,5 @@ fonts=(terminus)
 for(font in $fonts) for(f in $font/^(*.font *.*-*)) {
 	file share/fonts/plan9/$f '$srcdir'/$f 644
 }
+
+fetch git

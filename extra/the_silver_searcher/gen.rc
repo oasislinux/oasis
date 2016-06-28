@@ -10,3 +10,5 @@ exe ag -d phony/extra/pcre/headers src/^(\
 ) '$builddir'/extra/pcre/libpcre.a
 file bin/ag '$outdir'/ag 755
 file share/man/man1/ag.1 '$srcdir'/doc/ag.1 644
+
+fetch git

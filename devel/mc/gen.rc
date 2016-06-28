@@ -48,3 +48,5 @@ file share/man/man1/muse.1 '$srcdir'/doc/muse.1 644
 build '$outdir'/_myrrt.s cat '$srcdir'/rt/^(start-linux.s common.s abort-linux.s)
 build '$outdir'/_myrrt.o as '$outdir'/_myrrt.s
 file lib/myr/_myrrt.o '$outdir'/_myrrt.o 644
+
+fetch git

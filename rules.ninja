@@ -60,3 +60,13 @@ rule gitarchive
 
 rule gitinit
   command = mkdir -p $builddir/$repo.git && git -C $builddir/$repo.git init --bare && touch $out
+
+rule fetchcurl
+  command = rc ./scripts/fetch-curl.rc $dir
+  restat = 1
+  generator = 1
+
+rule fetchgit
+  command = rc ./scripts/fetch-git.rc $dir
+  restat = 1
+  generator = 1

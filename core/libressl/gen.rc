@@ -288,3 +288,5 @@ lib libssl.a src/lib/libssl/src/ssl/^(\
 file lib/libssl.a '$outdir'/libssl.a 644
 
 file share/libressl/cert.pem '$srcdir'/src/lib/libcrypto/cert.pem 644
+
+fetch git

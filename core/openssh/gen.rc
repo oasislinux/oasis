@@ -122,3 +122,5 @@ exe sftp-server\
 	libssh.a libopenbsd-compat.a '$builddir'/core/openbsd/libbsd.a
 file libexec/sftp-server '$outdir'/sftp-server 755
 file share/man/man8/sftp-server.8 '$srcdir'/sftp-server.8 644
+
+fetch git

@@ -35,3 +35,5 @@ if(~ nouveau $config_video_drivers) {
 }
 
 status=()
+
+fetch git

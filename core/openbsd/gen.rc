@@ -53,3 +53,5 @@ exe yacc usr.bin/yacc/^(\
 ) libbsd.a
 file bin/yacc '$outdir'/yacc 755
 file share/man/man1/yacc.1 '$srcdir'/usr.bin/yacc/yacc.1 644
+
+fetch curl

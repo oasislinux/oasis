@@ -63,3 +63,5 @@ for(man in mandoc.1 demandoc.1 man.1 mandoc.3 man.7 mdoc.7 roff.7 eqn.7 tbl.7 ma
 	sect=`{printf %s $man | tail -c 1}
 	file share/man/man$sect/$man '$srcdir'/$man 644
 }
+
+fetch curl

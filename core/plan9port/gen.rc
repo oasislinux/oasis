@@ -405,3 +405,5 @@ for(exe in rc sam) {
 }
 
 file lib/rcmain '$srcdir'/rcmain 644
+
+fetch git

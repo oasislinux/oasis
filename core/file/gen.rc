@@ -56,3 +56,5 @@ exe file -d 'phony/$dir/headers' src/file.c libmagic.a '$builddir/core/zlib/libz
 file bin/file '$outdir'/file 755
 file share/man/man1/file.1 '$outdir'/file.1 644
 file share/file/magic.mgc '$outdir'/magic.mgc 644
+
+fetch git

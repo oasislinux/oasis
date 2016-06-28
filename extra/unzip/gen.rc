@@ -11,3 +11,5 @@ exe unzip\
 	'$builddir'/core/bzip2/libbz2.a
 file bin/unzip '$outdir'/unzip 755
 file share/man/man1/unzip.1 '$srcdir'/man/unzip.1 644
+
+fetch curl

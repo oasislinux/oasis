@@ -28,3 +28,5 @@ exe msmtp src/^(\
 
 file bin/msmtp '$outdir'/msmtp 755
 file share/man/man1/msmtp.1 '$srcdir'/doc/msmtp.1 644
+
+fetch git

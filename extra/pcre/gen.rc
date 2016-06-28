@@ -37,3 +37,5 @@ lib libpcre.a -d 'phony/$dir/headers' \
 	pcre_version.c\
 	pcre_xclass.c\
 	'$outdir'/pcre_chartables.c
+
+fetch curl

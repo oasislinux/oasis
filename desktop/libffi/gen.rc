@@ -22,3 +22,5 @@ lib libffi.a -d 'phony/$dir/headers' src/^(\
 	x86/^(ffi64.c unix64.S ffi.c sysv.S)\
 )
 file lib/libffi.a '$outdir'/libffi.a 644
+
+fetch git

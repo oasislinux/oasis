@@ -12,3 +12,5 @@ phony headers '$outdir'/include/$hdrs
 
 lib libevdev.a libevdev/^(libevdev.c libevdev-names.c)
 file lib/libevdev.a '$outdir'/libevdev.a 644
+
+fetch git

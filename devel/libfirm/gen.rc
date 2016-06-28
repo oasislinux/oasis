@@ -57,3 +57,5 @@ for(backend in $backends) {
 phony internal_headers $genhdrs 'phony/$dir/headers'
 
 ar libfirm.a $objs
+
+fetch git

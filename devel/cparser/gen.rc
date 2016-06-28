@@ -25,3 +25,5 @@ exe cparser -d '$outdir/revision.h phony/devel/libfirm/headers' src/^(\
 ) '$builddir'/devel/libfirm/libfirm.a
 file bin/cparser '$outdir'/cparser 755
 file share/man/man1/cparser.1 '$srcdir'/cparser.1 644
+
+fetch git

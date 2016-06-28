@@ -29,3 +29,5 @@ lib libfuse.a lib/^(\
 	\
 	mount.c mount_util.c.o\
 )
+
+fetch git

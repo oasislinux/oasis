@@ -16,3 +16,5 @@ lib libpciaccess.a src/^(\
 	common_vgaarb.c\
 	linux_sysfs.c linux_devmem.c\
 )
+
+fetch git

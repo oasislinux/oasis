@@ -31,8 +31,9 @@ fn rule {
 }
 
 fn build {
-	out=$1 rule=$2 {
+	out=$1 rule=$2 src=() {
 		shift 2
+		for(src) if(~ $src '$srcdir'/*) allsrcs=($allsrcs $src)
 		echo build $out: $rule $*
 	}
 }
@@ -151,6 +152,11 @@ fn sym {
 		tree_inputs=($tree_inputs $out)
 	}
 	status=()
+}
+
+fn fetch {
+	ifs=$nl {allsrcs=`{printf %s\n $allsrcs | sort -u}}
+	build $"allsrcs fetch$1 '|' '$dir'/.rev
 }
 
 status=()

@@ -195,3 +195,5 @@ exe bin/resize2fs -d 'phony/$dir/headers' resize/^(\
 ) $libs
 file bin/resize2fs '$outdir'/bin/resize2fs 755
 man resize/resize2fs.8.in
+
+fetch git

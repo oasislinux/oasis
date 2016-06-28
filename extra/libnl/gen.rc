@@ -48,3 +48,5 @@ lib libnl-3.a -d 'phony/$dir/headers' lib/^(\
 
 lib libnl-genl-3.a -d 'phony/$dir/headers' \
 	lib/genl/^(ctrl.c family.c genl.c mngt.c)
+
+fetch git

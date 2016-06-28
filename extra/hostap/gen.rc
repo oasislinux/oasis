@@ -83,3 +83,5 @@ exe bin/wpa_cli -d $"deps\
 	wpa_supplicant/wpa_cli.c\
 	libcommon.a
 file bin/wpa_cli '$outdir'/bin/wpa_cli 755
+
+fetch git

@@ -105,3 +105,4 @@ exe curl -d '$outdir'/include/curl/curlbuild.h\
 file bin/curl '$outdir'/curl 755
 file share/man/man1/curl.1 '$srcdir'/docs/curl.1 644
 
+fetch git

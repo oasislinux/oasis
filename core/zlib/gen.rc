@@ -30,3 +30,5 @@ for(hdr in $hdrs) {
 	file include/$hdr '$srcdir'/$hdr 644
 }
 phony headers include/$hdrs
+
+fetch git

@@ -29,3 +29,5 @@ exe ninja src/^(\
 )
 
 file bin/ninja '$outdir'/ninja 755
+
+fetch git

@@ -37,3 +37,5 @@ for(data in $tzdata) {
 		sym share/zoneinfo/$link(2) $target
 	}
 }
+
+fetch git

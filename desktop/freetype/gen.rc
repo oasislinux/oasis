@@ -39,3 +39,5 @@ lib libfreetype.a builds/unix/ftsystem.c src/^(\
 	type42/type42.c\
 	winfonts/winfnt.c\
 )
+
+fetch git

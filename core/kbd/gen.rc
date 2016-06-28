@@ -74,3 +74,5 @@ keymaps=(\
 	file share/kbd/$keymap.gz '$outdir'/$keymap.gz 644
 }
 sym share/kbd/keymaps/ppc mac
+
+fetch git

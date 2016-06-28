@@ -376,3 +376,5 @@ file share/git-core/templates/info/exclude '$srcdir'/templates/info--exclude 644
 dir share/git-core/templates/hooks 755
 
 # TODO: Build and install man pages.
+
+fetch git
