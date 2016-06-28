@@ -26,13 +26,12 @@ for(data in $tzdata) {
 		build $"outs zic '$srcdir'/$data
 		for(zone in $zones) file share/zoneinfo/$zone '$outdir'/zoneinfo/$zone 644
 	}
-	ifs='
-' { links=`{awk '/^Link/ {print $2 " " $3}' $data} }
+	links=`{awk '/^Link/ {print $2 " " $3}' $data}
 	for(line in $links) {
 		# TODO: Figure out how to do this better. Maybe just readlink
 		# the symlinks constructed by zic?
-		link=`{printf %s $line}
-		ifs=/ { parts=`{printf %s $link(1)} }
+		ifs=' ' {link=`{printf %s $line}}
+		ifs='/' {parts=`{printf %s $link(1)}}
 		target=`{awk 'BEGIN {for(i=1; i<'$#parts'; i++) printf "../"}'}^$link(1)
 		sym share/zoneinfo/$link(2) $target
 	}

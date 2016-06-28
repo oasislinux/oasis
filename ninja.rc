@@ -155,7 +155,7 @@ fn sym {
 }
 
 fn fetch {
-	ifs=$nl {allsrcs=`{printf %s\n $allsrcs | sort -u}}
+	allsrcs=`{printf %s\n $allsrcs | sort -u}
 	build $"allsrcs fetch$1 '|' '$dir'/.rev
 }
 

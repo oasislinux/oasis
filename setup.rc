@@ -11,7 +11,7 @@ fn usage {
 
 if(! ~ $#* 0 1) usage
 
-nl='
+ifs='
 '
 
 . ./ninja.rc
