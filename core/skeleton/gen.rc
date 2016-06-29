@@ -5,7 +5,7 @@ dir etc 755
 dir home 755
 dir mnt 755
 dir proc 755
-dir root 755
+dir root 700
 dir run 755
 dir sys 755
 dir tmp 755
