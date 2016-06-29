@@ -11,6 +11,6 @@ dir sys 755
 dir tmp 755
 dir var 755
 dir var/empty 755
-sym usr .
+sym usr/bin ../bin
 
 file .gitignore '$dir'/gitignore 644
