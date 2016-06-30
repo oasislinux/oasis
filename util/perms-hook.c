@@ -307,7 +307,7 @@ readchanges(char *old, char *new)
 		if (lines[!cur].buf)
 			for (s = lines[!cur].buf; *s && *s == *diff; ++s, ++diff);
 		/* set permissions on each parent directory after that difference */
-		for (s = path + n; s > diff; --s) {
+		for (s = path + n; s >= diff; --s) {
 			if (*s != '/')
 				continue;
 			*s = '\0';
