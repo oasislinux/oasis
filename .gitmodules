@@ -100,9 +100,13 @@
 [submodule "devel/qbe/src"]
 	path = devel/qbe/src
 	url = git://c9x.me/qbe.git
+[submodule "extra/efibootmgr/src"]
+	path = extra/efibootmgr/src
+	url = https://github.com/rhinstaller/efibootmgr
 [submodule "extra/efivar/src"]
 	path = extra/efivar/src
 	url = https://github.com/rhinstaller/efivar
+	ignore = all
 [submodule "extra/hostap/src"]
 	path = extra/hostap/src
 	url = git://w1.fi/hostap.git

@@ -21,6 +21,12 @@ rule makeguids '$outdir/makeguids $in $out'
 outs='$outdir'/^(guids.bin names.bin guid-symbols.c include/efivar-guids.h)\
 	build $"outs makeguids '$srcdir'/src/guids.txt '|' '$outdir'/makeguids
 
+hdrs=(efiboot.h efiboot-creator.h efiboot-loadopt.h efivar.h efivar-dp.h)
+for(hdr in $hdrs) {
+	build '$outdir'/include/$hdr copy '$srcdir'/src/include/efivar/$hdr
+}
+phony headers '$outdir'/include/^($hdrs efivar-guids.h)
+
 lib libefiboot.a src/^(crc32.c creator.c disk.c gpt.c linux.c loadopt.c)
 lib libefivar.a -d '$outdir'/include/efivar-guids.h src/^(\
 	dp.c dp-acpi.c dp-hw.c dp-media.c dp-message.c\

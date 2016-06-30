@@ -1,3 +1,4 @@
+subgen efibootmgr
 subgen efivar
 subgen hostap
 subgen libevent
