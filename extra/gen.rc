@@ -1,3 +1,4 @@
+subgen efivar
 subgen hostap
 subgen libevent
 subgen libfuse

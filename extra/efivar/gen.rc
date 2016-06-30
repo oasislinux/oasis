@@ -1,0 +1,31 @@
+cc src/guids.S '||' '$outdir'/^(guids.bin names.bin) ; with\
+	cflags '$cflags -I $outdir'
+
+cflags\
+	-D _GNU_SOURCE\
+	-include '$dir'/compat.h\
+	-I '$outdir'/include\
+	-I '$srcdir'/src/include/efivar
+
+{
+	include 'toolchain/$host_toolchain.ninja'
+	cflags\
+		-D EFIVAR_BUILD_ENVIRONMENT\
+		-I '$srcdir'/src/include/efivar
+	build '$outdir'/host-guid.c.o cc '$srcdir'/src/guid.c
+	exe makeguids src/makeguids.c host-guid.c.o
+} >tools.ninja
+subninja '$dir'/tools.ninja
+
+rule makeguids '$outdir/makeguids $in $out'
+outs='$outdir'/^(guids.bin names.bin guid-symbols.c include/efivar-guids.h)\
+	build $"outs makeguids '$srcdir'/src/guids.txt '|' '$outdir'/makeguids
+
+lib libefiboot.a src/^(crc32.c creator.c disk.c gpt.c linux.c loadopt.c)
+lib libefivar.a -d '$outdir'/include/efivar-guids.h src/^(\
+	dp.c dp-acpi.c dp-hw.c dp-media.c dp-message.c\
+	efivarfs.c export.c guid.c guids.S.o\
+	lib.c vars.c\
+) '$outdir'/guid-symbols.c
+
+fetch git

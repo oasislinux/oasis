@@ -100,6 +100,9 @@
 [submodule "devel/qbe/src"]
 	path = devel/qbe/src
 	url = git://c9x.me/qbe.git
+[submodule "extra/efivar/src"]
+	path = extra/efivar/src
+	url = https://github.com/rhinstaller/efivar
 [submodule "extra/hostap/src"]
 	path = extra/hostap/src
 	url = git://w1.fi/hostap.git
