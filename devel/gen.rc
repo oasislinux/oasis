@@ -1,3 +1,4 @@
 subgen make
 subgen mc
+subgen nasm
 subgen qbe
