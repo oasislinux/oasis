@@ -55,15 +55,19 @@ fn cflags {
 	set cflags '$cflags' $*
 }
 
-fn cc {
-	src=$1 obj=$src.o {
-		shift
+fn compile {
+	rule=$1 src=$2 obj=$src.o {
+		shift 2
 		if(! ~ $src '$'*) {
 			src='$srcdir'/$src
 			obj='$outdir'/$obj
 		}
-		build $obj cc $src $*
+		build $obj $rule $src $*
 	}
+}
+
+fn cc {
+	compile cc $*
 }
 
 fn link {
@@ -96,11 +100,16 @@ fn objects {
 			shift 2
 		}
 		for(src) {
-			if(~ $src *.[cS] *.cc *.cpp) {
-				cc $src $deps
+			switch($src) {
+			case *.[cS] *.cc *.cpp
+				compile cc $src $deps
 				obj=$src.o
+			case *.asm
+				compile nasm $src $deps
+				obj=$src.o
+			case *
+				obj=$src
 			}
-			if not obj=$src
 			objs=($objs $obj)
 		}
 		$rule $out $objs

@@ -17,6 +17,9 @@ rule link
 rule ar
   command = rm -f $out && $ar crs $out $in
 
+rule nasm
+  command = nasm $nasmflags -o $out $in
+
 # misc tools
 rule touch
   command = touch $out
