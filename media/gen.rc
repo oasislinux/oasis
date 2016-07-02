@@ -1,1 +1,2 @@
 subgen alsa-lib
+subgen ffmpeg

@@ -1,0 +1,232 @@
+arch=x86
+
+cflags\
+	-Wno-deprecated-declarations\
+	-Wno-discarded-qualifiers\
+	-D HAVE_AV_CONFIG_H\
+	-isystem '$builddir'/core/libressl/include\
+	-isystem '$builddir'/media/alsa-lib/include\
+	-I '$dir' \
+	-I '$outdir'/include\
+	-I '$outdir'/internal\
+	-I '$srcdir'
+
+set nasmflags\
+	-i '$srcdir'/\
+	-i '$srcdir'/libavutil/$arch/\
+	-f elf64\
+	-P '$outdir'/config.asm
+
+gen_inputs='$dir'/^(sources.awk sources.txt options.h)
+
+build '$outdir'/config.asm awk '$dir'/options.h ; with\
+	expr '''{print "%define " substr($$0, length("#define ") + 1)}'''
+build '$outdir'/internal/libavcodec/bsf_list.c awk '$dir'/options.h ; with\
+	expr '-f $dir/bitstream_filters.awk'
+build '$outdir'/internal/libavformat/protocol_list.c awk '$dir'/options.h ; with\
+	expr '-f $dir/protocols.awk'
+build '$outdir'/include/libavutil/avconfig.h awk '$dir'/options.h ; with\
+	expr '-f $dir/avconfig.awk'
+
+rule ffversion 'sh $srcdir/version.sh $srcdir $out'
+build '$outdir'/include/libavutil/ffversion.h ffversion '|' '$srcdir'/version.sh
+
+# TODO: Copy the rest of the headers.
+phony headers '$outdir'/include/libavutil/^(avconfig.h ffversion.h)
+
+deps=(\
+	'$outdir'/config.asm\
+	phony/^('$dir' core/libressl media/alsa-lib)^/headers\
+)
+
+fn fflib {
+	name=$1 srcs=()
+	shift
+	for(src) switch($src) {
+	case $arch/*
+		srcs=($srcs $src)
+	case */*
+	case *
+		srcs=($srcs $src)
+	}
+	srcs=($srcs `{awk -f sources.awk 'lib='$name 'sources='sources.txt 'arch='$arch options.h | sort -u})
+	checkstatus
+	lib $name.a -d $"deps $name/$srcs
+}
+
+cc libavcodec/bitstream_filters.c '||' '$outdir'/internal/libavcodec/bsf_list.c
+fflib libavcodec\
+	allcodecs.c\
+	audioconvert.c\
+	avdct.c\
+	avpacket.c\
+	avpicture.c\
+	bitstream.c\
+	bitstream_filter.c\
+	bitstream_filters.c.o\
+	bsf.c\
+	codec_desc.c\
+	d3d11va.c\
+	dirac.c\
+	dv_profile.c\
+	imgconvert.c\
+	jni.c\
+	mathtables.c\
+	options.c\
+	parser.c\
+	profiles.c\
+	qsv_api.c\
+	raw.c\
+	resample.c\
+	resample2.c\
+	utils.c\
+	vorbis_parser.c\
+	xiph.c\
+	x86/constants.c
+
+fflib libavdevice alldevices.c avdevice.c utils.c
+
+fflib libavfilter\
+	allfilters.c\
+	audio.c\
+	avfilter.c\
+	avfiltergraph.c\
+	buffersink.c\
+	buffersrc.c\
+	drawutils.c\
+	fifo.c\
+	formats.c\
+	framepool.c\
+	graphdump.c\
+	graphparser.c\
+	opencl_allkernels.c\
+	transform.c\
+	video.c
+
+cc libavformat/protocols.c '||' '$outdir'/internal/libavformat/protocol_list.c
+fflib libavformat\
+	allformats.c\
+	avio.c\
+	aviobuf.c\
+	cutils.c\
+	dump.c\
+	format.c\
+	id3v1.c\
+	id3v2.c\
+	metadata.c\
+	mux.c\
+	options.c\
+	os_support.c\
+	qtpalette.c\
+	protocols.c.o\
+	riff.c\
+	sdp.c\
+	url.c\
+	utils.c
+
+fflib libavutil\
+	adler32.c\
+	aes.c\
+	aes_ctr.c\
+	audio_fifo.c\
+	avstring.c\
+	base64.c\
+	blowfish.c\
+	bprint.c\
+	buffer.c\
+	cast5.c\
+	camellia.c\
+	channel_layout.c\
+	color_utils.c\
+	cpu.c\
+	crc.c\
+	des.c\
+	dict.c\
+	display.c\
+	downmix_info.c\
+	error.c\
+	eval.c\
+	fifo.c\
+	file.c\
+	file_open.c\
+	float_dsp.c\
+	fixed_dsp.c\
+	frame.c\
+	hash.c\
+	hmac.c\
+	hwcontext.c\
+	imgutils.c\
+	integer.c\
+	intmath.c\
+	lfg.c\
+	lls.c\
+	log.c\
+	log2_tab.c\
+	mathematics.c\
+	mastering_display_metadata.c\
+	md5.c\
+	mem.c\
+	murmur3.c\
+	opt.c\
+	parseutils.c\
+	pixdesc.c\
+	pixelutils.c\
+	random_seed.c\
+	rational.c\
+	reverse.c\
+	rc4.c\
+	ripemd.c\
+	samplefmt.c\
+	sha.c\
+	sha512.c\
+	stereo3d.c\
+	threadmessage.c\
+	time.c\
+	timecode.c\
+	tree.c\
+	twofish.c\
+	utils.c\
+	xga_font_data.c\
+	xtea.c\
+	tea.c\
+	x86/^(\
+		cpu.c fixed_dsp_init.c float_dsp_init.c lls_init.c\
+		cpuid.asm fixed_dsp.asm float_dsp.asm lls.asm\
+	)
+
+fflib libswresample\
+	audioconvert.c\
+	dither.c\
+	options.c\
+	rematrix.c\
+	resample.c\
+	resample_dsp.c\
+	swresample.c\
+	swresample_frame.c\
+	x86/^(\
+		audio_convert.asm rematrix.asm resample.asm\
+		audio_convert_init.c rematrix_init.c resample_init.c\
+	)
+
+fflib libswscale\
+	alphablend.c\
+	hscale.c\
+	hscale_fast_bilinear.c\
+	gamma.c\
+	input.c\
+	options.c\
+	output.c\
+	rgb2rgb.c\
+	slice.c\
+	swscale.c\
+	swscale_unscaled.c\
+	utils.c\
+	yuv2rgb.c\
+	vscale.c\
+	x86/^(\
+		rgb2rgb.c swscale.c yuv2rgb.c\
+		hscale_fast_bilinear_simd.c\
+		input.asm output.asm scale.asm\
+	)
+
+fetch git

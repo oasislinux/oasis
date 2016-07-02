@@ -134,3 +134,7 @@
 	path = media/alsa-lib/src
 	url = git://git.alsa-project.org/alsa-lib.git
 	ignore = all
+[submodule "media/ffmpeg/src"]
+	path = media/ffmpeg/src
+	url = https://git.ffmpeg.org/ffmpeg.git
+	ignore = all
