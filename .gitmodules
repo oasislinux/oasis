@@ -130,3 +130,7 @@
 [submodule "extra/the_silver_searcher/src"]
 	path = extra/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher
+[submodule "media/alsa-lib/src"]
+	path = media/alsa-lib/src
+	url = git://git.alsa-project.org/alsa-lib.git
+	ignore = all

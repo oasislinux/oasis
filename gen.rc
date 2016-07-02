@@ -2,6 +2,7 @@ subgen core
 subgen desktop
 subgen devel
 subgen extra
+subgen media
 
 subgen util
 
