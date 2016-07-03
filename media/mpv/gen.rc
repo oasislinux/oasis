@@ -1,0 +1,57 @@
+cflags\
+	-Wno-deprecated-declarations\
+	-isystem '$builddir'/core/zlib/include\
+	-isystem '$builddir'/media/alsa-lib/include\
+	-isystem '$builddir'/media/ffmpeg/include\
+	-isystem desktop/libdrm/src\
+	-isystem desktop/libdrm/src/include/drm\
+	-isystem media/ffmpeg/src\
+	-I '$dir' \
+	-I '$outdir' \
+	-I '$srcdir'
+
+
+rule versionhdr 'sh $srcdir/version.sh --cwd=$srcdir --versionh=$out'
+build '$outdir'/version.h versionhdr '|' '$srcdir'/version.sh
+
+build '$outdir'/input/input_conf.h awk '$srcdir'/etc/input.conf ; with\
+	expr '-f $dir/file2string.awk'
+
+deps=(\
+	phony/^(\
+		core/zlib\
+		media/alsa-lib\
+		media/ffmpeg\
+	)^/headers\
+	'$outdir'/^(version.h input/input_conf.h)\
+)
+
+srcs=(\
+	osdep/^(main-fn-unix.c terminal-unix.c timer-linux.c)\
+        ta/^(ta.c ta_talloc.c ta_utils.c)\
+	`{awk -f sources.awk 'sources=sources.txt' config.h}\
+)
+checkstatus
+
+exe mpv -d $"deps $srcs '$builddir'/^(\
+	media/ffmpeg/^(\
+		libavformat.a\
+		libavfilter.a\
+		libavcodec.a\
+		libavdevice.a\
+		libavutil.a\
+		libswresample.a\
+		libswscale.a\
+	)\
+	desktop/libdrm/libdrm.a\
+	media/alsa-lib/libasound.a\
+	core/libressl/libssl.a\
+	core/libressl/libcrypto.a\
+	core/openbsd/libbsd.a\
+	core/zlib/libz.a\
+)
+file bin/mpv '$outdir'/mpv 755
+file share/man/man1/mpv.1 '$srcdir'/DOCS/man/mpv.1 644
+
+gen_inputs='$dir'/^(sources.awk sources.txt config.h)
+fetch git

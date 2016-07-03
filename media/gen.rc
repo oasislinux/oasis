@@ -1,2 +1,3 @@
 subgen alsa-lib
 subgen ffmpeg
+subgen mpv
