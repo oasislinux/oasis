@@ -17,5 +17,7 @@ fn x {
 
 x amixer amixer/amixer.c alsamixer/volume_mapping.c
 x aplay aplay/aplay.c
+sym bin/arecord aplay
+sym share/man/man1/arecord.1 aplay.1
 
 fetch git
