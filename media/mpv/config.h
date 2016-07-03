@@ -55,7 +55,7 @@
 #define HAVE_BSD_FSTATFS 0
 #define HAVE_LINUX_FSTATFS 1
 #define HAVE_LIBSMBCLIENT 0
-#define HAVE_LUA 0
+#define HAVE_LUA 1
 #define HAVE_LIBASS 0
 #define HAVE_LIBASS_OSD 0
 #define HAVE_DUMMY_OSD 1

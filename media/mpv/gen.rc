@@ -58,6 +58,10 @@ if(grep -qF 'HAVE_ALSA 1' config.h) {
 	libs=($libs media/alsa-lib/libasound.a)
 	deps=($deps phony/media/alsa-lib/headers)
 }
+if(grep -qF 'HAVE_LUA 1' config.h) {
+	cflags=($cflags -isystem devel/lua/src/src)
+	libs=($libs devel/lua/liblua.a)
+}
 
 cflags $cflags
 
