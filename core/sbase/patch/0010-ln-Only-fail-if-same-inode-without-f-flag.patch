@@ -1,0 +1,31 @@
+From 8f22e7778c6bb5c43c69bf0035cfca3fa94957d4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 3 Jul 2016 03:04:16 -0700
+Subject: [PATCH] ln: Only fail if same inode without -f flag
+
+---
+ ln.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/ln.c b/ln.c
+index ab1ec4e..f62068a 100644
+--- a/ln.c
++++ b/ln.c
+@@ -77,9 +77,11 @@ main(int argc, char *argv[])
+ 					continue;
+ 				}
+ 			} else if (st.st_dev == tst.st_dev && st.st_ino == tst.st_ino) {
+-				weprintf("%s and %s/%s are the same file\n",
+-						*argv, targetdir, target);
+-				ret = 1;
++				if (!fflag) {
++					weprintf("%s and %s/%s are the same file\n",
++							*argv, targetdir, target);
++					ret = 1;
++				}
+ 				continue;
+ 			}
+ 		}
+-- 
+2.9.0
+
