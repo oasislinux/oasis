@@ -1,0 +1,81 @@
+From bf5b040672b67cbf69eadb46b699d7f814adbdd5 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 2 Jul 2016 23:48:43 -0700
+Subject: [PATCH 1/2] Include poll.h instead of sys/poll.h
+
+---
+ amidi/amidi.c               | 2 +-
+ amixer/amixer.c             | 2 +-
+ aplay/aplay.c               | 2 +-
+ seq/aplaymidi/arecordmidi.c | 2 +-
+ seq/aseqdump/aseqdump.c     | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/amidi/amidi.c b/amidi/amidi.c
+index cedf18c..46f5767 100644
+--- a/amidi/amidi.c
++++ b/amidi/amidi.c
+@@ -29,7 +29,7 @@
+ #include <errno.h>
+ #include <signal.h>
+ #include <sys/types.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/stat.h>
+ #include <unistd.h>
+ #include <fcntl.h>
+diff --git a/amixer/amixer.c b/amixer/amixer.c
+index f9b09cb..8241148 100644
+--- a/amixer/amixer.c
++++ b/amixer/amixer.c
+@@ -28,7 +28,7 @@
+ #include <errno.h>
+ #include <assert.h>
+ #include <alsa/asoundlib.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <stdint.h>
+ #include "amixer.h"
+ #include "../alsamixer/volume_mapping.h"
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index 7acaa83..78823d8 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -43,7 +43,7 @@
+ #include <assert.h>
+ #include <termios.h>
+ #include <signal.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <sys/uio.h>
+ #include <sys/time.h>
+ #include <sys/stat.h>
+diff --git a/seq/aplaymidi/arecordmidi.c b/seq/aplaymidi/arecordmidi.c
+index 9628086..1c25fa2 100644
+--- a/seq/aplaymidi/arecordmidi.c
++++ b/seq/aplaymidi/arecordmidi.c
+@@ -27,7 +27,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include <getopt.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <alsa/asoundlib.h>
+ #include "aconfig.h"
+ #include "version.h"
+diff --git a/seq/aseqdump/aseqdump.c b/seq/aseqdump/aseqdump.c
+index 24c5d21..05892e0 100644
+--- a/seq/aseqdump/aseqdump.c
++++ b/seq/aseqdump/aseqdump.c
+@@ -25,7 +25,7 @@
+ #include <string.h>
+ #include <signal.h>
+ #include <getopt.h>
+-#include <sys/poll.h>
++#include <poll.h>
+ #include <alsa/asoundlib.h>
+ #include "aconfig.h"
+ #include "version.h"
+-- 
+2.9.0
+

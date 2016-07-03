@@ -1,0 +1,22 @@
+From 9e890d47655e382702bcaba8cb449fb81f1d1876 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 3 Jul 2016 00:01:24 -0700
+Subject: [PATCH 2/2] amixer.h: Just include "version.h"
+
+---
+ amixer/amixer.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/amixer/amixer.h b/amixer/amixer.h
+index 3588f04..0daa5b7 100644
+--- a/amixer/amixer.h
++++ b/amixer/amixer.h
+@@ -18,4 +18,4 @@
+  *
+  */
+ 
+-#include "../include/version.h"
++#include "version.h"
+-- 
+2.9.0
+
