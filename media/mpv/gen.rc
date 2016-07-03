@@ -1,29 +1,11 @@
-cflags\
+cflags=(\
 	-Wno-deprecated-declarations\
 	-isystem '$builddir'/core/zlib/include\
-	-isystem '$builddir'/media/alsa-lib/include\
 	-isystem '$builddir'/media/ffmpeg/include\
-	-isystem desktop/libdrm/src\
-	-isystem desktop/libdrm/src/include/drm\
 	-isystem media/ffmpeg/src\
 	-I '$dir' \
 	-I '$outdir' \
-	-I '$srcdir'
-
-
-rule versionhdr 'sh $srcdir/version.sh --cwd=$srcdir --versionh=$out'
-build '$outdir'/version.h versionhdr '|' '$srcdir'/version.sh
-
-build '$outdir'/input/input_conf.h awk '$srcdir'/etc/input.conf ; with\
-	expr '-f $dir/file2string.awk'
-
-deps=(\
-	phony/^(\
-		core/zlib\
-		media/alsa-lib\
-		media/ffmpeg\
-	)^/headers\
-	'$outdir'/^(version.h input/input_conf.h)\
+	-I '$srcdir' \
 )
 
 srcs=(\
@@ -33,7 +15,7 @@ srcs=(\
 )
 checkstatus
 
-exe mpv -d $"deps $srcs '$builddir'/^(\
+libs=(\
 	media/ffmpeg/^(\
 		libavformat.a\
 		libavfilter.a\
@@ -43,13 +25,43 @@ exe mpv -d $"deps $srcs '$builddir'/^(\
 		libswresample.a\
 		libswscale.a\
 	)\
-	desktop/libdrm/libdrm.a\
-	media/alsa-lib/libasound.a\
 	core/libressl/libssl.a\
 	core/libressl/libcrypto.a\
 	core/openbsd/libbsd.a\
 	core/zlib/libz.a\
 )
+
+deps=(\
+	phony/^(core/zlib media/ffmpeg)^/headers\
+	'$outdir'/version.h\
+)
+
+rule versionhdr 'sh $srcdir/version.sh --cwd=$srcdir --versionh=$out'
+build '$outdir'/version.h versionhdr '|' '$srcdir'/version.sh
+
+fn file2string {
+	build '$outdir'/$1 awk '$srcdir'/$2 '|' '$dir'/file2string.awk ; with\
+		expr '-f $dir/file2string.awk'
+	deps=($deps '$outdir'/$1)
+}
+
+file2string input/input_conf.h etc/input.conf
+for(f in assdraw defaults options osc ytdl_hook)
+	file2string player/lua/$f.inc player/lua/$f.lua
+
+if(grep -qF 'HAVE_DRM 1' config.h) {
+	cflags=($cflags '-isystem desktop/libdrm/'^(src src/include/drm))
+	libs=($libs desktop/libdrm/libdrm.a)
+}
+if(grep -qF 'HAVE_ALSA 1' config.h) {
+	cflags=($cflags -isystem '$builddir'/media/alsa-lib/include)
+	libs=($libs media/alsa-lib/libasound.a)
+	deps=($deps phony/media/alsa-lib/headers)
+}
+
+cflags $cflags
+
+exe mpv -d $"deps $srcs '$builddir'/$libs
 file bin/mpv '$outdir'/mpv 755
 file share/man/man1/mpv.1 '$srcdir'/DOCS/man/mpv.1 644
 
