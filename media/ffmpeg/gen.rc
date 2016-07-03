@@ -21,9 +21,9 @@ gen_inputs='$dir'/^(sources.awk sources.txt options.h)
 
 build '$outdir'/config.asm awk '$dir'/options.h ; with\
 	expr '''{print "%define " substr($$0, length("#define ") + 1)}'''
-build '$outdir'/internal/libavcodec/bsf_list.c awk '$dir'/options.h ; with\
+build '$outdir'/internal/libavcodec/bsf_list.c awk '$dir'/options.h '|' '$dir'/bitstream_filters.awk ; with\
 	expr '-f $dir/bitstream_filters.awk'
-build '$outdir'/internal/libavformat/protocol_list.c awk '$dir'/options.h ; with\
+build '$outdir'/internal/libavformat/protocol_list.c awk '$dir'/options.h '|' '$dir'/protocols.awk ; with\
 	expr '-f $dir/protocols.awk'
 build '$outdir'/include/libavutil/avconfig.h awk '$dir'/options.h ; with\
 	expr '-f $dir/avconfig.awk'
