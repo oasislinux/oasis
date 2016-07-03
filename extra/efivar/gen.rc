@@ -14,8 +14,7 @@ cflags\
 		-I '$srcdir'/src/include/efivar
 	build '$outdir'/host-guid.c.o cc '$srcdir'/src/guid.c
 	exe makeguids src/makeguids.c host-guid.c.o
-} >tools.ninja
-subninja '$dir'/tools.ninja
+} | sub tools.ninja
 
 rule makeguids '$outdir/makeguids $in $out'
 outs='$outdir'/^(guids.bin names.bin guid-symbols.c include/efivar-guids.h)\

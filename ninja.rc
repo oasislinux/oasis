@@ -23,6 +23,11 @@ fn include {
 	echo include $*
 }
 
+fn sub {
+	cat >$1
+	subninja '$dir'/$1
+}
+
 fn rule {
 	name=$1 {
 		shift
