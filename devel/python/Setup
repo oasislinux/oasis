@@ -43,7 +43,7 @@ select selectmodule.c
 mmap mmapmodule.c
 _csv _csv.c
 _socket socketmodule.c
-#_ssl _ssl.c
+_ssl _ssl.c
 _crypt _cryptmodule.c
 #nis nismodule.c
 termios termios.c
@@ -65,7 +65,7 @@ parser parsermodule.c
 #fpectl fpectlmodule.c
 #fpetest fpetestmodule.c
 zlib zlibmodule.c
-#pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c
+pyexpat pyexpat.c
 #_multibytecodec cjkcodecs/multibytecodec.c
 #_codecs_cn cjkcodecs/_codecs_cn.c
 #_codecs_hk cjkcodecs/_codecs_hk.c

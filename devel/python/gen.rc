@@ -132,10 +132,15 @@ if(grep -q '^_ctypes' Setup) {
 	deps=($deps phony/desktop/libffi/headers)
 	libs=($libs desktop/libffi/libffi.a)
 }
-if(grep -q '^_hashlib' Setup) {
+if(grep -qE '^(_hashlib|_ssl)' Setup) {
 	cflags=($cflags -isystem '$builddir'/core/libressl/include)
 	deps=($deps phony/core/libressl/headers)
-	libs=($libs core/libressl/libcrypto.a core/openbsd/libbsd.a)
+	libs=($libs core/libressl/^(libssl.a libcrypto.a) core/openbsd/libbsd.a)
+}
+if(grep -q '^pyexpat' Setup) {
+	cflags=($cflags -isystem '$builddir'/desktop/expat/include)
+	deps=($deps phony/desktop/expat/headers)
+	libs=($libs desktop/expat/libexpat.a)
 }
 if(grep -q '^zlib' Setup) {
 	cflags=($cflags -isystem '$builddir'/core/zlib/include)
