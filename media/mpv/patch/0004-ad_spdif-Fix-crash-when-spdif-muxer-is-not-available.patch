@@ -1,0 +1,28 @@
+From 5a6102dab2fd30cae322f369ea920b5ef640b4ae Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 3 Jul 2016 17:41:45 -0700
+Subject: [PATCH] ad_spdif: Fix crash when spdif muxer is not available
+
+Currently, if init_filter fails after lavf_ctx is allocated, uninit is called
+which frees lavf_ctx, but doesn't clear the pointer in spdif_ctx. So, on the
+next call of decode_packet, it thinks it is already initialized and uses it,
+resulting in a crash on my system.
+---
+ audio/decode/ad_spdif.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/audio/decode/ad_spdif.c b/audio/decode/ad_spdif.c
+index 56e4a81..71e2415 100644
+--- a/audio/decode/ad_spdif.c
++++ b/audio/decode/ad_spdif.c
+@@ -71,6 +71,7 @@ static void uninit(struct dec_audio *da)
+             av_freep(&lavf_ctx->pb->buffer);
+         av_freep(&lavf_ctx->pb);
+         avformat_free_context(lavf_ctx);
++        spdif_ctx->lavf_ctx = NULL;
+     }
+ }
+ 
+-- 
+2.9.0
+
