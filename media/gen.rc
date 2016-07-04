@@ -2,3 +2,4 @@ subgen alsa-lib
 subgen alsa-utils
 subgen ffmpeg
 subgen mpv
+subgen youtube-dl

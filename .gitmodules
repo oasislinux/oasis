@@ -146,3 +146,7 @@
 	path = media/mpv/src
 	url = https://github.com/mpv-player/mpv
 	ignore = all
+[submodule "media/youtube-dl/src"]
+	path = media/youtube-dl/src
+	url = https://github.com/rg3/youtube-dl
+	ignore = all
