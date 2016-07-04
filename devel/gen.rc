@@ -2,4 +2,5 @@ subgen lua
 subgen make
 subgen mc
 subgen nasm
+subgen python
 subgen qbe

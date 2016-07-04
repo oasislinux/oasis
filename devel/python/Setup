@@ -1,0 +1,78 @@
+*static*
+# from Setup.local
+_thread _threadmodule.c
+_signal signalmodule.c
+
+# from Setup.dist
+posix posixmodule.c
+errno errnomodule.c
+pwd pwdmodule.c
+_sre _sre.c
+_codecs _codecsmodule.c
+_weakref _weakref.c
+_functools _functoolsmodule.c
+_operator _operator.c
+_collections _collectionsmodule.c
+itertools itertoolsmodule.c
+atexit atexitmodule.c
+_stat _stat.c
+time timemodule.c
+_locale _localemodule.c
+_io _io/_iomodule.c _io/iobase.c _io/fileio.c _io/bytesio.c _io/bufferedio.c _io/textio.c _io/stringio.c
+zipimport zipimport.c
+faulthandler faulthandler.c
+_tracemalloc _tracemalloc.c hashtable.c
+#_symtable symtablemodule.c
+#readline readline.c
+array arraymodule.c
+cmath cmathmodule.c _math.c
+math mathmodule.c _math.c
+_struct _struct.c
+#_testcapi _testcapimodule.c
+_random _randommodule.c
+#_elementtree _elementtree.c
+_pickle _pickle.c
+_datetime _datetimemodule.c
+_bisect _bisectmodule.c
+_heapq _heapqmodule.c
+unicodedata unicodedata.c
+fcntl fcntlmodule.c
+spwd spwdmodule.c
+grp grpmodule.c
+select selectmodule.c
+mmap mmapmodule.c
+_csv _csv.c
+_socket socketmodule.c
+#_ssl _ssl.c
+_crypt _cryptmodule.c
+#nis nismodule.c
+termios termios.c
+resource resource.c
+_posixsubprocess _posixsubprocess.c
+#audioop audioop.c
+#_md5 md5module.c
+#_sha1 sha1module.c
+#_sha256 sha256module.c
+#_sha512 sha512module.c
+#_tkinter _tkinter.c tkappinit.c
+#syslog syslogmodule.c
+#_curses _cursesmodule.c
+#_curses_panel _curses_panel.c
+#_dbm _dbmmodule.c
+#_gdbm _gdbmmodule.c
+binascii binascii.c
+parser parsermodule.c
+#fpectl fpectlmodule.c
+#fpetest fpetestmodule.c
+zlib zlibmodule.c
+#pyexpat expat/xmlparse.c expat/xmlrole.c expat/xmltok.c pyexpat.c
+#_multibytecodec cjkcodecs/multibytecodec.c
+#_codecs_cn cjkcodecs/_codecs_cn.c
+#_codecs_hk cjkcodecs/_codecs_hk.c
+#_codecs_iso2022 cjkcodecs/_codecs_iso2022.c
+#_codecs_jp cjkcodecs/_codecs_jp.c
+#_codecs_kr cjkcodecs/_codecs_kr.c
+#_codecs_tw cjkcodecs/_codecs_tw.c
+
+_hashlib _hashopenssl.c
+#_ctypes _ctypes/_ctypes.c _ctypes/callbacks.c _ctypes/callproc.c _ctypes/stgdict.c _ctypes/cfield.c
