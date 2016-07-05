@@ -1,5 +1,4 @@
 cflags=(\
-	-Wno-deprecated-declarations\
 	-isystem '$builddir'/core/zlib/include\
 	-isystem '$builddir'/media/ffmpeg/include\
 	-isystem media/ffmpeg/src\
