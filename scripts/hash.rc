@@ -3,10 +3,9 @@
 flag e +
 
 repo=$1
-out=$2
-mode=$3
-name=$4
-shift 4
+mode=$2
+name=$3
+shift 3
 
 fn checkstatus {}
 
@@ -22,5 +21,4 @@ hash=`{
 }
 checkstatus
 
-printf '%s %s\t%s\n' $mode $hash $name >$out.tmp
-mv $out.tmp $out
+printf '%s %s\t%s\n' $mode $hash $name

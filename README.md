@@ -89,11 +89,6 @@ Next, configure `config.rc` to your liking.
 
 	$EDITOR config.rc
 
-Currently, tz's `gen.rc` requires the sources to exist to operate correctly. So,
-check them out.
-
-	git submodule update --init core/tz/src
-
 Generate the ninja build files.
 
 	rc ./setup.rc

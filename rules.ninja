@@ -49,7 +49,7 @@ rule awk
   command = awk $expr $in >$out.tmp && mv $out.tmp $out
 
 rule githash
-  command = rc ./scripts/hash.rc $builddir/$repo.git $out $args $in
+  command = rc ./scripts/hash.rc $builddir/$repo.git $args $in >$out.tmp && mv $out.tmp $out
 
 rule gittree
   command = rc ./scripts/tree.rc $builddir/$repo.git $repo_tag $in
