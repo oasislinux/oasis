@@ -12,7 +12,7 @@ rule as
   command = $as $asflags -o $out $in
 
 rule link
-  command = $cc $ldflags -o $out $in
+  command = $cc $ldflags -o $out $in $ldlibs
 
 rule ar
   command = rm -f $out && $ar crs $out $in
