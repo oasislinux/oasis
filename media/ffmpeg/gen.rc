@@ -229,4 +229,13 @@ fflib libswscale\
 		input.asm output.asm scale.asm\
 	)
 
+libs=(\
+	libavfilter.a libavdevice.a libavformat.a libavcodec.a libswresample.a libswscale.a libavutil.a\
+	'$builddir'/core/^(libressl/^(libssl.a libcrypto.a) openbsd/libbsd.a)\
+)
+
+cc cmdutils.c
+exe ffprobe ffprobe.c cmdutils.c.o $libs
+file bin/ffprobe '$outdir'/ffprobe 755
+
 fetch git
