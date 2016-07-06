@@ -7,6 +7,7 @@ subgen libnl
 subgen libusb
 subgen msmtp
 subgen pcre
+subgen pcsc
 subgen sshfs
 subgen the_silver_searcher
 subgen transmission

@@ -126,6 +126,10 @@
 	path = extra/msmtp/src
 	url = git://git.code.sf.net/p/msmtp/code
 	ignore = all
+[submodule "extra/pcsc/src"]
+	path = extra/pcsc/src
+	url = https://anonscm.debian.org/git/pcsclite/PCSC.git
+	ignore = all
 [submodule "extra/sshfs/src"]
 	path = extra/sshfs/src
 	url = https://github.com/libfuse/sshfs

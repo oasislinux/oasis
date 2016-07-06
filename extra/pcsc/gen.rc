@@ -1,0 +1,35 @@
+version=1.8.17
+cflags\
+	-D HAVE_CONFIG_H\
+	-isystem '$builddir'/extra/libusb/include\
+	-I include\
+	-I '$dir' \
+	-I '$outdir' \
+	-I '$outdir'/include\
+	-I '$srcdir'/src/PCSC
+
+set subst\
+	-e s,@VERSION@,$version,\
+	-e s,@PCSCLITE_CONFIG_DIR@,/etc/reader.conf.d,
+
+hdrs=(debuglog.h ifdhandler.h reader.h winscard.h wintypes.h)
+for(hdr in $hdrs)
+	build '$outdir'/include/$hdr copy '$srcdir'/src/PCSC/$hdr
+build '$outdir'/include/pcsclite.h sed '$srcdir'/src/PCSC/pcsclite.h.in ; with expr '$subst'
+hdrs=($hdrs pcsclite.h)
+phony headers include/$hdrs
+
+build '$outdir'/pcscd.h sed '$srcdir'/src/pcscd.h.in ; with expr '$subst'
+phony deps phony/'$dir'/headers pcscd.h
+
+lib libpcsclite.a -d phony/'$dir'/deps src/^(\
+	debug.c\
+	error.c\
+	winscard_clnt.c\
+	simclist.c\
+	sys_unix.c\
+	utils.c\
+	winscard_msg.c\
+)
+
+fetch git
