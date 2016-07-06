@@ -1,3 +1,4 @@
+subgen ccid
 subgen efibootmgr
 subgen efivar
 subgen hostap

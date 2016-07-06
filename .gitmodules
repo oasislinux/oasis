@@ -100,6 +100,10 @@
 [submodule "devel/qbe/src"]
 	path = devel/qbe/src
 	url = git://c9x.me/qbe.git
+[submodule "extra/ccid/src"]
+	path = extra/ccid/src
+	url = https://anonscm.debian.org/git/pcsclite/CCID.git
+	ignore = all
 [submodule "extra/efibootmgr/src"]
 	path = extra/efibootmgr/src
 	url = https://github.com/rhinstaller/efibootmgr
