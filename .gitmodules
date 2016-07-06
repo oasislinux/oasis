@@ -119,6 +119,9 @@
 [submodule "extra/libnl/src"]
 	path = extra/libnl/src
 	url = https://github.com/thom311/libnl
+[submodule "extra/libusb/src"]
+	path = extra/libusb/src
+	url = https://github.com/libusb/libusb
 [submodule "extra/msmtp/src"]
 	path = extra/msmtp/src
 	url = git://git.code.sf.net/p/msmtp/code
