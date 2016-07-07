@@ -204,6 +204,7 @@ youtube_dl/extractor/atresplayer.py
 youtube_dl/extractor/beatportpro.py
 youtube_dl/extractor/animeondemand.py
 youtube_dl/extractor/newgrounds.py
+youtube_dl/extractor/onet.py
 youtube_dl/extractor/stitcher.py
 youtube_dl/extractor/lecture2go.py
 youtube_dl/extractor/cbslocal.py
@@ -393,6 +394,7 @@ youtube_dl/extractor/bilibili.py
 youtube_dl/extractor/drbonanza.py
 youtube_dl/extractor/youku.py
 youtube_dl/extractor/lrt.py
+youtube_dl/extractor/kamcord.py
 youtube_dl/extractor/rutube.py
 youtube_dl/extractor/microsoftvirtualacademy.py
 youtube_dl/extractor/radiocanada.py
