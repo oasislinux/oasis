@@ -16,7 +16,7 @@ FNR == 1 {
 
 $1 == "Link" {
 	s = $3
-	gsub(/[^/]+/, "..", s)
+	gsub(/[^\/]+/, "..", s)
 	s = substr(s, 1, length(s) - 2) $2
 	run(sprintf(cmdfmt, repo, 120000, $3, s))
 }
