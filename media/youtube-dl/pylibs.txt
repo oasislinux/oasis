@@ -240,6 +240,7 @@ youtube_dl/extractor/foxgay.py
 youtube_dl/extractor/sexu.py
 youtube_dl/extractor/tdslifeway.py
 youtube_dl/extractor/ruhd.py
+youtube_dl/extractor/flipagram.py
 youtube_dl/extractor/niconico.py
 youtube_dl/extractor/kaltura.py
 youtube_dl/extractor/biqle.py
