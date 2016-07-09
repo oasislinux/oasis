@@ -1,5 +1,7 @@
 #!/bin/rc
 
+. ./config.rc
+
 flag e +
 
 ifs='
@@ -16,7 +18,16 @@ checkstatus
 
 cd $dir
 pages=man?p/*
+pages=()
+for(f in man?p/*) if(fs extra/man-pages-posix $f)
+	pages=($pages $f)
 cd $wd
+
+if(~ $#pages 0) {
+	>$out
+	>$out.d
+	exit
+}
 
 hashes=`{git -C $repo hash-object -w --no-filters -- $wd/$dir/$pages}
 checkstatus
