@@ -3,4 +3,5 @@ pylibs=`{grep -v '^#' pylibs.txt}
 for(f in $pylibs)
 	file lib/python3.5/$f '$srcdir'/$f 644
 
+gen_inputs='$dir'/pylibs.txt
 fetch git
