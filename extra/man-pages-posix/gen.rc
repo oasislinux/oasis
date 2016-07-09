@@ -1,0 +1,7 @@
+rule manpages 'rc ./$dir/manpages.rc $builddir/$repo.git $out $srcdir' ; with\
+	deps gcc\
+	depfile '$out.d'
+build '$outdir'/manpages.tree manpages '|' '$dir'/manpages.rc '||' '$outdir'/fetch.stamp
+tree_inputs=($tree_inputs '$outdir'/manpages.tree)
+
+fetch curl

@@ -6,6 +6,7 @@ subgen libevent
 subgen libfuse
 subgen libnl
 subgen libusb
+subgen man-pages-posix
 subgen msmtp
 subgen pcre
 subgen pcsc

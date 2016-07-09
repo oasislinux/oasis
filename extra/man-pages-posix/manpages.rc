@@ -1,0 +1,29 @@
+#!/bin/rc
+
+flag e +
+
+ifs='
+'
+repo=$1
+out=$2
+dir=$3
+shift 2
+
+fn checkstatus {}
+
+wd=`{pwd}
+checkstatus
+
+cd $dir
+pages=man?p/*
+cd $wd
+
+hashes=`{git -C $repo hash-object -w --no-filters -- $wd/$dir/$pages}
+checkstatus
+
+~ $#pages $#hashes
+printf '100644 %s\n' $hashes'	share/man/'$pages >$out.tmp
+mv $out.tmp $out
+
+echo $out: $dir/$pages >$out.d.tmp
+mv $out.d.tmp $out.d
