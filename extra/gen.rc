@@ -1,6 +1,7 @@
 subgen ccid
 subgen efibootmgr
 subgen efivar
+subgen fribidi
 subgen hostap
 subgen libevent
 subgen libfuse

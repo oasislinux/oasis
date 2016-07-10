@@ -111,6 +111,9 @@
 	path = extra/efivar/src
 	url = https://github.com/rhinstaller/efivar
 	ignore = all
+[submodule "extra/fribidi/src"]
+	path = extra/fribidi/src
+	url = https://anongit.freedesktop.org/git/fribidi/fribidi.git
 [submodule "extra/hostap/src"]
 	path = extra/hostap/src
 	url = git://w1.fi/hostap.git
