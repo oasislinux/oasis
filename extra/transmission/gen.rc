@@ -96,7 +96,7 @@ lib libdht.a third-party/dht/dht.c
 	set cflags '$orig_cflags' \
 		-D ENABLE_STRNATPMPERR
 	lib libnatpmp.a third-party/libnatpmp/^(getgateway.c natpmp.c wingettimeofday.c)
-} | sub libnatpmp.ninja
+} >libnatpmp.ninja ; subninja libnatpmp.ninja
 
 {
 	set cflags '$orig_cflags' \
@@ -121,7 +121,7 @@ lib libdht.a third-party/dht/dht.c
 		upnpcommands.c\
 		upnpreplyparse.c\
 	)
-} | sub libminiupnp.ninja
+} >libminiupnp.ninja ; subninja libminiupnp.ninja
 
 {
 	set cc '$cxx'
@@ -133,7 +133,7 @@ lib libdht.a third-party/dht/dht.c
 		-I '$srcdir'/third-party/libutp
 
 	lib libutp.a third-party/libutp/^(utp.cpp utp_utils.cpp)
-} | sub libutp.ninja
+} >libutp.ninja ; subninja libutp.ninja
 
 libs=(\
 	libtransmission.a libb64.a libdht.a libminiupnp.a libnatpmp.a libutp.a\

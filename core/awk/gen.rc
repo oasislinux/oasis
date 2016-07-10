@@ -7,7 +7,7 @@ build '$outdir'/ytab.h copy '$outdir'/gram.tab.h
 	include 'toolchain/$host_toolchain.ninja'
 	cflags -I '$outdir'
 	exe maketab -d '$outdir'/ytab.h maketab.c
-} | sub tools.ninja
+} >tools.ninja ; subninja tools.ninja
 
 rule maketab '(cd $outdir && ./maketab) >$out.tmp && mv $out.tmp $out'
 build '$outdir'/proctab.c maketab '|' '$outdir'/maketab

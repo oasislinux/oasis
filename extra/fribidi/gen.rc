@@ -11,7 +11,7 @@ cflags\
 	exe gen-unicode-version gen.tab/gen-unicode-version.c
 	for(t in bidi-type joining-type arabic-shaping mirroring)
 		exe gen-$t-tab -d 'phony/$dir/headers' gen.tab/^(gen-$t-tab.c packtab.c.o)
-} | sub tools.ninja
+} >tools.ninja ; subninja tools.ninja
 
 set compression 2
 

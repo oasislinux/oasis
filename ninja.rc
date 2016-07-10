@@ -16,16 +16,14 @@ fn with {
 }
 
 fn subninja {
-	echo subninja $*
+	file=$1
+	if(! ~ $file '$'*)
+		file='$dir'/$file
+	echo subninja $file
 }
 
 fn include {
 	echo include $*
-}
-
-fn sub {
-	cat >$1
-	subninja '$dir'/$1
 }
 
 fn rule {
