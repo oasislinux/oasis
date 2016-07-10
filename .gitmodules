@@ -156,6 +156,9 @@
 	path = media/ffmpeg/src
 	url = https://git.ffmpeg.org/ffmpeg.git
 	ignore = all
+[submodule "media/libass/src"]
+	path = media/libass/src
+	url = https://github.com/libass/libass
 [submodule "media/mpv/src"]
 	path = media/mpv/src
 	url = https://github.com/mpv-player/mpv

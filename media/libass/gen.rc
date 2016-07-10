@@ -1,0 +1,24 @@
+cflags\
+	-isystem '$builddir'/extra/fribidi/include\
+	-isystem desktop/freetype/src/include\
+	-I include\
+	-I '$dir'
+
+hdrs=(ass.h ass_types.h)
+for(hdr in $hdrs)
+	build '$outdir'/include/ass/$hdr copy '$srcdir'/libass/$hdr
+phony headers include/ass/$hdrs
+
+deps=phony/extra/fribidi/headers
+
+lib libass.a -d $"deps libass/^(\
+	ass.c ass_cache.c ass_font.c ass_fontselect.c ass_render.c\
+	ass_utils.c ass_bitmap.c ass_blur.c ass_library.c\
+	ass_drawing.c\
+	ass_parse.c ass_render_api.c ass_shaper.c\
+	ass_strtod.c ass_fontconfig.c\
+	ass_string.c\
+	ass_rasterizer.c ass_rasterizer_c.c\
+)
+
+fetch git

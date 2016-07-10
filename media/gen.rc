@@ -1,5 +1,6 @@
 subgen alsa-lib
 subgen alsa-utils
 subgen ffmpeg
+subgen libass
 subgen mpv
 subgen youtube-dl
