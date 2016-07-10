@@ -38,9 +38,15 @@ deps=(\
 rule versionhdr 'sh $srcdir/version.sh --cwd=$srcdir --versionh=$out'
 build '$outdir'/version.h versionhdr '|' '$srcdir'/version.sh
 
+{
+	include 'toolchain/$host_toolchain.ninja'
+	exe file2string '$dir'/file2string.c
+} | sub tools.ninja
+
+rule file2string '$outdir/file2string $in >$out.tmp && mv $out.tmp $out'
+
 fn file2string {
-	build '$outdir'/$1 awk '$srcdir'/$2 '|' '$dir'/file2string.awk ; with\
-		expr '-f $dir/file2string.awk'
+	build '$outdir'/$1 file2string '$srcdir'/$2 '|' '$outdir'/file2string
 	deps=($deps '$outdir'/$1)
 }
 
