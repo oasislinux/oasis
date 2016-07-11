@@ -51,17 +51,23 @@ fn file2string {
 }
 
 file2string input/input_conf.h etc/input.conf
+file2string sub/osd_font.h sub/osd_font.otf
 for(f in assdraw defaults options osc ytdl_hook)
 	file2string player/lua/$f.inc player/lua/$f.lua
 
-if(grep -qF 'HAVE_DRM 1' config.h) {
-	cflags=($cflags '-isystem desktop/libdrm/'^(src src/include/drm))
-	libs=($libs desktop/libdrm/libdrm.a)
-}
 if(grep -qF 'HAVE_ALSA 1' config.h) {
 	cflags=($cflags -isystem '$builddir'/media/alsa-lib/include)
 	libs=($libs media/alsa-lib/libasound.a)
 	deps=($deps phony/media/alsa-lib/headers)
+}
+if(grep -qF 'HAVE_DRM 1' config.h) {
+	cflags=($cflags '-isystem desktop/libdrm/'^(src src/include/drm))
+	libs=($libs desktop/libdrm/libdrm.a)
+}
+if(grep -qF 'HAVE_LIBASS 1' config.h) {
+	cflags=($cflags -isystem '$builddir'/media/libass/include)
+	libs=($libs media/libass/libass.a desktop/freetype/libfreetype.a extra/fribidi/libfribidi.a)
+	deps=($deps phony/media/libass/headers)
 }
 if(grep -qF 'HAVE_LUA 1' config.h) {
 	cflags=($cflags -isystem devel/lua/src/src)

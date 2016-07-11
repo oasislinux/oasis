@@ -56,9 +56,9 @@
 #define HAVE_LINUX_FSTATFS 1
 #define HAVE_LIBSMBCLIENT 0
 #define HAVE_LUA 1
-#define HAVE_LIBASS 0
-#define HAVE_LIBASS_OSD 0
-#define HAVE_DUMMY_OSD 1
+#define HAVE_LIBASS 1
+#define HAVE_LIBASS_OSD 1
+#define HAVE_DUMMY_OSD 0
 #define HAVE_ZLIB 1
 #define HAVE_ENCODING 0
 #define HAVE_LIBBLURAY 0
