@@ -1,20 +1,20 @@
-From 0cba8fec61ccc2b2a63cdd1f3c4ecd8c46c97e41 Mon Sep 17 00:00:00 2001
+From 45e12e24e5eea3136851ecd347554ca4e709829a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
 
 This requires python and rst2man to generate.
 ---
- DOCS/man/mpv.1 | 13850 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 13850 insertions(+)
+ DOCS/man/mpv.1 | 13877 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 13877 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 0000000..a6a249c
+index 0000000..38182f3
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,13850 @@
+@@ -0,0 +1,13877 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -1695,15 +1695,15 @@ index 0000000..a6a249c
 +In some cases, RGB conversion is forced, which means the RGB conversion
 +is performed by the hardware decoding API, instead of the OpenGL code
 +used by \fB\-\-vo=opengl\fP\&. This means certain obscure colorspaces may
-+not display correctly, and not certain filtering (such as debanding)
-+can not be applied in an ideal way.
++not display correctly, not certain filtering (such as debanding)
++cannot be applied in an ideal way.
 +.sp
 +\fBvdpau\fP is usually safe. If deinterlacing enabled (or the \fBvdpaupp\fP
 +video filter is active in general), it forces RGB conversion. The latter
 +currently does not treat certain colorspaces like BT.2020 correctly
-+(which is mostly a mpv\-specific restriction). If the \fBvdpauprb\fP
-+retrieves image data without RGB conversion, but does not work with
-+postprocessing.
++(which is mostly a mpv\-specific restriction). The \fBvdpauprb\fP video
++filter retrieves image data without RGB conversion and is safe (but
++precludes use of vdpau postprocessing).
 +.sp
 +\fBvaapi\fP is safe if the \fBvaapi\-egl\fP backend is indicated in the logs.
 +If \fBvaapi\-glx\fP is indicated, and the video colorspace is either BT.601
@@ -2202,17 +2202,10 @@ index 0000000..a6a249c
 +.TP
 +.B \fB\-\-volume=<value>\fP
 +Set the startup volume. 0 means silence, 100 means no volume reduction or
-+amplification. A value of \-1 (the default) will not change the volume. See
-+also \fB\-\-softvol\fP\&.
++amplification. Negative values can be passed for compatibility, but are
++treated as 0.
 +.sp
-+\fBNOTE:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+This was changed after the mpv 0.9 release. Before that, 100 actually
-+meant maximum volume. At the same time, the volume scale was made cubic,
-+so the old values won\(aqt match up with the new ones anyway.
-+.UNINDENT
-+.UNINDENT
++Since mpv 0.18.1, this always controls the internal mixer (aka "softvol").
 +.TP
 +.B \fB\-\-audio\-delay=<sec>\fP
 +Audio delay in seconds (positive or negative float value). Positive values
@@ -2227,27 +2220,17 @@ index 0000000..a6a249c
 +.sp
 +See also: \fB\-\-volume\fP\&.
 +.TP
-+.B \fB\-\-softvol=<mode>\fP
-+Control whether to use the volume controls of the audio output driver or
-+the internal mpv volume filter.
-+.INDENT 7.0
-+.TP
-+.B no
-+prefer audio driver controls, use the volume filter only if
-+absolutely needed
-+.TP
-+.B yes
-+always use the volume filter
-+.TP
-+.B auto
-+prefer the volume filter if the audio driver uses the system mixer
-+(default)
-+.UNINDENT
++.B \fB\-\-softvol=<no|yes|auto>\fP
++Deprecated/unfunctional. Before mpv 0.18.1, this used to control whether
++to use the volume controls of the audio output driver or the internal mpv
++volume filter.
 +.sp
-+The intention of \fBauto\fP is to avoid changing system mixer settings from
-+within mpv with default settings. mpv is a video player, not a mixer panel.
-+On the other hand, mixer controls are enabled for sound servers like
-+PulseAudio, which provide per\-application volume.
++The current behavior is as if this option was set to \fByes\fP\&. The other
++behaviors are not available anymore, although \fBauto\fP almost matches
++current behavior in most cases.
++.sp
++The \fBno\fP behavior is still partially available through the \fBao\-volume\fP
++and \fBao\-mute\fP properties. But there are no options to reset these.
 +.TP
 +.B \fB\-\-audio\-demuxer=<[+]name>\fP
 +Use this audio demuxer type when using \fB\-\-audio\-file\fP\&. Use a \(aq+\(aq before
@@ -2420,9 +2403,11 @@ index 0000000..a6a249c
 +their start timestamps differ, and then video timing is gradually adjusted
 +if necessary to reach correct synchronization later.
 +.TP
-+.B \fB\-\-softvol\-max=<100.0\-1000.0>\fP
++.B \fB\-\-volume\-max=<100.0\-1000.0>\fP, \fB\-\-softvol\-max=<...>\fP
 +Set the maximum amplification level in percent (default: 130). A value of
 +130 will allow you to adjust the volume up to about double the normal level.
++.sp
++\fB\-\-softvol\-max\fP is a deprecated alias and should not be used.
 +.TP
 +.B \fB\-\-audio\-file\-auto=<no|exact|fuzzy|all>\fP, \fB\-\-no\-audio\-file\-auto\fP
 +Load additional audio files matching the video filename. The parameter
@@ -2440,7 +2425,7 @@ index 0000000..a6a249c
 +Load all audio files containing media filename.
 +.TP
 +.B all
-+Load all aufio files in the current and \fB\-\-audio\-file\-paths\fP
++Load all audio files in the current and \fB\-\-audio\-file\-paths\fP
 +directories.
 +.UNINDENT
 +.TP
@@ -2485,7 +2470,7 @@ index 0000000..a6a249c
 +.INDENT 0.0
 +.INDENT 3.5
 +Changing styling and position does not work with all subtitles. Image\-based
-+subtitles (DVD, Bluray/PGS, DVB) can not changed for fundamental reasons.
++subtitles (DVD, Bluray/PGS, DVB) cannot changed for fundamental reasons.
 +Subtitles in ASS format are normally not changed intentionally, but
 +overriding them can be controlled with \fB\-\-ass\-style\-override\fP\&.
 +.UNINDENT
@@ -3363,15 +3348,29 @@ index 0000000..a6a249c
 +Forcefully move mpv\(aqs video output window to default location whenever
 +there is a change in video parameters, video stream or file. This used to
 +be the default behavior. Currently only affects X11 VOs.
-+.TP
-+.B \fB\-\-heartbeat\-cmd=<command>\fP
++.UNINDENT
++.sp
++\fB\-\-heartbeat\-cmd=<command>\fP
++.INDENT 0.0
++.INDENT 3.5
++.sp
++\fBWARNING:\fP
++.INDENT 0.0
++.INDENT 3.5
++This option is redundant with Lua scripting. Further, it shouldn\(aqt be
++needed for disabling screensaver anyway, since mpv will call
++\fBxdg\-screensaver\fP when using X11 backend. As a consequence this
++option has been deprecated with no direct replacement.
++.UNINDENT
++.UNINDENT
++.sp
 +Command that is executed every 30 seconds during playback via \fIsystem()\fP \-
 +i.e. using the shell. The time between the commands can be customized with
 +the \fB\-\-heartbeat\-interval\fP option. The command is not run while playback
 +is paused.
 +.sp
 +\fBNOTE:\fP
-+.INDENT 7.0
++.INDENT 0.0
 +.INDENT 3.5
 +mpv uses this command without any checking. It is your responsibility to
 +ensure it does not cause security problems (e.g. make sure to use full
@@ -3386,20 +3385,23 @@ index 0000000..a6a249c
 +complicated, ask the author of the screensaver program to support the
 +proper X APIs. Note that the \fB\-\-stop\-screensaver\fP does not influence the
 +heartbeat code at all.
-+.INDENT 7.0
++.INDENT 0.0
 +.INDENT 3.5
 +.IP "Example for xscreensaver"
 +.sp
 +\fBmpv \-\-heartbeat\-cmd="xscreensaver\-command \-deactivate" file\fP
 +.UNINDENT
 +.UNINDENT
-+.INDENT 7.0
++.INDENT 0.0
 +.INDENT 3.5
 +.IP "Example for GNOME screensaver"
 +.sp
 +\fBmpv \-\-heartbeat\-cmd="gnome\-screensaver\-command \-\-deactivate" file\fP
 +.UNINDENT
 +.UNINDENT
++.UNINDENT
++.UNINDENT
++.INDENT 0.0
 +.TP
 +.B \fB\-\-heartbeat\-interval=<sec>\fP
 +Time between \fB\-\-heartbeat\-cmd\fP invocations in seconds (default: 30).
@@ -3828,7 +3830,7 @@ index 0000000..a6a249c
 +stop reading additional packets as soon as one of the limits is reached.
 +(The limits still can be slightly overstepped due to technical reasons.)
 +.sp
-+Set these limits highher if you get a packet queue overflow warning, and
++Set these limits higher if you get a packet queue overflow warning, and
 +you think normal playback would be possible with a larger packet queue.
 +.sp
 +See \fB\-\-list\-options\fP for defaults and value range.
@@ -3853,7 +3855,7 @@ index 0000000..a6a249c
 +.TP
 +.B \fB\-\-force\-seekable=<yes|no>\fP
 +If the player thinks that the media is not seekable (e.g. playing from a
-+pipe, or it\(aqs a http stream with a server that doesn\(aqt support range
++pipe, or it\(aqs an http stream with a server that doesn\(aqt support range
 +requests), seeking will be disabled. This option can forcibly enable it.
 +For seeks within the cache, there\(aqs a good chance of success.
 +.UNINDENT
@@ -4827,7 +4829,7 @@ index 0000000..a6a249c
 +With \fBauto\fP, the cache will usually be enabled for network streams,
 +using the size set by \fB\-\-cache\-default\fP\&. With \fByes\fP, the cache will
 +always be enabled with the size set by \fB\-\-cache\-default\fP (unless the
-+stream can not be cached, or \fB\-\-cache\-default\fP disables caching).
++stream cannot be cached, or \fB\-\-cache\-default\fP disables caching).
 +.sp
 +May be useful when playing files from slow media, but can also have
 +negative effects, especially with file formats that require a lot of
@@ -5279,7 +5281,7 @@ index 0000000..a6a249c
 +video or audio outputs are not possible, but you can use filters to merge
 +them into one.
 +.sp
-+The complex filter can not be changed yet during playback. It\(aqs also not
++The complex filter cannot be changed yet during playback. It\(aqs also not
 +possible to change the tracks connected to the filter at runtime. Other
 +tracks, as long as they\(aqre not connected to the filter, and the
 +corresponding output is not connected to the filter, can still be freely
@@ -6288,7 +6290,7 @@ index 0000000..a6a249c
 +Dither to 8 bit output.
 +.UNINDENT
 +.sp
-+Note that the depth of the connected video display device can not be
++Note that the depth of the connected video display device cannot be
 +detected. Often, LCD panels will do dithering on their own, which
 +conflicts with \fBopengl\fP\(aqs dithering and leads to ugly output.
 +.TP
@@ -6476,6 +6478,10 @@ index 0000000..a6a249c
 +.TP
 +.B vec2 image_size
 +The size in pixels of the input image.
++.TP
++.B vec2 target_size
++The size in pixels of the visible part of the scaled (and possibly
++cropped) image.
 +.UNINDENT
 +.sp
 +For example, a shader that inverts the colors could look like this:
@@ -6887,6 +6893,9 @@ index 0000000..a6a249c
 +.TP
 +.B dci\-p3
 +DCI\-P3 (Digital Cinema Colorspace), SMPTE RP431\-2
++.TP
++.B v\-gamut
++Panasonic V\-Gamut (VARICAM) primaries
 +.UNINDENT
 +.TP
 +.B \fBtarget\-trc=<value>\fP
@@ -6921,6 +6930,18 @@ index 0000000..a6a249c
 +.TP
 +.B st2084
 +SMPTE ST2084 (HDR) curve, PQ OETF
++.TP
++.B std\-b67
++ARIB STD\-B67 (Hybrid Log\-gamma) curve, also known as BBC/NHK HDR
++.TP
++.B v\-log
++Panasonic V\-Log (VARICAM) curve
++.TP
++.B NOTE: When using HDR output formats, mpv will encode to the specified
++curve but it will not set any HDMI flags or other signalling that
++might be required for the target device to correctly display the
++HDR signal. The user should independently guarantee this before
++using these signal formats for display.
 +.UNINDENT
 +.TP
 +.B \fBtarget\-brightness=<1..100000>\fP
@@ -8308,7 +8329,7 @@ index 0000000..a6a249c
 +.TP
 +.B \fB<outfmt>\fP
 +Format name that should be substituted for the output. If they do not
-+have the same bytes per pixel and chroma subsamplimg, it will fail.
++have the same bytes per pixel and chroma subsampling, it will fail.
 +.TP
 +.B \fB<colormatrix>\fP
 +Controls the YUV to RGB color space conversion when playing video. There
@@ -8421,6 +8442,12 @@ index 0000000..a6a249c
 +.TP
 +.B cie1931
 +CIE 1931 RGB
++.TP
++.B dci\-p3
++DCI\-P3 (Digital Cinema)
++.TP
++.B v\-gamut
++Panasonic V\-Gamut primaries
 +.UNINDENT
 +.TP
 +.B \fB<gamma>\fP
@@ -8463,6 +8490,12 @@ index 0000000..a6a249c
 +.TP
 +.B st2084
 +SMPTE ST2084 (HDR) curve
++.TP
++.B std\-b67
++ARIB STD\-B67 (Hybrid Log\-gamma) curve
++.TP
++.B v\-log
++Panasonic V\-Log transfer curve
 +.UNINDENT
 +.TP
 +.B \fB<peak>\fP
@@ -9838,6 +9871,8 @@ index 0000000..a6a249c
 +not control automatically inserted filters.
 +.UNINDENT
 +.sp
++The argument is always needed. E.g. in case of \fBclr\fP use \fBvf clr ""\fP\&.
++.sp
 +You can assign labels to filter by prefixing them with \fB@name:\fP (where
 +\fBname\fP is a user\-chosen arbitrary identifier). Labels can be used to
 +refer to filters by name in all of the filter chain modification commands.
@@ -9954,29 +9989,20 @@ index 0000000..a6a249c
 +the resolution is reduced to that of the video\(aqs. You can read the
 +\fBosd\-width\fP and \fBosd\-height\fP properties. At least with \fB\-\-vo\-xv\fP and
 +anamorphic video (such as DVD), \fBosd\-par\fP should be read as well, and the
-+overlay should be aspect\-compensated. (Future directions: maybe mpv should
-+take care of some of these things automatically, but it\(aqs hard to tell
-+where to draw the line.)
++overlay should be aspect\-compensated.
 +.sp
 +\fBid\fP is an integer between 0 and 63 identifying the overlay element. The
 +ID can be used to add multiple overlay parts, update a part by using this
 +command with an already existing ID, or to remove a part with
 +\fBoverlay\-remove\fP\&. Using a previously unused ID will add a new overlay,
-+while reusing an ID will update it. (Future directions: there should be
-+something to ensure different programs wanting to create overlays don\(aqt
-+conflict with each others, should that ever be needed.)
++while reusing an ID will update it.
 +.sp
 +\fBx\fP and \fBy\fP specify the position where the OSD should be displayed.
 +.sp
 +\fBfile\fP specifies the file the raw image data is read from. It can be
 +either a numeric UNIX file descriptor prefixed with \fB@\fP (e.g. \fB@4\fP),
-+or a filename. The file will be mapped into memory with \fBmmap()\fP\&. Some VOs
-+will pass the mapped pointer directly to display APIs (e.g. opengl or
-+vdpau), so no actual copying is involved. Truncating the source file while
-+the overlay is active will crash the player. You shouldn\(aqt change the data
-+while the overlay is active, because the data is essentially accessed at
-+random points. Instead, call \fBoverlay\-add\fP again (preferably with a
-+different memory region to prevent tearing).
++or a filename. The file will be mapped into memory with \fBmmap()\fP,
++copied, and unmapped before the command returns (changed in mpv 0.18.1).
 +.sp
 +It is also possible to pass a raw memory address for use as bitmap memory
 +by passing a memory address as integer prefixed with an \fB&\fP character.
@@ -10008,17 +10034,16 @@ index 0000000..a6a249c
 +In general, the total amount of memory accessed is \fBstride * h\fP\&.
 +(Technically, the minimum size would be \fBstride * (h \- 1) + w * 4\fP, but
 +for simplicity, the player will access all \fBstride * h\fP bytes.)
++.sp
++\fBNOTE:\fP
 +.INDENT 7.0
 +.INDENT 3.5
-+.IP "Warning"
-+.sp
-+When updating the overlay, you should prepare a second shared memory
-+region (e.g. make use of the offset parameter) and add this as overlay,
-+instead of reusing the same memory every time. Otherwise, you might
-+get the equivalent of tearing, when your application and mpv write/read
-+the buffer at the same time. Also, keep in mind that mpv might access
-+an overlay\(aqs memory at random times whenever it feels the need to do
-+so, for example when redrawing the screen.
++Before mpv 0.18.1, you had to do manual "double buffering" when updating
++an overlay by replacing it with a different memory buffer. Since mpv
++0.18.1, the memory is simply copied and doesn\(aqt reference any of the
++memory indicated by the command\(aqs arguments after the commend returns.
++If you want to use this command before mpv 0.18.1, reads the old docs
++to see how to handle this correctly.
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -10692,29 +10717,31 @@ index 0000000..a6a249c
 +See \fB\-\-hr\-seek\fP\&.
 +.TP
 +.B \fBmixer\-active\fP
-+Return \fByes\fP if the audio mixer is active, \fBno\fP otherwise. This has
-+implications for \fB\-\-softvol=no\fP mode: if the mixer is inactive, changing
-+\fBvolume\fP doesn\(aqt actually change anything on the system mixer. If the
-+\fB\-\-volume\fP or \fB\-\-mute\fP option are used, these might not be applied
-+properly until the mixer becomes active either. (The options, if set, will
-+just overwrite the mixer state at audio initialization.)
++Return \fByes\fP if the audio mixer is active, \fBno\fP otherwise.
 +.sp
-+While the behavior with \fBmixer\-active==yes\fP is relatively well\-defined,
-+the \fBno\fP case will provide possibly wrong or insignificant values.
-+.sp
-+Note that an active mixer does not necessarily imply active audio output,
-+although this is implied in the current implementation.
++This option is relatively useless. Before mpv 0.18.1, it could be used to
++infer behavior of the \fBvolume\fP property.
 +.TP
 +.B \fBvolume\fP (RW)
-+Current volume (see \fB\-\-volume\fP for details). Also see \fBmixer\-active\fP
-+property.
++Current volume (see \fB\-\-volume\fP for details).
 +.TP
-+.B \fBvolume\-max\fP
-+Current maximum value the volume property can be set to. (This may depend
-+on the \fB\-\-softvol\-max\fP option.)
++.B \fBvolume\-max\fP (RW)
++Current maximum value the volume property can be set to. (Equivalent to the
++\fB\-\-volume\-max\fP option.)
 +.TP
 +.B \fBmute\fP (RW)
-+Current mute status (\fByes\fP/\fBno\fP). Also see \fBmixer\-active\fP property.
++Current mute status (\fByes\fP/\fBno\fP).
++.TP
++.B \fBao\-volume\fP (RW)
++System volume. This property is available only if mpv audio output is
++currently active, and only if the underlying implementation supports volume
++control. What this option does depends on the API. For example, on ALSA
++this usually changes system\-wide audio, while with PulseAudio this controls
++per\-application volume.
++.TP
++.B \fBao\-mute\fP (RW)
++Similar to \fBao\-volume\fP, but controls the mute state. May be unimplemented
++even if \fBao\-volume\fP works.
 +.TP
 +.B \fBaudio\-delay\fP (RW)
 +See \fB\-\-audio\-delay\fP\&.
@@ -10846,7 +10873,7 @@ index 0000000..a6a249c
 +properties to see whether this was successful.
 +.sp
 +Unlike in mpv 0.9.x and before, this does not return the currently active
-+hardware decoder. Since mpv 0.17.1, \fBhwdec\-current\fP is available for
++hardware decoder. Since mpv 0.18.0, \fBhwdec\-current\fP is available for
 +this purpose.
 +.TP
 +.B \fBhwdec\-current\fP
@@ -10870,13 +10897,13 @@ index 0000000..a6a249c
 +platform and VO.
 +.TP
 +.B \fBhwdec\-active\fP
-+Deprecated. To be removed in mpv 0.19.0. Use \fBhwdec\-current\fP instead.
++Deprecated. To be removed in mpv 0.20.0. Use \fBhwdec\-current\fP instead.
 +.sp
 +Return \fByes\fP or \fBno\fP, depending on whether any type of hardware decoding
 +is actually in use.
 +.TP
 +.B \fBhwdec\-detected\fP
-+Deprecated. To be removed in mpv 0.19.0.
++Deprecated. To be removed in mpv 0.20.0.
 +.sp
 +If hardware decoding is active, this returns the hardware decoder in use.
 +Otherwise, it returns either \fBno\fP, or if applicable, the currently loaded
@@ -11664,7 +11691,7 @@ index 0000000..a6a249c
 +.sp
 +(Note that if an option is marked as file\-local, even \fBoptions/\fP will
 +access the local value, and the \fBold\fP value, which will be restored on
-+end of playback, can not be read or written until end of playback.)
++end of playback, cannot be read or written until end of playback.)
 +.TP
 +.B \fBoption\-info/<name>\fP
 +Additional per\-option information.
@@ -12519,7 +12546,7 @@ index 0000000..a6a249c
 +Similar to \fBmp.set_property\fP, but set the given property using its native
 +type.
 +.sp
-+Since there are several data types which can not represented natively in
++Since there are several data types which cannot represented natively in
 +Lua, this might not always work as expected. For example, while the Lua
 +wrapper can do some guesswork to decide whether a Lua table is an array
 +or a map, this would fail with empty tables. Also, there are not many

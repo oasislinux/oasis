@@ -169,7 +169,7 @@ video/vdpau_mixer.c vdpau
 video/decode/dec_video.c
 video/decode/dxva2.c d3d-hwaccel
 video/decode/d3d11va.c d3d-hwaccel
-video/decode/d3d.c d3d-hwaccel
+video/decode/d3d.c win32
 video/decode/vaapi.c vaapi-hwaccel
 video/decode/vd_lavc.c
 video/decode/videotoolbox.c videotoolbox-hwaccel
@@ -208,7 +208,6 @@ video/out/cocoa_common.m cocoa
 video/out/dither.c
 video/out/filter_kernels.c
 video/out/opengl/angle_dynamic.c egl-angle
-video/out/opengl/angle_common.c egl-angle
 video/out/opengl/common.c gl
 video/out/opengl/context.c gl
 video/out/opengl/context_angle.c egl-angle
