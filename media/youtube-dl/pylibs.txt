@@ -50,6 +50,7 @@ youtube_dl/extractor/escapist.py
 youtube_dl/extractor/espn.py
 youtube_dl/extractor/iconosquare.py
 youtube_dl/extractor/steam.py
+youtube_dl/extractor/roosterteeth.py
 youtube_dl/extractor/xiami.py
 youtube_dl/extractor/watchindianporn.py
 youtube_dl/extractor/wrzuta.py
