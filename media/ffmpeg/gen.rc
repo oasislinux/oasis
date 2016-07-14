@@ -235,7 +235,11 @@ libs=(\
 )
 
 cc cmdutils.c
+
 exe ffprobe ffprobe.c cmdutils.c.o $libs
 file bin/ffprobe '$outdir'/ffprobe 755
+
+exe ffmpeg ffmpeg.c ffmpeg_opt.c ffmpeg_filter.c cmdutils.c.o $libs
+file bin/ffmpeg '$outdir'/ffmpeg 755
 
 fetch git
