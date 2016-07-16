@@ -32,8 +32,19 @@ up from the following:
 * [tz](https://www.iana.org/time-zones)
 * [xz](http://tukaani.org/xz/)
 
-Several other projects can be built in the `devel`, `extra`, and `desktop`
-directories.
+Several other projects can be built in the `desktop`, `devel`, `extra`, and
+`media` directories.
+
+# Principles
+
+* Binaries should be linked statically. This is made possible by lightweight
+  system components like musl libc, and a central source repository to keep
+  track of system-wide dependencies.
+* Software components should be built in a generic way that allows the user to
+  easily customize and/or modify as needed.
+* Sources can be referenced through a URL or git submodule, but not included
+  directly in the oasis repository. This way, users only need to download the
+  sources they are interested in.
 
 # Prerequisites
 
@@ -183,3 +194,12 @@ For a BIOS system:
 		LINUX ../linux
 		APPEND root=/dev/$ROOTPART init=/bin/sinit ro
 	EOF
+
+### efibootmgr
+
+If your system uses UEFI and you built your kernel with `CONFIG_EFI_STUB=y`, you
+can use `efibootmgr` to set up a new boot entry.
+
+	efibootmgr -c -d /dev/$DRIVE -p $BOOTPARTNUM -l /linux -L oasis "root=/dev/$BOOTPART init=/bin/sinit ro"
+
+You might also want to enable `extra/efibootmgr` in your `config.rc`.
