@@ -19,8 +19,8 @@ tzdata=(\
 	systemv\
 	factory\
 )
-build '$outdir'/tzdata.tree awk '$srcdir'/$tzdata '|' scripts/hash.rc '$dir/tzdata.awk' ; with\
+build '$outdir'/tzdata.index awk '$srcdir'/$tzdata '|' scripts/hash.rc '$dir/tzdata.awk' ; with\
 	expr '-f $dir/tzdata.awk out=$outdir/zoneinfo repo=$builddir/$repo.git'
-tree_inputs=($tree_inputs '$outdir'/tzdata.tree)
+index_inputs=($index_inputs '$outdir'/tzdata.index)
 
 fetch git

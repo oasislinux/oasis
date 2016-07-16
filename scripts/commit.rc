@@ -5,9 +5,11 @@ flag e +
 repo=$1
 branch=$2
 tag=$3
+out=$4
 
 fn checkstatus {}
 
+wd=`{pwd}
 cd $repo
 
 if([ -f refs/heads/$branch ]) parent=(-p $branch)
@@ -16,3 +18,4 @@ if not parent=()
 message='oasis built by '`{id -un}
 commit=`{echo $message | git commit-tree $tag $parent} ; checkstatus
 git update-ref refs/heads/$branch $commit
+ln -f refs/heads/$branch $wd/$out

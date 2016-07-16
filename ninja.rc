@@ -142,7 +142,7 @@ fn file {
 		mode=`{printf %4s $3 | tr ' ' 0 | tail -c 4}
 		build $out githash $2 '|' '$builddir/$repo.stamp' scripts/hash.rc ; with\
 			args 10$mode' '$1
-		tree_inputs=($tree_inputs $out)
+		index_inputs=($index_inputs $out)
 
 		if(! ~ $mode 0755 0644) tree_perms=($tree_perms 10$mode' '$1)
 	}
@@ -161,7 +161,7 @@ fn sym {
 		out='$builddir/$repo.hash'/$1
 		build $out githash '|' '$builddir/$repo.stamp' scripts/hash.rc ; with\
 			args 120000' '$1' '$2
-		tree_inputs=($tree_inputs $out)
+		index_inputs=($index_inputs $out)
 	}
 	status=()
 }

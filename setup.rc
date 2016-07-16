@@ -22,7 +22,7 @@ ifs='
 fn subgen {
 	subninja '$dir'/$1/local.ninja
 	ninja_inputs=($ninja_inputs phony/'$dir'/$1/ninja)
-	tree_inputs=($tree_inputs '$outdir'/$1/root.tree)
+	index_inputs=($index_inputs '$outdir'/$1/root.index)
 	perms_inputs=($perms_inputs '$outdir'/$1/root.perms)
 	if(~ $recurse 1 || ! [ -f $1/local.ninja ]) @ gen $1 &
 	status=()
@@ -37,7 +37,7 @@ fn gen {
 	allsrcs=()
 	tree_perms=()
 	perms_inputs=()
-	tree_inputs=()
+	index_inputs=()
 	gen_inputs=()
 	ninja_inputs=()
 
@@ -60,8 +60,8 @@ fn gen {
 		}
 		if(~ $#perms_inputs 0) build '$outdir/root.perms' empty
 		if not build '$outdir/root.perms' mergeperms $perms_inputs
-		if(~ $#tree_inputs 0) build '$outdir/root.tree' empty
-		if not build '$outdir/root.tree' cat $tree_inputs
+		if(~ $#index_inputs 0) build '$outdir/root.index' empty
+		if not build '$outdir/root.index' cat $index_inputs
 	} >local.ninja.tmp
 	mv $absdir/^(local.ninja.tmp local.ninja)
 

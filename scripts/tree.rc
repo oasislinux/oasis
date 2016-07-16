@@ -5,13 +5,15 @@ flag e +
 repo=$1
 tag=$2
 index=$3
+out=$4
 
 fn checkstatus {}
 
-oldcwd=`{pwd}
+wd=`{pwd}
 cd $repo
 
 git read-tree --empty
-git update-index --index-info <$oldcwd/$index
+git update-index --index-info <$wd/$index
 tree=`{git write-tree} ; checkstatus
 git update-ref refs/tags/$tag $tree
+ln -f refs/tags/$tag $wd/$out
