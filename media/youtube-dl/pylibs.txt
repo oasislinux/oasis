@@ -15,6 +15,7 @@ youtube_dl/extractor/cmt.py
 youtube_dl/extractor/nuevo.py
 youtube_dl/extractor/vimple.py
 youtube_dl/extractor/telecinco.py
+youtube_dl/extractor/rudo.py
 youtube_dl/extractor/pornoxo.py
 youtube_dl/extractor/matchtv.py
 youtube_dl/extractor/moniker.py
@@ -215,6 +216,7 @@ youtube_dl/extractor/pornotube.py
 youtube_dl/extractor/azubu.py
 youtube_dl/extractor/pinkbike.py
 youtube_dl/extractor/dramafever.py
+youtube_dl/extractor/ninenow.py
 youtube_dl/extractor/prosiebensat1.py
 youtube_dl/extractor/tlc.py
 youtube_dl/extractor/izlesene.py
