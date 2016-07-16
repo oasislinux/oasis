@@ -122,6 +122,7 @@
 [submodule "extra/libfuse/src"]
 	path = extra/libfuse/src
 	url = https://github.com/libfuse/libfuse
+	ignore = all
 [submodule "extra/libnl/src"]
 	path = extra/libnl/src
 	url = https://github.com/thom311/libnl
