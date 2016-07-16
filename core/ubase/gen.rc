@@ -70,7 +70,7 @@ x mount 8
 x mountpoint 1
 x nologin 8
 x pagesize 1
-x passwd 1
+x -m 4755 passwd 1
 x pidof 1
 x pivot_root 8
 x ps 1
