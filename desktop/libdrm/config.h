@@ -16,8 +16,6 @@
 /* #undef HAVE_LIB_ATOMIC_OPS */
 #define HAVE_MEMORY_H 1
 /* #undef HAVE_OMAP */
-/* #undef HAVE_RADEON */
-/* #undef HAVE_SYS_MKDEV_H */
 /* #undef HAVE_SYS_SYSCTL_H */
 /* #undef HAVE_TEGRA */
 /* #undef HAVE_VALGRIND */
@@ -25,13 +23,15 @@
 #define HAVE_VISIBILITY 1
 /* #undef HAVE_VMWGFX */
 #define LT_OBJDIR ".libs/"
+/* #undef MAJOR_IN_MKDEV */
+/* #undef MAJOR_IN_SYSMACROS */
 #define PACKAGE "libdrm"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=DRI"
 #define PACKAGE_NAME "libdrm"
-#define PACKAGE_STRING "libdrm 2.4.68"
+#define PACKAGE_STRING "libdrm 2.4.69"
 #define PACKAGE_TARNAME "libdrm"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.4.68"
+#define PACKAGE_VERSION "2.4.69"
 /* #undef STACK_DIRECTION */
 /* #undef UDEV */
 #ifndef _ALL_SOURCE
@@ -49,7 +49,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.4.68"
+#define VERSION "2.4.69"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
