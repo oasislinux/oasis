@@ -28,10 +28,10 @@
 #define PACKAGE "libdrm"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=DRI"
 #define PACKAGE_NAME "libdrm"
-#define PACKAGE_STRING "libdrm 2.4.69"
+#define PACKAGE_STRING "libdrm 2.4.70"
 #define PACKAGE_TARNAME "libdrm"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.4.69"
+#define PACKAGE_VERSION "2.4.70"
 /* #undef STACK_DIRECTION */
 /* #undef UDEV */
 #ifndef _ALL_SOURCE
@@ -49,7 +49,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.4.69"
+#define VERSION "2.4.70"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
