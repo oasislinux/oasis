@@ -42,6 +42,7 @@
 /* #undef USE_GNUTLS */
 /* #undef USE_LIBSSH2 */
 /* #undef USE_MANUAL */
+/* #undef USE_MBEDTLS */
 /* #undef USE_NSS */
 /* #undef USE_OPENLDAP */
 /* #undef USE_POLARSSL */
