@@ -112,6 +112,7 @@ youtube_dl/extractor/videomega.py
 youtube_dl/extractor/liveleak.py
 youtube_dl/extractor/internetvideoarchive.py
 youtube_dl/extractor/infoq.py
+youtube_dl/extractor/streamable.py
 youtube_dl/extractor/patreon.py
 youtube_dl/extractor/streamcz.py
 youtube_dl/extractor/tube8.py
@@ -177,6 +178,7 @@ youtube_dl/extractor/lovehomeporn.py
 youtube_dl/extractor/tvland.py
 youtube_dl/extractor/ora.py
 youtube_dl/extractor/crackle.py
+youtube_dl/extractor/odatv.py
 youtube_dl/extractor/tmz.py
 youtube_dl/extractor/r7.py
 youtube_dl/extractor/nfl.py
@@ -291,6 +293,7 @@ youtube_dl/extractor/fusion.py
 youtube_dl/extractor/tv2.py
 youtube_dl/extractor/npr.py
 youtube_dl/extractor/localnews8.py
+youtube_dl/extractor/nintendo.py
 youtube_dl/extractor/videomore.py
 youtube_dl/extractor/viddler.py
 youtube_dl/extractor/tunein.py
@@ -460,6 +463,7 @@ youtube_dl/extractor/canalc2.py
 youtube_dl/extractor/nova.py
 youtube_dl/extractor/normalboots.py
 youtube_dl/extractor/soundcloud.py
+youtube_dl/extractor/arkena.py
 youtube_dl/extractor/streamcloud.py
 youtube_dl/extractor/eporner.py
 youtube_dl/extractor/hornbunny.py
@@ -542,6 +546,7 @@ youtube_dl/extractor/tvplay.py
 youtube_dl/extractor/hitbox.py
 youtube_dl/extractor/canalplus.py
 youtube_dl/extractor/keek.py
+youtube_dl/extractor/lcp.py
 youtube_dl/extractor/mwave.py
 youtube_dl/extractor/lnkgo.py
 youtube_dl/extractor/goshgay.py
