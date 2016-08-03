@@ -1,7 +1,7 @@
-From 9e890d47655e382702bcaba8cb449fb81f1d1876 Mon Sep 17 00:00:00 2001
+From be89553bd363678ab75c44b8e0630920aba52987 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 3 Jul 2016 00:01:24 -0700
-Subject: [PATCH 2/2] amixer.h: Just include "version.h"
+Subject: [PATCH] amixer.h: Just include "version.h"
 
 ---
  amixer/amixer.h | 2 +-
@@ -18,5 +18,5 @@ index 3588f04..0daa5b7 100644
 -#include "../include/version.h"
 +#include "version.h"
 -- 
-2.9.0
+2.9.2
 

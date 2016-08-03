@@ -1,7 +1,7 @@
-From bf5b040672b67cbf69eadb46b699d7f814adbdd5 Mon Sep 17 00:00:00 2001
+From 16fb793861d8833c81b4a7bb0eb8372099699772 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 23:48:43 -0700
-Subject: [PATCH 1/2] Include poll.h instead of sys/poll.h
+Subject: [PATCH] Include poll.h instead of sys/poll.h
 
 ---
  amidi/amidi.c               | 2 +-
@@ -38,7 +38,7 @@ index f9b09cb..8241148 100644
  #include "amixer.h"
  #include "../alsamixer/volume_mapping.h"
 diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 7acaa83..78823d8 100644
+index 2da7dda..172287b 100644
 --- a/aplay/aplay.c
 +++ b/aplay/aplay.c
 @@ -43,7 +43,7 @@
@@ -77,5 +77,5 @@ index 24c5d21..05892e0 100644
  #include "aconfig.h"
  #include "version.h"
 -- 
-2.9.0
+2.9.2
 
