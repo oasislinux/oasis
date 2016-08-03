@@ -7,7 +7,7 @@ cflags\
 hdrs=(\
 	asoundef.h\
 	global.h input.h output.h error.h\
-	conf.h control.h iatomic.h\
+	conf.h control.h\
 	pcm.h pcm_old.h timer.h\
 	pcm_plugin.h\
 	pcm_rate.h\
@@ -33,7 +33,7 @@ lib libasound.a src/^(\
 	)\
 	mixer/^(bag.c mixer.c simple.c simple_none.c)\
 	pcm/^(\
-		atomic.c mask.c interval.c\
+		mask.c interval.c\
 		pcm.c pcm_params.c pcm_simple.c\
 		pcm_hw.c pcm_misc.c pcm_mmap.c pcm_symbols.c\
 		pcm_generic.c pcm_plugin.c\

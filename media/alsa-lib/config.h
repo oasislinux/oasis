@@ -9,13 +9,13 @@
 /* #undef BUILD_HWDEP */
 #define BUILD_MIXER "1"
 #define BUILD_PCM "1"
-#undef BUILD_PCM_PLUGIN_ADPCM
-#undef BUILD_PCM_PLUGIN_ALAW
-#undef BUILD_PCM_PLUGIN_LFLOAT
-#undef BUILD_PCM_PLUGIN_MMAP_EMUL
-#undef BUILD_PCM_PLUGIN_MULAW
-#undef BUILD_PCM_PLUGIN_RATE
-#undef BUILD_PCM_PLUGIN_ROUTE
+/* #undef BUILD_PCM_PLUGIN_ADPCM */
+/* #undef BUILD_PCM_PLUGIN_ALAW */
+/* #undef BUILD_PCM_PLUGIN_LFLOAT */
+/* #undef BUILD_PCM_PLUGIN_MMAP_EMUL */
+/* #undef BUILD_PCM_PLUGIN_MULAW */
+/* #undef BUILD_PCM_PLUGIN_RATE */
+/* #undef BUILD_PCM_PLUGIN_ROUTE */
 /* #undef BUILD_RAWMIDI */
 #define BUILD_SEQ "1"
 #define BUILD_TOPOLOGY "1"
@@ -34,13 +34,14 @@
 #define PACKAGE "alsa-lib"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "alsa-lib"
-#define PACKAGE_STRING "alsa-lib 1.1.1"
+#define PACKAGE_STRING "alsa-lib 1.1.2"
 #define PACKAGE_TARNAME "alsa-lib"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.1.1"
+#define PACKAGE_VERSION "1.1.2"
 #define SND_MAX_CARDS 32
 #define SUPPORT_ALOAD "1"
 /* #undef SUPPORT_RESMGR */
+#define THREAD_SAFE_API "1"
 #define TIME_WITH_SYS_TIME 1
 #define TMPDIR "/tmp"
 #ifndef _ALL_SOURCE
@@ -58,7 +59,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.1.1"
+#define VERSION "1.1.2"
 #define VERSIONED_SYMBOLS /**/
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
