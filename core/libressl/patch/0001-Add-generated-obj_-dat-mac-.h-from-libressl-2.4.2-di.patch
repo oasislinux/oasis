@@ -1,7 +1,7 @@
-From fc2b6cbb3d2240242f2304436e063b258f783767 Mon Sep 17 00:00:00 2001
+From 2e4c63fda4c6531feb78af2a0004e72d49343844 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 14 Jun 2016 21:17:48 -0700
-Subject: [PATCH] Add generated obj_{dat,mac}.h from libressl 2.4.1
+Subject: [PATCH] Add generated obj_{dat,mac}.h from libressl 2.4.2
  distribution
 
 ---
@@ -9446,5 +9446,5 @@ index 0000000..f727262
 +#define OBJ_id_tc26_signwithdigest_gost3410_2012_512		OBJ_tc26,1L,3L,3L
 +
 -- 
-2.8.1
+2.9.2
 
