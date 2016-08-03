@@ -12,5 +12,6 @@ build '$builddir/$repo.stamp' gitinit
 build '$builddir/$repo.tree' gittree '$outdir/root.index' '|' '$builddir/$repo.stamp' ./scripts/tree.rc
 build '$builddir/$repo.tar' gitarchive '|' '$builddir/$repo.tree'
 build '$builddir/$repo.commit' gitcommit '|' '$builddir/$repo.tree'
+build commit phony '$builddir/$repo.commit'
 
-echo default '$builddir/$repo.commit'
+echo default '$builddir/$repo.tree'

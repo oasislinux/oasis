@@ -115,7 +115,7 @@ from oasis.
 
 Build oasis.
 
-	ninja
+	ninja commit
 
 Prepare root repository.
 
