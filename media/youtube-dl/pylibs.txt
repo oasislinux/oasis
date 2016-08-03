@@ -484,7 +484,6 @@ youtube_dl/extractor/hearthisat.py
 youtube_dl/extractor/twitter.py
 youtube_dl/extractor/learnr.py
 youtube_dl/extractor/beeg.py
-youtube_dl/extractor/nextmovie.py
 youtube_dl/extractor/voxmedia.py
 youtube_dl/extractor/unistra.py
 youtube_dl/extractor/onionstudios.py
