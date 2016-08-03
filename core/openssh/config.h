@@ -129,6 +129,9 @@
 #define HAVE_ELF_H 1
 #define HAVE_ENDIAN_H 1
 #define HAVE_ENDUTENT 1
+#define HAVE_ERR 1
+#define HAVE_ERRX 1
+#define HAVE_ERR_H 1
 /* #undef HAVE_ETC_DEFAULT_LOGIN */
 #define HAVE_EVP_CIPHER_CTX_CTRL 1
 #define HAVE_EVP_DIGESTFINAL_EX 1
@@ -268,6 +271,7 @@
 /* #undef HAVE_SETLUID */
 /* #undef HAVE_SETPASSENT */
 /* #undef HAVE_SETPCRED */
+/* #undef HAVE_SETPFLAGS */
 /* #undef HAVE_SETPPRIV */
 /* #undef HAVE_SETPROCTITLE */
 #define HAVE_SETRESGID 1
@@ -344,6 +348,7 @@
 #define HAVE_U_INTXX_T 1
 #define HAVE_VASPRINTF 1
 /* #undef HAVE_VIS_H */
+#define HAVE_WARN 1
 /* #undef HAVE__GETLONG */
 /* #undef HAVE__GETPTY */
 /* #undef HAVE__GETSHORT */
@@ -375,18 +380,17 @@
 /* #undef MAIL_DIRECTORY */
 /* #undef NEED_SETPGRP */
 /* #undef NO_ATTRIBUTE_ON_RETURN_TYPE */
-/* #undef NO_IPPORT_RESERVED_CONCEPT */
 /* #undef NO_SSH_LASTLOG */
 /* #undef NO_UID_RESTORATION_TEST */
 /* #undef NO_X11_UNIX_SOCKETS */
-#define OPENSSL_EVP_DIGESTUPDATE_VOID 1
-/* #undef OPENSSL_HAS_ECC */
-/* #undef OPENSSL_HAS_NISTP256 */
-/* #undef OPENSSL_HAS_NISTP384 */
-/* #undef OPENSSL_HAS_NISTP521 */
-/* #undef OPENSSL_HAVE_EVPCTR */
-/* #undef OPENSSL_HAVE_EVPGCM */
-#define OPENSSL_LOBOTOMISED_AES 1
+/* #undef OPENSSL_EVP_DIGESTUPDATE_VOID */
+#define OPENSSL_HAS_ECC 1
+#define OPENSSL_HAS_NISTP256 1
+#define OPENSSL_HAS_NISTP384 1
+#define OPENSSL_HAS_NISTP521 1
+#define OPENSSL_HAVE_EVPCTR 1
+#define OPENSSL_HAVE_EVPGCM 1
+/* #undef OPENSSL_LOBOTOMISED_AES */
 #define OPENSSL_PRNG_ONLY 1
 #define PACKAGE_BUGREPORT "openssh-unix-dev@mindrot.org"
 #define PACKAGE_NAME "OpenSSH"
