@@ -25,7 +25,7 @@ exe bin/ip ip/^(\
 	iplink_vxlan.c tcp_metrics.c iplink_ipoib.c ipnetconf.c link_ip6tnl.c\
 	link_iptnl.c link_gre6.c iplink_bond.c iplink_bond_slave.c iplink_hsr.c\
 	iplink_bridge.c iplink_bridge_slave.c ipfou.c iplink_ipvlan.c\
-	iplink_geneve.c iplink_vrf.c iproute_lwtunnel.c\
+	iplink_geneve.c iplink_vrf.c iproute_lwtunnel.c ipmacsec.c\
 ) libnetlink.a
 
 exe bin/bridge\
@@ -39,7 +39,7 @@ for(exe in bin/^(ip bridge ss)) file $exe '$outdir'/$exe 755
 man=(\
 	bridge ip ss\
 	ip-^(\
-                addrlabel fou gue l2tp maddress monitor mroute neighbour\
+                addrlabel fou gue l2tp macsec maddress monitor mroute neighbour\
                 netconf netns ntable rule tcp_metrics token tunnel xfrm\
 	)\
 ) for(man in man/man8/$man.8) file share/$man '$srcdir'/$man 644

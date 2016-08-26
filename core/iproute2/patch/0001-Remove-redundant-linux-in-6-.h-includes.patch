@@ -1,4 +1,4 @@
-From e6033e1b9851c13f6aa24395150450b664500d4c Mon Sep 17 00:00:00 2001
+From 7e7a0b23d4d59ed69a0bb7106409c86cd534deeb Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 25 Apr 2015 17:37:46 +0000
 Subject: [PATCH] Remove redundant linux/in{,6}.h includes
@@ -10,7 +10,7 @@ Subject: [PATCH] Remove redundant linux/in{,6}.h includes
  3 files changed, 4 deletions(-)
 
 diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
-index ee197a3..f823aa4 100644
+index fc3dcfa..b78b35a 100644
 --- a/include/linux/if_bridge.h
 +++ b/include/linux/if_bridge.h
 @@ -15,7 +15,6 @@
@@ -35,7 +35,7 @@ index b71b4c9..3e4e6ae 100644
  /* Responses from hook functions. */
  #define NF_DROP 0
 diff --git a/include/linux/xfrm.h b/include/linux/xfrm.h
-index b8f5451..a9761a5 100644
+index d09be24..237e9ad 100644
 --- a/include/linux/xfrm.h
 +++ b/include/linux/xfrm.h
 @@ -1,7 +1,6 @@
@@ -47,5 +47,5 @@ index b8f5451..a9761a5 100644
  
  /* All of the structures in this file may not change size as they are
 -- 
-2.8.0
+2.9.2
 
