@@ -302,6 +302,7 @@ HAVE_PTHREAD_CANCEL
 HAVE_SCHED_GETAFFINITY
 HAVE_SETCONSOLETEXTATTRIBUTE
 HAVE_SETCONSOLECTRLHANDLER
+HAVE_SETDLLDIRECTORY
 HAVE_SETMODE
 HAVE_SETRLIMIT
 HAVE_SLEEP
@@ -820,7 +821,7 @@ CONFIG_SNOW_DECODER libavcodec/snowdec.c libavcodec/snow.c libavcodec/snow_dwt.c
 CONFIG_SP5X_DECODER libavcodec/sp5xdec.c
 CONFIG_SUNRAST_DECODER libavcodec/sunrast.c
 CONFIG_SVQ1_DECODER libavcodec/svq1dec.c libavcodec/svq1.c libavcodec/svq13.c libavcodec/h263data.c
-CONFIG_SVQ3_DECODER libavcodec/svq3.c libavcodec/svq13.c libavcodec/mpegutils.c libavcodec/h264_parse.c libavcodec/h264data.c
+CONFIG_SVQ3_DECODER libavcodec/svq3.c libavcodec/svq13.c libavcodec/mpegutils.c libavcodec/h264_parse.c libavcodec/h264data.c libavcodec/h264_ps.c libavcodec/h2645_parse.c
 CONFIG_TARGA_DECODER libavcodec/targa.c
 CONFIG_TARGA_Y216_DECODER libavcodec/targa_y216dec.c
 CONFIG_TDSC_DECODER libavcodec/tdsc.c
