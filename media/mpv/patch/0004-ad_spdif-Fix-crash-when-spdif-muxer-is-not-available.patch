@@ -1,4 +1,4 @@
-From 5a6102dab2fd30cae322f369ea920b5ef640b4ae Mon Sep 17 00:00:00 2001
+From 979c7e0c4357b6adcc447ac062341ae9ef2f5fd4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 3 Jul 2016 17:41:45 -0700
 Subject: [PATCH] ad_spdif: Fix crash when spdif muxer is not available
@@ -24,5 +24,5 @@ index 56e4a81..71e2415 100644
  }
  
 -- 
-2.9.0
+2.9.2
 

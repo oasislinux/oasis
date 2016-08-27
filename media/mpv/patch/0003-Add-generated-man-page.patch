@@ -1,20 +1,22 @@
-From 45e12e24e5eea3136851ecd347554ca4e709829a Mon Sep 17 00:00:00 2001
+From cbe80107418bb7a76634b8f13d3cdafbb1564f53 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
 
 This requires python and rst2man to generate.
+
+$ rst2man.py DOCS/man/mpv.rst DOCS/man/mpv.1
 ---
- DOCS/man/mpv.1 | 13877 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 13877 insertions(+)
+ DOCS/man/mpv.1 | 13993 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 13993 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 0000000..38182f3
+index 0000000..fadcd48
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,13877 @@
+@@ -0,0 +1,13993 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -1172,7 +1174,7 @@ index 0000000..38182f3
 +position and so can take some time depending on decoding performance. For
 +some video formats, precise seeks are disabled. This option selects the
 +default choice to use for seeks; it is possible to explicitly override that
-+default in the definition of key bindings and in slave mode commands.
++default in the definition of key bindings and in input commands.
 +.INDENT 7.0
 +.TP
 +.B no
@@ -1373,7 +1375,7 @@ index 0000000..38182f3
 +.TP
 +.B \fB\-\-idle=<no|yes|once>\fP
 +Makes mpv wait idly instead of quitting when there is no file to play.
-+Mostly useful in slave mode, where mpv can be controlled through input
++Mostly useful in input mode, where mpv can be controlled through input
 +commands.
 +.sp
 +\fBonce\fP will only idle at start and let the player close once the
@@ -1403,7 +1405,7 @@ index 0000000..38182f3
 +.B \fB\-\-no\-resume\-playback\fP
 +Do not restore playback position from the \fBwatch_later\fP configuration
 +subdirectory (usually \fB~/.config/mpv/watch_later/\fP).
-+See \fBquit_watch_later\fP input command.
++See \fBquit\-watch\-later\fP input command.
 +.TP
 +.B \fB\-\-profile=<profile1,profile2,...>\fP
 +Use the given profile(s), \fB\-\-profile=help\fP displays a list of the
@@ -1627,8 +1629,12 @@ index 0000000..38182f3
 +.B videotoolbox
 +requires \fB\-\-vo=opengl\fP (OS X 10.8 and up only)
 +.TP
++.B videotoolbox\-copy
++copies video back into system RAM (OS X 10.8 and up only)
++.TP
 +.B dxva2
 +requires \fB\-\-vo=opengl:backend=angle\fP or
++.sp
 +\fB\-\-vo=opengl:backend=dxinterop\fP (Windows only)
 +.TP
 +.B dxva2\-copy
@@ -1749,14 +1755,16 @@ index 0000000..38182f3
 +choice of the format can influence performance considerably. On the other
 +hand, there doesn\(aqt appear to be a good way to detect the best format for
 +the given hardware. \fBnv12\fP, the default, works better on modern hardware,
-+while \fBuyvy422\fP appears to be better for old hardware. \fBrgb0\fP also
-+works.
++while \fBuyvy422\fP appears to be better for old hardware. \fBrgb0\fP and
++\fByuv420p\fP also work.
 +.TP
 +.B \fB\-\-panscan=<0.0\-1.0>\fP
 +Enables pan\-and\-scan functionality (cropping the sides of e.g. a 16:9
 +video to make it fit a 4:3 display without black bands). The range
 +controls how much of the image is cropped. May not work with all video
 +output drivers.
++.sp
++This option has no effect if \fB\-\-video\-unscaled\fP option is used.
 +.TP
 +.B \fB\-\-video\-aspect=<ratio>\fP
 +Override video aspect ratio, in case aspect information is incorrect or
@@ -1813,10 +1821,12 @@ index 0000000..38182f3
 +choices if you encounter video that has the wrong aspect ratio in mpv,
 +but seems to be correct in other players.
 +.TP
-+.B \fB\-\-video\-unscaled\fP
++.B \fB\-\-video\-unscaled=<no|yes|downscale\-big>\fP
 +Disable scaling of the video. If the window is larger than the video,
-+black bars are added. Otherwise, the video is cropped. The video still
-+can be influenced by the other \fB\-\-video\-...\fP options.
++black bars are added. Otherwise, the video is cropped, unless the option
++is set to \fBdownscale\-big\fP, in which case the video is fit to window. The
++video still can be influenced by the other \fB\-\-video\-...\fP options. This
++option disables the effect of \fB\-\-panscan\fP\&.
 +.sp
 +Note that the scaler algorithm may still be used, even if the video isn\(aqt
 +scaled. For example, this can influence chroma conversion. The video will
@@ -1983,9 +1993,9 @@ index 0000000..38182f3
 +You can get the list of allowed codecs with \fBmpv \-\-vd=help\fP\&. Remove the
 +prefix, e.g. instead of \fBlavc:h264\fP use \fBh264\fP\&.
 +.sp
-+By default, this is set to \fBh264,vc1,wmv3,hevc,mpeg2video\fP\&. Note that the
-+hardware acceleration special codecs like \fBh264_vdpau\fP are not relevant
-+anymore, and in fact have been removed from Libav in this form.
++By default, this is set to \fBh264,vc1,wmv3,hevc,mpeg2video,vp9\fP\&. Note that
++the hardware acceleration special codecs like \fBh264_vdpau\fP are not
++relevant anymore, and in fact have been removed from Libav in this form.
 +.sp
 +This is usually only needed with broken GPUs, where a codec is reported
 +as supported, but decoding causes more problems than it solves.
@@ -2207,6 +2217,11 @@ index 0000000..38182f3
 +.sp
 +Since mpv 0.18.1, this always controls the internal mixer (aka "softvol").
 +.TP
++.B \fB\-\-balance=<value>\fP
++How much left/right channels contribute to the audio.
++.sp
++Deprecated.
++.TP
 +.B \fB\-\-audio\-delay=<sec>\fP
 +Audio delay in seconds (positive or negative float value). Positive values
 +delay the audio, and negative values delay the video.
@@ -2276,30 +2291,68 @@ index 0000000..38182f3
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-audio\-channels=<auto|number|layout>\fP
-+Request a channel layout for audio output (default: stereo). This  will ask
-+the AO to open a device with the given channel layout. It\(aqs up to the AO
-+to accept this layout, or to pick a fallback or to error out if the
-+requested layout is not supported.
++.B \fB\-\-audio\-channels=<auto\-safe|auto|layouts>\fP
++Control which audio channels are output (e.g. surround vs. stereo). There
++are the following possibilities:
++.INDENT 7.0
++.IP \(bu 2
++.INDENT 2.0
++.TP
++.B \fB\-\-audio\-channels=auto\-safe\fP
++Use the system\(aqs preferred channel layout. If there is none (such
++as when accessing a hardware device instead of the system mixer),
++force stereo. Some audio outputs might simply accept any layout and
++do downmixing on their own.
 +.sp
-+The \fB\-\-audio\-channels\fP option either takes a channel number or an explicit
-+channel layout. Channel numbers refer to default layouts, e.g. 2 channels
-+refer to stereo, 6 refers to 5.1.
++This is the default.
++.UNINDENT
++.IP \(bu 2
++.INDENT 2.0
++.TP
++.B \fB\-\-audio\-channels=auto\fP
++Send the audio device whatever it accepts, preferring the audio\(aqs
++original channel layout. Can cause issues with HDMI (see the warning
++below).
++.UNINDENT
++.IP \(bu 2
++.INDENT 2.0
++.TP
++.B \fB\-\-audio\-channels=layout1,layout2,...\fP
++List of \fB,\fP\-separated channel layouts which should be allowed.
++Technically, this only adjusts the filter chain output to the best
++matching layout in the list, and passes the result to the audio API.
++It\(aqs possible that the audio API will select a different channel
++layout.
++.sp
++Using this mode is recommended for direct hardware output, especially
++over HDMI (see HDMI warning below).
++.UNINDENT
++.IP \(bu 2
++.INDENT 2.0
++.TP
++.B \fB\-\-audio\-channels=stereo\fP
++Force  a plain stereo downmix. This is a special\-case of the previous
++item. (See paragraphs below for implications.)
++.UNINDENT
++.UNINDENT
++.sp
++If a list of layouts is given, each item can be either an explicit channel
++layout name (like \fB5.1\fP), or a channel number. Channel numbers refer to
++default layouts, e.g. 2 channels refer to stereo, 6 refers to 5.1.
 +.sp
 +See \fB\-\-audio\-channels=help\fP output for defined default layouts. This also
 +lists speaker names, which can be used to express arbitrary channel
 +layouts (e.g. \fBfl\-fr\-lfe\fP is 2.1).
 +.sp
-+\fB\-\-audio\-channels=auto\fP tries to play audio using the input file\(aqs
-+channel layout. There is no guarantee that the audio API handles this
-+correctly. See the HDMI warning below.
-+(\fBempty\fP is an accepted obsolete alias for \fBauto\fP\&.)
-+.sp
-+This will also request the channel layout from the decoder. If the decoder
-+does not support the layout, it will fall back to its native channel layout.
-+(You can use \fB\-\-ad\-lavc\-downmix=no\fP to make the decoder always output
-+its native layout.) Note that only some decoders support remixing audio.
-+Some that do include AC\-3, AAC or DTS audio.
++If the list of channel layouts has only 1 item, the decoder is asked to
++produce according output. This sometimes triggers decoder\-downmix, which
++might be different from the normal mpv downmix. (Only some decoders support
++remixing audio, like AC\-3, AAC or DTS. You can use \fB\-\-ad\-lavc\-downmix=no\fP
++to make the decoder always output its native layout.) One consequence is
++that \fB\-\-audio\-channels=stereo\fP triggers decoder downmix, while \fBauto\fP
++or \fBauto\-safe\fP never will, even if they end up selecting stereo. This
++happens because the decision whether to use decoder downmix happens long
++before the audio device is opened.
 +.sp
 +If the channel layout of the media file (i.e. the decoder) and the AO\(aqs
 +channel layout don\(aqt match, mpv will attempt to insert a conversion filter.
@@ -2312,6 +2365,10 @@ index 0000000..38182f3
 +the receiver does not support them. If a receiver gets an unsupported
 +channel layout, random things can happen, such as dropping the
 +additional channels, or adding noise.
++.sp
++You are recommended to set an explicit whitelist of the layouts you
++want. For example, most A/V receivers connected via HDMI and that can
++do 7.1 would  be served by: \fB\-\-audio\-channels=7.1,5.1,stereo\fP
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -2438,7 +2495,7 @@ index 0000000..38182f3
 +or to set your own application name when using libmpv.
 +.TP
 +.B \fB\-\-volume\-restore\-data=<string>\fP
-+Used internally for use by playback resume (e.g. with \fBquit_watch_later\fP).
++Used internally for use by playback resume (e.g. with \fBquit\-watch\-later\fP).
 +Restoring value has to be done carefully, because different AOs as well as
 +softvol can have different value ranges, and we don\(aqt want to restore
 +volume if setting the volume changes it system wide. The normal options
@@ -2463,6 +2520,25 @@ index 0000000..38182f3
 +significantly, the mpv developers should be contacted.
 +.sp
 +Default: 0.2 (200 ms).
++.TP
++.B \fB\-\-audio\-stream\-silence=<yes|no>\fP
++Cash\-grab consumer audio hardware (such as A/V receivers) often ignore
++initial audio sent over HDMI. This can happen every time audio over HDMI
++is stopped and resumed. In order to compensate for this, you can enable
++this option to not to stop and restart audio on seeks, and fill the gaps
++with silence. Likewise, when pausing playback, audio is not stopped, and
++silence is played while paused. Note that if no audio track is selected,
++the audio device will still be closed immediately.
++.sp
++Not all AOs support this.
++.TP
++.B \fB\-\-audio\-wait\-open=<secs>\fP
++This makes sense for use with \fB\-\-audio\-stream\-silence=yes\fP\&. If this option
++is given, the player will wait for the given amount of seconds after opening
++the audio device before sending actual audio data to it. Useful if your
++expensive hardware discards the first 1 or 2 seconds of audio data sent to
++it. If \fB\-\-audio\-stream\-silence=yes\fP is not set, this option will likely
++just waste time.
 +.UNINDENT
 +.SS Subtitles
 +.sp
@@ -3118,6 +3194,23 @@ index 0000000..38182f3
 +is not the case (e.g. \fBmpv \-\-keep\-open file.mkv /dev/null\fP will play
 +file.mkv normally, then fail to open \fB/dev/null\fP, then exit). (In
 +mpv 0.8.0, \fBalways\fP was introduced, which restores the old behavior.)
++.TP
++.B \fB\-\-image\-display\-duration=<seconds|inf>\fP
++If the current file is an image, play the image for the given amount of
++seconds (default: 1). \fBinf\fP means the file is kept open forever (until
++the user stops playback manually).
++.sp
++Unlike \fB\-\-keep\-open\fP, the player is not paused, but simply continues
++playback until the time has elapsed. (It should not use any resources
++during "playback".)
++.sp
++This affects image files, which are defined as having only 1 video frame
++and no audio. The player may recognize certain non\-images as images, for
++example if \fB\-\-length\fP is used to reduce the length to 1 frame, or if
++you seek to the last frame.
++.sp
++This option does not affect the framerate used for \fBmf://\fP or
++\fB\-\-merge\-files\fP\&. For that, use \fB\-\-mf\-fps\fP instead.
 +.TP
 +.B \fB\-\-force\-window=<yes|no|immediate>\fP
 +Create a video output window even if there is no video. This can be useful
@@ -3928,7 +4021,7 @@ index 0000000..38182f3
 +automatically enabled when \fB\-\fP is found on the command line. There are
 +situations where you have to set it manually, e.g. if you open
 +\fB/dev/stdin\fP (or the equivalent on your system), use stdin in a playlist
-+or intend to read from stdin later on via the loadfile or loadlist slave
++or intend to read from stdin later on via the loadfile or loadlist input
 +commands.
 +.TP
 +.B \fB\-\-input\-ipc\-server=<filename>\fP
@@ -4059,7 +4152,7 @@ index 0000000..38182f3
 +(default), then the playback time, duration, and some more information is
 +shown.
 +.sp
-+This is also used for the \fBshow_progress\fP command (by default mapped to
++This is also used for the \fBshow\-progress\fP command (by default mapped to
 +\fBP\fP), or in some non\-default cases when seeking.
 +.sp
 +\fB\-\-osd\-status\-msg\fP is a legacy equivalent (but with a minor difference).
@@ -4067,7 +4160,7 @@ index 0000000..38182f3
 +.B \fB\-\-osd\-status\-msg=<string>\fP
 +Show a custom string during playback instead of the standard status text.
 +This overrides the status text used for \fB\-\-osd\-level=3\fP, when using the
-+\fBshow_progress\fP command (by default mapped to \fBP\fP), or in some
++\fBshow\-progress\fP command (by default mapped to \fBP\fP), or in some
 +non\-default cases when seeking. Expands properties. See
 +\fI\%Property Expansion\fP\&.
 +.sp
@@ -4392,7 +4485,7 @@ index 0000000..38182f3
 +multiple \fB%tX\fP specifiers to build a full date/time string.
 +.TP
 +.B \fB%{prop[:fallback text]}\fP
-+Insert the value of the slave property \(aqprop\(aq. E.g. \fB%{filename}\fP is
++Insert the value of the input property \(aqprop\(aq. E.g. \fB%{filename}\fP is
 +the same as \fB%f\fP\&. If the property does not exist or is not available,
 +an error text is inserted, unless a fallback is specified.
 +.TP
@@ -4682,7 +4775,7 @@ index 0000000..38182f3
 +If <chan> is an integer greater than 1000, it will be treated as
 +frequency (in kHz) rather than channel name from frequency table.
 +Use _ for spaces in names (or play with quoting ;\-) ). The channel
-+names will then be written using OSD, and the slave commands
++names will then be written using OSD, and the input commands
 +\fBtv_step_channel\fP, \fBtv_set_channel\fP and \fBtv_last_channel\fP
 +will be usable for a remote control. Not compatible with
 +the \fBfrequency\fP parameter.
@@ -5182,7 +5275,7 @@ index 0000000..38182f3
 +.B \fB\-\-video\-sync\-max\-audio\-change=<value>\fP
 +Maximum \fIadditional\fP speed difference in percent that is applied to audio
 +with \fB\-\-video\-sync=display\-...\fP (default: 0.125). Normally, the player
-+play the audio at the speed of the video. But if the difference between
++plays the audio at the speed of the video. But if the difference between
 +audio and video position is too high, e.g. due to drift or other timing
 +errors, it will attempt to speed up or slow down audio by this additional
 +factor. Too low values could lead to video frame dropping or repeating if
@@ -5208,7 +5301,7 @@ index 0000000..38182f3
 +.B \fB\-\-stream\-capture=<filename>\fP
 +Allows capturing the primary stream (not additional audio tracks or other
 +kind of streams) into the given file. Capturing can also be started and
-+stopped by changing the filename with the \fBstream\-capture\fP slave property.
++stopped by changing the filename with the \fBstream\-capture\fP property.
 +Generally this will not produce usable results for anything else than MPEG
 +or raw streams, unless capturing includes the file headers and is not
 +interrupted. Note that, due to cache latencies, captured data may begin and
@@ -5256,6 +5349,16 @@ index 0000000..38182f3
 +Add all tracks from the given file. Unlike \fB\-\-sub\-file\fP and
 +\fB\-\-audio\-file\fP, this includes all tracks, and does not cause default
 +stream selection over the "proper" file.
++.TP
++.B \fB\-\-autoload\-files=<yes|no>\fP
++Automatically load/select external files (default: yes).
++.sp
++If set to \fBno\fP, then do not automatically load external files as specified
++by \fB\-\-sub\-auto\fP and \fB\-\-audio\-file\-auto\fP\&. If external files are forcibly
++added (like with \fB\-\-sub\-file\fP), they will not be auto\-selected.
++.sp
++This does not affect playlist expansion, redirection, or other loading of
++referenced files like with ordered chapters.
 +.TP
 +.B \fB\-\-lavfi\-complex=<string>\fP
 +Set a "complex" libavfilter filter, which means a single filter graph can
@@ -6162,6 +6265,9 @@ index 0000000..38182f3
 +exchange for adding some blur. This filter is good at temporal
 +interpolation, and also known as "smoothmotion" (see \fBtscale\fP).
 +.TP
++.B \fBlinear\fP
++A \fBtscale\fP filter.
++.TP
 +.B \fBcustom\fP
 +A user\-defined custom shader (see \fBscale\-shader\fP).
 +.UNINDENT
@@ -6760,6 +6866,16 @@ index 0000000..38182f3
 +.sp
 +Windows only.
 +.TP
++.B \fBdcomposition=<yes|no>\fP
++Allows DirectComposition when using the ANGLE backend (default: yes).
++DirectComposition implies flip\-model presentation, which can improve
++rendering efficiency on Windows 8+ by avoiding a copy of the video frame.
++mpv uses it by default where possible, but it can cause poor behaviour
++with some drivers, such as a black screen or graphical corruption when
++leaving full\-screen mode. Use "no" to disable it.
++.sp
++Windows with ANGLE only.
++.TP
 +.B \fBsw\fP
 +Continue even if a software renderer is detected.
 +.TP
@@ -7035,8 +7151,7 @@ index 0000000..38182f3
 +.TP
 +.B \fB3dlut\-size=<r>x<g>x<b>\fP
 +Size of the 3D LUT generated from the ICC profile in each dimension.
-+Default is 128x256x64.
-+Sizes must be a power of two, and 512 at most.
++Default is 64x64x64. Sizes may range from 2 to 512.
 +.TP
 +.B \fBicc\-contrast=<0\-100000>\fP
 +Specifies an upper limit on the target device\(aqs contrast ratio.
@@ -7317,7 +7432,7 @@ index 0000000..38182f3
 +This also supports many of the suboptions the \fBopengl\fP VO has. Run
 +\fBmpv \-\-vo=opengl\-cb:help\fP for a list.
 +.sp
-+This also supports the \fBvo_cmdline\fP command.
++This also supports the \fBvo\-cmdline\fP command.
 +.TP
 +.B \fBrpi\fP (Raspberry Pi)
 +Native video output on the Raspberry Pi using the MMAL API.
@@ -7808,43 +7923,6 @@ index 0000000..38182f3
 +it is easier to use the \fBformat\fP filter. For example,
 +\fBmpv \(aq\-\-af=format=channels=5.1\(aq \(aq\-\-audio\-channels=5.1\(aq\fP would always force
 +remixing audio to 5.1 and output it like this.
-+.UNINDENT
-+.UNINDENT
-+.TP
-+.B \fBdelay[=[ch1,ch2,...]]\fP
-+Delays the sound to the loudspeakers such that the sound from the
-+different channels arrives at the listening position simultaneously. It is
-+only useful if you have more than 2 loudspeakers.
-+.INDENT 7.0
-+.TP
-+.B \fB[ch1,ch2,...]\fP
-+The delay in ms that should be imposed on each channel (floating point
-+number between 0 and 1000).
-+.UNINDENT
-+.sp
-+To calculate the required delay for the different channels, do as follows:
-+.INDENT 7.0
-+.IP 1. 3
-+Measure the distance to the loudspeakers in meters in relation to your
-+listening position, giving you the distances s1 to s5 (for a 5.1
-+system). There is no point in compensating for the subwoofer (you will
-+not hear the difference anyway).
-+.IP 2. 3
-+Subtract the distances s1 to s5 from the maximum distance, i.e.
-+\fBs[i] = max(s) \- s[i]; i = 1...5\fP\&.
-+.IP 3. 3
-+Calculate the required delays in ms as \fBd[i] = 1000*s[i]/342; i =
-+1...5\fP\&.
-+.UNINDENT
-+.INDENT 7.0
-+.INDENT 3.5
-+.IP "Example"
-+.INDENT 0.0
-+.TP
-+.B \fBmpv \-\-af=delay=[10.5,10.5,0,0,7,0] media.avi\fP
-+Would delay front left and right by 10.5 ms, the two rear channels
-+and the subwoofer by 0 ms and the center channel by 7 ms.
-+.UNINDENT
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -9152,6 +9230,13 @@ index 0000000..38182f3
 +.TP
 +.B \fBinterlaced\-only=<yes|no>\fP
 +If \fByes\fP (default), only deinterlace frames marked as interlaced.
++.TP
++.B \fBmode=<blend|bob|adaptive|mocomp|ivctc|none>\fP
++Tries to select a video processor with the given processing capability.
++If a video processor supports multiple capabilities, it is not clear
++which algorithm is actually selected. \fBnone\fP always falls back. On
++most if not all hardware, this option will probably do nothing, because
++a video processor usually supports all modes or none.
 +.UNINDENT
 +.TP
 +.B \fBbuffer=<num>\fP
@@ -9949,7 +10034,7 @@ index 0000000..38182f3
 +.B \fBdisable\-section "<section>"\fP
 +Disable the named input section. Undoes \fBenable\-section\fP\&.
 +.TP
-+.B \fBdefine\-section "<section>" "<contents>" [default|forced]\fP
++.B \fBdefine\-section "<section>" "<contents>" [default|force]\fP
 +Create a named input section, or replace the contents of an already existing
 +input section. The \fBcontents\fP parameter uses the same syntax as the
 +\fBinput.conf\fP file (except that using the section syntax in it is not
@@ -9969,7 +10054,7 @@ index 0000000..38182f3
 +Use a key binding defined by this section only if the user hasn\(aqt
 +already bound this key to a command.
 +.TP
-+.B <forced>
++.B <force>
 +Always bind a key. (The input section that was made active most recently
 +wins if there are ambiguities.)
 +.UNINDENT
@@ -10069,7 +10154,7 @@ index 0000000..38182f3
 +The argument is the name of the binding.
 +.sp
 +It can optionally be prefixed with the name of the script, using \fB/\fP as
-+separator, e.g. \fBscript_binding scriptname/bindingname\fP\&.
++separator, e.g. \fBscript\-binding scriptname/bindingname\fP\&.
 +.sp
 +For completeness, here is how this command works internally. The details
 +could change any time. On any matching key event, \fBscript\-message\-to\fP
@@ -10258,7 +10343,7 @@ index 0000000..38182f3
 +In \fBinput.conf\fP, each key binding is assigned to an input section, rather
 +than actually having explicit text sections.
 +.sp
-+See also: \fBenable_section\fP and \fBdisable_section\fP commands.
++See also: \fBenable\-section\fP and \fBdisable\-section\fP commands.
 +.sp
 +Predefined bindings:
 +.INDENT 0.0
@@ -10317,6 +10402,14 @@ index 0000000..38182f3
 +percent encoding as well. (The result is not necessarily correct, but
 +looks better for display purposes. Use the \fBpath\fP property to get an
 +unmodified filename.)
++.sp
++This has a sub\-property:
++.INDENT 7.0
++.TP
++.B \fBfilename/no\-ext\fP
++Like the \fBfilename\fP property, but if the text contains a \fB\&.\fP, strip
++all text after the last \fB\&.\fP\&. Usually this removes the file extension.
++.UNINDENT
 +.TP
 +.B \fBfile\-size\fP
 +Length in bytes of the source file/stream. (This is the same as
@@ -10811,6 +10904,8 @@ index 0000000..38182f3
 +Audio channel balance. (The implementation of this feature is rather odd.
 +It doesn\(aqt change the volumes of each channel, but instead sets up a pan
 +matrix to mix the left and right channels.)
++.sp
++Deprecated.
 +.TP
 +.B \fBfullscreen\fP (RW)
 +See \fB\-\-fullscreen\fP\&.
@@ -10971,6 +11066,12 @@ index 0000000..38182f3
 +.B \fBvideo\-params/gamma\fP
 +The gamma function in use as string. (Exact values subject to change.)
 +.TP
++.B \fBvideo\-params/nom\-peak\fP
++The video encoding\(aqs nominal peak brightness as float.
++.TP
++.B \fBvideo\-params/sig\-peak\fP
++The video file\(aqs tagged signal peak as float.
++.TP
 +.B \fBvideo\-params/chroma\-location\fP
 +Chroma location as string. (Exact values subject to change.)
 +.TP
@@ -11000,6 +11101,9 @@ index 0000000..38182f3
 +    "colormatrix"       MPV_FORMAT_STRING
 +    "colorlevels"       MPV_FORMAT_STRING
 +    "primaries"         MPV_FORMAT_STRING
++    "gamma"             MPV_FORMAT_STRING
++    "nom\-peak"          MPV_FORMAT_DOUBLE
++    "sig\-peak"          MPV_FORMAT_DOUBLE
 +    "chroma\-location"   MPV_FORMAT_STRING
 +    "rotate"            MPV_FORMAT_INT64
 +    "stereo\-in"         MPV_FORMAT_STRING
@@ -11084,7 +11188,7 @@ index 0000000..38182f3
 +.TP
 +.B \fBosd\-width\fP, \fBosd\-height\fP
 +Last known OSD width (can be 0). This is needed if you want to use the
-+\fBoverlay_add\fP command. It gives you the actual OSD size, which can be
++\fBoverlay\-add\fP command. It gives you the actual OSD size, which can be
 +different from the window size in some cases.
 +.TP
 +.B \fBosd\-par\fP
@@ -11303,6 +11407,16 @@ index 0000000..38182f3
 +.TP
 +.B \fBtrack\-list/N/audio\-channels\fP (deprecated)
 +Deprecated alias for \fBtrack\-list/N/demux\-channel\-count\fP\&.
++.TP
++.B \fBtrack\-list/N/replaygain\-track\-peak\fP, \fBtrack\-list/N/replaygain\-track\-gain\fP
++Per\-track replaygain values. Only available for audio tracks with
++corresponding information stored in the source file.
++.TP
++.B \fBtrack\-list/N/replaygain\-album\-peak\fP, \fBtrack\-list/N/replaygain\-album\-gain\fP
++Per\-album replaygain values. If the file has per\-track but no per\-album
++information, the per\-album values will be copied from the per\-track
++values currently. It\(aqs possible that future mpv versions will make
++these properties unavailable instead in this case.
 +.UNINDENT
 +.sp
 +When querying the property with the client API using \fBMPV_FORMAT_NODE\fP,
@@ -11336,6 +11450,10 @@ index 0000000..38182f3
 +        "demux\-samplerate"  MPV_FORMAT_INT64
 +        "demux\-fps"         MPV_FORMAT_DOUBLE
 +        "audio\-channels"    MPV_FORMAT_INT64
++        "replaygain\-track\-peak" MPV_FORMAT_DOUBLE
++        "replaygain\-track\-gain" MPV_FORMAT_DOUBLE
++        "replaygain\-album\-peak" MPV_FORMAT_DOUBLE
++        "replaygain\-album\-gain" MPV_FORMAT_DOUBLE
 +.ft P
 +.fi
 +.UNINDENT
@@ -12968,7 +13086,7 @@ index 0000000..38182f3
 +.fi
 +.UNINDENT
 +.UNINDENT
-+.SS mp.utils options
++.SS mp.utils functions
 +.sp
 +This built\-in module provides generic helper functions for Lua, and have
 +strictly speaking nothing to do with mpv or video/audio playback. They are
@@ -13318,7 +13436,7 @@ index 0000000..38182f3
 +.sp
 +.nf
 +.ft C
-+> echo \(aqshow_text ${playback\-time}\(aq | socat \- /tmp/mpvsocket
++> echo \(aqshow\-text ${playback\-time}\(aq | socat \- /tmp/mpvsocket
 +.ft P
 +.fi
 +.UNINDENT
@@ -13352,7 +13470,7 @@ index 0000000..38182f3
 +.sp
 +.nf
 +.ft C
-+echo show_text ${playback\-time} >\e\e.\epipe\empvsocket
++echo show\-text ${playback\-time} >\e\e.\epipe\empvsocket
 +.ft P
 +.fi
 +.UNINDENT
@@ -13825,7 +13943,7 @@ index 0000000..38182f3
 +.B \fB~/.config/mpv/watch_later/\fP
 +Contains temporary config files needed for resuming playback of files with
 +the watch later feature. See for example the \fBQ\fP key binding, or the
-+\fBquit_watch_later\fP input command.
++\fBquit\-watch\-later\fP input command.
 +.sp
 +Each file is a small config file which is loaded if the corresponding media
 +file is loaded. It contains the playback position and some (not necessarily
@@ -13893,5 +14011,5 @@ index 0000000..38182f3
 +.\" Generated by docutils manpage writer.
 +.
 -- 
-2.9.0
+2.9.2
 

@@ -1,9 +1,12 @@
-From c2e0ea2e238021df4cbe6672c2babf35d09f0ea9 Mon Sep 17 00:00:00 2001
+From 66c3084212b84095703b39c6c4bfc76dca03c564 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 17:32:27 -0700
 Subject: [PATCH] Add generated ebml sources
 
 These require perl to generate.
+
+$ perl TOOLS/matroska.pl --generate-header demux/ebml.c demux/demux_mkv.c > demux/ebml_types.h
+$ perl TOOLS/matroska.pl --generate-definitions demux/ebml.c > demux/ebml_defs.c
 ---
  demux/ebml_defs.c  | 448 +++++++++++++++++++++++++++++++++++++++++++++++
  demux/ebml_types.h | 502 +++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -974,5 +977,5 @@ index 0000000..3739ec5
 +
 +#define MAX_EBML_SUBELEMENTS 23
 -- 
-2.9.0
+2.9.2
 
