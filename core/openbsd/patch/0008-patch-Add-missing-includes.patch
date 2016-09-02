@@ -1,4 +1,4 @@
-From 36a8f4b67191e6b8f350a6db33e849380255595b Mon Sep 17 00:00:00 2001
+From e47145b05bd63b51df6219855747a8247c0910fc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 4 Jun 2016 18:40:24 -0700
 Subject: [PATCH] patch: Add missing includes
@@ -9,7 +9,7 @@ Subject: [PATCH] patch: Add missing includes
  2 files changed, 2 insertions(+)
 
 diff --git a/usr.bin/patch/inp.c b/usr.bin/patch/inp.c
-index 6606ede..0a75bd6 100644
+index 3f60861..80c4801 100644
 --- a/usr.bin/patch/inp.c
 +++ b/usr.bin/patch/inp.c
 @@ -32,6 +32,7 @@
@@ -33,5 +33,5 @@ index 8f8f8cd..8087a21 100644
  #include <sys/stat.h>
  #include <unistd.h>
 -- 
-2.8.1
+2.9.3
 

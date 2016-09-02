@@ -5,3 +5,4 @@ long long strtonum(const char *, long long, long long, const char **);
 uint32_t arc4random(void);
 uint32_t arc4random_uniform(uint32_t);
 void arc4random_buf(void *, size_t);
+extern char *__progname;

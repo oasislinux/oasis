@@ -1,3 +1,3 @@
-url = "http://mirrors.sonic.net/pub/OpenBSD/5.9/src.tar.gz"
+url = "http://mirrors.sonic.net/pub/OpenBSD/6.0/src.tar.gz"
 -O
-url = "http://mirrors.sonic.net/pub/OpenBSD/5.9/sys.tar.gz"
+url = "http://mirrors.sonic.net/pub/OpenBSD/6.0/sys.tar.gz"

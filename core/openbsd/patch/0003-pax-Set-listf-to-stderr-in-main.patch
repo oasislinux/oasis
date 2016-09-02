@@ -1,4 +1,4 @@
-From 922ea08ad2487192bf46b077ec62d6924973c492 Mon Sep 17 00:00:00 2001
+From 2d5f85f2a77ee62751c4ec4193cc55207875a757 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Apr 2016 00:13:51 -0700
 Subject: [PATCH] pax: Set listf to stderr in main
@@ -8,7 +8,7 @@ Subject: [PATCH] pax: Set listf to stderr in main
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/bin/pax/pax.c b/bin/pax/pax.c
-index 6d70b7a..51a36c9 100644
+index 1b17b8c..7e62c51 100644
 --- a/bin/pax/pax.c
 +++ b/bin/pax/pax.c
 @@ -91,7 +91,7 @@ int	docrc;			/* check/create file crc */
@@ -30,5 +30,5 @@ index 6d70b7a..51a36c9 100644
  	 * Keep a reference to cwd, so we can always come back home.
  	 */
 -- 
-2.8.1
+2.9.3
 
