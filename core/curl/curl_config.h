@@ -48,6 +48,7 @@
 /* #undef USE_POLARSSL */
 /* #undef USE_SCHANNEL */
 /* #undef USE_THREADS_POSIX */
+/* #undef USE_THREADS_WIN32 */
 /* #undef USE_WIN32_LARGE_FILES */
 /* #undef USE_WIN32_LDAP */
 /* #undef USE_WINDOWS_SSPI */
