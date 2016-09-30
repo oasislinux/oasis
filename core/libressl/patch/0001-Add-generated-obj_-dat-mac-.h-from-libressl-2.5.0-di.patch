@@ -1,21 +1,21 @@
-From 2e4c63fda4c6531feb78af2a0004e72d49343844 Mon Sep 17 00:00:00 2001
+From 9e633f64197625448e65ad2f86cb033bc12b2c4a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 14 Jun 2016 21:17:48 -0700
-Subject: [PATCH] Add generated obj_{dat,mac}.h from libressl 2.4.2
+Subject: [PATCH] Add generated obj_{dat,mac}.h from libressl 2.5.0
  distribution
 
 ---
- src/lib/libssl/src/crypto/objects/obj_dat.h | 5266 +++++++++++++++++++++++++++
- src/lib/libssl/src/crypto/objects/obj_mac.h | 4156 +++++++++++++++++++++
+ src/lib/libcrypto/objects/obj_dat.h | 5266 +++++++++++++++++++++++++++++++++++
+ src/lib/libcrypto/objects/obj_mac.h | 4156 +++++++++++++++++++++++++++
  2 files changed, 9422 insertions(+)
- create mode 100644 src/lib/libssl/src/crypto/objects/obj_dat.h
- create mode 100644 src/lib/libssl/src/crypto/objects/obj_mac.h
+ create mode 100644 src/lib/libcrypto/objects/obj_dat.h
+ create mode 100644 src/lib/libcrypto/objects/obj_mac.h
 
-diff --git a/src/lib/libssl/src/crypto/objects/obj_dat.h b/src/lib/libssl/src/crypto/objects/obj_dat.h
+diff --git a/src/lib/libcrypto/objects/obj_dat.h b/src/lib/libcrypto/objects/obj_dat.h
 new file mode 100644
 index 0000000..fdb826a
 --- /dev/null
-+++ b/src/lib/libssl/src/crypto/objects/obj_dat.h
++++ b/src/lib/libcrypto/objects/obj_dat.h
 @@ -0,0 +1,5266 @@
 +/* crypto/objects/obj_dat.h */
 +
@@ -5283,11 +5283,11 @@ index 0000000..fdb826a
 +34,	/* OBJ_idea_cbc                     1 3 6 1 4 1 188 7 1 1 2 */
 +};
 +
-diff --git a/src/lib/libssl/src/crypto/objects/obj_mac.h b/src/lib/libssl/src/crypto/objects/obj_mac.h
+diff --git a/src/lib/libcrypto/objects/obj_mac.h b/src/lib/libcrypto/objects/obj_mac.h
 new file mode 100644
 index 0000000..f727262
 --- /dev/null
-+++ b/src/lib/libssl/src/crypto/objects/obj_mac.h
++++ b/src/lib/libcrypto/objects/obj_mac.h
 @@ -0,0 +1,4156 @@
 +/* crypto/objects/obj_mac.h */
 +
@@ -9446,5 +9446,5 @@ index 0000000..f727262
 +#define OBJ_id_tc26_signwithdigest_gost3410_2012_512		OBJ_tc26,1L,3L,3L
 +
 -- 
-2.9.2
+2.9.3
 
