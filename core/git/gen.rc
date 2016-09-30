@@ -15,6 +15,7 @@ deps=(\
 )
 
 cc exec_cmd.c '||' $deps ; with cflags '$cflags ''-DPREFIX=""'''
+cc common-main.c '||' $deps
 
 # src/Makefile:/^LIB_OBJS.\+=
 lib libgit.a -d $"deps\
@@ -60,6 +61,7 @@ lib libgit.a -d $"deps\
 	diffcore-pickaxe.c\
 	diffcore-rename.c\
 	dir.c\
+	dir-iterator.c\
 	editor.c\
 	entry.c\
 	environment.c\
@@ -93,6 +95,7 @@ lib libgit.a -d $"deps\
 	merge-recursive.c\
 	merge.c\
 	mergesort.c\
+	mru.c\
 	name-hash.c\
 	notes-cache.c\
 	notes-merge.c\
@@ -125,6 +128,7 @@ lib libgit.a -d $"deps\
 	reflog-walk.c\
 	refs.c\
 	refs/files-backend.c\
+	refs/iterator.c\
 	remote.c\
 	replace_object.c\
 	rerere.c\
@@ -191,7 +195,7 @@ lib libxdiff.a xdiff/^(\
 )
 
 libs=(\
-	libgit.a libxdiff.a\
+	common-main.c.o libgit.a libxdiff.a\
 	'$builddir'/core/^(\
 		curl/libcurl.a\
 		libressl/^(libssl.a libcrypto.a)\

@@ -7,3 +7,4 @@ s|@@USE_GETTEXT_SCHEME@@||g
 s|@@GITWEBDIR@@|/share/gitweb|g
 s|@@PERL@@|/bin/perl|g
 s|@@SANE_TEXT_GREP@@||g
+s|@@PAGER_ENV@@|LESS=FRX LV=-c|g
