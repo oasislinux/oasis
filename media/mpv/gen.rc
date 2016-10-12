@@ -41,7 +41,7 @@ build '$outdir'/version.h versionhdr '|' '$srcdir'/version.sh
 {
 	include 'toolchain/$host_toolchain.ninja'
 	set srcdir '$dir'
-	exe file2string '$dir'/file2string.c
+	exe file2string file2string.c
 } >tools.ninja ; subninja tools.ninja
 
 rule file2string '$outdir/file2string $in >$out.tmp && mv $out.tmp $out'
