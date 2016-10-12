@@ -47,7 +47,7 @@ fn gen {
 		if(~ $dir .) set outdir '$builddir'
 		if not set outdir '$builddir/$dir'
 
-		if([ -e .rev ]) set srcdir '$dir'/src
+		if([ -e rev ]) set srcdir '$dir'/src
 
 		. $absdir/gen.rc
 

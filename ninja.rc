@@ -104,7 +104,7 @@ fn objects {
 		}
 		for(src) {
 			switch($src) {
-			case *.[cS] *.cc *.cpp
+			case *.[csS] *.cc *.cpp
 				compile cc $src $deps
 				obj=$src.o
 			case *.asm
@@ -169,7 +169,7 @@ fn sym {
 fn fetch {
 	# Use a phony rule and stamp file to prevent ninja from making parent
 	# directories.
-	build '$outdir'/fetch.stamp fetch$1 '|' '$dir'/.rev
+	build '$outdir'/fetch.stamp fetch$1 '|' '$dir'/rev
 	shift
 	if(! ~ $#* 0) {
 		*=''''$*''''
