@@ -74,6 +74,7 @@ x -m 4755 passwd 1
 x pidof 1
 x pivot_root 8
 x ps 1
+x pwdx 1
 x readahead 8
 x respawn 1
 x rmmod 8
