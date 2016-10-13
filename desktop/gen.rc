@@ -6,6 +6,7 @@ subgen libdrm
 subgen libevdev
 subgen libffi
 subgen libpciaccess
+subgen libxkbcommon
 subgen pixman
 subgen plan9fonts
 subgen wayland

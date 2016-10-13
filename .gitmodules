@@ -80,6 +80,10 @@
 	path = desktop/libpciaccess/src
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
 	ignore = all
+[submodule "desktop/libxkbcommon/src"]
+	path = desktop/libxkbcommon/src
+	url = https://github.com/xkbcommon/libxkbcommon
+	ignore = all
 [submodule "desktop/pixman/src"]
 	path = desktop/pixman/src
 	url = https://anongit.freedesktop.org/git/pixman.git
