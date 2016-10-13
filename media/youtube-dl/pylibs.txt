@@ -307,12 +307,12 @@ youtube_dl/extractor/viddler.py
 youtube_dl/extractor/tunein.py
 youtube_dl/extractor/nowtv.py
 youtube_dl/extractor/revision3.py
+youtube_dl/extractor/thisoldhouse.py
 youtube_dl/extractor/clubic.py
 youtube_dl/extractor/discoverygo.py
 youtube_dl/extractor/canvas.py
 youtube_dl/extractor/sportdeutschland.py
 youtube_dl/extractor/anysex.py
-youtube_dl/extractor/aftonbladet.py
 youtube_dl/extractor/bandcamp.py
 youtube_dl/extractor/bbc.py
 youtube_dl/extractor/tnaflix.py
@@ -326,6 +326,7 @@ youtube_dl/extractor/thisav.py
 youtube_dl/extractor/jwplatform.py
 youtube_dl/extractor/amcnetworks.py
 youtube_dl/extractor/usanetwork.py
+youtube_dl/extractor/lego.py
 youtube_dl/extractor/democracynow.py
 youtube_dl/extractor/dotsub.py
 youtube_dl/extractor/pladform.py
@@ -346,6 +347,7 @@ youtube_dl/extractor/skysports.py
 youtube_dl/extractor/khanacademy.py
 youtube_dl/extractor/kanalplay.py
 youtube_dl/extractor/breakcom.py
+youtube_dl/extractor/tonline.py
 youtube_dl/extractor/jpopsukitv.py
 youtube_dl/extractor/mailru.py
 youtube_dl/extractor/gameinformer.py
@@ -481,6 +483,7 @@ youtube_dl/extractor/canalc2.py
 youtube_dl/extractor/nova.py
 youtube_dl/extractor/normalboots.py
 youtube_dl/extractor/soundcloud.py
+youtube_dl/extractor/theweatherchannel.py
 youtube_dl/extractor/arkena.py
 youtube_dl/extractor/streamcloud.py
 youtube_dl/extractor/eporner.py
@@ -614,6 +617,7 @@ youtube_dl/extractor/vrt.py
 youtube_dl/extractor/gfycat.py
 youtube_dl/extractor/miaopai.py
 youtube_dl/extractor/clyp.py
+youtube_dl/extractor/nzz.py
 youtube_dl/extractor/moviezine.py
 youtube_dl/extractor/sina.py
 youtube_dl/extractor/wsj.py
