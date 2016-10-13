@@ -1,0 +1,38 @@
+From ae1639dc00fe116c88403c7c23bdd76181191c7a Mon Sep 17 00:00:00 2001
+From: Christian Neukirchen <chneukirchen@gmail.com>
+Date: Wed, 5 Oct 2016 16:35:48 +0200
+Subject: [PATCH] LibreSSL: Fix dh5 code
+
+Add LibreSSL check to old OpenSSL #ifdef guard as DH_{get0,set0}_key()
+is not implemented in LibreSSL.
+
+Signed-off-by: Christian Neukirchen <chneukirchen@gmail.com>
+---
+ src/crypto/crypto_openssl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/crypto/crypto_openssl.c b/src/crypto/crypto_openssl.c
+index 19e0e2b..b3d1b07 100644
+--- a/src/crypto/crypto_openssl.c
++++ b/src/crypto/crypto_openssl.c
+@@ -611,7 +611,7 @@ void crypto_cipher_deinit(struct crypto_cipher *ctx)
+ 
+ void * dh5_init(struct wpabuf **priv, struct wpabuf **publ)
+ {
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+ 	DH *dh;
+ 	struct wpabuf *pubkey = NULL, *privkey = NULL;
+ 	size_t publen, privlen;
+@@ -712,7 +712,7 @@ err:
+ 
+ void * dh5_init_fixed(const struct wpabuf *priv, const struct wpabuf *publ)
+ {
+-#if OPENSSL_VERSION_NUMBER < 0x10100000L
++#if OPENSSL_VERSION_NUMBER < 0x10100000L || defined(LIBRESSL_VERSION_NUMBER)
+ 	DH *dh;
+ 
+ 	dh = DH_new();
+-- 
+2.10.1
+

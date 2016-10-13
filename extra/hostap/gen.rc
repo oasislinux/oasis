@@ -17,6 +17,7 @@ exe bin/wpa_supplicant -d $"deps\
 		peerkey_auth.c\
 	)\
 	src/common/^(\
+		ctrl_iface_common.c\
 		hw_features_common.c\
 		ieee802_11_common.c\
 		wpa_common.c\
@@ -78,7 +79,7 @@ exe bin/wpa_supplicant -d $"deps\
 file bin/wpa_supplicant '$outdir'/bin/wpa_supplicant 755
 
 exe bin/wpa_cli -d $"deps\
-	src/common/wpa_ctrl.c\
+	src/common/^(cli.c wpa_ctrl.c)\
 	src/utils/edit_simple.c\
 	wpa_supplicant/wpa_cli.c\
 	libcommon.a

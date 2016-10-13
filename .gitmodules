@@ -116,6 +116,7 @@
 [submodule "extra/hostap/src"]
 	path = extra/hostap/src
 	url = git://w1.fi/hostap.git
+	ignore = all
 [submodule "extra/libevent/src"]
 	path = extra/libevent/src
 	url = https://github.com/libevent/libevent
