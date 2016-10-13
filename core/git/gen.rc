@@ -4,6 +4,7 @@ cflags\
 	-I '$builddir'/core/libressl/include\
 	-I '$builddir'/core/curl/include\
 	-I '$srcdir' \
+	-I '$srcdir'/compat/regex\
 	-I '$outdir'
 
 rule cmdlist 'oldcwd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$oldcwd/$in >$$oldcwd/$out.tmp && mv $$oldcwd/$out.tmp $$oldcwd/$out'
@@ -16,6 +17,7 @@ deps=(\
 
 cc exec_cmd.c '||' $deps ; with cflags '$cflags ''-DPREFIX=""'''
 cc common-main.c '||' $deps
+cc compat/regex/regex.c '||' $deps ; with cflags '$cflags -DGAWK -DNO_MBSUPPORT'
 
 # src/Makefile:/^LIB_OBJS.\+=
 lib libgit.a -d $"deps\
@@ -40,6 +42,7 @@ lib libgit.a -d $"deps\
 	combine-diff.c\
 	commit.c\
 	compat/obstack.c\
+	compat/regex/regex.c.o\
 	compat/terminal.c\
 	config.c\
 	connect.c\
