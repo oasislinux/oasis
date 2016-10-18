@@ -6,7 +6,7 @@ cflags\
 
 exe nasm\
 	nasm.c nasmlib.c ver.c\
-	raa.c saa.c rbtree.c\
+	raa.c saa.c rbtree.c srcfile.c\
 	realpath.c\
 	float.c insnsa.c insnsb.c\
 	directiv.c\
