@@ -63,6 +63,10 @@
 [submodule "desktop/expat/src"]
 	path = desktop/expat/src
 	url = git://git.code.sf.net/p/expat/code_git
+[submodule "desktop/fontconfig/src"]
+	path = desktop/fontconfig/src
+	url = https://anongit.freedesktop.org/git/fontconfig
+	ignore = all
 [submodule "desktop/freetype/src"]
 	path = desktop/freetype/src
 	url = git://git.sv.nongnu.org/freetype/freetype2.git

@@ -1,6 +1,7 @@
 rule wayland_proto 'wayland-scanner $type $in $out.tmp && mv $out.tmp $out'
 
 subgen expat
+subgen fontconfig
 subgen freetype
 subgen libdrm
 subgen libevdev
