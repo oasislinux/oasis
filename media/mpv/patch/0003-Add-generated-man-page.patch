@@ -1,4 +1,4 @@
-From cbe80107418bb7a76634b8f13d3cdafbb1564f53 Mon Sep 17 00:00:00 2001
+From 6f17a08a04b52c5fab494b72f77bba0d91042f65 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
@@ -7,16 +7,16 @@ This requires python and rst2man to generate.
 
 $ rst2man.py DOCS/man/mpv.rst DOCS/man/mpv.1
 ---
- DOCS/man/mpv.1 | 13993 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 13993 insertions(+)
+ DOCS/man/mpv.1 | 14114 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 14114 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 0000000..fadcd48
+index 0000000..4ae65ee
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,13993 @@
+@@ -0,0 +1,14114 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -180,11 +180,11 @@ index 0000000..fadcd48
 +.B u
 +Switch between applying no style overrides to SSA/ASS subtitles, and
 +overriding them almost completely with the normal subtitle style. See
-+\fB\-\-ass\-style\-override\fP for more info.
++\fB\-\-sub\-ass\-style\-override\fP for more info.
 +.TP
 +.B V
 +Toggle subtitle VSFilter aspect compatibility mode. See
-+\fB\-\-ass\-vsfilter\-aspect\-compat\fP for more info.
++\fB\-\-sub\-ass\-vsfilter\-aspect\-compat\fP for more info.
 +.TP
 +.B r and t
 +Move subtitles up/down.
@@ -310,19 +310,20 @@ index 0000000..fadcd48
 +The suboption parser can quote strings with \fB"\fP and \fB[...]\fP\&.
 +Additionally, there is a special form of quoting with \fB%n%\fP described below.
 +.sp
-+For example, the \fBopengl\fP VO can take multiple options:
++For example, assume the hypothetical \fBfoo\fP filter can take multiple options:
 +.INDENT 0.0
 +.INDENT 3.5
-+\fBmpv test.mkv \-\-vo=opengl:scale=lanczos:icc\-profile=file.icc,xv\fP
++\fBmpv test.mkv \-\-vf=foo:option1=value1:option2:option3=value3,bar\fP
 +.UNINDENT
 +.UNINDENT
 +.sp
-+This passes \fBscale=lanczos\fP and \fBicc\-profile=file.icc\fP to \fBopengl\fP,
-+and also specifies \fBxv\fP as fallback VO. If the icc\-profile path contains
-+spaces or characters like \fB,\fP or \fB:\fP, you need to quote them:
++This passes \fBoption1\fP and \fBoption3\fP to the \fBfoo\fP filter, with \fBoption2\fP
++as flag (implicitly \fBoption2=yes\fP), and adds a \fBbar\fP filter after that. If
++an option contains spaces or characters like \fB,\fP or \fB:\fP, you need to quote
++them:
 +.INDENT 0.0
 +.INDENT 3.5
-+\fBmpv \(aq\-\-vo=opengl:icc\-profile="file with spaces.icc",xv\(aq\fP
++\fBmpv \(aq\-\-vf=foo:option1="option value with spaces",bar\(aq\fP
 +.UNINDENT
 +.UNINDENT
 +.sp
@@ -354,11 +355,11 @@ index 0000000..fadcd48
 +.INDENT 3.5
 +.IP "Examples"
 +.sp
-+\fBmpv \-\-ao=pcm:file=%10%C:test.wav test.avi\fP
++\fBmpv \(aq\-\-vf=foo:option1=%11%quoted text\(aq test.avi\fP
 +.sp
 +Or in a script:
 +.sp
-+\fBmpv \-\-ao=pcm:file=%\(gaexpr length "$NAME"\(ga%"$NAME" test.avi\fP
++\fBmpv \-\-vf=foo:option1=%\(gaexpr length "$NAME"\(ga%"$NAME" test.avi\fP
 +.UNINDENT
 +.UNINDENT
 +.sp
@@ -368,8 +369,7 @@ index 0000000..fadcd48
 +support passing values in a more structured way instead of flat strings, and
 +can avoid the suboption parsing mess. For example, \fB\-\-vf\fP supports
 +\fBMPV_FORMAT_NODE\fP, which lets you pass suboptions as a nested data structure
-+of maps and arrays. (\fB\-\-vo\fP supports this in the same way, although this
-+fact is undocumented.)
++of maps and arrays.
 +.SS Paths
 +.sp
 +Some care must be taken when passing arbitrary paths and filenames to mpv. For
@@ -690,7 +690,8 @@ index 0000000..fadcd48
 +
 +[slow]
 +profile\-desc="some profile name"
-+vo=opengl:scale=ewa_lanczos:scale\-radius=16
++# reference a builtin profile
++profile=opengl\-hq
 +
 +[fast]
 +vo=vdpau
@@ -717,10 +718,6 @@ index 0000000..fadcd48
 +.sp
 +.nf
 +.ft C
-+[vo.vdpau]
-+# Use hardware decoding
-+hwdec=vdpau
-+
 +[protocol.dvd]
 +profile\-desc="profile for dvd:// streams"
 +alang=en
@@ -728,9 +725,6 @@ index 0000000..fadcd48
 +[extension.flv]
 +profile\-desc="profile for .flv files"
 +vf=flip
-+
-+[ao.alsa]
-+device=spdif
 +.ft P
 +.fi
 +.UNINDENT
@@ -738,8 +732,7 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.sp
-+The profile name follows the schema \fBtype.name\fP, where type can be \fBvo\fP
-+to match the value the \fB\-\-vo\fP option is set to, \fBao\fP for \fB\-\-ao\fP,
++The profile name follows the schema \fBtype.name\fP, where type can be
 +\fBprotocol\fP for the input/output protocol in use (see \fB\-\-list\-protocols\fP),
 +and \fBextension\fP for the extension of the path of the currently played file
 +(\fInot\fP the file format).
@@ -871,7 +864,7 @@ index 0000000..fadcd48
 +.B \fBmf://[filemask|@listfile]\fP \fB\-\-mf\-...\fP
 +Play a series of images as video.
 +.TP
-+.B \fBcdda://track[\-endtrack][:speed][/device]\fP \fB\-\-cdrom\-device=PATH\fP \fB\-\-cdda\-...\fP
++.B \fBcdda://[device]\fP \fB\-\-cdrom\-device=PATH\fP \fB\-\-cdda\-...\fP
 +Play CD.
 +.TP
 +.B \fBlavf://...\fP
@@ -928,31 +921,43 @@ index 0000000..fadcd48
 +if started from explorer.exe on Windows (technically, if it was started on
 +Windows, and all of the stdout/stderr/stdin handles are unset)
 +.IP \(bu 2
-+manually adding \fB\-\-profile=pseudo\-gui\fP to the command line
++started out of the bundle on OSX
++.IP \(bu 2
++if you manually use \fB\-\-player\-operation\-mode=pseudo\-gui\fP on the command line
 +.UNINDENT
 +.sp
-+This mode implicitly adds \fB\-\-profile=pseudo\-gui\fP to the command line, with
-+the \fBpseudo\-gui\fP profile being predefined with the following contents:
++This mode applies options from the builtin profile \fBbuiltin\-pseudo\-gui\fP, but
++only if these haven\(aqt been set in the user\(aqs config file or on the command line.
++Also, for compatibility with the old pseudo\-gui behavior, the options in the
++\fBpseudo\-gui\fP profile are applied unconditionally. In addition, the profile
++makes sure to enable the pseudo\-GUI mode, so that \fB\-\-profile=pseudo\-gui\fP
++works like in older mpv releases. The profiles are currently defined as follows:
 +.INDENT 0.0
 +.INDENT 3.5
 +.sp
 +.nf
 +.ft C
-+[pseudo\-gui]
++[builtin\-pseudo\-gui]
 +terminal=no
 +force\-window=yes
 +idle=once
 +screenshot\-directory=~~desktop/
++[pseudo\-gui]
++player\-operation\-mode=pseudo\-gui
 +.ft P
 +.fi
 +.UNINDENT
 +.UNINDENT
 +.sp
-+This follows the mpv config file format. To customize pseudo\-GUI mode, you can
-+put your own \fBpseudo\-gui\fP profile into your \fBmpv.conf\fP\&. This profile will
-+enhance the default profile, rather than overwrite it.
-+.sp
-+The profile always overrides other settings in \fBmpv.conf\fP\&.
++\fBWARNING:\fP
++.INDENT 0.0
++.INDENT 3.5
++Currently, you can extend the \fBpseudo\-gui\fP profile in the config file the
++normal way. This is deprecated. In future mpv releases, the behavior might
++change, and not apply your additional settings, and/or use a different
++profile name.
++.UNINDENT
++.UNINDENT
 +.SH OPTIONS
 +.SS Track Selection
 +.INDENT 0.0
@@ -1000,15 +1005,32 @@ index 0000000..fadcd48
 +Select audio track. \fBauto\fP selects the default, \fBno\fP disables audio.
 +See also \fB\-\-alang\fP\&. mpv normally prints available audio tracks on the
 +terminal when starting playback of a file.
++.sp
++\fB\-\-audio\fP is an alias for \fB\-\-aid\fP\&.
++.sp
++\fB\-\-aid=no\fP or \fB\-\-audio=no\fP or \fB\-\-no\-audio\fP disables audio playback.
++(The latter variant does not work with the client API.)
 +.TP
 +.B \fB\-\-sid=<ID|auto|no>\fP
 +Display the subtitle stream specified by \fB<ID>\fP\&. \fBauto\fP selects
 +the default, \fBno\fP disables subtitles.
 +.sp
-+See also \fB\-\-slang\fP, \fB\-\-no\-sub\fP\&.
++\fB\-\-sub\fP is an alias for \fB\-\-sid\fP\&.
++.sp
++\fB\-\-sid=no\fP or \fB\-\-sub=no\fP or \fB\-\-no\-sub\fP disables subtitle decoding.
++(The latter variant does not work with the client API.)
 +.TP
 +.B \fB\-\-vid=<ID|auto|no>\fP
 +Select video channel. \fBauto\fP selects the default, \fBno\fP disables video.
++.sp
++\fB\-\-video\fP is an alias for \fB\-\-vid\fP\&.
++.sp
++\fB\-\-vid=no\fP or \fB\-\-video=no\fP or \fB\-\-no\-video\fP disables video playback.
++(The latter variant does not work with the client API.)
++.sp
++If video is disabled, mpv will try to download the audio only if media is
++streamed with youtube\-dl, because it saves bandwidth. This is done by
++setting the ytdl_format to "bestaudio/best" in the ytdl_hook.lua script.
 +.TP
 +.B \fB\-\-ff\-aid=<ID|auto|no>\fP, \fB\-\-ff\-sid=<ID|auto|no>\fP, \fB\-\-ff\-vid=<ID|auto|no>\fP
 +Select audio/subtitle/video streams by the FFmpeg stream index. The FFmpeg
@@ -1115,16 +1137,18 @@ index 0000000..fadcd48
 +.sp
 +See also: \fB\-\-start\fP\&.
 +.TP
-+.B \fB\-\-playlist\-pos=<no|index>\fP
++.B \fB\-\-playlist\-start=<auto|index>\fP
 +Set which file on the internal playlist to start playback with. The index
-+is an integer, with 0 meaning the first file. The value \fBno\fP means that
++is an integer, with 0 meaning the first file. The value \fBauto\fP means that
 +the selection of the entry to play is left to the playback resume mechanism
 +(default). If an entry with the given index doesn\(aqt exist, the behavior is
 +unspecified and might change in future mpv versions. The same applies if
 +the playlist contains further playlists (don\(aqt expect any reasonable
 +behavior). Passing a playlist file to mpv should work with this option,
-+though. E.g. \fBmpv playlist.m3u \-\-playlist\-pos=123\fP will work as expected,
++though. E.g. \fBmpv playlist.m3u \-\-playlist\-start=123\fP will work as expected,
 +as long as \fBplaylist.m3u\fP does not link to further playlists.
++.sp
++The value \fBno\fP is a deprecated alias for \fBauto\fP\&.
 +.TP
 +.B \fB\-\-playlist=<filename>\fP
 +Play files according to a playlist file (Supports some common formats. If
@@ -1306,8 +1330,12 @@ index 0000000..fadcd48
 +.SS Program Behavior
 +.INDENT 0.0
 +.TP
-+.B \fB\-\-help\fP
++.B \fB\-\-help\fP, \fB\-\-h\fP
 +Show short summary of options.
++.sp
++You can also pass a shell pattern to this option, which will list all
++matching top\-level options, e.g. \fB\-\-h=*scale*\fP for all options that
++contain the word "scale".
 +.TP
 +.B \fB\-v\fP
 +Increment verbosity level, one level for each \fB\-v\fP found on the command
@@ -1364,6 +1392,18 @@ index 0000000..fadcd48
 +.sp
 +This behavior is disabled by default, but is always available when quitting
 +the player with Shift+Q.
++.UNINDENT
++.sp
++\fB\-\-watch\-later\-directory=<path>\fP
++.INDENT 0.0
++.INDENT 3.5
++The directory in which to store the "watch later" temporary files.
++.sp
++The default is a subdirectory named "watch_later" underneath the
++config directory (usually \fB~/.config/mpv/\fP).
++.UNINDENT
++.UNINDENT
++.INDENT 0.0
 +.TP
 +.B \fB\-\-dump\-stats=<filename>\fP
 +Write certain statistics to the given file. The file is truncated on
@@ -1507,15 +1547,19 @@ index 0000000..fadcd48
 +\fB\-\-ytdl\-raw\-options=force\-ipv6=\fP
 +.UNINDENT
 +.UNINDENT
++.TP
++.B \fB\-\-player\-operation\-mode=<cplayer|pseudo\-gui>\fP
++For enabling "pseudo GUI mode", which means that the defaults for some
++options are changed. This option should not normally be used directly, but
++only by mpv internally, or mpv\-provided scripts, config files, or .desktop
++files.
 +.UNINDENT
 +.SS Video
 +.INDENT 0.0
 +.TP
-+.B \fB\-\-vo=<driver1[:suboption1[=value]:...],driver2,...[,]>\fP
-+Specify a priority list of video output drivers to be used. For
-+interactive use, one would normally specify a single one to use, but in
-+configuration files, specifying a list of fallbacks may make sense. See
-+\fI\%VIDEO OUTPUT DRIVERS\fP for details and descriptions of available drivers.
++.B \fB\-\-vo=<driver>\fP
++Specify the video output backend to be used. See \fI\%VIDEO OUTPUT DRIVERS\fP for
++details and descriptions of available drivers.
 +.TP
 +.B \fB\-\-vd=<[+|\-]family1:(*|decoder1),[+|\-]family2:(*|decoder2),...[\-]>\fP
 +Specify a priority list of video decoders to be used, according to their
@@ -1536,14 +1580,6 @@ index 0000000..fadcd48
 +The option variants \fB\-\-vf\-add\fP, \fB\-\-vf\-pre\fP, \fB\-\-vf\-del\fP and
 +\fB\-\-vf\-clr\fP exist to modify a previously specified list, but you
 +should not need these for typical use.
-+.TP
-+.B \fB\-\-no\-video\fP
-+Do not play video. With some demuxers this may not work. In those cases
-+you can try \fB\-\-vo=null\fP instead.
-+.sp
-+mpv will try to download the audio only if media is streamed with
-+youtube\-dl, because it saves bandwidth. This is done by setting the ytdl_format
-+to "bestaudio/best" in the ytdl_hook.lua script.
 +.TP
 +.B \fB\-\-untimed\fP
 +Do not sleep when outputting video frames. Useful for benchmarks when used
@@ -1612,10 +1648,13 @@ index 0000000..fadcd48
 +always use software decoding (default)
 +.TP
 +.B auto
-+see below
++enable best hw decoder (see below)
++.TP
++.B yes
++exactly the same as \fBauto\fP
 +.TP
 +.B auto\-copy
-+see below
++enable best hw decoder with copy\-back (see below)
 +.TP
 +.B vdpau
 +requires \fB\-\-vo=vdpau\fP or \fB\-\-vo=opengl\fP (Linux only)
@@ -1633,15 +1672,15 @@ index 0000000..fadcd48
 +copies video back into system RAM (OS X 10.8 and up only)
 +.TP
 +.B dxva2
-+requires \fB\-\-vo=opengl:backend=angle\fP or
-+.sp
-+\fB\-\-vo=opengl:backend=dxinterop\fP (Windows only)
++requires \fB\-\-vo=opengl\fP with \fB\-\-opengl\-backend=angle\fP or
++\fB\-\-opengl\-backend=dxinterop\fP (Windows only)
 +.TP
 +.B dxva2\-copy
 +copies video back to system RAM (Windows only)
 +.TP
 +.B d3d11va
-+requires \fB\-\-vo=opengl:backend=angle\fP (Windows only)
++requires \fB\-\-vo=opengl\fP with \fB\-\-opengl\-backend=angle\fP
++(Windows only)
 +.TP
 +.B d3d11va\-copy
 +copies video back to system RAM (Windows only)
@@ -1650,7 +1689,19 @@ index 0000000..fadcd48
 +copies video back to system RAM (Android only)
 +.TP
 +.B rpi
-+requires \fB\-\-vo=rpi\fP (Raspberry Pi only \- default if available)
++requires \fB\-\-vo=opengl\fP (Raspberry Pi only \- default if available)
++.TP
++.B rpi\-copy
++copies video back to system RAM (Raspberry Pi only)
++.TP
++.B cuda
++requires \fB\-\-vo=opengl\fP (Any platform CUDA is available)
++.TP
++.B cuda\-copy
++copies video back to system RAM (Any platform CUDA is available)
++.TP
++.B crystalhd
++copies video back to system RAM (Any platform supported by hardware)
 +.UNINDENT
 +.sp
 +\fBauto\fP tries to automatically enable hardware decoding using the first
@@ -1670,7 +1721,7 @@ index 0000000..fadcd48
 +The \fBvaapi\fP mode, if used with \fB\-\-vo=opengl\fP, requires Mesa 11 and most
 +likely works with Intel GPUs only. It also requires the opengl EGL backend
 +(automatically used if available). You can also try the old GLX backend by
-+forcing it with \fB\-\-vo=opengl:backend=x11\fP, but the vaapi/GLX interop is
++forcing it with \fB\-\-opengl\-backend=x11\fP, but the vaapi/GLX interop is
 +said to be slower than \fBvaapi\-copy\fP\&.
 +.sp
 +Most video filters will not work with hardware decoding as they are
@@ -1727,9 +1778,31 @@ index 0000000..fadcd48
 +affect this additionally. This can give incorrect results even with
 +completely ordinary video sources.
 +.sp
++\fBcuda\fP is usually safe. Interlaced content can be deinterlaced by
++the decoder, which is useful as there is no other deinterlacing
++mechanism in the opengl output path. To use this deinterlacing you
++must pass the option: \fBvd\-lavc\-o=deint=[weave|bob|adaptive]\fP\&. Pass
++\fBweave\fP to not attempt any deinterlacing.
++10bit HEVC is available if the hardware supports it but it will be
++rounded down to 8 bits.
++.sp
++\fBcuda\-copy\fP has the same behaviour as \fBcuda\fP \- including the ability
++to deinterlace inside the decoder. However, traditional deinterlacing
++filters can be used in this case.
++.sp
++\fBrpi\fP always uses the hardware overlay renderer, even with
++\fB\-\-vo=opengl\fP\&.
++.sp
++\fBcrystalhd\fP is not safe. It always converts to 4:2:2 YUV, which
++may be lossy, depending on how chroma sub\-sampling is done during
++conversion. It also discards the top left pixel of each frame for
++some reason.
++.sp
 +All other methods, in particular the copy\-back methods (like
 +\fBdxva2\-copy\fP etc.) are either fully safe, or not worse than software
-+decoding. In particular, \fBauto\-copy\fP will only select safe modes
++decoding.
++.sp
++In particular, \fBauto\-copy\fP will only select safe modes
 +(although potentially slower than other methods).
 +.UNINDENT
 +.UNINDENT
@@ -1766,15 +1839,18 @@ index 0000000..fadcd48
 +.sp
 +This option has no effect if \fB\-\-video\-unscaled\fP option is used.
 +.TP
-+.B \fB\-\-video\-aspect=<ratio>\fP
++.B \fB\-\-video\-aspect=<ratio|no>\fP
 +Override video aspect ratio, in case aspect information is incorrect or
 +missing in the file being played. See also \fB\-\-no\-video\-aspect\fP\&.
 +.sp
-+Two values have special meaning:
++These values have special meaning:
 +.INDENT 7.0
 +.TP
 +.B 0
 +disable aspect ratio handling, pretend the video has square pixels
++.TP
++.B no
++same as \fB0\fP
 +.TP
 +.B \-1
 +use the video stream or container aspect (default)
@@ -1789,13 +1865,11 @@ index 0000000..fadcd48
 +\fB\-\-video\-aspect=4:3\fP  or \fB\-\-video\-aspect=1.3333\fP
 +.IP \(bu 2
 +\fB\-\-video\-aspect=16:9\fP or \fB\-\-video\-aspect=1.7777\fP
++.IP \(bu 2
++\fB\-\-no\-video\-aspect\fP or \fB\-\-video\-aspect=no\fP
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
-+.TP
-+.B \fB\-\-no\-video\-aspect\fP
-+Ignore aspect ratio information from video file and assume the video has
-+square pixels. See also \fB\-\-video\-aspect\fP\&.
 +.TP
 +.B \fB\-\-video\-aspect\-method=<hybrid|bitstream|container>\fP
 +This sets the default video aspect determination method (if the aspect is
@@ -1924,8 +1998,7 @@ index 0000000..fadcd48
 +disable deinterlacing just because the \fB\-\-deinterlace\fP was not set.
 +.TP
 +.B \fB\-\-field\-dominance=<auto|top|bottom>\fP
-+Set first field for interlaced content. Useful for deinterlacers that
-+double the framerate: \fB\-\-vf=yadif=field\fP and \fB\-\-vo=vdpau:deint\fP\&.
++Set first field for interlaced content.
 +.INDENT 7.0
 +.TP
 +.B auto
@@ -2111,21 +2184,48 @@ index 0000000..fadcd48
 +.B \fB\-\-audio\-device=<name>\fP
 +Use the given audio device. This consists of the audio output name, e.g.
 +\fBalsa\fP, followed by \fB/\fP, followed by the audio output specific device
-+name.
++name. The default value for this option is \fBauto\fP, which tries every audio
++output in preference order with the default device.
 +.sp
 +You can list audio devices with \fB\-\-audio\-device=help\fP\&. This outputs the
 +device name in quotes, followed by a description. The device name is what
-+you have to pass to the \fB\-\-audio\-device\fP option.
++you have to pass to the \fB\-\-audio\-device\fP option. The list of audio devices
++can be retrieved by API by using the \fBaudio\-device\-list\fP property.
 +.sp
-+The default value for this option is \fBauto\fP, which tries every audio
-+output in preference order with the default device.
++While the option normally takes one of the strings as indicated by the
++methods above, you can also force the device for most AOs by building it
++manually. For example \fBname/foobar\fP forces the AO \fBname\fP to use the
++device \fBfoobar\fP\&.
++.INDENT 7.0
++.INDENT 3.5
++.IP "Example for ALSA"
 +.sp
-+Note that many AOs have a \fBdevice\fP sub\-option, which overrides the
-+device selection of this option (but not the audio output selection).
-+Likewise, forcing an AO with \fB\-\-ao\fP will override the audio output
-+selection of \fB\-\-audio\-device\fP (but not the device selection).
++MPlayer and mplayer2 required you to replace any \(aq,\(aq with \(aq.\(aq and
++any \(aq:\(aq with \(aq=\(aq in the ALSA device name. For example, to use the
++device named \fBdmix:default\fP, you had to do:
++.INDENT 0.0
++.INDENT 3.5
++\fB\-ao alsa:device=dmix=default\fP
++.UNINDENT
++.UNINDENT
 +.sp
-+Currently not implemented for most AOs.
++In mpv you could instead use:
++.INDENT 0.0
++.INDENT 3.5
++\fB\-\-audio\-device=alsa/dmix:default\fP
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.TP
++.B \fB\-\-audio\-exclusive=<yes|no>\fP
++Enable exclusive output mode. In this mode, the system is usually locked
++out, and only mpv will be able to output audio.
++.sp
++This only works for some audio outputs, such as \fBwasapi\fP and
++\fBcoreaudio\fP\&. Other audio outputs silently ignore this options. They either
++have no concept of exclusive mode, or the mpv side of the implementation is
++missing.
 +.TP
 +.B \fB\-\-audio\-fallback\-to\-null=<yes|no>\fP
 +If no audio device can be opened, behave as if \fB\-\-ao=null\fP was given. This
@@ -2135,11 +2235,9 @@ index 0000000..fadcd48
 +\fBcurrent\-ao\fP and \fBaudio\-device\-list\fP properties to make high\-level
 +decisions about how to continue.
 +.TP
-+.B \fB\-\-ao=<driver1[:suboption1[=value]:...],driver2,...[,]>\fP
-+Specify a priority list of audio output drivers to be used. For
-+interactive use one would normally specify a single one to use, but in
-+configuration files specifying a list of fallbacks may make sense. See
-+\fI\%AUDIO OUTPUT DRIVERS\fP for details and descriptions of available drivers.
++.B \fB\-\-ao=<driver>\fP
++Specify the audio output drivers to be used. See \fI\%AUDIO OUTPUT DRIVERS\fP for
++details and descriptions of available drivers.
 +.TP
 +.B \fB\-\-af=<filter1[=parameter1:parameter2:...],filter2,...>\fP
 +Specify a list of audio filters to apply to the audio stream. See
@@ -2218,7 +2316,10 @@ index 0000000..fadcd48
 +Since mpv 0.18.1, this always controls the internal mixer (aka "softvol").
 +.TP
 +.B \fB\-\-balance=<value>\fP
-+How much left/right channels contribute to the audio.
++How much left/right channels contribute to the audio. (The implementation
++of this feature is rather odd. It doesn\(aqt change the volumes of each
++channel, but instead sets up a pan matrix to mix the left and right
++channels.)
 +.sp
 +Deprecated.
 +.TP
@@ -2226,12 +2327,10 @@ index 0000000..fadcd48
 +Audio delay in seconds (positive or negative float value). Positive values
 +delay the audio, and negative values delay the video.
 +.TP
-+.B \fB\-\-no\-audio\fP
-+Do not play sound.
-+.TP
-+.B \fB\-\-mute=<auto|yes|no>\fP
-+Set startup audio mute status. \fBauto\fP (default) will not change the mute
-+status.
++.B \fB\-\-mute=<yes|no|auto>\fP
++Set startup audio mute status (default: no).
++.sp
++\fBauto\fP is a deprecated possible value that is equivalent to \fBno\fP\&.
 +.sp
 +See also: \fB\-\-volume\fP\&.
 +.TP
@@ -2548,13 +2647,15 @@ index 0000000..fadcd48
 +Changing styling and position does not work with all subtitles. Image\-based
 +subtitles (DVD, Bluray/PGS, DVB) cannot changed for fundamental reasons.
 +Subtitles in ASS format are normally not changed intentionally, but
-+overriding them can be controlled with \fB\-\-ass\-style\-override\fP\&.
++overriding them can be controlled with \fB\-\-sub\-ass\-style\-override\fP\&.
++.sp
++Previously some options working on text subtitles were called
++\fB\-\-sub\-text\-*\fP, they are now named \fB\-\-sub\-*\fP, and those specifically
++for ASS have been renamed from \fB\-\-ass\-*\fP to \fB\-\-sub\-ass\-*\fP\&.
++They are now all in this section.
 +.UNINDENT
 +.UNINDENT
 +.INDENT 0.0
-+.TP
-+.B \fB\-\-no\-sub\fP
-+Do not select any subtitle when the file is loaded.
 +.TP
 +.B \fB\-\-sub\-demuxer=<[+]name>\fP
 +Force subtitle demuxer type for \fB\-\-sub\-file\fP\&. Give the demuxer name as
@@ -2612,7 +2713,7 @@ index 0000000..fadcd48
 +.INDENT 7.0
 +.INDENT 3.5
 +This affects ASS subtitles as well, and may lead to incorrect subtitle
-+rendering. Use with care, or use \fB\-\-sub\-text\-font\-size\fP instead.
++rendering. Use with care, or use \fB\-\-sub\-font\-size\fP instead.
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -2635,10 +2736,10 @@ index 0000000..fadcd48
 +scales with the approximate window size, while the other option disables
 +this scaling.
 +.sp
-+Affects plain text subtitles only (or ASS if \fB\-\-ass\-style\-override\fP is
++Affects plain text subtitles only (or ASS if \fB\-\-sub\-ass\-style\-override\fP is
 +set high enough).
 +.TP
-+.B \fB\-\-ass\-scale\-with\-window=<yes|no>\fP
++.B \fB\-\-sub\-ass\-scale\-with\-window=<yes|no>\fP
 +Like \fB\-\-sub\-scale\-with\-window\fP, but affects subtitles in ASS format only.
 +Like \fB\-\-sub\-scale\fP, this can break ASS subtitles.
 +.sp
@@ -2656,7 +2757,7 @@ index 0000000..fadcd48
 +.INDENT 7.0
 +.INDENT 3.5
 +This affects ASS subtitles as well, and may lead to incorrect subtitle
-+rendering. Use with care, or use \fB\-\-sub\-text\-margin\-y\fP instead.
++rendering. Use with care, or use \fB\-\-sub\-margin\-y\fP instead.
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -2673,16 +2774,16 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-ass\-force\-style=<[Style.]Param=Value[,...]>\fP
++.B \fB\-\-sub\-ass\-force\-style=<[Style.]Param=Value[,...]>\fP
 +Override some style or script info parameters.
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Examples"
 +.INDENT 0.0
 +.IP \(bu 2
-+\fB\-\-ass\-force\-style=FontName=Arial,Default.Bold=1\fP
++\fB\-\-sub\-ass\-force\-style=FontName=Arial,Default.Bold=1\fP
 +.IP \(bu 2
-+\fB\-\-ass\-force\-style=PlayResY=768\fP
++\fB\-\-sub\-ass\-force\-style=PlayResY=768\fP
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
@@ -2694,7 +2795,7 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-ass\-hinting=<none|light|normal|native>\fP
++.B \fB\-\-sub\-ass\-hinting=<none|light|normal|native>\fP
 +Set font hinting type. <type> can be:
 +.INDENT 7.0
 +.TP
@@ -2721,10 +2822,10 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-ass\-line\-spacing=<value>\fP
++.B \fB\-\-sub\-ass\-line\-spacing=<value>\fP
 +Set line spacing value for SSA/ASS renderer.
 +.TP
-+.B \fB\-\-ass\-shaper=<simple|complex>\fP
++.B \fB\-\-sub\-ass\-shaper=<simple|complex>\fP
 +Set the text layout engine used by libass.
 +.INDENT 7.0
 +.TP
@@ -2738,7 +2839,7 @@ index 0000000..fadcd48
 +\fBcomplex\fP is the default. If libass hasn\(aqt been compiled against HarfBuzz,
 +libass silently reverts to \fBsimple\fP\&.
 +.TP
-+.B \fB\-\-ass\-styles=<filename>\fP
++.B \fB\-\-sub\-ass\-styles=<filename>\fP
 +Load all SSA/ASS styles found in the specified file and use them for
 +rendering text subtitles. The syntax of the file is exactly like the \fB[V4
 +Styles]\fP / \fB[V4+ Styles]\fP section of SSA/ASS.
@@ -2750,12 +2851,12 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-ass\-style\-override=<yes|no|force|signfs|strip>\fP
++.B \fB\-\-sub\-ass\-style\-override=<yes|no|force|signfs|strip>\fP
 +Control whether user style overrides should be applied.
 +.INDENT 7.0
 +.TP
 +.B yes
-+Apply all the \fB\-\-ass\-*\fP style override options. Changing the default
++Apply all the \fB\-\-sub\-ass\-*\fP style override options. Changing the default
 +for any of these options can lead to incorrect subtitle rendering
 +(default).
 +.TP
@@ -2766,7 +2867,7 @@ index 0000000..fadcd48
 +Render subtitles as forced by subtitle scripts.
 +.TP
 +.B force
-+Try to force the font style as defined by the \fB\-\-sub\-text\-*\fP
++Try to force the font style as defined by the \fB\-\-sub\-*\fP
 +options. Can break rendering easily.
 +.TP
 +.B strip
@@ -2774,7 +2875,7 @@ index 0000000..fadcd48
 +is equivalent to the old \fB\-\-no\-ass\fP / \fB\-\-no\-sub\-ass\fP options.
 +.UNINDENT
 +.TP
-+.B \fB\-\-ass\-force\-margins\fP
++.B \fB\-\-sub\-ass\-force\-margins\fP
 +Enables placing toptitles and subtitles in black borders when they are
 +available, if the subtitles are in the ASS format.
 +.sp
@@ -2783,14 +2884,14 @@ index 0000000..fadcd48
 +.B \fB\-\-sub\-use\-margins\fP
 +Enables placing toptitles and subtitles in black borders when they are
 +available, if the subtitles are in a plain text format  (or ASS if
-+\fB\-\-ass\-style\-override\fP is set high enough).
++\fB\-\-sub\-ass\-style\-override\fP is set high enough).
 +.sp
 +Default: yes.
 +.sp
-+Renamed from \fB\-\-ass\-use\-margins\fP\&. To place ASS subtitles in the borders
-+too (like the old option did), also add \fB\-\-ass\-force\-margins\fP\&.
++Renamed from \fB\-\-sub\-ass\-use\-margins\fP\&. To place ASS subtitles in the borders
++too (like the old option did), also add \fB\-\-sub\-ass\-force\-margins\fP\&.
 +.TP
-+.B \fB\-\-ass\-vsfilter\-aspect\-compat=<yes|no>\fP
++.B \fB\-\-sub\-ass\-vsfilter\-aspect\-compat=<yes|no>\fP
 +Stretch SSA/ASS subtitles when playing anamorphic videos for compatibility
 +with traditional VSFilter behavior. This switch has no effect when the
 +video is stored with square pixels.
@@ -2807,7 +2908,7 @@ index 0000000..fadcd48
 +.sp
 +Enabled by default.
 +.TP
-+.B \fB\-\-ass\-vsfilter\-blur\-compat=<yes|no>\fP
++.B \fB\-\-sub\-ass\-vsfilter\-blur\-compat=<yes|no>\fP
 +Scale \fB\eblur\fP tags by video resolution instead of script resolution
 +(enabled by default). This is bug in VSFilter, which according to some,
 +can\(aqt be fixed anymore in the name of compatibility.
@@ -2816,7 +2917,7 @@ index 0000000..fadcd48
 +offset scale factor, not what the video filter chain or the video output
 +use.
 +.TP
-+.B \fB\-\-ass\-vsfilter\-color\-compat=<basic|full|force\-601|no>\fP
++.B \fB\-\-sub\-ass\-vsfilter\-color\-compat=<basic|full|force\-601|no>\fP
 +Mangle colors like (xy\-)vsfilter do (default: basic). Historically, VSFilter
 +was not color space aware. This was no problem as long as the color space
 +used for SD video (BT.601) was used. But when everything switched to HD
@@ -2847,7 +2948,7 @@ index 0000000..fadcd48
 +.sp
 +Choosing anything other than \fBno\fP will make the subtitle color depend on
 +the video color space, and it\(aqs for example in theory not possible to reuse
-+a subtitle script with another video file. The \fB\-\-ass\-style\-override\fP
++a subtitle script with another video file. The \fB\-\-sub\-ass\-style\-override\fP
 +option doesn\(aqt affect how this option is interpreted.
 +.TP
 +.B \fB\-\-stretch\-dvd\-subs=<yes|no>\fP
@@ -2881,16 +2982,16 @@ index 0000000..fadcd48
 +\fBNOTE:\fP
 +.INDENT 7.0
 +.INDENT 3.5
-+This has been deprecated by \fB\-\-ass\-style\-override=strip\fP\&. You also
++This has been deprecated by \fB\-\-sub\-ass\-style\-override=strip\fP\&. You also
 +may need \fB\-\-embeddedfonts=no\fP to get the same behavior. Also,
-+using \fB\-\-ass\-style\-override=force\fP should give better results
++using \fB\-\-sub\-ass\-style\-override=force\fP should give better results
 +without breaking subtitles too much.
 +.UNINDENT
 +.UNINDENT
 +.sp
 +If \fB\-\-no\-sub\-ass\fP is specified, all tags and style declarations are
 +stripped and ignored on display. The subtitle renderer uses the font style
-+as specified by the \fB\-\-sub\-text\-\fP options instead.
++as specified by the \fB\-\-sub\-\fP options instead.
 +.sp
 +\fBNOTE:\fP
 +.INDENT 7.0
@@ -3082,6 +3183,161 @@ index 0000000..fadcd48
 +uses it for fast elimination of duplicates. This option disables caching
 +of subtitles across seeks, so after a seek libass can\(aqt eliminate subtitle
 +packets with the same ReadOrder as earlier packets.
++.TP
++.B \fB\-\-teletext\-page=<1\-999>\fP
++This works for \fBdvb_teletext\fP subtitle streams, and if FFmpeg has been
++compiled with support for it.
++.TP
++.B \fB\-\-sub\-font=<name>\fP
++Specify font to use for subtitles that do not themselves
++specify a particular font. The default is \fBsans\-serif\fP\&.
++.INDENT 7.0
++.INDENT 3.5
++.IP "Examples"
++.INDENT 0.0
++.IP \(bu 2
++\fB\-\-sub\-font=\(aqBitstream Vera Sans\(aq\fP
++.IP \(bu 2
++\fB\-\-sub\-font=\(aqMS Comic Sans\(aq\fP
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.sp
++\fBNOTE:\fP
++.INDENT 7.0
++.INDENT 3.5
++The \fB\-\-sub\-font\fP option (and many other style related \fB\-\-sub\-\fP
++options) are ignored when ASS\-subtitles are rendered, unless the
++\fB\-\-no\-sub\-ass\fP option is specified.
++.sp
++This used to support fontconfig patterns. Starting with libass 0.13.0,
++this stopped working.
++.UNINDENT
++.UNINDENT
++.TP
++.B \fB\-\-sub\-font\-size=<size>\fP
++Specify the sub font size. The unit is the size in scaled pixels at a
++window height of 720. The actual pixel size is scaled with the window
++height: if the window height is larger or smaller than 720, the actual size
++of the text increases or decreases as well.
++.sp
++Default: 55.
++.TP
++.B \fB\-\-sub\-back\-color=<color>\fP
++See \fB\-\-sub\-color\fP\&. Color used for sub text background.
++.TP
++.B \fB\-\-sub\-blur=<0..20.0>\fP
++Gaussian blur factor. 0 means no blur applied (default).
++.TP
++.B \fB\-\-sub\-bold=<yes|no>\fP
++Format text on bold.
++.TP
++.B \fB\-\-sub\-italic=<yes|no>\fP
++Format text on italic.
++.TP
++.B \fB\-\-sub\-border\-color=<color>\fP
++See \fB\-\-sub\-color\fP\&. Color used for the sub font border.
++.sp
++\fBNOTE:\fP
++.INDENT 7.0
++.INDENT 3.5
++ignored when \fB\-\-sub\-back\-color\fP is
++specified (or more exactly: when that option is not set to completely
++transparent).
++.UNINDENT
++.UNINDENT
++.TP
++.B \fB\-\-sub\-border\-size=<size>\fP
++Size of the sub font border in scaled pixels (see \fB\-\-sub\-font\-size\fP
++for details). A value of 0 disables borders.
++.sp
++Default: 3.
++.TP
++.B \fB\-\-sub\-color=<color>\fP
++Specify the color used for unstyled text subtitles.
++.sp
++The color is specified in the form \fBr/g/b\fP, where each color component
++is specified as number in the range 0.0 to 1.0. It\(aqs also possible to
++specify the transparency by using \fBr/g/b/a\fP, where the alpha value 0
++means fully transparent, and 1.0 means opaque. If the alpha component is
++not given, the color is 100% opaque.
++.sp
++Passing a single number to the option sets the sub to gray, and the form
++\fBgray/a\fP lets you specify alpha additionally.
++.INDENT 7.0
++.INDENT 3.5
++.IP "Examples"
++.INDENT 0.0
++.IP \(bu 2
++\fB\-\-sub\-color=1.0/0.0/0.0\fP set sub to opaque red
++.IP \(bu 2
++\fB\-\-sub\-color=1.0/0.0/0.0/0.75\fP set sub to opaque red with 75% alpha
++.IP \(bu 2
++\fB\-\-sub\-color=0.5/0.75\fP set sub to 50% gray with 75% alpha
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.sp
++Alternatively, the color can be specified as a RGB hex triplet in the form
++\fB#RRGGBB\fP, where each 2\-digit group expresses a color value in the
++range 0 (\fB00\fP) to 255 (\fBFF\fP). For example, \fB#FF0000\fP is red.
++This is similar to web colors. Alpha is given with \fB#AARRGGBB\fP\&.
++.INDENT 7.0
++.INDENT 3.5
++.IP "Examples"
++.INDENT 0.0
++.IP \(bu 2
++\fB\-\-sub\-color=\(aq#FF0000\(aq\fP set sub to opaque red
++.IP \(bu 2
++\fB\-\-sub\-color=\(aq#C0808080\(aq\fP set sub to 50% gray with 75% alpha
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.TP
++.B \fB\-\-sub\-margin\-x=<size>\fP
++Left and right screen margin for the subs in scaled pixels (see
++\fB\-\-sub\-font\-size\fP for details).
++.sp
++This option specifies the distance of the sub to the left, as well as at
++which distance from the right border long sub text will be broken.
++.sp
++Default: 25.
++.TP
++.B \fB\-\-sub\-margin\-y=<size>\fP
++Top and bottom screen margin for the subs in scaled pixels (see
++\fB\-\-sub\-font\-size\fP for details).
++.sp
++This option specifies the vertical margins of unstyled text subtitles.
++If you just want to raise the vertical subtitle position, use \fB\-\-sub\-pos\fP\&.
++.sp
++Default: 22.
++.TP
++.B \fB\-\-sub\-align\-x=<left|center|right>\fP
++Control to which corner of the screen text subtitles should be
++aligned to (default: \fBcenter\fP).
++.sp
++Never applied to ASS subtitles, except in \fB\-\-no\-sub\-ass\fP mode. Likewise,
++this does not apply to image subtitles.
++.TP
++.B \fB\-\-sub\-align\-y=<top|center|bottom>\fP
++Vertical position (default: \fBbottom\fP).
++Details see \fB\-\-sub\-align\-x\fP\&.
++.TP
++.B \fB\-\-sub\-shadow\-color=<color>\fP
++See \fB\-\-sub\-color\fP\&. Color used for sub text shadow.
++.TP
++.B \fB\-\-sub\-shadow\-offset=<size>\fP
++Displacement of the sub text shadow in scaled pixels (see
++\fB\-\-sub\-font\-size\fP for details). A value of 0 disables shadows.
++.sp
++Default: 0.
++.TP
++.B \fB\-\-sub\-spacing=<size>\fP
++Horizontal sub font spacing in scaled pixels (see \fB\-\-sub\-font\-size\fP
++for details). This value is added to the normal letter spacing. Negative
++values are allowed.
++.sp
++Default: 0.
 +.UNINDENT
 +.SS Window
 +.INDENT 0.0
@@ -3640,10 +3896,6 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-bluray\-angle=<ID>\fP
-+Some Blu\-ray discs contain scenes that can be viewed from multiple angles.
-+This option tells mpv which angle to use (default: 1).
-+.TP
 +.B \fB\-\-cdda\-...\fP
 +These options can be used to tune the CD Audio reading feature of mpv.
 +.TP
@@ -4102,9 +4354,8 @@ index 0000000..fadcd48
 +.B \fB\-\-osd\-duration=<time>\fP
 +Set the duration of the OSD messages in ms (default: 1000).
 +.TP
-+.B \fB\-\-osd\-font=<name>\fP, \fB\-\-sub\-text\-font=<name>\fP
-+Specify font to use for OSD and for subtitles that do not themselves
-+specify a particular font. The default is \fBsans\-serif\fP\&.
++.B \fB\-\-osd\-font=<name>\fP
++Specify font to use for OSD. The default is \fBsans\-serif\fP\&.
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Examples"
@@ -4116,24 +4367,9 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
-+.sp
-+\fBNOTE:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+The \fB\-\-sub\-text\-font\fP option (and most other \fB\-\-sub\-text\-\fP
-+options) are ignored when ASS\-subtitles are rendered, unless the
-+\fB\-\-no\-sub\-ass\fP option is specified.
-+.sp
-+This used to support fontconfig patterns. Starting with libass 0.13.0,
-+this stopped working.
-+.UNINDENT
-+.UNINDENT
 +.TP
-+.B \fB\-\-osd\-font\-size=<size>\fP, \fB\-\-sub\-text\-font\-size=<size>\fP
-+Specify the OSD/sub font size. The unit is the size in scaled pixels at a
-+window height of 720. The actual pixel size is scaled with the window
-+height: if the window height is larger or smaller than 720, the actual size
-+of the text increases or decreases as well.
++.B \fB\-\-osd\-font\-size=<size>\fP
++Specify the OSD font size. See \fB\-\-sub\-font\-size\fP for details.
 +.sp
 +Default: 55.
 +.TP
@@ -4190,76 +4426,39 @@ index 0000000..fadcd48
 +.B \fB\-\-osd\-bar\-h=<0.1\-50>\fP
 +Height of the OSD bar, in percentage of the screen height (default: 3.125).
 +.TP
-+.B \fB\-\-osd\-back\-color=<color>\fP, \fB\-\-sub\-text\-back\-color=<color>\fP
-+See \fB\-\-osd\-color\fP\&. Color used for OSD/sub text background.
++.B \fB\-\-osd\-back\-color=<color>\fP
++See \fB\-\-osd\-color\fP\&. Color used for OSD text background.
 +.TP
-+.B \fB\-\-osd\-blur=<0..20.0>\fP, \fB\-\-sub\-text\-blur=<0..20.0>\fP
++.B \fB\-\-osd\-blur=<0..20.0>\fP
 +Gaussian blur factor. 0 means no blur applied (default).
 +.TP
-+.B \fB\-\-osd\-bold=<yes|no>\fP, \fB\-\-sub\-text\-bold=<yes|no>\fP
++.B \fB\-\-osd\-bold=<yes|no>\fP
 +Format text on bold.
 +.TP
-+.B \fB\-\-osd\-italic=<yes|no>\fP, \fB\-\-sub\-text\-italic=<yes|no>\fP
++.B \fB\-\-osd\-italic=<yes|no>\fP
 +Format text on italic.
 +.TP
-+.B \fB\-\-osd\-border\-color=<color>\fP, \fB\-\-sub\-text\-border\-color=<color>\fP
-+See \fB\-\-osd\-color\fP\&. Color used for the OSD/sub font border.
++.B \fB\-\-osd\-border\-color=<color>\fP
++See \fB\-\-osd\-color\fP\&. Color used for the OSD font border.
 +.sp
 +\fBNOTE:\fP
 +.INDENT 7.0
 +.INDENT 3.5
-+ignored when \fB\-\-osd\-back\-color\fP/\fB\-\-sub\-text\-back\-color\fP is
++ignored when \fB\-\-osd\-back\-color\fP is
 +specified (or more exactly: when that option is not set to completely
 +transparent).
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-osd\-border\-size=<size>\fP, \fB\-\-sub\-text\-border\-size=<size>\fP
-+Size of the OSD/sub font border in scaled pixels (see \fB\-\-osd\-font\-size\fP
++.B \fB\-\-osd\-border\-size=<size>\fP
++Size of the OSD font border in scaled pixels (see \fB\-\-sub\-font\-size\fP
 +for details). A value of 0 disables borders.
 +.sp
 +Default: 3.
 +.TP
-+.B \fB\-\-osd\-color=<color>\fP, \fB\-\-sub\-text\-color=<color>\fP
-+Specify the color used for OSD/unstyled text subtitles.
-+.sp
-+The color is specified in the form \fBr/g/b\fP, where each color component
-+is specified as number in the range 0.0 to 1.0. It\(aqs also possible to
-+specify the transparency by using \fBr/g/b/a\fP, where the alpha value 0
-+means fully transparent, and 1.0 means opaque. If the alpha component is
-+not given, the color is 100% opaque.
-+.sp
-+Passing a single number to the option sets the OSD to gray, and the form
-+\fBgray/a\fP lets you specify alpha additionally.
-+.INDENT 7.0
-+.INDENT 3.5
-+.IP "Examples"
-+.INDENT 0.0
-+.IP \(bu 2
-+\fB\-\-osd\-color=1.0/0.0/0.0\fP set OSD to opaque red
-+.IP \(bu 2
-+\fB\-\-osd\-color=1.0/0.0/0.0/0.75\fP set OSD to opaque red with 75% alpha
-+.IP \(bu 2
-+\fB\-\-osd\-color=0.5/0.75\fP set OSD to 50% gray with 75% alpha
-+.UNINDENT
-+.UNINDENT
-+.UNINDENT
-+.sp
-+Alternatively, the color can be specified as a RGB hex triplet in the form
-+\fB#RRGGBB\fP, where each 2\-digit group expresses a color value in the
-+range 0 (\fB00\fP) to 255 (\fBFF\fP). For example, \fB#FF0000\fP is red.
-+This is similar to web colors. Alpha is given with \fB#AARRGGBB\fP\&.
-+.INDENT 7.0
-+.INDENT 3.5
-+.IP "Examples"
-+.INDENT 0.0
-+.IP \(bu 2
-+\fB\-\-osd\-color=\(aq#FF0000\(aq\fP set OSD to opaque red
-+.IP \(bu 2
-+\fB\-\-osd\-color=\(aq#C0808080\(aq\fP set OSD to 50% gray with 75% alpha
-+.UNINDENT
-+.UNINDENT
-+.UNINDENT
++.B \fB\-\-osd\-color=<color>\fP
++Specify the color used for OSD.
++See \fB\-\-sub\-color\fP for details.
 +.TP
 +.B \fB\-\-osd\-fractions\fP
 +Show OSD times with fractions of seconds (in millisecond precision). Useful
@@ -4282,34 +4481,29 @@ index 0000000..fadcd48
 +enabled + \fB\-\-osd\-status\-msg\fP (current time and status by default)
 +.UNINDENT
 +.TP
-+.B \fB\-\-osd\-margin\-x=<size>, \-\-sub\-text\-margin\-x=<size>\fP
-+Left and right screen margin for the OSD/subs in scaled pixels (see
-+\fB\-\-osd\-font\-size\fP for details).
++.B \fB\-\-osd\-margin\-x=<size>\fP
++Left and right screen margin for the OSD in scaled pixels (see
++\fB\-\-sub\-font\-size\fP for details).
 +.sp
 +This option specifies the distance of the OSD to the left, as well as at
 +which distance from the right border long OSD text will be broken.
 +.sp
 +Default: 25.
 +.TP
-+.B \fB\-\-osd\-margin\-y=<size>, \-\-sub\-text\-margin\-y=<size>\fP
-+Top and bottom screen margin for the OSD/subs in scaled pixels (see
-+\fB\-\-osd\-font\-size\fP for details).
++.B \fB\-\-osd\-margin\-y=<size>\fP
++Top and bottom screen margin for the OSD in scaled pixels (see
++\fB\-\-sub\-font\-size\fP for details).
 +.sp
-+This option specifies the vertical margins of the OSD. This is also used
-+for unstyled text subtitles. If you just want to raise the vertical
-+subtitle position, use \fB\-\-sub\-pos\fP\&.
++This option specifies the vertical margins of the OSD.
 +.sp
 +Default: 22.
 +.TP
-+.B \fB\-\-osd\-align\-x=<left|center|right>\fP,  \fB\-\-sub\-text\-align\-x=...\fP
-+Control to which corner of the screen OSD or text subtitles should be
-+aligned to (default: \fBcenter\fP for subs, \fBleft\fP for OSD).
-+.sp
-+Never applied to ASS subtitles, except in \fB\-\-no\-sub\-ass\fP mode. Likewise,
-+this does not apply to image subtitles.
++.B \fB\-\-osd\-align\-x=<left|center|right>\fP
++Control to which corner of the screen OSD should be
++aligned to (default: \fBleft\fP).
 +.TP
-+.B \fB\-\-osd\-align\-y=<top|center|bottom>\fP \fB\-\-sub\-text\-align\-y=...\fP
-+Vertical position (default: \fBbottom\fP for subs, \fBtop\fP for OSD).
++.B \fB\-\-osd\-align\-y=<top|center|bottom>\fP
++Vertical position (default: \fBtop\fP).
 +Details see \fB\-\-osd\-align\-x\fP\&.
 +.TP
 +.B \fB\-\-osd\-scale=<factor>\fP
@@ -4321,21 +4515,32 @@ index 0000000..fadcd48
 +are always in actual pixels. The effect is that changing the window size
 +won\(aqt change the OSD font size.
 +.TP
-+.B \fB\-\-osd\-shadow\-color=<color>, \-\-sub\-text\-shadow\-color=<color>\fP
-+See \fB\-\-osd\-color\fP\&. Color used for OSD/sub text shadow.
++.B \fB\-\-osd\-shadow\-color=<color>\fP
++See \fB\-\-sub\-color\fP\&. Color used for OSD shadow.
 +.TP
-+.B \fB\-\-osd\-shadow\-offset=<size>, \-\-sub\-text\-shadow\-offset=<size>\fP
-+Displacement of the OSD/sub text shadow in scaled pixels (see
-+\fB\-\-osd\-font\-size\fP for details). A value of 0 disables shadows.
++.B \fB\-\-osd\-shadow\-offset=<size>\fP
++Displacement of the OSD shadow in scaled pixels (see
++\fB\-\-sub\-font\-size\fP for details). A value of 0 disables shadows.
 +.sp
 +Default: 0.
 +.TP
-+.B \fB\-\-osd\-spacing=<size>, \-\-sub\-text\-spacing=<size>\fP
-+Horizontal OSD/sub font spacing in scaled pixels (see \fB\-\-osd\-font\-size\fP
++.B \fB\-\-osd\-spacing=<size>\fP
++Horizontal OSD/sub font spacing in scaled pixels (see \fB\-\-sub\-font\-size\fP
 +for details). This value is added to the normal letter spacing. Negative
 +values are allowed.
 +.sp
 +Default: 0.
++.TP
++.B \fB\-\-video\-osd=<yes|no>\fP
++Enabled OSD rendering on the video window (default: yes). This can be used
++in situations where terminal OSD is preferred. If you just want to disable
++all OSD rendering, use \fB\-\-osd\-level=0\fP\&.
++.sp
++It does not affect subtitles or overlays created by scripts (in particular,
++the OSC needs to be disabled with \fB\-\-no\-osc\fP).
++.sp
++This option is somewhat experimental and could be replaced by another
++mechanism in the future.
 +.UNINDENT
 +.SS Screenshot
 +.INDENT 0.0
@@ -4663,11 +4868,22 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-term\-osd, \-\-no\-term\-osd\fP, \fB\-\-term\-osd=force\fP
-+Display OSD messages on the console when no video output is available.
-+Enabled by default.
++.B \fB\-\-term\-osd=<auto|no|force>\fP
++Control whether OSD messages are shown on the console when no video output
++is available (default: auto).
++.INDENT 7.0
++.TP
++.B auto
++use terminal OSD if no video output active
++.TP
++.B no
++disable terminal OSD
++.TP
++.B force
++use terminal OSD even if video output active
++.UNINDENT
 +.sp
-+\fBforce\fP enables terminal OSD even if a video window is created.
++The \fBauto\fP mode also enables terminal OSD if \fB\-\-video\-osd=no\fP was set.
 +.TP
 +.B \fB\-\-term\-osd\-bar\fP, \fB\-\-no\-term\-osd\-bar\fP
 +Enable printing a progress bar under the status line on the terminal.
@@ -5166,6 +5382,990 @@ index 0000000..fadcd48
 +.sp
 +Default: \fBno\fP
 +.UNINDENT
++.SS ALSA audio output options
++.INDENT 0.0
++.TP
++.B \fB\-\-alsa\-device=<device>\fP
++Deprecated, use \fB\-\-audio\-device\fP (requires \fBalsa/\fP prefix).
++.TP
++.B \fB\-\-alsa\-resample=yes\fP
++Enable ALSA resampling plugin. (This is disabled by default, because
++some drivers report incorrect audio delay in some cases.)
++.TP
++.B \fB\-\-alsa\-mixer\-device=<device>\fP
++Set the mixer device used with \fBao\-volume\fP (default: \fBdefault\fP).
++.TP
++.B \fB\-\-alsa\-mixer\-name=<name>\fP
++Set the name of the mixer element (default: \fBMaster\fP). This is for
++example \fBPCM\fP or \fBMaster\fP\&.
++.TP
++.B \fB\-\-alsa\-mixer\-index=<number>\fP
++Set the index of the mixer channel (default: 0). Consider the output of
++"\fBamixer scontrols\fP", then the index is the number that follows the
++name of the element.
++.TP
++.B \fB\-\-alsa\-non\-interleaved\fP
++Allow output of non\-interleaved formats (if the audio decoder uses
++this format). Currently disabled by default, because some popular
++ALSA plugins are utterly broken with non\-interleaved formats.
++.TP
++.B \fB\-\-alsa\-ignore\-chmap\fP
++Don\(aqt read or set the channel map of the ALSA device \- only request the
++required number of channels, and then pass the audio as\-is to it. This
++option most likely should not be used. It can be useful for debugging,
++or for static setups with a specially engineered ALSA configuration (in
++this case you should always force the same layout with \fB\-\-audio\-channels\fP,
++or it will work only for files which use the layout implicit to your
++ALSA device).
++.UNINDENT
++.SS OpenGL renderer options
++.sp
++The following video options are currently all specific to \fB\-\-vo=opengl\fP and
++\fB\-vo=opengl\-cb\fP only, which are the only VOs that implement them.
++.INDENT 0.0
++.TP
++.B \fB\-\-opengl\-dumb\-mode=<yes|no>\fP
++This mode is extremely restricted, and will disable most extended OpenGL
++features. This includes high quality scalers and custom shaders!
++.sp
++It is intended for hardware that does not support FBOs (including GLES,
++which supports it insufficiently), or to get some more performance out of
++bad or old hardware.
++.sp
++This mode is forced automatically if needed, and this option is mostly
++useful for debugging. It\(aqs also enabled automatically if nothing uses
++features which require FBOs.
++.sp
++This option might be silently removed in the future.
++.UNINDENT
++.sp
++\fB\-\-scale=<filter>\fP
++.INDENT 0.0
++.INDENT 3.5
++.INDENT 0.0
++.TP
++.B \fBbilinear\fP
++Bilinear hardware texture filtering (fastest, very low quality). This
++is the default for compatibility reasons.
++.TP
++.B \fBspline36\fP
++Mid quality and speed. This is the default when using \fBopengl\-hq\fP\&.
++.TP
++.B \fBlanczos\fP
++Lanczos scaling. Provides mid quality and speed. Generally worse than
++\fBspline36\fP, but it results in a slightly sharper image which is good
++for some content types. The number of taps can be controlled with
++\fBscale\-radius\fP, but is best left unchanged.
++.sp
++(This filter is an alias for \fBsinc\fP\-windowed \fBsinc\fP)
++.TP
++.B \fBewa_lanczos\fP
++Elliptic weighted average Lanczos scaling. Also known as Jinc.
++Relatively slow, but very good quality. The radius can be controlled
++with \fBscale\-radius\fP\&. Increasing the radius makes the filter sharper
++but adds more ringing.
++.sp
++(This filter is an alias for \fBjinc\fP\-windowed \fBjinc\fP)
++.TP
++.B \fBewa_lanczossharp\fP
++A slightly sharpened version of ewa_lanczos, preconfigured to use an
++ideal radius and parameter. If your hardware can run it, this is
++probably what you should use by default.
++.TP
++.B \fBmitchell\fP
++Mitchell\-Netravali. The \fBB\fP and \fBC\fP parameters can be set with
++\fB\-\-scale\-param1\fP and \fB\-\-scale\-param2\fP\&. This filter is very good at
++downscaling (see \fB\-\-dscale\fP).
++.TP
++.B \fBoversample\fP
++A version of nearest neighbour that (naively) oversamples pixels, so
++that pixels overlapping edges get linearly interpolated instead of
++rounded. This essentially removes the small imperfections and judder
++artifacts caused by nearest\-neighbour interpolation, in exchange for
++adding some blur. This filter is good at temporal interpolation, and
++also known as "smoothmotion" (see \fB\-\-tscale\fP).
++.TP
++.B \fBlinear\fP
++A \fB\-\-tscale\fP filter.
++.UNINDENT
++.sp
++There are some more filters, but most are not as useful. For a complete
++list, pass \fBhelp\fP as value, e.g.:
++.INDENT 0.0
++.INDENT 3.5
++.sp
++.nf
++.ft C
++mpv \-\-scale=help
++.ft P
++.fi
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.INDENT 0.0
++.TP
++.B \fB\-\-scale\-param1=<value>\fP, \fB\-\-scale\-param2=<value>\fP
++Set filter parameters. Ignored if the filter is not tunable. Currently,
++this affects the following filter parameters:
++.INDENT 7.0
++.TP
++.B bcspline
++Spline parameters (\fBB\fP and \fBC\fP). Defaults to 0.5 for both.
++.TP
++.B gaussian
++Scale parameter (\fBt\fP). Increasing this makes the result blurrier.
++Defaults to 1.
++.TP
++.B oversample
++Minimum distance to an edge before interpolation is used. Setting this
++to 0 will always interpolate edges, whereas setting it to 0.5 will
++never interpolate, thus behaving as if the regular nearest neighbour
++algorithm was used. Defaults to 0.0.
++.UNINDENT
++.TP
++.B \fB\-\-scale\-blur=<value>\fP
++Kernel scaling factor (also known as a blur factor). Decreasing this makes
++the result sharper, increasing it makes it blurrier (default 0). If set to
++0, the kernel\(aqs preferred blur factor is used. Note that setting this too
++low (eg. 0.5) leads to bad results. It\(aqs generally recommended to stick to
++values between 0.8 and 1.2.
++.TP
++.B \fB\-\-scale\-radius=<value>\fP
++Set radius for tunable filters, must be a float number between 0.5 and
++16.0. Defaults to the filter\(aqs preferred radius if not specified. Doesn\(aqt
++work for every scaler and VO combination.
++.sp
++Note that depending on filter implementation details and video scaling
++ratio, the radius that actually being used might be different (most likely
++being increased a bit).
++.TP
++.B \fB\-\-scale\-antiring=<value>\fP
++Set the antiringing strength. This tries to eliminate ringing, but can
++introduce other artifacts in the process. Must be a float number between
++0.0 and 1.0. The default value of 0.0 disables antiringing entirely.
++.sp
++Note that this doesn\(aqt affect the special filters \fBbilinear\fP and
++\fBbicubic_fast\fP\&.
++.TP
++.B \fB\-\-scale\-window=<window>\fP
++(Advanced users only) Choose a custom windowing function for the kernel.
++Defaults to the filter\(aqs preferred window if unset. Use
++\fB\-\-scale\-window=help\fP to get a list of supported windowing functions.
++.TP
++.B \fB\-\-scale\-wparam=<window>\fP
++(Advanced users only) Configure the parameter for the window function given
++by \fB\-\-scale\-window\fP\&. Ignored if the window is not tunable. Currently,
++this affects the following window parameters:
++.INDENT 7.0
++.TP
++.B kaiser
++Window parameter (alpha). Defaults to 6.33.
++.TP
++.B blackman
++Window parameter (alpha). Defaults to 0.16.
++.TP
++.B gaussian
++Scale parameter (t). Increasing this makes the window wider. Defaults
++to 1.
++.UNINDENT
++.TP
++.B \fB\-\-scaler\-lut\-size=<4..10>\fP
++Set the size of the lookup texture for scaler kernels (default: 6). The
++actual size of the texture is \fB2^N\fP for an option value of \fBN\fP\&. So the
++lookup texture with the default setting uses 64 samples.
++.sp
++All weights are linearly interpolated from those samples, so increasing
++the size of lookup table might improve the accuracy of scaler.
++.TP
++.B \fB\-\-scaler\-resizes\-only\fP
++Disable the scaler if the video image is not resized. In that case,
++\fBbilinear\fP is used instead of whatever is set with \fB\-\-scale\fP\&. Bilinear
++will reproduce the source image perfectly if no scaling is performed.
++Enabled by default. Note that this option never affects \fB\-\-cscale\fP\&.
++.TP
++.B \fB\-\-opengl\-pbo\fP
++Enable use of PBOs. On some drivers this can be faster, especially if the
++source video size is huge (e.g. so called "4K" video). On other drivers it
++might be slower or cause latency issues.
++.sp
++In theory, this can sometimes lead to sporadic and temporary image
++corruption (because reupload is not retried when it fails).
++.TP
++.B \fB\-\-dither\-depth=<N|no|auto>\fP
++Set dither target depth to N. Default: no.
++.INDENT 7.0
++.TP
++.B no
++Disable any dithering done by mpv.
++.TP
++.B auto
++Automatic selection. If output bit depth cannot be detected, 8 bits per
++component are assumed.
++.TP
++.B 8
++Dither to 8 bit output.
++.UNINDENT
++.sp
++Note that the depth of the connected video display device cannot be
++detected. Often, LCD panels will do dithering on their own, which conflicts
++with this option and leads to ugly output.
++.TP
++.B \fB\-\-dither\-size\-fruit=<2\-8>\fP
++Set the size of the dither matrix (default: 6). The actual size of the
++matrix is \fB(2^N) x (2^N)\fP for an option value of \fBN\fP, so a value of 6
++gives a size of 64x64. The matrix is generated at startup time, and a large
++matrix can take rather long to compute (seconds).
++.sp
++Used in \fB\-\-dither=fruit\fP mode only.
++.TP
++.B \fB\-\-dither=<fruit|ordered|no>\fP
++Select dithering algorithm (default: fruit). (Normally, the
++\fB\-\-dither\-depth\fP option controls whether dithering is enabled.)
++.TP
++.B \fB\-\-temporal\-dither\fP
++Enable temporal dithering. (Only active if dithering is enabled in
++general.) This changes between 8 different dithering patterns on each frame
++by changing the orientation of the tiled dithering matrix. Unfortunately,
++this can lead to flicker on LCD displays, since these have a high reaction
++time.
++.TP
++.B \fB\-\-temporal\-dither\-period=<1\-128>\fP
++Determines how often the dithering pattern is updated when
++\fB\-\-temporal\-dither\fP is in use. 1 (the default) will update on every video
++frame, 2 on every other frame, etc.
++.TP
++.B \fB\-\-opengl\-debug\fP
++Check for OpenGL errors, i.e. call \fBglGetError()\fP\&. Also, request a
++debug OpenGL context (which does nothing with current graphics drivers
++as of this writing).
++.TP
++.B \fB\-\-interpolation\fP
++Reduce stuttering caused by mismatches in the video fps and display refresh
++rate (also known as judder).
++.sp
++\fBWARNING:\fP
++.INDENT 7.0
++.INDENT 3.5
++This requires setting the \fB\-\-video\-sync\fP option to one
++of the \fBdisplay\-\fP modes, or it will be silently disabled.
++This was not required before mpv 0.14.0.
++.UNINDENT
++.UNINDENT
++.sp
++This essentially attempts to interpolate the missing frames by convoluting
++the video along the temporal axis. The filter used can be controlled using
++the \fB\-\-tscale\fP setting.
++.sp
++Note that this relies on vsync to work, see \fB\-\-opengl\-swapinterval\fP for
++more information.
++.TP
++.B \fB\-\-opengl\-swapinterval=<n>\fP
++Interval in displayed frames between two buffer swaps. 1 is equivalent to
++enable VSYNC, 0 to disable VSYNC. Defaults to 1 if not specified.
++.sp
++Note that this depends on proper OpenGL vsync support. On some platforms
++and drivers, this only works reliably when in fullscreen mode. It may also
++require driver\-specific hacks if using multiple monitors, to ensure mpv
++syncs to the right one. Compositing window managers can also lead to bad
++results, as can missing or incorrect display FPS information (see
++\fB\-\-display\-fps\fP).
++.TP
++.B \fB\-\-dscale=<filter>\fP
++Like \fB\-\-scale\fP, but apply these filters on downscaling instead. If this
++option is unset, the filter implied by \fB\-\-scale\fP will be applied.
++.TP
++.B \fB\-\-cscale=<filter>\fP
++As \fB\-\-scale\fP, but for interpolating chroma information. If the image is
++not subsampled, this option is ignored entirely.
++.TP
++.B \fB\-\-tscale=<filter>\fP
++The filter used for interpolating the temporal axis (frames). This is only
++used if \fB\-\-interpolation\fP is enabled. The only valid choices for
++\fB\-\-tscale\fP are separable convolution filters (use \fB\-\-tscale=help\fP to
++get a list). The default is \fBmitchell\fP\&.
++.sp
++Note that the maximum supported filter radius is currently 3, due to
++limitations in the number of video textures that can be loaded
++simultaneously.
++.TP
++.B \fB\-\-tscale\-clamp\fP
++Clamp the \fB\-\-tscale\fP filter kernel\(aqs value range to [0\-1]. This reduces
++excessive ringing artifacts in the temporal domain (which typically
++manifest themselves as short flashes or fringes of black, mostly around
++moving edges) in exchange for potentially adding more blur.
++.TP
++.B \fB\-\-interpolation\-threshold=<0..1,\-1>\fP
++Threshold below which frame ratio interpolation gets disabled (default:
++\fB0.0001\fP). This is calculated as \fBabs(disphz/vfps \- 1) < threshold\fP,
++where \fBvfps\fP is the speed\-adjusted video FPS, and \fBdisphz\fP the
++display refresh rate. (The speed\-adjusted video FPS is roughly equal to
++the normal video FPS, but with slowdown and speedup applied. This matters
++if you use \fB\-\-video\-sync=display\-resample\fP to make video run synchronously
++to the display FPS, or if you change the \fBspeed\fP property.)
++.sp
++The default is intended to almost always enable interpolation if the
++playback rate is even slightly different from the display refresh rate. But
++note that if you use e.g. \fB\-\-video\-sync=display\-vdrop\fP, small deviations
++in the rate can disable interpolation and introduce a discontinuity every
++other minute.
++.sp
++Set this to \fB\-1\fP to disable this logic.
++.TP
++.B \fB\-\-dscale\-radius\fP, \fB\-\-cscale\-radius\fP, \fB\-\-tscale\-radius\fP, etc.
++Set filter parameters for \fB\-\-dscale\fP, \fB\-\-cscale\fP and \fB\-\-tscale\fP,
++respectively.
++.sp
++See the corresponding options for \fB\-\-scale\fP\&.
++.TP
++.B \fB\-\-linear\-scaling\fP
++Scale in linear light. It should only be used with a
++\fB\-\-opengl\-fbo\-format\fP that has at least 16 bit precision.
++.TP
++.B \fB\-\-correct\-downscaling\fP
++When using convolution based filters, extend the filter size when
++downscaling. Increases quality, but reduces performance while downscaling.
++.sp
++This will perform slightly sub\-optimally for anamorphic video (but still
++better than without it) since it will extend the size to match only the
++milder of the scale factors between the axes.
++.TP
++.B \fB\-\-opengl\-shaders=<files>\fP
++Custom GLSL hooks. These are a flexible way to add custom fragment shaders,
++which can be injected at almost arbitrary points in the rendering pipeline,
++and access all previous intermediate textures.
++.INDENT 7.0
++.INDENT 3.5
++.IP "Warning"
++.sp
++The syntax is not stable yet and may change any time.
++.UNINDENT
++.UNINDENT
++.sp
++The general syntax of a user shader looks like this:
++.INDENT 7.0
++.INDENT 3.5
++.sp
++.nf
++.ft C
++//!METADATA ARGS...
++//!METADATA ARGS...
++
++vec4 hook() {
++   ...
++   return something;
++}
++
++//!METADATA ARGS...
++//!METADATA ARGS...
++
++\&...
++.ft P
++.fi
++.UNINDENT
++.UNINDENT
++.sp
++Each block of metadata, along with the non\-metadata lines after it, defines
++a single pass. Each pass can set the following metadata:
++.INDENT 7.0
++.TP
++.B HOOK <name> (required)
++The texture which to hook into. May occur multiple times within a
++metadata block, up to a predetermined limit. See below for a list of
++hookable textures.
++.TP
++.B BIND <name>
++Loads a texture and makes it available to the pass, and sets up macros
++to enable accessing it. See below for a list of set macros. By default,
++no textures are bound. The special name HOOKED can be used to refer to
++the texture that triggered this pass.
++.TP
++.B SAVE <name>
++Gives the name of the texture to save the result of this pass into. By
++default, this is set to the special name HOOKED which has the effect of
++overwriting the hooked texture.
++.TP
++.B WIDTH <szexpr>, HEIGHT <szexpr>
++Specifies the size of the resulting texture for this pass. \fBszexpr\fP
++refers to an expression in RPN (reverse polish notation), using the
++operators + \- * / > < !, floating point literals, and references to
++sizes of existing texture and OUTPUT (such as MAIN.width or
++CHROMA.height). By default, these are set to HOOKED.w and HOOKED.h,
++respectively.
++.TP
++.B WHEN <szexpr>
++Specifies a condition that needs to be true (non\-zero) for the shader
++stage to be evaluated. If it fails, it will silently be omitted. (Note
++that a shader stage like this which has a dependency on an optional
++hook point can still cause that hook point to be saved, which has some
++minor overhead)
++.TP
++.B OFFSET ox oy
++Indicates a pixel shift (offset) introduced by this pass. These pixel
++offsets will be accumulated and corrected during the next scaling pass
++(\fBcscale\fP or \fBscale\fP). The default values are 0 0 which correspond
++to no shift. Note that offsets are ignored when not overwriting the
++hooked texture.
++.TP
++.B COMPONENTS n
++Specifies how many components of this pass\(aqs output are relevant and
++should be stored in the texture, up to 4 (rgba). By default, this value
++is equal to the number of components in HOOKED.
++.UNINDENT
++.sp
++Each bound texture (via \fBBIND\fP) will make available the following
++definitions to that shader pass, where NAME is the name of the bound
++texture:
++.INDENT 7.0
++.TP
++.B vec4 NAME_tex(vec2 pos)
++The sampling function to use to access the texture at a certain spot
++(in texture coordinate space, range [0,1]). This takes care of any
++necessary normalization conversions.
++.TP
++.B vec4 NAME_texOff(vec2 offset)
++Sample the texture at a certain offset in pixels. This works like
++NAME_tex but additionally takes care of necessary rotations, so that
++sampling at e.g. vec2(\-1,0) is always one pixel to the left.
++.TP
++.B vec2 NAME_pos
++The local texture coordinate of that texture, range [0,1].
++.TP
++.B vec2 NAME_size
++The (rotated) size in pixels of the texture.
++.TP
++.B mat2 NAME_rot
++The rotation matrix associated with this texture. (Rotates pixel space
++to texture coordinates)
++.TP
++.B vec2 NAME_pt
++The (unrotated) size of a single pixel, range [0,1].
++.TP
++.B sampler NAME_raw
++The raw bound texture itself. The use of this should be avoided unless
++absolutely necessary.
++.UNINDENT
++.sp
++In addition to these parameters, the following uniforms are also globally
++available:
++.INDENT 7.0
++.TP
++.B float random
++A random number in the range [0\-1], different per frame.
++.TP
++.B int frame
++A simple count of frames rendered, increases by one per frame and never
++resets (regardless of seeks).
++.TP
++.B vec2 image_size
++The size in pixels of the input image.
++.TP
++.B vec2 target_size
++The size in pixels of the visible part of the scaled (and possibly
++cropped) image.
++.UNINDENT
++.sp
++Internally, vo_opengl may generate any number of the following textures.
++Whenever a texture is rendered and saved by vo_opengl, all of the passes
++that have hooked into it will run, in the order they were added by the
++user. This is a list of the legal hook points:
++.INDENT 7.0
++.TP
++.B RGB, LUMA, CHROMA, ALPHA, XYZ (resizable)
++Source planes (raw). Which of these fire depends on the image format of
++the source.
++.TP
++.B CHROMA_SCALED, ALPHA_SCALED (fixed)
++Source planes (upscaled). These only fire on subsampled content.
++.TP
++.B NATIVE (resizable)
++The combined image, in the source colorspace, before conversion to RGB.
++.TP
++.B MAINPRESUB (resizable)
++The image, after conversion to RGB, but before
++\fB\-\-blend\-subtitles=video\fP is applied.
++.TP
++.B MAIN (resizable)
++The main image, after conversion to RGB but before upscaling.
++.TP
++.B LINEAR (fixed)
++Linear light image, before scaling. This only fires when
++\fB\-\-linear\-scaling\fP is in effect.
++.TP
++.B SIGMOID (fixed)
++Sigmoidized light, before scaling. This only fires when
++\fB\-\-sigmoid\-upscaling\fP is in effect.
++.TP
++.B PREKERNEL (fixed)
++The image immediately before the scaler kernel runs.
++.TP
++.B POSTKERNEL (fixed)
++The image immediately after the scaler kernel runs.
++.TP
++.B SCALED (fixed)
++The final upscaled image, before color management.
++.TP
++.B OUTPUT (fixed)
++The final output image, after color management but before dithering and
++drawing to screen.
++.UNINDENT
++.sp
++Only the textures labelled with \fBresizable\fP may be transformed by the
++pass. When overwriting a texture marked \fBfixed\fP, the WIDTH, HEIGHT and
++OFFSET must be left at their default values.
++.TP
++.B \fB\-\-deband\fP
++Enable the debanding algorithm. This greatly reduces the amount of visible
++banding, blocking and other quantization artifacts, at the expensive of
++very slightly blurring some of the finest details. In practice, it\(aqs
++virtually always an improvement \- the only reason to disable it would be
++for performance.
++.TP
++.B \fB\-\-deband\-iterations=<1..16>\fP
++The number of debanding steps to perform per sample. Each step reduces a
++bit more banding, but takes time to compute. Note that the strength of each
++step falls off very quickly, so high numbers (>4) are practically useless.
++(Default 1)
++.TP
++.B \fB\-\-deband\-threshold=<0..4096>\fP
++The debanding filter\(aqs cut\-off threshold. Higher numbers increase the
++debanding strength dramatically but progressively diminish image details.
++(Default 64)
++.TP
++.B \fB\-\-deband\-range=<1..64>\fP
++The debanding filter\(aqs initial radius. The radius increases linearly for
++each iteration. A higher radius will find more gradients, but a lower
++radius will smooth more aggressively. (Default 16)
++.sp
++If you increase the \fB\-\-deband\-iterations\fP, you should probably decrease
++this to compensate.
++.TP
++.B \fB\-\-deband\-grain=<0..4096>\fP
++Add some extra noise to the image. This significantly helps cover up
++remaining quantization artifacts. Higher numbers add more noise. (Default
++48)
++.TP
++.B \fB\-\-sigmoid\-upscaling\fP
++When upscaling, use a sigmoidal color transform to avoid emphasizing
++ringing artifacts. This also implies \fB\-\-linear\-scaling\fP\&.
++.TP
++.B \fB\-\-sigmoid\-center\fP
++The center of the sigmoid curve used for \fB\-\-sigmoid\-upscaling\fP, must be a
++float between 0.0 and 1.0. Defaults to 0.75 if not specified.
++.TP
++.B \fB\-\-sigmoid\-slope\fP
++The slope of the sigmoid curve used for \fB\-\-sigmoid\-upscaling\fP, must be a
++float between 1.0 and 20.0. Defaults to 6.5 if not specified.
++.TP
++.B \fB\-\-sharpen=<value>\fP
++If set to a value other than 0, enable an unsharp masking filter. Positive
++values will sharpen the image (but add more ringing and aliasing). Negative
++values will blur the image. If your GPU is powerful enough, consider
++alternatives like the \fBewa_lanczossharp\fP scale filter, or the
++\fB\-\-scale\-blur\fP option.
++.TP
++.B \fB\-\-opengl\-glfinish\fP
++Call \fBglFinish()\fP before and after swapping buffers (default: disabled).
++Slower, but might improve results when doing framedropping. Can completely
++ruin performance. The details depend entirely on the OpenGL driver.
++.TP
++.B \fB\-\-opengl\-waitvsync\fP
++Call \fBglXWaitVideoSyncSGI\fP after each buffer swap (default: disabled).
++This may or may not help with video timing accuracy and frame drop. It\(aqs
++possible that this makes video output slower, or has no effect at all.
++.sp
++X11/GLX only.
++.TP
++.B \fB\-\-opengl\-vsync\-fences=<N>\fP
++Synchronize the CPU to the Nth past frame using the \fBGL_ARB_sync\fP
++extension. A value of 0 disables this behavior (default). A value of 1
++means it will synchronize to the current frame after rendering it. Like
++\fB\-\-glfinish\fP and \fB\-\-waitvsync\fP, this can lower or ruin performance. Its
++advantage is that it can span multiple frames, and effectively limit the
++number of frames the GPU queues ahead (which also has an influence on
++vsync).
++.TP
++.B \fB\-\-opengl\-dwmflush=<no|windowed|yes|auto>\fP
++Calls \fBDwmFlush\fP after swapping buffers on Windows (default: auto). It
++also sets \fBSwapInterval(0)\fP to ignore the OpenGL timing. Values are: no
++(disabled), windowed (only in windowed mode), yes (also in full screen).
++.sp
++The value \fBauto\fP will try to determine whether the compositor is active,
++and calls \fBDwmFlush\fP only if it seems to be.
++.sp
++This may help to get more consistent frame intervals, especially with
++high\-fps clips \- which might also reduce dropped frames. Typically, a value
++of \fBwindowed\fP should be enough, since full screen may bypass the DWM.
++.sp
++Windows only.
++.TP
++.B \fB\-\-opengl\-dcomposition=<yes|no>\fP
++Allows DirectComposition when using the ANGLE backend (default: yes).
++DirectComposition implies flip\-model presentation, which can improve
++rendering efficiency on Windows 8+ by avoiding a copy of the video frame.
++mpv uses it by default where possible, but it can cause poor behaviour with
++some drivers, such as a black screen or graphical corruption when leaving
++full\-screen mode. Use "no" to disable it.
++.sp
++Windows with ANGLE only.
++.TP
++.B \fB\-\-opengl\-sw\fP
++Continue even if a software renderer is detected.
++.TP
++.B \fB\-\-opengl\-backend=<sys>\fP
++The value \fBauto\fP (the default) selects the windowing backend. You can
++also pass \fBhelp\fP to get a complete list of compiled in backends (sorted
++by autoprobe order).
++.INDENT 7.0
++.TP
++.B auto
++auto\-select (default)
++.TP
++.B cocoa
++Cocoa/OS X
++.TP
++.B win
++Win32/WGL
++.TP
++.B angle
++Direct3D11 through the OpenGL ES translation layer ANGLE. This supports
++almost everything the \fBwin\fP backend does (if the ANGLE build is new
++enough).
++.TP
++.B dxinterop (experimental)
++Win32, using WGL for rendering and Direct3D 9Ex for presentation. Works
++on Nvidia and AMD. Newer Intel chips with the latest drivers may also
++work.
++.TP
++.B x11
++X11/GLX
++.TP
++.B wayland
++Wayland/EGL
++.TP
++.B drm
++DRM/EGL (\fBdrm\-egl\fP is a deprecated alias)
++.TP
++.B x11egl
++X11/EGL
++.TP
++.B mali\-fbdev
++Direct fbdev/EGL support on some ARM/MALI devices.
++.UNINDENT
++.TP
++.B \fB\-\-opengl\-es=<mode>\fP
++Select whether to use GLES:
++.INDENT 7.0
++.TP
++.B yes
++Try to prefer ES over Desktop GL
++.TP
++.B no
++Try to prefer desktop GL over ES
++.TP
++.B auto
++Use the default for each backend (default)
++.UNINDENT
++.TP
++.B \fB\-\-opengl\-fbo\-format=<fmt>\fP
++Selects the internal format of textures used for FBOs. The format can
++influence performance and quality of the video output. \fBfmt\fP can be one
++of: rgb8, rgb10, rgb10_a2, rgb16, rgb16f, rgb32f, rgba12, rgba16, rgba16f,
++rgba32f. Default: \fBauto\fP, which maps to rgba16 on desktop GL, and rgba16f
++or rgb10_a2 on GLES (e.g. ANGLE), unless GL_EXT_texture_norm16 is
++available.
++.TP
++.B \fB\-\-opengl\-gamma=<0.1..2.0>\fP
++Set a gamma value (default: 1.0). If gamma is adjusted in other ways (like
++with the \fB\-\-gamma\fP option or key bindings and the \fBgamma\fP property),
++the value is multiplied with the other gamma value.
++.sp
++Recommended values based on the environmental brightness:
++.INDENT 7.0
++.TP
++.B 1.0
++Brightly illuminated (default)
++.TP
++.B 0.9
++Slightly dim
++.TP
++.B 0.8
++Pitch black room
++.UNINDENT
++.sp
++NOTE: Typical movie content (Blu\-ray etc.) already contains a gamma drop of
++about 0.8, so specifying it here as well will result in even darker
++image than intended!
++.TP
++.B \fB\-\-gamma\-auto\fP
++Automatically corrects the gamma value depending on ambient lighting
++conditions (adding a gamma boost for dark rooms).
++.sp
++With ambient illuminance of 64lux, mpv will pick the 1.0 gamma value (no
++boost), and slightly increase the boost up until 0.8 for 16lux.
++.sp
++NOTE: Only implemented on OS X.
++.TP
++.B \fB\-\-target\-prim=<value>\fP
++Specifies the primaries of the display. Video colors will be adapted to
++this colorspace when ICC color management is not being used. Valid values
++are:
++.INDENT 7.0
++.TP
++.B auto
++Disable any adaptation (default)
++.TP
++.B bt.470m
++ITU\-R BT.470 M
++.TP
++.B bt.601\-525
++ITU\-R BT.601 (525\-line SD systems, eg. NTSC), SMPTE 170M/240M
++.TP
++.B bt.601\-625
++ITU\-R BT.601 (625\-line SD systems, eg. PAL/SECAM), ITU\-R BT.470 B/G
++.TP
++.B bt.709
++ITU\-R BT.709 (HD), IEC 61966\-2\-4 (sRGB), SMPTE RP177 Annex B
++.TP
++.B bt.2020
++ITU\-R BT.2020 (UHD)
++.TP
++.B apple
++Apple RGB
++.TP
++.B adobe
++Adobe RGB (1998)
++.TP
++.B prophoto
++ProPhoto RGB (ROMM)
++.TP
++.B cie1931
++CIE 1931 RGB (not to be confused with CIE XYZ)
++.TP
++.B dci\-p3
++DCI\-P3 (Digital Cinema Colorspace), SMPTE RP431\-2
++.TP
++.B v\-gamut
++Panasonic V\-Gamut (VARICAM) primaries
++.UNINDENT
++.TP
++.B \fB\-\-target\-trc=<value>\fP
++Specifies the transfer characteristics (gamma) of the display. Video colors
++will be adjusted to this curve when ICC color management is not being used.
++Valid values are:
++.INDENT 7.0
++.TP
++.B auto
++Disable any adaptation (default)
++.TP
++.B bt.1886
++ITU\-R BT.1886 curve (assuming infinite contrast)
++.TP
++.B srgb
++IEC 61966\-2\-4 (sRGB)
++.TP
++.B linear
++Linear light output
++.TP
++.B gamma1.8
++Pure power curve (gamma 1.8), also used for Apple RGB
++.TP
++.B gamma2.2
++Pure power curve (gamma 2.2)
++.TP
++.B gamma2.8
++Pure power curve (gamma 2.8), also used for BT.470\-BG
++.TP
++.B prophoto
++ProPhoto RGB (ROMM)
++.TP
++.B st2084
++SMPTE ST2084 (HDR) curve, PQ OETF
++.TP
++.B std\-b67
++ARIB STD\-B67 (Hybrid Log\-gamma) curve, also known as BBC/NHK HDR
++.TP
++.B v\-log
++Panasonic V\-Log (VARICAM) curve
++.UNINDENT
++.sp
++\fBNOTE:\fP
++.INDENT 7.0
++.INDENT 3.5
++When using HDR output formats, mpv will encode to the specified
++curve but it will not set any HDMI flags or other signalling that might
++be required for the target device to correctly display the HDR signal.
++The user should independently guarantee this before using these signal
++formats for display.
++.UNINDENT
++.UNINDENT
++.TP
++.B \fB\-\-target\-brightness=<1..100000>\fP
++Specifies the display\(aqs approximate brightness in cd/m^2. When playing HDR
++content on a SDR display (or SDR content on an HDR display), video colors
++will be tone mapped to this target brightness using the algorithm specified
++by \fB\-\-hdr\-tone\-mapping\fP\&. The default of 250 cd/m^2 corresponds to a
++typical consumer display.
++.TP
++.B \fB\-\-hdr\-tone\-mapping=<value>\fP
++Specifies the algorithm used for tone\-mapping HDR images onto the target
++display. Valid values are:
++.INDENT 7.0
++.TP
++.B clip
++Hard\-clip any out\-of\-range values.
++.TP
++.B reinhard
++Reinhard tone mapping algorithm. Very simple continuous curve.
++Preserves dynamic range and peak but uses nonlinear contrast.
++.TP
++.B hable
++Similar to \fBreinhard\fP but preserves dark contrast better (slightly
++sigmoidal). Developed by John Hable for use in video games. (default)
++.TP
++.B gamma
++Fits a logarithmic transfer between the tone curves.
++.TP
++.B linear
++Linearly stretches the entire reference gamut to (a linear multiple of)
++the display.
++.UNINDENT
++.TP
++.B \fB\-\-tone\-mapping\-param=<value>\fP
++Set tone mapping parameters. Ignored if the tone mapping algorithm is not
++tunable. This affects the following tone mapping algorithms:
++.INDENT 7.0
++.TP
++.B reinhard
++Specifies the local contrast coefficient at the display peak. Defaults
++to 0.5, which means that in\-gamut values will be about half as bright
++as when clipping.
++.TP
++.B gamma
++Specifies the exponent of the function. Defaults to 1.8.
++.TP
++.B linear
++Specifies the scale factor to use while stretching. Defaults to 1.0.
++.UNINDENT
++.TP
++.B \fB\-\-icc\-profile=<file>\fP
++Load an ICC profile and use it to transform video RGB to screen output.
++Needs LittleCMS 2 support compiled in. This option overrides the
++\fB\-\-target\-prim\fP, \fB\-\-target\-trc\fP and \fB\-\-icc\-profile\-auto\fP options.
++.TP
++.B \fB\-\-icc\-profile\-auto\fP
++Automatically select the ICC display profile currently specified by the
++display settings of the operating system.
++.sp
++NOTE: On Windows, the default profile must be an ICC profile. WCS profiles
++are not supported.
++.TP
++.B \fB\-\-icc\-cache\-dir=<dirname>\fP
++Store and load the 3D LUTs created from the ICC profile in this directory.
++This can be used to speed up loading, since LittleCMS 2 can take a while to
++create a 3D LUT. Note that these files contain uncompressed LUTs. Their
++size depends on the \fB\-\-icc\-3dlut\-size\fP, and can be very big.
++.sp
++NOTE: This is not cleaned automatically, so old, unused cache files may
++stick around indefinitely.
++.TP
++.B \fB\-\-icc\-intent=<value>\fP
++Specifies the ICC intent used for the color transformation (when using
++\fB\-\-icc\-profile\fP).
++.INDENT 7.0
++.TP
++.B 0
++perceptual
++.TP
++.B 1
++relative colorimetric (default)
++.TP
++.B 2
++saturation
++.TP
++.B 3
++absolute colorimetric
++.UNINDENT
++.TP
++.B \fB\-\-icc\-3dlut\-size=<r>x<g>x<b>\fP
++Size of the 3D LUT generated from the ICC profile in each dimension.
++Default is 64x64x64. Sizes may range from 2 to 512.
++.TP
++.B \fB\-\-icc\-contrast=<0\-100000>\fP
++Specifies an upper limit on the target device\(aqs contrast ratio. This is
++detected automatically from the profile if possible, but for some profiles
++it might be missing, causing the contrast to be assumed as infinite. As a
++result, video may appear darker than intended. This only affects BT.1886
++content. The default of 0 means no limit.
++.TP
++.B \fB\-\-blend\-subtitles=<yes|video|no>\fP
++Blend subtitles directly onto upscaled video frames, before interpolation
++and/or color management (default: no). Enabling this causes subtitles to be
++affected by \fB\-\-icc\-profile\fP, \fB\-\-target\-prim\fP, \fB\-\-target\-trc\fP,
++\fB\-\-interpolation\fP, \fB\-\-opengl\-gamma\fP and \fB\-\-post\-shader\fP\&. It also
++increases subtitle performance when using \fB\-\-interpolation\fP\&.
++.sp
++The downside of enabling this is that it restricts subtitles to the visible
++portion of the video, so you can\(aqt have subtitles exist in the black
++margins below a video (for example).
++.sp
++If \fBvideo\fP is selected, the behavior is similar to \fByes\fP, but subs are
++drawn at the video\(aqs native resolution, and scaled along with the video.
++.sp
++\fBWARNING:\fP
++.INDENT 7.0
++.INDENT 3.5
++This changes the way subtitle colors are handled. Normally,
++subtitle colors are assumed to be in sRGB and color managed as
++such. Enabling this makes them treated as being in the video\(aqs
++color space instead. This is good if you want things like
++softsubbed ASS signs to match the video colors, but may cause
++SRT subtitles or similar to look slightly off.
++.UNINDENT
++.UNINDENT
++.TP
++.B \fB\-\-alpha=<blend\-tiles|blend|yes|no>\fP
++Decides what to do if the input has an alpha component.
++.INDENT 7.0
++.TP
++.B blend\-tiles
++Blend the frame against a 16x16 gray/white tiles background (default).
++.TP
++.B blend
++Blend the frame against a black background.
++.TP
++.B yes
++Try to create a framebuffer with alpha component. This only makes sense
++if the video contains alpha information (which is extremely rare). May
++not be supported on all platforms. If alpha framebuffers are
++unavailable, it silently falls back on a normal framebuffer. Note that
++if you set the \fB\-\-opengl\-fbo\-format\fP option to a non\-default value, a
++format with alpha must be specified, or this won\(aqt work.
++.TP
++.B no
++Ignore alpha component.
++.UNINDENT
++.TP
++.B \fB\-\-opengl\-rectangle\-textures\fP
++Force use of rectangle textures (default: no). Normally this shouldn\(aqt have
++any advantages over normal textures. Note that hardware decoding overrides
++this flag. Could be removed any time.
++.TP
++.B \fB\-\-background=<color>\fP
++Color used to draw parts of the mpv window not covered by video. See
++\fB\-\-osd\-color\fP option how colors are defined.
++.TP
++.B \fB\-\-opengl\-tex\-pad\-x\fP, \fB\-\-opengl\-tex\-pad\-y\fP
++Enlarge the video source textures by this many pixels. For debugging only
++(normally textures are sized exactly, but due to hardware decoding interop
++we may have to deal with additional padding, which can be tested with these
++options). Could be removed any time.
++.TP
++.B \fB\-\-opengl\-early\-flush=<yes|no>\fP
++Call \fBglFlush()\fP after rendering a frame and before attempting to display
++it (default: no). Can fix stuttering in some cases, in other cases probably
++causes it. For testing \- could be removed any time.
++.UNINDENT
 +.SS Miscellaneous
 +.INDENT 0.0
 +.TP
@@ -5432,19 +6632,18 @@ index 0000000..fadcd48
 +syntax is:
 +.INDENT 0.0
 +.TP
-+.B \fB\-\-ao=<driver1[:suboption1[=value]:...],driver2,...[,]>\fP
++.B \fB\-\-ao=<driver1,driver2,...[,]>\fP
 +Specify a priority list of audio output drivers to be used.
 +.UNINDENT
 +.sp
 +If the list has a trailing \(aq,\(aq, mpv will fall back on drivers not contained
-+in the list. Suboptions are optional and can mostly be omitted.
-+.sp
-+You can also set defaults for each driver. The defaults are applied before the
-+normal driver parameters.
++in the list.
 +.INDENT 0.0
 +.TP
 +.B \fB\-\-ao\-defaults=<driver1[:parameter1:parameter2:...],driver2,...>\fP
 +Set defaults for each driver.
++.sp
++Deprecated. No replacement.
 +.UNINDENT
 +.sp
 +\fBNOTE:\fP
@@ -5456,110 +6655,22 @@ index 0000000..fadcd48
 +may work (the latter being experimental).
 +.UNINDENT
 +.UNINDENT
-+.INDENT 0.0
-+.INDENT 3.5
-+.IP "Examples"
-+.INDENT 0.0
-+.IP \(bu 2
-+\fB\-\-ao=alsa,oss,\fP Try the ALSA driver, then the OSS driver, then others.
-+.IP \(bu 2
-+\fB\-\-ao=alsa:resample=yes:device=[plughw:0,3]\fP Lets ALSA resample and
-+sets the device\-name as first card, fourth device.
-+.UNINDENT
-+.UNINDENT
-+.UNINDENT
 +.sp
 +Available audio output drivers are:
 +.INDENT 0.0
 +.TP
 +.B \fBalsa\fP (Linux only)
 +ALSA audio output driver
-+.INDENT 7.0
-+.TP
-+.B \fBdevice=<device>\fP
-+Sets the device name. For ac3 output via S/PDIF, use an "iec958" or
-+"spdif" device, unless you really know how to set it correctly.
-+.TP
-+.B \fBresample=yes\fP
-+Enable ALSA resampling plugin. (This is disabled by default, because
-+some drivers report incorrect audio delay in some cases.)
-+.TP
-+.B \fBmixer\-device=<device>\fP
-+Set the mixer device used with \fB\-\-no\-softvol\fP (default: \fBdefault\fP).
-+.TP
-+.B \fBmixer\-name=<name>\fP
-+Set the name of the mixer element (default: \fBMaster\fP). This is for
-+example \fBPCM\fP or \fBMaster\fP\&.
-+.TP
-+.B \fBmixer\-index=<number>\fP
-+Set the index of the mixer channel (default: 0). Consider the output of
-+"\fBamixer scontrols\fP", then the index is the number that follows the
-+name of the element.
-+.TP
-+.B \fBnon\-interleaved\fP
-+Allow output of non\-interleaved formats (if the audio decoder uses
-+this format). Currently disabled by default, because some popular
-+ALSA plugins are utterly broken with non\-interleaved formats.
-+.TP
-+.B \fBignore\-chmap\fP
-+Don\(aqt read or set the channel map of the ALSA device \- only request the
-+required number of channels, and then pass the audio as\-is to it. This
-+option most likely should not be used. It can be useful for debugging,
-+or for static setups with a specially engineered ALSA configuration (in
-+this case you should always force the same layout with \fB\-\-audio\-channels\fP,
-+or it will work only for files which use the layout implicit to your
-+ALSA device).
-+.UNINDENT
 +.sp
-+\fBNOTE:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+MPlayer and mplayer2 required you to replace any \(aq,\(aq with \(aq.\(aq and
-+any \(aq:\(aq with \(aq=\(aq in the ALSA device name. mpv does not do this anymore.
-+Instead, quote the device name:
-+.INDENT 0.0
-+.INDENT 3.5
-+\fB\-\-ao=alsa:device=[plug:surround50]\fP
-+.UNINDENT
-+.UNINDENT
-+.sp
-+Note that the \fB[\fP and \fB]\fP simply quote the device name. With some
-+shells (like zsh), you have to quote the option string to prevent the
-+shell from interpreting the brackets instead of passing them to mpv.
-+.sp
-+Actually, you should use the \fB\-\-audio\-device\fP option, instead of
-+setting the device directly.
-+.UNINDENT
-+.UNINDENT
++See \fI\%ALSA audio output options\fP for options specific to this AO.
 +.sp
 +\fBWARNING:\fP
 +.INDENT 7.0
 +.INDENT 3.5
-+Handling of multichannel/surround audio changed in mpv 0.8.0 from the
-+behavior in MPlayer/mplayer2 and older versions of mpv.
-+.sp
-+The old behavior is that the player always downmixed to stereo by
-+default. The \fB\-\-audio\-channels\fP (or \fB\-\-channels\fP before that) option
-+had to be set to get multichannel audio. Then playing stereo would
-+use the \fBdefault\fP device (which typically allows multiple programs
-+to play audio at the same time via dmix), while playing anything with
-+more channels would open one of the hardware devices, e.g. via the
-+\fBsurround51\fP alias (typically with exclusive access). Whether the
-+player would use exclusive access or not would depend on the file
-+being played.
-+.sp
-+The new behavior since mpv 0.8.0 always enables multichannel audio,
-+i.e. \fB\-\-audio\-channels=auto\fP is the default. However, since ALSA
-+provides no good way to play multichannel audio in a non\-exclusive
-+way (without blocking other applications from using audio), the player
-+is restricted to the capabilities of the \fBdefault\fP device by default,
-+which means it supports only stereo and mono (at least with current
-+typical ALSA configurations). But if a hardware device is selected,
-+then multichannel audio will typically work.
-+.sp
-+The short story is: if you want multichannel audio with ALSA, use
-+\fB\-\-audio\-device\fP to select the device (use \fB\-\-audio\-device=help\fP
-+to get a list of all devices and their mpv name).
++To get multichannel/surround audio, use \fB\-\-audio\-channels=auto\fP\&. The
++default for this option is \fBauto\-safe\fP, which makes this audio otuput
++explicitly reject multichannel output, as there is no way to detect
++whether a certain channel layout is actually supported.
 +.sp
 +You can also try \fI\%using the upmix plugin\fP\&.
 +This setup enables multichannel audio on the \fBdefault\fP device
@@ -5570,41 +6681,46 @@ index 0000000..fadcd48
 +.TP
 +.B \fBoss\fP
 +OSS audio output driver
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fB<dsp\-device>\fP
++.B \fB\-\-oss\-device\fP
 +Sets the audio output device (default: \fB/dev/dsp\fP).
++Deprecated, use \fB\-\-audio\-device\fP\&.
 +.TP
-+.B \fB<mixer\-device>\fP
++.B \fB\-\-oss\-mixer\-device\fP
 +Sets the audio mixer device (default: \fB/dev/mixer\fP).
 +.TP
-+.B \fB<mixer\-channel>\fP
++.B \fB\-\-oss\-mixer\-channel\fP
 +Sets the audio mixer channel (default: \fBpcm\fP). Other valid values
 +include \fBvol, pcm, line\fP\&. For a complete list of options look for
 +\fBSOUND_DEVICE_NAMES\fP in \fB/usr/include/linux/soundcard.h\fP\&.
 +.UNINDENT
 +.TP
 +.B \fBjack\fP
-+JACK (Jack Audio Connection Kit) audio output driver
++JACK (Jack Audio Connection Kit) audio output driver.
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fBport=<name>\fP
++.B \fB\-\-jack\-port=<name>\fP
 +Connects to the ports with the given name (default: physical ports).
 +.TP
-+.B \fBname=<client>\fP
++.B \fB\-\-jack\-name=<client>\fP
 +Client name that is passed to JACK (default: \fBmpv\fP). Useful
 +if you want to have certain connections established automatically.
 +.TP
-+.B \fB(no\-)autostart\fP
++.B \fB\-\-jack\-autostart=<yes|no>\fP
 +Automatically start jackd if necessary (default: disabled). Note that
 +this tends to be unreliable and will flood stdout with server messages.
 +.TP
-+.B \fB(no\-)connect\fP
++.B \fB\-\-jack\-connect=<yes|no>\fP
 +Automatically create connections to output ports (default: enabled).
 +When enabled, the maximum number of output channels will be limited to
 +the number of available output ports.
 +.TP
-+.B \fBstd\-channel\-layout=waveext|any\fP
++.B \fB\-\-jack\-std\-channel\-layout=<waveext|any>\fP
 +Select the standard channel layout (default: waveext). JACK itself has no
 +notion of channel layouts (i.e. assigning which speaker a given
 +channel is supposed to map to) \- it just takes whatever the application
@@ -5624,9 +6740,11 @@ index 0000000..fadcd48
 +.sp
 +Automatically redirects to \fBcoreaudio_exclusive\fP when playing compressed
 +formats.
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fBchange\-physical\-format=<yes|no>\fP
++.B \fB\-\-coreaudio\-change\-physical\-format=<yes|no>\fP
 +Change the physical format to one similar to the requested audio format
 +(default: no). This has the advantage that multichannel audio output
 +will actually work. The disadvantage is that it will change the
@@ -5634,7 +6752,8 @@ index 0000000..fadcd48
 +setting in the \fBAudio Devices\fP dialog in the \fBAudio MIDI Setup\fP
 +utility. Note that this does not affect the selected speaker setup.
 +.TP
-+.B \fBexclusive\fP
++.B \fB\-\-coreaudio\-exclusive\fP
++Deprecated, use \fB\-\-audio\-exclusive\fP\&.
 +Use exclusive mode access. This merely redirects to
 +\fBcoreaudio_exclusive\fP, but should be preferred over using that AO
 +directly.
@@ -5657,20 +6776,23 @@ index 0000000..fadcd48
 +.TP
 +.B \fBpulse\fP
 +PulseAudio audio output driver
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fB[<host>][:<output sink>]\fP
++.B \fB\-\-pulse\-host=<host>\fP, \fB\-\-pulse\-sink=<sink>\fP
 +Specify the host and optionally output sink to use. An empty <host>
 +string uses a local connection, "localhost" uses network transfer
 +(most likely not what you want).
++Deprecated, use \fB\-\-audio\-device\fP\&.
 +.TP
-+.B \fBbuffer=<1\-2000|native>\fP
++.B \fB\-\-pulse\-buffer=<1\-2000|native>\fP
 +Set the audio buffer size in milliseconds. A higher value buffers
 +more data, and has a lower probability of buffer underruns. A smaller
 +value makes the audio stream react faster, e.g. to playback speed
 +changes. Default: 250.
 +.TP
-+.B \fBlatency\-hacks=<yes|no>\fP
++.B \fB\-\-pulse\-latency\-hacks=<yes|no>\fP
 +Enable hacks to workaround PulseAudio timing bugs (default: no). If
 +enabled, mpv will do elaborate latency calculations on its own. If
 +disabled, it will use PulseAudio automatically updated timing
@@ -5695,69 +6817,75 @@ index 0000000..fadcd48
 +are available.
 +.UNINDENT
 +.UNINDENT
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fBbuflen=<length>\fP
++.B \fB\-\-sdl\-buflen=<length>\fP
 +Sets the audio buffer length in seconds. Is used only as a hint by the
 +sound system. Playing a file with \fB\-v\fP will show the requested and
 +obtained exact buffer size. A value of 0 selects the sound system
 +default.
 +.TP
-+.B \fBbufcnt=<count>\fP
++.B \fB\-\-sdl\-bufcnt=<count>\fP
 +Sets the number of extra audio buffers in mpv. Usually needs not be
 +changed.
 +.UNINDENT
 +.TP
 +.B \fBnull\fP
-+Produces no audio output but maintains video playback speed. Use
-+\fB\-\-ao=null:untimed\fP for benchmarking.
++Produces no audio output but maintains video playback speed. You can use
++\fB\-\-ao=null \-\-ao\-null\-untimed\fP for benchmarking.
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fBuntimed\fP
++.B \fB\-\-ao\-null\-untimed\fP
 +Do not simulate timing of a perfect audio device. This means audio
 +decoding will go as fast as possible, instead of timing it to the
 +system clock.
 +.TP
-+.B \fBbuffer\fP
++.B \fB\-\-ao\-null\-buffer\fP
 +Simulated buffer length in seconds.
 +.TP
-+.B \fBoutburst\fP
++.B \fB\-\-ao\-null\-outburst\fP
 +Simulated chunk size in samples.
 +.TP
-+.B \fBspeed\fP
++.B \fB\-\-ao\-null\-speed\fP
 +Simulated audio playback speed as a multiplier. Usually, a real audio
 +device will not go exactly as fast as the system clock. It will deviate
 +just a little, and this option helps to simulate this.
 +.TP
-+.B \fBlatency\fP
++.B \fB\-\-ao\-null\-latency\fP
 +Simulated device latency. This is additional to EOF.
 +.TP
-+.B \fBbroken\-eof\fP
++.B \fB\-\-ao\-null\-broken\-eof\fP
 +Simulate broken audio drivers, which always add the fixed device
 +latency to the reported audio playback position.
 +.TP
-+.B \fBbroken\-delay\fP
++.B \fB\-\-ao\-null\-broken\-delay\fP
 +Simulate broken audio drivers, which don\(aqt report latency correctly.
 +.TP
-+.B \fBchannel\-layouts\fP
++.B \fB\-\-ao\-null\-channel\-layouts\fP
 +If not empty, this is a \fB,\fP separated list of channel layouts the
 +AO allows. This can be used to test channel layout selection.
 +.UNINDENT
 +.TP
 +.B \fBpcm\fP
 +Raw PCM/WAVE file writer audio output
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fB(no\-)waveheader\fP
++.B \fB\-\-ao\-pcm\-waveheader=<yes|no>\fP
 +Include or do not include the WAVE header (default: included). When
 +not included, raw PCM will be generated.
 +.TP
-+.B \fBfile=<filename>\fP
++.B \fB\-\-ao\-pcm\-file=<filename>\fP
 +Write the sound to \fB<filename>\fP instead of the default
 +\fBaudiodump.wav\fP\&. If \fBno\-waveheader\fP is specified, the default is
 +\fBaudiodump.pcm\fP\&.
 +.TP
-+.B \fB(no\-)append\fP
++.B \fB\-\-ao\-pcm\-append=<yes|no>\fP
 +Append to the file, instead of overwriting it. Always use this with the
 +\fBno\-waveheader\fP option \- with \fBwaveheader\fP it\(aqs broken, because
 +it will write a WAVE header every time the file is opened.
@@ -5774,17 +6902,22 @@ index 0000000..fadcd48
 +different.
 +.UNINDENT
 +.UNINDENT
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fBhost=<name/path>\fP
++.B \fB\-\-rsound\-host=<name/path>\fP
 +Set the address of the server (default: localhost).  Can be either a
 +network hostname for TCP connections or a Unix domain socket path
 +starting with \(aq/\(aq.
 +.TP
-+.B \fBport=<number>\fP
++.B \fB\-\-rsound\-port=<number>\fP
 +Set the TCP port used for connecting to the server (default: 12345).
 +Not used if connecting to a Unix domain socket.
 +.UNINDENT
++.sp
++These options are deprecated. If anyone cares enough, their functionality
++can be added back using \fB\-\-audio\-device\fP\&.
 +.TP
 +.B \fBsndio\fP
 +Audio output to the OpenBSD sndio sound system
@@ -5798,21 +6931,29 @@ index 0000000..fadcd48
 +.sp
 +(Note: only supports mono, stereo, 4.0, 5.1 and 7.1 channel
 +layouts.)
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fBdevice=<device>\fP
++.B \fB\-\-ao\-sndio\-device=<device>\fP
 +sndio device to use (default: \fB$AUDIODEVICE\fP, resp. \fBsnd0\fP).
++Deprecated, use \fB\-\-audio\-device\fP\&.
 +.UNINDENT
 +.TP
 +.B \fBwasapi\fP
 +Audio output to the Windows Audio Session API.
++.sp
++The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fBexclusive\fP
++.B \fB\-\-ao\-wasapi\-exclusive\fP
++Deprecated, use \fB\-\-audio\-exclusive\fP\&.
 +Requests exclusive, direct hardware access. By definition prevents
 +sound playback of any other program until mpv exits.
 +.TP
-+.B \fBdevice=<id>\fP
++.B \fB\-\-ao\-wasapi\-device=<id>\fP
++Deprecated, use \fB\-\-audio\-device\fP\&.
++.sp
 +Uses the requested endpoint instead of the system\(aqs default audio
 +endpoint. Both an ordinal number (0,1,2,...) and the GUID
 +String are valid; the GUID string is guaranteed to not change
@@ -5820,11 +6961,6 @@ index 0000000..fadcd48
 +.sp
 +Also supports searching active devices by human\-readable name. If more
 +than one device matches the name, refuses loading it.
-+.sp
-+This option is mostly deprecated in favour of the more general
-+\fB\-\-audio\-device\fP option. That said, \fB\-\-audio\-device=help\fP will give
-+a list of valid device GUIDs (prefixed with \fBwasapi/\fP), as well as
-+their human readable names, which should work here.
 +.UNINDENT
 +.UNINDENT
 +.SH VIDEO OUTPUT DRIVERS
@@ -5833,19 +6969,18 @@ index 0000000..fadcd48
 +syntax is:
 +.INDENT 0.0
 +.TP
-+.B \fB\-\-vo=<driver1[:suboption1[=value]:...],driver2,...[,]>\fP
++.B \fB\-\-vo=<driver1,driver2,...[,]>\fP
 +Specify a priority list of video output drivers to be used.
 +.UNINDENT
 +.sp
-+If the list has a trailing \(aq,\(aq, mpv will fall back on drivers not contained
-+in the list. Suboptions are optional and can mostly be omitted.
-+.sp
-+You can also set defaults for each driver. The defaults are applied before the
-+normal driver parameters.
++If the list has a trailing \fB,\fP, mpv will fall back on drivers not contained
++in the list.
 +.INDENT 0.0
 +.TP
 +.B \fB\-\-vo\-defaults=<driver1[:parameter1:parameter2:...],driver2,...>\fP
 +Set defaults for each driver.
++.sp
++Deprecated. No replacement.
 +.UNINDENT
 +.sp
 +\fBNOTE:\fP
@@ -5853,10 +6988,10 @@ index 0000000..fadcd48
 +.INDENT 3.5
 +See \fB\-\-vo=help\fP for a list of compiled\-in video output drivers.
 +.sp
-+The recommended output driver is \fB\-\-vo=opengl\-hq\fP\&. All other drivers are
-+for compatibility or special purposes. By default, \fB\-\-vo=opengl\fP is used,
-+but if that appears not to work, it fallback to other drivers (in the same
-+order as listed by \fB\-\-vo=help\fP).
++The recommended output driver is \fB\-\-vo=opengl\fP, which is the default. All
++other drivers are for compatibility or special purposes. If the default
++does not work, it will fallback to other drivers (in the same order as
++listed by \fB\-\-vo=help\fP).
 +.UNINDENT
 +.UNINDENT
 +.sp
@@ -5874,15 +7009,17 @@ index 0000000..fadcd48
 +This driver is for compatibility with old systems.
 +.UNINDENT
 +.UNINDENT
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBadaptor=<number>\fP
++.B \fB\-\-xv\-adaptor=<number>\fP
 +Select a specific XVideo adapter (check xvinfo results).
 +.TP
-+.B \fBport=<number>\fP
++.B \fB\-\-xv\-port=<number>\fP
 +Select a specific XVideo port.
 +.TP
-+.B \fBck=<cur|use|set>\fP
++.B \fB\-\-xv\-ck=<cur|use|set>\fP
 +Select the source from which the color key is taken (default: cur).
 +.INDENT 7.0
 +.TP
@@ -5897,9 +7034,12 @@ index 0000000..fadcd48
 +Same as use but also sets the supplied color key.
 +.UNINDENT
 +.TP
-+.B \fBck\-method=<man|bg|auto>\fP
++.B \fB\-\-xv\-ck\-method=<none|man|bg|auto>\fP
 +Sets the color key drawing method (default: man).
 +.INDENT 7.0
++.TP
++.B none
++Disables color\-keying.
 +.TP
 +.B man
 +Draw the color key manually (reduces flicker in some cases).
@@ -5911,14 +7051,11 @@ index 0000000..fadcd48
 +Let Xv draw the color key.
 +.UNINDENT
 +.TP
-+.B \fBcolorkey=<number>\fP
++.B \fB\-\-xv\-colorkey=<number>\fP
 +Changes the color key to an RGB value of your choice. \fB0x000000\fP is
 +black and \fB0xffffff\fP is white.
 +.TP
-+.B \fBno\-colorkey\fP
-+Disables color\-keying.
-+.TP
-+.B \fBbuffers=<number>\fP
++.B \fB\-\-xv\-buffers=<number>\fP
 +Number of image buffers to use for the internal ringbuffer (default: 2).
 +Increasing this will use more memory, but might help with the X server
 +not responding quickly enough if video FPS is close to or higher than
@@ -5949,21 +7086,23 @@ index 0000000..fadcd48
 +deprecated, and you should use the \fBvdpaupp\fP video filter instead.
 +.UNINDENT
 +.UNINDENT
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBsharpen=<\-1\-1>\fP
++.B \fB\-\-vo\-vdpau\-sharpen=<\-1\-1>\fP
 +(Deprecated. See note about \fBvdpaupp\fP\&.)
 +.sp
 +For positive values, apply a sharpening algorithm to the video, for
 +negative values a blurring algorithm (default: 0).
 +.TP
-+.B \fBdenoise=<0\-1>\fP
++.B \fB\-\-vo\-vdpau\-denoise=<0\-1>\fP
 +(Deprecated. See note about \fBvdpaupp\fP\&.)
 +.sp
 +Apply a noise reduction algorithm to the video (default: 0; no noise
 +reduction).
 +.TP
-+.B \fBdeint=<\-4\-4>\fP
++.B \fB\-\-vo\-vdpau\-deint=<\-4\-4>\fP
 +(Deprecated. See note about \fBvdpaupp\fP\&.)
 +.sp
 +Select deinterlacing mode (default: 0). In older versions (as well as
@@ -5993,20 +7132,20 @@ index 0000000..fadcd48
 +interpolation. Needs fast video hardware.
 +.UNINDENT
 +.TP
-+.B \fBchroma\-deint\fP
++.B \fB\-\-vo\-vdpau\-chroma\-deint\fP
 +(Deprecated. See note about \fBvdpaupp\fP\&.)
 +.sp
 +Makes temporal deinterlacers operate both on luma and chroma (default).
 +Use no\-chroma\-deint to solely use luma and speed up advanced
 +deinterlacing. Useful with slow video memory.
 +.TP
-+.B \fBpullup\fP
++.B \fB\-\-vo\-vdpau\-pullup\fP
 +(Deprecated. See note about \fBvdpaupp\fP\&.)
 +.sp
 +Try to apply inverse telecine, needs motion adaptive temporal
 +deinterlacing.
 +.TP
-+.B \fBhqscaling=<0\-9>\fP
++.B \fB\-\-vo\-vdpau\-hqscaling=<0\-9>\fP
 +(Deprecated. See note about \fBvdpaupp\fP\&.)
 +.INDENT 7.0
 +.TP
@@ -6017,7 +7156,7 @@ index 0000000..fadcd48
 +Apply high quality VDPAU scaling (needs capable hardware).
 +.UNINDENT
 +.TP
-+.B \fBfps=<number>\fP
++.B \fB\-\-vo\-vdpau\-fps=<number>\fP
 +Override autodetected display refresh rate value (the value is needed
 +for framedrop to allow video playback rates higher than display
 +refresh rate, and for vsync\-aware frame timing adjustments). Default 0
@@ -6025,7 +7164,7 @@ index 0000000..fadcd48
 +refresh rate in Hz and overrides the autodetected value. A negative
 +value disables all timing adjustment and framedrop logic.
 +.TP
-+.B \fBcomposite\-detect\fP
++.B \fB\-\-vo\-vdpau\-composite\-detect\fP
 +NVIDIA\(aqs current VDPAU implementation behaves somewhat differently
 +under a compositing window manager and does not give accurate frame
 +timing information. With this option enabled, the player tries to
@@ -6037,23 +7176,23 @@ index 0000000..fadcd48
 +hard playback speed limit even without the disabled logic. Enabled by
 +default, use \fBno\-composite\-detect\fP to disable.
 +.TP
-+.B \fBqueuetime_windowed=<number>\fP and \fBqueuetime_fs=<number>\fP
++.B \fB\-\-vo\-vdpau\-queuetime\-windowed=<number>\fP and \fBqueuetime\-fs=<number>\fP
 +Use VDPAU\(aqs presentation queue functionality to queue future video
 +frame changes at most this many milliseconds in advance (default: 50).
 +See below for additional information.
 +.TP
-+.B \fBoutput_surfaces=<2\-15>\fP
++.B \fB\-\-vo\-vdpau\-output\-surfaces=<2\-15>\fP
 +Allocate this many output surfaces to display video frames (default:
 +3). See below for additional information.
 +.TP
-+.B \fBcolorkey=<#RRGGBB|#AARRGGBB>\fP
++.B \fB\-\-vo\-vdpau\-colorkey=<#RRGGBB|#AARRGGBB>\fP
 +Set the VDPAU presentation queue background color, which in practice
 +is the colorkey used if VDPAU operates in overlay mode (default:
 +\fB#020507\fP, some shade of black). If the alpha component of this value
 +is 0, the default VDPAU colorkey will be used instead (which is usually
 +green).
 +.TP
-+.B \fBforce\-yuv\fP
++.B \fB\-\-vo\-vdpau\-force\-yuv\fP
 +Never accept RGBA input. This means mpv will insert a filter to convert
 +to a YUV format before the VO. Sometimes useful to force availability
 +of certain YUV\-only features, like video equalizer or deinterlacing.
@@ -6081,37 +7220,51 @@ index 0000000..fadcd48
 +driver implementation may also have limits on the length of maximum
 +queuing time or number of queued surfaces that work well or at all.
 +.TP
-+.B \fBdirect3d_shaders\fP (Windows only)
++.B \fBdirect3d\fP (Windows only)
 +Video output driver that uses the Direct3D interface.
 +.sp
 +\fBNOTE:\fP
 +.INDENT 7.0
 +.INDENT 3.5
 +This driver is for compatibility with systems that don\(aqt provide
-+proper OpenGL drivers.
++proper OpenGL drivers, and where ANGLE does not perform well.
 +.UNINDENT
 +.UNINDENT
++.sp
++\fBNOTE:\fP
++.INDENT 7.0
++.INDENT 3.5
++Before to 0.21.0, \fBdirect3d_shaders\fP and \fBdirect3d\fP were
++different, with \fBdirect3d\fP not using shader by default. Now
++both use shaders by default, and \fBdirect3d_shaders\fP is a
++deprecated alias. Use the \fB\-\-vo\-direct3d\-prefer\-stretchrect\fP
++or the \fB\-\-vo\-direct3d\-disable\-shaders\fP options to get the old
++behavior of \fBdirect3d\fP\&.
++.UNINDENT
++.UNINDENT
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBprefer\-stretchrect\fP
++.B \fB\-\-vo\-direct3d\-prefer\-stretchrect\fP
 +Use \fBIDirect3DDevice9::StretchRect\fP over other methods if possible.
 +.TP
-+.B \fBdisable\-stretchrect\fP
++.B \fB\-\-vo\-direct3d\-disable\-stretchrect\fP
 +Never render the video using \fBIDirect3DDevice9::StretchRect\fP\&.
 +.TP
-+.B \fBdisable\-textures\fP
++.B \fB\-\-vo\-direct3d\-disable\-textures\fP
 +Never render the video using D3D texture rendering. Rendering with
 +textures + shader will still be allowed. Add \fBdisable\-shaders\fP to
 +completely disable video rendering with textures.
 +.TP
-+.B \fBdisable\-shaders\fP
++.B \fB\-\-vo\-direct3d\-disable\-shaders\fP
 +Never use shaders when rendering video.
 +.TP
-+.B \fBonly\-8bit\fP
++.B \fB\-\-vo\-direct3d\-only\-8bit\fP
 +Never render YUV video with more than 8 bits per component.
 +Using this flag will force software conversion to 8\-bit.
 +.TP
-+.B \fBdisable\-texture\-align\fP
++.B \fB\-\-vo\-direct3d\-disable\-texture\-align\fP
 +Normally texture sizes are always aligned to 16. With this option
 +enabled, the video texture will always have exactly the same size as
 +the video itself.
@@ -6122,11 +7275,11 @@ index 0000000..fadcd48
 +actually need any of these for performance or proper operation.
 +.INDENT 7.0
 +.TP
-+.B \fBforce\-power\-of\-2\fP
++.B \fB\-\-vo\-direct3d\-force\-power\-of\-2\fP
 +Always force textures to power of 2, even if the device reports
 +non\-power\-of\-2 texture sizes as supported.
 +.TP
-+.B \fBtexture\-memory=<mode>\fP
++.B \fB\-\-vo\-direct3d\-texture\-memory=<mode>\fP
 +Only affects operation with shaders/texturing enabled, and (E)OSD.
 +Possible values:
 +.INDENT 7.0
@@ -6152,32 +7305,25 @@ index 0000000..fadcd48
 +locking.
 +.UNINDENT
 +.TP
-+.B \fBswap\-discard\fP
++.B \fB\-\-vo\-direct3d\-swap\-discard\fP
 +Use \fBD3DSWAPEFFECT_DISCARD\fP, which might be faster.
 +Might be slower too, as it must(?) clear every frame.
 +.TP
-+.B \fBexact\-backbuffer\fP
++.B \fB\-\-vo\-direct3d\-exact\-backbuffer\fP
 +Always resize the backbuffer to window size.
-+.UNINDENT
-+.TP
-+.B \fBdirect3d\fP (Windows only)
-+Same as \fBdirect3d_shaders\fP, but with the options \fBdisable\-textures\fP
-+and \fBdisable\-shaders\fP forced.
-+.sp
-+\fBNOTE:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+This driver is for compatibility with old systems.
-+.UNINDENT
 +.UNINDENT
 +.TP
 +.B \fBopengl\fP
 +OpenGL video output driver. It supports extended scaling methods, dithering
 +and color management.
 +.sp
-+By default, it tries to use fast and fail\-safe settings. Use the alias
-+\fBopengl\-hq\fP to use this driver with defaults set to high quality
-+rendering.
++See \fI\%OpenGL renderer options\fP for options specific to this VO.
++.sp
++By default, it tries to use fast and fail\-safe settings. Use the
++\fBopengl\-hq\fP profile to use this driver with defaults set to high
++quality rendering. (This profile is also the replacement for
++\fB\-\-vo=opengl\-hq\fP\&.) The profile can be applied with \fB\-\-profile=opengl\-hq\fP
++and its contents can be viewed with \fB\-\-show\-profile=opengl\-hq\fP\&.
 +.sp
 +Requires at least OpenGL 2.1.
 +.sp
@@ -6192,1050 +7338,12 @@ index 0000000..fadcd48
 +the hardware decoder APIs.
 +.sp
 +\fBopengl\fP makes use of FBOs by default. Sometimes you can achieve better
-+quality or performance by changing the \fBfbo\-format\fP suboption to
++quality or performance by changing the \fB\-\-opengl\-fbo\-format\fP option to
 +\fBrgb16f\fP, \fBrgb32f\fP or \fBrgb\fP\&. Known problems include Mesa/Intel not
 +accepting \fBrgb16\fP, Mesa sometimes not being compiled with float texture
 +support, and some OS X setups being very slow with \fBrgb16\fP but fast
-+with \fBrgb32f\fP\&. If you have problems, you can also try passing the
-+\fBdumb\-mode=yes\fP sub\-option.
-+.INDENT 7.0
-+.TP
-+.B \fBdumb\-mode=<yes|no>\fP
-+This mode is extremely restricted, and will disable most extended
-+OpenGL features. This includes high quality scalers and custom
-+shaders!
-+.sp
-+It is intended for hardware that does not support FBOs (including GLES,
-+which supports it insufficiently), or to get some more performance out
-+of bad or old hardware.
-+.sp
-+This mode is forced automatically if needed, and this option is mostly
-+useful for debugging. It\(aqs also enabled automatically if nothing uses
-+features which require FBOs.
-+.sp
-+This option might be silently removed in the future.
-+.UNINDENT
-+.sp
-+\fBscale=<filter>\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+.INDENT 0.0
-+.TP
-+.B \fBbilinear\fP
-+Bilinear hardware texture filtering (fastest, very low quality).
-+This is the default for compatibility reasons.
-+.TP
-+.B \fBspline36\fP
-+Mid quality and speed. This is the default when using \fBopengl\-hq\fP\&.
-+.TP
-+.B \fBlanczos\fP
-+Lanczos scaling. Provides mid quality and speed. Generally worse
-+than \fBspline36\fP, but it results in a slightly sharper image
-+which is good for some content types. The number of taps can be
-+controlled with \fBscale\-radius\fP, but is best left unchanged.
-+.sp
-+This filter corresponds to the old \fBlanczos3\fP alias if the default
-+radius is used, while \fBlanczos2\fP corresponds to a radius of 2.
-+.sp
-+(This filter is an alias for \fBsinc\fP\-windowed \fBsinc\fP)
-+.TP
-+.B \fBewa_lanczos\fP
-+Elliptic weighted average Lanczos scaling. Also known as Jinc.
-+Relatively slow, but very good quality. The radius can be
-+controlled with \fBscale\-radius\fP\&. Increasing the radius makes the
-+filter sharper but adds more ringing.
-+.sp
-+(This filter is an alias for \fBjinc\fP\-windowed \fBjinc\fP)
-+.TP
-+.B \fBewa_lanczossharp\fP
-+A slightly sharpened version of ewa_lanczos, preconfigured to use
-+an ideal radius and parameter. If your hardware can run it, this is
-+probably what you should use by default.
-+.TP
-+.B \fBmitchell\fP
-+Mitchell\-Netravali. The \fBB\fP and \fBC\fP parameters can be set with
-+\fBscale\-param1\fP and \fBscale\-param2\fP\&. This filter is very good at
-+downscaling (see \fBdscale\fP).
-+.TP
-+.B \fBoversample\fP
-+A version of nearest neighbour that (naively) oversamples pixels,
-+so that pixels overlapping edges get linearly interpolated instead
-+of rounded. This essentially removes the small imperfections and
-+judder artifacts caused by nearest\-neighbour interpolation, in
-+exchange for adding some blur. This filter is good at temporal
-+interpolation, and also known as "smoothmotion" (see \fBtscale\fP).
-+.TP
-+.B \fBlinear\fP
-+A \fBtscale\fP filter.
-+.TP
-+.B \fBcustom\fP
-+A user\-defined custom shader (see \fBscale\-shader\fP).
-+.UNINDENT
-+.sp
-+There are some more filters, but most are not as useful. For a complete
-+list, pass \fBhelp\fP as value, e.g.:
-+.INDENT 0.0
-+.INDENT 3.5
-+.sp
-+.nf
-+.ft C
-+mpv \-\-vo=opengl:scale=help
-+.ft P
-+.fi
-+.UNINDENT
-+.UNINDENT
-+.UNINDENT
-+.UNINDENT
-+.INDENT 7.0
-+.TP
-+.B \fBscale\-param1=<value>\fP, \fBscale\-param2=<value>\fP
-+Set filter parameters. Ignored if the filter is not tunable.
-+Currently, this affects the following filter parameters:
-+.INDENT 7.0
-+.TP
-+.B bcspline
-+Spline parameters (\fBB\fP and \fBC\fP). Defaults to 0.5 for both.
-+.TP
-+.B gaussian
-+Scale parameter (\fBt\fP). Increasing this makes the result blurrier.
-+Defaults to 1.
-+.TP
-+.B oversample
-+Minimum distance to an edge before interpolation is used. Setting
-+this to 0 will always interpolate edges, whereas setting it to 0.5
-+will never interpolate, thus behaving as if the regular nearest
-+neighbour algorithm was used. Defaults to 0.0.
-+.UNINDENT
-+.TP
-+.B \fBscale\-blur=<value>\fP
-+Kernel scaling factor (also known as a blur factor). Decreasing this
-+makes the result sharper, increasing it makes it blurrier (default 0).
-+If set to 0, the kernel\(aqs preferred blur factor is used. Note that
-+setting this too low (eg. 0.5) leads to bad results. It\(aqs generally
-+recommended to stick to values between 0.8 and 1.2.
-+.TP
-+.B \fBscale\-radius=<value>\fP
-+Set radius for filters listed below, must be a float number between 0.5
-+and 16.0. Defaults to the filter\(aqs preferred radius if not specified.
-+.INDENT 7.0
-+.INDENT 3.5
-+\fBsinc\fP and derivatives, \fBjinc\fP and derivatives, \fBgaussian\fP, \fBbox\fP and \fBtriangle\fP
-+.UNINDENT
-+.UNINDENT
-+.sp
-+Note that depending on filter implementation details and video scaling
-+ratio, the radius that actually being used might be different
-+(most likely being increased a bit).
-+.TP
-+.B \fBscale\-antiring=<value>\fP
-+Set the antiringing strength. This tries to eliminate ringing, but can
-+introduce other artifacts in the process. Must be a float number
-+between 0.0 and 1.0. The default value of 0.0 disables antiringing
-+entirely.
-+.sp
-+Note that this doesn\(aqt affect the special filters \fBbilinear\fP and
-+\fBbicubic_fast\fP\&.
-+.TP
-+.B \fBscale\-window=<window>\fP
-+(Advanced users only) Choose a custom windowing function for the kernel.
-+Defaults to the filter\(aqs preferred window if unset. Use
-+\fBscale\-window=help\fP to get a list of supported windowing functions.
-+.TP
-+.B \fBscale\-wparam=<window>\fP
-+(Advanced users only) Configure the parameter for the window function
-+given by \fBscale\-window\fP\&. Ignored if the window is not tunable.
-+Currently, this affects the following window parameters:
-+.INDENT 7.0
-+.TP
-+.B kaiser
-+Window parameter (alpha). Defaults to 6.33.
-+.TP
-+.B blackman
-+Window parameter (alpha). Defaults to 0.16.
-+.TP
-+.B gaussian
-+Scale parameter (t). Increasing this makes the window wider.
-+Defaults to 1.
-+.UNINDENT
-+.TP
-+.B \fBscaler\-lut\-size=<4..10>\fP
-+Set the size of the lookup texture for scaler kernels (default: 6).
-+The actual size of the texture is \fB2^N\fP for an option value of \fBN\fP\&.
-+So the lookup texture with the default setting uses 64 samples.
-+.sp
-+All weights are bilinearly interpolated from those samples, so
-+increasing the size of lookup table might improve the accuracy of
-+scaler.
-+.TP
-+.B \fBscaler\-resizes\-only\fP
-+Disable the scaler if the video image is not resized. In that case,
-+\fBbilinear\fP is used instead whatever is set with \fBscale\fP\&. Bilinear
-+will reproduce the source image perfectly if no scaling is performed.
-+Enabled by default. Note that this option never affects \fBcscale\fP\&.
-+.TP
-+.B \fBpbo\fP
-+Enable use of PBOs. On some drivers this can be faster, especially if
-+the source video size is huge (e.g. so called "4K" video). On other
-+drivers it might be slower or cause latency issues.
-+.sp
-+In theory, this can sometimes lead to sporadic and temporary image
-+corruption (because reupload is not retried when it fails).
-+.TP
-+.B \fBdither\-depth=<N|no|auto>\fP
-+Set dither target depth to N. Default: no.
-+.INDENT 7.0
-+.TP
-+.B no
-+Disable any dithering done by mpv.
-+.TP
-+.B auto
-+Automatic selection. If output bit depth cannot be detected,
-+8 bits per component are assumed.
-+.TP
-+.B 8
-+Dither to 8 bit output.
-+.UNINDENT
-+.sp
-+Note that the depth of the connected video display device cannot be
-+detected. Often, LCD panels will do dithering on their own, which
-+conflicts with \fBopengl\fP\(aqs dithering and leads to ugly output.
-+.TP
-+.B \fBdither\-size\-fruit=<2\-8>\fP
-+Set the size of the dither matrix (default: 6). The actual size of
-+the matrix is \fB(2^N) x (2^N)\fP for an option value of \fBN\fP, so a
-+value of 6 gives a size of 64x64. The matrix is generated at startup
-+time, and a large matrix can take rather long to compute (seconds).
-+.sp
-+Used in \fBdither=fruit\fP mode only.
-+.TP
-+.B \fBdither=<fruit|ordered|no>\fP
-+Select dithering algorithm (default: fruit). (Normally, the
-+\fBdither\-depth\fP option controls whether dithering is enabled.)
-+.TP
-+.B \fBtemporal\-dither\fP
-+Enable temporal dithering. (Only active if dithering is enabled in
-+general.) This changes between 8 different dithering patterns on each
-+frame by changing the orientation of the tiled dithering matrix.
-+Unfortunately, this can lead to flicker on LCD displays, since these
-+have a high reaction time.
-+.TP
-+.B \fBtemporal\-dither\-period=<1\-128>\fP
-+Determines how often the dithering pattern is updated when
-+\fBtemporal\-dither\fP is in use. 1 (the default) will update on every
-+video frame, 2 on every other frame, etc.
-+.TP
-+.B \fBdebug\fP
-+Check for OpenGL errors, i.e. call \fBglGetError()\fP\&. Also, request a
-+debug OpenGL context (which does nothing with current graphics drivers
-+as of this writing).
-+.TP
-+.B \fBinterpolation\fP
-+Reduce stuttering caused by mismatches in the video fps and display
-+refresh rate (also known as judder).
-+.sp
-+\fBWARNING:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+This requires setting the \fB\-\-video\-sync\fP option to one
-+of the \fBdisplay\-\fP modes, or it will be silently disabled.
-+This was not required before mpv 0.14.0.
-+.UNINDENT
-+.UNINDENT
-+.sp
-+This essentially attempts to interpolate the missing frames by
-+convoluting the video along the temporal axis. The filter used can be
-+controlled using the \fBtscale\fP setting.
-+.sp
-+Note that this relies on vsync to work, see \fBswapinterval\fP for more
-+information.
-+.TP
-+.B \fBswapinterval=<n>\fP
-+Interval in displayed frames between two buffer swaps.
-+1 is equivalent to enable VSYNC, 0 to disable VSYNC. Defaults to 1 if
-+not specified.
-+.sp
-+Note that this depends on proper OpenGL vsync support. On some platforms
-+and drivers, this only works reliably when in fullscreen mode. It may
-+also require driver\-specific hacks if using multiple monitors, to
-+ensure mpv syncs to the right one. Compositing window managers can
-+also lead to bad results, as can missing or incorrect display FPS
-+information (see \fB\-\-display\-fps\fP).
-+.TP
-+.B \fBdscale=<filter>\fP
-+Like \fBscale\fP, but apply these filters on downscaling instead. If this
-+option is unset, the filter implied by \fBscale\fP will be applied.
-+.TP
-+.B \fBcscale=<filter>\fP
-+As \fBscale\fP, but for interpolating chroma information. If the image
-+is not subsampled, this option is ignored entirely.
-+.TP
-+.B \fBtscale=<filter>\fP
-+The filter used for interpolating the temporal axis (frames). This is
-+only used if \fBinterpolation\fP is enabled. The only valid choices
-+for \fBtscale\fP are separable convolution filters (use \fBtscale=help\fP
-+to get a list). The default is \fBmitchell\fP\&.
-+.sp
-+Note that the maximum supported filter radius is currently 3, due to
-+limitations in the number of video textures that can be loaded
-+simultaneously.
-+.TP
-+.B \fBtscale\-clamp\fP
-+Clamp the \fBtscale\fP filter kernel\(aqs value range to [0\-1]. This reduces
-+excessive ringing artifacts in the temporal domain (which typically
-+manifest themselves as short flashes or fringes of black, mostly
-+around moving edges) in exchange for potentially adding more blur.
-+.TP
-+.B \fBinterpolation\-threshold=<0..1,\-1>\fP
-+Threshold below which frame ratio interpolation gets disabled (default:
-+\fB0.0001\fP). This is calculated as \fBabs(disphz/vfps \- 1) < threshold\fP,
-+where \fBvfps\fP is the speed\-adjusted display FPS, and \fBdisphz\fP the
-+display refresh rate.
-+.sp
-+The default is intended to almost always enable interpolation if the
-+playback rate is even slightly different from the display refresh rate.
-+But note that if you use e.g. \fB\-\-video\-sync=display\-vdrop\fP, small
-+deviations in the rate can disable interpolation and introduce a
-+discontinuity every other minute.
-+.sp
-+Set this to \fB\-1\fP to disable this logic.
-+.TP
-+.B \fBdscale\-radius\fP, \fBcscale\-radius\fP, \fBtscale\-radius\fP, etc.
-+Set filter parameters for \fBdscale\fP, \fBcscale\fP and \fBtscale\fP,
-+respectively.
-+.sp
-+See the corresponding options for \fBscale\fP\&.
-+.TP
-+.B \fBlinear\-scaling\fP
-+Scale in linear light. It should only be used with a \fBfbo\-format\fP
-+that has at least 16 bit precision.
-+.TP
-+.B \fBcorrect\-downscaling\fP
-+When using convolution based filters, extend the filter size
-+when downscaling. Increases quality, but reduces performance while
-+downscaling.
-+.sp
-+This will perform slightly sub\-optimally for anamorphic video (but still
-+better than without it) since it will extend the size to match only the
-+milder of the scale factors between the axes.
-+.TP
-+.B \fBpre\-shaders=<files>\fP, \fBpost\-shaders=<files>\fP, \fBscale\-shader=<file>\fP
-+Custom GLSL fragment shaders.
-+.INDENT 7.0
-+.TP
-+.B pre\-shaders (list)
-+These get applied after conversion to RGB and before linearization
-+and upscaling. Operates on non\-linear RGB (same as input). This is
-+the best place to put things like sharpen filters.
-+.TP
-+.B scale\-shader
-+This gets used instead of scale/cscale when those options are set
-+to \fBcustom\fP\&. The colorspace it operates on depends on the values
-+of \fBlinear\-scaling\fP and \fBsigmoid\-upscaling\fP, so no assumptions
-+should be made here.
-+.TP
-+.B post\-shaders (list)
-+These get applied after upscaling and subtitle blending (when
-+\fBblend\-subtitles\fP is enabled), but before color management.
-+Operates on linear RGB if \fBlinear\-scaling\fP is in effect,
-+otherwise non\-linear RGB. This is the best place for colorspace
-+transformations (eg. saturation mapping).
-+.UNINDENT
-+.sp
-+These files must define a function with the following signature:
-+.INDENT 7.0
-+.INDENT 3.5
-+.sp
-+.nf
-+.ft C
-+vec4 sample_pixel(sampler2D tex, vec2 pos, vec2 tex_size)
-+.ft P
-+.fi
-+.UNINDENT
-+.UNINDENT
-+.sp
-+(If there is no string \fBsample_pixel\fP in the shader script, it will
-+use \fBsample\fP instead. This is a compatibility hack for older shader
-+scripts, and is deprecated.)
-+.sp
-+The meanings of the parameters are as follows:
-+.INDENT 7.0
-+.TP
-+.B sampler2D tex
-+The source texture for the shader.
-+.TP
-+.B vec2 pos
-+The position to be sampled, in coordinate space [0\-1].
-+.TP
-+.B vec2 tex_size
-+The size of the texture, in pixels. This may differ from image_size,
-+eg. for subsampled content or for post\-shaders.
-+.UNINDENT
-+.sp
-+In addition to these parameters, the following uniforms are also
-+globally available:
-+.INDENT 7.0
-+.TP
-+.B float random
-+A random number in the range [0\-1], different per frame.
-+.TP
-+.B int frame
-+A simple count of frames rendered, increases by one per frame and
-+never resets (regardless of seeks).
-+.TP
-+.B vec2 image_size
-+The size in pixels of the input image.
-+.TP
-+.B vec2 target_size
-+The size in pixels of the visible part of the scaled (and possibly
-+cropped) image.
-+.UNINDENT
-+.sp
-+For example, a shader that inverts the colors could look like this:
-+.INDENT 7.0
-+.INDENT 3.5
-+.sp
-+.nf
-+.ft C
-+vec4 sample(sampler2D tex, vec2 pos, vec2 tex_size)
-+{
-+    vec4 color = texture(tex, pos);
-+    return vec4(1.0 \- color.rgb, color.a);
-+}
-+.ft P
-+.fi
-+.UNINDENT
-+.UNINDENT
-+.TP
-+.B \fBuser\-shaders=<files>\fP
-+Custom GLSL hooks. These are similar to \fBpost\-shaders\fP etc., but more
-+flexible: They can be injected at almost arbitrary points in the
-+rendering pipeline, and access all previous intermediate textures.
-+.INDENT 7.0
-+.INDENT 3.5
-+.IP "Warning"
-+.sp
-+The syntax is not stable yet and may change any time.
-+.UNINDENT
-+.UNINDENT
-+.sp
-+The general syntax of a user shader looks like this:
-+.INDENT 7.0
-+.INDENT 3.5
-+.sp
-+.nf
-+.ft C
-+//!METADATA ARGS...
-+//!METADATA ARGS...
-+
-+vec4 hook() {
-+   ...
-+   return something;
-+}
-+
-+//!METADATA ARGS...
-+//!METADATA ARGS...
-+
-+\&...
-+.ft P
-+.fi
-+.UNINDENT
-+.UNINDENT
-+.sp
-+Each block of metadata, along with the non\-metadata lines after it,
-+defines a single pass. Each pass can set the following metadata:
-+.INDENT 7.0
-+.TP
-+.B HOOK <name> (required)
-+The texture which to hook into. May occur multiple times within a
-+metadata block, up to a predetermined limit. See below for a list
-+of hookable textures.
-+.TP
-+.B BIND <name>
-+Loads a texture and makes it available to the pass, and sets up
-+macros to enable accessing it. See below for a list of set macros.
-+By default, no textures are bound. The special name HOOKED can be
-+used to refer to the texture that triggered this pass.
-+.TP
-+.B SAVE <name>
-+Gives the name of the texture to save the result of this pass
-+into. By default, this is set to the special name HOOKED which has
-+the effect of overwriting the hooked texture.
-+.TP
-+.B WIDTH <szexpr>, HEIGHT <szexpr>
-+Specifies the size of the resulting texture for this pass.
-+\fBszexpr\fP refers to an expression in RPN (reverse polish
-+notation), using the operators + \- * / > < !, floating point
-+literals, and references to sizes of existing texture and OUTPUT
-+(such as MAIN.width or CHROMA.height). By default, these are set to
-+HOOKED.w and HOOKED.h, respectively.
-+.TP
-+.B WHEN <szexpr>
-+Specifies a condition that needs to be true (non\-zero) for the
-+shader stage to be evaluated. If it fails, it will silently be
-+omitted. (Note that a shader stage like this which has a dependency
-+on an optional hook point can still cause that hook point to be
-+saved, which has some minor overhead)
-+.TP
-+.B OFFSET ox oy
-+Indicates a pixel shift (offset) introduced by this pass. These
-+pixel offsets will be accumulated and corrected during the
-+next scaling pass (\fBcscale\fP or \fBscale\fP). The default values
-+are 0 0 which correspond to no shift. Note that offsets are ignored
-+when not overwriting the hooked texture.
-+.TP
-+.B COMPONENTS n
-+Specifies how many components of this pass\(aqs output are relevant
-+and should be stored in the texture, up to 4 (rgba). By default,
-+this value is equal to the number of components in HOOKED.
-+.UNINDENT
-+.sp
-+Each bound texture (via \fBBIND\fP) will make available the following
-+definitions to that shader pass, where NAME is the name of the bound
-+texture:
-+.INDENT 7.0
-+.TP
-+.B vec4 NAME_tex(vec2 pos)
-+The sampling function to use to access the texture at a certain
-+spot (in texture coordinate space, range [0,1]). This takes care
-+of any necessary normalization conversions.
-+.TP
-+.B vec4 NAME_texOff(vec2 offset)
-+Sample the texture at a certain offset in pixels. This works like
-+NAME_tex but additionally takes care of necessary rotations, so
-+that sampling at e.g. vec2(\-1,0) is always one pixel to the left.
-+.TP
-+.B vec2 NAME_pos
-+The local texture coordinate of that texture, range [0,1].
-+.TP
-+.B vec2 NAME_size
-+The (rotated) size in pixels of the texture.
-+.TP
-+.B mat2 NAME_rot
-+The rotation matrix associated with this texture. (Rotates
-+pixel space to texture coordinates)
-+.TP
-+.B vec2 NAME_pt
-+The (unrotated) size of a single pixel, range [0,1].
-+.TP
-+.B sampler NAME_raw
-+The raw bound texture itself. The use of this should be
-+avoided unless absolutely necessary.
-+.UNINDENT
-+.sp
-+In addition, the global uniforms described in \fBpost\-shaders\fP are
-+also available.
-+.sp
-+Internally, vo_opengl may generate any number of the following
-+textures. Whenever a texture is rendered and saved by vo_opengl, all of
-+the passes that have hooked into it will run, in the order they were
-+added by the user. This is a list of the legal hook points:
-+.INDENT 7.0
-+.TP
-+.B RGB, LUMA, CHROMA, ALPHA, XYZ (resizable)
-+Source planes (raw). Which of these fire depends on the image
-+format of the source.
-+.TP
-+.B CHROMA_SCALED, ALPHA_SCALED (fixed)
-+Source planes (upscaled). These only fire on subsampled content.
-+.TP
-+.B NATIVE (resizable)
-+The combined image, in the source colorspace, before conversion
-+to RGB.
-+.TP
-+.B MAINPRESUB (resizable)
-+The image, after conversion to RGB, but before
-+\fBblend\-subtitles=video\fP is applied.
-+.TP
-+.B MAIN (resizable)
-+The main image, after conversion to RGB but before upscaling.
-+.TP
-+.B LINEAR (fixed)
-+Linear light image, before scaling. This only fires when
-+\fBlinear\-scaling\fP is in effect.
-+.TP
-+.B SIGMOID (fixed)
-+Sigmoidized light, before scaling. This only fires when
-+\fBsigmoid\-upscaling\fP is in effect.
-+.TP
-+.B PREKERNEL (fixed)
-+The image immediately before the scaler kernel runs.
-+.TP
-+.B POSTKERNEL (fixed)
-+The image immediately after the scaler kernel runs.
-+.TP
-+.B SCALED (fixed)
-+The final upscaled image, before color management.
-+.TP
-+.B OUTPUT (fixed)
-+The final output image, after color management but before
-+dithering and drawing to screen.
-+.UNINDENT
-+.sp
-+Only the textures labelled with \fBresizable\fP may be transformed by the
-+pass. When overwriting a texture marked \fBfixed\fP, the WIDTH, HEIGHT
-+and OFFSET must be left at their default values.
-+.TP
-+.B \fBdeband\fP
-+Enable the debanding algorithm. This greatly reduces the amount of
-+visible banding, blocking and other quantization artifacts, at the
-+expensive of very slightly blurring some of the finest details. In
-+practice, it\(aqs virtually always an improvement \- the only reason to
-+disable it would be for performance.
-+.TP
-+.B \fBdeband\-iterations=<1..16>\fP
-+The number of debanding steps to perform per sample. Each step reduces
-+a bit more banding, but takes time to compute. Note that the strength
-+of each step falls off very quickly, so high numbers (>4) are
-+practically useless. (Default 1)
-+.TP
-+.B \fBdeband\-threshold=<0..4096>\fP
-+The debanding filter\(aqs cut\-off threshold. Higher numbers increase the
-+debanding strength dramatically but progressively diminish image
-+details. (Default 64)
-+.TP
-+.B \fBdeband\-range=<1..64>\fP
-+The debanding filter\(aqs initial radius. The radius increases linearly
-+for each iteration. A higher radius will find more gradients, but
-+a lower radius will smooth more aggressively. (Default 16)
-+.sp
-+If you increase the \fBdeband\-iterations\fP, you should probably
-+decrease this to compensate.
-+.TP
-+.B \fBdeband\-grain=<0..4096>\fP
-+Add some extra noise to the image. This significantly helps cover up
-+remaining quantization artifacts. Higher numbers add more noise.
-+(Default 48)
-+.TP
-+.B \fBsigmoid\-upscaling\fP
-+When upscaling, use a sigmoidal color transform to avoid emphasizing
-+ringing artifacts. This also implies \fBlinear\-scaling\fP\&.
-+.TP
-+.B \fBsigmoid\-center\fP
-+The center of the sigmoid curve used for \fBsigmoid\-upscaling\fP, must
-+be a float between 0.0 and 1.0. Defaults to 0.75 if not specified.
-+.TP
-+.B \fBsigmoid\-slope\fP
-+The slope of the sigmoid curve used for \fBsigmoid\-upscaling\fP, must
-+be a float between 1.0 and 20.0. Defaults to 6.5 if not specified.
-+.TP
-+.B \fBsharpen=<value>\fP
-+If set to a value other than 0, enable an unsharp masking filter.
-+Positive values will sharpen the image (but add more ringing and
-+aliasing). Negative values will blur the image. If your GPU is powerful
-+enough, consider alternatives like the \fBewa_lanczossharp\fP scale
-+filter, or the \fBscale\-blur\fP sub\-option.
-+.sp
-+(This feature is the replacement for the old \fBsharpen3\fP and
-+\fBsharpen5\fP scalers.)
-+.TP
-+.B \fBglfinish\fP
-+Call \fBglFinish()\fP before and after swapping buffers (default: disabled).
-+Slower, but might improve results when doing framedropping.
-+Can completely ruin performance. The details depend entirely on the
-+OpenGL driver.
-+.TP
-+.B \fBwaitvsync\fP
-+Call \fBglXWaitVideoSyncSGI\fP after each buffer swap (default: disabled).
-+This may or may not help with video timing accuracy and frame drop. It\(aqs
-+possible that this makes video output slower, or has no effect at all.
-+.sp
-+X11/GLX only.
-+.TP
-+.B \fBvsync\-fences=<N>\fP
-+Synchronize the CPU to the Nth past frame using the \fBGL_ARB_sync\fP
-+extension. A value of 0 disables this behavior (default). A value of
-+1 means it will synchronize to the current frame after rendering it.
-+Like \fBglfinish\fP and \fBwaitvsync\fP, this can lower or ruin performance.
-+Its advantage is that it can span multiple frames, and effectively limit
-+the number of frames the GPU queues ahead (which also has an influence
-+on vsync).
-+.TP
-+.B \fBdwmflush=<no|windowed|yes|auto>\fP
-+Calls \fBDwmFlush\fP after swapping buffers on Windows (default: auto).
-+It also sets \fBSwapInterval(0)\fP to ignore the OpenGL timing. Values
-+are: no (disabled), windowed (only in windowed mode), yes (also in
-+full screen).
-+.sp
-+The value \fBauto\fP will try to determine whether the compositor is
-+active, and calls \fBDwmFlush\fP only if it seems to be.
-+.sp
-+This may help to get more consistent frame intervals, especially with
-+high\-fps clips \- which might also reduce dropped frames. Typically, a
-+value of \fBwindowed\fP should be enough, since full screen may bypass the
-+DWM.
-+.sp
-+Windows only.
-+.TP
-+.B \fBdcomposition=<yes|no>\fP
-+Allows DirectComposition when using the ANGLE backend (default: yes).
-+DirectComposition implies flip\-model presentation, which can improve
-+rendering efficiency on Windows 8+ by avoiding a copy of the video frame.
-+mpv uses it by default where possible, but it can cause poor behaviour
-+with some drivers, such as a black screen or graphical corruption when
-+leaving full\-screen mode. Use "no" to disable it.
-+.sp
-+Windows with ANGLE only.
-+.TP
-+.B \fBsw\fP
-+Continue even if a software renderer is detected.
-+.TP
-+.B \fBbackend=<sys>\fP
-+The value \fBauto\fP (the default) selects the windowing backend. You
-+can also pass \fBhelp\fP to get a complete list of compiled in backends
-+(sorted by autoprobe order).
-+.INDENT 7.0
-+.TP
-+.B auto
-+auto\-select (default)
-+.TP
-+.B cocoa
-+Cocoa/OS X
-+.TP
-+.B win
-+Win32/WGL
-+.TP
-+.B angle
-+Direct3D11 through the OpenGL ES translation layer ANGLE. This
-+supports almost everything the \fBwin\fP backend does (if the ANGLE
-+build is new enough).
-+.TP
-+.B dxinterop (experimental)
-+Win32, using WGL for rendering and Direct3D 9Ex for presentation.
-+Works on Nvidia and AMD. Newer Intel chips with the latest drivers
-+may also work.
-+.TP
-+.B x11
-+X11/GLX
-+.TP
-+.B wayland
-+Wayland/EGL
-+.TP
-+.B drm\-egl
-+DRM/EGL
-+.TP
-+.B x11egl
-+X11/EGL
-+.UNINDENT
-+.TP
-+.B \fBes=<mode>\fP
-+Select whether to use GLES:
-+.INDENT 7.0
-+.TP
-+.B yes
-+Try to prefer ES over Desktop GL
-+.TP
-+.B no
-+Try to prefer desktop GL over ES
-+.TP
-+.B auto
-+Use the default for each backend (default)
-+.UNINDENT
-+.TP
-+.B \fBfbo\-format=<fmt>\fP
-+Selects the internal format of textures used for FBOs. The format can
-+influence performance and quality of the video output.
-+\fBfmt\fP can be one of: rgb8, rgb10, rgb10_a2, rgb16, rgb16f,
-+rgb32f, rgba12, rgba16, rgba16f, rgba32f.
-+Default: \fBauto\fP, which maps to rgba16 on desktop GL, and rgba16f or
-+rgb10_a2 on GLES (e.g. ANGLE), unless GL_EXT_texture_norm16 is
-+available.
-+.TP
-+.B \fBgamma=<0.1..2.0>\fP
-+Set a gamma value (default: 1.0). If gamma is adjusted in other ways
-+(like with the \fB\-\-gamma\fP option or key bindings and the \fBgamma\fP
-+property), the value is multiplied with the other gamma value.
-+.sp
-+Recommended values based on the environmental brightness:
-+.INDENT 7.0
-+.TP
-+.B 1.0
-+Brightly illuminated (default)
-+.TP
-+.B 0.9
-+Slightly dim
-+.TP
-+.B 0.8
-+Pitch black room
-+.UNINDENT
-+.sp
-+NOTE: Typical movie content (Blu\-ray etc.) already contains a gamma
-+drop of about 0.8, so specifying it here as well will result in even
-+even darker image than intended!
-+.TP
-+.B \fBgamma\-auto\fP
-+Automatically corrects the gamma value depending on ambient lighting
-+conditions (adding a gamma boost for dark rooms).
-+.sp
-+With ambient illuminance of 64lux, mpv will pick the 1.0 gamma value
-+(no boost), and slightly increase the boost up until 0.8 for 16lux.
-+.sp
-+NOTE: Only implemented on OS X.
-+.TP
-+.B \fBtarget\-prim=<value>\fP
-+Specifies the primaries of the display. Video colors will be adapted to
-+this colorspace when ICC color management is not being used. Valid
-+values are:
-+.INDENT 7.0
-+.TP
-+.B auto
-+Disable any adaptation (default)
-+.TP
-+.B bt.470m
-+ITU\-R BT.470 M
-+.TP
-+.B bt.601\-525
-+ITU\-R BT.601 (525\-line SD systems, eg. NTSC), SMPTE 170M/240M
-+.TP
-+.B bt.601\-625
-+ITU\-R BT.601 (625\-line SD systems, eg. PAL/SECAM), ITU\-R BT.470 B/G
-+.TP
-+.B bt.709
-+ITU\-R BT.709 (HD), IEC 61966\-2\-4 (sRGB), SMPTE RP177 Annex B
-+.TP
-+.B bt.2020
-+ITU\-R BT.2020 (UHD)
-+.TP
-+.B apple
-+Apple RGB
-+.TP
-+.B adobe
-+Adobe RGB (1998)
-+.TP
-+.B prophoto
-+ProPhoto RGB (ROMM)
-+.TP
-+.B cie1931
-+CIE 1931 RGB (not to be confused with CIE XYZ)
-+.TP
-+.B dci\-p3
-+DCI\-P3 (Digital Cinema Colorspace), SMPTE RP431\-2
-+.TP
-+.B v\-gamut
-+Panasonic V\-Gamut (VARICAM) primaries
-+.UNINDENT
-+.TP
-+.B \fBtarget\-trc=<value>\fP
-+Specifies the transfer characteristics (gamma) of the display. Video
-+colors will be adjusted to this curve when ICC color management is
-+not being used. Valid values are:
-+.INDENT 7.0
-+.TP
-+.B auto
-+Disable any adaptation (default)
-+.TP
-+.B bt.1886
-+ITU\-R BT.1886 curve (assuming infinite contrast)
-+.TP
-+.B srgb
-+IEC 61966\-2\-4 (sRGB)
-+.TP
-+.B linear
-+Linear light output
-+.TP
-+.B gamma1.8
-+Pure power curve (gamma 1.8), also used for Apple RGB
-+.TP
-+.B gamma2.2
-+Pure power curve (gamma 2.2)
-+.TP
-+.B gamma2.8
-+Pure power curve (gamma 2.8), also used for BT.470\-BG
-+.TP
-+.B prophoto
-+ProPhoto RGB (ROMM)
-+.TP
-+.B st2084
-+SMPTE ST2084 (HDR) curve, PQ OETF
-+.TP
-+.B std\-b67
-+ARIB STD\-B67 (Hybrid Log\-gamma) curve, also known as BBC/NHK HDR
-+.TP
-+.B v\-log
-+Panasonic V\-Log (VARICAM) curve
-+.TP
-+.B NOTE: When using HDR output formats, mpv will encode to the specified
-+curve but it will not set any HDMI flags or other signalling that
-+might be required for the target device to correctly display the
-+HDR signal. The user should independently guarantee this before
-+using these signal formats for display.
-+.UNINDENT
-+.TP
-+.B \fBtarget\-brightness=<1..100000>\fP
-+Specifies the display\(aqs approximate brightness in cd/m^2. When playing
-+HDR content on a SDR display (or SDR content on an HDR display), video
-+colors will be tone mapped to this target brightness using the
-+algorithm specified by \fBhdr\-tone\-mapping\fP\&. The default of 250 cd/m^2
-+corresponds to a typical consumer display.
-+.TP
-+.B \fBhdr\-tone\-mapping=<value>\fP
-+Specifies the algorithm used for tone\-mapping HDR images onto the
-+target display. Valid values are:
-+.INDENT 7.0
-+.TP
-+.B clip
-+Hard\-clip any out\-of\-range values.
-+.TP
-+.B reinhard
-+Reinhard tone mapping algorithm. Very simple continuous curve.
-+Preserves dynamic range and peak but uses nonlinear contrast.
-+.TP
-+.B hable
-+Similar to \fBreinhard\fP but preserves dark contrast better
-+(slightly sigmoidal). Developed by John Hable for use in video
-+games. (default)
-+.TP
-+.B gamma
-+Fits a logarithmic transfer between the tone curves.
-+.TP
-+.B linear
-+Linearly stretches the entire reference gamut to (a linear multiple
-+of) the display.
-+.UNINDENT
-+.TP
-+.B \fBtone\-mapping\-param=<value>\fP
-+Set tone mapping parameters. Ignored if the tone mapping algorithm is
-+not tunable. This affects the following tone mapping algorithms:
-+.INDENT 7.0
-+.TP
-+.B reinhard
-+Specifies the local contrast coefficient at the display peak.
-+Defaults to 0.5, which means that in\-gamut values will be about
-+half as bright as when clipping.
-+.TP
-+.B gamma
-+Specifies the exponent of the function. Defaults to 1.8.
-+.TP
-+.B linear
-+Specifies the scale factor to use while stretching. Defaults to
-+1.0.
-+.UNINDENT
-+.TP
-+.B \fBicc\-profile=<file>\fP
-+Load an ICC profile and use it to transform video RGB to screen output.
-+Needs LittleCMS 2 support compiled in. This option overrides the
-+\fBtarget\-prim\fP, \fBtarget\-trc\fP and \fBicc\-profile\-auto\fP options.
-+.TP
-+.B \fBicc\-profile\-auto\fP
-+Automatically select the ICC display profile currently specified by
-+the display settings of the operating system.
-+.sp
-+NOTE: On Windows, the default profile must be an ICC profile. WCS
-+profiles are not supported.
-+.TP
-+.B \fBicc\-cache\-dir=<dirname>\fP
-+Store and load the 3D LUTs created from the ICC profile in this directory.
-+This can be used to speed up loading, since LittleCMS 2 can take a while
-+to create a 3D LUT. Note that these files contain uncompressed LUTs.
-+Their size depends on the \fB3dlut\-size\fP, and can be very big.
-+.sp
-+NOTE: This is not cleaned automatically, so old, unused cache files
-+may stick around indefinitely.
-+.TP
-+.B \fBicc\-intent=<value>\fP
-+Specifies the ICC intent used for the color transformation (when using
-+\fBicc\-profile\fP).
-+.INDENT 7.0
-+.TP
-+.B 0
-+perceptual
-+.TP
-+.B 1
-+relative colorimetric (default)
-+.TP
-+.B 2
-+saturation
-+.TP
-+.B 3
-+absolute colorimetric
-+.UNINDENT
-+.TP
-+.B \fB3dlut\-size=<r>x<g>x<b>\fP
-+Size of the 3D LUT generated from the ICC profile in each dimension.
-+Default is 64x64x64. Sizes may range from 2 to 512.
-+.TP
-+.B \fBicc\-contrast=<0\-100000>\fP
-+Specifies an upper limit on the target device\(aqs contrast ratio.
-+This is detected automatically from the profile if possible, but for
-+some profiles it might be missing, causing the contrast to be assumed
-+as infinite. As a result, video may appear darker than intended. This
-+only affects BT.1886 content. The default of 0 means no limit.
-+.TP
-+.B \fBblend\-subtitles=<yes|video|no>\fP
-+Blend subtitles directly onto upscaled video frames, before
-+interpolation and/or color management (default: no). Enabling this
-+causes subtitles to be affected by \fBicc\-profile\fP, \fBtarget\-prim\fP,
-+\fBtarget\-trc\fP, \fBinterpolation\fP, \fBgamma\fP and \fBpost\-shader\fP\&. It
-+also increases subtitle performance when using \fBinterpolation\fP\&.
-+.sp
-+The downside of enabling this is that it restricts subtitles to the
-+visible portion of the video, so you can\(aqt have subtitles exist in the
-+black margins below a video (for example).
-+.sp
-+If \fBvideo\fP is selected, the behavior is similar to \fByes\fP, but subs
-+are drawn at the video\(aqs native resolution, and scaled along with the
-+video.
-+.sp
-+\fBWARNING:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+This changes the way subtitle colors are handled. Normally,
-+subtitle colors are assumed to be in sRGB and color managed
-+as such. Enabling this makes them treated as being in the
-+video\(aqs color space instead. This is good if you want
-+things like softsubbed ASS signs to match the video colors,
-+but may cause SRT subtitles or similar to look slightly off.
-+.UNINDENT
-+.UNINDENT
-+.TP
-+.B \fBalpha=<blend\-tiles|blend|yes|no>\fP
-+Decides what to do if the input has an alpha component.
-+.INDENT 7.0
-+.TP
-+.B blend\-tiles
-+Blend the frame against a 16x16 gray/white tiles background (default).
-+.TP
-+.B blend
-+Blend the frame against a black background.
-+.TP
-+.B yes
-+Try to create a framebuffer with alpha component. This only makes sense
-+if the video contains alpha information (which is extremely rare). May
-+not be supported on all platforms. If alpha framebuffers are
-+unavailable, it silently falls back on a normal framebuffer. Note
-+that if you set the \fBfbo\-format\fP option to a non\-default value,
-+a format with alpha must be specified, or this won\(aqt work.
-+.TP
-+.B no
-+Ignore alpha component.
-+.UNINDENT
-+.TP
-+.B \fBrectangle\-textures\fP
-+Force use of rectangle textures (default: no). Normally this shouldn\(aqt
-+have any advantages over normal textures. Note that hardware decoding
-+overrides this flag.
-+.TP
-+.B \fBbackground=<color>\fP
-+Color used to draw parts of the mpv window not covered by video.
-+See \fB\-\-osd\-color\fP option how colors are defined.
-+.UNINDENT
-+.TP
-+.B \fBopengl\-hq\fP
-+Same as \fBopengl\fP, but with default settings for high quality rendering.
-+.sp
-+This is equivalent to:
-+.INDENT 7.0
-+.INDENT 3.5
-+.sp
-+.nf
-+.ft C
-+\-\-vo=opengl:scale=spline36:cscale=spline36:dscale=mitchell:dither\-depth=auto:correct\-downscaling:sigmoid\-upscaling:deband:es=no
-+.ft P
-+.fi
-+.UNINDENT
-+.UNINDENT
-+.sp
-+Note that some cheaper LCDs do dithering that gravely interferes with
-+\fBopengl\fP\(aqs dithering. Disabling dithering with \fBdither\-depth=no\fP helps.
++with \fBrgb32f\fP\&. If you have problems, you can also try enabling the
++\fB\-\-opengl\-dumb\-mode=yes\fP option.
 +.TP
 +.B \fBsdl\fP
 +SDL 2.0+ Render video output driver, depending on system with or without
@@ -7249,12 +7357,14 @@ index 0000000..fadcd48
 +proper graphics drivers, or which support GLES only.
 +.UNINDENT
 +.UNINDENT
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBsw\fP
++.B \fB\-\-sdl\-sw\fP
 +Continue even if a software renderer is detected.
 +.TP
-+.B \fBswitch\-mode\fP
++.B \fB\-\-sdl\-switch\-mode\fP
 +Instruct SDL to switch the monitor video mode when going fullscreen.
 +.UNINDENT
 +.TP
@@ -7271,9 +7381,11 @@ index 0000000..fadcd48
 +use vaapi hardware decoding with \fB\-\-vo=opengl\fP too.
 +.UNINDENT
 +.UNINDENT
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBscaling=<algorithm>\fP
++.B \fB\-\-vo\-vaapi\-scaling=<algorithm>\fP
 +.INDENT 7.0
 +.TP
 +.B default
@@ -7289,7 +7401,7 @@ index 0000000..fadcd48
 +\fBnon\-linear anamorphic scaling\fP
 +.UNINDENT
 +.TP
-+.B \fBdeint\-mode=<mode>\fP
++.B \fB\-\-vo\-vaapi\-deint\-mode=<mode>\fP
 +Select deinterlacing algorithm. Note that by default deinterlacing is
 +initially always off, and needs to be enabled with the \fBd\fP key
 +(default key binding for \fBcycle deinterlace\fP).
@@ -7312,7 +7424,7 @@ index 0000000..fadcd48
 +bob deinterlacing (default for older libva).
 +.UNINDENT
 +.TP
-+.B \fBscaled\-osd=<yes|no>\fP
++.B \fB\-\-vo\-vaapi\-scaled\-osd=<yes|no>\fP
 +If enabled, then the OSD is rendered at video resolution and scaled to
 +display resolution. By default, this is disabled, and the OSD is
 +rendered at display resolution if the driver supports it.
@@ -7322,9 +7434,11 @@ index 0000000..fadcd48
 +Produces no video output. Useful for benchmarking.
 +.sp
 +Usually, it\(aqs better to disable video with \fB\-\-no\-video\fP instead.
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBfps=<value>\fP
++.B \fB\-\-vo\-null\-fps=<value>\fP
 +Simulate display FPS. This artificially limits how many frames the
 +VO accepts per second.
 +.UNINDENT
@@ -7342,9 +7456,11 @@ index 0000000..fadcd48
 +.B \fBimage\fP
 +Output each frame into an image file in the current directory. Each file
 +takes the frame number padded with leading zeros as name.
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBformat=<format>\fP
++.B \fB\-\-vo\-image\-format=<format>\fP
 +Select the image file format.
 +.INDENT 7.0
 +.TP
@@ -7370,32 +7486,32 @@ index 0000000..fadcd48
 +Truevision TGA.
 +.UNINDENT
 +.TP
-+.B \fBpng\-compression=<0\-9>\fP
++.B \fB\-\-vo\-image\-png\-compression=<0\-9>\fP
 +PNG compression factor (speed vs. file size tradeoff) (default: 7)
 +.TP
-+.B \fBpng\-filter=<0\-5>\fP
++.B \fB\-\-vo\-image\-png\-filter=<0\-5>\fP
 +Filter applied prior to PNG compression (0 = none; 1 = sub; 2 = up;
 +3 = average; 4 = Paeth; 5 = mixed) (default: 5)
 +.TP
-+.B \fBjpeg\-quality=<0\-100>\fP
++.B \fB\-\-vo\-image\-jpeg\-quality=<0\-100>\fP
 +JPEG quality factor (default: 90)
 +.TP
-+.B \fB(no\-)jpeg\-progressive\fP
++.B \fB\-\-vo\-image\-jpeg\-progressive=<yes|no>\fP
 +Specify standard or progressive JPEG (default: no).
 +.TP
-+.B \fB(no\-)jpeg\-baseline\fP
++.B \fB\-\-vo\-image\-jpeg\-baseline=<yes|no>\fP
 +Specify use of JPEG baseline or not (default: yes).
 +.TP
-+.B \fBjpeg\-optimize=<0\-100>\fP
++.B \fB\-\-vo\-image\-jpeg\-optimize=<0\-100>\fP
 +JPEG optimization factor (default: 100)
 +.TP
-+.B \fBjpeg\-smooth=<0\-100>\fP
++.B \fB\-\-vo\-image\-jpeg\-smooth=<0\-100>\fP
 +smooth factor (default: 0)
 +.TP
-+.B \fBjpeg\-dpi=<1\->\fP
++.B \fB\-\-vo\-image\-jpeg\-dpi=<1\->\fP
 +JPEG DPI (default: 72)
 +.TP
-+.B \fBoutdir=<dirname>\fP
++.B \fB\-\-vo\-image\-outdir=<dirname>\fP
 +Specify the directory to save the image files to (default: \fB\&./\fP).
 +.UNINDENT
 +.TP
@@ -7409,18 +7525,20 @@ index 0000000..fadcd48
 +working OpenGL drivers.
 +.UNINDENT
 +.UNINDENT
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBalpha\fP
++.B \fB\-\-vo\-wayland\-alpha\fP
 +Use a buffer format that supports videos and images with alpha
 +information
 +.TP
-+.B \fBrgb565\fP
++.B \fB\-\-vo\-wayland\-rgb565\fP
 +Use RGB565 as buffer format. This format is implemented on most
 +platforms, especially on embedded where it is far more efficient then
 +RGB8888.
 +.TP
-+.B \fBtriple\-buffering\fP
++.B \fB\-\-vo\-wayland\-triple\-buffering\fP
 +Use 3 buffers instead of 2. This can lead to more fluid playback, but
 +uses more memory.
 +.UNINDENT
@@ -7429,31 +7547,37 @@ index 0000000..fadcd48
 +For use with libmpv direct OpenGL embedding; useless in any other contexts.
 +(See \fB<mpv/opengl_cb.h>\fP\&.)
 +.sp
-+This also supports many of the suboptions the \fBopengl\fP VO has. Run
-+\fBmpv \-\-vo=opengl\-cb:help\fP for a list.
-+.sp
-+This also supports the \fBvo\-cmdline\fP command.
++This also supports many of the options the \fBopengl\fP VO has.
 +.TP
 +.B \fBrpi\fP (Raspberry Pi)
 +Native video output on the Raspberry Pi using the MMAL API.
++.sp
++This is deprecated. Use \fB\-\-vo=opengl\fP instead, which is the default and
++provides the same functionality. The \fBrpi\fP VO will be removed in
++mpv 0.22.0. Its functionality was folded into \-\-vo=opengl, which now uses
++RPI hardware decoding by treating it as a hardware overlay (without applying
++GL filtering). Also to be changed in 0.22.0: the \-\-fs flag will be reset to
++"no" by default (like on the other platforms).
++.sp
++The following deprecated global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBdisplay=<number>\fP
++.B \fB\-\-rpi\-display=<number>\fP
 +Select the display number on which the video overlay should be shown
 +(default: 0).
 +.TP
-+.B \fBlayer=<number>\fP
++.B \fB\-\-rpi\-layer=<number>\fP
 +Select the dispmanx layer on which the video overlay should be shown
 +(default: \-10). Note that mpv will also use the 2 layers above the
 +selected layer, to handle the window background and OSD. Actual video
 +rendering will happen on the layer above the selected layer.
 +.TP
-+.B \fBbackground=<yes|no>\fP
++.B \fB\-\-rpi\-background=<yes|no>\fP
 +Whether to render a black background behind the video (default: no).
 +Normally it\(aqs better to kill the console framebuffer instead, which
 +gives better performance.
 +.TP
-+.B \fBosd=<yes|no>\fP
++.B \fB\-\-rpi\-osd=<yes|no>\fP
 +Enabled by default. If disabled with \fBno\fP, no OSD layer is created.
 +This also means there will be no subtitles rendered.
 +.UNINDENT
@@ -7463,17 +7587,19 @@ index 0000000..fadcd48
 +Should be used when one doesn\(aqt want to install full\-blown graphical
 +environment (e.g. no X). Does not support hardware acceleration (if you
 +need this, check the \fBdrm\-egl\fP backend for \fBopengl\fP VO).
++.sp
++The following global options are supported by this video output:
 +.INDENT 7.0
 +.TP
-+.B \fBconnector=<number>\fP
-+Select the connector to use (usually this is a monitor.) If set to \-1,
-+mpv renders the output on the first available connector. (default: \-1)
++.B \fB\-\-drm\-connector=[<gpu_number>.]<name>\fP
++Select the connector to use (usually this is a monitor.) If \fB<name>\fP
++is empty or \fBauto\fP, mpv renders the output on the first available
++connector. Use \fB\-\-drm\-connector=help\fP to get list of available
++connectors. When using multiple graphic cards, use the \fB<gpu_number>\fP
++argument to disambiguate.
++(default: empty)
 +.TP
-+.B \fBdevpath=<filename>\fP
-+Path to graphic card device.
-+(default: /dev/dri/card0)
-+.TP
-+.B \fBmode=<number>\fP
++.B \fB\-\-drm\-mode=<number>\fP
 +Mode ID to use (resolution, bit depth and frame rate).
 +(default: 0)
 +.UNINDENT
@@ -7925,6 +8051,15 @@ index 0000000..fadcd48
 +remixing audio to 5.1 and output it like this.
 +.UNINDENT
 +.UNINDENT
++.sp
++This filter supports the following \fBaf\-command\fP commands:
++.INDENT 7.0
++.TP
++.B \fBset\-matrix\fP
++Set the \fB<matrix>\fP argument dynamically. This can be used to change
++the mixing matrix at runtime, without reinitializing the entire filter
++chain.
++.UNINDENT
 +.TP
 +.B \fBdrc[=method:target]\fP
 +Applies dynamic range compression. This maximizes the volume by compressing
@@ -8040,10 +8175,6 @@ index 0000000..fadcd48
 +.B \fBmpv \-\-af=scaletempo=stride=30:overlap=.50:search=10 media.ogg\fP
 +Would tweak the quality and performance parameters.
 +.TP
-+.B \fBmpv \-\-af=format=float,scaletempo media.ogg\fP
-+Would make scaletempo use float code. Maybe faster on some
-+platforms.
-+.TP
 +.B \fBmpv \-\-af=scaletempo=scale=1.2:speed=pitch audio.ogg\fP
 +Would play media at 1.2x normal speed, with audio at normal pitch.
 +Changing playback speed would change pitch, leaving audio tempo at
@@ -8055,9 +8186,15 @@ index 0000000..fadcd48
 +.B \fBrubberband\fP
 +High quality pitch correction with librubberband. This can be used in place
 +of \fBscaletempo\fP, and will be used to adjust audio pitch when playing
-+at speed different from normal.
++at speed different from normal. It can also be used to adjust audio pitch
++without changing playback speed.
++.INDENT 7.0
++.TP
++.B \fB<pitch\-scale>\fP
++Sets the pitch scaling factor. Frequencies are multiplied by this value.
++.UNINDENT
 +.sp
-+This filter has a number of sub\-options. You can list them with
++This filter has a number of additional sub\-options. You can list them with
 +\fBmpv \-\-af=rubberband=help\fP\&. This will also show the default values
 +for each option. The options are not documented here, because they are
 +merely passed to librubberband. Look at the librubberband documentation
@@ -8065,6 +8202,15 @@ index 0000000..fadcd48
 +\fI\%http://breakfastquay.com/rubberband/code\-doc/classRubberBand_1_1RubberBandStretcher.html\fP
 +(The mapping of the mpv rubberband filter sub\-option names and values to
 +those of librubberband follows a simple pattern: \fB"Option" + Name + Value\fP\&.)
++.sp
++This filter supports the following \fBaf\-command\fP commands:
++.INDENT 7.0
++.TP
++.B \fBset\-pitch\fP
++Set the \fB<pitch\-scale>\fP argument dynamically. This can be used to
++change the playback pitch at runtime. Note that speed is controlled
++using the standard \fBspeed\fP property, not \fBaf\-command\fP\&.
++.UNINDENT
 +.TP
 +.B \fBlavfi=graph\fP
 +Filter audio using FFmpeg\(aqs libavfilter.
@@ -9549,7 +9695,7 @@ index 0000000..fadcd48
 +Seek relative to current position (a negative value seeks backwards).
 +.TP
 +.B absolute
-+Seek to a given time.
++Seek to a given time (a negative value starts from the end of the file).
 +.TP
 +.B absolute\-percent
 +Seek to a given percent position.
@@ -10187,13 +10333,6 @@ index 0000000..fadcd48
 +(the \fBab\-loop\-a\fP property); the second the \fBB\fP point, and the third
 +will clear both points.
 +.TP
-+.B \fBvo\-cmdline "<args>"\fP
-+Reset the sub\-option of the current VO. Currently works with \fBopengl\fP
-+(including \fBopengl\-hq\fP). The argument is the sub\-option string usually
-+passed to the VO on the command line. Not all sub\-options can be set, but
-+those which can will be reset even if they don\(aqt appear in the argument.
-+This command might be changed or removed in the future.
-+.TP
 +.B \fBdrop\-buffers\fP
 +Drop audio/video/demuxer buffers, and restart from fresh. Might help with
 +unseekable streams that are going out of sync.
@@ -10219,6 +10358,17 @@ index 0000000..fadcd48
 +.TP
 +.B \fBaf\-command "<label>" "<cmd>" "<args>"\fP
 +Same as \fBvf\-command\fP, but for audio filters.
++.TP
++.B \fBapply\-profile "<name>"\fP
++Apply the contents of a named profile. This is like using \fBprofile=name\fP
++in a config file, except you can map it to a key binding to change it at
++runtime.
++.sp
++There is no such thing as "unapplying" a profile \- applying a profile
++merely sets all option values listed within the profile.
++.TP
++.B \fBload\-script "<path>"\fP
++Load a script, similar to the \fB\-\-script\fP option.
 +.UNINDENT
 +.sp
 +Undocumented commands: \fBtv\-last\-channel\fP (TV/DVB only),
@@ -10370,22 +10520,17 @@ index 0000000..fadcd48
 +same values as the option. In these cases, properties are merely a way to change
 +an option at runtime.
 +.SS Property list
++.sp
++\fBNOTE:\fP
 +.INDENT 0.0
-+.TP
-+.B \fBosd\-level\fP (RW)
-+See \fB\-\-osd\-level\fP\&.
-+.TP
-+.B \fBosd\-scale\fP (RW)
-+OSD font size multiplier, see \fB\-\-osd\-scale\fP\&.
-+.TP
-+.B \fBloop\fP (RW)
-+See \fB\-\-loop\fP\&.
-+.TP
-+.B \fBloop\-file\fP (RW)
-+See \fB\-\-loop\-file\fP (uses \fByes\fP/\fBno\fP).
-+.TP
-+.B \fBspeed\fP (RW)
-+See \fB\-\-speed\fP\&.
++.INDENT 3.5
++Most options can be set as runtime via properties as well. Just remove the
++leading \fB\-\-\fP from the option name. These are not documented. Only
++properties which do not exist as option with the same name, or which have
++very different behavior from the options are documented below.
++.UNINDENT
++.UNINDENT
++.INDENT 0.0
 +.TP
 +.B \fBaudio\-speed\-correction\fP, \fBvideo\-speed\-correction\fP
 +Factor multiplied with \fBspeed\fP at which the player attempts to play the
@@ -10457,8 +10602,10 @@ index 0000000..fadcd48
 +list of format names, e.g. mp4 is \fBmov,mp4,m4a,3gp,3g2,mj2\fP (the list
 +may grow in the future for any format).
 +.TP
-+.B \fBdemuxer\fP
++.B \fBcurrent\-demuxer\fP
 +Name of the current demuxer. (This is useless.)
++.sp
++(Renamed from \fBdemuxer\fP\&.)
 +.TP
 +.B \fBstream\-path\fP
 +Filename (full path) of the stream layer filename. (This is probably
@@ -10534,6 +10681,12 @@ index 0000000..fadcd48
 +.B \fBtime\-remaining\fP
 +Remaining length of the file in seconds. Note that the file duration is not
 +always exactly known, so this is an estimate.
++.TP
++.B \fBaudio\-pts\fP (R)
++Current audio playback position in current file in seconds. Unlike time\-pos,
++this updates more often than once per frame. For audio\-only files, it is
++mostly equivalent to time\-pos, while for video\-only files this property is
++not available.
 +.TP
 +.B \fBplaytime\-remaining\fP
 +\fBtime\-remaining\fP scaled by the current \fBspeed\fP\&.
@@ -10640,10 +10793,6 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fBab\-loop\-a\fP, \fBab\-loop\-b\fP (RW)
-+Set/get A\-B loop points. See corresponding options and \fBab\-loop\fP command
-+for details.
-+.TP
 +.B \fBangle\fP (RW)
 +Current DVD angle.
 +.TP
@@ -10724,12 +10873,11 @@ index 0000000..fadcd48
 +.B \fBaf\-metadata/<filter\-label>\fP
 +Equivalent to \fBvf\-metadata/<filter\-label>\fP, but for audio filters.
 +.TP
-+.B \fBpause\fP (RW)
-+Pause status. This is usually \fByes\fP or \fBno\fP\&. See \fB\-\-pause\fP\&.
-+.TP
-+.B \fBidle\fP
++.B \fBidle\-active\fP
 +Return \fByes\fP if no file is loaded, but the player is staying around
 +because of the \fB\-\-idle\fP option.
++.sp
++(Renamed from \fBidle\fP\&.)
 +.TP
 +.B \fBcore\-idle\fP
 +Return \fByes\fP if the playback core is paused, otherwise \fBno\fP\&. This can
@@ -10806,24 +10954,11 @@ index 0000000..fadcd48
 +is loaded, or when switching ordered chapter segments. This is because
 +the same underlying code is used for seeking and resyncing.)
 +.TP
-+.B \fBhr\-seek\fP (RW)
-+See \fB\-\-hr\-seek\fP\&.
-+.TP
 +.B \fBmixer\-active\fP
 +Return \fByes\fP if the audio mixer is active, \fBno\fP otherwise.
 +.sp
 +This option is relatively useless. Before mpv 0.18.1, it could be used to
 +infer behavior of the \fBvolume\fP property.
-+.TP
-+.B \fBvolume\fP (RW)
-+Current volume (see \fB\-\-volume\fP for details).
-+.TP
-+.B \fBvolume\-max\fP (RW)
-+Current maximum value the volume property can be set to. (Equivalent to the
-+\fB\-\-volume\-max\fP option.)
-+.TP
-+.B \fBmute\fP (RW)
-+Current mute status (\fByes\fP/\fBno\fP).
 +.TP
 +.B \fBao\-volume\fP (RW)
 +System volume. This property is available only if mpv audio output is
@@ -10835,9 +10970,6 @@ index 0000000..fadcd48
 +.B \fBao\-mute\fP (RW)
 +Similar to \fBao\-volume\fP, but controls the mute state. May be unimplemented
 +even if \fBao\-volume\fP works.
-+.TP
-+.B \fBaudio\-delay\fP (RW)
-+See \fB\-\-audio\-delay\fP\&.
 +.TP
 +.B \fBaudio\-codec\fP
 +Audio codec selected for decoding.
@@ -10894,28 +11026,6 @@ index 0000000..fadcd48
 +Same as \fBaudio\-params\fP, but the format of the data written to the audio
 +API.
 +.TP
-+.B \fBaid\fP (RW)
-+Current audio track (similar to \fB\-\-aid\fP).
-+.TP
-+.B \fBaudio\fP (RW)
-+Alias for \fBaid\fP\&.
-+.TP
-+.B \fBbalance\fP (RW)
-+Audio channel balance. (The implementation of this feature is rather odd.
-+It doesn\(aqt change the volumes of each channel, but instead sets up a pan
-+matrix to mix the left and right channels.)
-+.sp
-+Deprecated.
-+.TP
-+.B \fBfullscreen\fP (RW)
-+See \fB\-\-fullscreen\fP\&.
-+.TP
-+.B \fBdeinterlace\fP (RW)
-+See \fB\-\-deinterlace\fP\&.
-+.TP
-+.B \fBfield\-dominance\fP (RW)
-+See \fB\-\-field\-dominance\fP
-+.TP
 +.B \fBcolormatrix\fP (R)
 +Redirects to \fBvideo\-params/colormatrix\fP\&. This parameter (as well as
 +similar ones) can be overridden with the \fBformat\fP video filter.
@@ -10923,41 +11033,8 @@ index 0000000..fadcd48
 +.B \fBcolormatrix\-input\-range\fP (R)
 +See \fBcolormatrix\fP\&.
 +.TP
-+.B \fBvideo\-output\-levels\fP (RW)
-+See \fB\-\-video\-output\-levels\fP,
-+.TP
 +.B \fBcolormatrix\-primaries\fP (R)
 +See \fBcolormatrix\fP\&.
-+.TP
-+.B \fBtaskbar\-progress\fP (RW)
-+See \fB\-\-taskbar\-progress\fP\&.
-+.TP
-+.B \fBontop\fP (RW)
-+See \fB\-\-ontop\fP\&.
-+.TP
-+.B \fBborder\fP (RW)
-+See \fB\-\-border\fP\&.
-+.TP
-+.B \fBon\-all\-workspaces\fP (RW)
-+See \fB\-\-on\-all\-workspaces\fP\&. Unsetting may not work on all WMs.
-+.TP
-+.B \fBframedrop\fP (RW)
-+See \fB\-\-framedrop\fP\&.
-+.TP
-+.B \fBgamma\fP (RW)
-+See \fB\-\-gamma\fP\&.
-+.TP
-+.B \fBbrightness\fP (RW)
-+See \fB\-\-brightness\fP\&.
-+.TP
-+.B \fBcontrast\fP (RW)
-+See \fB\-\-contrast\fP\&.
-+.TP
-+.B \fBsaturation\fP (RW)
-+See \fB\-\-saturation\fP\&.
-+.TP
-+.B \fBhue\fP (RW)
-+See \fB\-\-hue\fP\&.
 +.TP
 +.B \fBhwdec\fP (RW)
 +Reflects the \fB\-\-hwdec\fP option.
@@ -10990,27 +11067,6 @@ index 0000000..fadcd48
 +This does not necessarily use the same values as \fBhwdec\fP\&. There can be
 +multiple interop drivers for the same hardware decoder, depending on
 +platform and VO.
-+.TP
-+.B \fBhwdec\-active\fP
-+Deprecated. To be removed in mpv 0.20.0. Use \fBhwdec\-current\fP instead.
-+.sp
-+Return \fByes\fP or \fBno\fP, depending on whether any type of hardware decoding
-+is actually in use.
-+.TP
-+.B \fBhwdec\-detected\fP
-+Deprecated. To be removed in mpv 0.20.0.
-+.sp
-+If hardware decoding is active, this returns the hardware decoder in use.
-+Otherwise, it returns either \fBno\fP, or if applicable, the currently loaded
-+hardware decoding API. This is known only once the VO has opened (and
-+possibly later). With some VOs (like \fBopengl\fP), this is never known in
-+advance, but only when the decoder attempted to create the hw decoder
-+successfully. Also, hw decoders with \fB\-copy\fP suffix will return \fBno\fP
-+while no video is being decoded. All this reflects how detecting hw decoders
-+are detected and used internally in mpv.
-+.TP
-+.B \fBpanscan\fP (RW)
-+See \fB\-\-panscan\fP\&.
 +.TP
 +.B \fBvideo\-format\fP
 +Video format as string.
@@ -11120,6 +11176,9 @@ index 0000000..fadcd48
 +These have the same values as \fBvideo\-out\-params/dw\fP and
 +\fBvideo\-out\-params/dh\fP\&.
 +.TP
++.B \fBvideo\-dec\-params\fP
++Exactly like \fBvideo\-params\fP, but no overrides applied.
++.TP
 +.B \fBvideo\-out\-params\fP
 +Same as \fBvideo\-params\fP, but after video filters have been applied. If
 +there are no video filters in use, this will contain the same values as
@@ -11142,9 +11201,11 @@ index 0000000..fadcd48
 +\fBvideo\-frame\-info/tff\fP
 +\fBvideo\-frame\-info/repeat\fP
 +.TP
-+.B \fBfps\fP
++.B \fBcontainer\-fps\fP
 +Container FPS. This can easily contain bogus values. For videos that use
 +modern container formats or video codecs, this will often be incorrect.
++.sp
++(Renamed from \fBfps\fP\&.)
 +.TP
 +.B \fBestimated\-vf\-fps\fP
 +Estimated/measured FPS of the video filter chain output. (If no filters
@@ -11166,7 +11227,10 @@ index 0000000..fadcd48
 +.TP
 +.B \fBdisplay\-names\fP
 +Names of the displays that the mpv window covers. On X11, these
-+are the xrandr names (LVDS1, HDMI1, DP1, VGA1, etc.).
++are the xrandr names (LVDS1, HDMI1, DP1, VGA1, etc.). On Windows, these
++are the GDI names (\e.DISPLAY1, \e.DISPLAY2, etc.) and the first display
++in the list will be the one that Windows considers associated with the
++window (as determined by the MonitorFromWindow API.)
 +.TP
 +.B \fBdisplay\-fps\fP (RW)
 +The refresh rate of the current display. Currently, this is the lowest FPS
@@ -11185,6 +11249,9 @@ index 0000000..fadcd48
 +.TP
 +.B \fBvideo\-aspect\fP (RW)
 +Video aspect, see \fB\-\-video\-aspect\fP\&.
++.sp
++If video is active, this reports the effective aspect value, instead of
++the value of the \fB\-\-video\-aspect\fP option.
 +.TP
 +.B \fBosd\-width\fP, \fBosd\-height\fP
 +Last known OSD width (can be 0). This is needed if you want to use the
@@ -11193,24 +11260,6 @@ index 0000000..fadcd48
 +.TP
 +.B \fBosd\-par\fP
 +Last known OSD display pixel aspect (can be 0).
-+.TP
-+.B \fBvid\fP (RW)
-+Current video track (similar to \fB\-\-vid\fP).
-+.TP
-+.B \fBvideo\fP (RW)
-+Alias for \fBvid\fP\&.
-+.TP
-+.B \fBvideo\-align\-x\fP, \fBvideo\-align\-y\fP (RW)
-+See \fB\-\-video\-align\-x\fP and \fB\-\-video\-align\-y\fP\&.
-+.TP
-+.B \fBvideo\-pan\-x\fP, \fBvideo\-pan\-y\fP (RW)
-+See \fB\-\-video\-pan\-x\fP and \fB\-\-video\-pan\-y\fP\&.
-+.TP
-+.B \fBvideo\-zoom\fP (RW)
-+See \fB\-\-video\-zoom\fP\&.
-+.TP
-+.B \fBvideo\-unscaled\fP (W)
-+See \fB\-\-video\-unscaled\fP\&.
 +.TP
 +.B \fBprogram\fP (W)
 +Switch TS program (write\-only).
@@ -11224,41 +11273,12 @@ index 0000000..fadcd48
 +On write, a channel\-switch to the named channel on the same
 +card is performed. Can also be used for channel switching.
 +.TP
-+.B \fBsid\fP (RW)
-+Current subtitle track (similar to \fB\-\-sid\fP).
-+.TP
-+.B \fBsecondary\-sid\fP (RW)
-+Secondary subtitle track (see \fB\-\-secondary\-sid\fP).
-+.TP
-+.B \fBsub\fP (RW)
-+Alias for \fBsid\fP\&.
-+.TP
-+.B \fBsub\-delay\fP (RW)
-+See \fB\-\-sub\-delay\fP\&.
-+.TP
-+.B \fBsub\-pos\fP (RW)
-+See \fB\-\-sub\-pos\fP\&.
-+.TP
-+.B \fBsub\-visibility\fP (RW)
-+See \fB\-\-sub\-visibility\fP\&.
-+.TP
-+.B \fBsub\-forced\-only\fP (RW)
-+See \fB\-\-sub\-forced\-only\fP\&.
-+.TP
-+.B \fBsub\-scale\fP (RW)
-+Subtitle font size multiplier.
-+.TP
-+.B \fBass\-force\-margins\fP (RW)
-+See \fB\-\-ass\-force\-margins\fP\&.
-+.TP
-+.B \fBsub\-use\-margins\fP (RW)
-+See \fB\-\-sub\-use\-margins\fP\&.
-+.TP
-+.B \fBass\-vsfilter\-aspect\-compat\fP (RW)
-+See \fB\-\-ass\-vsfilter\-aspect\-compat\fP\&.
-+.TP
-+.B \fBass\-style\-override\fP (RW)
-+See \fB\-\-ass\-style\-override\fP\&.
++.B \fBsub\-text\fP
++Return the current subtitle text. Formatting is stripped. If a subtitle
++is selected, but no text is currently visible, or the subtitle is not
++text\-based (i.e. DVD/BD subtitles), an empty string is returned.
++.sp
++This property is experimental and might be removed in the future.
 +.TP
 +.B \fBstream\-capture\fP (RW)
 +A filename, see \fB\-\-stream\-capture\fP\&. Setting this will start capture using
@@ -11494,11 +11514,8 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fBaf\fP (RW)
-+See \fB\-\-af\fP and the \fBaf\fP command.
-+.TP
-+.B \fBvf\fP (RW)
-+See \fB\-\-vf\fP and the \fBvf\fP command.
++.B \fBaf\fP, \fBvf\fP (RW)
++See \fB\-\-vf\fP/\fB\-\-af\fP and the \fBvf\fP/\fBaf\fP command.
 +.sp
 +When querying the property with the client API using \fBMPV_FORMAT_NODE\fP,
 +or with Lua \fBmp.get_property_native\fP, this will return a mpv_node with
@@ -11521,12 +11538,6 @@ index 0000000..fadcd48
 +.UNINDENT
 +.sp
 +It\(aqs also possible to write the property using this format.
-+.TP
-+.B \fBvideo\-rotate\fP (RW)
-+See \fB\-\-video\-rotate\fP option.
-+.TP
-+.B \fBvideo\-stereo\-mode\fP (RW)
-+See \fB\-\-video\-stereo\-mode\fP option.
 +.TP
 +.B \fBseekable\fP
 +Return whether it\(aqs generally possible to seek in the current file.
@@ -11800,6 +11811,10 @@ index 0000000..fadcd48
 +changed at runtime by writing to this property. Note that many options
 +require reloading the file for changes to take effect. If there is an
 +equivalent property, prefer setting the property instead.
++.sp
++There shouldn\(aqt be any reason to access \fBoptions/<name>\fP instead of
++\fB<name>\fP, except in situations in which the properties have different
++behavior or conflicting semantics.
 +.TP
 +.B \fBfile\-local\-options/<name>\fP
 +Similar to \fBoptions/<name>\fP, but when setting an option through this
@@ -11855,6 +11870,87 @@ index 0000000..fadcd48
 +.TP
 +.B \fBproperty\-list\fP
 +Return the list of top\-level properties.
++.TP
++.B \fBprofile\-list\fP
++Return the list of profiles and their contents. This is highly
++implementation\-specific, and may change any time. Currently, it returns
++an array of options for each profile. Each option has a name and a value,
++with the value currently always being a string. Note that the options array
++is not a map, as order matters and duplicate entries are possible. Recursive
++profiles are not expanded, and show up as special \fBprofile\fP options.
++.UNINDENT
++.SS Inconsistencies between options and properties
++.sp
++You can access (almost) all options as properties, though there are some
++caveats with some properties (due to historical reasons):
++.INDENT 0.0
++.TP
++.B \fBvid\fP, \fBaid\fP, \fBsid\fP
++While playback is active, you can set existing tracks only. (The option
++allows setting any track ID, and which tracks to enable is chosen at
++loading time.)
++.sp
++Option changes at runtime are affected by this as well.
++.TP
++.B \fBdeinterlace\fP
++While video is active, this behaves differently from the option. It will
++never return the \fBauto\fP value (but the state as observed by the video
++chain). If you set \fBauto\fP, the property will set this as the option value,
++and will return the actual video chain state as observed instead of auto.
++.TP
++.B \fBvideo\-aspect\fP
++While video is active, always returns the effective aspect ratio. Setting
++a special value (like \fBno\fP, values \fB<= 0\fP) will make the property
++set this as option, and return whatever actual aspect was derived from the
++option setting.
++.TP
++.B \fBbrightness\fP (and other color options)
++If \fB\-\-vo=xv\fP is used, these properties may return the adapter\(aqs current
++values instead of the option values.
++.TP
++.B \fBdisplay\-fps\fP
++If a VO is created, this will return either the actual display FPS, or
++an invalid value, instead of the option value.
++.TP
++.B \fBvf\fP, \fBaf\fP
++If you set the properties during playback, and the filter chain fails to
++reinitialize, the new value will be rejected. Setting the option or
++setting the property outside of playback will always succeed/fail in the
++same way. Also, there are no \fBvf\-add\fP etc. properties, but you can use
++the \fBvf\fP/\fBaf\fP group of commands to achieve the same.
++.sp
++Option changes at runtime are affected by this as well.
++.TP
++.B \fBedition\fP
++While a file is loaded, the property will always return the effective
++edition, and setting the \fBauto\fP value will show somewhat strange behavior
++(the property eventually switching to whatever is the default edition).
++.TP
++.B \fBplaylist\fP
++The property is read\-only and returns the current internal playlist. The
++option is for loading playlist during command line parsing. For client API
++uses, you should use the \fBloadlist\fP command instead.
++.TP
++.B \fBwindow\-scale\fP
++Might verify the set value when setting while a window is created.
++.TP
++.B \fBaudio\-file\fP, \fBsub\-file\fP, \fBexternal\-file\fP
++These options/properties are actually lists of filenames. To make the
++command\-line interface easier, each \fB\-\-audio\-file=...\fP option appends
++the full string to the internal list. However, when used as properties,
++every time you set the property as a string the internal list will be
++replaced with a single entry containing the string you set. \fB,\fP or other
++separators are never used. You have to use \fBMPV_FORMAT_NODE_ARRAY\fP (or
++corresponding API, e.g. \fBmp.set_property_native()\fP with a table in Lua)
++to set multiple entries.
++.sp
++Strictly speaking, option access via API (e.g. \fBmpv_set_option_string()\fP)
++has the same problem, and it\(aqs only a difference between CLI/API.
++.TP
++.B \fBdemuxer\fP, \fBidle\fP, \fBlength\fP, \fBaudio\-samplerate\fP, \fBaudio\-channels\fP, \fBaudio\-format\fP, \fBfps\fP, \fBcache\fP, \fBplaylist\-pos\fP, \fBchapter\fP
++These behave completely different as property, but are deprecated (newer
++aliases which don\(aqt conflict have been added). After the deprecation period
++they will be changed to the proper option behavior.
 +.UNINDENT
 +.SS Property Expansion
 +.sp
@@ -11981,24 +12077,19 @@ index 0000000..fadcd48
 +.sp
 +.nf
 +.ft C
-++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
-+| playlist prev    |   title   |      playlist next |
-++\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-+\-\-+\-\-\-\-\-\-+\-+\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
-+| audio | skip | seek |      | seek | skip |  full  |
-++\-\-\-\-\-\-\-+ back | back | play | frwd | frwd | screen |
-+| sub   |      |      |      |      |      |        |
-++\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-+
-+|                     seekbar                       |
-++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
-+| time passed    | cache status |    time remaining |
-++\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
+++\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-+
++| pl prev | pl next  |  title                     |       cache |
+++\-\-\-\-\-\-+\-\-+\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-+\-\-\-\-\-+
++| play | skip | skip | time    |  seekbar  | time | audio | sub |
++|      | back | frwd | elapsed |           | left |       |     |
+++\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-+\-\-\-\-\-+
 +.ft P
 +.fi
 +.UNINDENT
 +.UNINDENT
 +.INDENT 0.0
 +.TP
-+.B playlist prev
++.B pl prev
 +.TS
 +center;
 +|l|l|.
@@ -12007,6 +12098,37 @@ index 0000000..fadcd48
 +left\-click
 +T}	T{
 +play previous file in playlist
++T}
++_
++T{
++right\-click
++T}	T{
++show playlist
++T}
++_
++T{
++shift+L\-click
++T}	T{
++show playlist
++T}
++_
++.TE
++.TP
++.B pl next
++.TS
++center;
++|l|l|.
++_
++T{
++left\-click
++T}	T{
++play next file in playlist
++T}
++_
++T{
++right\-click
++T}	T{
++show playlist
 +T}
 +_
 +T{
@@ -12040,7 +12162,13 @@ index 0000000..fadcd48
 +_
 +.TE
 +.TP
-+.B playlist next
++.B cache
++.nf
++Shows current cache fill status
++.fi
++.sp
++.TP
++.B play
 +.TS
 +center;
 +|l|l|.
@@ -12048,13 +12176,108 @@ index 0000000..fadcd48
 +T{
 +left\-click
 +T}	T{
-+play next file in playlist
++toggle play/pause
++T}
++_
++.TE
++.TP
++.B skip back
++.TS
++center;
++|l|l|.
++_
++T{
++left\-click
++T}	T{
++go to beginning of chapter / previous chapter
++T}
++_
++T{
++right\-click
++T}	T{
++show chapters
 +T}
 +_
 +T{
 +shift+L\-click
 +T}	T{
-+show playlist
++show chapters
++T}
++_
++.TE
++.TP
++.B skip frwd
++.TS
++center;
++|l|l|.
++_
++T{
++left\-click
++T}	T{
++go to next chapter
++T}
++_
++T{
++right\-click
++T}	T{
++show chapters
++T}
++_
++T{
++shift+L\-click
++T}	T{
++show chapters
++T}
++_
++.TE
++.TP
++.B time elapsed
++.nf
++Shows current playback position timestamp
++.fi
++.sp
++.TS
++center;
++|l|l|.
++_
++T{
++left\-click
++T}	T{
++toggle displaying timecodes with milliseconds
++T}
++_
++.TE
++.TP
++.B seekbar
++.nf
++Indicates current playback position and position of chapters
++.fi
++.sp
++.TS
++center;
++|l|l|.
++_
++T{
++left\-click
++T}	T{
++seek to position
++T}
++_
++.TE
++.TP
++.B time left
++.nf
++Shows remaining playback time timestamp
++.fi
++.sp
++.TS
++center;
++|l|l|.
++_
++T{
++left\-click
++T}	T{
++toggle between total and remaining time
 +T}
 +_
 +.TE
@@ -12084,177 +12307,6 @@ index 0000000..fadcd48
 +shift+L\-click
 +T}	T{
 +show available audio/sub tracks
-+T}
-+_
-+.TE
-+.TP
-+.B skip back
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+go to beginning of chapter / previous chapter
-+T}
-+_
-+T{
-+shift+L\-click
-+T}	T{
-+show chapters
-+T}
-+_
-+.TE
-+.TP
-+.B seek back
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+skip back  5 seconds
-+T}
-+_
-+T{
-+right\-click
-+T}	T{
-+skip back 30 seconds
-+T}
-+_
-+T{
-+shift\-L\-click
-+T}	T{
-+skip back  1 frame
-+T}
-+_
-+.TE
-+.TP
-+.B play
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+toggle play/pause
-+T}
-+_
-+.TE
-+.TP
-+.B seek frwd
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+skip forward 10 seconds
-+T}
-+_
-+T{
-+right\-click
-+T}	T{
-+skip forward 60 seconds
-+T}
-+_
-+T{
-+shift\-L\-click
-+T}	T{
-+skip forward  1 frame
-+T}
-+_
-+.TE
-+.TP
-+.B skip frwd
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+go to next chapter
-+T}
-+_
-+T{
-+shift+L\-click
-+T}	T{
-+show chapters
-+T}
-+_
-+.TE
-+.TP
-+.B fullscreen
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+toggle fullscreen
-+T}
-+_
-+.TE
-+.TP
-+.B seekbar
-+.nf
-+Indicates current playback position and position of chapters
-+.fi
-+.sp
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+seek to position
-+T}
-+_
-+.TE
-+.TP
-+.B time passed
-+.nf
-+Shows current playback position timestamp
-+.fi
-+.sp
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+toggle displaying timecodes with milliseconds
-+T}
-+_
-+.TE
-+.TP
-+.B cache status
-+.nf
-+Shows current cache fill status (only visible when below 45%)
-+.fi
-+.sp
-+.TP
-+.B time remaining
-+.nf
-+Shows remaining playback time timestamp
-+.fi
-+.sp
-+.TS
-+center;
-+|l|l|.
-+_
-+T{
-+left\-click
-+T}	T{
-+toggle between total and remaining time
 +T}
 +_
 +.TE
@@ -12334,14 +12386,14 @@ index 0000000..fadcd48
 +.TP
 +.B \fBscalewindowed\fP
 +.nf
-+Default: 1.0
++Default: 1.5
 +Scale factor of the OSC when windowed
 +.fi
 +.sp
 +.TP
 +.B \fBscalefullscreen\fP
 +.nf
-+Default: 1.0
++Default: 1.5
 +Scale factor of the OSC when fullscreen
 +.fi
 +.sp
@@ -12375,6 +12427,13 @@ index 0000000..fadcd48
 +.fi
 +.sp
 +.TP
++.B \fBbarmargin\fP
++.nf
++Default: 0
++Margin from bottom (bottombar) or top (topbar), in pixels
++.fi
++.sp
++.TP
 +.B \fBboxalpha\fP
 +.nf
 +Default: 80
@@ -12399,18 +12458,20 @@ index 0000000..fadcd48
 +.TP
 +.B \fBdeadzonesize\fP
 +.nf
-+Default: 0
++Default: 1
 +Size of the deadzone. The deadzone is an area that makes the mouse act
 +like leaving the window. Movement there won\(aqt make the OSC show up and
 +it will hide immediately if the mouse enters it. The deadzone starts
 +at the window border opposite to the OSC and the size controls how much
-+of the window it will span. Values between 0 and 1.
++of the window it will span. Values between 0 and 1, where 0 means the
++OSC will always popup with mouse movement in the window, and 1 means the
++OSC will only show up when the mouse hovers it.
 +.fi
 +.sp
 +.TP
 +.B \fBminmousemove\fP
 +.nf
-+Default: 3
++Default: 0
 +Minimum amount of pixels the mouse has to move between ticks to make
 +the OSC show up
 +.fi
@@ -12418,7 +12479,7 @@ index 0000000..fadcd48
 +.TP
 +.B \fBlayout\fP
 +.nf
-+Default: box
++Default: bottombar
 +The layout for the OSC. Currently available are: box, slimbox,
 +bottombar and topbar.
 +.fi
@@ -12426,8 +12487,15 @@ index 0000000..fadcd48
 +.TP
 +.B \fBseekbarstyle\fP
 +.nf
-+Default: slider
++Default: bar
 +Sets the style of the seekbar, slider (diamond marker) or bar (fill)
++.fi
++.sp
++.TP
++.B \fBtooltipborder\fP
++.nf
++Default: 1
++Size of the tooltip outline when using bottombar or topbar layouts
 +.fi
 +.sp
 +.TP
@@ -12937,6 +13005,8 @@ index 0000000..fadcd48
 +.INDENT 0.0
 +.TP
 +.B \fBmp.suspend()\fP
++This function has been deprecated in mpv 0.21.0 (no replacement).
++.sp
 +Suspend the mpv main loop. There is a long\-winded explanation of this in
 +the C API function \fBmpv_suspend()\fP\&. In short, this prevents the player
 +from displaying the next video frame, so that you don\(aqt get blocked when
@@ -12945,11 +13015,15 @@ index 0000000..fadcd48
 +Before mpv 0.17.0, this was automatically called by the event handler.
 +.TP
 +.B \fBmp.resume()\fP
++This function has been deprecated in mpv 0.21.0 (no replacement).
++.sp
 +Undo one \fBmp.suspend()\fP call. \fBmp.suspend()\fP increments an internal
 +counter, and \fBmp.resume()\fP decrements it. When 0 is reached, the player
 +is actually resumed.
 +.TP
 +.B \fBmp.resume_all()\fP
++This function has been deprecated in mpv 0.21.0 (no replacement).
++.sp
 +This resets the internal suspend counter and resumes the player. (It\(aqs
 +like calling \fBmp.resume()\fP until the player is actually resumed.)
 +.TP
@@ -12974,6 +13048,13 @@ index 0000000..fadcd48
 +emptied. It\(aqs strongly recommended to use \fBmp.get_next_timeout()\fP and
 +\fBmp.get_wakeup_pipe()\fP if you\(aqre interested in properly working
 +notification of new events and working timers.
++.TP
++.B \fBmp.register_idle(fn)\fP
++Register an event loop idle handler. Idle handlers are called before the
++script goes to sleep after handling all new events. This can be used for
++example to delay processing of property change events: if you\(aqre observing
++multiple properties at once, you might not want to act on each property
++change, but only when all change notifications have been received.
 +.TP
 +.B \fBmp.enable_messages(level)\fP
 +Set the minimum log level of which mpv message output to receive. These
@@ -13195,8 +13276,23 @@ index 0000000..fadcd48
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
++.TP
++.B \fButils.subprocess_detached(t)\fP
++Runs an external process and detaches it from mpv\(aqs control.
 +.sp
-+In all cases, \fBmp.resume_all()\fP is implicitly called.
++The parameter \fBt\fP is a table. The function reads the following entries:
++.INDENT 7.0
++.INDENT 3.5
++.INDENT 0.0
++.TP
++.B \fBargs\fP
++Array of strings of the same semantics as the \fBargs\fP used in the
++\fBsubprocess\fP function.
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.sp
++The function returns \fBnil\fP\&.
 +.TP
 +.B \fButils.parse_json(str [, trail])\fP
 +Parses the given string argument as JSON, and returns it as a Lua table. On
@@ -13720,12 +13816,16 @@ index 0000000..fadcd48
 +command.
 +.TP
 +.B \fBsuspend\fP
++Deprecated, will be removed completely in 0.21.0.
++.sp
 +Suspend the mpv main loop. There is a long\-winded explanation of this in
 +the C API function \fBmpv_suspend()\fP\&. In short, this prevents the player
 +from displaying the next video frame, so that you don\(aqt get blocked when
 +trying to access the player.
 +.TP
 +.B \fBresume\fP
++Deprecated, will be removed completely in 0.21.0.
++.sp
 +Undo one \fBsuspend\fP call. \fBsuspend\fP increments an internal counter, and
 +\fBresume\fP decrements it. When 0 is reached, the player is actually resumed.
 +.TP
@@ -13757,9 +13857,15 @@ index 0000000..fadcd48
 +.IP \(bu 2
 +The git log, which is the "real" changelog
 +.IP \(bu 2
++The files \fBclient\-api\-changes.rst\fP and \fBinterface\-changes.rst\fP in the
++\fBDOCS\fP sub directoryon the git repository, which document API and user
++interface changes (the latter usually documents breaking changes only, rather
++than additions).
++.IP \(bu 2
 +The file \fBmplayer\-changes.rst\fP in the \fBDOCS\fP sub directory on the git
 +repository, which used to be in place of this section. It documents some
-+changes that happened since mplayer2 forked off MPlayer.
++changes that happened since mplayer2 forked off MPlayer. (Not updated
++anymore.)
 +.UNINDENT
 +.SH EMBEDDING INTO OTHER PROGRAMS (LIBMPV)
 +.sp
@@ -13767,6 +13873,21 @@ index 0000000..fadcd48
 +recommended way to do so is using libmpv. See \fBlibmpv/client.h\fP in the mpv
 +source code repository. This provides a C API. Bindings for other languages
 +might be available (see wiki).
++.sp
++Since libmpv merely allows access to underlying mechanisms that can control
++mpv, further documentation is spread over a few places:
++.INDENT 0.0
++.IP \(bu 2
++\fI\%https://github.com/mpv\-player/mpv/blob/master/libmpv/client.h\fP
++.IP \(bu 2
++\fI\%http://mpv.io/manual/master/#options\fP
++.IP \(bu 2
++\fI\%http://mpv.io/manual/master/#list\-of\-input\-commands\fP
++.IP \(bu 2
++\fI\%http://mpv.io/manual/master/#properties\fP
++.IP \(bu 2
++\fI\%https://github.com/mpv\-player/mpv\-examples/tree/master/libmpv\fP
++.UNINDENT
 +.SH ENVIRONMENT VARIABLES
 +.sp
 +There are a number of environment variables that can be used to control the
@@ -14011,5 +14132,5 @@ index 0000000..fadcd48
 +.\" Generated by docutils manpage writer.
 +.
 -- 
-2.9.2
+2.10.1
 

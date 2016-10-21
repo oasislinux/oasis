@@ -52,6 +52,7 @@ fn file2string {
 }
 
 file2string input/input_conf.h etc/input.conf
+file2string player/builtin_conf.inc etc/builtin.conf
 file2string sub/osd_font.h sub/osd_font.otf
 for(f in assdraw defaults options osc ytdl_hook)
 	file2string player/lua/$f.inc player/lua/$f.lua
