@@ -100,6 +100,7 @@ youtube_dl/extractor/crooksandliars.py
 youtube_dl/extractor/mtv.py
 youtube_dl/extractor/nowness.py
 youtube_dl/extractor/newstube.py
+youtube_dl/extractor/beatport.py
 youtube_dl/extractor/embedly.py
 youtube_dl/extractor/wimp.py
 youtube_dl/extractor/cbssports.py
@@ -207,7 +208,6 @@ youtube_dl/extractor/afreecatv.py
 youtube_dl/extractor/brightcove.py
 youtube_dl/extractor/pluralsight.py
 youtube_dl/extractor/atresplayer.py
-youtube_dl/extractor/beatportpro.py
 youtube_dl/extractor/animeondemand.py
 youtube_dl/extractor/newgrounds.py
 youtube_dl/extractor/onet.py
@@ -497,6 +497,7 @@ youtube_dl/extractor/veoh.py
 youtube_dl/extractor/atttechchannel.py
 youtube_dl/extractor/cspan.py
 youtube_dl/extractor/lemonde.py
+youtube_dl/extractor/huajiao.py
 youtube_dl/extractor/aol.py
 youtube_dl/extractor/hbo.py
 youtube_dl/extractor/myvidster.py

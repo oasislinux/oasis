@@ -1,4 +1,4 @@
-From 47223fe0bd580c17c31681423d94b728a9dd879f Mon Sep 17 00:00:00 2001
+From 6348e6ef49c0fb04a568d061b7a511a019b965e7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -8,7 +8,7 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  1 file changed, 11 insertions(+), 164 deletions(-)
 
 diff --git a/youtube_dl/utils.py b/youtube_dl/utils.py
-index 0569d23..e1e4bff 100644
+index 2894167..d0b394a 100644
 --- a/youtube_dl/utils.py
 +++ b/youtube_dl/utils.py
 @@ -8,7 +8,6 @@ import binascii
@@ -19,7 +19,7 @@ index 0569d23..e1e4bff 100644
  import datetime
  import email.utils
  import errno
-@@ -1247,90 +1246,11 @@ def platform_name():
+@@ -1249,90 +1248,11 @@ def platform_name():
      return res
  
  
@@ -110,7 +110,7 @@ index 0569d23..e1e4bff 100644
      if ('b' in getattr(out, 'mode', '') or
              sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
          byt = s.encode(encoding or preferredencoding(), 'ignore')
-@@ -1360,78 +1280,22 @@ def intlist_to_bytes(xs):
+@@ -1362,78 +1282,22 @@ def intlist_to_bytes(xs):
  
  
  # Cross-platform file locking
@@ -199,7 +199,7 @@ index 0569d23..e1e4bff 100644
  
  
  class locked_file(object):
-@@ -1647,24 +1511,7 @@ def fix_xml_ampersands(xml_str):
+@@ -1649,24 +1513,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
