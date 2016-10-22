@@ -1,0 +1,44 @@
+From 5ab8305957fcf03a7b0602c926db72ecbc3f1294 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 22 Oct 2016 02:13:12 -0700
+Subject: [sbase] [PATCH] tr: Fix multiple ranges with different lengths
+
+A bug was introduced in bc4c293fe59de042c1ac71793d33bb685c4fb915 causing the
+range length for the next set to be used instead of the first one. This causes
+issues when choosing the replacement rune when the ranges are of different
+lengths.
+
+Current behavior:
+
+$ echo 1234 | tr 'a-f1-4' '1-6a-d'
+56ab
+
+Correct behavior:
+
+$ echo 1234 | tr 'a-f1-4' '1-6a-d'
+abcd
+
+This also fixes range expressions in the form [a-z], which get encoded as four
+ranges '[', 'a'..'z', ']', causing all a-z characters to get mapped to ']'. This
+form is occasionally used in shell scripts, including the syscalltbl.sh script
+used to build linux.
+---
+ tr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tr.c b/tr.c
+index a633d74..c235215 100644
+--- a/tr.c
++++ b/tr.c
+@@ -213,7 +213,7 @@ read:
+ 	}
+ 	if (argc == 1 && sflag)
+ 		goto write;
+-	for (i = 0, off1 = 0; i < set1ranges; i++, off1 += rangelen(set1[i])) {
++	for (i = 0, off1 = 0; i < set1ranges; off1 += rangelen(set1[i]), i++) {
+ 		if (set1[i].start <= r && r <= set1[i].end) {
+ 			if (dflag) {
+ 				if (cflag)
+-- 
+2.10.1
+

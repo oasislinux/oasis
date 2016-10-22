@@ -44,6 +44,7 @@
 [submodule "core/sbase/src"]
 	path = core/sbase/src
 	url = git://git.suckless.org/sbase
+	ignore = all
 [submodule "core/sinit/src"]
 	path = core/sinit/src
 	url = git://git.suckless.org/sinit
