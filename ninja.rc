@@ -151,6 +151,15 @@ fn yacc {
 	}
 }
 
+fn waylandproto {
+	proto='$srcdir'/$1
+	shift
+	build '$outdir'/$1 waylandproto $proto ; with type client-header
+	build '$outdir'/$2 waylandproto $proto ; with type server-header
+	build '$outdir'/$3 waylandproto $proto ; with type code
+	cc '$outdir'/$3 '||' phony/desktop/wayland/headers
+}
+
 # packaging rules
 
 fn file {

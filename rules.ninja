@@ -53,6 +53,9 @@ rule sed
 rule awk
   command = awk $expr $in >$out.tmp && mv $out.tmp $out
 
+rule waylandproto
+  command = wayland-scanner $type $in $out.tmp && mv $out.tmp $out
+
 rule githash
   command = rc ./scripts/hash.rc $builddir/$repo.git $args $in >$out.tmp && mv $out.tmp $out
 
