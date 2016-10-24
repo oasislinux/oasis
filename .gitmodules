@@ -100,6 +100,9 @@
 	path = desktop/wayland/src
 	url = https://anongit.freedesktop.org/git/wayland/wayland.git
 	ignore = all
+[submodule "desktop/wld/src"]
+	path = desktop/wld/src
+	url = https://github.com/michaelforney/wld
 [submodule "devel/make/src"]
 	path = devel/make/src
 	url = git://git.sv.gnu.org/make.git

@@ -1,0 +1,65 @@
+cflags=(\
+	-D WITH_WAYLAND_SHM\
+	-D WITH_WAYLAND_DRM\
+	-isystem desktop/fontconfig/src\
+	-isystem desktop/freetype/src/include\
+	-isystem desktop/libdrm/src\
+	-isystem desktop/libdrm/src/include/drm\
+	-isystem '$builddir'/desktop/pixman/include\
+	-isystem '$builddir'/desktop/wayland/include\
+	-I '$outdir' \
+)
+
+hdrs=(drm.h pixman.h wayland.h wld.h)
+for(hdr in $hdrs) {
+	build '$outdir'/include/wld/$hdr copy '$srcdir'/$hdr
+	file include/wld/$hdr '$srcdir'/$hdr 644
+}
+phony headers include/wld/$hdrs
+
+srcs=(\
+	buffer.c\
+	buffered_surface.c\
+	color.c\
+	context.c\
+	drm.c\
+	dumb.c\
+	font.c\
+	renderer.c\
+	surface.c\
+	pixman.c\
+	wayland.c\
+	wayland-shm.c\
+	wayland-drm.c\
+	wayland-drm-protocol.c.o\
+)
+libs=(\
+	desktop/fontconfig/libfontconfig.a.d\
+	desktop/freetype/libfreetype.a.d\
+	desktop/libdrm/libdrm.a\
+	desktop/pixman/libpixman.a\
+	desktop/wayland/libwayland-client.a.d\
+)
+
+if(~ intel $config_video_drivers) {
+	cflags=($cflags -D WITH_DRM_INTEL -I desktop/libdrm/src/intel)
+	srcs=($srcs intel.c intel/batch.c)
+	libs=($libs desktop/libdrm/libdrm_intel.a.d)
+}
+if(~ nouveau $config_video_drivers) {
+	cflags=($cflags -D WITH_DRM_NOUVEAU -I desktop/libdrm/src/nouveau)
+	srcs=($srcs nouveau.c)
+	libs=($libs desktop/libdrm/libdrm_nouveau.a)
+}
+
+cflags $cflags
+
+waylandproto protocol/wayland-drm.xml\
+	protocol/wayland-drm-^(client server)^-protocol.h\
+	wayland-drm-protocol.c
+
+phony deps phony/desktop/^(pixman wayland)^/headers protocol/wayland-drm-client-protocol.h
+
+lib libwld.a -d 'phony/$dir/deps' $srcs '$builddir'/$libs
+
+fetch git
