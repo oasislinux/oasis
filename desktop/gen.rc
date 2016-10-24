@@ -10,4 +10,5 @@ subgen pixman
 subgen plan9fonts
 subgen terminus-font
 subgen wayland
+subgen wayland-protocols
 subgen wld
