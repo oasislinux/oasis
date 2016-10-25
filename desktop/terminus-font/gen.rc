@@ -1,0 +1,13 @@
+fn ucstox11 {
+	maps='$srcdir'/uni/^(x11gr.uni 10646-1.uni)
+	build '$outdir'/$1 awk $maps '|' '$dir'/ucstoany.awk '$srcdir'/$1
+	with expr '-v font=$srcdir/'$1' -v charset=ISO10646-1 -f $dir/ucstoany.awk'
+	file share/fonts/terminus/$1 '$outdir'/$1 644
+}
+
+for(size in (12 14 16 20 22 24 28 32)) {
+	for(font in ter-u$size^(n b)^.bdf)
+		ucstox11 $font
+}
+
+fetch curl

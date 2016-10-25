@@ -10,4 +10,5 @@ subgen libpciaccess
 subgen libxkbcommon
 subgen pixman
 subgen plan9fonts
+subgen terminus-font
 subgen wayland
