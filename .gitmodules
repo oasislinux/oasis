@@ -99,6 +99,9 @@
 [submodule "desktop/swc/src"]
 	path = desktop/swc/src
 	url = https://github.com/michaelforney/swc
+[submodule "desktop/velox/src"]
+	path = desktop/velox/src
+	url = https://github.com/michaelforney/velox
 [submodule "desktop/wayland/src"]
 	path = desktop/wayland/src
 	url = https://anongit.freedesktop.org/git/wayland/wayland.git

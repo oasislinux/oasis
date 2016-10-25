@@ -10,6 +10,7 @@ subgen pixman
 subgen plan9fonts
 subgen swc
 subgen terminus-font
+subgen velox
 subgen wayland
 subgen wayland-protocols
 subgen wld
