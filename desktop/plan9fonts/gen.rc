@@ -1,5 +1,4 @@
-for(f in `{grep -v '^#' fonts.txt}) {
-	file share/fonts/plan9/$f '$srcdir'/$f 644
-}
+for(f in `{grep -v '^#' fonts.txt})
+	file share/plan9/fonts/$f '$srcdir'/$f 644
 
 fetch git
