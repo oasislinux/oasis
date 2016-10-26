@@ -2,6 +2,7 @@
 acorn
 adi
 adventure
+algol68
 allegro
 alliant
 alpha
@@ -12,7 +13,9 @@ animation
 aout
 apl
 apple
+application
 applix
+apt
 archive
 assembler
 asterix
@@ -198,6 +201,7 @@ polyml
 printer
 project
 psdbms
+psl
 pulsar
 pwsafe
 pyramid

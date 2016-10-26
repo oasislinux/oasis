@@ -1,4 +1,4 @@
-version=5.28
+version=5.29
 cflags\
 	-DHAVE_CONFIG_H\
 	-DMAGIC'='\"/share/file/magic\"\
