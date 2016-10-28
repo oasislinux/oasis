@@ -1,0 +1,71 @@
+From 5873e9061201ed7b182b6ec7ec46be60ae4d9893 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 28 Oct 2016 00:33:53 -0700
+Subject: [PATCH] Fix build with LibreSSL
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ libavformat/tls_openssl.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/libavformat/tls_openssl.c b/libavformat/tls_openssl.c
+index c551ac7..9712856 100644
+--- a/libavformat/tls_openssl.c
++++ b/libavformat/tls_openssl.c
+@@ -43,7 +43,7 @@ typedef struct TLSContext {
+     TLSShared tls_shared;
+     SSL_CTX *ctx;
+     SSL *ssl;
+-#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
+     BIO_METHOD* url_bio_method;
+ #endif
+ } TLSContext;
+@@ -68,7 +68,7 @@ static unsigned long openssl_thread_id(void)
+ 
+ static int url_bio_create(BIO *b)
+ {
+-#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
+     BIO_set_init(b, 1);
+     BIO_set_data(b, NULL);
+     BIO_set_flags(b, 0);
+@@ -85,7 +85,7 @@ static int url_bio_destroy(BIO *b)
+     return 1;
+ }
+ 
+-#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
+ #define GET_BIO_DATA(x) BIO_get_data(x);
+ #else
+ #define GET_BIO_DATA(x) (x)->ptr;
+@@ -133,7 +133,7 @@ static int url_bio_bputs(BIO *b, const char *str)
+     return url_bio_bwrite(b, str, strlen(str));
+ }
+ 
+-#if OPENSSL_VERSION_NUMBER < 0x1010000fL
++#if OPENSSL_VERSION_NUMBER < 0x1010000fL || defined(LIBRESSL_VERSION_NUMBER)
+ static BIO_METHOD url_bio_method = {
+     .type = BIO_TYPE_SOURCE_SINK,
+     .name = "urlprotocol bio",
+@@ -212,7 +212,7 @@ static int tls_close(URLContext *h)
+         SSL_CTX_free(c->ctx);
+     if (c->tls_shared.tcp)
+         ffurl_close(c->tls_shared.tcp);
+-#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
+     if (c->url_bio_method)
+         BIO_meth_free(c->url_bio_method);
+ #endif
+@@ -265,7 +265,7 @@ static int tls_open(URLContext *h, const char *uri, int flags, AVDictionary **op
+         ret = AVERROR(EIO);
+         goto fail;
+     }
+-#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
+     p->url_bio_method = BIO_meth_new(BIO_TYPE_SOURCE_SINK, "urlprotocol bio");
+     BIO_meth_set_write(p->url_bio_method, url_bio_bwrite);
+     BIO_meth_set_read(p->url_bio_method, url_bio_bread);
+-- 
+2.10.1
+

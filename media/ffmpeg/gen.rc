@@ -72,6 +72,7 @@ fflib libavcodec\
 	imgconvert.c\
 	jni.c\
 	mathtables.c\
+	mediacodec.c\
 	options.c\
 	parser.c\
 	profiles.c\

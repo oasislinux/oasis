@@ -39,6 +39,7 @@ END {
 	proto("sctp")
 	proto("srtp")
 	proto("subfile")
+	proto("tee")
 	proto("tcp")
 	proto("tls_gnutls")
 	proto("tls_schannel")
