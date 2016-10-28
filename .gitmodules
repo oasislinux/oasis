@@ -62,6 +62,10 @@
 [submodule "core/xz/src"]
 	path = core/xz/src
 	url = http://git.tukaani.org/xz.git
+[submodule "desktop/dmenu/src"]
+	path = desktop/dmenu/src
+	url = git://git.suckless.org/dmenu
+	ignore = all
 [submodule "desktop/expat/src"]
 	path = desktop/expat/src
 	url = git://git.code.sf.net/p/expat/code_git

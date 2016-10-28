@@ -1,0 +1,1234 @@
+From d0d4bd1e7d5d39fe955dab33fa39d5a5115c89a7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 27 Oct 2016 21:04:23 -0700
+Subject: [PATCH] Port to wayland using wld and swc panels
+
+---
+ Makefile  |  16 +-
+ config.mk |  20 +--
+ dmenu.c   | 540 +++++++++++++++++++++++++++++++++-----------------------------
+ drw.c     | 123 +++++++-------
+ drw.h     |  26 ++-
+ 5 files changed, 372 insertions(+), 353 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index a7cd04f..5747934 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,7 @@
+ 
+ include config.mk
+ 
+-SRC = drw.c dmenu.c stest.c util.c
++SRC = drw.c dmenu.c stest.c panel-protocol.c util.c
+ OBJ = ${SRC:.c=.o}
+ 
+ all: options dmenu stest
+@@ -22,11 +22,19 @@ config.h:
+ 	@echo creating $@ from config.def.h
+ 	@cp config.def.h $@
+ 
+-${OBJ}: arg.h config.h config.mk drw.h
++swc-protocol.c: $(SWCPROTO)
++	@echo GEN $@
++	@wayland-scanner code < $< > $@
+ 
+-dmenu: dmenu.o drw.o util.o
++swc-client-protocol.h: $(SWCPROTO)
++	@echo GEN $@
++	@wayland-scanner client-header < $< > $@
++
++${OBJ}: arg.h config.h config.mk drw.h swc-client-protocol.h
++
++dmenu: dmenu.o drw.o swc-protocol.o util.o
+ 	@echo CC -o $@
+-	@${CC} -o $@ dmenu.o drw.o util.o ${LDFLAGS}
++	@${CC} -o $@ dmenu.o drw.o swc-protocol.o util.o ${LDFLAGS}
+ 
+ stest: stest.o
+ 	@echo CC -o $@
+diff --git a/config.mk b/config.mk
+index 4d908a5..c6416ad 100644
+--- a/config.mk
++++ b/config.mk
+@@ -5,25 +5,15 @@ VERSION = 4.6
+ PREFIX = /usr/local
+ MANPREFIX = ${PREFIX}/share/man
+ 
+-X11INC = /usr/X11R6/include
+-X11LIB = /usr/X11R6/lib
+-
+-# Xinerama, comment if you don't want it
+-XINERAMALIBS  = -lXinerama
+-XINERAMAFLAGS = -DXINERAMA
+-
+-# freetype
+-FREETYPELIBS = -lfontconfig -lXft
+-FREETYPEINC = /usr/include/freetype2
+-# OpenBSD (uncomment)
+-#FREETYPEINC = ${X11INC}/freetype2
++PIXMANINC = /usr/include/pixman-1
++SWCPROTO = /usr/share/swc/swc.xml
+ 
+ # includes and libs
+-INCS = -I${X11INC} -I${FREETYPEINC}
+-LIBS = -L${X11LIB} -lX11 ${XINERAMALIBS} ${FREETYPELIBS}
++INCS = -I${PIXMANINC}
++LIBS = -lwayland-client -lxkbcommon -lwld
+ 
+ # flags
+-CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_POSIX_C_SOURCE=200809L -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
++CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_POSIX_C_SOURCE=200809L -DVERSION=\"${VERSION}\"
+ CFLAGS   = -std=c99 -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
+ LDFLAGS  = -s ${LIBS}
+ 
+diff --git a/dmenu.c b/dmenu.c
+index 9278e91..9cd3c23 100644
+--- a/dmenu.c
++++ b/dmenu.c
+@@ -5,18 +5,18 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <strings.h>
++#include <sys/mman.h>
+ #include <time.h>
++#include <unistd.h>
+ 
+-#include <X11/Xlib.h>
+-#include <X11/Xatom.h>
+-#include <X11/Xutil.h>
+-#ifdef XINERAMA
+-#include <X11/extensions/Xinerama.h>
+-#endif
+-#include <X11/Xft/Xft.h>
++#include <wayland-client.h>
++#include <wld/wayland.h>
++#include <wld/wld.h>
++#include <xkbcommon/xkbcommon.h>
+ 
+ #include "drw.h"
+ #include "util.h"
++#include "swc-client-protocol.h"
+ 
+ /* macros */
+ #define INTERSECT(x,y,w,h,r)  (MAX(0, MIN((x)+(w),(r).x_org+(r).width)  - MAX((x),(r).x_org)) \
+@@ -33,8 +33,16 @@ struct item {
+ 	int out;
+ };
+ 
++struct xkb {
++	struct xkb_context *context;
++	struct xkb_state *state;
++	struct xkb_keymap *keymap;
++	xkb_mod_index_t ctrl, alt, shift;
++};
++
++static void paste(void);
++
+ static char text[BUFSIZ] = "";
+-static char *embed;
+ static int bh, mw, mh;
+ static int inputw = 0, promptw;
+ static int lrpad; /* sum of left and right padding */
+@@ -42,12 +50,21 @@ static size_t cursor;
+ static struct item *items = NULL;
+ static struct item *matches, *matchend;
+ static struct item *prev, *curr, *next, *sel;
+-static int mon = -1, screen;
+-
+-static Atom clip, utf8;
+-static Display *dpy;
+-static Window root, parentwin, win;
+-static XIC xic;
++static int mon = -1;
++
++static struct wl_display *dpy;
++static struct wl_compositor *compositor;
++static struct wl_keyboard *kbd;
++static struct wl_seat *seat;
++static struct wl_shell *shell;
++static struct wl_surface *surface;
++static struct wl_data_device_manager *datadevman;
++static struct wl_data_device *datadev;
++static struct wl_data_offer *seloffer;
++static struct swc_screen *screen;
++static struct swc_panel_manager *panelman;
++static struct swc_panel *panel;
++static struct xkb xkb;
+ 
+ static Drw *drw;
+ static Clr *scheme[SchemeLast];
+@@ -93,12 +110,10 @@ cleanup(void)
+ {
+ 	size_t i;
+ 
+-	XUngrabKey(dpy, AnyKey, AnyModifier, root);
+ 	for (i = 0; i < SchemeLast; i++)
+ 		free(scheme[i]);
+ 	drw_free(drw);
+-	XSync(dpy, False);
+-	XCloseDisplay(dpy);
++	wl_display_disconnect(dpy);
+ }
+ 
+ static char *
+@@ -132,6 +147,7 @@ drawmenu(void)
+ 	struct item *item;
+ 	int x = 0, y = 0, w;
+ 
++	wld_set_target_surface(drw->renderer, drw->surface);
+ 	drw_setscheme(drw, scheme[SchemeNorm]);
+ 	drw_rect(drw, 0, 0, mw, mh, 1, 1);
+ 
+@@ -171,42 +187,7 @@ drawmenu(void)
+ 			drw_text(drw, mw - w, 0, w, bh, lrpad / 2, ">", 0);
+ 		}
+ 	}
+-	drw_map(drw, win, 0, 0, mw, mh);
+-}
+-
+-static void
+-grabfocus(void)
+-{
+-	struct timespec ts = { .tv_sec = 0, .tv_nsec = 10000000  };
+-	Window focuswin;
+-	int i, revertwin;
+-
+-	for (i = 0; i < 100; ++i) {
+-		XGetInputFocus(dpy, &focuswin, &revertwin);
+-		if (focuswin == win)
+-			return;
+-		XSetInputFocus(dpy, win, RevertToParent, CurrentTime);
+-		nanosleep(&ts, NULL);
+-	}
+-	die("cannot grab focus");
+-}
+-
+-static void
+-grabkeyboard(void)
+-{
+-	struct timespec ts = { .tv_sec = 0, .tv_nsec = 1000000  };
+-	int i;
+-
+-	if (embed)
+-		return;
+-	/* try to grab keyboard, we may have to wait for another process to ungrab */
+-	for (i = 0; i < 1000; i++) {
+-		if (XGrabKeyboard(dpy, DefaultRootWindow(dpy), True, GrabModeAsync,
+-		                  GrabModeAsync, CurrentTime) == GrabSuccess)
+-			return;
+-		nanosleep(&ts, NULL);
+-	}
+-	die("cannot grab keyboard");
++	drw_map(drw, surface, 0, 0, mw, mh);
+ }
+ 
+ static void
+@@ -288,88 +269,92 @@ nextrune(int inc)
+ }
+ 
+ static void
+-keypress(XKeyEvent *ev)
++kbdkey(void *d, struct wl_keyboard *kbd, uint32_t serial, uint32_t time,
++       uint32_t key, uint32_t state)
+ {
+ 	char buf[32];
+ 	int len;
+-	KeySym ksym = NoSymbol;
+-	Status status;
++	xkb_keysym_t ksym = XKB_KEY_NoSymbol;
++	int ctrl = xkb_state_mod_index_is_active(xkb.state, xkb.ctrl, XKB_STATE_MODS_EFFECTIVE);
++	int shift = xkb_state_mod_index_is_active(xkb.state, xkb.shift, XKB_STATE_MODS_EFFECTIVE);
++	int alt = xkb_state_mod_index_is_active(xkb.state, xkb.alt, XKB_STATE_MODS_EFFECTIVE);
+ 
+-	len = XmbLookupString(xic, ev, buf, sizeof buf, &ksym, &status);
+-	if (status == XBufferOverflow)
+-		return;
+-	if (ev->state & ControlMask)
++	if (state == WL_KEYBOARD_KEY_STATE_RELEASED)
++		goto update_state;
++
++	ksym = xkb_state_key_get_one_sym(xkb.state, key + 8);
++	len = xkb_keysym_to_utf8(ksym, buf, sizeof buf) - 1;
++	if (ctrl)
+ 		switch(ksym) {
+-		case XK_a: ksym = XK_Home;      break;
+-		case XK_b: ksym = XK_Left;      break;
+-		case XK_c: ksym = XK_Escape;    break;
+-		case XK_d: ksym = XK_Delete;    break;
+-		case XK_e: ksym = XK_End;       break;
+-		case XK_f: ksym = XK_Right;     break;
+-		case XK_g: ksym = XK_Escape;    break;
+-		case XK_h: ksym = XK_BackSpace; break;
+-		case XK_i: ksym = XK_Tab;       break;
+-		case XK_j: /* fallthrough */
+-		case XK_J: /* fallthrough */
+-		case XK_m: /* fallthrough */
+-		case XK_M: ksym = XK_Return; ev->state &= ~ControlMask; break;
+-		case XK_n: ksym = XK_Down;      break;
+-		case XK_p: ksym = XK_Up;        break;
+-
+-		case XK_k: /* delete right */
++		case XKB_KEY_a: ksym = XKB_KEY_Home;      break;
++		case XKB_KEY_b: ksym = XKB_KEY_Left;      break;
++		case XKB_KEY_c: ksym = XKB_KEY_Escape;    break;
++		case XKB_KEY_d: ksym = XKB_KEY_Delete;    break;
++		case XKB_KEY_e: ksym = XKB_KEY_End;       break;
++		case XKB_KEY_f: ksym = XKB_KEY_Right;     break;
++		case XKB_KEY_g: ksym = XKB_KEY_Escape;    break;
++		case XKB_KEY_h: ksym = XKB_KEY_BackSpace; break;
++		case XKB_KEY_i: ksym = XKB_KEY_Tab;       break;
++		case XKB_KEY_j: /* fallthrough */
++		case XKB_KEY_J: /* fallthrough */
++		case XKB_KEY_m: /* fallthrough */
++		case XKB_KEY_M: ksym = XKB_KEY_Return; ctrl = 0; break;
++		case XKB_KEY_n: ksym = XKB_KEY_Down;      break;
++		case XKB_KEY_p: ksym = XKB_KEY_Up;        break;
++
++		case XKB_KEY_k: /* delete right */
+ 			text[cursor] = '\0';
+ 			match();
+ 			break;
+-		case XK_u: /* delete left */
++		case XKB_KEY_u: /* delete left */
+ 			insert(NULL, 0 - cursor);
+ 			break;
+-		case XK_w: /* delete word */
++		case XKB_KEY_w: /* delete word */
+ 			while (cursor > 0 && strchr(worddelimiters, text[nextrune(-1)]))
+ 				insert(NULL, nextrune(-1) - cursor);
+ 			while (cursor > 0 && !strchr(worddelimiters, text[nextrune(-1)]))
+ 				insert(NULL, nextrune(-1) - cursor);
+ 			break;
+-		case XK_y: /* paste selection */
+-		case XK_Y:
+-			XConvertSelection(dpy, (ev->state & ShiftMask) ? clip : XA_PRIMARY,
+-			                  utf8, utf8, win, CurrentTime);
++		case XKB_KEY_y: /* paste selection */
++		case XKB_KEY_Y:
++			paste();
+ 			return;
+-		case XK_Return:
+-		case XK_KP_Enter:
++		case XKB_KEY_Return:
++		case XKB_KEY_KP_Enter:
+ 			break;
+-		case XK_bracketleft:
++		case XKB_KEY_bracketleft:
+ 			cleanup();
+ 			exit(1);
+ 		default:
+ 			return;
+ 		}
+-	else if (ev->state & Mod1Mask)
++	else if (alt)
+ 		switch(ksym) {
+-		case XK_g: ksym = XK_Home;  break;
+-		case XK_G: ksym = XK_End;   break;
+-		case XK_h: ksym = XK_Up;    break;
+-		case XK_j: ksym = XK_Next;  break;
+-		case XK_k: ksym = XK_Prior; break;
+-		case XK_l: ksym = XK_Down;  break;
++		case XKB_KEY_g: ksym = XKB_KEY_Home;  break;
++		case XKB_KEY_G: ksym = XKB_KEY_End;   break;
++		case XKB_KEY_h: ksym = XKB_KEY_Up;    break;
++		case XKB_KEY_j: ksym = XKB_KEY_Next;  break;
++		case XKB_KEY_k: ksym = XKB_KEY_Prior; break;
++		case XKB_KEY_l: ksym = XKB_KEY_Down;  break;
+ 		default:
+ 			return;
+ 		}
+-	switch(ksym) {
++	switch (ksym) {
+ 	default:
+ 		if (!iscntrl(*buf))
+ 			insert(buf, len);
+ 		break;
+-	case XK_Delete:
++	case XKB_KEY_Delete:
+ 		if (text[cursor] == '\0')
+ 			return;
+ 		cursor = nextrune(+1);
+ 		/* fallthrough */
+-	case XK_BackSpace:
++	case XKB_KEY_BackSpace:
+ 		if (cursor == 0)
+ 			return;
+ 		insert(NULL, nextrune(-1) - cursor);
+ 		break;
+-	case XK_End:
++	case XKB_KEY_End:
+ 		if (text[cursor] != '\0') {
+ 			cursor = strlen(text);
+ 			break;
+@@ -385,10 +370,10 @@ keypress(XKeyEvent *ev)
+ 		}
+ 		sel = matchend;
+ 		break;
+-	case XK_Escape:
++	case XKB_KEY_Escape:
+ 		cleanup();
+ 		exit(1);
+-	case XK_Home:
++	case XKB_KEY_Home:
+ 		if (sel == matches) {
+ 			cursor = 0;
+ 			break;
+@@ -396,7 +381,7 @@ keypress(XKeyEvent *ev)
+ 		sel = curr = matches;
+ 		calcoffsets();
+ 		break;
+-	case XK_Left:
++	case XKB_KEY_Left:
+ 		if (cursor > 0 && (!sel || !sel->left || lines > 0)) {
+ 			cursor = nextrune(-1);
+ 			break;
+@@ -404,35 +389,35 @@ keypress(XKeyEvent *ev)
+ 		if (lines > 0)
+ 			return;
+ 		/* fallthrough */
+-	case XK_Up:
++	case XKB_KEY_Up:
+ 		if (sel && sel->left && (sel = sel->left)->right == curr) {
+ 			curr = prev;
+ 			calcoffsets();
+ 		}
+ 		break;
+-	case XK_Next:
++	case XKB_KEY_Next:
+ 		if (!next)
+ 			return;
+ 		sel = curr = next;
+ 		calcoffsets();
+ 		break;
+-	case XK_Prior:
++	case XKB_KEY_Prior:
+ 		if (!prev)
+ 			return;
+ 		sel = curr = prev;
+ 		calcoffsets();
+ 		break;
+-	case XK_Return:
+-	case XK_KP_Enter:
+-		puts((sel && !(ev->state & ShiftMask)) ? sel->text : text);
+-		if (!(ev->state & ControlMask)) {
++	case XKB_KEY_Return:
++	case XKB_KEY_KP_Enter:
++		puts((sel && !shift) ? sel->text : text);
++		if (!ctrl) {
+ 			cleanup();
+ 			exit(0);
+ 		}
+-		if (sel)
++		if(sel)
+ 			sel->out = 1;
+ 		break;
+-	case XK_Right:
++	case XKB_KEY_Right:
+ 		if (text[cursor] != '\0') {
+ 			cursor = nextrune(+1);
+ 			break;
+@@ -440,13 +425,13 @@ keypress(XKeyEvent *ev)
+ 		if (lines > 0)
+ 			return;
+ 		/* fallthrough */
+-	case XK_Down:
++	case XKB_KEY_Down:
+ 		if (sel && sel->right && (sel = sel->right) == next) {
+ 			curr = next;
+ 			calcoffsets();
+ 		}
+ 		break;
+-	case XK_Tab:
++	case XKB_KEY_Tab:
+ 		if (!sel)
+ 			return;
+ 		strncpy(text, sel->text, sizeof text - 1);
+@@ -456,22 +441,28 @@ keypress(XKeyEvent *ev)
+ 		break;
+ 	}
+ 	drawmenu();
++
++update_state:
++	xkb_state_update_key(xkb.state, key + 8,
++			     state == WL_KEYBOARD_KEY_STATE_PRESSED ? XKB_KEY_DOWN : XKB_KEY_UP);
+ }
+ 
+ static void
+ paste(void)
+ {
+-	char *p, *q;
+-	int di;
+-	unsigned long dl;
+-	Atom da;
+-
+-	/* we have been given the current selection, now insert it into input */
+-	XGetWindowProperty(dpy, win, utf8, 0, (sizeof text / 4) + 1, False,
+-	                   utf8, &da, &di, &dl, &dl, (unsigned char **)&p);
+-	insert(p, (q = strchr(p, '\n')) ? q - p : (ssize_t)strlen(p));
+-	XFree(p);
+-	drawmenu();
++	int fds[2], len;
++	char buf[BUFSIZ], *nl;
++
++	if (seloffer) {
++		pipe(fds);
++		wl_data_offer_receive(seloffer, "text/plain", fds[1]);
++		wl_display_flush(dpy);
++		close(fds[1]);
++		while((len = read(fds[0], buf, sizeof buf)) > 0)
++			insert(buf, (nl = strchr(buf, '\n')) ? nl - buf : len);
++		close(fds[0]);
++		drawmenu();
++	}
+ }
+ 
+ static void
+@@ -506,145 +497,203 @@ readstdin(void)
+ static void
+ run(void)
+ {
+-	XEvent ev;
++	while (wl_display_dispatch(dpy) != -1)
++		;
++}
+ 
+-	while (!XNextEvent(dpy, &ev)) {
+-		if (XFilterEvent(&ev, win))
+-			continue;
+-		switch(ev.type) {
+-		case Expose:
+-			if (ev.xexpose.count == 0)
+-				drw_map(drw, win, 0, 0, mw, mh);
+-			break;
+-		case FocusIn:
+-			/* regrab focus from parent window */
+-			if (ev.xfocus.window != win)
+-				grabfocus();
+-			break;
+-		case KeyPress:
+-			keypress(&ev.xkey);
+-			break;
+-		case SelectionNotify:
+-			if (ev.xselection.property == utf8)
+-				paste();
+-			break;
+-		case VisibilityNotify:
+-			if (ev.xvisibility.state != VisibilityUnobscured)
+-				XRaiseWindow(dpy, win);
+-			break;
+-		}
++/* wayland event handlers */
++static void
++regglobal(void *d, struct wl_registry *r, uint32_t name, const char *interface, uint32_t version)
++{
++	if(strcmp(interface, "wl_compositor") == 0)
++		compositor = wl_registry_bind(r, name, &wl_compositor_interface, 1);
++	else if(strcmp(interface, "wl_shell") == 0)
++		shell = wl_registry_bind(r, name, &wl_shell_interface, 1);
++	else if(strcmp(interface, "wl_seat") == 0)
++		seat = wl_registry_bind(r, name, &wl_seat_interface, 1);
++	else if(strcmp(interface, "wl_data_device_manager") == 0)
++		datadevman = wl_registry_bind(r, name, &wl_data_device_manager_interface, 1);
++	else if(strcmp(interface, "swc_panel_manager") == 0)
++		panelman = wl_registry_bind(r, name, &swc_panel_manager_interface, 1);
++	else if (strcmp(interface, "swc_screen") == 0) {
++		if (mon != -1 && mon-- == 0)
++			screen = wl_registry_bind(r, name, &swc_screen_interface, 1);
+ 	}
+ }
+ 
+ static void
++regglobalremove(void *d, struct wl_registry *reg, uint32_t name)
++{
++}
++
++static const struct wl_registry_listener reglistener = { regglobal, regglobalremove };
++
++static void
++kbdenter(void *data, struct wl_keyboard *kbd, uint32_t serial,
++         struct wl_surface *surface, struct wl_array *keys)
++{
++}
++
++static void
++kbdleave(void *d, struct wl_keyboard *kbd, uint32_t serial,
++         struct wl_surface *surface)
++{
++}
++
++/* kbdkey is defined above to reduce merge conflicts */
++
++static void
++kbdkeymap(void *d, struct wl_keyboard *kbd, uint32_t format, int32_t fd, uint32_t size)
++{
++	char *string;
++
++	if (format != WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1) {
++		close(fd);
++		return;
++	}
++
++	string = mmap(NULL, size, PROT_READ, MAP_SHARED, fd, 0);
++
++	if (string == MAP_FAILED) {
++		close(fd);
++		return;
++	}
++
++	xkb.keymap = xkb_keymap_new_from_string(xkb.context, string,
++						XKB_KEYMAP_FORMAT_TEXT_V1, 0);
++	munmap(string, size);
++	close(fd);
++	xkb.state = xkb_state_new(xkb.keymap);
++
++	xkb.ctrl = xkb_keymap_mod_get_index(xkb.keymap, XKB_MOD_NAME_CTRL);
++	xkb.alt = xkb_keymap_mod_get_index(xkb.keymap, XKB_MOD_NAME_ALT);
++	xkb.shift = xkb_keymap_mod_get_index(xkb.keymap, XKB_MOD_NAME_SHIFT);
++}
++
++static void
++kbdmodifiers(void *d, struct wl_keyboard *kbd, uint32_t serial, uint32_t dep,
++             uint32_t lat, uint32_t lck, uint32_t grp)
++{
++	xkb_state_update_mask(xkb.state, dep, lat, lck, grp, 0, 0);
++}
++
++static const struct wl_keyboard_listener kbdlistener = {
++	kbdkeymap, kbdenter, kbdleave, kbdkey, kbdmodifiers,
++};
++
++static void
++dataofferoffer(void *d, struct wl_data_offer *offer, const char *mimetype)
++{
++	if (strncmp(mimetype, "text/plain", 10) == 0)
++		wl_data_offer_set_user_data(offer, (void *)(uintptr_t) 1);
++}
++
++static const struct wl_data_offer_listener dataofferlistener = { dataofferoffer };
++
++static void
++datadevoffer(void *d, struct wl_data_device *datadev, struct wl_data_offer *offer)
++{
++	wl_data_offer_add_listener(offer, &dataofferlistener, NULL);
++}
++
++static void
++datadeventer(void *d, struct wl_data_device *datadev, uint32_t serial,
++             struct wl_surface *surface, wl_fixed_t x, wl_fixed_t y,
++             struct wl_data_offer *offer)
++{
++}
++
++static void
++datadevleave(void *d, struct wl_data_device *datadev)
++{
++}
++
++static void
++datadevmotion(void *d, struct wl_data_device *datadev, uint32_t time,
++              wl_fixed_t x, wl_fixed_t y)
++{
++}
++
++static void
++datadevdrop(void *d, struct wl_data_device *datadev)
++{
++}
++
++static void
++datadevselection(void *d, struct wl_data_device *datadev, struct wl_data_offer *offer)
++{
++	if (offer && (uintptr_t) wl_data_offer_get_user_data(offer) == 1)
++		seloffer = offer;
++}
++
++static const struct wl_data_device_listener datadevlistener = {
++	datadevoffer, datadeventer, datadevleave, datadevmotion, datadevdrop,
++	datadevselection,
++};
++
++static void
++paneldocked(void *d, struct swc_panel *panel, uint32_t length)
++{
++	mw = length;
++}
++
++static const struct swc_panel_listener panellistener = { paneldocked };
++
++static void
+ setup(void)
+ {
+-	int x, y;
+-	XSetWindowAttributes swa;
+-	XIM xim;
+-#ifdef XINERAMA
+-	XineramaScreenInfo *info;
+-	Window w, pw, dw, *dws;
+-	XWindowAttributes wa;
+-	int a, j, di, n, i = 0, area = 0;
+-	unsigned int du;
+-#endif
++	if (!compositor || !seat || !panelman)
++		exit(1);
++
++	kbd = wl_seat_get_keyboard(seat);
++	wl_keyboard_add_listener(kbd, &kbdlistener, NULL);
++	datadev = wl_data_device_manager_get_data_device(datadevman, seat);
++	wl_data_device_add_listener(datadev, &datadevlistener, NULL);
++
++	xkb.context = xkb_context_new(0);
+ 
+ 	/* init appearance */
+ 	scheme[SchemeNorm] = drw_scm_create(drw, colors[SchemeNorm], 2);
+ 	scheme[SchemeSel] = drw_scm_create(drw, colors[SchemeSel], 2);
+ 	scheme[SchemeOut] = drw_scm_create(drw, colors[SchemeOut], 2);
+ 
+-	clip = XInternAtom(dpy, "CLIPBOARD",   False);
+-	utf8 = XInternAtom(dpy, "UTF8_STRING", False);
+-
+ 	/* calculate menu geometry */
+-	bh = drw->fonts->h + 2;
++	bh = drw->fonts->wld->height + 2;
+ 	lines = MAX(lines, 0);
+ 	mh = (lines + 1) * bh;
+-#ifdef XINERAMA
+-	if (parentwin == root && (info = XineramaQueryScreens(dpy, &n))) {
+-		XGetInputFocus(dpy, &w, &di);
+-		if (mon >= 0 && mon < n)
+-			i = mon;
+-		else if (w != root && w != PointerRoot && w != None) {
+-			/* find top-level window containing current input focus */
+-			do {
+-				if (XQueryTree(dpy, (pw = w), &dw, &w, &dws, &du) && dws)
+-					XFree(dws);
+-			} while (w != root && w != pw);
+-			/* find xinerama screen with which the window intersects most */
+-			if (XGetWindowAttributes(dpy, pw, &wa))
+-				for (j = 0; j < n; j++)
+-					if ((a = INTERSECT(wa.x, wa.y, wa.width, wa.height, info[j])) > area) {
+-						area = a;
+-						i = j;
+-					}
+-		}
+-		/* no focused window is on screen, so use pointer location instead */
+-		if (mon < 0 && !area && XQueryPointer(dpy, root, &dw, &dw, &x, &y, &di, &di, &du))
+-			for (i = 0; i < n; i++)
+-				if (INTERSECT(x, y, 1, 1, info[i]))
+-					break;
+-
+-		x = info[i].x_org;
+-		y = info[i].y_org + (topbar ? 0 : info[i].height - mh);
+-		mw = info[i].width;
+-		XFree(info);
+-	} else
+-#endif
+-	{
+-		if (!XGetWindowAttributes(dpy, parentwin, &wa))
+-			die("could not get embedding window attributes: 0x%lx",
+-			    parentwin);
+-		x = 0;
+-		y = topbar ? 0 : wa.height - mh;
+-		mw = wa.width;
+-	}
++
++	/* create menu surface */
++	surface = wl_compositor_create_surface(compositor);
++
++	panel = swc_panel_manager_create_panel(panelman, surface);
++	swc_panel_add_listener(panel, &panellistener, NULL);
++	swc_panel_dock(panel, topbar ? SWC_PANEL_EDGE_TOP : SWC_PANEL_EDGE_BOTTOM, screen, 1);
++
++	wl_display_roundtrip(dpy);
++	if (!mw)
++		exit(1);
++
+ 	promptw = (prompt && *prompt) ? TEXTW(prompt) - lrpad / 4 : 0;
+ 	inputw = MIN(inputw, mw/3);
+ 	match();
+ 
+-	/* create menu window */
+-	swa.override_redirect = True;
+-	swa.background_pixel = scheme[SchemeNorm][ColBg].pixel;
+-	swa.event_mask = ExposureMask | KeyPressMask | VisibilityChangeMask;
+-	win = XCreateWindow(dpy, parentwin, x, y, mw, mh, 0,
+-	                    CopyFromParent, CopyFromParent, CopyFromParent,
+-	                    CWOverrideRedirect | CWBackPixel | CWEventMask, &swa);
+-
+-	/* open input methods */
+-	xim = XOpenIM(dpy, NULL, NULL, NULL);
+-	xic = XCreateIC(xim, XNInputStyle, XIMPreeditNothing | XIMStatusNothing,
+-	                XNClientWindow, win, XNFocusWindow, win, NULL);
+-
+-	XMapRaised(dpy, win);
+-	if (embed) {
+-		XSelectInput(dpy, parentwin, FocusChangeMask);
+-		if (XQueryTree(dpy, parentwin, &dw, &w, &dws, &du) && dws) {
+-			for (i = 0; i < du && dws[i] != win; ++i)
+-				XSelectInput(dpy, dws[i], FocusChangeMask);
+-			XFree(dws);
+-		}
+-		grabfocus();
+-	}
+-	drw_resize(drw, mw, mh);
++	drw_resize(drw, surface, mw, mh);
+ 	drawmenu();
+ }
+ 
+ static void
+ usage(void)
+ {
+-	fputs("usage: dmenu [-bfiv] [-l lines] [-p prompt] [-fn font] [-m monitor]\n"
+-	      "             [-nb color] [-nf color] [-sb color] [-sf color] [-w windowid]\n", stderr);
++	fputs("usage: dmenu [-biv] [-l lines] [-p prompt] [-fn font] [-m monitor]\n"
++	      "             [-nb color] [-nf color] [-sb color] [-sf color]\n", stderr);
+ 	exit(1);
+ }
+ 
+ int
+ main(int argc, char *argv[])
+ {
+-	XWindowAttributes wa;
+-	int i, fast = 0;
++	struct wl_registry *reg;
++	int i;
+ 
+ 	for (i = 1; i < argc; i++)
+ 		/* these options take no arguments */
+@@ -653,8 +702,6 @@ main(int argc, char *argv[])
+ 			exit(0);
+ 		} else if (!strcmp(argv[i], "-b")) /* appears at the bottom of the screen */
+ 			topbar = 0;
+-		else if (!strcmp(argv[i], "-f"))   /* grabs keyboard before reading stdin */
+-			fast = 1;
+ 		else if (!strcmp(argv[i], "-i")) { /* case-insensitive item matching */
+ 			fstrncmp = strncasecmp;
+ 			fstrstr = cistrstr;
+@@ -677,34 +724,23 @@ main(int argc, char *argv[])
+ 			colors[SchemeSel][ColBg] = argv[++i];
+ 		else if (!strcmp(argv[i], "-sf"))  /* selected foreground color */
+ 			colors[SchemeSel][ColFg] = argv[++i];
+-		else if (!strcmp(argv[i], "-w"))   /* embedding window id */
+-			embed = argv[++i];
+ 		else
+ 			usage();
+ 
+-	if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
++	if (!setlocale(LC_CTYPE, ""))
+ 		fputs("warning: no locale support\n", stderr);
+-	if (!(dpy = XOpenDisplay(NULL)))
++	if (!(dpy = wl_display_connect(NULL)))
+ 		die("cannot open display");
+-	screen = DefaultScreen(dpy);
+-	root = RootWindow(dpy, screen);
+-	if (!embed || !(parentwin = strtol(embed, NULL, 0)))
+-		parentwin = root;
+-	if (!XGetWindowAttributes(dpy, parentwin, &wa))
+-		die("could not get embedding window attributes: 0x%lx",
+-		    parentwin);
+-	drw = drw_create(dpy, screen, root, wa.width, wa.height);
++	if (!(reg = wl_display_get_registry(dpy)))
++		die("cannot get registry");
++	wl_registry_add_listener(reg, &reglistener, NULL);
++	wl_display_roundtrip(dpy);
++	drw = drw_create(dpy);
+ 	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
+ 		die("no fonts could be loaded.");
+-	lrpad = drw->fonts->h;
+-
+-	if (fast) {
+-		grabkeyboard();
+-		readstdin();
+-	} else {
+-		readstdin();
+-		grabkeyboard();
+-	}
++	lrpad = drw->fonts->wld->height;
++
++	readstdin();
+ 	setup();
+ 	run();
+ 
+diff --git a/drw.c b/drw.c
+index c1582e7..b6e6d33 100644
+--- a/drw.c
++++ b/drw.c
+@@ -2,8 +2,9 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <X11/Xlib.h>
+-#include <X11/Xft/Xft.h>
++#include <wayland-client.h>
++#include <wld/wld.h>
++#include <wld/wayland.h>
+ 
+ #include "drw.h"
+ #include "util.h"
+@@ -61,40 +62,33 @@ utf8decode(const char *c, long *u, size_t clen)
+ }
+ 
+ Drw *
+-drw_create(Display *dpy, int screen, Window root, unsigned int w, unsigned int h)
++drw_create(struct wl_display *dpy)
+ {
+ 	Drw *drw = ecalloc(1, sizeof(Drw));
+ 
+ 	drw->dpy = dpy;
+-	drw->screen = screen;
+-	drw->root = root;
+-	drw->w = w;
+-	drw->h = h;
+-	drw->drawable = XCreatePixmap(dpy, root, w, h, DefaultDepth(dpy, screen));
+-	drw->gc = XCreateGC(dpy, root, 0, NULL);
+-	XSetLineAttributes(dpy, drw->gc, 1, LineSolid, CapButt, JoinMiter);
++	drw->ctx = wld_wayland_create_context(dpy, WLD_ANY);
++	drw->renderer = wld_create_renderer(drw->ctx);
++	drw->fontctx = wld_font_create_context();
+ 
+ 	return drw;
+ }
+ 
+ void
+-drw_resize(Drw *drw, unsigned int w, unsigned int h)
++drw_resize(Drw *drw, struct wl_surface *surface, unsigned int w, unsigned int h)
+ {
+-	if (!drw)
+-		return;
+-
+-	drw->w = w;
+-	drw->h = h;
+-	if (drw->drawable)
+-		XFreePixmap(drw->dpy, drw->drawable);
+-	drw->drawable = XCreatePixmap(drw->dpy, drw->root, w, h, DefaultDepth(drw->dpy, drw->screen));
++	if (drw->surface)
++		wld_destroy_surface(drw->surface);
++	drw->surface = wld_wayland_create_surface(drw->ctx, w, h, WLD_FORMAT_XRGB8888, 0, surface);
+ }
+ 
+ void
+ drw_free(Drw *drw)
+ {
+-	XFreePixmap(drw->dpy, drw->drawable);
+-	XFreeGC(drw->dpy, drw->gc);
++	wld_destroy_surface(drw->surface);
++	wld_destroy_renderer(drw->renderer);
++	wld_destroy_context(drw->ctx);
++	wld_font_destroy_context(drw->fontctx);
+ 	free(drw);
+ }
+ 
+@@ -102,10 +96,10 @@ drw_free(Drw *drw)
+  * drw_fontset_create instead.
+  */
+ static Fnt *
+-xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
++wldfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
+ {
+ 	Fnt *font;
+-	XftFont *xfont = NULL;
++	struct wld_font *wld = NULL;
+ 	FcPattern *pattern = NULL;
+ 
+ 	if (fontname) {
+@@ -114,17 +108,17 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
+ 		 * FcNameParse; using the latter results in the desired fallback
+ 		 * behaviour whereas the former just results in missing-character
+ 		 * rectangles being drawn, at least with some fonts. */
+-		if (!(xfont = XftFontOpenName(drw->dpy, drw->screen, fontname))) {
++		if (!(wld = wld_font_open_name(drw->fontctx, fontname))) {
+ 			fprintf(stderr, "error, cannot load font from name: '%s'\n", fontname);
+ 			return NULL;
+ 		}
+ 		if (!(pattern = FcNameParse((FcChar8 *) fontname))) {
+ 			fprintf(stderr, "error, cannot parse font name to pattern: '%s'\n", fontname);
+-			XftFontClose(drw->dpy, xfont);
++			wld_font_close(wld);
+ 			return NULL;
+ 		}
+ 	} else if (fontpattern) {
+-		if (!(xfont = XftFontOpenPattern(drw->dpy, fontpattern))) {
++		if (!(wld = wld_font_open_pattern(drw->fontctx, fontpattern))) {
+ 			fprintf(stderr, "error, cannot load font from pattern.\n");
+ 			return NULL;
+ 		}
+@@ -133,22 +127,20 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
+ 	}
+ 
+ 	font = ecalloc(1, sizeof(Fnt));
+-	font->xfont = xfont;
++	font->wld = wld;
+ 	font->pattern = pattern;
+-	font->h = xfont->ascent + xfont->descent;
+-	font->dpy = drw->dpy;
+ 
+ 	return font;
+ }
+ 
+ static void
+-xfont_free(Fnt *font)
++wldfont_free(Fnt *font)
+ {
+ 	if (!font)
+ 		return;
+ 	if (font->pattern)
+ 		FcPatternDestroy(font->pattern);
+-	XftFontClose(font->dpy, font->xfont);
++	wld_font_close(font->wld);
+ 	free(font);
+ }
+ 
+@@ -162,7 +154,7 @@ drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount)
+ 		return NULL;
+ 
+ 	for (i = 1; i <= fontcount; i++) {
+-		if ((cur = xfont_create(drw, fonts[fontcount - i], NULL))) {
++		if ((cur = wldfont_create(drw, fonts[fontcount - i], NULL))) {
+ 			cur->next = ret;
+ 			ret = cur;
+ 		}
+@@ -175,7 +167,7 @@ drw_fontset_free(Fnt *font)
+ {
+ 	if (font) {
+ 		drw_fontset_free(font->next);
+-		xfont_free(font);
++		wldfont_free(font);
+ 	}
+ }
+ 
+@@ -184,10 +176,7 @@ drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
+ {
+ 	if (!drw || !dest || !clrname)
+ 		return;
+-
+-	if (!XftColorAllocName(drw->dpy, DefaultVisual(drw->dpy, drw->screen),
+-	                       DefaultColormap(drw->dpy, drw->screen),
+-	                       clrname, dest))
++	if (!(wld_lookup_named_color(clrname, dest)))
+ 		die("error, cannot allocate color '%s'", clrname);
+ }
+ 
+@@ -200,7 +189,7 @@ drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
+ 	Clr *ret;
+ 
+ 	/* need at least two colors for a scheme */
+-	if (!drw || !clrnames || clrcount < 2 || !(ret = ecalloc(clrcount, sizeof(XftColor))))
++	if (!drw || !clrnames || clrcount < 2 || !(ret = ecalloc(clrcount, sizeof(*ret))))
+ 		return NULL;
+ 
+ 	for (i = 0; i < clrcount; i++)
+@@ -227,11 +216,15 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
+ {
+ 	if (!drw || !drw->scheme)
+ 		return;
+-	XSetForeground(drw->dpy, drw->gc, invert ? drw->scheme[ColBg].pixel : drw->scheme[ColFg].pixel);
++	Clr color = invert ? drw->scheme[ColBg] : drw->scheme[ColFg];
+ 	if (filled)
+-		XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
+-	else
+-		XDrawRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w - 1, h - 1);
++		wld_fill_rectangle(drw->renderer, color, x, y, w, h);
++	else {
++		wld_fill_rectangle(drw->renderer, color, x, y, w, 1);
++		wld_fill_rectangle(drw->renderer, color, x + w - 1, y + 1, 1, h - 2);
++		wld_fill_rectangle(drw->renderer, color, x, y + 1, 1, h - 2);
++		wld_fill_rectangle(drw->renderer, color, x, y - 1, w, 1);
++	}
+ }
+ 
+ int
+@@ -240,7 +233,6 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+ 	char buf[1024];
+ 	int ty;
+ 	unsigned int ew;
+-	XftDraw *d = NULL;
+ 	Fnt *usedfont, *curfont, *nextfont;
+ 	size_t i, len;
+ 	int utf8strlen, utf8charlen, render = x || y || w || h;
+@@ -249,7 +241,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+ 	FcCharSet *fccharset;
+ 	FcPattern *fcpattern;
+ 	FcPattern *match;
+-	XftResult result;
++	FcResult result;
+ 	int charexists = 0;
+ 
+ 	if (!drw || (render && !drw->scheme) || !text || !drw->fonts)
+@@ -258,11 +250,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+ 	if (!render) {
+ 		w = ~w;
+ 	} else {
+-		XSetForeground(drw->dpy, drw->gc, drw->scheme[invert ? ColFg : ColBg].pixel);
+-		XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y, w, h);
+-		d = XftDrawCreate(drw->dpy, drw->drawable,
+-		                  DefaultVisual(drw->dpy, drw->screen),
+-		                  DefaultColormap(drw->dpy, drw->screen));
++		wld_fill_rectangle(drw->renderer, drw->scheme[invert ? ColFg : ColBg], x, y, w, h);
+ 		x += lpad;
+ 		w -= lpad;
+ 	}
+@@ -275,7 +263,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+ 		while (*text) {
+ 			utf8charlen = utf8decode(text, &utf8codepoint, UTF_SIZ);
+ 			for (curfont = drw->fonts; curfont; curfont = curfont->next) {
+-				charexists = charexists || XftCharExists(drw->dpy, curfont->xfont, utf8codepoint);
++				charexists = charexists || wld_font_ensure_char(curfont->wld,  utf8codepoint);
+ 				if (charexists) {
+ 					if (curfont == usedfont) {
+ 						utf8strlen += utf8charlen;
+@@ -307,9 +295,9 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+ 						; /* NOP */
+ 
+ 				if (render) {
+-					ty = y + (h - usedfont->h) / 2 + usedfont->xfont->ascent;
+-					XftDrawStringUtf8(d, &drw->scheme[invert ? ColBg : ColFg],
+-					                  usedfont->xfont, x, ty, (XftChar8 *)buf, len);
++					ty = y + (h - usedfont->wld->height) / 2 + usedfont->wld->ascent;
++					wld_draw_text(drw->renderer, usedfont->wld, drw->scheme[invert ? ColBg : ColFg],
++					              x, ty, buf, len, NULL);
+ 				}
+ 				x += ew;
+ 				w -= ew;
+@@ -330,7 +318,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+ 			FcCharSetAddChar(fccharset, utf8codepoint);
+ 
+ 			if (!drw->fonts->pattern) {
+-				/* Refer to the comment in xfont_create for more information. */
++				/* Refer to the comment in wldfont_create for more information. */
+ 				die("the first font in the cache must be loaded from a font string.");
+ 			}
+ 
+@@ -340,38 +328,37 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+ 
+ 			FcConfigSubstitute(NULL, fcpattern, FcMatchPattern);
+ 			FcDefaultSubstitute(fcpattern);
+-			match = XftFontMatch(drw->dpy, drw->screen, fcpattern, &result);
++			match = FcFontMatch(NULL, fcpattern, &result);
+ 
+ 			FcCharSetDestroy(fccharset);
+ 			FcPatternDestroy(fcpattern);
+ 
+ 			if (match) {
+-				usedfont = xfont_create(drw, NULL, match);
+-				if (usedfont && XftCharExists(drw->dpy, usedfont->xfont, utf8codepoint)) {
++				usedfont = wldfont_create(drw, NULL, match);
++				if (usedfont && wld_font_ensure_char(usedfont->wld, utf8codepoint)) {
+ 					for (curfont = drw->fonts; curfont->next; curfont = curfont->next)
+ 						; /* NOP */
+ 					curfont->next = usedfont;
+ 				} else {
+-					xfont_free(usedfont);
++					wldfont_free(usedfont);
+ 					usedfont = drw->fonts;
+ 				}
+ 			}
+ 		}
+ 	}
+-	if (d)
+-		XftDrawDestroy(d);
+ 
+ 	return x + (render ? w : 0);
+ }
+ 
+ void
+-drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h)
++drw_map(Drw *drw, struct wl_surface *surface, int x, int y, unsigned int w, unsigned int h)
+ {
+ 	if (!drw)
+ 		return;
+ 
+-	XCopyArea(drw->dpy, drw->drawable, win, drw->gc, x, y, w, h, x, y);
+-	XSync(drw->dpy, False);
++	wl_surface_damage(surface, x, y, w, h);
++	wld_flush(drw->renderer);
++	wld_swap(drw->surface);
+ }
+ 
+ unsigned int
+@@ -385,18 +372,19 @@ drw_fontset_getwidth(Drw *drw, const char *text)
+ void
+ drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h)
+ {
+-	XGlyphInfo ext;
++	struct wld_extents ext;
+ 
+ 	if (!font || !text)
+ 		return;
+ 
+-	XftTextExtentsUtf8(font->dpy, font->xfont, (XftChar8 *)text, len, &ext);
++	wld_font_text_extents_n(font->wld, text, len, &ext);
+ 	if (w)
+-		*w = ext.xOff;
++		*w = ext.advance;
+ 	if (h)
+-		*h = font->h;
++		*h = font->wld->height;
+ }
+ 
++#if 0
+ Cur *
+ drw_cur_create(Drw *drw, int shape)
+ {
+@@ -419,3 +407,4 @@ drw_cur_free(Drw *drw, Cur *cursor)
+ 	XFreeCursor(drw->dpy, cursor->cursor);
+ 	free(cursor);
+ }
++#endif
+diff --git a/drw.h b/drw.h
+index 4c67419..1f1967e 100644
+--- a/drw.h
++++ b/drw.h
+@@ -1,34 +1,30 @@
+ /* See LICENSE file for copyright and license details. */
+ 
+-typedef struct {
+-	Cursor cursor;
+-} Cur;
++typedef void Cur;
+ 
+ typedef struct Fnt {
+-	Display *dpy;
+-	unsigned int h;
+-	XftFont *xfont;
++	struct wld_font *wld;
+ 	FcPattern *pattern;
+ 	struct Fnt *next;
+ } Fnt;
+ 
+ enum { ColFg, ColBg }; /* Clr scheme index */
+-typedef XftColor Clr;
++typedef uint32_t Clr;
+ 
+ typedef struct {
+ 	unsigned int w, h;
+-	Display *dpy;
+-	int screen;
+-	Window root;
+-	Drawable drawable;
+-	GC gc;
++	struct wl_display *dpy;
++	struct wld_context *ctx;
++	struct wld_renderer *renderer;
++	struct wld_surface *surface;
++	struct wld_font_context *fontctx;
+ 	Clr *scheme;
+ 	Fnt *fonts;
+ } Drw;
+ 
+ /* Drawable abstraction */
+-Drw *drw_create(Display *dpy, int screen, Window win, unsigned int w, unsigned int h);
+-void drw_resize(Drw *drw, unsigned int w, unsigned int h);
++Drw *drw_create(struct wl_display *dpy);
++void drw_resize(Drw *drw, struct wl_surface *surface, unsigned int w, unsigned int h);
+ void drw_free(Drw *drw);
+ 
+ /* Fnt abstraction */
+@@ -54,4 +50,4 @@ void drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled
+ int drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert);
+ 
+ /* Map functions */
+-void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
++void drw_map(Drw *drw, struct wl_surface *surface, int x, int y, unsigned int w, unsigned int h);
+-- 
+2.10.1
+

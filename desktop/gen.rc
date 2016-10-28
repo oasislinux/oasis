@@ -1,3 +1,4 @@
+subgen dmenu
 subgen expat
 subgen fontconfig
 subgen freetype

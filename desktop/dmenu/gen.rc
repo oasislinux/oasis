@@ -1,0 +1,30 @@
+cflags\
+	-D 'VERSION=''"4.6"''' \
+	-isystem desktop/fontconfig/src\
+	-isystem desktop/libxkbcommon/src\
+	-isystem '$builddir'/desktop/pixman/include\
+	-isystem '$builddir'/desktop/swc/include\
+	-isystem '$builddir'/desktop/wayland/include\
+	-isystem '$builddir'/desktop/wld/include\
+	-I '$dir'
+
+phony deps phony/desktop/^(pixman swc wayland wld)^/headers
+
+exe dmenu -d 'phony/$dir/deps' dmenu.c drw.c util.c '$builddir'/^(\
+	desktop/swc/swc-protocol.c.o\
+	desktop/libxkbcommon/libxkbcommon.a\
+	desktop/wld/libwld.a.d\
+	desktop/fontconfig/libfontconfig.a.d\
+	desktop/wayland/libwayland-client.a.d\
+)
+file bin/dmenu '$outdir'/dmenu 755
+file share/man/man1/dmenu.1 '$srcdir'/dmenu.1 644
+
+exe stest stest.c
+file bin/stest '$outdir'/stest 755
+file share/man/man1/stest.1 '$srcdir'/stest.1 644
+
+for(f in dmenu_path dmenu_run)
+	file bin/$f '$srcdir'/$f 755
+
+fetch git
