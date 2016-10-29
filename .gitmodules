@@ -28,6 +28,7 @@
 [submodule "core/loksh/src"]
 	path = core/loksh/src
 	url = https://github.com/dimkr/loksh
+	ignore = all
 [submodule "core/ninja/src"]
 	path = core/ninja/src
 	url = https://github.com/ninja-build/ninja

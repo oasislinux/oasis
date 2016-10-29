@@ -1,0 +1,37 @@
+From 34a09675724c2d4f13f21b4f5663c098fe955090 Mon Sep 17 00:00:00 2001
+From: schwarze <schwarze@openbsd.org>
+Date: Tue, 9 Aug 2016 11:04:46 +0000
+Subject: [PATCH] In emacs incremental search mode (^R), make commands starting
+ with the escape key (^[) work as documented. Long-standing bug, this time
+ reported by Dave minus Cohen dot com. OK natano@ halex@
+
+---
+ emacs.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/emacs.c b/emacs.c
+index 51d1ab0..2f82b5b 100644
+--- a/emacs.c
++++ b/emacs.c
+@@ -1,4 +1,4 @@
+-/*	$OpenBSD: emacs.c,v 1.65 2016/01/26 17:39:31 mmcc Exp $	*/
++/*	$OpenBSD: emacs.c,v 1.66 2016/08/09 11:04:46 schwarze Exp $	*/
+ 
+ /*
+  *  Emacs-like command line editing and history
+@@ -893,9 +893,10 @@ x_search_hist(int c)
+ 		if ((c = x_e_getc()) < 0)
+ 			return KSTD;
+ 		f = kb_find_hist_func(c);
+-		if (c == CTRL('['))
++		if (c == CTRL('[')) {
++			x_e_ungetc(c);
+ 			break;
+-		else if (f == x_search_hist)
++		} else if (f == x_search_hist)
+ 			offset = x_search(pat, 0, offset);
+ 		else if (f == x_del_back) {
+ 			if (p == pat) {
+-- 
+2.10.1
+
