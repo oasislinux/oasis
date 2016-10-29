@@ -50,6 +50,9 @@ lib libfontconfig.a -d 'phony/$dir/deps' src/^(\
 	fcweight.c\
 	fcxml.c\
 	ftglue.c\
+) '$builddir'/^(\
+	desktop/expat/libexpat.a\
+	desktop/freetype/libfreetype.a.d\
 )
 
 fetch git

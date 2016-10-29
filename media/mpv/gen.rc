@@ -16,17 +16,14 @@ checkstatus
 
 libs=(\
 	media/ffmpeg/^(\
-		libavformat.a\
-		libavfilter.a\
-		libavcodec.a\
-		libavdevice.a\
+		libavcodec.a.d\
+		libavdevice.a.d\
+		libavfilter.a.d\
+		libavformat.a.d\
 		libavutil.a\
-		libswresample.a\
-		libswscale.a\
+		libswresample.a.d\
+		libswscale.a.d\
 	)\
-	core/libressl/libssl.a\
-	core/libressl/libcrypto.a\
-	core/openbsd/libbsd.a\
 	core/zlib/libz.a\
 )
 
@@ -68,7 +65,7 @@ if(grep -qF 'HAVE_DRM 1' config.h) {
 }
 if(grep -qF 'HAVE_LIBASS 1' config.h) {
 	cflags=($cflags -isystem '$builddir'/media/libass/include)
-	libs=($libs media/libass/libass.a desktop/freetype/libfreetype.a extra/fribidi/libfribidi.a)
+	libs=($libs media/libass/libass.a.d)
 	deps=($deps phony/media/libass/headers)
 }
 if(grep -qF 'HAVE_LUA 1' config.h) {

@@ -19,6 +19,9 @@ lib libass.a -d $"deps libass/^(\
 	ass_strtod.c ass_fontconfig.c\
 	ass_string.c\
 	ass_rasterizer.c ass_rasterizer_c.c\
+) '$builddir'/^(\
+	desktop/freetype/libfreetype.a.d\
+	extra/fribidi/libfribidi.a\
 )
 
 fetch git

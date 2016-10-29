@@ -38,6 +38,6 @@ lib libfreetype.a builds/unix/ftsystem.c src/^(\
 	type1/type1.c\
 	type42/type42.c\
 	winfonts/winfnt.c\
-)
+) '$builddir'/core/zlib/libz.a
 
 fetch git

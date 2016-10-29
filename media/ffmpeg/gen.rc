@@ -40,9 +40,11 @@ deps=(\
 )
 
 fn fflib {
-	name=$1 srcs=()
+	name=$1 srcs=() libs=()
 	shift
 	for(src) switch($src) {
+	case *.[ad]
+		libs=($libs $src)
 	case $arch/*
 		srcs=($srcs $src)
 	case */*
@@ -51,7 +53,7 @@ fn fflib {
 	}
 	srcs=($srcs `{awk -f sources.awk 'lib='$name 'sources='sources.txt 'arch='$arch options.h | sort -u})
 	checkstatus
-	lib $name.a -d $"deps $name/$srcs
+	lib $name.a -d $"deps $name/$srcs $libs
 }
 
 cc libavcodec/bitstream_filters.c '||' '$outdir'/internal/libavcodec/bsf_list.c
@@ -83,9 +85,11 @@ fflib libavcodec\
 	utils.c\
 	vorbis_parser.c\
 	xiph.c\
-	x86/constants.c
+	x86/constants.c\
+	libavutil.a
 
-fflib libavdevice alldevices.c avdevice.c utils.c
+fflib libavdevice alldevices.c avdevice.c utils.c\
+	libavcodec.a.d libavformat.a.d libavutil.a
 
 fflib libavfilter\
 	allfilters.c\
@@ -102,7 +106,8 @@ fflib libavfilter\
 	graphparser.c\
 	opencl_allkernels.c\
 	transform.c\
-	video.c
+	video.c\
+	libavutil.a
 
 cc libavformat/protocols.c '||' '$outdir'/internal/libavformat/protocol_list.c
 fflib libavformat\
@@ -123,7 +128,9 @@ fflib libavformat\
 	riff.c\
 	sdp.c\
 	url.c\
-	utils.c
+	utils.c\
+	libavcodec.a.d libavutil.a\
+	'$builddir'/core/libressl/libssl.a.d
 
 fflib libavutil\
 	adler32.c\
@@ -207,7 +214,8 @@ fflib libswresample\
 	x86/^(\
 		audio_convert.asm rematrix.asm resample.asm\
 		audio_convert_init.c rematrix_init.c resample_init.c\
-	)
+	)\
+	libavutil.a
 
 fflib libswscale\
 	alphablend.c\
@@ -228,11 +236,12 @@ fflib libswscale\
 		rgb2rgb.c swscale.c yuv2rgb.c\
 		hscale_fast_bilinear_simd.c\
 		input.asm output.asm scale.asm\
-	)
+	)\
+	libavutil.a
 
 libs=(\
-	libavfilter.a libavdevice.a libavformat.a libavcodec.a libswresample.a libswscale.a libavutil.a\
-	'$builddir'/core/^(libressl/^(libssl.a libcrypto.a) openbsd/libbsd.a)\
+	libavcodec.a.d libavdevice.a.d libavfilter.a.d libavformat.a.d libavutil.a\
+	libswresample.a.d libswscale.a.d\
 )
 
 cc cmdutils.c

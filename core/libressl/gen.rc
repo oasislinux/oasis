@@ -267,7 +267,7 @@ lib libcrypto.a -d 'phony/$dir/headers' src/lib/libcrypto/^(\
 	des/^(des_enc.c fcrypt_b.c)\
 	rc4/^(rc4_enc.c rc4_skey.c)\
 	whrlpool/^(wp_block.c)\
-)
+) '$builddir'/core/openbsd/libbsd.a
 file lib/libcrypto.a '$outdir'/libcrypto.a 644
 
 # src/lib/libssl/ssl/Makefile
@@ -285,7 +285,7 @@ lib libssl.a src/lib/libssl/^(\
 	\
 	s3_cbc.c\
 	bs_ber.c bs_cbb.c bs_cbs.c\
-)
+) libcrypto.a.d
 file lib/libssl.a '$outdir'/libssl.a 644
 
 # src/usr.bin/openssl/Makefile
@@ -297,7 +297,7 @@ exe openssl src/usr.bin/openssl/^(\
 	pkeyutl.c prime.c rand.c req.c rsa.c rsautl.c s_cb.c s_client.c\
 	s_server.c s_socket.c s_time.c sess_id.c smime.c speed.c spkac.c ts.c\
 	verify.c version.c x509.c\
-) libssl.a libcrypto.a '$builddir'/core/openbsd/libbsd.a
+) libssl.a.d libcrypto.a.d
 file bin/openssl '$outdir'/openssl 755
 file share/man/man1/openssl.1 '$srcdir'/src/usr.bin/openssl/openssl.1 644
 

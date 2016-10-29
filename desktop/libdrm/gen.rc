@@ -21,7 +21,7 @@ if(~ intel $config_video_drivers) {
 		intel_bufmgr_gem.c\
 		intel_decode.c\
 		mm.c\
-	)
+	) '$builddir'/desktop/libpciaccess/libpciaccess.a
 }
 
 if(~ nouveau $config_video_drivers) {

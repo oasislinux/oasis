@@ -184,7 +184,9 @@ lib libgit.a -d $"deps\
 	xdiff-interface.c\
 	zlib.c\
 	\
-	thread-utils.c
+	thread-utils.c\
+	libxdiff.a\
+	'$builddir'/^(core/libressl/libcrypto.a.d core/zlib/libz.a)
 
 # src/Makefile:/^XDIFF_OBJS.\+=
 lib libxdiff.a xdiff/^(\
@@ -197,18 +199,8 @@ lib libxdiff.a xdiff/^(\
 	xhistogram.c\
 )
 
-libs=(\
-	common-main.c.o libgit.a libxdiff.a\
-	'$builddir'/core/^(\
-		curl/libcurl.a\
-		libressl/^(libssl.a libcrypto.a)\
-		openbsd/libbsd.a\
-		zlib/libz.a\
-	)\
-)
-
 # src/Makefile:/^BUILTIN_OBJS.\+=
-exe git -d $"deps git.c builtin/^(\
+exe git -d $"deps git.c common-main.c.o builtin/^(\
 	add.c\
 	am.c\
 	annotate.c\
@@ -312,7 +304,7 @@ exe git -d $"deps git.c builtin/^(\
 	verify-tag.c\
 	worktree.c\
 	write-tree.c\
-) $libs
+) libgit.a.d
 file bin/git '$outdir'/git 755
 
 fn x {
@@ -320,7 +312,7 @@ fn x {
 	shift
 	if(~ $#* 0) srcs=$name.c
 	if not srcs=$*
-	exe git-$name -d $"deps $srcs $libs
+	exe git-$name -d $"deps $srcs common-main.c.o libgit.a.d
 	file libexec/git-core/git-$name '$outdir'/git-$name 755
 }
 
@@ -329,14 +321,14 @@ x credential-store
 x daemon
 x fast-import
 x http-backend
-x imap-send
+x imap-send imap-send.c '$builddir'/core/libressl/libssl.a.d
 x sh-i18n--envsubst
 x shell
 x show-index
 x upload-pack
 # git-remote-testsvn is intentionally omitted.
 
-x remote-http remote-curl.c http.c http-walker.c
+x remote-http remote-curl.c http.c http-walker.c '$builddir'/core/curl/libcurl.a.d
 for(remote in https ftp ftps) sym libexec/git-core/git-remote-$remote git-remote-http
 
 rule sh_gen 'sed -f $dir/sh_gen.sed $in >$out.tmp && mv $out.tmp $out'

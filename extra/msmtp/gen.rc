@@ -21,10 +21,7 @@ exe msmtp src/^(\
 	tls.c\
 	\
 	base64.c md5.c md5-apps.c\
-) '$builddir'/core/^(\
-	libressl/^(libssl.a libcrypto.a)\
-	openbsd/libbsd.a\
-)
+) '$builddir'/core/libressl/^(libssl.a.d libcrypto.a.d)
 
 file bin/msmtp '$outdir'/msmtp 755
 file share/man/man1/msmtp.1 '$srcdir'/doc/msmtp.1 644

@@ -46,6 +46,10 @@ lib libcurl.a -d $"deps lib/^(\
 		cyassl.c schannel.c darwinssl.c gskit.c\
 		mbedtls.c\
 	)\
+) '$builddir'/^(\
+	core/libressl/libssl.a.d\
+	core/libressl/libcrypto.a.d\
+	core/zlib/libz.a\
 )
 
 build '$outdir'/tool_hugehelp.c.o cc '$dir'/tool_hugehelp.c '||' '$srcdir'/src/tool_hugehelp.h
@@ -94,13 +98,7 @@ exe curl -d '$outdir'/include/curl/curlbuild.h\
 		tool_xattr.c\
 	)\
 	tool_hugehelp.c.o\
-	libcurl.a\
-	'$builddir'/^(\
-		core/libressl/libssl.a\
-		core/libressl/libcrypto.a\
-		core/openbsd/libbsd.a\
-		core/zlib/libz.a\
-	)
+	libcurl.a.d
 
 file bin/curl '$outdir'/curl 755
 file share/man/man1/curl.1 '$srcdir'/docs/curl.1 644

@@ -31,10 +31,13 @@ lib libopenbsd-compat.a openbsd-compat/^(\
 	bsd-statvfs.c bsd-waitpid.c fake-rfc2553.c openssl-compat.c xmmap.c\
 	xcrypt.c kludge-fd_set.c\
 	\
-	port-aix.c port-irix.c port-linux.c port-solaris.c port-tun.c port-uw.c\
+	port-aix.c port-irix.c port-linux.c port-solaris.c port-uw.c\
 )
 
 deps=phony/core/^(libressl zlib)^/headers
+
+# port-tun.c from openbsd-compat depends on sshbuf-getput-basic.c and ssherr.c
+# from libssh.a, so just include it in libssh.a.
 lib libssh.a -d $"deps\
 	ssh_api.c\
 	ssherr.c\
@@ -62,21 +65,14 @@ lib libssh.a -d $"deps\
 	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c\
 	kexdhc.c kexgexc.c kexecdhc.c kexc25519c.c\
 	kexdhs.c kexgexs.c kexecdhs.c kexc25519s.c\
-	platform-pledge.c platform-tracing.c
-
-libs=(\
-	libssh.a libopenbsd-compat.a\
-	'$builddir'/^(\
-		core/libressl/^(libssl.a libcrypto.a)\
-		core/openbsd/libbsd.a\
-		core/zlib/libz.a\
-	)\
-)
+	platform-pledge.c platform-tracing.c\
+	openbsd-compat/port-tun.c libopenbsd-compat.a\
+	'$builddir'/^(core/libressl/libcrypto.a.d core/zlib/libz.a)\
 
 exe ssh\
 	ssh.c readconf.c clientloop.c sshtty.c\
 	sshconnect.c sshconnect1.c sshconnect2.c mux.c\
-	$libs
+	libssh.a.d
 file bin/ssh '$outdir'/ssh 755
 file share/man/man1/ssh.1 '$srcdir'/ssh.1 644
 
@@ -98,29 +94,27 @@ exe sshd\
 	sandbox-null.c sandbox-rlimit.c sandbox-systrace.c sandbox-darwin.c\
 	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c\
 	sandbox-solaris.c\
-	$libs
+	libssh.a.d
 file bin/sshd '$outdir'/sshd 755
 file share/man/man8/sshd.8 '$srcdir'/sshd.8 644
 
-exe scp scp.c libssh.a libopenbsd-compat.a libssh.a '$builddir'/core/openbsd/libbsd.a
+exe scp scp.c libssh.a.d
 file bin/scp '$outdir'/scp 755
 file share/man/man1/scp.1 '$srcdir'/scp.1 644
 
-exe ssh-add ssh-add.c $libs
+exe ssh-add ssh-add.c libssh.a.d
 file bin/ssh-add '$outdir'/ssh-add 755
 file share/man/man1/ssh-add.1 '$srcdir'/ssh-add.1 644
 
-exe ssh-agent ssh-agent.c ssh-pkcs11-client.c $libs
+exe ssh-agent ssh-agent.c ssh-pkcs11-client.c libssh.a.d
 file bin/ssh-agent '$outdir'/ssh-agent 755
 file share/man/man1/ssh-agent.1 '$srcdir'/ssh-agent.1 644
 
-exe ssh-keygen ssh-keygen.c $libs
+exe ssh-keygen ssh-keygen.c libssh.a.d
 file bin/ssh-keygen '$outdir'/ssh-keygen 755
 file share/man/man1/ssh-keygen.1 '$srcdir'/ssh-keygen.1 644
 
-exe sftp-server\
-	sftp-common.c.o sftp-server.c.o sftp-server-main.c\
-	libssh.a libopenbsd-compat.a '$builddir'/core/openbsd/libbsd.a
+exe sftp-server sftp-common.c.o sftp-server.c.o sftp-server-main.c libssh.a.d
 file libexec/sftp-server '$outdir'/sftp-server 755
 file share/man/man8/sftp-server.8 '$srcdir'/sftp-server.8 644
 

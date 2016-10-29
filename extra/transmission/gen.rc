@@ -87,6 +87,11 @@ lib libtransmission.a -d $"deps libtransmission/^(\
 	watchdir-inotify.c\
 	file-posix.c\
 	crypto-utils-openssl.c\
+) libb64.a libdht.a libminiupnp.a libnatpmp.a libutp.a '$builddir'/^(\
+	core/curl/libcurl.a.d\
+	core/libressl/libcrypto.a.d\
+	core/zlib/libz.a\
+	extra/libevent/libevent.a\
 )
 
 lib libb64.a third-party/libb64/^(cdecode.c cencode.c)
@@ -135,22 +140,11 @@ lib libdht.a third-party/dht/dht.c
 	lib libutp.a third-party/libutp/^(utp.cpp utp_utils.cpp)
 } >libutp.ninja ; subninja libutp.ninja
 
-libs=(\
-	libtransmission.a libb64.a libdht.a libminiupnp.a libnatpmp.a libutp.a\
-	'$builddir'/^(\
-		core/curl/libcurl.a\
-		core/libressl/^(libssl.a libcrypto.a)\
-		core/openbsd/libbsd.a\
-		core/zlib/libz.a\
-		extra/libevent/libevent.a\
-	)\
-)
-
-exe transmission-daemon -d $"deps daemon/^(daemon.c daemon-posix.c) $libs
+exe transmission-daemon -d $"deps daemon/^(daemon.c daemon-posix.c) libtransmission.a.d
 file bin/transmission-daemon '$outdir'/transmission-daemon 755
 file share/man/man1/transmission-daemon.1 '$srcdir'/daemon/transmission-daemon.1 644
 
-exe transmission-remote -d $"deps daemon/remote.c libtransmission.a $libs
+exe transmission-remote -d $"deps daemon/remote.c libtransmission.a.d
 file bin/transmission-remote '$outdir'/transmission-remote 755
 file share/man/man1/transmission-remote.1 '$srcdir'/daemon/transmission-remote.1 644
 
