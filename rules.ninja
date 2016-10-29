@@ -17,6 +17,11 @@ rule link
 rule ar
   command = rm -f $out && $ar crs $out $in
 
+rule lines
+  command = ln -f $rspfile $out
+  rspfile = $out.tmp
+  rspfile_content = $in_newline
+
 rule nasm
   command = nasm $nasmflags -o $out $in
 

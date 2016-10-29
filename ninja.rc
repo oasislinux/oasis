@@ -74,24 +74,42 @@ fn cc {
 }
 
 fn link {
-	out='$outdir'/$1 objs=() {
+	out='$outdir'/$1 objs=() deps=() {
 		shift
 		for(obj in $*) {
 			if(! ~ $obj '$'*) obj='$outdir'/$obj
-			objs=($objs $obj)
+			switch($obj) {
+			case *.d
+				deps=($deps $obj)
+			case *
+				objs=($objs $obj)
+			}
+		}
+		if(! ~ $#deps 0) {
+			build $out.rsp awk $deps '|' scripts/rsp.awk ; with expr '-f scripts/rsp.awk'
+			objs=($objs '|' $out.rsp)
 		}
 		build $out link $objs
+		if(! ~ $#deps 0)
+			with ldlibs @$out.rsp
+		status=()
 	}
 }
 
 fn ar {
-	out='$outdir'/$1 objs=() {
+	out='$outdir'/$1 objs=() deps=() {
 		shift
 		for(obj in $*) {
 			if(! ~ $obj '$'*) obj='$outdir'/$obj
-			objs=($objs $obj)
+			switch($obj) {
+			case *.[ad]
+				deps=($deps $obj)
+			case *
+				objs=($objs $obj)
+			}
 		}
 		build $out ar $objs
+		build $out.d lines $out $deps
 	}
 }
 
