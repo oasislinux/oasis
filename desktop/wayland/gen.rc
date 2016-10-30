@@ -4,6 +4,7 @@ cflags\
 	-I include\
 	-I '$dir' \
 	-I '$outdir'/include\
+	-I '$srcdir' \
 	-I '$srcdir'/src
 
 build '$outdir'/include/wayland-version.h sed '$srcdir'/src/wayland-version.h.in ; exprs=(\
