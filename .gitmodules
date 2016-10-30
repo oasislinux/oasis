@@ -116,6 +116,9 @@
 [submodule "desktop/wld/src"]
 	path = desktop/wld/src
 	url = https://github.com/michaelforney/wld
+[submodule "desktop/xkeyboard-config/src"]
+	path = desktop/xkeyboard-config/src
+	url = https://anongit.freedesktop.org/git/xkeyboard-config.git
 [submodule "devel/make/src"]
 	path = devel/make/src
 	url = git://git.sv.gnu.org/make.git
