@@ -104,7 +104,7 @@ Generate the ninja build files.
 
 	rc ./setup.rc
 
-If the version of `file` on your host system is less than 5.28, you'll need to
+If the version of `file` on your host system is less than 5.29, you'll need to
 obtain a newer version. If you are not cross-compiling, you can just use the one
 from oasis.
 
