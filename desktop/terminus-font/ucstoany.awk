@@ -1,4 +1,9 @@
-{ unimap[unimap_len++] = int("0x" $0) }
+{
+	d = 0
+	for (i = 1; i <= length($0); ++i)
+		d = d * 16 + index("0123456789ABCDEF", substr($0, i, 1)) - 1
+	unimap[unimap_len++] = d
+}
 
 function readchar() {
 	name = $2
