@@ -50,4 +50,10 @@ lib libwayland-client.a -d 'phony/$dir/headers' src/^(\
 	wayland-util.c.o\
 ) '$builddir'/desktop/libffi/libffi.a
 
+lib libwayland-cursor.a -d 'phony/$dir/headers' cursor/^(\
+	os-compatibility.c\
+	wayland-cursor.c\
+	xcursor.c\
+) libwayland-client.a.d
+
 fetch git

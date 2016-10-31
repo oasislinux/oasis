@@ -100,6 +100,10 @@
 [submodule "desktop/plan9fonts/src"]
 	path = desktop/plan9fonts/src
 	url = https://github.com/rtrn/plan9fonts
+[submodule "desktop/st/src"]
+	path = desktop/st/src
+	url = git://git.suckless.org/st
+	ignore = all
 [submodule "desktop/swc/src"]
 	path = desktop/swc/src
 	url = https://github.com/michaelforney/swc

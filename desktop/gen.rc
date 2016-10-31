@@ -9,6 +9,7 @@ subgen libpciaccess
 subgen libxkbcommon
 subgen pixman
 subgen plan9fonts
+subgen st
 subgen swc
 subgen terminus-font
 subgen velox

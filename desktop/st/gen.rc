@@ -1,0 +1,24 @@
+cflags\
+	-D 'VERSION=''"0.7"''' \
+	-isystem desktop/fontconfig/src\
+	-isystem desktop/libxkbcommon/src\
+	-isystem '$builddir'/desktop/pixman/include\
+	-isystem '$builddir'/desktop/wayland/include\
+	-isystem '$builddir'/desktop/wayland-protocols/include\
+	-isystem '$builddir'/desktop/wld/include\
+	-I '$dir'
+
+phony deps\
+	phony/desktop/^(pixman wayland wayland-protocols wld)^/headers
+
+exe st -d 'phony/$dir/deps' st.c '$builddir'/^(\
+	desktop/libxkbcommon/libxkbcommon.a\
+	desktop/wayland/libwayland-client.a.d\
+	desktop/wayland/libwayland-cursor.a.d\
+	desktop/wayland-protocols/xdg-shell-unstable-v5-protocol.c.o\
+	desktop/wld/libwld.a.d\
+)
+file bin/st '$outdir'/st 755
+file share/man/man1/st.1 '$srcdir'/st.1 644
+
+fetch git
