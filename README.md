@@ -129,7 +129,7 @@ You may want to include a toolchain.
 
 	git remote add toolchain https://github.com/michaelforney/oasis-toolchain
 	git fetch toolchain
-	git merge -Xours toolchain/master
+	git merge -Xours --allow-unrelated-histories toolchain/master
 
 Prepare your `/etc` repository.
 
