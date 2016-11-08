@@ -17,6 +17,7 @@ subgen perp
 subgen pigz
 subgen plan9port
 subgen sbase
+subgen sdhcp
 subgen sinit
 subgen skeleton
 subgen tz

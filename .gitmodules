@@ -46,6 +46,9 @@
 	path = core/sbase/src
 	url = git://git.suckless.org/sbase
 	ignore = all
+[submodule "core/sdhcp/src"]
+	path = core/sdhcp/src
+	url = git://git.2f30.org/sdhcp
 [submodule "core/sinit/src"]
 	path = core/sinit/src
 	url = git://git.suckless.org/sinit
