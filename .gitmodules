@@ -59,6 +59,9 @@
 	path = core/ubase/src
 	url = git://git.suckless.org/ubase
 	ignore = all
+[submodule "core/util-linux/src"]
+	path = core/util-linux/src
+	url = https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
 [submodule "core/zlib/src"]
 	path = core/zlib/src
 	url = https://github.com/madler/zlib

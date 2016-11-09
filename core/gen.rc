@@ -22,5 +22,6 @@ subgen sinit
 subgen skeleton
 subgen tz
 subgen ubase
+subgen util-linux
 subgen xz
 subgen zlib
