@@ -43,6 +43,7 @@
 /* #undef USE_LIBSSH2 */
 /* #undef USE_MANUAL */
 /* #undef USE_MBEDTLS */
+/* #undef USE_NGHTTP2 */
 /* #undef USE_NSS */
 /* #undef USE_OPENLDAP */
 /* #undef USE_POLARSSL */
