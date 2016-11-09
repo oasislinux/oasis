@@ -10,6 +10,7 @@ up from the following:
 	- sbase
 	- ubase
 	- sinit
+	- sdhcp
 * [openbsd](http://openbsd.org/)
 	- pax, yacc, fmt, diff, patch
 * [plan9port](http://swtch.com/plan9port/)
@@ -30,6 +31,7 @@ up from the following:
 * [perp](http://b0llix.net/perp/) (process supervisor)
 * [pigz](http://zlib.net/pigz/) (gzip)
 * [tz](https://www.iana.org/time-zones)
+* util-linux (for fdisk)
 * [xz](http://tukaani.org/xz/)
 
 Several other projects can be built in the `desktop`, `devel`, `extra`, and
