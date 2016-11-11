@@ -219,33 +219,27 @@ specialperm(struct perm *p)
 static void
 specialperms(void)
 {
-	int i = oldsp.len - 1, j = newsp.len - 1, n;
+	int i = 0, j = 0, n;
+	char *dirs[oldsp.len], **dir = dirs;
 
-	/* process in reverse order so that directory removals can succeed */
-	while (i >= 0 || j >= 0) {
-		if (i < 0)
-			n = -1;
-		else if (j < 0)
+	while (i < oldsp.len || j < newsp.len) {
+		if (i == oldsp.len)
 			n = 1;
+		else if (j == newsp.len)
+			n = -1;
 		else
 			n = strcmp(oldsp.perms[i].name, newsp.perms[j].name);
-		if (n <= 0) {
+		if (n >= 0) {
 			if (specialperm(&newsp.perms[j]) < 0 && errno != EXDEV)
 				error("specialperm:");
-			--j;
+			++j;
 			if (n == 0)
-				--i;
+				++i;
 			continue;
 		}
 		switch (oldsp.perms[i].mode&S_IFMT) {
 		case S_IFDIR:
-			if (rmdir(oldsp.perms[i].name) < 0) switch (errno) {
-				case ENOENT:
-				case ENOTEMPTY:
-					break;
-				default:
-					error("rmdir:");
-			}
+			*dir++ = oldsp.perms[i].name;
 			break;
 		default:
 			if (defperm(oldsp.perms[i].name) < 0) switch (errno) {
@@ -256,7 +250,18 @@ specialperms(void)
 					error("defperm:");
 			}
 		}
-		--i;
+		++i;
+	}
+	/* delete directories in reverse order */
+	while (dir > dirs) {
+		--dir;
+		if (rmdir(*dir) < 0) switch (errno) {
+			case ENOENT:
+			case ENOTEMPTY:
+				break;
+			default:
+				error("rmdir:");
+		}
 	}
 }
 
