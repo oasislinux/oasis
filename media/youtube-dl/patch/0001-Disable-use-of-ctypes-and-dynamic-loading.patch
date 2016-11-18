@@ -1,4 +1,4 @@
-From 6348e6ef49c0fb04a568d061b7a511a019b965e7 Mon Sep 17 00:00:00 2001
+From 975a7ac91a0fc6e04d5010c760d35306bb0afeb4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -8,7 +8,7 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  1 file changed, 11 insertions(+), 164 deletions(-)
 
 diff --git a/youtube_dl/utils.py b/youtube_dl/utils.py
-index 2894167..d0b394a 100644
+index 9595bcf..780ae89 100644
 --- a/youtube_dl/utils.py
 +++ b/youtube_dl/utils.py
 @@ -8,7 +8,6 @@ import binascii
@@ -226,5 +226,5 @@ index 2894167..d0b394a 100644
  
  def remove_start(s, start):
 -- 
-2.10.1
+2.10.2
 
