@@ -1,4 +1,4 @@
-From 9e2788dc2cb13d7ef57447c2470adf3b1977d6fc Mon Sep 17 00:00:00 2001
+From 5384637142de4c43b19ff069248f95e4b4d0ed8d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 13 May 2016 23:01:44 -0700
 Subject: [PATCH] Use _Static_assert instead of checking for size of long long
@@ -9,7 +9,7 @@ Subject: [PATCH] Use _Static_assert instead of checking for size of long long
  2 files changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 868062a..f00a42e 100644
+index 33ae887..db4b59c 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -49,7 +49,6 @@ AC_CHECK_HEADERS([sysexits.h netdb.h arpa/inet.h sys/socket.h sys/wait.h])
@@ -36,5 +36,5 @@ index 875e51e..e471bea 100644
  #include "gettext.h"
  #define _(string) gettext(string)
 -- 
-2.8.1
+2.10.2
 
