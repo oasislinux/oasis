@@ -1,7 +1,7 @@
-From 11fcd5454d4b559bd0e4318cc54f8111af72b3e4 Mon Sep 17 00:00:00 2001
+From 34b23df0ece4bac6475690f1ff27cfe2e6b55ccb Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 12 Oct 2016 21:21:58 -0700
-Subject: [PATCH] Import parser.{c,h} from libxkbcommon-0.6.1 distribution
+Subject: [PATCH] Import parser.{c,h} from libxkbcommon-0.7.0 distribution
 
 ---
  src/xkbcomp/parser.c | 3462 ++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -12,7 +12,7 @@ Subject: [PATCH] Import parser.{c,h} from libxkbcommon-0.6.1 distribution
 
 diff --git a/src/xkbcomp/parser.c b/src/xkbcomp/parser.c
 new file mode 100644
-index 0000000..def73a2
+index 0000000..5b46b90
 --- /dev/null
 +++ b/src/xkbcomp/parser.c
 @@ -0,0 +1,3462 @@
@@ -86,7 +86,7 @@ index 0000000..def73a2
 +
 +
 +/* Copy the first part of user declarations.  */
-+#line 33 "../src/xkbcomp/parser.y" /* yacc.c:339  */
++#line 33 "src/xkbcomp/parser.y" /* yacc.c:339  */
 +
 +#include "xkbcomp-priv.h"
 +#include "ast-build.h"
@@ -308,7 +308,7 @@ index 0000000..def73a2
 +
 +union YYSTYPE
 +{
-+#line 162 "../src/xkbcomp/parser.y" /* yacc.c:355  */
++#line 162 "src/xkbcomp/parser.y" /* yacc.c:355  */
 +
 +        int              ival;
 +        int64_t          num;
@@ -1505,247 +1505,247 @@ index 0000000..def73a2
 +  switch (yytype)
 +    {
 +          case 52: /* STRING  */
-+#line 225 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 225 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { free(((*yyvaluep).str)); }
 +#line 1493 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 55: /* IDENT  */
-+#line 225 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 225 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { free(((*yyvaluep).str)); }
 +#line 1499 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 66: /* XkbFile  */
-+#line 224 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 224 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { if (!param->rtrn) FreeXkbFile(((*yyvaluep).file)); }
 +#line 1505 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 67: /* XkbCompositeMap  */
-+#line 224 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 224 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { if (!param->rtrn) FreeXkbFile(((*yyvaluep).file)); }
 +#line 1511 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 69: /* XkbMapConfigList  */
-+#line 224 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 224 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { if (!param->rtrn) FreeXkbFile(((*yyvaluep).file)); }
 +#line 1517 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 70: /* XkbMapConfig  */
-+#line 224 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 224 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { if (!param->rtrn) FreeXkbFile(((*yyvaluep).file)); }
 +#line 1523 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 75: /* DeclList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).any)); }
 +#line 1529 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 76: /* Decl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).any)); }
 +#line 1535 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 77: /* VarDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).var)); }
 +#line 1541 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 78: /* KeyNameDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).keyCode)); }
 +#line 1547 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 79: /* KeyAliasDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).keyAlias)); }
 +#line 1553 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 80: /* VModDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).vmod)); }
 +#line 1559 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 81: /* VModDefList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).vmod)); }
 +#line 1565 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 82: /* VModDef  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).vmod)); }
 +#line 1571 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 83: /* InterpretDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).interp)); }
 +#line 1577 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 84: /* InterpretMatch  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).interp)); }
 +#line 1583 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 85: /* VarDeclList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).var)); }
 +#line 1589 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 86: /* KeyTypeDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).keyType)); }
 +#line 1595 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 87: /* SymbolsDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).syms)); }
 +#line 1601 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 88: /* SymbolsBody  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).var)); }
 +#line 1607 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 89: /* SymbolsVarDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).var)); }
 +#line 1613 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 90: /* ArrayInit  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1619 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 91: /* GroupCompatDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).groupCompat)); }
 +#line 1625 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 92: /* ModMapDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).modMask)); }
 +#line 1631 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 93: /* LedMapDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).ledMap)); }
 +#line 1637 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 94: /* LedNameDecl  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).ledName)); }
 +#line 1643 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 108: /* CoordList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1649 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 109: /* Coord  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1655 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 116: /* OptExprList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1661 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 117: /* ExprList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1667 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 118: /* Expr  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1673 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 119: /* Term  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1679 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 120: /* ActionList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1685 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 121: /* Action  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1691 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 122: /* Lhs  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1697 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 123: /* Terminal  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1703 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 124: /* OptKeySymList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1709 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 125: /* KeySymList  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1715 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 126: /* KeySyms  */
-+#line 219 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 219 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
 +#line 1721 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 135: /* OptMapName  */
-+#line 225 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 225 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { free(((*yyvaluep).str)); }
 +#line 1727 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
 +
 +    case 136: /* MapName  */
-+#line 225 "../src/xkbcomp/parser.y" /* yacc.c:1257  */
++#line 225 "src/xkbcomp/parser.y" /* yacc.c:1257  */
 +      { free(((*yyvaluep).str)); }
 +#line 1733 "src/xkbcomp/parser.c" /* yacc.c:1257  */
 +        break;
@@ -2013,49 +2013,49 @@ index 0000000..def73a2
 +  switch (yyn)
 +    {
 +        case 2:
-+#line 242 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 242 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file) = param->rtrn = (yyvsp[0].file); param->more_maps = true; }
 +#line 2001 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 3:
-+#line 244 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 244 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file) = param->rtrn = (yyvsp[0].file); param->more_maps = true; YYACCEPT; }
 +#line 2007 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 4:
-+#line 246 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 246 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file) = param->rtrn = NULL; param->more_maps = false; }
 +#line 2013 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 5:
-+#line 252 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 252 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file) = XkbFileCreate((yyvsp[-5].file_type), (yyvsp[-4].str), (ParseCommon *) (yyvsp[-2].file), (yyvsp[-6].mapFlags)); }
 +#line 2019 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 6:
-+#line 255 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 255 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file_type) = FILE_TYPE_KEYMAP; }
 +#line 2025 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 7:
-+#line 256 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 256 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file_type) = FILE_TYPE_KEYMAP; }
 +#line 2031 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 8:
-+#line 257 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 257 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file_type) = FILE_TYPE_KEYMAP; }
 +#line 2037 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 9:
-+#line 261 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 261 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            if (!(yyvsp[0].file))
 +                                (yyval.file) = (yyvsp[-1].file);
@@ -2067,13 +2067,13 @@ index 0000000..def73a2
 +    break;
 +
 +  case 10:
-+#line 269 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 269 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file) = (yyvsp[0].file); }
 +#line 2055 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 11:
-+#line 275 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 275 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            if ((yyvsp[-5].file_type) == FILE_TYPE_GEOMETRY) {
 +                                free((yyvsp[-4].str));
@@ -2088,121 +2088,121 @@ index 0000000..def73a2
 +    break;
 +
 +  case 12:
-+#line 287 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 287 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file_type) = FILE_TYPE_KEYCODES; }
 +#line 2076 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 13:
-+#line 288 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 288 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file_type) = FILE_TYPE_TYPES; }
 +#line 2082 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 14:
-+#line 289 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 289 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file_type) = FILE_TYPE_COMPAT; }
 +#line 2088 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 15:
-+#line 290 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 290 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file_type) = FILE_TYPE_SYMBOLS; }
 +#line 2094 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 16:
-+#line 291 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 291 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.file_type) = FILE_TYPE_GEOMETRY; }
 +#line 2100 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 17:
-+#line 294 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 294 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = (yyvsp[0].mapFlags); }
 +#line 2106 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 18:
-+#line 295 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 295 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = 0; }
 +#line 2112 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 19:
-+#line 298 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 298 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = ((yyvsp[-1].mapFlags) | (yyvsp[0].mapFlags)); }
 +#line 2118 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 20:
-+#line 299 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 299 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = (yyvsp[0].mapFlags); }
 +#line 2124 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 21:
-+#line 302 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 302 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = MAP_IS_PARTIAL; }
 +#line 2130 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 22:
-+#line 303 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 303 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = MAP_IS_DEFAULT; }
 +#line 2136 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 23:
-+#line 304 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 304 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = MAP_IS_HIDDEN; }
 +#line 2142 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 24:
-+#line 305 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 305 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = MAP_HAS_ALPHANUMERIC; }
 +#line 2148 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 25:
-+#line 306 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 306 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = MAP_HAS_MODIFIER; }
 +#line 2154 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 26:
-+#line 307 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 307 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = MAP_HAS_KEYPAD; }
 +#line 2160 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 27:
-+#line 308 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 308 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = MAP_HAS_FN; }
 +#line 2166 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 28:
-+#line 309 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 309 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.mapFlags) = MAP_IS_ALTGR; }
 +#line 2172 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 29:
-+#line 313 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 313 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.any) = AppendStmt((yyvsp[-1].any), (yyvsp[0].any)); }
 +#line 2178 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 30:
-+#line 314 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 314 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.any) = NULL; }
 +#line 2184 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 31:
-+#line 318 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 318 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].var)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].var);
@@ -2211,7 +2211,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 32:
-+#line 323 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 323 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].vmod)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].vmod);
@@ -2220,7 +2220,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 33:
-+#line 328 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 328 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].interp)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].interp);
@@ -2229,7 +2229,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 34:
-+#line 333 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 333 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].keyCode)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].keyCode);
@@ -2238,7 +2238,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 35:
-+#line 338 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 338 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].keyAlias)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].keyAlias);
@@ -2247,7 +2247,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 36:
-+#line 343 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 343 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].keyType)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].keyType);
@@ -2256,7 +2256,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 37:
-+#line 348 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 348 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].syms)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].syms);
@@ -2265,7 +2265,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 38:
-+#line 353 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 353 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].modMask)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].modMask);
@@ -2274,7 +2274,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 39:
-+#line 358 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 358 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].groupCompat)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].groupCompat);
@@ -2283,7 +2283,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 40:
-+#line 363 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 363 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].ledMap)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].ledMap);
@@ -2292,7 +2292,7 @@ index 0000000..def73a2
 +    break;
 +
 +  case 41:
-+#line 368 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 368 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyvsp[0].ledName)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].ledName);
@@ -2301,25 +2301,25 @@ index 0000000..def73a2
 +    break;
 +
 +  case 42:
-+#line 372 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 372 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.any) = NULL; }
 +#line 2289 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 43:
-+#line 373 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 373 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.any) = NULL; }
 +#line 2295 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 44:
-+#line 374 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 374 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.any) = NULL; }
 +#line 2301 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 45:
-+#line 376 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 376 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            (yyval.any) = (ParseCommon *) IncludeCreate(param->ctx, (yyvsp[0].str), (yyvsp[-1].merge));
 +                            free((yyvsp[0].str));
@@ -2328,526 +2328,526 @@ index 0000000..def73a2
 +    break;
 +
 +  case 46:
-+#line 383 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 383 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = VarCreate((yyvsp[-3].expr), (yyvsp[-1].expr)); }
 +#line 2316 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 47:
-+#line 385 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 385 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = BoolVarCreate((yyvsp[-1].atom), true); }
 +#line 2322 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 48:
-+#line 387 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 387 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = BoolVarCreate((yyvsp[-1].atom), false); }
 +#line 2328 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 49:
-+#line 391 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 391 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.keyCode) = KeycodeCreate((yyvsp[-3].atom), (yyvsp[-1].num)); }
 +#line 2334 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 50:
-+#line 395 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 395 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.keyAlias) = KeyAliasCreate((yyvsp[-3].atom), (yyvsp[-1].atom)); }
 +#line 2340 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 51:
-+#line 399 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 399 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.vmod) = (yyvsp[-1].vmod); }
 +#line 2346 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 52:
-+#line 403 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 403 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.vmod) = (VModDef *) AppendStmt((ParseCommon *) (yyvsp[-2].vmod),
 +                                                      (ParseCommon *) (yyvsp[0].vmod)); }
 +#line 2353 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 53:
-+#line 406 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 406 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.vmod) = (yyvsp[0].vmod); }
 +#line 2359 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 54:
-+#line 410 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 410 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.vmod) = VModCreate((yyvsp[0].atom), NULL); }
 +#line 2365 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 55:
-+#line 412 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 412 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.vmod) = VModCreate((yyvsp[-2].atom), (yyvsp[0].expr)); }
 +#line 2371 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 56:
-+#line 418 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 418 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyvsp[-4].interp)->def = (yyvsp[-2].var); (yyval.interp) = (yyvsp[-4].interp); }
 +#line 2377 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 57:
-+#line 422 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 422 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.interp) = InterpCreate((yyvsp[-2].keysym), (yyvsp[0].expr)); }
 +#line 2383 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 58:
-+#line 424 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 424 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.interp) = InterpCreate((yyvsp[0].keysym), NULL); }
 +#line 2389 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 59:
-+#line 428 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 428 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = (VarDef *) AppendStmt((ParseCommon *) (yyvsp[-1].var),
 +                                                     (ParseCommon *) (yyvsp[0].var)); }
 +#line 2396 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 60:
-+#line 431 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 431 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = (yyvsp[0].var); }
 +#line 2402 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 61:
-+#line 437 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 437 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.keyType) = KeyTypeCreate((yyvsp[-4].atom), (yyvsp[-2].var)); }
 +#line 2408 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 62:
-+#line 443 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 443 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.syms) = SymbolsCreate((yyvsp[-4].atom), (yyvsp[-2].var)); }
 +#line 2414 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 63:
-+#line 447 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 447 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = (VarDef *) AppendStmt((ParseCommon *) (yyvsp[-2].var),
 +                                                     (ParseCommon *) (yyvsp[0].var)); }
 +#line 2421 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 64:
-+#line 450 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 450 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = (yyvsp[0].var); }
 +#line 2427 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 65:
-+#line 451 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 451 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = NULL; }
 +#line 2433 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 66:
-+#line 454 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 454 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = VarCreate((yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2439 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 67:
-+#line 455 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 455 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = VarCreate((yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2445 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 68:
-+#line 456 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 456 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = BoolVarCreate((yyvsp[0].atom), true); }
 +#line 2451 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 69:
-+#line 457 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 457 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = BoolVarCreate((yyvsp[0].atom), false); }
 +#line 2457 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 70:
-+#line 458 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 458 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.var) = VarCreate(NULL, (yyvsp[0].expr)); }
 +#line 2463 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 71:
-+#line 462 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 462 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[-1].expr); }
 +#line 2469 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 72:
-+#line 464 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 464 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateUnary(EXPR_ACTION_LIST, EXPR_TYPE_ACTION, (yyvsp[-1].expr)); }
 +#line 2475 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 73:
-+#line 468 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 468 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.groupCompat) = GroupCompatCreate((yyvsp[-3].ival), (yyvsp[-1].expr)); }
 +#line 2481 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 74:
-+#line 472 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 472 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.modMask) = ModMapCreate((yyvsp[-4].atom), (yyvsp[-2].expr)); }
 +#line 2487 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 75:
-+#line 476 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 476 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ledMap) = LedMapCreate((yyvsp[-4].atom), (yyvsp[-2].var)); }
 +#line 2493 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 76:
-+#line 480 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 480 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ledName) = LedNameCreate((yyvsp[-3].ival), (yyvsp[-1].expr), false); }
 +#line 2499 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 77:
-+#line 482 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 482 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ledName) = LedNameCreate((yyvsp[-3].ival), (yyvsp[-1].expr), true); }
 +#line 2505 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 78:
-+#line 486 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 486 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2511 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 79:
-+#line 488 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 488 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (void) (yyvsp[-2].expr); (yyval.geom) = NULL; }
 +#line 2517 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 80:
-+#line 492 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 492 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2523 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 81:
-+#line 495 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 495 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL;}
 +#line 2529 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 82:
-+#line 496 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 496 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2535 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 83:
-+#line 500 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 500 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2541 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 84:
-+#line 502 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 502 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { FreeStmt((ParseCommon *) (yyvsp[0].var)); (yyval.geom) = NULL; }
 +#line 2547 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 85:
-+#line 504 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 504 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2553 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 86:
-+#line 506 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 506 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { FreeStmt((ParseCommon *) (yyvsp[0].ledMap)); (yyval.geom) = NULL; }
 +#line 2559 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 87:
-+#line 508 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 508 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2565 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 88:
-+#line 511 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 511 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL;}
 +#line 2571 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 89:
-+#line 512 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 512 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2577 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 90:
-+#line 515 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 515 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2583 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 91:
-+#line 517 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 517 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { FreeStmt((ParseCommon *) (yyvsp[0].var)); (yyval.geom) = NULL; }
 +#line 2589 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 92:
-+#line 520 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 520 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2595 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 93:
-+#line 521 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 521 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2601 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 94:
-+#line 525 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 525 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2607 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 95:
-+#line 527 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 527 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { FreeStmt((ParseCommon *) (yyvsp[-1].expr)); (yyval.geom) = NULL; }
 +#line 2613 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 96:
-+#line 531 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 531 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2619 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 97:
-+#line 534 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 534 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2625 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 98:
-+#line 535 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 535 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2631 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 99:
-+#line 538 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 538 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2637 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 100:
-+#line 542 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 542 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL;}
 +#line 2643 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 101:
-+#line 544 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 544 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.geom) = NULL; }
 +#line 2649 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 102:
-+#line 548 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 548 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (void) (yyvsp[-1].expr); (yyval.geom) = NULL; }
 +#line 2655 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 103:
-+#line 550 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 550 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (void) (yyvsp[-1].expr); (yyval.geom) = NULL; }
 +#line 2661 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 104:
-+#line 552 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 552 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { FreeStmt((ParseCommon *) (yyvsp[0].expr)); (yyval.geom) = NULL; }
 +#line 2667 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 105:
-+#line 556 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 556 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (void) (yyvsp[-2].expr); (void) (yyvsp[0].expr); (yyval.expr) = NULL; }
 +#line 2673 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 106:
-+#line 558 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 558 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (void) (yyvsp[0].expr); (yyval.expr) = NULL; }
 +#line 2679 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 107:
-+#line 562 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 562 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = NULL; }
 +#line 2685 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 108:
-+#line 566 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 566 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { FreeStmt((ParseCommon *) (yyvsp[-2].var)); (yyval.geom) = NULL; }
 +#line 2691 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 109:
-+#line 569 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 569 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = 0; }
 +#line 2697 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 110:
-+#line 570 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 570 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = 0; }
 +#line 2703 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 111:
-+#line 571 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 571 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = 0; }
 +#line 2709 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 112:
-+#line 572 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 572 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = 0; }
 +#line 2715 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 113:
-+#line 575 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 575 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = (yyvsp[0].atom); }
 +#line 2721 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 114:
-+#line 576 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 576 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = (yyvsp[0].atom); }
 +#line 2727 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 115:
-+#line 580 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 580 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "action"); }
 +#line 2733 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 116:
-+#line 582 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 582 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "interpret"); }
 +#line 2739 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 117:
-+#line 584 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 584 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "type"); }
 +#line 2745 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 118:
-+#line 586 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 586 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "key"); }
 +#line 2751 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 119:
-+#line 588 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 588 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "group"); }
 +#line 2757 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 120:
-+#line 590 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 590 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {(yyval.atom) = xkb_atom_intern_literal(param->ctx, "modifier_map");}
 +#line 2763 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 121:
-+#line 592 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 592 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "indicator"); }
 +#line 2769 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 122:
-+#line 594 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 594 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = XKB_ATOM_NONE; }
 +#line 2775 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 123:
-+#line 596 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 596 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = XKB_ATOM_NONE; }
 +#line 2781 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 124:
-+#line 598 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 598 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = XKB_ATOM_NONE; }
 +#line 2787 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 125:
-+#line 600 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 600 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = XKB_ATOM_NONE; }
 +#line 2793 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 126:
-+#line 603 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 603 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.merge) = (yyvsp[0].merge); }
 +#line 2799 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 127:
-+#line 604 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 604 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.merge) = MERGE_DEFAULT; }
 +#line 2805 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 128:
-+#line 607 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 607 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.merge) = MERGE_DEFAULT; }
 +#line 2811 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 129:
-+#line 608 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 608 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.merge) = MERGE_AUGMENT; }
 +#line 2817 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 130:
-+#line 609 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 609 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.merge) = MERGE_OVERRIDE; }
 +#line 2823 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 131:
-+#line 610 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 610 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.merge) = MERGE_REPLACE; }
 +#line 2829 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 132:
-+#line 612 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 612 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                    /*
 +                     * This used to be MERGE_ALT_FORM. This functionality was
@@ -2859,225 +2859,225 @@ index 0000000..def73a2
 +    break;
 +
 +  case 133:
-+#line 621 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 621 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[0].expr); }
 +#line 2847 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 134:
-+#line 622 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 622 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = NULL; }
 +#line 2853 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 135:
-+#line 626 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 626 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (ExprDef *) AppendStmt((ParseCommon *) (yyvsp[-2].expr),
 +                                                      (ParseCommon *) (yyvsp[0].expr)); }
 +#line 2860 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 136:
-+#line 629 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 629 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[0].expr); }
 +#line 2866 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 137:
-+#line 633 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 633 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateBinary(EXPR_DIVIDE, (yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2872 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 138:
-+#line 635 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 635 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateBinary(EXPR_ADD, (yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2878 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 139:
-+#line 637 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 637 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateBinary(EXPR_SUBTRACT, (yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2884 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 140:
-+#line 639 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 639 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateBinary(EXPR_MULTIPLY, (yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2890 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 141:
-+#line 641 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 641 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateBinary(EXPR_ASSIGN, (yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2896 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 142:
-+#line 643 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 643 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[0].expr); }
 +#line 2902 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 143:
-+#line 647 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 647 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateUnary(EXPR_NEGATE, (yyvsp[0].expr)->expr.value_type, (yyvsp[0].expr)); }
 +#line 2908 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 144:
-+#line 649 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 649 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateUnary(EXPR_UNARY_PLUS, (yyvsp[0].expr)->expr.value_type, (yyvsp[0].expr)); }
 +#line 2914 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 145:
-+#line 651 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 651 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateUnary(EXPR_NOT, EXPR_TYPE_BOOLEAN, (yyvsp[0].expr)); }
 +#line 2920 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 146:
-+#line 653 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 653 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateUnary(EXPR_INVERT, (yyvsp[0].expr)->expr.value_type, (yyvsp[0].expr)); }
 +#line 2926 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 147:
-+#line 655 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 655 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[0].expr);  }
 +#line 2932 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 148:
-+#line 657 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 657 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateAction((yyvsp[-3].atom), (yyvsp[-1].expr)); }
 +#line 2938 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 149:
-+#line 659 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 659 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[0].expr);  }
 +#line 2944 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 150:
-+#line 661 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 661 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[-1].expr);  }
 +#line 2950 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 151:
-+#line 665 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 665 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (ExprDef *) AppendStmt((ParseCommon *) (yyvsp[-2].expr),
 +                                                      (ParseCommon *) (yyvsp[0].expr)); }
 +#line 2957 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 152:
-+#line 668 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 668 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[0].expr); }
 +#line 2963 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 153:
-+#line 672 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 672 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateAction((yyvsp[-3].atom), (yyvsp[-1].expr)); }
 +#line 2969 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 154:
-+#line 676 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 676 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateIdent((yyvsp[0].atom)); }
 +#line 2975 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 155:
-+#line 678 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 678 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateFieldRef((yyvsp[-2].atom), (yyvsp[0].atom)); }
 +#line 2981 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 156:
-+#line 680 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 680 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateArrayRef(XKB_ATOM_NONE, (yyvsp[-3].atom), (yyvsp[-1].expr)); }
 +#line 2987 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 157:
-+#line 682 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 682 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateArrayRef((yyvsp[-5].atom), (yyvsp[-3].atom), (yyvsp[-1].expr)); }
 +#line 2993 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 158:
-+#line 686 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 686 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateString((yyvsp[0].atom)); }
 +#line 2999 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 159:
-+#line 688 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 688 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateInteger((yyvsp[0].ival)); }
 +#line 3005 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 160:
-+#line 690 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 690 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = NULL; }
 +#line 3011 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 161:
-+#line 692 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 692 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateKeyName((yyvsp[0].atom)); }
 +#line 3017 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 162:
-+#line 695 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 695 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[0].expr); }
 +#line 3023 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 163:
-+#line 696 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 696 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = NULL; }
 +#line 3029 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 164:
-+#line 700 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 700 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprAppendKeysymList((yyvsp[-2].expr), (yyvsp[0].keysym)); }
 +#line 3035 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 165:
-+#line 702 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 702 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprAppendMultiKeysymList((yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 3041 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 166:
-+#line 704 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 704 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateKeysymList((yyvsp[0].keysym)); }
 +#line 3047 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 167:
-+#line 706 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 706 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = ExprCreateMultiKeysymList((yyvsp[0].expr)); }
 +#line 3053 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 168:
-+#line 710 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 710 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.expr) = (yyvsp[-1].expr); }
 +#line 3059 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 169:
-+#line 714 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 714 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            if (!resolve_keysym((yyvsp[0].str), &(yyval.keysym)))
 +                                parser_warn(param, "unrecognized keysym \"%s\"", (yyvsp[0].str));
@@ -3087,13 +3087,13 @@ index 0000000..def73a2
 +    break;
 +
 +  case 170:
-+#line 719 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 719 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.keysym) = XKB_KEY_section; }
 +#line 3075 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 171:
-+#line 721 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 721 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    {
 +                            if ((yyvsp[0].ival) < 0) {
 +                                parser_warn(param, "unrecognized keysym \"%d\"", (yyvsp[0].ival));
@@ -3115,79 +3115,79 @@ index 0000000..def73a2
 +    break;
 +
 +  case 172:
-+#line 740 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 740 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = -(yyvsp[0].ival); }
 +#line 3103 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 173:
-+#line 741 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 741 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = (yyvsp[0].ival); }
 +#line 3109 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 174:
-+#line 744 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 744 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = (yyvsp[0].num); }
 +#line 3115 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 175:
-+#line 745 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 745 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = (yyvsp[0].num); }
 +#line 3121 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 176:
-+#line 748 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 748 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = 0; }
 +#line 3127 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 177:
-+#line 751 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 751 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.ival) = (yyvsp[0].num); }
 +#line 3133 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 178:
-+#line 754 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 754 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.num) = (yyvsp[0].num); }
 +#line 3139 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 179:
-+#line 757 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 757 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_steal(param->ctx, (yyvsp[0].str)); }
 +#line 3145 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 180:
-+#line 758 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 758 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "default"); }
 +#line 3151 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 181:
-+#line 761 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 761 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.atom) = xkb_atom_steal(param->ctx, (yyvsp[0].str)); }
 +#line 3157 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 182:
-+#line 764 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 764 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.str) = (yyvsp[0].str); }
 +#line 3163 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 183:
-+#line 765 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 765 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.str) = NULL; }
 +#line 3169 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
 +
 +  case 184:
-+#line 768 "../src/xkbcomp/parser.y" /* yacc.c:1646  */
++#line 768 "src/xkbcomp/parser.y" /* yacc.c:1646  */
 +    { (yyval.str) = (yyvsp[0].str); }
 +#line 3175 "src/xkbcomp/parser.c" /* yacc.c:1646  */
 +    break;
@@ -3421,7 +3421,7 @@ index 0000000..def73a2
 +#endif
 +  return yyresult;
 +}
-+#line 771 "../src/xkbcomp/parser.y" /* yacc.c:1906  */
++#line 771 "src/xkbcomp/parser.y" /* yacc.c:1906  */
 +
 +
 +XkbFile *
@@ -3480,7 +3480,7 @@ index 0000000..def73a2
 +}
 diff --git a/src/xkbcomp/parser.h b/src/xkbcomp/parser.h
 new file mode 100644
-index 0000000..cdd8995
+index 0000000..af40d41
 --- /dev/null
 +++ b/src/xkbcomp/parser.h
 @@ -0,0 +1,221 @@
@@ -3666,7 +3666,7 @@ index 0000000..cdd8995
 +
 +union YYSTYPE
 +{
-+#line 162 "../src/xkbcomp/parser.y" /* yacc.c:1909  */
++#line 162 "src/xkbcomp/parser.y" /* yacc.c:1909  */
 +
 +        int              ival;
 +        int64_t          num;
@@ -3706,5 +3706,5 @@ index 0000000..cdd8995
 +
 +#endif /* !YY__XKBCOMMON_SRC_XKBCOMP_PARSER_H_INCLUDED  */
 -- 
-2.10.1
+2.10.2
 
