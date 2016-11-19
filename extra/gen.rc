@@ -10,6 +10,7 @@ subgen libusb
 subgen lpeg
 subgen man-pages-posix
 subgen msmtp
+subgen ncurses
 subgen pcre
 subgen pcsc
 subgen sshfs

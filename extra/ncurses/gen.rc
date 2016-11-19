@@ -1,0 +1,85 @@
+set common_cflags\
+	-D NDEBUG\
+	-I include\
+	-I '$dir' \
+	-I '$outdir' \
+	-I '$outdir'/include\
+	-I '$srcdir'/include\
+	-I '$srcdir'/ncurses
+cflags '$common_cflags'
+
+{
+	include 'toolchain/$host_toolchain.ninja'
+	cflags '$common_cflags' -D USE_BUILD_CC
+	exe make_keys -d '$outdir/names.c $outdir/include/curses.h $outdir/include/ncurses_dll.h' ncurses/tinfo/make_keys.c
+	exe make_hash -d '$outdir/hashsize.h $outdir/include/curses.h' ncurses/tinfo/make_hash.c
+} >tools.ninja ; subninja tools.ninja
+
+build '$outdir'/curses.head sed '$srcdir'/include/curses.h.in '|' '$dir'/subst.sed ; with\
+	expr '-f $dir/subst.sed'
+rule mkkeydefs '{ cat $outdir/curses.head && sh $srcdir/include/MKkey_defs.sh $in && cat $srcdir/include/curses.{wide,tail}; } >$out.tmp && mv $out.tmp $out'
+build '$outdir'/include/curses.h mkkeydefs '$srcdir'/include/Caps '|' '$outdir'/curses.head '$srcdir'/include/^(curses.^(wide tail) MKkey_defs.sh)
+
+rule mkhashsize 'sh $srcdir/include/MKhashsize.sh $in >$out.tmp && mv $out.tmp $out'
+build '$outdir'/hashsize.h mkhashsize '$srcdir'/include/Caps '|' '$srcdir'/include/MKhashsize.sh
+
+rule mkkeyslist 'sh $srcdir/ncurses/tinfo/MKkeys_list.sh $in | sort >$out.tmp && mv $out.tmp $out'
+build '$outdir'/keys.list mkkeyslist '$srcdir'/include/Caps '|' '$srcdir'/ncurses/tinfo/MKkeys_list.sh
+
+rule mkkeys '$outdir/make_keys $in >$out.tmp && mv $out.tmp $out'
+build '$outdir'/init_keytry.h mkkeys '$outdir'/keys.list '|' '$outdir'/make_keys
+
+rule mkdefs 'sh $srcdir/include/MKncurses_def.sh $in >$out.tmp && mv $out.tmp $out'
+build '$outdir'/ncurses_def.h mkdefs '$srcdir'/include/ncurses_defs '|' '$srcdir'/include/MKncurses_def.sh
+
+build '$outdir'/include/ncurses_dll.h sed '$srcdir'/include/ncurses_dll.h.in ; with\
+	expr s,@NCURSES_WRAP_PREFIX@,_nc_,
+
+build '$outdir'/MKterm.h.awk sed '$srcdir'/include/MKterm.h.awk.in '|' '$dir'/subst.sed ; with\
+	expr '-f $dir/subst.sed'
+
+for(f in termcap.h unctrl.h) {
+	build '$outdir'/include/$f sed '$srcdir'/include/$f.in '|' '$dir'/subst.sed ; with\
+		expr '-f $dir/subst.sed'
+}
+
+rule mkterm 'awk -f $outdir/MKterm.h.awk $in >$out.tmp && mv $out.tmp $out'
+build '$outdir'/include/term.h mkterm '$srcdir'/include/Caps '|' '$outdir'/MKterm.h.awk
+
+rule mkcaptab '(wd=$$PWD && cd $outdir && $$wd/$srcdir/ncurses/tinfo/MKcaptab.sh awk 1 $$wd/$srcdir/ncurses/tinfo/MKcaptab.awk $$wd/$in) >$out.tmp && mv $out.tmp $out'
+build '$outdir'/comp_captab.c mkcaptab '$srcdir'/include/Caps '|' '$outdir'/make_hash '$srcdir'/tinfo/^(MKcaptab.awk MKcaptab.sh)
+
+rule mkfallback 'sh $srcdir/ncurses/tinfo/MKfallback.sh /dev/null /dev/null /dev/null >$out.tmp && mv $out.tmp $out'
+build '$outdir'/fallback.c mkfallback '|' '$srcdir'/ncurses/tinfo/MKfallback.sh
+
+build '$outdir'/lib_keyname.c awk '$outdir'/keys.list ; with\
+	expr '-f $srcdir/ncurses/base/MKkeyname.awk bigstrings=1'
+
+build '$outdir'/names.c awk '$srcdir'/include/Caps '|' '$srcdir'/ncurses/tinfo/MKnames.awk ; with\
+	expr '-f $srcdir/ncurses/tinfo/MKnames.awk bigstrings=1'
+
+build '$outdir'/unctrl.c awk /dev/null '|' '$srcdir'/ncurses/base/MKunctrl.awk ; with\
+	expr '-f $srcdir/ncurses/base/MKunctrl.awk bigstrings=1'
+
+phony headers '$outdir'/include/^(curses.h ncurses_dll.h term.h termcap.h unctrl.h)
+phony deps 'phony/$dir/headers' '$outdir'/^(hashsize.h init_keytry.h ncurses_def.h)
+
+lib libncurses.a -d 'phony/$dir/deps' `{grep -v '^#' sources.txt}
+
+terms=(dumb linux tmux tmux-256color xterm xterm-256color)
+terminfo=`{printf %s\n $terms | awk '{print substr($0, 1, 1) "/" $0}'}
+termnames=`{printf ,%s $terms | tail -c +1}
+terminfo_outs='$outdir'/terminfo/$terminfo
+
+rule tic 'tic $ticflags $in'
+build $"terminfo_outs tic '$srcdir'/misc/terminfo.src ; ticflags=(\
+	-o '$outdir'/terminfo\
+	-e $termnames\
+	-x\
+) with ticflags $"ticflags
+for(f in $terminfo)
+	file share/terminfo/$f '$outdir'/terminfo/$f 644
+
+gen_inputs='$dir'/sources.txt
+
+fetch curl
