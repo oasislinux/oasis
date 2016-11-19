@@ -21,4 +21,11 @@ exe st -d 'phony/$dir/deps' st.c '$builddir'/^(\
 file bin/st '$outdir'/st 755
 file share/man/man1/st.1 '$srcdir'/st.1 644
 
+terminfo=s/^(st st-256color)
+terminfo_outs='$outdir'/$terminfo
+build $"terminfo_outs tic '$srcdir'/st.info ; with\
+	ticflags '-x -o $outdir'
+for(t in $terminfo)
+	file share/terminfo/$t '$outdir'/$t 644
+
 fetch git

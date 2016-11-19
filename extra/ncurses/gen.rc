@@ -109,7 +109,6 @@ terminfo=`{printf %s\n $terms | awk '{print substr($0, 1, 1) "/" $0}'}
 termnames=`{printf ,%s $terms | tail -c +1}
 terminfo_outs='$outdir'/terminfo/$terminfo
 
-rule tic 'tic $ticflags $in'
 build $"terminfo_outs tic '$srcdir'/misc/terminfo.src ; ticflags=(\
 	-o '$outdir'/terminfo\
 	-e $termnames\
