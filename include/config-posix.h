@@ -346,7 +346,7 @@
 #define HAVE_ERFCL 1
 #define HAVE_ERFF 1
 #define HAVE_ERFL 1
-#define HAVE_ERRNO
+#define HAVE_ERRNO 1
 #define HAVE_EXECL 1
 #define HAVE_EXECLE 1
 #define HAVE_EXECLP 1
