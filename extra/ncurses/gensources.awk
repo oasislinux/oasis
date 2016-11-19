@@ -6,7 +6,6 @@ BEGIN {
 	dirs["$(wide)"] = "ncurses/widechar"
 	dirs["."] = "$outdir"
 
-	skip["codes"] = 1
 	skip["expanded"] = 1
 	skip["lib_gen"] = 1
 	skip["link_test"] = 1

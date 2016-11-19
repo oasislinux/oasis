@@ -108,6 +108,7 @@ ncurses/base/wresize.c
 ncurses/tinfo/access.c
 ncurses/tinfo/add_tries.c
 ncurses/tinfo/alloc_ttype.c
+$outdir/codes.c
 $outdir/comp_captab.c
 ncurses/tinfo/comp_error.c
 ncurses/tinfo/comp_hash.c

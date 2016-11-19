@@ -5,7 +5,8 @@ set common_cflags\
 	-I '$outdir' \
 	-I '$outdir'/include\
 	-I '$srcdir'/include\
-	-I '$srcdir'/ncurses
+	-I '$srcdir'/ncurses\
+	-I '$srcdir'/progs
 cflags '$common_cflags'
 
 {
@@ -35,6 +36,9 @@ build '$outdir'/ncurses_def.h mkdefs '$srcdir'/include/ncurses_defs '|' '$srcdir
 build '$outdir'/include/ncurses_dll.h sed '$srcdir'/include/ncurses_dll.h.in ; with\
 	expr s,@NCURSES_WRAP_PREFIX@,_nc_,
 
+rule mkparam '$srcdir/include/MKparametrized.sh $in >$out.tmp && mv $out.tmp $out'
+build '$outdir'/parametrized.h mkparam '$srcdir'/include/Caps '|' '$srcdir'/include/MKparametrized.sh
+
 build '$outdir'/MKterm.h.awk sed '$srcdir'/include/MKterm.h.awk.in '|' '$dir'/subst.sed ; with\
 	expr '-f $dir/subst.sed'
 
@@ -45,6 +49,9 @@ for(f in termcap.h unctrl.h) {
 
 rule mkterm 'awk -f $outdir/MKterm.h.awk $in >$out.tmp && mv $out.tmp $out'
 build '$outdir'/include/term.h mkterm '$srcdir'/include/Caps '|' '$outdir'/MKterm.h.awk
+
+build '$outdir'/codes.c awk '$srcdir'/include/Caps '|' '$srcdir'/ncurses/tinfo/MKcodes.awk ; with\
+	expr '-f $srcdir/ncurses/tinfo/MKcodes.awk bigstrings=1'
 
 rule mkcaptab '(wd=$$PWD && cd $outdir && $$wd/$srcdir/ncurses/tinfo/MKcaptab.sh awk 1 $$wd/$srcdir/ncurses/tinfo/MKcaptab.awk $$wd/$in) >$out.tmp && mv $out.tmp $out'
 build '$outdir'/comp_captab.c mkcaptab '$srcdir'/include/Caps '|' '$outdir'/make_hash '$srcdir'/tinfo/^(MKcaptab.awk MKcaptab.sh)
@@ -58,13 +65,44 @@ build '$outdir'/lib_keyname.c awk '$outdir'/keys.list ; with\
 build '$outdir'/names.c awk '$srcdir'/include/Caps '|' '$srcdir'/ncurses/tinfo/MKnames.awk ; with\
 	expr '-f $srcdir/ncurses/tinfo/MKnames.awk bigstrings=1'
 
+rule mktermsort 'sh $srcdir/progs/MKtermsort.sh awk $in >$out.tmp && mv $out.tmp $out'
+build '$outdir'/termsort.c mktermsort '$srcdir'/include/Caps '|' '$srcdir'/progs/MKtermsort.sh
+
 build '$outdir'/unctrl.c awk /dev/null '|' '$srcdir'/ncurses/base/MKunctrl.awk ; with\
 	expr '-f $srcdir/ncurses/base/MKunctrl.awk bigstrings=1'
 
 phony headers '$outdir'/include/^(curses.h ncurses_dll.h term.h termcap.h unctrl.h)
-phony deps 'phony/$dir/headers' '$outdir'/^(hashsize.h init_keytry.h ncurses_def.h)
+phony deps 'phony/$dir/headers' '$outdir'/^(hashsize.h init_keytry.h ncurses_def.h parametrized.h termsort.c)
 
 lib libncurses.a -d 'phony/$dir/deps' `{grep -v '^#' sources.txt}
+
+exe tic -d 'phony/$dir/deps' \
+	progs/^(tic.c dump_entry.c tparm_type.c transform.c)\
+	ncurses/^(\
+		tinfo/^(\
+			alloc_entry.c\
+			captoinfo.c\
+			comp_expand.c\
+			comp_parse.c\
+			comp_scan.c\
+			parse_entry.c\
+			write_entry.c\
+		)\
+		trace/lib_trace.c\
+	)\
+	libncurses.a
+file bin/tic '$outdir'/tic 755
+
+exe tset progs/^(tset.c transform.c.o) libncurses.a
+file bin/tset '$outdir'/tset 755
+sym bin/reset tset
+
+for(m in tic.1m tset.1) {
+	build '$outdir'/$m sed '$srcdir'/man/$m '|' '$dir'/subst.sed ; with\
+		expr '-f $dir/subst.sed'
+	file share/man/man1/$m '$outdir'/$m 644
+}
+sym share/man/man1/reset.1 tset.1
 
 terms=(dumb linux tmux tmux-256color xterm xterm-256color)
 terminfo=`{printf %s\n $terms | awk '{print substr($0, 1, 1) "/" $0}'}
