@@ -6,6 +6,7 @@ subgen hostap
 subgen libevent
 subgen libfuse
 subgen libnl
+subgen libtermkey
 subgen libusb
 subgen lpeg
 subgen man-pages-posix
