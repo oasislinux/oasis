@@ -7,6 +7,7 @@ subgen libevent
 subgen libfuse
 subgen libnl
 subgen libusb
+subgen lpeg
 subgen man-pages-posix
 subgen msmtp
 subgen pcre
