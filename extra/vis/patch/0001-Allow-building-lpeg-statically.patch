@@ -1,4 +1,4 @@
-From ac5d9c9d271023f1d0a9733946f7f079b7829625 Mon Sep 17 00:00:00 2001
+From 6bfd92e10c366e804a14d793aa3df8e43baed550 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 18 Nov 2016 21:35:52 -0800
 Subject: [PATCH] Allow building lpeg statically
@@ -9,7 +9,7 @@ Subject: [PATCH] Allow building lpeg statically
  2 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index e221b67..b28590c 100644
+index e572442..92f501c 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -14,6 +14,7 @@ MANPREFIX ?= ${PREFIX}/man

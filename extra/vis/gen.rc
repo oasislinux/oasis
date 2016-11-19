@@ -1,4 +1,4 @@
-version=v0.2-467-g8cdfd27
+version=v0.2-476-gca86834
 cflags\
 	'-std=c99' \
 	-D 'CONFIG_LUA=1' \
