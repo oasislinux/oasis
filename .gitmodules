@@ -183,6 +183,10 @@
 [submodule "extra/the_silver_searcher/src"]
 	path = extra/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher
+[submodule "extra/vis/src"]
+	path = extra/vis/src
+	url = https://github.com/martanne/vis
+	ignore = all
 [submodule "media/alsa-lib/src"]
 	path = media/alsa-lib/src
 	url = git://git.alsa-project.org/alsa-lib.git
