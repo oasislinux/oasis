@@ -69,8 +69,8 @@ if(grep -qF 'HAVE_LIBASS 1' config.h) {
 	deps=($deps phony/media/libass/headers)
 }
 if(grep -qF 'HAVE_LUA 1' config.h) {
-	cflags=($cflags -isystem devel/lua/src/src)
-	libs=($libs devel/lua/liblua.a)
+	cflags=($cflags -isystem lang/lua/src/src)
+	libs=($libs lang/lua/liblua.a)
 }
 
 cflags $cflags

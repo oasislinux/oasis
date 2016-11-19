@@ -131,9 +131,6 @@
 [submodule "devel/make/src"]
 	path = devel/make/src
 	url = git://git.sv.gnu.org/make.git
-[submodule "devel/mc/src"]
-	path = devel/mc/src
-	url = https://github.com/oridb/mc
 [submodule "devel/qbe/src"]
 	path = devel/qbe/src
 	url = git://c9x.me/qbe.git
@@ -187,6 +184,9 @@
 	path = extra/vis/src
 	url = https://github.com/martanne/vis
 	ignore = all
+[submodule "lang/mc/src"]
+	path = lang/mc/src
+	url = https://github.com/oridb/mc
 [submodule "media/alsa-lib/src"]
 	path = media/alsa-lib/src
 	url = git://git.alsa-project.org/alsa-lib.git

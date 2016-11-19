@@ -8,16 +8,16 @@ cflags\
 	-D 'VERSION=''"'$version'"''' \
 	-D 'VIS_PATH=''"/share/vis"''' \
 	-D NDEBUG\
-	-isystem devel/lua/src/src\
 	-isystem extra/libtermkey/src\
+	-isystem lang/lua/src/src\
 	-isystem '$builddir'/extra/ncurses/include\
 	-I '$outdir'
 
 build '$outdir'/config.h copy '$srcdir'/config.def.h
 
 phony deps config.h phony/extra/ncurses/headers '$builddir'/^(\
-	devel/lua/fetch.stamp\
 	extra/libtermkey/fetch.stamp\
+	lang/lua/fetch.stamp\
 )
 
 exe vis -d 'phony/$dir/deps' \
@@ -26,10 +26,10 @@ exe vis -d 'phony/$dir/deps' \
 	ui-curses.c view.c vis.c vis-lua.c vis-modes.c vis-motions.c\
 	vis-operators.c vis-prompt.c vis-text-objects.c\
 	'$builddir'/^(\
-		devel/lua/liblua.a\
 		extra/libtermkey/libtermkey.a.d\
 		extra/lpeg/liblpeg.a\
 		extra/ncurses/libncurses.a\
+		lang/lua/liblua.a\
 	)
 file bin/vis '$outdir'/vis 755
 
