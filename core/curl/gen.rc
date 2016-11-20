@@ -1,9 +1,9 @@
 cflags\
 	-D HAVE_CONFIG_H\
+	-isystem '$builddir'/core/libressl/include\
+	-isystem '$builddir'/core/zlib/include\
 	-I include\
 	-I '$dir' \
-	-I '$builddir'/core/libressl/include\
-	-I '$builddir'/core/zlib/include\
 	-I '$outdir'/include/curl\
 	-I '$outdir'/include\
 	-I '$srcdir'/lib\

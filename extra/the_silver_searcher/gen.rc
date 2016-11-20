@@ -1,7 +1,7 @@
 cflags\
 	-D _GNU_SOURCE\
+	-isystem '$builddir'/extra/pcre/include\
 	-I include\
-	-I '$builddir'/extra/pcre/include\
 	-I '$dir'
 
 exe ag -d extra/pcre/headers src/^(\

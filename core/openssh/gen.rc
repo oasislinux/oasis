@@ -1,8 +1,8 @@
 cflags\
+	-isystem core/openbsd/include\
+	-isystem '$builddir'/core/libressl/include\
+	-isystem '$builddir'/core/zlib/include\
 	-I include\
-	-I core/openbsd/include\
-	-I '$builddir'/core/libressl/include\
-	-I '$builddir'/core/zlib/include\
 	-I '$dir' \
 	-I '$srcdir' \
 	-I '$srcdir'/openbsd-compat\
@@ -79,7 +79,7 @@ file share/man/man1/ssh.1 '$srcdir'/ssh.1 644
 cc sftp-server.c
 cc sftp-common.c
 
-exe sshd\
+exe sshd -d '$dir'/deps\
 	sshd.c auth-rhosts.c auth-passwd.c auth-rsa.c auth-rh-rsa.c\
 	audit.c audit-bsm.c audit-linux.c platform.c\
 	sshpty.c sshlogin.c servconf.c serverloop.c\

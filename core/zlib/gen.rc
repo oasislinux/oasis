@@ -1,8 +1,8 @@
 cflags\
-	-DHAVE_HIDDEN\
-	-DHAVE_STDARG_H\
-	-DHAVE_UNISTD_H\
-	-D_LARGEFILE64_SOURCE
+	-D HAVE_HIDDEN\
+	-D HAVE_STDARG_H\
+	-D HAVE_UNISTD_H\
+	-D _LARGEFILE64_SOURCE
 
 lib libz.a\
 	adler32.c\
@@ -23,7 +23,6 @@ lib libz.a\
 	gzwrite.c
 file lib/libz.a '$outdir'/libz.a 644
 
-# Only expose the headers needed to build with zlib.
 hdrs=(zlib.h zconf.h)
 for(hdr in $hdrs) {
 	build '$outdir'/include/$hdr copy '$srcdir'/$hdr

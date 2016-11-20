@@ -1,7 +1,7 @@
 set cc '$cxx'
 set cflags '$cxxflags' \
 	-Wall -Wextra -Wno-deprecated -Wno-unused-parameter\
-	-fno-rtti -fno-exceptions -fvisibility'='hidden\
+	-fno-rtti -fno-exceptions '-fvisibility=hidden' \
 	-D USE_PPOLL
 
 exe ninja src/^(\

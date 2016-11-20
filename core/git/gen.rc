@@ -1,13 +1,13 @@
 cflags\
 	-include '$dir'/config.h\
-	-I '$builddir'/core/zlib/include\
-	-I '$builddir'/core/libressl/include\
-	-I '$builddir'/core/curl/include\
+	-isystem '$builddir'/core/zlib/include\
+	-isystem '$builddir'/core/libressl/include\
+	-isystem '$builddir'/core/curl/include\
 	-I '$srcdir' \
 	-I '$srcdir'/compat/regex\
 	-I '$outdir'
 
-rule cmdlist 'oldcwd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$oldcwd/$in >$$oldcwd/$out.tmp && mv $$oldcwd/$out.tmp $$oldcwd/$out'
+rule cmdlist 'wd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$wd/$in >$$wd/$out.tmp && mv $$wd/$out.tmp $$wd/$out'
 build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/Documentation/`{grep -v '^#' commands.txt}
 
 phony deps '$outdir'/common-cmds.h core/^(curl libressl zlib)^/headers

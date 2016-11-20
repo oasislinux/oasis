@@ -1,9 +1,9 @@
 cflags\
-	-std'='c99 -pedantic\
+	'-std=c99' -pedantic\
 	-Wall -Wextra -Wno-maybe-uninitialized\
-	-D_GNU_SOURCE\
-	-D_XOPEN_SOURCE'='700\
-	-D_FILE_OFFSET_BITS'='64\
+	-D _GNU_SOURCE\
+	-D '_XOPEN_SOURCE=700' \
+	-D '_FILE_OFFSET_BITS=64' \
 	-I '$outdir'
 
 build '$outdir/config.h' copy '$srcdir/config.def.h'

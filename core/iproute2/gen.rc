@@ -1,8 +1,8 @@
 cflags\
-	-Wall -Wstrict-prototypes  -Wmissing-prototypes\
-	-Wmissing-declarations -Wold-style-definition -Wformat'='2\
-	-D_GNU_SOURCE\
-	-DHAVE_SETNS\
+	-Wall '-Wformat=2' -Wmissing-declarations -Wmissing-prototypes\
+	-Wold-style-definition -Wstrict-prototypes\
+	-D _GNU_SOURCE\
+	-D HAVE_SETNS\
 	-I '$srcdir'/include\
 	-I '$srcdir'/misc
 

@@ -1,11 +1,11 @@
 version=5.29
 cflags\
-	-DHAVE_CONFIG_H\
-	-DMAGIC'='\"/share/file/magic\"\
-	-D_GNU_SOURCE\
 	-Wall\
+	-D HAVE_CONFIG_H\
+	-D 'MAGIC=''"/share/file/magic"''' \
+	-D _GNU_SOURCE\
+	-isystem '$builddir'/core/zlib/include\
 	-I include\
-	-I '$builddir'/core/zlib/include\
 	-I '$dir' \
 	-I '$outdir'/include
 

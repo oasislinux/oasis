@@ -1,7 +1,7 @@
 cflags\
 	-D '''DEF_WEAK(n)=''' \
+	-isystem '$builddir'/core/libressl/include\
 	-I '$dir'/include\
-	-I '$builddir'/core/libressl/include\
 	-idirafter '$srcdir'/include\
 	-idirafter '$srcdir'/sys
 

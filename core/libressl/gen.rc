@@ -3,7 +3,7 @@ cflags\
 	-D OPENSSL_NO_HW_PADLOCK\
 	-D OPENSSL_NO_ASM\
 	-D '''__warn_references(sym,msg)=''' \
-	-I core/openbsd/include\
+	-isystem core/openbsd/include\
 	-I '$outdir'/include\
 	-I '$outdir'/internal\
 	-I '$srcdir'/src/lib/libcrypto\

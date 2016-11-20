@@ -1,7 +1,7 @@
 cflags\
 	-D '_FILE_OFFSET_BITS=64' \
 	-D 'FUSE_USE_VERSION=26' \
-	-I extra/libfuse/src/include\
+	-isystem extra/libfuse/src/include\
 	-I '$dir'
 
 build '$outdir'/sshfs.1 sed '$srcdir'/sshfs.1.in ; with\

@@ -1,7 +1,6 @@
 version=1.8.17
 cflags\
 	-D HAVE_CONFIG_H\
-	-isystem '$builddir'/extra/libusb/include\
 	-I include\
 	-I '$dir' \
 	-I '$outdir' \

@@ -1,9 +1,9 @@
 cflags\
+	-D HAVE_CONFIG_H\
 	-I include\
 	-I '$dir' \
 	-I '$srcdir' \
-	-I '$srcdir'/glob\
-	-D HAVE_CONFIG_H
+	-I '$srcdir'/glob
 
 lib libglob.a glob/^(glob.c fnmatch.c)
 

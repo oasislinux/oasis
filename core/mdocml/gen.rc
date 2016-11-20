@@ -1,6 +1,6 @@
 cflags\
-	-I core/openbsd/include\
-	-I '$builddir'/core/zlib/include\
+	-isystem core/openbsd/include\
+	-isystem '$builddir'/core/zlib/include\
 	-I include\
 	-I '$dir'
 

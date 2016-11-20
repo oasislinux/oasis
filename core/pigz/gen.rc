@@ -1,4 +1,6 @@
-cflags -Wall -Wextra -I '$builddir'/core/zlib/include
+cflags\
+	-Wall -Wextra\
+	-isystem '$builddir'/core/zlib/include
 
 exe pigz -d core/zlib/headers\
 	pigz.c yarn.c try.c\

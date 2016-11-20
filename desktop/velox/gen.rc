@@ -2,7 +2,6 @@ cflags\
 	-D 'VELOX_LIBEXEC=''"/libexec/velox"''' \
 	-isystem desktop/fontconfig/src\
 	-isystem desktop/libxkbcommon/src\
-	-isystem desktop/swc/src/libswc\
 	-isystem '$builddir'/desktop/pixman/include\
 	-isystem '$builddir'/desktop/swc/include\
 	-isystem '$builddir'/desktop/wayland/include\

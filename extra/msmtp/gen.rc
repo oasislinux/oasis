@@ -1,8 +1,8 @@
 cflags\
 	-D HAVE_CONFIG_H\
 	-D 'SYSCONFDIR=\"/etc\"' \
+	-isystem '$builddir'/core/libressl/include\
 	-I include\
-	-I '$builddir'/core/libressl/include\
 	-I '$dir' \
 
 exe msmtp src/^(\

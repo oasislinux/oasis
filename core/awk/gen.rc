@@ -10,7 +10,7 @@ build '$outdir'/ytab.h copy '$outdir'/gram.tab.h
 } >tools.ninja ; subninja tools.ninja
 
 rule maketab '(cd $outdir && ./maketab) >$out.tmp && mv $out.tmp $out'
-build '$outdir'/proctab.c maketab '|' '$outdir'/maketab
+build '$outdir'/proctab.c maketab '|' '$outdir'/^(maketab ytab.h)
 
 exe awk -d '$outdir'/ytab.h\
 	b.c main.c parse.c tran.c lib.c run.c lex.c\
