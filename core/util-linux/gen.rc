@@ -46,7 +46,7 @@ lib libcommon.a lib/^(\
 	sysfs.c\
 )
 
-lib libfdisk.a libfdisk/src/^(\
+lib libfdisk.a -d '$dir'/deps libfdisk/src/^(\
 	init.c\
 	field.c\
 	item.c\
@@ -71,7 +71,7 @@ lib libfdisk.a libfdisk/src/^(\
 	gpt.c\
 ) libuuid.a libcommon.a
 
-lib libsmartcols.a libsmartcols/src/^(\
+lib libsmartcols.a -d '$dir'/deps libsmartcols/src/^(\
 	iter.c\
 	symbols.c\
 	cell.c\

@@ -95,7 +95,7 @@ exe tic -d '$dir'/deps\
 	libncurses.a
 file bin/tic '$outdir'/tic 755
 
-exe tset progs/^(tset.c transform.c.o) libncurses.a
+exe tset -d '$dir'/deps progs/^(tset.c transform.c.o) libncurses.a
 file bin/tset '$outdir'/tset 755
 sym bin/reset tset
 
