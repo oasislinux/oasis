@@ -12,9 +12,10 @@ waylandproto protocol/velox.xml\
 	protocol/velox-^(client server)^-protocol.h velox-protocol.c
 build '$outdir'/protocol/swc-client-protocol.h copy '$builddir'/desktop/swc/include/swc-client-protocol.h
 
-phony deps '$outdir'/^(\
-	protocol/^(swc-client velox-^(client server))^-protocol.h\
-) desktop/^(pixman swc wayland wld)^/headers\
+phony deps\
+	'$outdir'/protocol/^(swc-client velox-^(client server))^-protocol.h\
+	'$builddir'/desktop/^(fontconfig libxkbcommon swc)^/fetch.stamp\
+	desktop/^(pixman swc wayland wld)^/headers
 
 exe velox -d '$dir'/deps \
 	config.c\

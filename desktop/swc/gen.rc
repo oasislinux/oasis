@@ -34,11 +34,14 @@ subninja '$dir'/tools.ninja
 rule convert_font '$outdir/convert_font $in $out.tmp 2>/dev/null && mv $out.tmp $out'
 build '$outdir'/cursor/cursor_data.h convert_font '$srcdir'/cursor/cursor.pcf '|' '$outdir'/convert_font
 
-phony deps '$outdir'/^(\
-	wayland-drm-server-protocol.h\
-	include/swc-server-protocol.h\
-	cursor/cursor_data.h\
-) desktop/^(pixman wayland wayland-protocols wld)^/headers
+phony deps\
+	'$outdir'/^(\
+		wayland-drm-server-protocol.h\
+		include/swc-server-protocol.h\
+		cursor/cursor_data.h\
+	)\
+	'$builddir'/desktop/^(fontconfig libdrm libevdev libxkbcommon)^/fetch.stamp\
+	desktop/^(pixman wayland wayland-protocols wld)^/headers
 
 lib libswc.a -d '$dir'/deps\
 	libswc/^(\

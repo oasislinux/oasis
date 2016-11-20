@@ -5,7 +5,7 @@ cflags\
 	-I include\
 	-I '$dir' \
 
-exe msmtp src/^(\
+exe msmtp -d core/libressl/headers src/^(\
 	conf.c\
 	list.c\
 	msmtp.c\

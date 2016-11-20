@@ -8,7 +8,9 @@ cflags\
 	-isystem '$builddir'/desktop/wld/include\
 	-I '$dir'
 
-phony deps desktop/^(pixman swc wayland wld)^/headers
+phony deps\
+	'$builddir'/desktop/^(fontconfig libxkbcommon)^/fetch.stamp\
+	desktop/^(pixman swc wayland wld)^/headers
 
 exe dmenu -d '$dir'/deps dmenu.c drw.c util.c '$builddir'/^(\
 	desktop/swc/swc-protocol.c.o\

@@ -3,7 +3,7 @@ cflags\
 	-isystem core/bzip2/src\
 	-I '$srcdir'
 
-exe unzip\
+exe unzip -d '$builddir'/core/bzip2/fetch.stamp\
         unzip.c crc32.c crypt.c envargs.c explode.c\
 	extract.c fileio.c globals.c inflate.c list.c match.c\
 	process.c ttyio.c ubz2err.c unreduce.c unshrink.c zipinfo.c\

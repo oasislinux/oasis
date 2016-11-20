@@ -7,7 +7,7 @@ cflags\
 	-I '$outdir' \
 	-I '$srcdir'
 
-deps=desktop/expat/headers
+deps=(desktop/expat/headers '$builddir'/desktop/freetype/fetch.stamp)
 
 rule makealias '$srcdir/src/makealias $srcdir/src $out $in'
 fn makealias {

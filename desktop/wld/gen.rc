@@ -60,6 +60,7 @@ waylandproto protocol/wayland-drm.xml\
 
 phony deps\
 	'$outdir'/protocol/wayland-drm-client-protocol.h\
+	'$builddir'/desktop/^(fontconfig freetype libdrm)^/fetch.stamp\
 	desktop/^(pixman wayland)^/headers 
 
 lib libwld.a -d '$dir'/deps $srcs '$builddir'/$libs
