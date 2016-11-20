@@ -72,11 +72,13 @@ build '$outdir'/unctrl.c awk /dev/null '|' '$srcdir'/ncurses/base/MKunctrl.awk ;
 	expr '-f $srcdir/ncurses/base/MKunctrl.awk bigstrings=1'
 
 phony headers '$outdir'/include/^(curses.h ncurses_dll.h term.h termcap.h unctrl.h)
-phony deps 'phony/$dir/headers' '$outdir'/^(hashsize.h init_keytry.h ncurses_def.h parametrized.h termsort.c)
+phony deps '$outdir'/^(\
+	hashsize.h init_keytry.h ncurses_def.h parametrized.h termsort.c\
+) '$dir'/headers
 
-lib libncurses.a -d 'phony/$dir/deps' `{grep -v '^#' sources.txt}
+lib libncurses.a -d '$dir'/deps `{grep -v '^#' sources.txt}
 
-exe tic -d 'phony/$dir/deps' \
+exe tic -d '$dir'/deps\
 	progs/^(tic.c dump_entry.c tparm_type.c transform.c)\
 	ncurses/^(\
 		tinfo/^(\

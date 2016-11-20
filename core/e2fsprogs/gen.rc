@@ -55,25 +55,23 @@ phony headers '$outdir'/include/^(\
 	ext2fs/^(ext2_err.h ext2_types.h)\
 	uuid/uuid.h\
 )
-phony internal '$outdir'/internal/^(\
+phony deps '$dir'/headers '$outdir'/internal/^(\
 	blkid/blkid_types.h support/prof_err.h crc32c_table.h\
 )
 
-deps=phony/'$dir'/^(headers internal)
-
-lib libcomm_err.a -d $"deps\
+lib libcomm_err.a -d '$dir'/deps\
 	lib/et/^(error_message.c et_name.c init_et.c com_err.c com_right.c)
-lib libblkid.a -d $"deps lib/blkid/^(\
+lib libblkid.a -d '$dir'/deps lib/blkid/^(\
 	cache.c dev.c devname.c devno.c getsize.c llseek.c probe.c\
 	read.c resolve.c save.c tag.c version.c\
 )
-lib libe2p.a -d $"deps lib/e2p/^(\
+lib libe2p.a -d '$dir'/deps lib/e2p/^(\
 	feature.c fgetflags.c fsetflags.c fgetversion.c fsetversion.c\
 	getflags.c getversion.c hashstr.c iod.c ls.c mntopts.c\
 	parse_num.c pe.c pf.c ps.c setflags.c setversion.c uuid.c\
 	ostype.c percent.c crypto_mode.c fgetproject.c fsetproject.c\
 )
-lib libext2fs.a -d $"deps '$outdir'/ext2_err.c lib/ext2fs/^(\
+lib libext2fs.a -d '$dir'/deps '$outdir'/ext2_err.c lib/ext2fs/^(\
 	alloc.c\
 	alloc_sb.c\
 	alloc_stats.c\
@@ -150,7 +148,7 @@ lib libext2fs.a -d $"deps '$outdir'/ext2_err.c lib/ext2fs/^(\
 	\
 	dupfs.c\
 )
-lib libsupport.a -d $"deps '$outdir'/prof_err.c lib/support/^(\
+lib libsupport.a -d '$dir'/deps '$outdir'/prof_err.c lib/support/^(\
 	mkquota.c\
 	plausible.c\
 	profile.c\
@@ -161,7 +159,7 @@ lib libsupport.a -d $"deps '$outdir'/prof_err.c lib/support/^(\
 	quotaio_tree.c\
 	dict.c\
 )
-lib libuuid.a -d $"deps lib/uuid/^(\
+lib libuuid.a -d '$dir'/deps lib/uuid/^(\
 	clear.c\
 	compare.c\
 	copy.c\
@@ -176,7 +174,7 @@ lib libuuid.a -d $"deps lib/uuid/^(\
 
 libs=(libext2fs.a libe2p.a libblkid.a libuuid.a libcomm_err.a libsupport.a)
 
-exe bin/e2fsck -d 'phony/$dir/headers' e2fsck/^(\
+exe bin/e2fsck -d '$dir'/headers e2fsck/^(\
 	unix.c e2fsck.c super.c pass1.c pass1b.c pass2.c\
 	pass3.c pass4.c pass5.c journal.c badblocks.c util.c dirinfo.c\
 	dx_dirinfo.c ehandler.c problem.c message.c quota.c recovery.c\
@@ -188,7 +186,7 @@ file bin/e2fsck '$outdir'/bin/e2fsck 755
 man e2fsck/e2fsck.8.in
 man e2fsck/e2fsck.conf.5.in
 
-exe bin/resize2fs -d 'phony/$dir/headers' resize/^(\
+exe bin/resize2fs -d '$dir'/headers resize/^(\
 	extent.c resize2fs.c main.c online.c resource_track.c\
 	sim_progress.c\
 ) $libs

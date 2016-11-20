@@ -12,7 +12,7 @@ build '$outdir'/lib/libc/crypt/arc4random.h copy '$srcdir'/lib/libcrypto/crypto/
 build '$outdir'/lib/libc/crypt/chacha_private.h copy '$srcdir'/lib/libc/crypt/chacha_private.h
 cc '$outdir'/lib/libc/crypt/arc4random.c '||' '$outdir'/lib/libc/crypt/^(arc4random.h chacha_private.h)
 
-lib libbsd.a -d phony/core/libressl/headers\
+lib libbsd.a -d core/libressl/headers\
 	lib/libc/^(\
 		crypt/^(arc4random.c.o arc4random_uniform.c)\
 		gen/^(fts.c vis.c warnc.c vwarnc.c)\

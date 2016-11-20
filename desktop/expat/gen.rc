@@ -6,6 +6,6 @@ lib libexpat.a expat/lib/^(xmlparse.c xmltok.c xmlrole.c)
 
 hdrs=(expat.h expat_external.h)
 for(hdr in $hdrs) build '$outdir'/include/$hdr copy '$srcdir'/expat/lib/$hdr
-phony headers include/$hdrs
+phony headers '$outdir'/include/$hdrs
 
 fetch git

@@ -19,9 +19,9 @@ rule sysstr '$outdir/mksysstr $type >$out.tmp && mv $out.tmp $out'
 build '$outdir'/sysstr_errno.c.in sysstr '|' '$outdir'/mksysstr ; with type errno
 build '$outdir'/sysstr_signo.c.in sysstr '|' '$outdir'/mksysstr ; with type signo
 
-phony internal_headers outvec_STDOUT.h rlimit_defs.c.in sysstr_^(errno signo)^.c.in
+phony deps '$outdir'/^(outvec_STDOUT.h rlimit_defs.c.in sysstr_^(errno signo)^.c.in)
 
-lib libasagna.a -d 'phony/$dir/internal_headers' lasagna/^(\
+lib libasagna.a -d '$dir'/deps lasagna/^(\
 	buf/buf_^(cmp copy fill ndx rcopy rndx)^.c\
 	cstr/cstr_^(cat chop cmp cmpi contains copy dup lcat lcpy len ltrim match matchi ncmp pos rpos rtrim trim vcat_ vcopy_ vlen_)^.c\
 	cdb/^(cdb_^(find cc clear close distance dynget dynread get hashpart init open read seq) cdbmk_^(add addioq addrec clear finish init _update))^.c\

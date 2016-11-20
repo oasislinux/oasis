@@ -17,12 +17,12 @@ for(hdr in $hdrs)
 	build '$outdir'/include/$hdr copy '$srcdir'/src/PCSC/$hdr
 build '$outdir'/include/pcsclite.h sed '$srcdir'/src/PCSC/pcsclite.h.in ; with expr '$subst'
 hdrs=($hdrs pcsclite.h)
-phony headers include/$hdrs
+phony headers '$outdir'/include/$hdrs
 
 build '$outdir'/pcscd.h sed '$srcdir'/src/pcscd.h.in ; with expr '$subst'
-phony deps phony/'$dir'/headers pcscd.h
+phony deps '$outdir'/pcscd.h '$dir'/headers
 
-lib libpcsclite.a -d phony/'$dir'/deps src/^(\
+lib libpcsclite.a -d '$dir'/deps src/^(\
 	debug.c\
 	error.c\
 	winscard_clnt.c\

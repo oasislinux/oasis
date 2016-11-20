@@ -10,7 +10,7 @@ cflags\
 	cc gen.tab/packtab.c
 	exe gen-unicode-version gen.tab/gen-unicode-version.c
 	for(t in bidi-type joining-type arabic-shaping mirroring)
-		exe gen-$t-tab -d 'phony/$dir/headers' gen.tab/^(gen-$t-tab.c packtab.c.o)
+		exe gen-$t-tab -d '$dir'/headers gen.tab/^(gen-$t-tab.c packtab.c.o)
 } >tools.ninja ; subninja tools.ninja
 
 set compression 2
@@ -40,13 +40,13 @@ hdrs=(\
 for(hdr in $hdrs)
 	build '$outdir'/include/$hdr copy '$srcdir'/lib/$hdr
 build '$outdir'/include/fribidi-config.h copy '$dir'/fribidi-config.h
-phony headers include/^($hdrs fribidi-config.h fribidi-unicode-version.h)
+phony headers '$outdir'/include/^($hdrs fribidi-config.h fribidi-unicode-version.h)
 
-phony internal\
-	(bidi-type joining-type arabic-shaping mirroring)^.tab.i\
-	'phony/$dir/headers'
+phony deps\
+	'$outdir'/^(bidi-type joining-type arabic-shaping mirroring)^.tab.i\
+	'$dir'/headers
 
-lib libfribidi.a -d 'phony/$dir/internal' lib/^(\
+lib libfribidi.a -d '$dir'/deps lib/^(\
 	fribidi.c\
 	fribidi-arabic.c\
 	fribidi-bidi.c\

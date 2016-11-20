@@ -129,22 +129,22 @@ deps=()
 
 if(grep -q '^_ctypes' Setup) {
 	cflags=($cflags -isystem '$builddir'/desktop/libffi/include)
-	deps=($deps phony/desktop/libffi/headers)
+	deps=($deps desktop/libffi/headers)
 	libs=($libs desktop/libffi/libffi.a)
 }
 if(grep -qE '^(_hashlib|_ssl)' Setup) {
 	cflags=($cflags -isystem '$builddir'/core/libressl/include)
-	deps=($deps phony/core/libressl/headers)
+	deps=($deps core/libressl/headers)
 	libs=($libs core/libressl/^(libssl.a libcrypto.a) core/openbsd/libbsd.a)
 }
 if(grep -q '^pyexpat' Setup) {
 	cflags=($cflags -isystem '$builddir'/desktop/expat/include)
-	deps=($deps phony/desktop/expat/headers)
+	deps=($deps desktop/expat/headers)
 	libs=($libs desktop/expat/libexpat.a)
 }
 if(grep -q '^zlib' Setup) {
 	cflags=($cflags -isystem '$builddir'/core/zlib/include)
-	deps=($deps phony/core/zlib/headers)
+	deps=($deps core/zlib/headers)
 	libs=($libs core/zlib/libz.a)
 }
 
@@ -161,7 +161,8 @@ cc Modules/getpath.c ; defs='-D '''^(\
 	'VPATH='""\
 )^'''' with cflags '$cflags '$"defs
 
-lib libpython.a -d $"deps $srcs
+phony deps $deps
+lib libpython.a -d '$dir'/deps $srcs
 
 exe python Programs/python.c libpython.a '$builddir'/$libs
 file bin/python3 '$outdir'/python 755

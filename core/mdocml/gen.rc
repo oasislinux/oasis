@@ -4,7 +4,7 @@ cflags\
 	-I include\
 	-I '$dir'
 
-lib libmandoc.a -d phony/core/zlib/headers\
+lib libmandoc.a -d core/zlib/headers\
 	man.c\
 	man_hash.c\
 	man_macro.c\

@@ -12,11 +12,12 @@ cflags\
 hdrs=include/curl/^(curl.h curlrules.h curlver.h easy.h mprintf.h multi.h stdcheaders.h typecheck-gcc.h)
 for(hdr in $hdrs) build '$outdir'/$hdr copy '$srcdir'/$hdr
 build '$outdir'/include/curl/curlbuild.h copy '$srcdir'/include/curl/curlbuild.h.dist
-phony headers $hdrs '$outdir'/include/curl/curlbuild.h
+phony headers '$outdir'/^($hdrs include/curl/curlbuild.h)
+
+phony deps core/^(libressl zlib)^/headers
 
 # src/lib/Makefile.inc:/^CSOURCES
-deps=phony/core/^(libressl zlib)^/headers
-lib libcurl.a -d $"deps lib/^(\
+lib libcurl.a -d '$dir'/deps lib/^(\
 	file.c timeval.c base64.c hostip.c progress.c formdata.c\
 	cookie.c http.c sendf.c ftp.c url.c dict.c if2ip.c speedcheck.c\
 	ldap.c version.c getenv.c escape.c mprintf.c telnet.c netrc.c\

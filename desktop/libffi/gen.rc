@@ -14,10 +14,10 @@ build '$outdir'/include/ffi.h sed '$srcdir'/include/ffi.h.in ; exprs=(\
 build '$outdir'/include/ffitarget.h copy '$srcdir'/src/x86/ffitarget.h
 
 hdrs=include/^(ffi.h ffitarget.h)
-phony headers $hdrs
+phony headers '$outdir'/$hdrs
 for(hdr in $hdrs) file $hdr '$outdir'/$hdr 644
 
-lib libffi.a -d 'phony/$dir/headers' src/^(\
+lib libffi.a -d '$dir'/headers src/^(\
 	prep_cif.c types.c raw_api.c java_raw_api.c closures.c\
 	x86/^(ffi64.c unix64.S ffi.c sysv.S)\
 )

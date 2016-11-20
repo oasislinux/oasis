@@ -29,6 +29,6 @@ for(hdr in $hdrs) {
 	build '$outdir'/include/$hdr copy '$srcdir'/$hdr
 	file include/$hdr '$srcdir'/$hdr 644
 }
-phony headers include/$hdrs
+phony headers '$outdir'/include/$hdrs
 
 fetch git

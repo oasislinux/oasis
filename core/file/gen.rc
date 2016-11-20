@@ -11,7 +11,7 @@ cflags\
 
 build '$outdir'/include/magic.h sed '$srcdir'/src/magic.h.in ; with\
 	expr s,X.YY,`{echo $version | tr -d .}^,
-phony headers include/magic.h
+phony headers '$outdir'/include/magic.h
 
 build '$outdir'/file.1 sed '$srcdir'/doc/file.man ; exprs=(\
 	-e s,__CSECTION__,1,g\
@@ -20,7 +20,9 @@ build '$outdir'/file.1 sed '$srcdir'/doc/file.man ; exprs=(\
 	-e s,__MAGIC__,/share/file/magic,g\
 ) with expr $"exprs
 
-lib libmagic.a -d 'phony/$dir/headers phony/core/zlib/headers' src/^(\
+phony deps ('$dir' core/zlib)^/headers
+
+lib libmagic.a -d '$dir'/deps src/^(\
 	magic.c\
 	apprentice.c\
 	softmagic.c\
@@ -41,7 +43,7 @@ lib libmagic.a -d 'phony/$dir/headers phony/core/zlib/headers' src/^(\
 	fmtcheck.c\
 )
 
-exe file -d 'phony/$dir/headers' src/file.c libmagic.a '$builddir/core/zlib/libz.a'
+exe file -d '$dir'/headers src/file.c libmagic.a '$builddir/core/zlib/libz.a'
 file bin/file '$outdir'/file 755
 file share/man/man1/file.1 '$outdir'/file.1 644
 

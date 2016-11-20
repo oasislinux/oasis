@@ -90,7 +90,7 @@ for(srchdr in $srchdrs) {
 phony headers $hdrs
 
 # src/lib/libcrypto/crypto/Makefile
-lib libcrypto.a -d 'phony/$dir/headers' src/lib/libcrypto/^(\
+lib libcrypto.a -d '$dir'/headers src/lib/libcrypto/^(\
 	cryptlib.c malloc-wrapper.c mem_dbg.c cversion.c ex_data.c cpt_err.c\
 	o_time.c o_str.c o_init.c\
 	mem_clr.c\

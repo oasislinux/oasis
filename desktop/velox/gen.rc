@@ -13,11 +13,11 @@ waylandproto protocol/velox.xml\
 	protocol/velox-^(client server)^-protocol.h velox-protocol.c
 build '$outdir'/protocol/swc-client-protocol.h copy '$builddir'/desktop/swc/include/swc-client-protocol.h
 
-phony deps\
-	phony/desktop/^(pixman swc wayland wld)^/headers\
-	protocol/^(swc-client velox-^(client server))^-protocol.h
+phony deps '$outdir'/^(\
+	protocol/^(swc-client velox-^(client server))^-protocol.h\
+) desktop/^(pixman swc wayland wld)^/headers\
 
-exe velox -d 'phony/$dir/deps' \
+exe velox -d '$dir'/deps \
 	config.c\
 	layout.c\
 	screen.c\
@@ -32,7 +32,7 @@ exe velox -d 'phony/$dir/deps' \
 	)
 file bin/velox '$outdir'/velox 755
 
-exe status_bar -d 'phony/$dir/deps' clients/status_bar.c velox-protocol.c.o '$builddir'/^(\
+exe status_bar -d '$dir'/deps clients/status_bar.c velox-protocol.c.o '$builddir'/^(\
 	desktop/swc/swc-protocol.c.o\
 	desktop/wld/libwld.a.d\
 	desktop/wayland/libwayland-client.a.d\

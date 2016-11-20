@@ -5,5 +5,5 @@ include toolchain/$toolchain.ninja
 
 subninja local.ninja
 
-build build.ninja: phony phony/ninja
+build build.ninja: phony ninja
   generator = 1

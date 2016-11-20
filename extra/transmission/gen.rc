@@ -16,14 +16,9 @@ cflags\
 	-idirafter core/openbsd/src/sys\
 	-include config.h
 
-deps=phony/^(\
-	core/curl\
-	core/libressl\
-	core/zlib\
-	extra/libevent\
-)^/headers
+phony deps (core/^(curl libressl zlib) extra/libevent)^/headers
 
-lib libtransmission.a -d $"deps libtransmission/^(\
+lib libtransmission.a -d '$dir'/deps libtransmission/^(\
 	announcer.c\
 	announcer-http.c\
 	announcer-udp.c\
@@ -140,11 +135,11 @@ lib libdht.a third-party/dht/dht.c
 	lib libutp.a third-party/libutp/^(utp.cpp utp_utils.cpp)
 } >libutp.ninja ; subninja libutp.ninja
 
-exe transmission-daemon -d $"deps daemon/^(daemon.c daemon-posix.c) libtransmission.a.d
+exe transmission-daemon -d '$dir'/deps daemon/^(daemon.c daemon-posix.c) libtransmission.a.d
 file bin/transmission-daemon '$outdir'/transmission-daemon 755
 file share/man/man1/transmission-daemon.1 '$srcdir'/daemon/transmission-daemon.1 644
 
-exe transmission-remote -d $"deps daemon/remote.c libtransmission.a.d
+exe transmission-remote -d '$dir'/deps daemon/remote.c libtransmission.a.d
 file bin/transmission-remote '$outdir'/transmission-remote 755
 file share/man/man1/transmission-remote.1 '$srcdir'/daemon/transmission-remote.1 644
 

@@ -15,7 +15,7 @@ for(hdr in $hdrs) {
 	build '$outdir'/include/wld/$hdr copy '$srcdir'/$hdr
 	file include/wld/$hdr '$srcdir'/$hdr 644
 }
-phony headers include/wld/$hdrs
+phony headers '$outdir'/include/wld/$hdrs
 
 srcs=(\
 	buffer.c\
@@ -58,8 +58,10 @@ waylandproto protocol/wayland-drm.xml\
 	protocol/wayland-drm-^(client server)^-protocol.h\
 	wayland-drm-protocol.c
 
-phony deps phony/desktop/^(pixman wayland)^/headers protocol/wayland-drm-client-protocol.h
+phony deps\
+	'$outdir'/protocol/wayland-drm-client-protocol.h\
+	desktop/^(pixman wayland)^/headers 
 
-lib libwld.a -d 'phony/$dir/deps' $srcs '$builddir'/$libs
+lib libwld.a -d '$dir'/deps $srcs '$builddir'/$libs
 
 fetch git

@@ -21,7 +21,7 @@ ifs='
 
 fn subgen {
 	subninja '$dir'/$1/local.ninja
-	ninja_inputs=($ninja_inputs phony/'$dir'/$1/ninja)
+	ninja_inputs=($ninja_inputs '$dir'/$1/ninja)
 	index_inputs=($index_inputs '$outdir'/$1/root.index)
 	perms_inputs=($perms_inputs '$outdir'/$1/root.perms)
 	if(~ $recurse 1 || ! [ -f $1/local.ninja ]) @ gen $1 &

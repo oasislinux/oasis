@@ -34,10 +34,9 @@ build '$outdir'/include/libavutil/ffversion.h ffversion '|' '$srcdir'/version.sh
 # TODO: Copy the rest of the headers.
 phony headers '$outdir'/include/libavutil/^(avconfig.h ffversion.h)
 
-deps=(\
+phony deps\
 	'$outdir'/config.asm\
-	phony/^('$dir' core/libressl media/alsa-lib)^/headers\
-)
+	('$dir' core/libressl media/alsa-lib)^/headers
 
 fn fflib {
 	name=$1 srcs=() libs=()
@@ -53,7 +52,7 @@ fn fflib {
 	}
 	srcs=($srcs `{awk -f sources.awk 'lib='$name 'sources='sources.txt 'arch='$arch options.h | sort -u})
 	checkstatus
-	lib $name.a -d $"deps $name/$srcs $libs
+	lib $name.a -d '$dir'/deps $name/$srcs $libs
 }
 
 cc libavcodec/bitstream_filters.c '||' '$outdir'/internal/libavcodec/bsf_list.c

@@ -34,11 +34,11 @@ lib libopenbsd-compat.a openbsd-compat/^(\
 	port-aix.c port-irix.c port-linux.c port-solaris.c port-uw.c\
 )
 
-deps=phony/core/^(libressl zlib)^/headers
+phony deps core/^(libressl zlib)^/headers
 
 # port-tun.c from openbsd-compat depends on sshbuf-getput-basic.c and ssherr.c
 # from libssh.a, so just include it in libssh.a.
-lib libssh.a -d $"deps\
+lib libssh.a -d '$dir'/deps\
 	ssh_api.c\
 	ssherr.c\
 	sshbuf.c\

@@ -10,17 +10,14 @@ cflags\
 rule cmdlist 'oldcwd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$oldcwd/$in >$$oldcwd/$out.tmp && mv $$oldcwd/$out.tmp $$oldcwd/$out'
 build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/Documentation/`{grep -v '^#' commands.txt}
 
-deps=(\
-	phony/core/^(curl libressl zlib)^/headers\
-	'$outdir'/common-cmds.h\
-)
+phony deps '$outdir'/common-cmds.h core/^(curl libressl zlib)^/headers
 
-cc exec_cmd.c '||' $deps ; with cflags '$cflags ''-DPREFIX=""'''
-cc common-main.c '||' $deps
-cc compat/regex/regex.c '||' $deps ; with cflags '$cflags -DGAWK -DNO_MBSUPPORT'
+cc exec_cmd.c '||' '$dir'/deps ; with cflags '$cflags ''-DPREFIX=""'''
+cc common-main.c '||' '$dir'/deps
+cc compat/regex/regex.c '||' '$dir'/deps ; with cflags '$cflags -DGAWK -DNO_MBSUPPORT'
 
 # src/Makefile:/^LIB_OBJS.\+=
-lib libgit.a -d $"deps\
+lib libgit.a -d '$dir'/deps\
 	abspath.c\
 	advice.c\
 	alias.c\
@@ -200,7 +197,7 @@ lib libxdiff.a xdiff/^(\
 )
 
 # src/Makefile:/^BUILTIN_OBJS.\+=
-exe git -d $"deps git.c common-main.c.o builtin/^(\
+exe git -d '$dir'/deps git.c common-main.c.o builtin/^(\
 	add.c\
 	am.c\
 	annotate.c\
@@ -312,7 +309,7 @@ fn x {
 	shift
 	if(~ $#* 0) srcs=$name.c
 	if not srcs=$*
-	exe git-$name -d $"deps $srcs common-main.c.o libgit.a.d
+	exe git-$name -d '$dir'/deps $srcs common-main.c.o libgit.a.d
 	file libexec/git-core/git-$name '$outdir'/git-$name 755
 }
 

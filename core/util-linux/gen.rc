@@ -15,7 +15,7 @@ build '$outdir'/libfdisk.h sed '$srcdir'/libfdisk/src/libfdisk.h.in ; expr=(\
 	-e /@LIBFDISK_PATCH_VERSION@/d\
 ) with expr $"expr
 
-phony deps libsmartcols.h libfdisk.h
+phony deps '$outdir'/^(libsmartcols.h libfdisk.h)
 
 lib libcommon.a lib/^(\
 	blkdev.c\
@@ -98,7 +98,7 @@ lib libuuid.a libuuid/src/^(\
 	uuid_time.c\
 )
 
-exe fdisk -d 'phony/$dir/deps' \
+exe fdisk -d '$dir'/deps\
 	disk-utils/^(fdisk.c fdisk-menu.c fdisk-list.c)\
 	libfdisk.a.d libsmartcols.a libtcolors.a
 file bin/fdisk '$outdir'/fdisk 755

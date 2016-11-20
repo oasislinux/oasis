@@ -15,7 +15,7 @@ build '$outdir'/include/pcre.h sed '$srcdir'/pcre.h.in ; exprs=(\
 phony headers '$outdir'/include/pcre.h
 
 build '$outdir'/pcre_chartables.c copy '$srcdir'/pcre_chartables.c.dist
-lib libpcre.a -d 'phony/$dir/headers' \
+lib libpcre.a -d '$dir'/headers\
 	pcre_byte_order.c\
 	pcre_compile.c\
 	pcre_config.c\

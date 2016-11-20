@@ -4,7 +4,7 @@ cflags\
 	-I '$srcdir'/libusb
 
 build '$outdir'/include/libusb.h copy '$srcdir'/libusb/libusb.h
-phony headers include/libusb.h
+phony headers '$outdir'/include/libusb.h
 
 lib libusb-1.0.a libusb/^(\
 	core.c descriptor.c hotplug.c io.c strerror.c sync.c\

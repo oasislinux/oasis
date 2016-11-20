@@ -40,13 +40,13 @@ build '$outdir'/include/netlink/version.h sed '$srcdir'/include/netlink/version.
 hdrs=($hdrs include/netlink/version.h)
 phony headers '$outdir'/$hdrs
 
-lib libnl-3.a -d 'phony/$dir/headers' lib/^(\
+lib libnl-3.a -d '$dir'/headers lib/^(\
 	addr.c attr.c cache.c cache_mngr.c cache_mngt.c data.c\
 	error.c handlers.c msg.c nl.c object.c socket.c utils.c\
 	version.c hash.c hashtable.c\
 )
 
-lib libnl-genl-3.a -d 'phony/$dir/headers' \
+lib libnl-genl-3.a -d '$dir'/headers\
 	lib/genl/^(ctrl.c family.c genl.c mngt.c)
 
 fetch git

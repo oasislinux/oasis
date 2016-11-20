@@ -4,12 +4,11 @@ cflags\
 	-I '$dir' \
 	-I '$srcdir'/include
 
-deps=phony/media/alsa-lib/headers
-
 fn x {
 	name=$1
 	shift
-	exe bin/$name -d $"deps $* '$builddir'/media/alsa-lib/libasound.a
+	exe bin/$name -d media/alsa-lib/headers $*\
+		'$builddir'/media/alsa-lib/libasound.a
 	file bin/$name '$outdir'/bin/$name 755
 	file share/man/man1/$name.1 '$srcdir'/$name/$name.1 644
 }

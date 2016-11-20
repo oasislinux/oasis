@@ -7,11 +7,9 @@ cflags\
 hdrs=(ass.h ass_types.h)
 for(hdr in $hdrs)
 	build '$outdir'/include/ass/$hdr copy '$srcdir'/libass/$hdr
-phony headers include/ass/$hdrs
+phony headers '$outdir'/include/ass/$hdrs
 
-deps=phony/extra/fribidi/headers
-
-lib libass.a -d $"deps libass/^(\
+lib libass.a -d extra/fribidi/headers libass/^(\
 	ass.c ass_cache.c ass_font.c ass_fontselect.c ass_render.c\
 	ass_utils.c ass_bitmap.c ass_blur.c ass_library.c\
 	ass_drawing.c\

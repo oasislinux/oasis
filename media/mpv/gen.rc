@@ -27,10 +27,7 @@ libs=(\
 	core/zlib/libz.a\
 )
 
-deps=(\
-	phony/^(core/zlib media/ffmpeg)^/headers\
-	'$outdir'/version.h\
-)
+deps=('$outdir'/version.h (core/zlib media/ffmpeg)^/headers)
 
 rule versionhdr 'sh $srcdir/version.sh --cwd=$srcdir --versionh=$out'
 build '$outdir'/version.h versionhdr '|' '$srcdir'/version.sh
@@ -57,7 +54,7 @@ for(f in assdraw defaults options osc ytdl_hook)
 if(grep -qF 'HAVE_ALSA 1' config.h) {
 	cflags=($cflags -isystem '$builddir'/media/alsa-lib/include)
 	libs=($libs media/alsa-lib/libasound.a)
-	deps=($deps phony/media/alsa-lib/headers)
+	deps=($deps media/alsa-lib/headers)
 }
 if(grep -qF 'HAVE_DRM 1' config.h) {
 	cflags=($cflags '-isystem desktop/libdrm/'^(src src/include/drm))
@@ -66,7 +63,7 @@ if(grep -qF 'HAVE_DRM 1' config.h) {
 if(grep -qF 'HAVE_LIBASS 1' config.h) {
 	cflags=($cflags -isystem '$builddir'/media/libass/include)
 	libs=($libs media/libass/libass.a.d)
-	deps=($deps phony/media/libass/headers)
+	deps=($deps media/libass/headers)
 }
 if(grep -qF 'HAVE_LUA 1' config.h) {
 	cflags=($cflags -isystem lang/lua/src/src)
@@ -74,8 +71,9 @@ if(grep -qF 'HAVE_LUA 1' config.h) {
 }
 
 cflags $cflags
+phony deps $deps
 
-exe mpv -d $"deps $srcs '$builddir'/$libs
+exe mpv -d '$dir'/deps $srcs '$builddir'/$libs
 file bin/mpv '$outdir'/mpv 755
 file share/man/man1/mpv.1 '$srcdir'/DOCS/man/mpv.1 644
 

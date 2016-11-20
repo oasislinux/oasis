@@ -7,7 +7,7 @@ cflags\
 	-I '$outdir' \
 	-I '$srcdir'
 
-deps=phony/desktop/expat/headers
+deps=desktop/expat/headers
 
 rule makealias '$srcdir/src/makealias $srcdir/src $out $in'
 fn makealias {
@@ -20,9 +20,9 @@ fn makealias {
 makealias fcalias fontconfig/^(fontconfig.h fcprivate.h) src/fcdeprecate.h
 makealias fcftalias fontconfig/fcfreetype.h
 
-phony deps $"deps
+phony deps $deps
 
-lib libfontconfig.a -d 'phony/$dir/deps' src/^(\
+lib libfontconfig.a -d '$dir'/deps src/^(\
 	fcatomic.c\
 	fcblanks.c\
 	fccache.c\

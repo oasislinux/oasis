@@ -10,7 +10,7 @@ cflags\
 	-I '$srcdir'/include/freetype/config\
 	-I '$srcdir'/include
 
-cc src/gzip/ftgzip.c '||' phony/core/zlib/headers
+cc src/gzip/ftgzip.c '||' core/zlib/headers
 lib libfreetype.a builds/unix/ftsystem.c src/^(\
 	base/^(\
 		ftdebug.c ftbase.c ftbbox.c ftbdf.c ftbitmap.c ftcid.c\

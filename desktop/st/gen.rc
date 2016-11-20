@@ -8,10 +8,9 @@ cflags\
 	-isystem '$builddir'/desktop/wld/include\
 	-I '$dir'
 
-phony deps\
-	phony/desktop/^(pixman wayland wayland-protocols wld)^/headers
+phony deps desktop/^(pixman wayland wayland-protocols wld)^/headers
 
-exe st -d 'phony/$dir/deps' st.c '$builddir'/^(\
+exe st -d '$dir'/deps st.c '$builddir'/^(\
 	desktop/libxkbcommon/libxkbcommon.a\
 	desktop/wayland/libwayland-client.a.d\
 	desktop/wayland/libwayland-cursor.a.d\

@@ -9,7 +9,7 @@ build '$outdir'/include/event2/event-config.h sed '$dir'/config.h ; with\
 
 phony headers '$outdir'/include/event2/event-config.h
 
-lib libevent.a -d 'phony/$dir/headers' \
+lib libevent.a -d '$dir'/headers\
 	event.c evthread.c buffer.c \
 	bufferevent.c bufferevent_sock.c bufferevent_filter.c \
 	bufferevent_pair.c listener.c bufferevent_ratelim.c \

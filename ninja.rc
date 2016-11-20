@@ -44,13 +44,9 @@ fn build {
 # higher-level rules
 
 fn phony {
-	name=$1 deps=() {
+	name=$1 {
 		shift
-		for(dep) {
-			if(! ~ $dep '$'* phony/*) dep='$outdir'/$dep
-			deps=($deps $dep)
-		}
-		build phony/'$dir'/$name phony $deps
+		build '$dir'/$name phony $*
 	}
 }
 
@@ -157,7 +153,7 @@ fn waylandproto {
 	build '$outdir'/$1 waylandproto $proto ; with type client-header
 	build '$outdir'/$2 waylandproto $proto ; with type server-header
 	build '$outdir'/$3 waylandproto $proto ; with type code
-	cc '$outdir'/$3 '||' phony/desktop/wayland/headers
+	cc '$outdir'/$3 '||' desktop/wayland/headers
 }
 
 # packaging rules

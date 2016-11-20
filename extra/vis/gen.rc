@@ -15,12 +15,12 @@ cflags\
 
 build '$outdir'/config.h copy '$srcdir'/config.def.h
 
-phony deps config.h phony/extra/ncurses/headers '$builddir'/^(\
+phony deps '$outdir'/config.h '$builddir'/^(\
 	extra/libtermkey/fetch.stamp\
 	lang/lua/fetch.stamp\
-)
+) extra/ncurses/headers
 
-exe vis -d 'phony/$dir/deps' \
+exe vis -d '$dir'/deps \
 	array.c buffer.c libutf.c main.c map.c register.c ring-buffer.c\
 	sam.c text.c text-motions.c text-objects.c text-regex.c text-util.c\
 	ui-curses.c view.c vis.c vis-lua.c vis-modes.c vis-motions.c\

@@ -16,9 +16,9 @@ build '$outdir'/include/wayland-version.h sed '$srcdir'/src/wayland-version.h.in
 
 cc src/wayland-util.c
 cc src/wayland-os.c
-cc src/connection.c '||' phony/desktop/libffi/headers
+cc src/connection.c '||' desktop/libffi/headers
 
-exe wayland-scanner -d 'phony/desktop/expat/headers $outdir/include/wayland-version.h' \
+exe wayland-scanner -d 'desktop/expat/headers $outdir/include/wayland-version.h' \
 	src/^(scanner.c wayland-util.c.o)\
 	'$builddir'/desktop/expat/libexpat.a
 
@@ -30,9 +30,9 @@ hdrs=wayland-^(client-core client egl-core egl server-core server util)^.h
 for(hdr in $hdrs) build '$outdir'/include/$hdr copy '$srcdir'/src/$hdr
 build '$outdir'/include/wayland-cursor.h copy '$srcdir'/cursor/wayland-cursor.h
 
-phony headers include/^($hdrs wayland-^(cursor.h (client server)^-protocol.h version.h))
+phony headers '$outdir'/include/^($hdrs wayland-^(cursor.h (client server)^-protocol.h version.h))
 
-lib libwayland-server.a -d 'phony/$dir/headers' src/^(\
+lib libwayland-server.a -d '$dir'/headers src/^(\
 	connection.c.o\
 	wayland-os.c.o\
 	wayland-protocol.c.o\
@@ -42,7 +42,7 @@ lib libwayland-server.a -d 'phony/$dir/headers' src/^(\
 	event-loop.c\
 ) '$builddir'/desktop/libffi/libffi.a
 
-lib libwayland-client.a -d 'phony/$dir/headers' src/^(\
+lib libwayland-client.a -d '$dir'/headers src/^(\
 	connection.c.o\
 	wayland-os.c.o\
 	wayland-protocol.c.o\
@@ -50,7 +50,7 @@ lib libwayland-client.a -d 'phony/$dir/headers' src/^(\
 	wayland-util.c.o\
 ) '$builddir'/desktop/libffi/libffi.a
 
-lib libwayland-cursor.a -d 'phony/$dir/headers' cursor/^(\
+lib libwayland-cursor.a -d '$dir'/headers cursor/^(\
 	os-compatibility.c\
 	wayland-cursor.c\
 	xcursor.c\
