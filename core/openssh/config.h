@@ -53,7 +53,7 @@
 /* #undef DISABLE_SHADOW */
 /* #undef DISABLE_UTMP */
 /* #undef DISABLE_UTMPX */
-/* #undef DISABLE_WTMP */
+#define DISABLE_WTMP 1
 #define DISABLE_WTMPX 1
 #define ENABLE_PKCS11 1
 /* #undef FILESYSTEM_NO_BACKSLASH */
