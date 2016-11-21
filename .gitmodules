@@ -38,6 +38,7 @@
 [submodule "core/pigz/src"]
 	path = core/pigz/src
 	url = https://github.com/madler/pigz
+	ignore = all
 [submodule "core/plan9port/src"]
 	path = core/plan9port/src
 	url = https://github.com/9fans/plan9port
