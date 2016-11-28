@@ -1,4 +1,4 @@
-From 5873e9061201ed7b182b6ec7ec46be60ae4d9893 Mon Sep 17 00:00:00 2001
+From cfe9464c798d231d389053ba3b8f9b49ac0a578b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 28 Oct 2016 00:33:53 -0700
 Subject: [PATCH] Fix build with LibreSSL
@@ -67,5 +67,5 @@ index c551ac7..9712856 100644
      BIO_meth_set_write(p->url_bio_method, url_bio_bwrite);
      BIO_meth_set_read(p->url_bio_method, url_bio_bread);
 -- 
-2.10.1
+2.10.2
 
