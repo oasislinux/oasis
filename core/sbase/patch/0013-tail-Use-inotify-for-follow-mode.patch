@@ -1,0 +1,58 @@
+From d108384953d2bd1e3040ea3dd0bae3d2f68db7a7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 30 Nov 2016 03:24:25 -0800
+Subject: [PATCH] tail: Use inotify for follow mode
+
+---
+ tail.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/tail.c b/tail.c
+index ce3be9d..8bc1fe6 100644
+--- a/tail.c
++++ b/tail.c
+@@ -1,4 +1,5 @@
+ /* See LICENSE file for copyright and license details. */
++#include <sys/inotify.h>
+ #include <sys/stat.h>
+ 
+ #include <fcntl.h>
+@@ -152,9 +153,10 @@ main(int argc, char *argv[])
+ 	struct stat st1, st2;
+ 	int fd;
+ 	size_t n = 10;
+-	int fflag = 0, ret = 0, newline = 0, many = 0;
++	int fflag = 0, ret = 0, newline = 0, many = 0, ifd;
+ 	char *numstr;
+ 	int (*tail)(int, const char *, size_t) = taketail;
++	struct inotify_event ev;
+ 
+ 	ARGBEGIN {
+ 	case 'f':
+@@ -209,9 +211,15 @@ main(int argc, char *argv[])
+ 					close(fd);
+ 				continue;
+ 			}
++			if ((ifd = inotify_init()) < 0)
++				eprintf("inotify_init:");
++			if (inotify_add_watch(ifd, *argv, IN_MODIFY) < 0)
++				eprintf("inotify_add_watch:");
+ 			for (;;) {
+ 				if (concat(fd, *argv, 1, "<stdout>") < 0)
+ 					exit(1);
++				if (read(ifd, &ev, sizeof(ev)) < 0)
++					eprintf("read <inotify>:");
+ 				if (fstat(fd, &st2) < 0)
+ 					eprintf("fstat %s:", *argv);
+ 				if (st2.st_size < st1.st_size) {
+@@ -220,7 +228,6 @@ main(int argc, char *argv[])
+ 						eprintf("lseek:");
+ 				}
+ 				st1 = st2;
+-				sleep(1);
+ 			}
+ 		}
+ 	}
+-- 
+2.11.0
+

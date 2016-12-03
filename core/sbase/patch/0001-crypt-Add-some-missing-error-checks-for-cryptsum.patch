@@ -1,0 +1,60 @@
+From 51f007e97e71641b176fd2ecb6b818a351df2360 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 1 Dec 2016 00:14:32 -0800
+Subject: [PATCH] crypt: Add some missing error checks for cryptsum
+
+Previously, if a file failed to read in a checksum list, it would be
+reported as not matched rather than a read failure.
+
+Also, if reading from stdin failed, previously a bogus checksum would be
+printed anyway.
+---
+ libutil/crypt.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/libutil/crypt.c b/libutil/crypt.c
+index 3f849ba..6991c39 100644
+--- a/libutil/crypt.c
++++ b/libutil/crypt.c
+@@ -64,7 +64,10 @@ mdchecklist(FILE *listfp, struct crypt_ops *ops, uint8_t *md, size_t sz,
+ 			(*noread)++;
+ 			continue;
+ 		}
+-		cryptsum(ops, fp, file, md);
++		if (cryptsum(ops, fp, file, md)) {
++			(*noread)++;
++			continue;
++		}
+ 		r = mdcheckline(line, md, sz);
+ 		if (r == 1) {
+ 			printf("%s: OK\n", file);
+@@ -125,8 +128,10 @@ cryptmain(int argc, char *argv[], struct crypt_ops *ops, uint8_t *md, size_t sz)
+ 	int ret = 0;
+ 
+ 	if (argc == 0) {
+-		cryptsum(ops, stdin, "<stdin>", md);
+-		mdprint(md, "<stdin>", sz);
++		if (cryptsum(ops, stdin, "<stdin>", md))
++			ret = 1;
++		else
++			mdprint(md, "<stdin>", sz);
+ 	} else {
+ 		for (; *argv; argc--, argv++) {
+ 			if ((*argv)[0] == '-' && !(*argv)[1]) {
+@@ -137,11 +142,10 @@ cryptmain(int argc, char *argv[], struct crypt_ops *ops, uint8_t *md, size_t sz)
+ 				ret = 1;
+ 				continue;
+ 			}
+-			if (cryptsum(ops, fp, *argv, md)) {
++			if (cryptsum(ops, fp, *argv, md))
+ 				ret = 1;
+-			} else {
++			else
+ 				mdprint(md, *argv, sz);
+-			}
+ 			if (fp != stdin && fshut(fp, *argv))
+ 				ret = 1;
+ 		}
+-- 
+2.11.0
+

@@ -43,6 +43,7 @@ lib libutil.a libutil/^(\
 	strsep.c\
 	strtonum.c\
 	unescape.c\
+	writeall.c\
 )
 lib libutf.a libutf/^(\
 	rune.c\

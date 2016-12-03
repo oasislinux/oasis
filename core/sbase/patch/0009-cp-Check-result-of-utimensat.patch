@@ -1,0 +1,31 @@
+From 0adb4dda2587dd82fd43c8e28444cf06464d2b56 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 2 Dec 2016 22:02:14 -0800
+Subject: [PATCH] cp: Check result of utimensat
+
+POSIX says that if duplicating the modification/access times fails, then
+an error should be written to stderr.
+---
+ libutil/cp.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/libutil/cp.c b/libutil/cp.c
+index 339c892..15e4ce5 100644
+--- a/libutil/cp.c
++++ b/libutil/cp.c
+@@ -142,8 +142,10 @@ cp(const char *s1, const char *s2, int depth)
+ 		if (!S_ISLNK(st.st_mode)) {
+ 			times[0] = st.st_atim;
+ 			times[1] = st.st_mtim;
+-			utimensat(AT_FDCWD, s2, times, 0);
+-
++			if (utimensat(AT_FDCWD, s2, times, 0) < 0) {
++				weprintf("utimensat %s:", s2);
++				cp_status = 1;
++			}
+ 			if (chown(s2, st.st_uid, st.st_gid) < 0) {
+ 				weprintf("chown %s:", s2);
+ 				cp_status = 1;
+-- 
+2.11.0
+

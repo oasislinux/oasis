@@ -1,0 +1,133 @@
+From f6e3de7b4a9cab4ff2f63a7217fb7d7cb3917657 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 6 Dec 2016 00:45:48 -0800
+Subject: [PATCH] tail: Process bytes with -c option, and add -m option for
+ runes
+
+POSIX says that -c specifies a number of bytes, not characters. This
+flag is commonly used by scripts that operate on binary files to things
+like extract a header. Treating the offsets as character offsets will
+break things in mysterious ways.
+
+Instead, add a -m option (chosen to match `wc -m`, which also operates
+on characters) to handle character offsets.
+---
+ tail.1 |  6 +++---
+ tail.c | 29 ++++++++++++++++++++++++-----
+ 2 files changed, 27 insertions(+), 8 deletions(-)
+
+diff --git a/tail.1 b/tail.1
+index 433404d..281560d 100644
+--- a/tail.1
++++ b/tail.1
+@@ -7,7 +7,7 @@
+ .Sh SYNOPSIS
+ .Nm
+ .Op Fl f
+-.Op Fl c Ar num | Fl n Ar num | Fl Ns Ar num
++.Op Fl c Ar num | Fl m Ar num | Fl n Ar num | Fl Ns Ar num
+ .Op Ar file ...
+ .Sh DESCRIPTION
+ .Nm
+@@ -20,10 +20,10 @@ is given,
+ reads from stdin.
+ .Sh OPTIONS
+ .Bl -tag -width Ds
+-.It Fl c Ar num | Fl n Ar num | Fl Ns Ar num
++.It Fl c Ar num | Fl m Ar num | Fl n Ar num | Fl Ns Ar num
+ Display final
+ .Ar num
+-characters | lines |
++bytes | characters | lines |
+ lines. If
+ .Ar num
+ begins with '+'
+diff --git a/tail.c b/tail.c
+index ce65a01..ce3be9d 100644
+--- a/tail.c
++++ b/tail.c
+@@ -26,12 +26,23 @@ dropinit(int fd, const char *fname, size_t count)
+ 		goto copy;
+ 	count--;  /* numbering starts at 1 */
+ 	while (count && (n = read(fd, buf, sizeof(buf))) > 0) {
+-		if (mode == 'n') {
++		switch (mode) {
++		case 'n':  /* lines */
+ 			for (p = buf; count && n > 0; p++, n--) {
+ 				if (*p == '\n')
+ 					count--;
+ 			}
+-		} else {
++			break;
++		case 'c':  /* bytes */
++			if (count > n) {
++				count -= n;
++			} else {
++				p = buf + count;
++				n -= count;
++				count = 0;
++			}
++			break;
++		case 'm':  /* runes */
+ 			for (p = buf; count && n > 0; p += nr, n -= nr, count--) {
+ 				nr = charntorune(&r, p, n);
+ 				if (!nr) {
+@@ -42,6 +53,7 @@ dropinit(int fd, const char *fname, size_t count)
+ 					break;
+ 				}
+ 			}
++			break;
+ 		}
+ 	}
+ 	if (count) {
+@@ -90,7 +102,8 @@ taketail(int fd, const char *fname, size_t count)
+ 		if (n == 0)
+ 			break;
+ 		len += n;
+-		if (mode == 'n') {
++		switch (mode) {
++		case 'n':  /* lines */
+ 			/* ignore the last character; if it is a newline, it
+ 			 * ends the last line */
+ 			for (p = buf + len - 2, left = count; p >= buf; p--) {
+@@ -102,7 +115,11 @@ taketail(int fd, const char *fname, size_t count)
+ 					break;
+ 				}
+ 			}
+-		} else {
++			break;
++		case 'c':  /* bytes */
++			p = count < len ? buf + len - count : buf;
++			break;
++		case 'm':  /* runes */
+ 			for (p = buf + len - 1, left = count; p >= buf; p--) {
+ 				/* skip utf-8 continuation bytes */
+ 				if ((*p & 0xc0) == 0x80)
+@@ -111,6 +128,7 @@ taketail(int fd, const char *fname, size_t count)
+ 				if (!left)
+ 					break;
+ 			}
++			break;
+ 		}
+ 		if (p > buf) {
+ 			len -= p - buf;
+@@ -125,7 +143,7 @@ taketail(int fd, const char *fname, size_t count)
+ static void
+ usage(void)
+ {
+-	eprintf("usage: %s [-f] [-c num | -n num | -num] [file ...]\n", argv0);
++	eprintf("usage: %s [-f] [-c num | -m num | -n num | -num] [file ...]\n", argv0);
+ }
+ 
+ int
+@@ -143,6 +161,7 @@ main(int argc, char *argv[])
+ 		fflag = 1;
+ 		break;
+ 	case 'c':
++	case 'm':
+ 	case 'n':
+ 		mode = ARGC();
+ 		numstr = EARGF(usage());
+-- 
+2.11.0
+

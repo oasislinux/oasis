@@ -1,0 +1,73 @@
+From 21eed6939c15af59218f58a5ed858e56d62c3279 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 30 Nov 2016 00:03:40 -0800
+Subject: [PATCH] libutil: Add writeall utility function
+
+writeall makes successive write calls to write an entire buffer to the
+output file descriptor. It returns the number of bytes written, or -1 on
+the first error.
+---
+ Makefile           |  3 ++-
+ libutil/writeall.c | 21 +++++++++++++++++++++
+ util.h             |  3 +++
+ 3 files changed, 26 insertions(+), 1 deletion(-)
+ create mode 100644 libutil/writeall.c
+
+diff --git a/Makefile b/Makefile
+index 25bab70..a337ead 100644
+--- a/Makefile
++++ b/Makefile
+@@ -79,7 +79,8 @@ LIBUTILSRC =\
+ 	libutil/strlcpy.c\
+ 	libutil/strsep.c\
+ 	libutil/strtonum.c\
+-	libutil/unescape.c
++	libutil/unescape.c\
++	libutil/writeall.c
+ 
+ LIB = $(LIBUTF) $(LIBUTIL)
+ 
+diff --git a/libutil/writeall.c b/libutil/writeall.c
+new file mode 100644
+index 0000000..4725ced
+--- /dev/null
++++ b/libutil/writeall.c
+@@ -0,0 +1,21 @@
++/* See LICENSE file for copyright and license details. */
++#include <unistd.h>
++
++#include "../util.h"
++
++ssize_t
++writeall(int fd, const void *buf, size_t len)
++{
++	const char *p = buf;
++	ssize_t n;
++
++	while (len) {
++		n = write(fd, p, len);
++		if (n <= 0)
++			return n;
++		p += n;
++		len -= n;
++	}
++
++	return p - (const char *)buf;
++}
+diff --git a/util.h b/util.h
+index b5860dc..eaad3ce 100644
+--- a/util.h
++++ b/util.h
+@@ -62,6 +62,9 @@ char *strsep(char **, const char *);
+ int enregcomp(int, regex_t *, const char *, int);
+ int eregcomp(regex_t *, const char *, int);
+ 
++/* io */
++ssize_t writeall(int, const void *, size_t);
++
+ /* misc */
+ void enmasse(int, char **, int (*)(const char *, const char *, int));
+ void fnck(const char *, const char *, int (*)(const char *, const char *, int), int);
+-- 
+2.11.0
+
