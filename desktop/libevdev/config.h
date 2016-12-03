@@ -5,10 +5,10 @@
 #define PACKAGE "libevdev"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=libevdev"
 #define PACKAGE_NAME "libevdev"
-#define PACKAGE_STRING "libevdev 1.5.4"
+#define PACKAGE_STRING "libevdev 1.5.5"
 #define PACKAGE_TARNAME "libevdev"
 #define PACKAGE_URL "http://freedesktop.org/wiki/Software/libevdev/"
-#define PACKAGE_VERSION "1.5.4"
+#define PACKAGE_VERSION "1.5.5"
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
@@ -24,7 +24,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.5.2"
+#define VERSION "1.5.5"
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */
