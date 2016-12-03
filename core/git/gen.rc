@@ -22,6 +22,7 @@ lib libgit.a -d '$dir'/deps\
 	advice.c\
 	alias.c\
 	alloc.c\
+	apply.c\
 	archive-tar.c\
 	archive-zip.c\
 	archive.c\
@@ -155,6 +156,7 @@ lib libgit.a -d '$dir'/deps\
 	symlinks.c\
 	tag.c\
 	tempfile.c\
+	tmp-objdir.c\
 	trace.c\
 	trailer.c\
 	transport-helper.c\

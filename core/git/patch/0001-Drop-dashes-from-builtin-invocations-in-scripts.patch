@@ -1,4 +1,4 @@
-From 449ed800f543c7c1258a54b568cf4deb095954b2 Mon Sep 17 00:00:00 2001
+From b8d3b9e40f00194a25797f606aeebf946b38eba2 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 3 Dec 2016 00:41:41 -0800
 Subject: [PATCH] Drop dashes from builtin invocations in scripts
@@ -76,10 +76,10 @@ index d3c3998..dcfa271 100644
  GIT_DIR=$(git rev-parse -q --git-dir) || :;
  
 diff --git a/git-submodule.sh b/git-submodule.sh
-index b57f87d..1d25678 100755
+index a024a13..4aac71f 100755
 --- a/git-submodule.sh
 +++ b/git-submodule.sh
-@@ -838,7 +838,7 @@ cmd_summary() {
+@@ -843,7 +843,7 @@ cmd_summary() {
  				test $status != A && test $ignore_config = all && continue
  			fi
  			# Also show added or modified modules which are checked out
@@ -88,7 +88,7 @@ index b57f87d..1d25678 100755
  			printf '%s\n' "$sm_path"
  		done
  	)
-@@ -872,11 +872,11 @@ cmd_summary() {
+@@ -877,11 +877,11 @@ cmd_summary() {
  		missing_dst=
  
  		test $mod_src = 160000 &&
