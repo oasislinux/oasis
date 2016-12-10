@@ -1,5 +1,10 @@
 set srcdir '$dir'
-cflags -Wall -Wextra '-std=c11' -pedantic
+cflags\
+	-Wall -Wextra -Wno-unused-parameter -pedantic\
+	'-std=c11'
 
 exe perms-hook perms-hook.c
 file libexec/oasis/perms-hook '$outdir'/perms-hook 755
+
+exe shutdown shutdown.c
+file libexec/oasis/shutdown '$outdir'/shutdown 755
