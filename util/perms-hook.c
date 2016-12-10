@@ -87,13 +87,13 @@ spawn(char **argv, pid_t *pid)
 	f = fdopen(fd[0], "r");
 	if (!f)
 		die("fdopen:");
-	if (posix_spawn_file_actions_init(&actions) < 0)
+	if ((errno = posix_spawn_file_actions_init(&actions)) > 0)
 		die("posix_spawn_file_actions_init:");
-	if (posix_spawn_file_actions_addclose(&actions, fd[0]) < 0)
+	if ((errno = posix_spawn_file_actions_addclose(&actions, fd[0])) > 0)
 		die("posix_spawn_file_actions_adddup2:");
-	if (posix_spawn_file_actions_adddup2(&actions, fd[1], 1) < 0)
+	if ((errno = posix_spawn_file_actions_adddup2(&actions, fd[1], 1)) > 0)
 		die("posix_spawn_file_actions_adddup2:");
-	if (posix_spawnp(pid, argv[0], &actions, NULL, argv, environ) < 0)
+	if ((errno = posix_spawnp(pid, argv[0], &actions, NULL, argv, environ)) > 0)
 		die("posix_spawnp:");
 	posix_spawn_file_actions_destroy(&actions);
 	close(fd[1]);
