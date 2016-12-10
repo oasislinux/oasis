@@ -1,0 +1,9 @@
+cflags\
+	-Wall\
+	-D 'VERSION=''"1.7-12-g714bd0c"'''
+
+exe ii ii.c
+file bin/ii '$outdir'/ii 755
+file share/man/man1/ii.1 '$srcdir'/ii.1 644
+
+fetch git

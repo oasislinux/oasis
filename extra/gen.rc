@@ -3,6 +3,7 @@ subgen efibootmgr
 subgen efivar
 subgen fribidi
 subgen hostap
+subgen ii
 subgen less
 subgen libevent
 subgen libfuse
