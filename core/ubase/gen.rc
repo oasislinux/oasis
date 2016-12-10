@@ -6,24 +6,25 @@ cflags\
 	-D '_FILE_OFFSET_BITS=64' \
 	-I '$dir'
 
-lib libutil.a\
-	libutil/agetcwd.c\
-	libutil/agetline.c\
-	libutil/apathmax.c\
-	libutil/concat.c\
-	libutil/ealloc.c\
-	libutil/eprintf.c\
-	libutil/estrtol.c\
-	libutil/estrtoul.c\
-	libutil/explicit_bzero.c\
-	libutil/passwd.c\
-	libutil/proc.c\
-	libutil/putword.c\
-	libutil/recurse.c\
-	libutil/strlcat.c\
-	libutil/strlcpy.c\
-	libutil/strtonum.c\
-	libutil/tty.c
+lib libutil.a libutil/^(\
+	agetcwd.c\
+	agetline.c\
+	apathmax.c\
+	concat.c\
+	ealloc.c\
+	eprintf.c\
+	estrtol.c\
+	estrtoul.c\
+	explicit_bzero.c\
+	passwd.c\
+	proc.c\
+	putword.c\
+	recurse.c\
+	strlcat.c\
+	strlcpy.c\
+	strtonum.c\
+	tty.c\
+)
 
 fn x {
 	if(~ $1 -m) {
