@@ -41,12 +41,12 @@ extern char **environ;
 
 static dev_t rootdev;
 static struct special oldsp, newsp;
-static int failure;
+static int status;
 
 static void
 verror(char *fmt, va_list ap)
 {
-	failure = 1;
+	status = 1;
 	vfprintf(stderr, fmt, ap);
 	if (fmt[0] && fmt[strlen(fmt)-1] == ':')
 		fprintf(stderr, " %s", strerror(errno));
@@ -330,10 +330,13 @@ readchanges(char *old, char *new)
 		die("child process failed");
 }
 
-int main(int argc, char *argv[]) {
-	char *old, *new;
+int
+main(int argc, char *argv[])
+{
+	char *prog, *old, *new;
 	struct stat st;
 
+	prog = basename(argv[0]);
 	switch (argc) {
 	case 1:
 		old = NULL;
@@ -348,7 +351,7 @@ int main(int argc, char *argv[]) {
 		new = argv[2];
 		break;
 	default:
-		fprintf(stderr, "usage: %s [[old] new]\n", basename(argv[0]));
+		fprintf(stderr, "usage: %s [[old] new]\n", prog);
 		exit(2);
 	}
 
@@ -364,5 +367,5 @@ int main(int argc, char *argv[]) {
 	umask(0);
 	readchanges(old, new);
 
-	return failure;
+	return status;
 }
