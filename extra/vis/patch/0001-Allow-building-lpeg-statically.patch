@@ -1,4 +1,4 @@
-From 6bfd92e10c366e804a14d793aa3df8e43baed550 Mon Sep 17 00:00:00 2001
+From 7a20eee4766219a030f8f581713d9a2b04d2e0ea Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 18 Nov 2016 21:35:52 -0800
 Subject: [PATCH] Allow building lpeg statically
@@ -9,10 +9,10 @@ Subject: [PATCH] Allow building lpeg statically
  2 files changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index e572442..92f501c 100644
+index 962fb7e..201c0c1 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -14,6 +14,7 @@ MANPREFIX ?= ${PREFIX}/man
+@@ -16,6 +16,7 @@ MANPREFIX ?= ${PREFIX}/man
  VERSION = $(shell git describe --always 2>/dev/null || echo "0.2")
  
  CONFIG_LUA ?= 1
@@ -20,7 +20,7 @@ index e572442..92f501c 100644
  CONFIG_ACL ?= 0
  CONFIG_SELINUX ?= 0
  
-@@ -25,7 +26,7 @@ CFLAGS_VIS = $(CFLAGS_AUTO) $(CFLAGS_TERMKEY) $(CFLAGS_CURSES) $(CFLAGS_ACL) \
+@@ -27,7 +28,7 @@ CFLAGS_VIS = $(CFLAGS_AUTO) $(CFLAGS_TERMKEY) $(CFLAGS_CURSES) $(CFLAGS_ACL) \
  	$(CFLAGS_SELINUX) $(CFLAGS_LUA) $(CFLAGS_STD)
  
  CFLAGS_VIS += -DVIS_PATH=\"${SHAREPREFIX}/vis\"
@@ -30,10 +30,10 @@ index e572442..92f501c 100644
  CFLAGS_VIS += -DCONFIG_ACL=${CONFIG_ACL}
  CFLAGS_VIS += ${CFLAGS_DEBUG}
 diff --git a/vis-lua.c b/vis-lua.c
-index 5b039ba..f6ed68e 100644
+index 29e94ef..83d2e52 100644
 --- a/vis-lua.c
 +++ b/vis-lua.c
-@@ -1404,6 +1404,15 @@ void vis_lua_init(Vis *vis) {
+@@ -1889,6 +1889,15 @@ void vis_lua_init(Vis *vis) {
  	vis->lua = L;
  	luaL_openlibs(L);
  

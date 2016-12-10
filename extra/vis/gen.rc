@@ -1,4 +1,4 @@
-version=v0.2-476-gca86834
+version=v0.2-539-g37d98f3
 cflags\
 	'-std=c99' \
 	-D 'CONFIG_LUA=1' \
@@ -39,141 +39,149 @@ file bin/vis-menu '$outdir'/vis-menu 755
 file bin/vis-open '$srcdir'/vis-open 755
 
 for(f in vis.1 vis-menu.1 vis-open.1) {
-	build '$outdir'/$f sed '$srcdir'/$f ; with\
+	build '$outdir'/$f sed '$srcdir'/man/$f ; with\
 		expr s,VERSION,$version,
 	file share/man/man1/$f '$outdir'/$f 644
 }
 
-file share/vis/vis.lua '$srcdir'/vis.lua 644
-file share/vis/visrc.lua '$srcdir'/visrc.lua 644
-
-# <cd src/lexers && printf '\t%s\\\n' *.lua | sort
-lexers=lexers/^(\
-	actionscript.lua\
-	ada.lua\
-	ansi_c.lua\
-	antlr.lua\
-	apdl.lua\
-	apl.lua\
-	applescript.lua\
-	asm.lua\
-	asp.lua\
-	autoit.lua\
-	awk.lua\
-	bash.lua\
-	batch.lua\
-	bibtex.lua\
-	boo.lua\
-	caml.lua\
-	chuck.lua\
-	cmake.lua\
-	coffeescript.lua\
-	container.lua\
-	context.lua\
-	cpp.lua\
-	crystal.lua\
-	csharp.lua\
-	css.lua\
-	cuda.lua\
-	dart.lua\
-	desktop.lua\
-	diff.lua\
-	django.lua\
-	dmd.lua\
-	dockerfile.lua\
-	dot.lua\
-	dsv.lua\
-	eiffel.lua\
-	elixir.lua\
-	erlang.lua\
-	faust.lua\
-	fish.lua\
-	forth.lua\
-	fortran.lua\
-	fsharp.lua\
-	fstab.lua\
-	gap.lua\
-	gettext.lua\
-	gherkin.lua\
-	glsl.lua\
-	gnuplot.lua\
-	go.lua\
-	groovy.lua\
-	gtkrc.lua\
-	haskell.lua\
-	html.lua\
-	icon.lua\
-	idl.lua\
-	inform.lua\
-	ini.lua\
-	io_lang.lua\
-	java.lua\
-	javascript.lua\
-	json.lua\
-	jsp.lua\
-	latex.lua\
-	ledger.lua\
-	less.lua\
+# <cd src/lua/lexers && printf '\t%s\\\n' *.lua | sort
+lexers=(\
 	lexer.lua\
-	lilypond.lua\
-	lisp.lua\
-	litcoffee.lua\
-	lua.lua\
-	makefile.lua\
-	man.lua\
-	markdown.lua\
-	matlab.lua\
-	moonscript.lua\
-	nemerle.lua\
-	networkd.lua\
-	nim.lua\
-	nsis.lua\
-	null.lua\
-	objective_c.lua\
-	pascal.lua\
-	perl.lua\
-	php.lua\
-	pico8.lua\
-	pike.lua\
-	pkgbuild.lua\
-	powershell.lua\
-	prolog.lua\
-	props.lua\
-	protobuf.lua\
-	ps.lua\
-	pure.lua\
-	python.lua\
-	rails.lua\
-	rebol.lua\
-	rest.lua\
-	rexx.lua\
-	rhtml.lua\
-	rstats.lua\
-	ruby.lua\
-	rust.lua\
-	sass.lua\
-	scala.lua\
-	scheme.lua\
-	smalltalk.lua\
-	snobol4.lua\
-	sql.lua\
-	systemd.lua\
-	taskpaper.lua\
-	tcl.lua\
-	tex.lua\
-	texinfo.lua\
-	text.lua\
-	toml.lua\
-	vala.lua\
-	vb.lua\
-	vbscript.lua\
-	vcard.lua\
-	verilog.lua\
-	vhdl.lua\
-	wsf.lua\
-	xml.lua\
-	xtend.lua\
-	yaml.lua\
+	vis-std.lua\
+	vis.lua\
+	visrc.lua\
+	plugins/^(\
+		filetype.lua\
+		textobject-lexer.lua\
+	)\
+	lexers/^(\
+		actionscript.lua\
+		ada.lua\
+		ansi_c.lua\
+		antlr.lua\
+		apdl.lua\
+		apl.lua\
+		applescript.lua\
+		asm.lua\
+		asp.lua\
+		autoit.lua\
+		awk.lua\
+		bash.lua\
+		batch.lua\
+		bibtex.lua\
+		boo.lua\
+		caml.lua\
+		chuck.lua\
+		cmake.lua\
+		coffeescript.lua\
+		container.lua\
+		context.lua\
+		cpp.lua\
+		crystal.lua\
+		csharp.lua\
+		css.lua\
+		cuda.lua\
+		dart.lua\
+		desktop.lua\
+		diff.lua\
+		django.lua\
+		dmd.lua\
+		dockerfile.lua\
+		dot.lua\
+		dsv.lua\
+		eiffel.lua\
+		elixir.lua\
+		erlang.lua\
+		faust.lua\
+		fish.lua\
+		forth.lua\
+		fortran.lua\
+		fsharp.lua\
+		fstab.lua\
+		gap.lua\
+		gettext.lua\
+		gherkin.lua\
+		glsl.lua\
+		gnuplot.lua\
+		go.lua\
+		groovy.lua\
+		gtkrc.lua\
+		haskell.lua\
+		html.lua\
+		icon.lua\
+		idl.lua\
+		inform.lua\
+		ini.lua\
+		io_lang.lua\
+		java.lua\
+		javascript.lua\
+		json.lua\
+		jsp.lua\
+		latex.lua\
+		ledger.lua\
+		less.lua\
+		lexer.lua\
+		lilypond.lua\
+		lisp.lua\
+		litcoffee.lua\
+		lua.lua\
+		makefile.lua\
+		man.lua\
+		markdown.lua\
+		matlab.lua\
+		moonscript.lua\
+		nemerle.lua\
+		networkd.lua\
+		nim.lua\
+		nsis.lua\
+		null.lua\
+		objective_c.lua\
+		pascal.lua\
+		perl.lua\
+		php.lua\
+		pico8.lua\
+		pike.lua\
+		pkgbuild.lua\
+		powershell.lua\
+		prolog.lua\
+		props.lua\
+		protobuf.lua\
+		ps.lua\
+		pure.lua\
+		python.lua\
+		rails.lua\
+		rebol.lua\
+		rest.lua\
+		rexx.lua\
+		rhtml.lua\
+		rstats.lua\
+		ruby.lua\
+		rust.lua\
+		sass.lua\
+		scala.lua\
+		scheme.lua\
+		smalltalk.lua\
+		sml.lua\
+		snobol4.lua\
+		sql.lua\
+		systemd.lua\
+		taskpaper.lua\
+		tcl.lua\
+		tex.lua\
+		texinfo.lua\
+		text.lua\
+		toml.lua\
+		vala.lua\
+		vb.lua\
+		vbscript.lua\
+		vcard.lua\
+		verilog.lua\
+		vhdl.lua\
+		wsf.lua\
+		xml.lua\
+		xtend.lua\
+		yaml.lua\
+	)\
 	themes/^(\
 		dark-16.lua\
 		default-16.lua\
@@ -183,6 +191,6 @@ lexers=lexers/^(\
 	)\
 )
 for(f in $lexers)
-	file share/vis/$f '$srcdir'/$f 644
+	file share/vis/$f '$srcdir'/lua/$f 644
 
 fetch git
