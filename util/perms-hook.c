@@ -40,6 +40,7 @@ struct special {
 extern char **environ;
 
 static dev_t rootdev;
+static int rootfd = AT_FDCWD;
 static struct special oldsp, newsp;
 static int status;
 
@@ -148,14 +149,14 @@ static int
 chmod_v(const char *path, mode_t mode)
 {
 	printf("chmod(\"%s\", %#o)\n", path, mode);
-	return chmod(path, mode);
+	return fchmodat(rootfd, path, mode, AT_SYMLINK_NOFOLLOW);
 }
 
 static int
 mkdir_v(const char *path, mode_t mode)
 {
 	printf("mkdir(\"%s\", %#o)\n", path, mode);
-	return mkdir(path, mode);
+	return mkdirat(rootfd, path, mode);
 }
 
 static int
@@ -164,7 +165,7 @@ defperm(const char *name)
 	struct stat st;
 	mode_t mode;
 
-	if (lstat(name, &st) < 0)
+	if (fstatat(rootfd, name, &st, AT_SYMLINK_NOFOLLOW) < 0)
 		return -1;
 	if (st.st_dev != rootdev) {
 		errno = EXDEV;
@@ -196,7 +197,7 @@ specialperm(struct perm *p)
 	if (p->attempted)
 		return 0;
 	p->attempted = true;
-	if (lstat(p->name, &st) < 0) {
+	if (fstatat(rootfd, p->name, &st, AT_SYMLINK_NOFOLLOW) < 0) {
 		if (errno != ENOENT || !S_ISDIR(p->mode))
 			return -1;
 		if (mkdir_v(p->name, p->mode & ~S_IFMT) < 0)
@@ -333,7 +334,7 @@ readchanges(char *old, char *new)
 int
 main(int argc, char *argv[])
 {
-	char *prog, *old, *new;
+	char *prog, *old, *new, *tree;
 	struct stat st;
 
 	prog = basename(argv[0]);
@@ -355,10 +356,16 @@ main(int argc, char *argv[])
 		exit(2);
 	}
 
-	if (stat(".git", &st) < 0)
+	if (!getenv("GIT_DIR") && stat(".git", &st) < 0)
 		die("stat .git:");
-	if (stat(".", &st) < 0)
-		die("stat .:");
+	tree = getenv("GIT_WORK_TREE");
+	if (!tree)
+		tree = ".";
+	rootfd = open(tree, O_RDONLY);
+	if (rootfd < 0)
+		die("open %s:", tree);
+	if (fstat(rootfd, &st) < 0)
+		die("fstat:", tree);
 	rootdev = st.st_dev;
 
 	if (old)
