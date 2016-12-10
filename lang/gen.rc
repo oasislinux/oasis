@@ -1,3 +1,4 @@
 subgen lua
 subgen mc
 subgen python
+subgen scc

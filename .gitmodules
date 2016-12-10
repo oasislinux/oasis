@@ -190,6 +190,9 @@
 [submodule "lang/mc/src"]
 	path = lang/mc/src
 	url = https://github.com/oridb/mc
+[submodule "lang/scc/src"]
+	path = lang/scc/src
+	url = git://git.suckless.org/scc
 [submodule "media/alsa-lib/src"]
 	path = media/alsa-lib/src
 	url = git://git.alsa-project.org/alsa-lib.git
