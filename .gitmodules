@@ -51,6 +51,7 @@
 [submodule "core/sdhcp/src"]
 	path = core/sdhcp/src
 	url = git://git.2f30.org/sdhcp
+	ignore = all
 [submodule "core/sinit/src"]
 	path = core/sinit/src
 	url = git://git.suckless.org/sinit
