@@ -1,4 +1,4 @@
-From 38c6d6ee98b8a8eaafc71c6ca4e13f52152a40fa Mon Sep 17 00:00:00 2001
+From 935018562e6fee649bb629a873d4c3beca3bc72e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 17:11:20 -0700
 Subject: [PATCH] Include poll.h instead of sys/poll.h
@@ -9,7 +9,7 @@ Subject: [PATCH] Include poll.h instead of sys/poll.h
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/video/out/drm_common.c b/video/out/drm_common.c
-index 44e017e..3a9b2a4 100644
+index 44e017e4b..3a9b2a4b3 100644
 --- a/video/out/drm_common.c
 +++ b/video/out/drm_common.c
 @@ -16,10 +16,10 @@
@@ -25,7 +25,7 @@ index 44e017e..3a9b2a4 100644
  #include <sys/vt.h>
  #include <unistd.h>
 diff --git a/video/out/vo_drm.c b/video/out/vo_drm.c
-index 7e642e3..726d820 100644
+index 7e642e391..726d820ba 100644
 --- a/video/out/vo_drm.c
 +++ b/video/out/vo_drm.c
 @@ -18,9 +18,9 @@
@@ -40,5 +40,5 @@ index 7e642e3..726d820 100644
  
  #include <libswscale/swscale.h>
 -- 
-2.10.1
+2.11.0
 

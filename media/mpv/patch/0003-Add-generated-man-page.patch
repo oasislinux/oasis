@@ -1,4 +1,4 @@
-From 6f17a08a04b52c5fab494b72f77bba0d91042f65 Mon Sep 17 00:00:00 2001
+From 85c80cb0f48c4d51dd5192b79c543a4b8fd863ec Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
@@ -7,16 +7,16 @@ This requires python and rst2man to generate.
 
 $ rst2man.py DOCS/man/mpv.rst DOCS/man/mpv.1
 ---
- DOCS/man/mpv.1 | 14114 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 14114 insertions(+)
+ DOCS/man/mpv.1 | 14137 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 14137 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 0000000..4ae65ee
+index 000000000..c411fc606
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,14114 @@
+@@ -0,0 +1,14137 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -828,6 +828,15 @@ index 0000000..4ae65ee
 +Note that not all prefixes are documented here. Undocumented prefixes are
 +either aliases to documented protocols, or are just redirections to
 +protocols implemented and documented in FFmpeg.
++.TP
++.B \fBytdl://...\fP
++By default, the youtube\-dl hook script (enabled by default for mpv CLI)
++only looks at http URLs. Prefixing an URL with \fBytdl://\fP forces it to
++be always processed by the script. This can also be used to invoke special
++youtube\-dl functionality like playing a video by ID or invoking search.
++.sp
++Keep in mind that you can\(aqt pass youtube\-dl command line options by this,
++and you have to use \fB\-\-ytdl\-raw\-options\fP instead.
 +.TP
 +.B \fB\-\fP
 +Play data from stdin.
@@ -1659,6 +1668,9 @@ index 0000000..4ae65ee
 +.B vdpau
 +requires \fB\-\-vo=vdpau\fP or \fB\-\-vo=opengl\fP (Linux only)
 +.TP
++.B vdpau\-copy
++copies video back into system RAM (Linux with some GPUs only)
++.TP
 +.B vaapi
 +requires \fB\-\-vo=opengl\fP or \fB\-\-vo=vaapi\fP (Linux only)
 +.TP
@@ -1728,10 +1740,10 @@ index 0000000..4ae65ee
 +primarily implemented on the CPU. Some exceptions are \fBvdpaupp\fP,
 +\fBvdpaurb\fP and \fBvavpp\fP\&. See \fI\%VIDEO FILTERS\fP for more details.
 +.sp
-+The \fBvaapi\-copy\fP and \fBdxva2\-copy\fP modes allow you to use hardware
++The \fB\&...\-copy\fP modes (e.g. \fBdxva2\-copy\fP) allow you to use hardware
 +decoding with any VO, backend or filter. Because these copy the decoded
-+video back to system RAM, they\(aqre likely less efficient than the \fBvaapi\fP
-+or \fBdxva2\fP modes respectively.
++video back to system RAM, they\(aqre likely less efficient than the direct
++modes (like e.g. \fBdxva2\fP).
 +.sp
 +\fBNOTE:\fP
 +.INDENT 7.0
@@ -2339,9 +2351,9 @@ index 0000000..4ae65ee
 +to use the volume controls of the audio output driver or the internal mpv
 +volume filter.
 +.sp
-+The current behavior is as if this option was set to \fByes\fP\&. The other
-+behaviors are not available anymore, although \fBauto\fP almost matches
-+current behavior in most cases.
++The current behavior is that softvol is always enabled, i.e. as if this
++option is set to \fByes\fP\&. The other behaviors are not available anymore,
++although \fBauto\fP almost matches current behavior in most cases.
 +.sp
 +The \fBno\fP behavior is still partially available through the \fBao\-volume\fP
 +and \fBao\-mute\fP properties. But there are no options to reset these.
@@ -2726,7 +2738,7 @@ index 0000000..4ae65ee
 +.B \fB\-\-sub\-scale\-with\-window=<yes|no>\fP
 +Make the subtitle font size relative to the window, instead of the video.
 +This is useful if you always want the same font size, even if the video
-+doesn\(aqt covert the window fully, e.g. because screen aspect and window
++doesn\(aqt cover the window fully, e.g. because screen aspect and window
 +aspect mismatch (and the player adds black bars).
 +.sp
 +Default: yes.
@@ -3791,6 +3803,13 @@ index 0000000..4ae65ee
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
++.TP
++.B \fB\-\-hidpi\-window\-scale\fP, \fB\-\-no\-hidpi\-window\-scale\fP
++(OS X only)
++Scale the window size according to the backing scale factor (default: yes).
++On regular HiDPI resolutions the window opens with double the size but appears
++as having the same size as on none\-HiDPI resolutions. This is the default OS X
++behavior.
 +.TP
 +.B \fB\-\-monitorpixelaspect=<ratio>\fP
 +Set the aspect of a single pixel of your monitor or TV screen (default:
@@ -5505,7 +5524,25 @@ index 0000000..4ae65ee
 +.UNINDENT
 +.INDENT 0.0
 +.TP
-+.B \fB\-\-scale\-param1=<value>\fP, \fB\-\-scale\-param2=<value>\fP
++.B \fB\-\-cscale=<filter>\fP
++As \fB\-\-scale\fP, but for interpolating chroma information. If the image is
++not subsampled, this option is ignored entirely.
++.TP
++.B \fB\-\-dscale=<filter>\fP
++Like \fB\-\-scale\fP, but apply these filters on downscaling instead. If this
++option is unset, the filter implied by \fB\-\-scale\fP will be applied.
++.TP
++.B \fB\-\-tscale=<filter>\fP
++The filter used for interpolating the temporal axis (frames). This is only
++used if \fB\-\-interpolation\fP is enabled. The only valid choices for
++\fB\-\-tscale\fP are separable convolution filters (use \fB\-\-tscale=help\fP to
++get a list). The default is \fBmitchell\fP\&.
++.sp
++Note that the maximum supported filter radius is currently 3, due to
++limitations in the number of video textures that can be loaded
++simultaneously.
++.TP
++.B \fB\-\-scale\-param1=<value>\fP, \fB\-\-scale\-param2=<value>\fP, \fB\-\-cscale\-param1=<value>\fP, \fB\-\-cscale\-param2=<value>\fP, \fB\-\-dscale\-param1=<value>\fP, \fB\-\-dscale\-param2=<value>\fP, \fB\-\-tscale\-param1=<value>\fP, \fB\-\-tscale\-param2=<value>\fP
 +Set filter parameters. Ignored if the filter is not tunable. Currently,
 +this affects the following filter parameters:
 +.INDENT 7.0
@@ -5524,14 +5561,28 @@ index 0000000..4ae65ee
 +algorithm was used. Defaults to 0.0.
 +.UNINDENT
 +.TP
-+.B \fB\-\-scale\-blur=<value>\fP
-+Kernel scaling factor (also known as a blur factor). Decreasing this makes
-+the result sharper, increasing it makes it blurrier (default 0). If set to
-+0, the kernel\(aqs preferred blur factor is used. Note that setting this too
-+low (eg. 0.5) leads to bad results. It\(aqs generally recommended to stick to
-+values between 0.8 and 1.2.
++.B \fB\-\-scale\-blur=<value>\fP, \fB\-\-scale\-wblur=<value>\fP, \fB\-\-cscale\-blur=<value>\fP, \fB\-\-cscale\-wblur=<value>\fP, \fB\-\-dscale\-blur=<value>\fP, \fB\-\-dscale\-wblur=<value>\fP, \fB\-\-tscale\-blur=<value>\fP, \fB\-\-tscale\-wblur=<value>\fP
++Kernel/window scaling factor (also known as a blur factor). Decreasing this
++makes the result sharper, increasing it makes it blurrier (default 0). If
++set to 0, the kernel\(aqs preferred blur factor is used. Note that setting
++this too low (eg. 0.5) leads to bad results. It\(aqs generally recommended to
++stick to values between 0.8 and 1.2.
 +.TP
-+.B \fB\-\-scale\-radius=<value>\fP
++.B \fB\-\-scale\-clamp\fP, \fB\-\-cscale\-clamp\fP, \fB\-\-dscale\-clamp\fP, \fB\-\-tscale\-clamp\fP
++Clamp the filter kernel\(aqs value range to [0\-1]. This is especially useful
++for \fB\-\-tscale\fP, where it reduces excessive ringing artifacts in the
++temporal domain (which typically manifest themselves as short flashes or
++fringes of black, mostly around moving edges) in exchange for potentially
++adding more blur.
++.TP
++.B \fB\-\-scale\-taper=<value>\fP, \fB\-\-scale\-wtaper=<value>\fP, \fB\-\-dscale\-taper=<value>\fP, \fB\-\-dscale\-wtaper=<value>\fP, \fB\-\-cscale\-taper=<value>\fP, \fB\-\-cscale\-wtaper=<value>\fP, \fB\-\-tscale\-taper=<value>\fP, \fB\-\-tscale\-wtaper=<value>\fP
++Kernel/window taper factor. Increasing this flattens the filter function.
++Value range is 0 to 1. A value of 0 (the default) means no flattening, a
++value of 1 makes the filter completely flat (equivalent to a box function).
++Values in between mean that some portion will be flat and the actual filter
++function will be squeezed into the space in between.
++.TP
++.B \fB\-\-scale\-radius=<value>\fP, \fB\-\-cscale\-radius=<value>\fP, \fB\-\-dscale\-radius=<value>\fP, \fB\-\-tscale\-radius=<value>\fP
 +Set radius for tunable filters, must be a float number between 0.5 and
 +16.0. Defaults to the filter\(aqs preferred radius if not specified. Doesn\(aqt
 +work for every scaler and VO combination.
@@ -5540,7 +5591,7 @@ index 0000000..4ae65ee
 +ratio, the radius that actually being used might be different (most likely
 +being increased a bit).
 +.TP
-+.B \fB\-\-scale\-antiring=<value>\fP
++.B \fB\-\-scale\-antiring=<value>\fP, \fB\-\-cscale\-antiring=<value>\fP, \fB\-\-dscale\-antiring=<value>\fP, \fB\-\-tscale\-antiring=<value>\fP
 +Set the antiringing strength. This tries to eliminate ringing, but can
 +introduce other artifacts in the process. Must be a float number between
 +0.0 and 1.0. The default value of 0.0 disables antiringing entirely.
@@ -5548,14 +5599,14 @@ index 0000000..4ae65ee
 +Note that this doesn\(aqt affect the special filters \fBbilinear\fP and
 +\fBbicubic_fast\fP\&.
 +.TP
-+.B \fB\-\-scale\-window=<window>\fP
++.B \fB\-\-scale\-window=<window>\fP, \fB\-\-cscale\-window=<window>\fP, \fB\-\-dscale\-window=<window>\fP, \fB\-\-tscale\-window=<window>\fP
 +(Advanced users only) Choose a custom windowing function for the kernel.
 +Defaults to the filter\(aqs preferred window if unset. Use
 +\fB\-\-scale\-window=help\fP to get a list of supported windowing functions.
 +.TP
-+.B \fB\-\-scale\-wparam=<window>\fP
++.B \fB\-\-scale\-wparam=<window>\fP, \fB\-\-cscale\-wparam=<window>\fP, \fB\-\-cscale\-wparam=<window>\fP, \fB\-\-tscale\-wparam=<window>\fP
 +(Advanced users only) Configure the parameter for the window function given
-+by \fB\-\-scale\-window\fP\&. Ignored if the window is not tunable. Currently,
++by \fB\-\-scale\-window\fP etc. Ignored if the window is not tunable. Currently,
 +this affects the following window parameters:
 +.INDENT 7.0
 +.TP
@@ -5583,6 +5634,55 @@ index 0000000..4ae65ee
 +\fBbilinear\fP is used instead of whatever is set with \fB\-\-scale\fP\&. Bilinear
 +will reproduce the source image perfectly if no scaling is performed.
 +Enabled by default. Note that this option never affects \fB\-\-cscale\fP\&.
++.TP
++.B \fB\-\-linear\-scaling\fP
++Scale in linear light. It should only be used with a
++\fB\-\-opengl\-fbo\-format\fP that has at least 16 bit precision.
++.TP
++.B \fB\-\-correct\-downscaling\fP
++When using convolution based filters, extend the filter size when
++downscaling. Increases quality, but reduces performance while downscaling.
++.sp
++This will perform slightly sub\-optimally for anamorphic video (but still
++better than without it) since it will extend the size to match only the
++milder of the scale factors between the axes.
++.TP
++.B \fB\-\-interpolation\fP
++Reduce stuttering caused by mismatches in the video fps and display refresh
++rate (also known as judder).
++.sp
++\fBWARNING:\fP
++.INDENT 7.0
++.INDENT 3.5
++This requires setting the \fB\-\-video\-sync\fP option to one
++of the \fBdisplay\-\fP modes, or it will be silently disabled.
++This was not required before mpv 0.14.0.
++.UNINDENT
++.UNINDENT
++.sp
++This essentially attempts to interpolate the missing frames by convoluting
++the video along the temporal axis. The filter used can be controlled using
++the \fB\-\-tscale\fP setting.
++.sp
++Note that this relies on vsync to work, see \fB\-\-opengl\-swapinterval\fP for
++more information.
++.TP
++.B \fB\-\-interpolation\-threshold=<0..1,\-1>\fP
++Threshold below which frame ratio interpolation gets disabled (default:
++\fB0.0001\fP). This is calculated as \fBabs(disphz/vfps \- 1) < threshold\fP,
++where \fBvfps\fP is the speed\-adjusted video FPS, and \fBdisphz\fP the
++display refresh rate. (The speed\-adjusted video FPS is roughly equal to
++the normal video FPS, but with slowdown and speedup applied. This matters
++if you use \fB\-\-video\-sync=display\-resample\fP to make video run synchronously
++to the display FPS, or if you change the \fBspeed\fP property.)
++.sp
++The default is intended to almost always enable interpolation if the
++playback rate is even slightly different from the display refresh rate. But
++note that if you use e.g. \fB\-\-video\-sync=display\-vdrop\fP, small deviations
++in the rate can disable interpolation and introduce a discontinuity every
++other minute.
++.sp
++Set this to \fB\-1\fP to disable this logic.
 +.TP
 +.B \fB\-\-opengl\-pbo\fP
 +Enable use of PBOs. On some drivers this can be faster, especially if the
@@ -5640,26 +5740,6 @@ index 0000000..4ae65ee
 +debug OpenGL context (which does nothing with current graphics drivers
 +as of this writing).
 +.TP
-+.B \fB\-\-interpolation\fP
-+Reduce stuttering caused by mismatches in the video fps and display refresh
-+rate (also known as judder).
-+.sp
-+\fBWARNING:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+This requires setting the \fB\-\-video\-sync\fP option to one
-+of the \fBdisplay\-\fP modes, or it will be silently disabled.
-+This was not required before mpv 0.14.0.
-+.UNINDENT
-+.UNINDENT
-+.sp
-+This essentially attempts to interpolate the missing frames by convoluting
-+the video along the temporal axis. The filter used can be controlled using
-+the \fB\-\-tscale\fP setting.
-+.sp
-+Note that this relies on vsync to work, see \fB\-\-opengl\-swapinterval\fP for
-+more information.
-+.TP
 +.B \fB\-\-opengl\-swapinterval=<n>\fP
 +Interval in displayed frames between two buffer swaps. 1 is equivalent to
 +enable VSYNC, 0 to disable VSYNC. Defaults to 1 if not specified.
@@ -5670,65 +5750,6 @@ index 0000000..4ae65ee
 +syncs to the right one. Compositing window managers can also lead to bad
 +results, as can missing or incorrect display FPS information (see
 +\fB\-\-display\-fps\fP).
-+.TP
-+.B \fB\-\-dscale=<filter>\fP
-+Like \fB\-\-scale\fP, but apply these filters on downscaling instead. If this
-+option is unset, the filter implied by \fB\-\-scale\fP will be applied.
-+.TP
-+.B \fB\-\-cscale=<filter>\fP
-+As \fB\-\-scale\fP, but for interpolating chroma information. If the image is
-+not subsampled, this option is ignored entirely.
-+.TP
-+.B \fB\-\-tscale=<filter>\fP
-+The filter used for interpolating the temporal axis (frames). This is only
-+used if \fB\-\-interpolation\fP is enabled. The only valid choices for
-+\fB\-\-tscale\fP are separable convolution filters (use \fB\-\-tscale=help\fP to
-+get a list). The default is \fBmitchell\fP\&.
-+.sp
-+Note that the maximum supported filter radius is currently 3, due to
-+limitations in the number of video textures that can be loaded
-+simultaneously.
-+.TP
-+.B \fB\-\-tscale\-clamp\fP
-+Clamp the \fB\-\-tscale\fP filter kernel\(aqs value range to [0\-1]. This reduces
-+excessive ringing artifacts in the temporal domain (which typically
-+manifest themselves as short flashes or fringes of black, mostly around
-+moving edges) in exchange for potentially adding more blur.
-+.TP
-+.B \fB\-\-interpolation\-threshold=<0..1,\-1>\fP
-+Threshold below which frame ratio interpolation gets disabled (default:
-+\fB0.0001\fP). This is calculated as \fBabs(disphz/vfps \- 1) < threshold\fP,
-+where \fBvfps\fP is the speed\-adjusted video FPS, and \fBdisphz\fP the
-+display refresh rate. (The speed\-adjusted video FPS is roughly equal to
-+the normal video FPS, but with slowdown and speedup applied. This matters
-+if you use \fB\-\-video\-sync=display\-resample\fP to make video run synchronously
-+to the display FPS, or if you change the \fBspeed\fP property.)
-+.sp
-+The default is intended to almost always enable interpolation if the
-+playback rate is even slightly different from the display refresh rate. But
-+note that if you use e.g. \fB\-\-video\-sync=display\-vdrop\fP, small deviations
-+in the rate can disable interpolation and introduce a discontinuity every
-+other minute.
-+.sp
-+Set this to \fB\-1\fP to disable this logic.
-+.TP
-+.B \fB\-\-dscale\-radius\fP, \fB\-\-cscale\-radius\fP, \fB\-\-tscale\-radius\fP, etc.
-+Set filter parameters for \fB\-\-dscale\fP, \fB\-\-cscale\fP and \fB\-\-tscale\fP,
-+respectively.
-+.sp
-+See the corresponding options for \fB\-\-scale\fP\&.
-+.TP
-+.B \fB\-\-linear\-scaling\fP
-+Scale in linear light. It should only be used with a
-+\fB\-\-opengl\-fbo\-format\fP that has at least 16 bit precision.
-+.TP
-+.B \fB\-\-correct\-downscaling\fP
-+When using convolution based filters, extend the filter size when
-+downscaling. Increases quality, but reduces performance while downscaling.
-+.sp
-+This will perform slightly sub\-optimally for anamorphic video (but still
-+better than without it) since it will extend the size to match only the
-+milder of the scale factors between the axes.
 +.TP
 +.B \fB\-\-opengl\-shaders=<files>\fP
 +Custom GLSL hooks. These are a flexible way to add custom fragment shaders,
@@ -6332,7 +6353,8 @@ index 0000000..4ae65ee
 +Blend the frame against a 16x16 gray/white tiles background (default).
 +.TP
 +.B blend
-+Blend the frame against a black background.
++Blend the frame against the background color (\fB\-\-background\fP, normally
++black).
 +.TP
 +.B yes
 +Try to create a framebuffer with alpha component. This only makes sense
@@ -6361,10 +6383,13 @@ index 0000000..4ae65ee
 +we may have to deal with additional padding, which can be tested with these
 +options). Could be removed any time.
 +.TP
-+.B \fB\-\-opengl\-early\-flush=<yes|no>\fP
++.B \fB\-\-opengl\-early\-flush=<yes|no|auto>\fP
 +Call \fBglFlush()\fP after rendering a frame and before attempting to display
-+it (default: no). Can fix stuttering in some cases, in other cases probably
-+causes it. For testing \- could be removed any time.
++it (default: auto). Can fix stuttering in some cases, in other cases
++probably causes it. The \fBauto\fP mode will call \fBglFlush()\fP only if
++the renderer is going to wait for a while after rendering, instead of
++flipping GL front and backbuffers immediately (i.e. it doesn\(aqt call it
++in display\-sync mode).
 +.UNINDENT
 +.SS Miscellaneous
 +.INDENT 0.0
@@ -7174,7 +7199,7 @@ index 0000000..4ae65ee
 +means timing is somewhat less accurate than without compositing, but
 +with the composited mode behavior of the NVIDIA driver, there is no
 +hard playback speed limit even without the disabled logic. Enabled by
-+default, use \fBno\-composite\-detect\fP to disable.
++default, use \fB\-\-vo\-vdpau\-composite\-detect=no\fP to disable.
 +.TP
 +.B \fB\-\-vo\-vdpau\-queuetime\-windowed=<number>\fP and \fBqueuetime\-fs=<number>\fP
 +Use VDPAU\(aqs presentation queue functionality to queue future video
@@ -7453,6 +7478,33 @@ index 0000000..4ae65ee
 +.UNINDENT
 +.UNINDENT
 +.TP
++.B \fBtct\fP
++Color Unicode art video output driver that works on a text console.
++Depends on support of true color by modern terminals to display the images
++at full color range. On Windows it requires an ansi terminal such as mintty.
++.INDENT 7.0
++.TP
++.B \fB\-\-vo\-tct\-algo=<algo>\fP
++Select how to write the pixels to the terminal.
++.INDENT 7.0
++.TP
++.B half\-blocks
++Uses unicode LOWER HALF BLOCK character to achieve higher vertical
++resolution. (Default.)
++.TP
++.B plain
++Uses spaces. Causes vertical resolution to drop twofolds, but in
++theory works in more places.
++.UNINDENT
++.TP
++.B \fB\-\-vo\-tct\-width=<width>\fP  \fB\-\-vo\-tct\-height=<height>\fP
++Assume the terminal has the specified character width and/or height.
++These default to 80x25 if the terminal size cannot be determined.
++.TP
++.B \fB\-\-vo\-tct\-256=<yes|no>\fP (default: no)
++Use 256 colors \- for terminals which don\(aqt support true color.
++.UNINDENT
++.TP
 +.B \fBimage\fP
 +Output each frame into an image file in the current directory. Each file
 +takes the frame number padded with leading zeros as name.
@@ -7586,7 +7638,7 @@ index 0000000..4ae65ee
 +Video output driver using Kernel Mode Setting / Direct Rendering Manager.
 +Should be used when one doesn\(aqt want to install full\-blown graphical
 +environment (e.g. no X). Does not support hardware acceleration (if you
-+need this, check the \fBdrm\-egl\fP backend for \fBopengl\fP VO).
++need this, check the \fBdrm\fP backend for \fBopengl\fP VO).
 +.sp
 +The following global options are supported by this video output:
 +.INDENT 7.0
@@ -9360,6 +9412,8 @@ index 0000000..4ae65ee
 +.UNINDENT
 +.TP
 +.B \fBvdpaurb\fP
++This filter is deprecated. Use \fB\-\-hwdec=vdpau\-copy\fP instead.
++.sp
 +VDPAU video read back. Works with \fB\-\-vo=vdpau\fP and \fB\-\-vo=opengl\fP only.
 +This filter will read back frames decoded by VDPAU so that other filters,
 +which are not normally compatible with VDPAU, can be used like normal.
@@ -11703,8 +11757,9 @@ index 0000000..4ae65ee
 +.sp
 +The \fBname\fP is what is to be passed to the \fB\-\-audio\-device\fP option (and
 +often a rather cryptic audio API\-specific ID), while \fBdescription\fP is
-+human readable free form text. The description is an empty string if none
-+was received.
++human readable free form text. The description is set to the device name
++(minus mpv\-specific \fB<driver>/\fP prefix) if no description is available
++or the description would have been an empty string.
 +.sp
 +The special entry with the name set to \fBauto\fP selects the default audio
 +output driver and the default device.
@@ -12370,155 +12425,117 @@ index 0000000..4ae65ee
 +.SS Configurable Options
 +.INDENT 0.0
 +.TP
-+.B \fBshowwindowed\fP
-+.nf
-+Default: yes
-+Enable the OSC when windowed
-+.fi
++.B \fBlayout\fP
++Default: bottombar
 +.sp
++The layout for the OSC. Currently available are: box, slimbox,
++bottombar and topbar. Default pre\-0.21.0 was \(aqbox\(aq.
 +.TP
-+.B \fBshowfullscreen\fP
-+.nf
-+Default: yes
-+Enable the OSC when fullscreen
-+.fi
++.B \fBseekbarstyle\fP
++Default: bar
 +.sp
-+.TP
-+.B \fBscalewindowed\fP
-+.nf
-+Default: 1.5
-+Scale factor of the OSC when windowed
-+.fi
-+.sp
-+.TP
-+.B \fBscalefullscreen\fP
-+.nf
-+Default: 1.5
-+Scale factor of the OSC when fullscreen
-+.fi
-+.sp
-+.TP
-+.B \fBscaleforcedwindow\fP
-+.nf
-+Default: 2.0
-+Scale factor of the OSC when rendered on a forced (dummy) window
-+.fi
-+.sp
-+.TP
-+.B \fBvidscale\fP
-+.nf
-+Default: yes
-+Scale the OSC with the video
-+\fBno\fP tries to keep the OSC size constant as much as the window size allows
-+.fi
-+.sp
-+.TP
-+.B \fBvalign\fP
-+.nf
-+Default: 0.8
-+Vertical alignment, \-1 (top) to 1 (bottom)
-+.fi
-+.sp
-+.TP
-+.B \fBhalign\fP
-+.nf
-+Default: 0.0
-+Horizontal alignment, \-1 (left) to 1 (right)
-+.fi
-+.sp
-+.TP
-+.B \fBbarmargin\fP
-+.nf
-+Default: 0
-+Margin from bottom (bottombar) or top (topbar), in pixels
-+.fi
-+.sp
-+.TP
-+.B \fBboxalpha\fP
-+.nf
-+Default: 80
-+Alpha of the background box, 0 (opaque) to 255 (fully transparent)
-+.fi
-+.sp
-+.TP
-+.B \fBhidetimeout\fP
-+.nf
-+Default: 500
-+Duration in ms until the OSC hides if no mouse movement, must not be
-+negative
-+.fi
-+.sp
-+.TP
-+.B \fBfadeduration\fP
-+.nf
-+Default: 200
-+Duration of fade out in ms, 0 = no fade
-+.fi
-+.sp
++Sets the style of the seekbar, slider (diamond marker), knob (circle
++marker with guide), or bar (fill).
++Default pre\-0.21.0 was \(aqslider\(aq.
 +.TP
 +.B \fBdeadzonesize\fP
-+.nf
-+Default: 1
++Default: 0.5
++.sp
 +Size of the deadzone. The deadzone is an area that makes the mouse act
 +like leaving the window. Movement there won\(aqt make the OSC show up and
 +it will hide immediately if the mouse enters it. The deadzone starts
 +at the window border opposite to the OSC and the size controls how much
-+of the window it will span. Values between 0 and 1, where 0 means the
++of the window it will span. Values between 0.0 and 1.0, where 0 means the
 +OSC will always popup with mouse movement in the window, and 1 means the
-+OSC will only show up when the mouse hovers it.
-+.fi
-+.sp
++OSC will only show up when the mouse hovers it. Default pre\-0.21.0 was 0.
 +.TP
 +.B \fBminmousemove\fP
-+.nf
 +Default: 0
++.sp
 +Minimum amount of pixels the mouse has to move between ticks to make
-+the OSC show up
-+.fi
-+.sp
++the OSC show up. Default pre\-0.21.0 was 3.
 +.TP
-+.B \fBlayout\fP
-+.nf
-+Default: bottombar
-+The layout for the OSC. Currently available are: box, slimbox,
-+bottombar and topbar.
-+.fi
++.B \fBshowwindowed\fP
++Default: yes
 +.sp
++Enable the OSC when windowed
 +.TP
-+.B \fBseekbarstyle\fP
-+.nf
-+Default: bar
-+Sets the style of the seekbar, slider (diamond marker) or bar (fill)
-+.fi
++.B \fBshowfullscreen\fP
++Default: yes
 +.sp
++Enable the OSC when fullscreen
++.TP
++.B \fBscalewindowed\fP
++Default: 1.0
++.sp
++Scale factor of the OSC when windowed.
++.TP
++.B \fBscalefullscreen\fP
++Default: 1.0
++.sp
++Scale factor of the OSC when fullscreen
++.TP
++.B \fBscaleforcedwindow\fP
++Default: 2.0
++.sp
++Scale factor of the OSC when rendered on a forced (dummy) window
++.TP
++.B \fBvidscale\fP
++Default: yes
++.sp
++Scale the OSC with the video
++\fBno\fP tries to keep the OSC size constant as much as the window size allows
++.TP
++.B \fBvalign\fP
++Default: 0.8
++.sp
++Vertical alignment, \-1 (top) to 1 (bottom)
++.TP
++.B \fBhalign\fP
++Default: 0.0
++.sp
++Horizontal alignment, \-1 (left) to 1 (right)
++.TP
++.B \fBbarmargin\fP
++Default: 0
++.sp
++Margin from bottom (bottombar) or top (topbar), in pixels
++.TP
++.B \fBboxalpha\fP
++Default: 80
++.sp
++Alpha of the background box, 0 (opaque) to 255 (fully transparent)
++.TP
++.B \fBhidetimeout\fP
++Default: 500
++.sp
++Duration in ms until the OSC hides if no mouse movement, must not be
++negative
++.TP
++.B \fBfadeduration\fP
++Default: 200
++.sp
++Duration of fade out in ms, 0 = no fade
 +.TP
 +.B \fBtooltipborder\fP
-+.nf
 +Default: 1
-+Size of the tooltip outline when using bottombar or topbar layouts
-+.fi
 +.sp
++Size of the tooltip outline when using bottombar or topbar layouts
 +.TP
 +.B \fBtimetotal\fP
-+.nf
 +Default: no
-+Show total time instead of time remaining
-+.fi
 +.sp
++Show total time instead of time remaining
 +.TP
 +.B \fBtimems\fP
-+.nf
 +Default: no
-+Display timecodes with milliseconds
-+.fi
 +.sp
++Display timecodes with milliseconds
 +.TP
 +.B \fBvisibility\fP
-+.nf
 +Default: auto (auto hide/show on mouse move)
-+Also supports \fBnever\fP and \fBalways\fP
-+.fi
 +.sp
++Also supports \fBnever\fP and \fBalways\fP
 +.UNINDENT
 +.SS Script Commands
 +.sp
@@ -12549,6 +12566,12 @@ index 0000000..4ae65ee
 +.ft P
 +.fi
 +.UNINDENT
++.UNINDENT
++.INDENT 0.0
++.TP
++.B \fBosc\-playlist\fP, \fBosc\-chapterlist\fP, \fBosc\-tracklist\fP
++Shows a limited view of the respective type of list using the OSC. First
++argument is duration in seconds.
 +.UNINDENT
 +.SH LUA SCRIPTING
 +.sp
@@ -14132,5 +14155,5 @@ index 0000000..4ae65ee
 +.\" Generated by docutils manpage writer.
 +.
 -- 
-2.10.1
+2.11.0
 

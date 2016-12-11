@@ -1,4 +1,4 @@
-From 979c7e0c4357b6adcc447ac062341ae9ef2f5fd4 Mon Sep 17 00:00:00 2001
+From 479c6bedadf9f4cce17c12a7fa1e43d39578704f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 3 Jul 2016 17:41:45 -0700
 Subject: [PATCH] ad_spdif: Fix crash when spdif muxer is not available
@@ -12,7 +12,7 @@ resulting in a crash on my system.
  1 file changed, 1 insertion(+)
 
 diff --git a/audio/decode/ad_spdif.c b/audio/decode/ad_spdif.c
-index 56e4a81..71e2415 100644
+index 56e4a8102..71e24152f 100644
 --- a/audio/decode/ad_spdif.c
 +++ b/audio/decode/ad_spdif.c
 @@ -71,6 +71,7 @@ static void uninit(struct dec_audio *da)
@@ -24,5 +24,5 @@ index 56e4a81..71e2415 100644
  }
  
 -- 
-2.9.2
+2.11.0
 

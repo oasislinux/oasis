@@ -24,6 +24,7 @@
 #define HAVE_LIBM 1
 #define HAVE_MINGW 0
 #define HAVE_POSIX 1
+#define HAVE_FNMATCH 1
 #define HAVE_POSIX_OR_MINGW 1
 #define HAVE_WIN32 0
 #define HAVE_WIN32_INTERNAL_PTHREADS 0
@@ -34,6 +35,7 @@
 #define HAVE_SYNC_BUILTINS 0
 #define HAVE_ATOMICS 1
 #define HAVE_C11_TLS 1
+#define HAVE_GCC_TLS 1
 #define HAVE_LIBRT 1
 #define HAVE_ICONV 1
 #define HAVE_DOS_PATHS 0
@@ -89,6 +91,7 @@
 #define HAVE_OPENSLES 0
 #define HAVE_ALSA 1
 #define HAVE_COREAUDIO 0
+#define HAVE_AUDIOUNIT 0
 #define HAVE_WASAPI 0
 #define HAVE_COCOA 0
 #define HAVE_DRM 1
@@ -124,6 +127,7 @@
 #define HAVE_RPI 0
 #define HAVE_STANDARD_GL 0
 #define HAVE_ANDROID_GL 0
+#define HAVE_IOS_GL 0
 #define HAVE_ANY_GL 0
 #define HAVE_PLAIN_GL 0
 #define HAVE_MALI_FBDEV 0
