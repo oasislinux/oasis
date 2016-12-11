@@ -3,6 +3,6 @@ as = as
 cc = cc
 cxx = c++
 
-cflags = -O2 -march=native -pipe
+cflags = -O2 -pipe
 cxxflags = $cflags
 ldflags = -static -s
