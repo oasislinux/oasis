@@ -22,19 +22,12 @@
 #define HAVE_OHASH 0
 #define HAVE_MANPATH 0
 
-/* macros */
-#if !defined(__BEGIN_DECLS)
-#  define       __BEGIN_DECLS
-#endif
-#if !defined(__END_DECLS)
-#  define       __END_DECLS
-#endif
-
 /* binary names */
 #define BINM_APROPOS "apropos"
-#define BINM_MAN "man"
-#define BINM_WHATIS "whatis"
 #define BINM_MAKEWHATIS "makewhatis"
+#define BINM_MAN "man"
+#define BINM_SOELIM "soelim"
+#define BINM_WHATIS "whatis"
 
 /* paths */
 #define MAN_CONF_FILE "/etc/man.conf"
