@@ -1,6 +1,6 @@
 cflags\
 	'-std=c99' -pedantic\
-	-Wall -Wextra -Wno-maybe-uninitialized\
+	-Wall -Wno-maybe-uninitialized -Wno-overflow\
 	-D _GNU_SOURCE\
 	-D '_XOPEN_SOURCE=700' \
 	-D '_FILE_OFFSET_BITS=64' \
