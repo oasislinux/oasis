@@ -1,0 +1,26 @@
+From f976df1b8ad1ed79f25d04eb7285e582690ad965 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Dec 2016 14:36:13 -0800
+Subject: [PATCH] setprogname: Explicitly discard const qualifier
+
+---
+ lib/libc/gen/setprogname.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/lib/libc/gen/setprogname.c b/lib/libc/gen/setprogname.c
+index ec3189fa699..173148ba8cf 100644
+--- a/lib/libc/gen/setprogname.c
++++ b/lib/libc/gen/setprogname.c
+@@ -25,7 +25,7 @@ setprogname(const char *progname)
+ 
+ 	tmpn = strrchr(progname, '/');
+ 	if (tmpn == NULL)
+-		__progname = progname;
++		__progname = (char *)progname;
+ 	else
+-		__progname = tmpn + 1;
++		__progname = (char *)tmpn + 1;
+ }
+-- 
+2.11.0
+

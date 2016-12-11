@@ -35,8 +35,7 @@ lib libmandoc.a -d core/zlib/headers\
 	preconv.c\
 	read.c\
 	\
-	compat_ohash.c\
-	compat_progname.c
+	compat_ohash.c
 
 exe mandoc\
 	main.c\

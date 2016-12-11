@@ -4,7 +4,7 @@
 #define HAVE_ERR 1
 #define HAVE_FTS 1
 #define HAVE_PLEDGE 0
-#define HAVE_PROGNAME 0
+#define HAVE_PROGNAME 1
 #define HAVE_REALLOCARRAY 1
 #define HAVE_REWB_BSD 0
 #define HAVE_REWB_SYSV 1

@@ -15,7 +15,7 @@ cc '$outdir'/lib/libc/crypt/arc4random.c '||' '$outdir'/lib/libc/crypt/^(arc4ran
 lib libbsd.a -d core/libressl/headers\
 	lib/libc/^(\
 		crypt/^(arc4random.c.o arc4random_uniform.c)\
-		gen/^(fts.c vis.c warnc.c vwarnc.c)\
+		gen/^(fts.c getprogname.c setprogname.c vis.c warnc.c vwarnc.c)\
 		stdlib/^(reallocarray.c strtonum.c)\
 		string/^(explicit_bzero.c strmode.c timingsafe_memcmp.c)\
 	)\
