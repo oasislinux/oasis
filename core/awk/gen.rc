@@ -1,4 +1,8 @@
-cflags '-std=c90' -I '$outdir' -I '$srcdir'
+cflags\
+	'-std=c90' \
+	-D '_POSIX_C_SOURCE=200809L' \
+	-I '$outdir' \
+	-I '$srcdir'
 
 yacc gram '$srcdir'/awkgram.y
 build '$outdir'/ytab.h copy '$outdir'/gram.tab.h
