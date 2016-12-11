@@ -1,6 +1,7 @@
 [submodule "core/awk/src"]
 	path = core/awk/src
 	url = https://github.com/onetrueawk/awk
+	ignore = all
 [submodule "core/curl/src"]
 	path = core/curl/src
 	url = https://github.com/curl/curl
