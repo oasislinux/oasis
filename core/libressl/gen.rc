@@ -1,4 +1,5 @@
 cflags\
+	-Wno-attributes\
 	-D LIBRESSL_INTERNAL\
 	-D OPENSSL_NO_HW_PADLOCK\
 	-D OPENSSL_NO_ASM\
