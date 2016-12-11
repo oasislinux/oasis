@@ -1,0 +1,23 @@
+From c35ccfd7b03be1770ba3894e2e97b7faf87b8634 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Dec 2016 13:28:47 -0800
+Subject: [PATCH] Include <u.h> before any other system headers
+
+Otherwise, the system headers may provide different values for feature test
+macros than we do in u.h.
+---
+ src/cmd/rc/io.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/cmd/rc/io.c b/src/cmd/rc/io.c
+index bb8af4ab..ac3b7585 100644
+--- a/src/cmd/rc/io.c
++++ b/src/cmd/rc/io.c
+@@ -1,3 +1,4 @@
++#include <u.h>
+ #include <limits.h>
+ #include "rc.h"
+ #include "exec.h"
+-- 
+2.11.0
+

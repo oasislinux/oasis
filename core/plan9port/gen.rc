@@ -355,7 +355,10 @@ lib libplumb.a src/libplumb/^(event.c fid.c mesg.c)
 
 # src/src/cmd/rc/mkfile:/^OFILES
 yacc rc/x '$srcdir'/src/cmd/rc/syn.y
-exe bin/rc -d '$outdir'/rc/x.tab.h '$outdir'/rc/x.tab.c src/cmd/rc/^(\
+# remove stdlib.h and string.h includes so that u.h comes first.
+build '$outdir'/rc/syn.c grep '$outdir'/rc/x.tab.c ; with\
+	expr '-F -x -v -e ''#include <stdlib.h>'' -e ''#include <string.h>'''
+exe bin/rc -d '$outdir'/rc/x.tab.h '$outdir'/rc/syn.c src/cmd/rc/^(\
 	code.c\
 	exec.c\
 	getflags.c\
