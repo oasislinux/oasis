@@ -26,7 +26,9 @@ for(hdr in $hdrs) {
 }
 phony headers '$outdir'/include/^($hdrs efivar-guids.h)
 
-lib libefiboot.a src/^(crc32.c creator.c disk.c gpt.c linux.c loadopt.c)
+lib libefiboot.a -d '$outdir'/include/efivar-guids.h src/^(\
+	crc32.c creator.c disk.c gpt.c linux.c loadopt.c\
+)
 lib libefivar.a -d '$outdir'/include/efivar-guids.h src/^(\
 	dp.c dp-acpi.c dp-hw.c dp-media.c dp-message.c\
 	efivarfs.c export.c guid.c guids.S.o\

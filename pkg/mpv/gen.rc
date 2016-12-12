@@ -59,6 +59,7 @@ if(grep -qF 'HAVE_ALSA 1' config.h) {
 if(grep -qF 'HAVE_DRM 1' config.h) {
 	cflags=($cflags '-isystem pkg/libdrm/'^(src src/include/drm))
 	libs=($libs libdrm/libdrm.a)
+	deps=($deps '$builddir'/pkg/libdrm/fetch.stamp)
 }
 if(grep -qF 'HAVE_LIBASS 1' config.h) {
 	cflags=($cflags -isystem '$builddir'/pkg/libass/include)
@@ -68,6 +69,7 @@ if(grep -qF 'HAVE_LIBASS 1' config.h) {
 if(grep -qF 'HAVE_LUA 1' config.h) {
 	cflags=($cflags -isystem pkg/lua/src/src)
 	libs=($libs lua/liblua.a)
+	deps=($deps '$builddir'/pkg/lua/fetch.stamp)
 }
 
 cflags $cflags

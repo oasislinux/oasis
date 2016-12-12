@@ -14,7 +14,7 @@ for(hdr in $hdrs) build '$outdir'/$hdr copy '$srcdir'/$hdr
 build '$outdir'/include/curl/curlbuild.h copy '$srcdir'/include/curl/curlbuild.h.dist
 phony headers '$outdir'/^($hdrs include/curl/curlbuild.h)
 
-phony deps pkg/^(libressl zlib)^/headers
+phony deps '$dir'/headers pkg/^(libressl zlib)^/headers
 
 # src/lib/Makefile.inc:/^CSOURCES
 lib libcurl.a -d '$dir'/deps lib/^(\
@@ -52,10 +52,10 @@ lib libcurl.a -d '$dir'/deps lib/^(\
 	zlib/libz.a\
 )
 
-build '$outdir'/tool_hugehelp.c.o cc '$dir'/tool_hugehelp.c '||' '$srcdir'/src/tool_hugehelp.h
+build '$outdir'/tool_hugehelp.c.o cc '$dir'/tool_hugehelp.c '||' '$dir'/deps '$srcdir'/src/tool_hugehelp.h
 
 # src/src/Makefile.inc:/^CURL_CFILES
-exe curl -d '$outdir'/include/curl/curlbuild.h\
+exe curl -d '$dir'/deps\
 	src/^(\
 		slist_wc.c\
 		tool_binmode.c\

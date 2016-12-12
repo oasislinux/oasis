@@ -9,8 +9,9 @@ build '$outdir'/include/event2/event-config.h\
 with expr '-f $srcdir/make-event-config.sed'
 
 phony headers '$outdir'/include/event2/event-config.h
+phony deps '$dir'/headers '$builddir'/pkg/openbsd/fetch.stamp
 
-lib libevent.a -d '$dir'/headers\
+lib libevent.a -d '$dir'/deps\
 	event.c evthread.c buffer.c \
 	bufferevent.c bufferevent_sock.c bufferevent_filter.c \
 	bufferevent_pair.c listener.c bufferevent_ratelim.c \

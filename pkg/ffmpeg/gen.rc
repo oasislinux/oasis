@@ -243,12 +243,12 @@ libs=(\
 	libswresample.a.d libswscale.a.d\
 )
 
-cc cmdutils.c
+cc cmdutils.c '||' '$dir'/deps
 
-exe ffprobe ffprobe.c cmdutils.c.o $libs
+exe ffprobe -d '$dir'/deps ffprobe.c cmdutils.c.o $libs
 file bin/ffprobe '$outdir'/ffprobe 755
 
-exe ffmpeg ffmpeg.c ffmpeg_opt.c ffmpeg_filter.c cmdutils.c.o $libs
+exe ffmpeg -d '$dir'/deps ffmpeg.c ffmpeg_opt.c ffmpeg_filter.c cmdutils.c.o $libs
 file bin/ffmpeg '$outdir'/ffmpeg 755
 
 fetch git

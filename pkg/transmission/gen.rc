@@ -144,7 +144,7 @@ file bin/transmission-remote '$outdir'/transmission-remote 755
 file share/man/man1/transmission-remote.1 '$srcdir'/daemon/transmission-remote.1 644
 
 for(tool in create edit show) {
-	exe transmission-$tool utils/$tool.c libtransmission.a.d
+	exe transmission-$tool -d '$dir'/deps utils/$tool.c libtransmission.a.d
 	file bin/transmission-$tool '$outdir'/transmission-$tool 755
 	file share/man/man1/transmission-$tool.1 '$srcdir'/utils/transmission-$tool.1 644
 }
