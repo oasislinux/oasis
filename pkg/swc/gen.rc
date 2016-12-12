@@ -1,0 +1,96 @@
+cflags\
+	-D _GNU_SOURCE\
+	-D 'screen_new=swc__screen_new' \
+	-D 'remove_resource=swc__remove_resource' \
+	-isystem pkg/fontconfig/src\
+	-isystem pkg/libdrm/src/include/drm\
+	-isystem pkg/libdrm/src\
+	-isystem pkg/libevdev/src\
+	-isystem pkg/libxkbcommon/src\
+	-isystem '$builddir'/pkg/pixman/include\
+	-isystem '$builddir'/pkg/wayland-protocols/include\
+	-isystem '$builddir'/pkg/wayland/include\
+	-isystem '$builddir'/pkg/wld/include\
+	-I '$outdir' \
+	-I '$outdir'/include\
+	-I '$srcdir'
+
+cc launch/protocol.c
+
+waylandproto protocol/swc.xml\
+	include/swc-^(client server)^-protocol.h swc-protocol.c
+
+build '$outdir'/include/swc.h copy '$srcdir'/libswc/swc.h
+phony headers '$outdir'/include/^(swc.h swc-^(client server)^-protocol.h)
+
+build '$outdir'/wayland-drm-server-protocol.h copy '$builddir'/pkg/wld/protocol/wayland-drm-server-protocol.h
+
+{
+	include 'toolchain/$host_toolchain.ninja'
+	exe convert_font cursor/convert_font.c
+} >tools.ninja
+subninja '$dir'/tools.ninja
+
+rule convert_font '$outdir/convert_font $in $out.tmp 2>/dev/null && mv $out.tmp $out'
+build '$outdir'/cursor/cursor_data.h convert_font '$srcdir'/cursor/cursor.pcf '|' '$outdir'/convert_font
+
+phony deps\
+	'$outdir'/^(\
+		wayland-drm-server-protocol.h\
+		include/swc-server-protocol.h\
+		cursor/cursor_data.h\
+	)\
+	'$builddir'/pkg/^(fontconfig libdrm libevdev libxkbcommon)^/fetch.stamp\
+	pkg/^(pixman wayland wayland-protocols wld)^/headers
+
+lib libswc.a -d '$dir'/deps\
+	libswc/^(\
+		bindings.c\
+		compositor.c\
+		cursor_plane.c\
+		data.c\
+		data_device.c\
+		data_device_manager.c\
+		drm.c\
+		evdev_device.c\
+		input.c\
+		keyboard.c\
+		launch.c\
+		mode.c\
+		output.c\
+		panel.c\
+		panel_manager.c\
+		pointer.c\
+		primary_plane.c\
+		region.c\
+		screen.c\
+		seat.c\
+		shell.c\
+		shell_surface.c\
+		shm.c\
+		subcompositor.c\
+		subsurface.c\
+		surface.c\
+		swc.c\
+		util.c\
+		view.c\
+		wayland_buffer.c\
+		window.c\
+		xdg_popup.c\
+		xdg_shell.c\
+		xdg_surface.c\
+	)\
+	launch/protocol.c.o\
+	swc-protocol.c.o\
+	'$builddir'/^(\
+		pkg/libevdev/libevdev.a\
+		pkg/libxkbcommon/libxkbcommon.a\
+		pkg/wayland-protocols/xdg-shell-unstable-v5-protocol.c.o\
+		pkg/wayland/libwayland-server.a.d\
+		pkg/wld/libwld.a.d\
+	)
+
+exe swc-launch launch/^(launch.c protocol.c.o) '$builddir'/pkg/libdrm/libdrm.a
+file bin/swc-launch '$outdir'/swc-launch 4755
+
+fetch git

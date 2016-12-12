@@ -1,0 +1,16 @@
+. ./sets.rc
+
+pkgs=$core
+
+fn fs {
+	switch($1) {
+	case $pkgs
+		! ~ $2 include/* lib/*.a
+	case *
+		false
+	}
+}
+
+# depends on your video card
+# config_video_drivers=intel
+# config_video_drivers=nouveau

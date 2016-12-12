@@ -1,0 +1,66 @@
+core=(\
+	awk\
+	bc\
+	bzip2\
+	curl\
+	e2fsprogs\
+	file\
+	git\
+	iproute2\
+	kbd\
+	libressl\
+	loksh\
+	mdocml\
+	musl\
+	ninja\
+	openbsd\
+	openssh\
+	perp\
+	pigz\
+	plan9port\
+	sbase\
+	sdhcp\
+	sinit\
+	skeleton\
+	tz\
+	ubase\
+	util-linux\
+	xz\
+)
+extra=(\
+	less\
+	libfuse\
+	ncurses\
+	the_silver_searcher\
+	unzip\
+	vis\
+)
+devel=(\
+	make\
+	qbe\
+	nasm\
+	scc\
+	mc\
+	man-pages-posix\
+)
+media=(\
+	alsa-utils\
+	ffmpeg\
+	mpv\
+	youtube-dl\
+)
+net=(\
+	hostap\
+	ii\
+	msmtp\
+	sshfs\
+	transmission\
+)
+desktop=(\
+	dmenu\
+	st\
+	swc\
+	terminus-font\
+	velox\
+	xkeyboard-config\
+)

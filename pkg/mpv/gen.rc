@@ -1,0 +1,81 @@
+cflags=(\
+	-isystem '$builddir'/pkg/ffmpeg/include\
+	-isystem '$builddir'/pkg/zlib/include\
+	-isystem pkg/ffmpeg/src\
+	-I '$dir' \
+	-I '$outdir' \
+	-I '$srcdir' \
+)
+
+srcs=(\
+	osdep/^(main-fn-unix.c terminal-unix.c timer-linux.c)\
+        ta/^(ta.c ta_talloc.c ta_utils.c)\
+	`{awk -f sources.awk 'sources=sources.txt' config.h}\
+)
+checkstatus
+
+libs=(\
+	ffmpeg/^(\
+		libavcodec.a.d\
+		libavdevice.a.d\
+		libavfilter.a.d\
+		libavformat.a.d\
+		libavutil.a\
+		libswresample.a.d\
+		libswscale.a.d\
+	)\
+	zlib/libz.a\
+)
+
+deps=('$outdir'/version.h pkg/^(zlib ffmpeg)^/headers)
+
+rule versionhdr 'sh $srcdir/version.sh --cwd=$srcdir --versionh=$out'
+build '$outdir'/version.h versionhdr '|' '$srcdir'/version.sh
+
+{
+	include 'toolchain/$host_toolchain.ninja'
+	set srcdir '$dir'
+	exe file2string file2string.c
+} >tools.ninja ; subninja tools.ninja
+
+rule file2string '$outdir/file2string $in >$out.tmp && mv $out.tmp $out'
+
+fn file2string {
+	build '$outdir'/$1 file2string '$srcdir'/$2 '|' '$outdir'/file2string
+	deps=($deps '$outdir'/$1)
+}
+
+file2string input/input_conf.h etc/input.conf
+file2string player/builtin_conf.inc etc/builtin.conf
+file2string sub/osd_font.h sub/osd_font.otf
+for(f in assdraw defaults options osc ytdl_hook)
+	file2string player/lua/$f.inc player/lua/$f.lua
+
+if(grep -qF 'HAVE_ALSA 1' config.h) {
+	cflags=($cflags -isystem '$builddir'/pkg/alsa-lib/include)
+	libs=($libs alsa-lib/libasound.a)
+	deps=($deps pkg/alsa-lib/headers)
+}
+if(grep -qF 'HAVE_DRM 1' config.h) {
+	cflags=($cflags '-isystem pkg/libdrm/'^(src src/include/drm))
+	libs=($libs libdrm/libdrm.a)
+}
+if(grep -qF 'HAVE_LIBASS 1' config.h) {
+	cflags=($cflags -isystem '$builddir'/pkg/libass/include)
+	libs=($libs libass/libass.a.d)
+	deps=($deps pkg/libass/headers)
+}
+if(grep -qF 'HAVE_LUA 1' config.h) {
+	cflags=($cflags -isystem pkg/lua/src/src)
+	libs=($libs lua/liblua.a)
+}
+
+cflags $cflags
+phony deps $deps
+
+exe mpv -d '$dir'/deps $srcs '$builddir'/pkg/$libs
+file bin/mpv '$outdir'/mpv 755
+file share/man/man1/mpv.1 '$srcdir'/DOCS/man/mpv.1 644
+
+gen_inputs='$dir'/^(sources.awk sources.txt config.h)
+fetch git

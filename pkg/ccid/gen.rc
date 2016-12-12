@@ -1,0 +1,31 @@
+version=1.4.24
+cflags\
+	-D HAVE_CONFIG_H\
+	-isystem '$builddir'/pkg/libusb/include\
+	-isystem '$builddir'/pkg/pcsc/include\
+	-I include\
+	-I '$dir' \
+	-I '$srcdir'/src\
+
+phony deps pkg/^(libusb pcsc)^/headers
+
+lib libccid.a -d '$dir'/deps src/^(\
+	ccid.c \
+	commands.c \
+	ifdhandler.c \
+	utils.c \
+	ccid_usb.c\
+	tokenparser.c\
+	towitoko/atr.c \
+	towitoko/pps.c \
+	openct/buffer.c \
+	openct/checksum.c \
+	openct/proto-t1.c \
+)
+
+build '$outdir'/Info.plist awk '$srcdir'/src/Info.plist.src\
+	'|' '$dir'/info_plist.awk '$srcdir'/readers/supported_readers.txt
+with expr '-f $dir/info_plist.awk -v readers=$srcdir/readers/supported_readers.txt target=libccid.a version='$version
+file lib/pcsc/drivers/ifd-ccid.bundle/Contents/Info.plist '$outdir'/Info.plist 644
+
+fetch git

@@ -1,0 +1,58 @@
+cflags\
+	-D HAVE_CONFIG_H\
+	-isystem '$builddir'/pkg/expat/include\
+	-isystem pkg/freetype/src/include\
+	-I include\
+	-I '$dir' \
+	-I '$outdir' \
+	-I '$srcdir'
+
+deps=(pkg/expat/headers '$builddir'/pkg/freetype/fetch.stamp)
+
+rule makealias '$srcdir/src/makealias $srcdir/src $out $in'
+fn makealias {
+	outs='$outdir'/^($1.h $1^tail.h)
+	deps=($deps $outs)
+	shift
+	build $"outs makealias '$srcdir'/$* '|' '$srcdir'/src/makealias
+}
+
+makealias fcalias fontconfig/^(fontconfig.h fcprivate.h) src/fcdeprecate.h
+makealias fcftalias fontconfig/fcfreetype.h
+
+phony deps $deps
+
+lib libfontconfig.a -d '$dir'/deps src/^(\
+	fcatomic.c\
+	fcblanks.c\
+	fccache.c\
+	fccfg.c\
+	fccharset.c\
+	fccompat.c\
+	fcdbg.c\
+	fcdefault.c\
+	fcdir.c\
+	fcformat.c\
+	fcfreetype.c\
+	fcfs.c\
+	fcinit.c\
+	fclang.c\
+	fclist.c\
+	fcmatch.c\
+	fcmatrix.c\
+	fcname.c\
+	fcobjs.c\
+	fcpat.c\
+	fcrange.c\
+	fcserialize.c\
+	fcstat.c\
+	fcstr.c\
+	fcweight.c\
+	fcxml.c\
+	ftglue.c\
+) '$builddir'/pkg/^(\
+	expat/libexpat.a\
+	freetype/libfreetype.a.d\
+)
+
+fetch git

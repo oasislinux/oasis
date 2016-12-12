@@ -1,0 +1,23 @@
+cflags\
+	-I '$outdir'/include\
+	-I '$srcdir'/include\
+	-I include\
+	-idirafter pkg/openbsd/src/sys
+
+build '$outdir'/include/event2/event-config.h\
+	sed '$dir'/config.h '|' '$srcdir'/make-event-config.sed
+with expr '-f $srcdir/make-event-config.sed'
+
+phony headers '$outdir'/include/event2/event-config.h
+
+lib libevent.a -d '$dir'/headers\
+	event.c evthread.c buffer.c \
+	bufferevent.c bufferevent_sock.c bufferevent_filter.c \
+	bufferevent_pair.c listener.c bufferevent_ratelim.c \
+	evmap.c log.c evutil.c evutil_rand.c strlcpy.c\
+	\
+	epoll.c signal.c\
+	\
+	event_tagging.c http.c evdns.c evrpc.c
+
+fetch git

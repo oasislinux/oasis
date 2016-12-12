@@ -1,15 +1,17 @@
 #!/bin/rc
 
-. ./config.rc
-
-flag e +
-
 fn usage {
 	echo 'usage: '$0' [dir]' >[1=2]
 	exit 2
 }
 
 if(! ~ $#* 0 1) usage
+
+if(! [ -f config.rc ])
+	cp config.def.rc config.rc
+. ./config.rc
+
+flag e +
 
 # call this after a command capture to ensure it succeeded
 fn checkstatus {}
@@ -29,6 +31,8 @@ fn subgen {
 }
 
 fn gen {
+	pkg=`{basename $1}
+	checkstatus
 	if(~ $dir '' .) dir=$1
 	if not dir=$dir/$1
 

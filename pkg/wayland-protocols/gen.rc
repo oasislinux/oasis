@@ -1,0 +1,10 @@
+cflags\
+	-I '$builddir'/pkg/wayland/include
+
+waylandproto unstable/xdg-shell/xdg-shell-unstable-v5.xml\
+	include/xdg-shell-unstable-v5-^(client server)^-protocol.h\
+	xdg-shell-unstable-v5-protocol.c
+
+phony headers '$outdir'/include/xdg-shell-unstable-v5-^(client server)^-protocol.h
+
+fetch git

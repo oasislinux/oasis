@@ -1,223 +1,223 @@
-[submodule "core/awk/src"]
-	path = core/awk/src
-	url = https://github.com/onetrueawk/awk
-	ignore = all
-[submodule "core/curl/src"]
-	path = core/curl/src
-	url = https://github.com/curl/curl
-[submodule "core/e2fsprogs/src"]
-	path = core/e2fsprogs/src
-	url = https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git
-[submodule "core/file/src"]
-	path = core/file/src
-	url = https://github.com/file/file
-[submodule "core/git/src"]
-	path = core/git/src
-	url = https://github.com/git/git
-	ignore = all
-[submodule "core/iproute2/src"]
-	path = core/iproute2/src
-	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
-	ignore = all
-[submodule "core/kbd/src"]
-	path = core/kbd/src
-	url = https://git.kernel.org/pub/scm/linux/kernel/git/legion/kbd.git
-	ignore = all
-[submodule "core/libressl/src"]
-	path = core/libressl/src
-	url = https://github.com/libressl-portable/openbsd
-	ignore = all
-[submodule "core/loksh/src"]
-	path = core/loksh/src
-	url = https://github.com/dimkr/loksh
-	ignore = all
-[submodule "core/ninja/src"]
-	path = core/ninja/src
-	url = https://github.com/ninja-build/ninja
-[submodule "core/openssh/src"]
-	path = core/openssh/src
-	url = https://github.com/openssh/openssh-portable
-[submodule "core/pigz/src"]
-	path = core/pigz/src
-	url = https://github.com/madler/pigz
-	ignore = all
-[submodule "core/plan9port/src"]
-	path = core/plan9port/src
-	url = https://github.com/9fans/plan9port
-	ignore = all
-[submodule "core/sbase/src"]
-	path = core/sbase/src
-	url = git://git.suckless.org/sbase
-	ignore = all
-[submodule "core/sdhcp/src"]
-	path = core/sdhcp/src
-	url = git://git.2f30.org/sdhcp
-	ignore = all
-[submodule "core/sinit/src"]
-	path = core/sinit/src
-	url = git://git.suckless.org/sinit
-[submodule "core/tz/src"]
-	path = core/tz/src
-	url = https://github.com/eggert/tz
-[submodule "core/ubase/src"]
-	path = core/ubase/src
-	url = git://git.suckless.org/ubase
-	ignore = all
-[submodule "core/util-linux/src"]
-	path = core/util-linux/src
-	url = https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
-[submodule "core/zlib/src"]
-	path = core/zlib/src
-	url = https://github.com/madler/zlib
-[submodule "core/xz/src"]
-	path = core/xz/src
-	url = http://git.tukaani.org/xz.git
-[submodule "desktop/dmenu/src"]
-	path = desktop/dmenu/src
-	url = git://git.suckless.org/dmenu
-	ignore = all
-[submodule "desktop/expat/src"]
-	path = desktop/expat/src
-	url = git://git.code.sf.net/p/expat/code_git
-[submodule "desktop/fontconfig/src"]
-	path = desktop/fontconfig/src
-	url = https://anongit.freedesktop.org/git/fontconfig
-	ignore = all
-[submodule "desktop/freetype/src"]
-	path = desktop/freetype/src
-	url = git://git.sv.nongnu.org/freetype/freetype2.git
-[submodule "desktop/libdrm/src"]
-	path = desktop/libdrm/src
-	url = https://cgit.freedesktop.org/mesa/drm
-[submodule "desktop/libevdev/src"]
-	path = desktop/libevdev/src
-	url = https://anongit.freedesktop.org/git/libevdev.git
-	ignore = all
-[submodule "desktop/libffi/src"]
-	path = desktop/libffi/src
-	url = https://github.com/libffi/libffi
-[submodule "desktop/libpciaccess/src"]
-	path = desktop/libpciaccess/src
-	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
-	ignore = all
-[submodule "desktop/libxkbcommon/src"]
-	path = desktop/libxkbcommon/src
-	url = https://github.com/xkbcommon/libxkbcommon
-	ignore = all
-[submodule "desktop/pixman/src"]
-	path = desktop/pixman/src
-	url = https://anongit.freedesktop.org/git/pixman.git
-[submodule "desktop/plan9fonts/src"]
-	path = desktop/plan9fonts/src
-	url = https://github.com/rtrn/plan9fonts
-[submodule "desktop/st/src"]
-	path = desktop/st/src
-	url = git://git.suckless.org/st
-	ignore = all
-[submodule "desktop/swc/src"]
-	path = desktop/swc/src
-	url = https://github.com/michaelforney/swc
-[submodule "desktop/velox/src"]
-	path = desktop/velox/src
-	url = https://github.com/michaelforney/velox
-[submodule "desktop/wayland/src"]
-	path = desktop/wayland/src
-	url = https://anongit.freedesktop.org/git/wayland/wayland.git
-	ignore = all
-[submodule "desktop/wayland-protocols/src"]
-	path = desktop/wayland-protocols/src
-	url = https://anongit.freedesktop.org/git/wayland/wayland-protocols.git
-[submodule "desktop/wld/src"]
-	path = desktop/wld/src
-	url = https://github.com/michaelforney/wld
-[submodule "desktop/xkeyboard-config/src"]
-	path = desktop/xkeyboard-config/src
-	url = https://anongit.freedesktop.org/git/xkeyboard-config.git
-[submodule "devel/make/src"]
-	path = devel/make/src
-	url = git://git.sv.gnu.org/make.git
-[submodule "devel/qbe/src"]
-	path = devel/qbe/src
-	url = git://c9x.me/qbe.git
-[submodule "extra/ccid/src"]
-	path = extra/ccid/src
-	url = https://anonscm.debian.org/git/pcsclite/CCID.git
-	ignore = all
-[submodule "extra/efibootmgr/src"]
-	path = extra/efibootmgr/src
-	url = https://github.com/rhinstaller/efibootmgr
-[submodule "extra/efivar/src"]
-	path = extra/efivar/src
-	url = https://github.com/rhinstaller/efivar
-	ignore = all
-[submodule "extra/fribidi/src"]
-	path = extra/fribidi/src
-	url = https://anongit.freedesktop.org/git/fribidi/fribidi.git
-[submodule "extra/hostap/src"]
-	path = extra/hostap/src
-	url = git://w1.fi/hostap.git
-	ignore = all
-[submodule "extra/ii/src"]
-	path = extra/ii/src
-	url = git://git.suckless.org/ii
-[submodule "extra/libevent/src"]
-	path = extra/libevent/src
-	url = https://github.com/libevent/libevent
-[submodule "extra/libfuse/src"]
-	path = extra/libfuse/src
-	url = https://github.com/libfuse/libfuse
-	ignore = all
-[submodule "extra/libnl/src"]
-	path = extra/libnl/src
-	url = https://github.com/thom311/libnl
-[submodule "extra/libusb/src"]
-	path = extra/libusb/src
-	url = https://github.com/libusb/libusb
-[submodule "extra/msmtp/src"]
-	path = extra/msmtp/src
-	url = git://git.code.sf.net/p/msmtp/code
-	ignore = all
-[submodule "extra/pcsc/src"]
-	path = extra/pcsc/src
-	url = https://anonscm.debian.org/git/pcsclite/PCSC.git
-	ignore = all
-[submodule "extra/sshfs/src"]
-	path = extra/sshfs/src
-	url = https://github.com/libfuse/sshfs
-	ignore = all
-[submodule "extra/the_silver_searcher/src"]
-	path = extra/the_silver_searcher/src
-	url = https://github.com/ggreer/the_silver_searcher
-[submodule "extra/vis/src"]
-	path = extra/vis/src
-	url = https://github.com/martanne/vis
-	ignore = all
-[submodule "lang/mc/src"]
-	path = lang/mc/src
-	url = https://github.com/oridb/mc
-[submodule "lang/scc/src"]
-	path = lang/scc/src
-	url = git://git.suckless.org/scc
-[submodule "media/alsa-lib/src"]
-	path = media/alsa-lib/src
+[submodule "pkg/alsa-lib/src"]
+	path = pkg/alsa-lib/src
 	url = git://git.alsa-project.org/alsa-lib.git
 	ignore = all
-[submodule "media/alsa-utils/src"]
-	path = media/alsa-utils/src
+[submodule "pkg/alsa-utils/src"]
+	path = pkg/alsa-utils/src
 	url = git://git.alsa-project.org/alsa-utils.git
 	ignore = all
-[submodule "media/ffmpeg/src"]
-	path = media/ffmpeg/src
+[submodule "pkg/awk/src"]
+	path = pkg/awk/src
+	url = https://github.com/onetrueawk/awk
+	ignore = all
+[submodule "pkg/ccid/src"]
+	path = pkg/ccid/src
+	url = https://anonscm.debian.org/git/pcsclite/CCID.git
+	ignore = all
+[submodule "pkg/curl/src"]
+	path = pkg/curl/src
+	url = https://github.com/curl/curl
+[submodule "pkg/dmenu/src"]
+	path = pkg/dmenu/src
+	url = git://git.suckless.org/dmenu
+	ignore = all
+[submodule "pkg/e2fsprogs/src"]
+	path = pkg/e2fsprogs/src
+	url = https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git
+[submodule "pkg/efibootmgr/src"]
+	path = pkg/efibootmgr/src
+	url = https://github.com/rhinstaller/efibootmgr
+[submodule "pkg/efivar/src"]
+	path = pkg/efivar/src
+	url = https://github.com/rhinstaller/efivar
+	ignore = all
+[submodule "pkg/expat/src"]
+	path = pkg/expat/src
+	url = git://git.code.sf.net/p/expat/code_git
+[submodule "pkg/ffmpeg/src"]
+	path = pkg/ffmpeg/src
 	url = https://git.ffmpeg.org/ffmpeg.git
 	ignore = all
-[submodule "media/libass/src"]
-	path = media/libass/src
+[submodule "pkg/file/src"]
+	path = pkg/file/src
+	url = https://github.com/file/file
+[submodule "pkg/fontconfig/src"]
+	path = pkg/fontconfig/src
+	url = https://anongit.freedesktop.org/git/fontconfig
+	ignore = all
+[submodule "pkg/freetype/src"]
+	path = pkg/freetype/src
+	url = git://git.sv.nongnu.org/freetype/freetype2.git
+[submodule "pkg/fribidi/src"]
+	path = pkg/fribidi/src
+	url = https://anongit.freedesktop.org/git/fribidi/fribidi.git
+[submodule "pkg/git/src"]
+	path = pkg/git/src
+	url = https://github.com/git/git
+	ignore = all
+[submodule "pkg/hostap/src"]
+	path = pkg/hostap/src
+	url = git://w1.fi/hostap.git
+	ignore = all
+[submodule "pkg/ii/src"]
+	path = pkg/ii/src
+	url = git://git.suckless.org/ii
+[submodule "pkg/iproute2/src"]
+	path = pkg/iproute2/src
+	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
+	ignore = all
+[submodule "pkg/kbd/src"]
+	path = pkg/kbd/src
+	url = https://git.kernel.org/pub/scm/linux/kernel/git/legion/kbd.git
+	ignore = all
+[submodule "pkg/libass/src"]
+	path = pkg/libass/src
 	url = https://github.com/libass/libass
-[submodule "media/mpv/src"]
-	path = media/mpv/src
+[submodule "pkg/libdrm/src"]
+	path = pkg/libdrm/src
+	url = https://cgit.freedesktop.org/mesa/drm
+[submodule "pkg/libevdev/src"]
+	path = pkg/libevdev/src
+	url = https://anongit.freedesktop.org/git/libevdev.git
+	ignore = all
+[submodule "pkg/libevent/src"]
+	path = pkg/libevent/src
+	url = https://github.com/libevent/libevent
+[submodule "pkg/libffi/src"]
+	path = pkg/libffi/src
+	url = https://github.com/libffi/libffi
+[submodule "pkg/libfuse/src"]
+	path = pkg/libfuse/src
+	url = https://github.com/libfuse/libfuse
+	ignore = all
+[submodule "pkg/libnl/src"]
+	path = pkg/libnl/src
+	url = https://github.com/thom311/libnl
+[submodule "pkg/libpciaccess/src"]
+	path = pkg/libpciaccess/src
+	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
+	ignore = all
+[submodule "pkg/libressl/src"]
+	path = pkg/libressl/src
+	url = https://github.com/libressl-portable/openbsd
+	ignore = all
+[submodule "pkg/libusb/src"]
+	path = pkg/libusb/src
+	url = https://github.com/libusb/libusb
+[submodule "pkg/libxkbcommon/src"]
+	path = pkg/libxkbcommon/src
+	url = https://github.com/xkbcommon/libxkbcommon
+	ignore = all
+[submodule "pkg/loksh/src"]
+	path = pkg/loksh/src
+	url = https://github.com/dimkr/loksh
+	ignore = all
+[submodule "pkg/make/src"]
+	path = pkg/make/src
+	url = git://git.sv.gnu.org/make.git
+[submodule "pkg/mc/src"]
+	path = pkg/mc/src
+	url = https://github.com/oridb/mc
+[submodule "pkg/mpv/src"]
+	path = pkg/mpv/src
 	url = https://github.com/mpv-player/mpv
 	ignore = all
-[submodule "media/youtube-dl/src"]
-	path = media/youtube-dl/src
+[submodule "pkg/msmtp/src"]
+	path = pkg/msmtp/src
+	url = git://git.code.sf.net/p/msmtp/code
+	ignore = all
+[submodule "pkg/ninja/src"]
+	path = pkg/ninja/src
+	url = https://github.com/ninja-build/ninja
+[submodule "pkg/openssh/src"]
+	path = pkg/openssh/src
+	url = https://github.com/openssh/openssh-portable
+[submodule "pkg/pcsc/src"]
+	path = pkg/pcsc/src
+	url = https://anonscm.debian.org/git/pcsclite/PCSC.git
+	ignore = all
+[submodule "pkg/pigz/src"]
+	path = pkg/pigz/src
+	url = https://github.com/madler/pigz
+	ignore = all
+[submodule "pkg/pixman/src"]
+	path = pkg/pixman/src
+	url = https://anongit.freedesktop.org/git/pixman.git
+[submodule "pkg/plan9fonts/src"]
+	path = pkg/plan9fonts/src
+	url = https://github.com/rtrn/plan9fonts
+[submodule "pkg/plan9port/src"]
+	path = pkg/plan9port/src
+	url = https://github.com/9fans/plan9port
+	ignore = all
+[submodule "pkg/qbe/src"]
+	path = pkg/qbe/src
+	url = git://c9x.me/qbe.git
+[submodule "pkg/sbase/src"]
+	path = pkg/sbase/src
+	url = git://git.suckless.org/sbase
+	ignore = all
+[submodule "pkg/scc/src"]
+	path = pkg/scc/src
+	url = git://git.suckless.org/scc
+[submodule "pkg/sdhcp/src"]
+	path = pkg/sdhcp/src
+	url = git://git.2f30.org/sdhcp
+	ignore = all
+[submodule "pkg/sinit/src"]
+	path = pkg/sinit/src
+	url = git://git.suckless.org/sinit
+[submodule "pkg/sshfs/src"]
+	path = pkg/sshfs/src
+	url = https://github.com/libfuse/sshfs
+	ignore = all
+[submodule "pkg/st/src"]
+	path = pkg/st/src
+	url = git://git.suckless.org/st
+	ignore = all
+[submodule "pkg/swc/src"]
+	path = pkg/swc/src
+	url = https://github.com/michaelforney/swc
+[submodule "pkg/the_silver_searcher/src"]
+	path = pkg/the_silver_searcher/src
+	url = https://github.com/ggreer/the_silver_searcher
+[submodule "pkg/tz/src"]
+	path = pkg/tz/src
+	url = https://github.com/eggert/tz
+[submodule "pkg/ubase/src"]
+	path = pkg/ubase/src
+	url = git://git.suckless.org/ubase
+	ignore = all
+[submodule "pkg/util-linux/src"]
+	path = pkg/util-linux/src
+	url = https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
+[submodule "pkg/velox/src"]
+	path = pkg/velox/src
+	url = https://github.com/michaelforney/velox
+[submodule "pkg/vis/src"]
+	path = pkg/vis/src
+	url = https://github.com/martanne/vis
+	ignore = all
+[submodule "pkg/wayland-protocols/src"]
+	path = pkg/wayland-protocols/src
+	url = https://anongit.freedesktop.org/git/wayland/wayland-protocols.git
+[submodule "pkg/wayland/src"]
+	path = pkg/wayland/src
+	url = https://anongit.freedesktop.org/git/wayland/wayland.git
+	ignore = all
+[submodule "pkg/wld/src"]
+	path = pkg/wld/src
+	url = https://github.com/michaelforney/wld
+[submodule "pkg/xkeyboard-config/src"]
+	path = pkg/xkeyboard-config/src
+	url = https://anongit.freedesktop.org/git/xkeyboard-config.git
+[submodule "pkg/xz/src"]
+	path = pkg/xz/src
+	url = http://git.tukaani.org/xz.git
+[submodule "pkg/youtube-dl/src"]
+	path = pkg/youtube-dl/src
 	url = https://github.com/rg3/youtube-dl
 	ignore = all
+[submodule "pkg/zlib/src"]
+	path = pkg/zlib/src
+	url = https://github.com/madler/zlib

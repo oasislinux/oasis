@@ -1,9 +1,0 @@
-cflags\
-	'-std=c99' -Wall\
-	-isystem '$builddir'/extra/ncurses/include
-
-lib libtermkey.a -d extra/ncurses/headers\
-	termkey.c driver-csi.c driver-ti.c\
-	'$builddir'/extra/ncurses/libncurses.a
-
-fetch curl

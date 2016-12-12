@@ -153,14 +153,14 @@ fn waylandproto {
 	build '$outdir'/$1 waylandproto $proto ; with type client-header
 	build '$outdir'/$2 waylandproto $proto ; with type server-header
 	build '$outdir'/$3 waylandproto $proto ; with type code
-	cc '$outdir'/$3 '||' desktop/wayland/headers
+	cc '$outdir'/$3 '||' pkg/wayland/headers
 }
 
 # packaging rules
 
 fn file {
 	~ $#* 3
-	if(fs $dir $1) {
+	if(~ $dir . util || fs $pkg $1) {
 		out='$builddir/$repo.hash'/$1
 		mode=`{printf %4s $3 | tr ' ' 0 | tail -c 4}
 		build $out githash $2 '|' '$builddir/$repo.stamp' scripts/hash.rc ; with\
@@ -174,13 +174,14 @@ fn file {
 
 fn dir {
 	~ $#* 2
-	if(fs $dir $1) tree_perms=($tree_perms '040'$2' '$1)
+	if(~ $dir . util || fs $pkg $1)
+		tree_perms=($tree_perms '040'$2' '$1)
 	status=()
 }
 
 fn sym {
 	~ $#* 2
-	if(fs $dir $1) {
+	if(~ $dir . util || fs $pkg $1) {
 		out='$builddir/$repo.hash'/$1
 		build $out githash '|' '$builddir/$repo.stamp' scripts/hash.rc ; with\
 			args 120000' '$1' '$2

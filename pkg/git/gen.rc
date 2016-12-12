@@ -1,0 +1,381 @@
+cflags\
+	-include '$dir'/config.h\
+	-isystem '$builddir'/pkg/curl/include\
+	-isystem '$builddir'/pkg/libressl/include\
+	-isystem '$builddir'/pkg/zlib/include\
+	-I '$srcdir' \
+	-I '$srcdir'/compat/regex\
+	-I '$outdir'
+
+rule cmdlist 'wd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$wd/$in >$$wd/$out.tmp && mv $$wd/$out.tmp $$wd/$out'
+build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/Documentation/`{grep -v '^#' commands.txt}
+
+phony deps '$outdir'/common-cmds.h pkg/^(curl libressl zlib)^/headers
+
+cc exec_cmd.c '||' '$dir'/deps ; with cflags '$cflags ''-DPREFIX=""'''
+cc common-main.c '||' '$dir'/deps
+cc compat/regex/regex.c '||' '$dir'/deps ; with cflags '$cflags -DGAWK -DNO_MBSUPPORT'
+
+# src/Makefile:/^LIB_OBJS.\+=
+lib libgit.a -d '$dir'/deps\
+	abspath.c\
+	advice.c\
+	alias.c\
+	alloc.c\
+	apply.c\
+	archive-tar.c\
+	archive-zip.c\
+	archive.c\
+	argv-array.c\
+	attr.c\
+	base85.c\
+	bisect.c\
+	blob.c\
+	branch.c\
+	bulk-checkin.c\
+	bundle.c\
+	cache-tree.c\
+	color.c\
+	column.c\
+	combine-diff.c\
+	commit.c\
+	compat/obstack.c\
+	compat/regex/regex.c.o\
+	compat/terminal.c\
+	config.c\
+	connect.c\
+	connected.c\
+	convert.c\
+	copy.c\
+	credential.c\
+	csum-file.c\
+	ctype.c\
+	date.c\
+	decorate.c\
+	diff-delta.c\
+	diff-lib.c\
+	diff-no-index.c\
+	diff.c\
+	diffcore-break.c\
+	diffcore-delta.c\
+	diffcore-order.c\
+	diffcore-pickaxe.c\
+	diffcore-rename.c\
+	dir.c\
+	dir-iterator.c\
+	editor.c\
+	entry.c\
+	environment.c\
+	ewah/bitmap.c\
+	ewah/ewah_bitmap.c\
+	ewah/ewah_io.c\
+	ewah/ewah_rlw.c\
+	exec_cmd.c.o\
+	fetch-pack.c\
+	fsck.c\
+	gettext.c\
+	gpg-interface.c\
+	graph.c\
+	grep.c\
+	hashmap.c\
+	help.c\
+	hex.c\
+	ident.c\
+	kwset.c\
+	levenshtein.c\
+	line-log.c\
+	line-range.c\
+	list-objects.c\
+	ll-merge.c\
+	lockfile.c\
+	log-tree.c\
+	mailinfo.c\
+	mailmap.c\
+	match-trees.c\
+	merge-blobs.c\
+	merge-recursive.c\
+	merge.c\
+	mergesort.c\
+	mru.c\
+	name-hash.c\
+	notes-cache.c\
+	notes-merge.c\
+	notes-utils.c\
+	notes.c\
+	object.c\
+	pack-bitmap-write.c\
+	pack-bitmap.c\
+	pack-check.c\
+	pack-objects.c\
+	pack-revindex.c\
+	pack-write.c\
+	pager.c\
+	parse-options-cb.c\
+	parse-options.c\
+	patch-delta.c\
+	patch-ids.c\
+	path.c\
+	pathspec.c\
+	pkt-line.c\
+	preload-index.c\
+	pretty.c\
+	prio-queue.c\
+	progress.c\
+	prompt.c\
+	quote.c\
+	reachable.c\
+	read-cache.c\
+	ref-filter.c\
+	reflog-walk.c\
+	refs.c\
+	refs/files-backend.c\
+	refs/iterator.c\
+	remote.c\
+	replace_object.c\
+	rerere.c\
+	resolve-undo.c\
+	revision.c\
+	run-command.c\
+	send-pack.c\
+	sequencer.c\
+	server-info.c\
+	setup.c\
+	sha1-array.c\
+	sha1-lookup.c\
+	sha1_file.c\
+	sha1_name.c\
+	shallow.c\
+	sideband.c\
+	sigchain.c\
+	split-index.c\
+	strbuf.c\
+	streaming.c\
+	string-list.c\
+	submodule-config.c\
+	submodule.c\
+	symlinks.c\
+	tag.c\
+	tempfile.c\
+	tmp-objdir.c\
+	trace.c\
+	trailer.c\
+	transport-helper.c\
+	transport.c\
+	tree-diff.c\
+	tree-walk.c\
+	tree.c\
+	unpack-trees.c\
+	url.c\
+	urlmatch.c\
+	usage.c\
+	userdiff.c\
+	utf8.c\
+	varint.c\
+	version.c\
+	versioncmp.c\
+	walker.c\
+	wildmatch.c\
+	worktree.c\
+	wrapper.c\
+	write_or_die.c\
+	ws.c\
+	wt-status.c\
+	xdiff-interface.c\
+	zlib.c\
+	\
+	thread-utils.c\
+	libxdiff.a\
+	'$builddir'/pkg/^(libressl/libcrypto.a.d zlib/libz.a)
+
+# src/Makefile:/^XDIFF_OBJS.\+=
+lib libxdiff.a xdiff/^(\
+	xdiffi.c\
+	xprepare.c\
+	xutils.c\
+	xemit.c\
+	xmerge.c\
+	xpatience.c\
+	xhistogram.c\
+)
+
+# src/Makefile:/^BUILTIN_OBJS.\+=
+exe git -d '$dir'/deps git.c common-main.c.o builtin/^(\
+	add.c\
+	am.c\
+	annotate.c\
+	apply.c\
+	archive.c\
+	bisect--helper.c\
+	blame.c\
+	branch.c\
+	bundle.c\
+	cat-file.c\
+	check-attr.c\
+	check-ignore.c\
+	check-mailmap.c\
+	check-ref-format.c\
+	checkout-index.c\
+	checkout.c\
+	clean.c\
+	clone.c\
+	column.c\
+	commit-tree.c\
+	commit.c\
+	config.c\
+	count-objects.c\
+	credential.c\
+	describe.c\
+	diff-files.c\
+	diff-index.c\
+	diff-tree.c\
+	diff.c\
+	fast-export.c\
+	fetch-pack.c\
+	fetch.c\
+	fmt-merge-msg.c\
+	for-each-ref.c\
+	fsck.c\
+	gc.c\
+	get-tar-commit-id.c\
+	grep.c\
+	hash-object.c\
+	help.c\
+	index-pack.c\
+	init-db.c\
+	interpret-trailers.c\
+	log.c\
+	ls-files.c\
+	ls-remote.c\
+	ls-tree.c\
+	mailinfo.c\
+	mailsplit.c\
+	merge.c\
+	merge-base.c\
+	merge-file.c\
+	merge-index.c\
+	merge-ours.c\
+	merge-recursive.c\
+	merge-tree.c\
+	mktag.c\
+	mktree.c\
+	mv.c\
+	name-rev.c\
+	notes.c\
+	pack-objects.c\
+	pack-redundant.c\
+	pack-refs.c\
+	patch-id.c\
+	prune-packed.c\
+	prune.c\
+	pull.c\
+	push.c\
+	read-tree.c\
+	receive-pack.c\
+	reflog.c\
+	remote.c\
+	remote-ext.c\
+	remote-fd.c\
+	repack.c\
+	replace.c\
+	rerere.c\
+	reset.c\
+	rev-list.c\
+	rev-parse.c\
+	revert.c\
+	rm.c\
+	send-pack.c\
+	shortlog.c\
+	show-branch.c\
+	show-ref.c\
+	stripspace.c\
+	submodule--helper.c\
+	symbolic-ref.c\
+	tag.c\
+	unpack-file.c\
+	unpack-objects.c\
+	update-index.c\
+	update-ref.c\
+	update-server-info.c\
+	upload-archive.c\
+	var.c\
+	verify-commit.c\
+	verify-pack.c\
+	verify-tag.c\
+	worktree.c\
+	write-tree.c\
+) libgit.a.d
+file bin/git '$outdir'/git 755
+
+fn x {
+	name=$1
+	shift
+	if(~ $#* 0) srcs=$name.c
+	if not srcs=$*
+	exe git-$name -d '$dir'/deps $srcs common-main.c.o libgit.a.d
+	file libexec/git-core/git-$name '$outdir'/git-$name 755
+}
+
+# src/Makefile:/^PROGRAM_OBJS./+=
+x credential-store
+x daemon
+x fast-import
+x http-backend
+x imap-send imap-send.c '$builddir'/pkg/libressl/libssl.a.d
+x sh-i18n--envsubst
+x shell
+x show-index
+x upload-pack
+# git-remote-testsvn is intentionally omitted.
+
+x remote-http remote-curl.c http.c http-walker.c '$builddir'/pkg/curl/libcurl.a.d
+for(remote in https ftp ftps) sym libexec/git-core/git-remote-$remote git-remote-http
+
+rule sh_gen 'sed -f $dir/sh_gen.sed $in >$out.tmp && mv $out.tmp $out'
+fn x {
+	name=$1
+	mode=$2
+	shift
+	build '$outdir'/git-$name sh_gen '$srcdir'/git-$name.sh '|' '$dir'/sh_gen.sed
+	file libexec/git-core/git-$name '$outdir'/git-$name $mode
+}
+
+# src/Makefile:/^SCRIPT_SH.\+=
+x bisect 755
+x difftool--helper 755
+x filter-branch 755
+x merge-octopus 755
+x merge-one-file 755
+x merge-resolve 755
+x mergetool 755
+x quiltimport 755
+x rebase 755
+x remote-testgit 755
+x request-pull 755
+x stash 755
+x submodule 755
+x web--browse 755
+
+# src/Makefile:/^SCRIPT_LIB.\+=
+x mergetool--lib 644
+x parse-remote 644
+x rebase--am 644
+x rebase--interactive 644
+x rebase--merge 644
+x sh-setup 644
+x sh-i18n 644
+
+for(exe in git-^(shell upload-pack))
+	sym bin/$exe ../libexec/git-core/$exe
+for(exe in git-^(receive-pack upload-archive))
+	sym bin/$exe git
+
+# templates
+dir share/git-core/templates/branches 755
+file share/git-core/templates/description '$srcdir'/templates/this--description 644
+file share/git-core/templates/info/exclude '$srcdir'/templates/info--exclude 644
+# Skip the sample hooks and install an empty directory instead.
+dir share/git-core/templates/hooks 755
+
+# TODO: Build and install man pages.
+
+fetch git

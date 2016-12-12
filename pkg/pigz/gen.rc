@@ -1,0 +1,12 @@
+cflags\
+	-Wall -Wextra\
+	-isystem '$builddir'/pkg/zlib/include
+
+exe pigz -d pkg/zlib/headers\
+	pigz.c yarn.c try.c\
+	zopfli/src/zopfli/^(deflate.c blocksplitter.c tree.c lz77.c cache.c hash.c util.c squeeze.c katajainen.c)\
+	'$builddir'/pkg/zlib/libz.a
+file bin/pigz '$outdir'/pigz 755
+for(alias in gzip gunzip zcat) sym bin/$alias pigz
+
+fetch git
