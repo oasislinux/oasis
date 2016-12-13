@@ -13,6 +13,9 @@ if(! [ -f config.rc ])
 
 flag e +
 
+if(! [ -f config.ninja ])
+	cp config.def.ninja config.ninja
+
 # call this after a command capture to ensure it succeeded
 fn checkstatus {}
 
