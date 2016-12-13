@@ -33,7 +33,7 @@ rule versionhdr 'sh $srcdir/version.sh --cwd=$srcdir --versionh=$out'
 build '$outdir'/version.h versionhdr '|' '$srcdir'/version.sh
 
 {
-	include 'toolchain/$host_toolchain.ninja'
+	toolchain host
 	set srcdir '$dir'
 	exe file2string file2string.c
 } >tools.ninja ; subninja tools.ninja

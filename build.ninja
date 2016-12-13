@@ -1,7 +1,14 @@
 builddir = out
 
-toolchain = default
-host_toolchain = default
+target_toolchain = default
+target_cflags = -O2 -pipe
+target_cxxflags = $cflags
+target_ldflags = -s -static
+
+host_toolchain = $target_toolchain
+host_cflags = $target_cflags
+host_cxxflags = $target_cxxflags
+host_ldflags = $target_ldflags
 
 lex = lex
 perl = perl
@@ -15,9 +22,6 @@ repo_branch = master
 
 include config.ninja
 include rules.ninja
-
-include toolchain/$toolchain.ninja
-
 include local.ninja
 
 build build.ninja: phony ninja

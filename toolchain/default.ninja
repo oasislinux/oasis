@@ -2,7 +2,3 @@ ar = ar
 as = as
 cc = cc
 cxx = c++
-
-cflags = -O2 -pipe
-cxxflags = $cflags
-ldflags = -static -s

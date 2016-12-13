@@ -8,7 +8,7 @@ cflags\
 	-I '$srcdir'/src/include/efivar
 
 {
-	include 'toolchain/$host_toolchain.ninja'
+	toolchain host
 	cflags\
 		-D EFIVAR_BUILD_ENVIRONMENT\
 		-I '$srcdir'/src/include/efivar

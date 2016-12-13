@@ -44,7 +44,7 @@ build '$outdir'/include/uuid/uuid.h copy '$srcdir'/lib/uuid/uuid.h.in
 build '$outdir'/internal/blkid/blkid_types.h copy '$dir'/blkid_types.h
 
 {
-	include 'toolchain/$host_toolchain.ninja'
+	toolchain host
 	exe gen_crc32ctable lib/ext2fs/gen_crc32ctable.c
 } >tools.ninja ; subninja tools.ninja
 rule gen_crc32ctable '$outdir/gen_crc32ctable >$out.tmp && mv $out.tmp $out'

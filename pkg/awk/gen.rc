@@ -8,7 +8,7 @@ yacc gram '$srcdir'/awkgram.y
 build '$outdir'/ytab.h copy '$outdir'/gram.tab.h
 
 {
-	include 'toolchain/$host_toolchain.ninja'
+	toolchain host
 	cflags -I '$outdir'
 	exe maketab -d '$outdir'/ytab.h maketab.c
 } >tools.ninja ; subninja tools.ninja

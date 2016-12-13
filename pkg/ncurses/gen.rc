@@ -10,7 +10,7 @@ set common_cflags\
 cflags '$common_cflags'
 
 {
-	include 'toolchain/$host_toolchain.ninja'
+	toolchain host
 	cflags '$common_cflags' -D USE_BUILD_CC
 	exe make_keys -d '$outdir/names.c $outdir/include/curses.h $outdir/include/ncurses_dll.h' ncurses/tinfo/make_keys.c
 	exe make_hash -d '$outdir/hashsize.h $outdir/include/curses.h' ncurses/tinfo/make_hash.c

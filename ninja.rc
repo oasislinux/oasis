@@ -43,6 +43,13 @@ fn build {
 
 # higher-level rules
 
+fn toolchain {
+	set cflags '$'$1^_cflags
+	set cxxflags '$'$1^_cxxflags
+	set ldflags '$'$1^_ldflags
+	include 'toolchain/$'$1'_toolchain.ninja'
+}
+
 fn phony {
 	name=$1 {
 		shift
