@@ -1,4 +1,4 @@
-From 26ae3ca3f65a72f980c4e7821944c796be0494a7 Mon Sep 17 00:00:00 2001
+From bcadf970c7f63973b5a765dcf817da932f29301a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 25 Apr 2015 17:37:46 +0000
 Subject: [PATCH] Remove redundant linux/in{,6}.h includes
@@ -11,7 +11,7 @@ Subject: [PATCH] Remove redundant linux/in{,6}.h includes
  4 files changed, 6 deletions(-)
 
 diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
-index d9c76fe..016b4cc 100644
+index b7393dd..a7028ab 100644
 --- a/include/linux/if_bridge.h
 +++ b/include/linux/if_bridge.h
 @@ -15,7 +15,6 @@
@@ -23,7 +23,7 @@ index d9c76fe..016b4cc 100644
  #define SYSFS_BRIDGE_ATTR	"bridge"
  #define SYSFS_BRIDGE_FDB	"brforward"
 diff --git a/include/linux/if_tunnel.h b/include/linux/if_tunnel.h
-index 24aa175..19d557d 100644
+index 4f975f5..2680646 100644
 --- a/include/linux/if_tunnel.h
 +++ b/include/linux/if_tunnel.h
 @@ -2,9 +2,7 @@
@@ -50,7 +50,7 @@ index b71b4c9..3e4e6ae 100644
  /* Responses from hook functions. */
  #define NF_DROP 0
 diff --git a/include/linux/xfrm.h b/include/linux/xfrm.h
-index d09be24..237e9ad 100644
+index d2dd1fd..8c72966 100644
 --- a/include/linux/xfrm.h
 +++ b/include/linux/xfrm.h
 @@ -1,7 +1,6 @@
@@ -62,5 +62,5 @@ index d09be24..237e9ad 100644
  
  /* All of the structures in this file may not change size as they are
 -- 
-2.10.0
+2.11.0
 
