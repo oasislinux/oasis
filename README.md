@@ -44,6 +44,3 @@ up from the following:
 * [tz](https://www.iana.org/time-zones)
 * util-linux (for fdisk)
 * [xz](http://tukaani.org/xz/)
-
-Several other projects can be built in the `desktop`, `devel`, `extra`, `lang`
-and `media` directories.
