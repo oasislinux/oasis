@@ -17,6 +17,9 @@ rule link
 rule ar
   command = rm -f $out && $ar crs $out $in
 
+rule objcopy
+  command = $objcopy $objcopyflags $in $out
+
 rule lines
   command = ln -f $rspfile $out
   rspfile = $out.tmp

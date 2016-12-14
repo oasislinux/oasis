@@ -22,6 +22,10 @@ for(hdr in asoundlib.h version.h)
 	build '$outdir'/include/alsa/$hdr copy '$dir'/alsa/$hdr
 phony headers '$outdir'/include/alsa/^($hdrs asoundlib.h version.h)
 
+cc src/pcm/pcm.c
+build '$outdir'/src/pcm/pcm.nowarn.c.o objcopy '$outdir'/src/pcm/pcm.c.o ; with\
+	objcopyflags '-R .gnu.warning.snd_pcm_hwsync'
+
 lib libasound.a src/^(\
 	conf.c confmisc.c input.c output.c async.c error.c dlmisc.c socket.c shmarea.c userfile.c names.c\
 	control/^(\
@@ -34,7 +38,7 @@ lib libasound.a src/^(\
 	mixer/^(bag.c mixer.c simple.c simple_none.c)\
 	pcm/^(\
 		mask.c interval.c\
-		pcm.c pcm_params.c pcm_simple.c\
+		pcm.nowarn.c.o pcm_params.c pcm_simple.c\
 		pcm_hw.c pcm_misc.c pcm_mmap.c pcm_symbols.c\
 		pcm_generic.c pcm_plugin.c\
 		pcm_copy.c\
