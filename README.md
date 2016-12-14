@@ -31,7 +31,6 @@ up from the following:
 * [bc](https://www.gnu.org/software/bc/)
 * [curl](https://curl.haxx.se/)
 * [e2fsprogs](http://e2fsprogs.sourceforge.net/)
-* [file](https://www.darwinsys.com/file/)
 * [git](https://git-scm.com/)
 * [iproute2](http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2)
 * [kbd](http://kbd-project.org/)

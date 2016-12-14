@@ -4,7 +4,6 @@ core=(\
 	bzip2\
 	curl\
 	e2fsprogs\
-	file\
 	git\
 	iproute2\
 	kbd\
@@ -28,6 +27,7 @@ core=(\
 	xz\
 )
 extra=(\
+	file\
 	less\
 	libfuse\
 	ncurses\
