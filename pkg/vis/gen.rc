@@ -2,7 +2,7 @@ version=v0.2-539-g37d98f3
 cflags\
 	'-std=c99' \
 	-D 'CONFIG_LUA=1' \
-	-D 'CONFIG_LUA_STATIC=1' \
+	-D 'CONFIG_LPEG=1' \
 	-D '_POSIX_C_SOURCE=200809L' \
 	-D '_XOPEN_SOURCE=700' \
 	-D 'VERSION=''"'$version'"''' \
