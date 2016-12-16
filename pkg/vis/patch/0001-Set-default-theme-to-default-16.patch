@@ -1,0 +1,25 @@
+From 96c37c8e8b2b3be1620033e44ead62f1c8c953cb Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 18 Nov 2016 21:53:25 -0800
+Subject: [PATCH] Set default theme to default-16
+
+---
+ lua/vis-std.lua | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lua/vis-std.lua b/lua/vis-std.lua
+index ff5469a..d3a8760 100644
+--- a/lua/vis-std.lua
++++ b/lua/vis-std.lua
+@@ -19,7 +19,7 @@ vis.events.subscribe(vis.events.INIT, function()
+ 		vis.lexers = require('lexer')
+ 	end
+ 
+-	vis:command("set theme ".. (vis.ui.colors <= 16 and "default-16" or "default-256"))
++	vis:command("set theme default-16")
+ end)
+ 
+ vis.events.subscribe(vis.events.THEME_CHANGE, function(name)
+-- 
+2.11.0
+
