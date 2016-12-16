@@ -37,7 +37,7 @@ for(arch in $archs) {
 		file bin/scc '$outdir'/scc 755
 	}
 
-	hdrs=($hdrs $arch/^(assert.h ctype.h errno.h signal.h stdio.h stdlib.h string.h))
+	hdrs=($hdrs $arch/^(assert.h ctype.h errno.h signal.h stdint.h stdio.h stdlib.h string.h))
 }
 if(~ amd64-sysv $archs)
 	hdrs=($hdrs amd64-sysv/stdarg.h)
