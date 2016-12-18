@@ -92,3 +92,9 @@ rule fetchgit
   restat = 1
   generator = 1
   pool = console
+
+rule fetchlocal
+  command = rc ./$dir/fetch.rc $dir $args && touch $out
+  restat = 1
+  generator = 1
+  pool = console
