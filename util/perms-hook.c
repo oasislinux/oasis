@@ -4,6 +4,9 @@ See LICENSE file for copyright and license details.
 This program is meant to be run by a git hook to fix the permissions of files
 based on a .perms file in the repository
 
+It can also be run with the -d flag on any directory containing .perms in order
+to apply the permissions specified by that file.
+
 Security considerations:
 If the repository previously contained a world or group readable directory which
 has become secret, the names of the new files in that directory will become
@@ -39,6 +42,7 @@ struct special {
 
 extern char **environ;
 
+static char *prog;
 static dev_t rootdev;
 static int rootfd = AT_FDCWD;
 static struct special oldsp, newsp;
@@ -103,20 +107,12 @@ spawn(char **argv, pid_t *pid)
 }
 
 static void
-readspecial(struct special *sp, const char *rev)
+readspecial(struct special *sp, FILE *f)
 {
-	char object[41 + sizeof(PERMS_FILE)];
-	char *argv[] = {"git", "show", object, 0};
-	FILE *f;
-	pid_t pid;
 	char *line = NULL, *s, *mode;
 	size_t size = 0;
 	ssize_t n;
-	int st;
 
-	if (snprintf(object, sizeof(object), "%s:%s", rev, PERMS_FILE) >= (int)sizeof(object))
-		die("revision is too large: %s", rev);
-	f = spawn(argv, &pid);
 	while ((n = getline(&line, &size, f)) >= 0) {
 		if (line[n-1] == '\n')
 			line[--n] = '\0';
@@ -137,6 +133,21 @@ readspecial(struct special *sp, const char *rev)
 			die("invalid mode: %s", mode);
 		++sp->len;
 	}
+}
+
+static void
+gitspecial(struct special *sp, const char *rev)
+{
+	char object[41 + sizeof(PERMS_FILE)];
+	char *argv[] = {"git", "show", object, 0};
+	FILE *f;
+	pid_t pid;
+	int st;
+
+	if (snprintf(object, sizeof(object), "%s:%s", rev, PERMS_FILE) >= (int)sizeof(object))
+		die("revision is too large: %s", rev);
+	f = spawn(argv, &pid);
+	readspecial(sp, f);
 	fclose(f);
 
 	if (waitpid(pid, &st, 0) < 0)
@@ -279,7 +290,20 @@ setperm(const char *name)
 }
 
 static void
-readchanges(char *old, char *new)
+setroot(const char *root)
+{
+	struct stat st;
+
+	rootfd = open(root, O_RDONLY);
+	if (rootfd < 0)
+		die("open %s:", root);
+	if (fstat(rootfd, &st) < 0)
+		die("fstat:", root);
+	rootdev = st.st_dev;
+}
+
+static void
+gitupdate(char *old, char *new)
 {
 	char *argv_diff[] = {"git", "diff", "--name-only", "-z", old, new, 0};
 	char *argv_new[] = {"git", "ls-tree", "--name-only", "--full-tree", "-z", "-r", new, 0};
@@ -291,9 +315,16 @@ readchanges(char *old, char *new)
 	} lines[2] = {0};
 	ssize_t n;
 	int cur = 0, st;
-	char *path, *diff, *s;
+	char *root, *path, *diff, *s;
+
+	root = getenv("GIT_WORK_TREE");
+	setroot(root ? root : ".");
+	if (old)
+		gitspecial(&oldsp, old);
+	gitspecial(&newsp, new);
 
 	f = spawn(old ? argv_diff : argv_new, &pid);
+	umask(0);
 	while ((n = getdelim(&lines[cur].buf, &lines[cur].size, '\0', f)) >= 0) {
 		path = lines[cur].buf;
 		if (strcmp(path, PERMS_FILE) == 0) {
@@ -331,48 +362,75 @@ readchanges(char *old, char *new)
 		die("child process failed");
 }
 
+static void
+applyspecial(void)
+{
+	int fd;
+	FILE *f;
+
+	fd = openat(rootfd, ".perms", O_RDONLY);
+	if (fd < 0)
+		die("open .perms:");
+	f = fdopen(fd, "r");
+	if (!f)
+		die("fdopen:");
+	readspecial(&newsp, f);
+	fclose(f);
+	umask(0);
+	specialperms();
+}
+
+static void
+usage()
+{
+	fprintf(stderr, "usage: %s [[old] new] | %s -d dir\n", prog, prog);
+	exit(2);
+}
+
 int
 main(int argc, char *argv[])
 {
-	char *prog, *old, *new, *tree;
-	struct stat st;
+	int dflag = 0;
+	char *old, *new;
 
 	prog = basename(argv[0]);
+	for (++argv, --argc; argc && (*argv)[0] == '-' && (*argv)[1]; ++argv, --argc) {
+		switch ((*argv)[1]) {
+		case 'd':
+			if (!*++argv)
+				usage();
+			--argc;
+			setroot(*argv);
+			dflag = 1;
+			break;
+		default:
+			usage();
+		}
+	}
+
+	if (dflag) {
+		if (argc)
+			usage();
+		applyspecial();
+		return status;
+	}
+
 	switch (argc) {
-	case 1:
+	case 0:
 		old = NULL;
 		new = "HEAD";
 		break;
-	case 2:
+	case 1:
 		old = NULL;
+		new = argv[0];
+		break;
+	case 2:
+		old = argv[0];
 		new = argv[1];
 		break;
-	case 3:
-		old = argv[1];
-		new = argv[2];
-		break;
 	default:
-		fprintf(stderr, "usage: %s [[old] new]\n", prog);
-		exit(2);
+		usage();
 	}
-
-	if (!getenv("GIT_DIR") && stat(".git", &st) < 0)
-		die("stat .git:");
-	tree = getenv("GIT_WORK_TREE");
-	if (!tree)
-		tree = ".";
-	rootfd = open(tree, O_RDONLY);
-	if (rootfd < 0)
-		die("open %s:", tree);
-	if (fstat(rootfd, &st) < 0)
-		die("fstat:", tree);
-	rootdev = st.st_dev;
-
-	if (old)
-		readspecial(&oldsp, old);
-	readspecial(&newsp, new);
-	umask(0);
-	readchanges(old, new);
-
+	gitupdate(old, new);
 	return status;
 }
