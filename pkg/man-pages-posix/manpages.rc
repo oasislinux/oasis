@@ -23,7 +23,7 @@ pages=()
 for(d in man?p) {
 	mkdir -p $wd/$outdir/$d
 	for(f in $d/*) if(fs man-pages-posix share/man/$f.gz) {
-		gzip -c -9 -n $f > $wd/$outdir/$f.gz
+		gzip -c -9 -n < $f > $wd/$outdir/$f.gz
 		pages=($pages $f)
 	}
 }

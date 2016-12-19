@@ -45,7 +45,7 @@ rule mergeperms
   command = sort -k 2 -m $in >$out.tmp && mv $out.tmp $out
 
 rule gzip
-  command = gzip -c -9 -n $in >$out.tmp && mv $out.tmp $out
+  command = gzip -c -9 -n <$in >$out.tmp && mv $out.tmp $out
 
 rule yacc
   command = oldcwd=$$PWD && cd $outdir && $yacc $yaccflags $$oldcwd/$in
