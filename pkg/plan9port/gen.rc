@@ -377,6 +377,7 @@ exe bin/rc -d '$outdir'/rc/x.tab.h '$outdir'/rc/syn.c src/cmd/rc/^(\
 	unixcrap.c\
 	var.c\
 ) lib9.a
+file bin/rc '$outdir'/bin/rc 755
 
 # src/src/cmd/sam/mkfile:/^OFILES
 exe bin/sam src/cmd/sam/^(\
@@ -401,11 +402,9 @@ exe bin/sam src/cmd/sam/^(\
 	util.c\
 	xec.c\
 ) libplumb.a lib9.a
+file bin/sam '$outdir'/bin/sam 755
 
-for(exe in rc sam) {
-	file bin/$exe '$outdir'/bin/$exe 755
-	file share/man/man1/$exe.1 '$srcdir'/man/man1/$exe.1 644
-}
+man -d man man1/^(rc.1 sam.1)
 
 file lib/rcmain '$srcdir'/rcmain 644
 

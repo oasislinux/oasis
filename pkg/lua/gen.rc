@@ -13,6 +13,6 @@ lib liblua.a src/^(\
 
 exe lua src/lua.c liblua.a
 file bin/lua '$outdir'/lua 755
-file share/man/man1/lua.1 '$srcdir'/doc/lua.1 644
+man -d doc 1 lua.1
 
 fetch curl

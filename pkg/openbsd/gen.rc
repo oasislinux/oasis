@@ -24,17 +24,17 @@ lib libbsd.a -d pkg/libressl/headers\
 # diff
 exe diff usr.bin/diff/^(diff.c diffdir.c diffreg.c xmalloc.c) libbsd.a
 file bin/diff '$outdir'/diff 755
-file share/man/man1/diff.1 '$srcdir'/usr.bin/diff/diff.1 644
+man -d usr.bin/diff 1 diff.1
 
 # fmt
 exe fmt usr.bin/fmt/fmt.c
 file bin/fmt '$outdir'/fmt 755
-file share/man/man1/fmt.1 '$srcdir'/usr.bin/fmt/fmt.1 644
+man -d usr.bin/fmt 1 fmt.1
 
 # patch
 exe patch usr.bin/patch/^(patch.c pch.c inp.c util.c backupfile.c mkpath.c ed.c) libbsd.a
 file bin/patch '$outdir'/patch 755
-file share/man/man1/patch.1 '$srcdir'/usr.bin/patch/patch.1 644
+man -d usr.bin/patch 1 patch.1
 
 # pax
 exe pax bin/pax/^(\
@@ -44,7 +44,7 @@ exe pax bin/pax/^(\
 ) libbsd.a
 file bin/pax '$outdir'/pax 755
 for(alias in tar cpio) sym bin/$alias pax
-for(man in pax tar cpio) file share/man/man1/$man.1 '$srcdir'/bin/pax/$man.1 644
+man -d bin/pax 1 pax.1 tar.1 cpio.1
 
 # yacc
 exe yacc usr.bin/yacc/^(\
@@ -52,7 +52,7 @@ exe yacc usr.bin/yacc/^(\
 	skeleton.c symtab.c verbose.c warshall.c\
 ) libbsd.a
 file bin/yacc '$outdir'/yacc 755
-file share/man/man1/yacc.1 '$srcdir'/usr.bin/yacc/yacc.1 644
+man -d usr.bin/yacc 1 yacc.1
 
 srcpats=./^(\
 	bin/pax\

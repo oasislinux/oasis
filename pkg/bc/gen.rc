@@ -7,6 +7,6 @@ cflags\
 lib libbc.a lib/number.c
 exe bin/bc bc/^(main.c bc.c scan.c execute.c load.c storage.c util.c global.c warranty.c) libbc.a
 file bin/bc '$outdir'/bin/bc 755
-file share/man/man1/bc.1 '$srcdir'/doc/bc.1 644
+man -d doc 1 bc.1
 
 fetch curl

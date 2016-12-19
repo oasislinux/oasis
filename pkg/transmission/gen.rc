@@ -137,16 +137,16 @@ lib libdht.a third-party/dht/dht.c
 
 exe transmission-daemon -d '$dir'/deps daemon/^(daemon.c daemon-posix.c) libtransmission.a.d
 file bin/transmission-daemon '$outdir'/transmission-daemon 755
-file share/man/man1/transmission-daemon.1 '$srcdir'/daemon/transmission-daemon.1 644
+man -d daemon 1 transmission-daemon.1
 
 exe transmission-remote -d '$dir'/deps daemon/remote.c libtransmission.a.d
 file bin/transmission-remote '$outdir'/transmission-remote 755
-file share/man/man1/transmission-remote.1 '$srcdir'/daemon/transmission-remote.1 644
+man -d daemon 1 transmission-remote.1
 
 for(tool in create edit show) {
 	exe transmission-$tool -d '$dir'/deps utils/$tool.c libtransmission.a.d
 	file bin/transmission-$tool '$outdir'/transmission-$tool 755
-	file share/man/man1/transmission-$tool.1 '$srcdir'/utils/transmission-$tool.1 644
+	man -d utils 1 transmission-$tool.1
 }
 
 fetch curl

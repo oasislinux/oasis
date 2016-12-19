@@ -24,6 +24,6 @@ exe msmtp -d pkg/libressl/headers src/^(\
 ) '$builddir'/pkg/libressl/^(libssl.a.d libcrypto.a.d)
 
 file bin/msmtp '$outdir'/msmtp 755
-file share/man/man1/msmtp.1 '$srcdir'/doc/msmtp.1 644
+man -d doc 1 msmtp.1
 
 fetch git

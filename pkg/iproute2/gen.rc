@@ -42,11 +42,11 @@ man=(\
                 addrlabel fou gue l2tp macsec maddress monitor mroute neighbour\
                 netconf netns ntable rule tcp_metrics token tunnel xfrm\
 	)\
-) for(man in man/man8/$man.8) file share/$man '$srcdir'/$man 644
+) man -d man man8/$man.8
 for(man in ip-address ip-link ip-route) {
 	build '$outdir'/$man.8 sed '$srcdir'/man/man8/$man.8.in ; with\
 		expr s,@SYSCONFDIR@,/etc,g
-	file share/man/man8/$man.8 '$outdir'/$man.8 644
+	man -d '$outdir' 8 $man.8
 }
 
 fetch git

@@ -41,10 +41,11 @@ fn x {
 		sect=`{printf %s $sect | cut -c -1}
 		build '$outdir'/$exe.$sect sed '$srcdir'/docs/man/man$sect/$exe.$sect.in ; with\
 			expr s,@DATADIR@,/share/kbd,g
-		man='$outdir'/$exe.$sect
+		subdir='$outdir'
 	}
-	if not man='$srcdir'/docs/man/man$sect/$exe.$sect
-	if(~ $sect [18]) file share/man/man$sect/$exe.$sect $man 644
+	if not subdir=docs/man/man$sect
+	if(~ $sect [18])
+		man -d $subdir $sect $exe.$sect
 	status=()
 }
 

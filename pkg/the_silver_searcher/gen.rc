@@ -9,6 +9,6 @@ exe ag -d pkg/pcre/headers src/^(\
         util.c decompress.c main.c\
 ) '$builddir'/pkg/pcre/libpcre.a
 file bin/ag '$outdir'/ag 755
-file share/man/man1/ag.1 '$srcdir'/doc/ag.1 644
+man -d doc 1 ag.1
 
 fetch git

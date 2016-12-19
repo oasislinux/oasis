@@ -134,7 +134,7 @@ exe xz src/^(\
 ) liblzma.a
 
 file bin/xz '$outdir'/xz 755
-file share/man/man1/xz.1 '$srcdir'/src/xz/xz.1 644
+man -d src/xz 1 xz.1
 for(alias in unxz xzcat) sym bin/$alias xz
 
 fetch git

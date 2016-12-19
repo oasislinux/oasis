@@ -63,7 +63,7 @@ fn x {
 	shift 2
 	exe $exe $subdir/$* libasagna.a
 	if(! ~ $exe cat*)
-		file share/man/man8/$exe.8 '$srcdir'/$subdir/man/$exe.8 644
+		man -d $subdir/man 8 $exe.8
 	file bin/$exe '$outdir'/$exe 755
 }
 
@@ -79,8 +79,7 @@ tools=(\
 	cat^(args env limits uid)\
 ) for(exe in $tools) x runtools $exe $exe.c
 
-file share/man/man5/perpetrate.5 '$srcdir'/perp/man/perpetrate.5 644
-file share/man/man8/perp_intro.8 '$srcdir'/perp/man/perp_intro.8 644
-file share/man/man5/runtools_intro.8 '$srcdir'/runtools/man/runtools_intro.8 644
+man -d perp/man 5 perpetrate.5 8 perp_intro.8
+man -d runtools/man 8 runtools_intro.8
 
 fetch curl

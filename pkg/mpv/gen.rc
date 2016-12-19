@@ -77,7 +77,7 @@ phony deps $deps
 
 exe mpv -d '$dir'/deps $srcs '$builddir'/pkg/$libs
 file bin/mpv '$outdir'/mpv 755
-file share/man/man1/mpv.1 '$srcdir'/DOCS/man/mpv.1 644
+man -d DOCS/man 1 mpv.1
 
 gen_inputs='$dir'/^(sources.awk sources.txt config.h)
 fetch git

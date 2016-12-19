@@ -15,6 +15,6 @@ exe make\
 	hash.c remote-stub.c\
 	libglob.a
 file bin/make '$outdir'/make 755
-file share/man/man1/make.1 '$srcdir'/make.1 644
+man 1 make.1
 
 fetch git

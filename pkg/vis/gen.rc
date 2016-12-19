@@ -41,7 +41,7 @@ file bin/vis-open '$srcdir'/vis-open 755
 for(f in vis.1 vis-menu.1 vis-open.1) {
 	build '$outdir'/$f sed '$srcdir'/man/$f ; with\
 		expr s,VERSION,$version,
-	file share/man/man1/$f '$outdir'/$f 644
+	man -d '$outdir' 1 $f
 }
 
 # <cd src/lua/lexers && printf '\t%s\\\n' *.lua | sort

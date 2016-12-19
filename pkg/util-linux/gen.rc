@@ -102,6 +102,6 @@ exe fdisk -d '$dir'/deps\
 	disk-utils/^(fdisk.c fdisk-menu.c fdisk-list.c)\
 	libfdisk.a.d libsmartcols.a libtcolors.a
 file bin/fdisk '$outdir'/fdisk 755
-file share/man/man8/fdisk.8 '$srcdir'/disk-utils/fdisk.8 644
+man -d disk-utils 8 fdisk.8
 
 fetch git

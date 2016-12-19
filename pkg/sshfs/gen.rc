@@ -10,6 +10,6 @@ build '$outdir'/sshfs.1 sed '$srcdir'/sshfs.1.in ; with\
 exe sshfs -d '$builddir'/pkg/libfuse/fetch.stamp\
 	sshfs.c nocache.c '$builddir'/pkg/libfuse/libfuse.a
 file bin/sshfs '$outdir'/sshfs 755
-file share/man/man1/sshfs.1 '$outdir'/sshfs.1 644
+man -d '$outdir' 1 sshfs.1
 
 fetch git

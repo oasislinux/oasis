@@ -74,7 +74,6 @@ exe ssh\
 	sshconnect.c sshconnect1.c sshconnect2.c mux.c\
 	libssh.a.d
 file bin/ssh '$outdir'/ssh 755
-file share/man/man1/ssh.1 '$srcdir'/ssh.1 644
 
 cc sftp-server.c
 cc sftp-common.c
@@ -96,26 +95,24 @@ exe sshd -d '$dir'/deps\
 	sandbox-solaris.c\
 	libssh.a.d
 file bin/sshd '$outdir'/sshd 755
-file share/man/man8/sshd.8 '$srcdir'/sshd.8 644
 
 exe scp scp.c libssh.a.d
 file bin/scp '$outdir'/scp 755
-file share/man/man1/scp.1 '$srcdir'/scp.1 644
 
 exe ssh-add ssh-add.c libssh.a.d
 file bin/ssh-add '$outdir'/ssh-add 755
-file share/man/man1/ssh-add.1 '$srcdir'/ssh-add.1 644
 
 exe ssh-agent ssh-agent.c ssh-pkcs11-client.c libssh.a.d
 file bin/ssh-agent '$outdir'/ssh-agent 755
-file share/man/man1/ssh-agent.1 '$srcdir'/ssh-agent.1 644
 
 exe ssh-keygen ssh-keygen.c libssh.a.d
 file bin/ssh-keygen '$outdir'/ssh-keygen 755
-file share/man/man1/ssh-keygen.1 '$srcdir'/ssh-keygen.1 644
 
 exe sftp-server sftp-common.c.o sftp-server.c.o sftp-server-main.c libssh.a.d
 file libexec/sftp-server '$outdir'/sftp-server 755
-file share/man/man8/sftp-server.8 '$srcdir'/sftp-server.8 644
+
+man\
+	1 ssh.1 scp.1 ssh-add.1 ssh-agent.1 ssh-keygen.1\
+	8 sshd.8 sftp-server.8
 
 fetch git

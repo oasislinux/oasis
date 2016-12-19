@@ -20,7 +20,7 @@ exe st -d '$dir'/deps st.c '$builddir'/^(\
 	pkg/wld/libwld.a.d\
 )
 file bin/st '$outdir'/st 755
-file share/man/man1/st.1 '$srcdir'/st.1 644
+man 1 st.1
 
 terminfo=s/^(st st-256color)
 terminfo_outs='$outdir'/$terminfo

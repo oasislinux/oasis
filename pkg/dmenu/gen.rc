@@ -20,11 +20,11 @@ exe dmenu -d '$dir'/deps dmenu.c drw.c util.c '$builddir'/pkg/^(\
 	wayland/libwayland-client.a.d\
 )
 file bin/dmenu '$outdir'/dmenu 755
-file share/man/man1/dmenu.1 '$srcdir'/dmenu.1 644
+man 1 dmenu.1
 
 exe stest stest.c
 file bin/stest '$outdir'/stest 755
-file share/man/man1/stest.1 '$srcdir'/stest.1 644
+man 1 stest.1
 
 for(f in dmenu_path dmenu_run)
 	file bin/$f '$srcdir'/$f 755

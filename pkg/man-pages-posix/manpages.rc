@@ -6,10 +6,11 @@ flag e +
 
 ifs='
 '
+~ $#* 4
 repo=$1
 out=$2
 dir=$3
-shift 2
+outdir=$4
 
 fn checkstatus {}
 
@@ -19,8 +20,13 @@ checkstatus
 cd $dir
 pages=man?p/*
 pages=()
-for(f in man?p/*) if(fs extra/man-pages-posix $f)
-	pages=($pages $f)
+for(d in man?p) {
+	mkdir -p $wd/$outdir/$d
+	for(f in $d/*) if(fs man-pages-posix share/man/$f.gz) {
+		gzip -c -9 -n $f > $wd/$outdir/$f.gz
+		pages=($pages $f)
+	}
+}
 cd $wd
 
 if(~ $#pages 0) {
@@ -29,11 +35,12 @@ if(~ $#pages 0) {
 	exit
 }
 
-hashes=`{git -C $repo hash-object -w --no-filters -- $wd/$dir/$pages}
+hashes=`{git -C $repo hash-object -w --no-filters -- $wd/$outdir/$pages.gz}
 checkstatus
+rm $outdir/$pages.gz
 
 ~ $#pages $#hashes
-printf '100644 %s\n' $hashes'	share/man/'$pages >$out.tmp
+printf '100644 %s\n' $hashes'	share/man/'$pages.gz >$out.tmp
 mv $out.tmp $out
 
 echo $out: $dir/$pages >$out.d.tmp

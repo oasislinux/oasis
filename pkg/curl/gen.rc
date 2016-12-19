@@ -101,6 +101,6 @@ exe curl -d '$dir'/deps\
 	libcurl.a.d
 
 file bin/curl '$outdir'/curl 755
-file share/man/man1/curl.1 '$srcdir'/docs/curl.1 644
+man -d docs 1 curl.1
 
 fetch git

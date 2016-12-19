@@ -106,9 +106,9 @@ sym bin/reset tset
 for(m in tic.1m tset.1) {
 	build '$outdir'/$m sed '$srcdir'/man/$m '|' '$dir'/subst.sed ; with\
 		expr '-f $dir/subst.sed'
-	file share/man/man1/$m '$outdir'/$m 644
+	man -d '$outdir' 1 $m
 }
-sym share/man/man1/reset.1 tset.1
+sym share/man/man1/reset.1.gz tset.1.gz
 
 terms=(dumb linux tmux tmux-256color xterm xterm-256color)
 terminfo=`{printf %s\n $terms | awk '{print substr($0, 1, 1) "/" $0}'}

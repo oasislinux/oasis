@@ -376,10 +376,8 @@ file share/git-core/templates/info/exclude '$srcdir'/templates/info--exclude 644
 # Skip the sample hooks and install an empty directory instead.
 dir share/git-core/templates/hooks 755
 
-man=`{grep -v '^#' man.txt}
+srcs=`{grep -v '^#' man.txt}
 checkstatus
-for(f in $man)
-	file share/man/$f '$dir'/man/$f 644
-allsrcs=($allsrcs '$dir'/man/$man)
+man -d man $srcs
 
 fetch local

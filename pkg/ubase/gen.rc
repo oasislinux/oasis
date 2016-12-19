@@ -36,7 +36,8 @@ fn x {
 	shift
 	exe $exe $exe.c libutil.a
 	file bin/$exe '$outdir'/$exe $mode
-	if(~ $#* 1) file share/man/man$1/$exe.$1 '$srcdir'/$exe.$1 644
+	if(~ $#* 1)
+		man $1 $exe.$1
 	status=()
 }
 

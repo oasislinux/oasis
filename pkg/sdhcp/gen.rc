@@ -4,6 +4,6 @@ cflags\
 
 exe sdhcp sdhcp.c util/eprintf.c
 file bin/sdhcp '$outdir'/sdhcp 755
-file share/man/man1/sdhcp.1 '$srcdir'/sdhcp.1 644
+man 1 sdhcp.1
 
 fetch git

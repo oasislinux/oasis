@@ -12,6 +12,6 @@ exe less -d pkg/ncurses/headers\
 	tags.c ttyin.c version.c\
 	'$builddir'/pkg/ncurses/libncurses.a
 file bin/less '$outdir'/less 755
-file share/man/man1/less.1 '$srcdir'/less.nro 644
+man 1 less.nro
 
 fetch curl

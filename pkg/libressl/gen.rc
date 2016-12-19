@@ -300,7 +300,7 @@ exe openssl src/usr.bin/openssl/^(\
 	verify.c version.c x509.c\
 ) libssl.a.d libcrypto.a.d
 file bin/openssl '$outdir'/openssl 755
-file share/man/man1/openssl.1 '$srcdir'/src/usr.bin/openssl/openssl.1 644
+man -d src/usr.bin/openssl 1 openssl.1
 
 file share/libressl/cert.pem '$srcdir'/src/lib/libcrypto/cert.pem 644
 

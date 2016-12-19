@@ -4,6 +4,6 @@ cflags\
 
 exe ii ii.c
 file bin/ii '$outdir'/ii 755
-file share/man/man1/ii.1 '$srcdir'/ii.1 644
+man 1 ii.1
 
 fetch git

@@ -197,6 +197,37 @@ fn sym {
 	status=()
 }
 
+fn man {
+	srcdir='$srcdir'
+	outdir='$outdir'
+	if(~ $1 -d) {
+		if(~ $2 '$'*) {
+			srcdir=$2
+			outdir=$2
+		}
+		if not {
+			srcdir='$srcdir'/$2
+			outdir='$outdir'/$2
+		}
+		shift 2
+	}
+	mandir=share/man
+	for(src) {
+		if(~ $src [1-9])
+			mandir=share/man/man$src
+		if not {
+			if(~ $src *.gz)
+				gz=$srcdir/$src
+			if not {
+				build $outdir/$src.gz gzip $srcdir/$src
+				src=$src.gz
+				gz=$outdir/$src
+			}
+			file $mandir/$src $outdir/$src 644
+		}
+	}
+}
+
 fn fetch {
 	# Use a phony rule and stamp file to prevent ninja from making parent
 	# directories.

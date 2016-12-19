@@ -87,7 +87,8 @@ fn x {
 	link $exe $src.c.o libutil.a libutf.a
 
 	file bin/$exe '$outdir'/$exe 755
-	file share/man/man1/$exe.1 '$srcdir'/$src.1 644
+	build '$outdir'/$exe.1.gz gzip '$srcdir'/$src.1
+	man -d '$outdir' 1 $exe.1.gz
 }
 
 x basename

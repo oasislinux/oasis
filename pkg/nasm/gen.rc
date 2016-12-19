@@ -29,6 +29,6 @@ exe nasm\
 	iflag.c
 
 file bin/nasm '$outdir'/nasm 755
-file share/man/man1/nasm.1 '$srcdir'/nasm.1 644
+man 1 nasm.1
 
 fetch curl

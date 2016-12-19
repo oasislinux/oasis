@@ -45,7 +45,7 @@ lib libmagic.a -d '$dir'/deps src/^(\
 
 exe file -d '$dir'/headers src/file.c libmagic.a '$builddir/pkg/zlib/libz.a'
 file bin/file '$outdir'/file 755
-file share/man/man1/file.1 '$outdir'/file.1 644
+man -d '$outdir' 1 file.1
 
 srcs=`{grep -v '^#' magic.txt}
 for(src in $srcs) build '$outdir'/magic/$src copy '$srcdir'/magic/Magdir/$src

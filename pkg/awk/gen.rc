@@ -20,6 +20,6 @@ exe awk -d '$outdir'/ytab.h\
 	b.c main.c parse.c tran.c lib.c run.c lex.c\
 	'$outdir'/^(gram.tab.c proctab.c)
 file bin/awk '$outdir'/awk 755
-file share/man/man1/awk.1 '$srcdir'/awk.1 644
+man 1 awk.1
 
 fetch git

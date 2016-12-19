@@ -10,6 +10,6 @@ exe unzip -d '$builddir'/pkg/bzip2/fetch.stamp\
 	unix/unix.c\
 	'$builddir'/pkg/bzip2/libbz2.a
 file bin/unzip '$outdir'/unzip 755
-file share/man/man1/unzip.1 '$srcdir'/man/unzip.1 644
+man -d man 1 unzip.1
 
 fetch curl
