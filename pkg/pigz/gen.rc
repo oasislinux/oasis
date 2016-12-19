@@ -7,6 +7,10 @@ exe pigz -d pkg/zlib/headers\
 	zopfli/src/zopfli/^(deflate.c blocksplitter.c tree.c lz77.c cache.c hash.c util.c squeeze.c katajainen.c)\
 	'$builddir'/pkg/zlib/libz.a
 file bin/pigz '$outdir'/pigz 755
-for(alias in gzip gunzip zcat) sym bin/$alias pigz
+man 1 pigz.1
+for(alias in gzip gunzip zcat) {
+	sym bin/$alias pigz
+	sym share/man/man1/$alias.1.gz pigz.1.gz
+}
 
 fetch git
