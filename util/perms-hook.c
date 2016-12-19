@@ -149,7 +149,7 @@ static int
 chmod_v(const char *path, mode_t mode)
 {
 	printf("chmod(\"%s\", %#o)\n", path, mode);
-	return fchmodat(rootfd, path, mode, AT_SYMLINK_NOFOLLOW);
+	return fchmodat(rootfd, path, mode, 0);
 }
 
 static int
