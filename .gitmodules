@@ -185,8 +185,7 @@
 	url = https://github.com/eggert/tz
 [submodule "pkg/ubase/src"]
 	path = pkg/ubase/src
-	url = git://git.suckless.org/ubase
-	ignore = all
+	url = https://github.com/michaelforney/ubase
 [submodule "pkg/util-linux/src"]
 	path = pkg/util-linux/src
 	url = https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
