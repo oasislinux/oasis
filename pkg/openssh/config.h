@@ -24,7 +24,6 @@
 /* #undef BROKEN_GLOB */
 /* #undef BROKEN_INET_NTOA */
 /* #undef BROKEN_LIBIAF */
-/* #undef BROKEN_MMAP */
 /* #undef BROKEN_ONE_BYTE_DIRENT_D_NAME */
 /* #undef BROKEN_READV_COMPARISON */
 /* #undef BROKEN_READ_COMPARISON */
@@ -286,6 +285,7 @@
 #define HAVE_SO_PEERCRED 1
 #define HAVE_SS_FAMILY_IN_SS 1
 #define HAVE_STATFS 1
+#define HAVE_STRCASESTR 1
 #define HAVE_STRICT_MKSTEMP 1
 #define HAVE_STRLCAT 1
 #define HAVE_STRLCPY 1
@@ -315,6 +315,7 @@
 #define HAVE_SYS_PRCTL_H 1
 /* #undef HAVE_SYS_PSTAT_H */
 /* #undef HAVE_SYS_PTMS_H */
+#define HAVE_SYS_PTRACE_H 1
 /* #undef HAVE_SYS_STREAM_H */
 #define HAVE_SYS_STROPTS_H 1
 /* #undef HAVE_SYS_STRTIO_H */
@@ -373,10 +374,7 @@
 #define LOCKED_PASSWD_PREFIX "!"
 /* #undef LOCKED_PASSWD_STRING */
 /* #undef LOCKED_PASSWD_SUBSTR */
-/* #undef LOGIN_NEEDS_TERM */
 /* #undef LOGIN_NEEDS_UTMPX */
-/* #undef LOGIN_NO_ENDOPT */
-#define LOGIN_PROGRAM_FALLBACK "/bin/login"
 /* #undef MAIL_DIRECTORY */
 /* #undef NEED_SETPGRP */
 /* #undef NO_ATTRIBUTE_ON_RETURN_TYPE */
@@ -426,6 +424,7 @@
 #define SNPRINTF_CONST const
 #define SPT_TYPE SPT_REUSEARGV
 /* #undef SSHD_ACQUIRES_CTTY */
+/* #undef SSHD_PAM_SERVICE */
 /* #undef SSHPAM_CHAUTHTOK_NEEDS_RUID */
 /* #undef SSH_AUDIT_EVENTS */
 /* #undef SSH_IOBUFSZ */
