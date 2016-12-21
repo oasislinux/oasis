@@ -186,13 +186,13 @@ lexers=(\
 	)\
 	themes/^(\
 		dark-16.lua\
-		default-16.lua\
-		default-256.lua\
 		light-16.lua\
 		solarized.lua\
 	)\
 )
 for(f in $lexers)
 	file share/vis/$f '$srcdir'/lua/$f 644
+sym share/vis/themes/default-16.lua dark-16.lua
+sym share/vis/themes/default-256.lua dark-16.lua
 
 fetch git
