@@ -71,6 +71,17 @@ if(grep -qF 'HAVE_LUA 1' config.h) {
 	libs=($libs lua/liblua.a)
 	deps=($deps '$builddir'/pkg/lua/fetch.stamp)
 }
+if(grep -qF 'HAVE_WAYLAND 1' config.h) {
+	cflags=($cflags\
+		-isystem '$builddir'/pkg/wayland/include\
+		-isystem pkg/libxkbcommon/src\
+	)
+	libs=($libs\
+		wayland/libwayland-^(client cursor)^.a.d\
+		libxkbcommon/libxkbcommon.a\
+	)
+	deps=($deps pkg/wayland/headers '$builddir'/pkg/libxkbcommon/fetch.stamp)
+}
 
 cflags $cflags
 phony deps $deps
