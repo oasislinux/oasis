@@ -1,4 +1,4 @@
-From ff4af7dbb187550996f82baba73bf3707c7ec573 Mon Sep 17 00:00:00 2001
+From a527c58b00e37544a7937996de57570721b1c823 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 30 Oct 2016 23:54:56 -0700
 Subject: [PATCH] Port to wayland using wld
@@ -7,8 +7,8 @@ Subject: [PATCH] Port to wayland using wld
  Makefile     |   12 +-
  config.def.h |  500 +++++++------
  config.mk    |   12 +-
- st.c         | 2352 +++++++++++++++++++++++++++++-----------------------------
- 4 files changed, 1449 insertions(+), 1427 deletions(-)
+ st.c         | 2346 +++++++++++++++++++++++++++++-----------------------------
+ 4 files changed, 1447 insertions(+), 1423 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index fb026c4..053d3e0 100644
@@ -41,7 +41,7 @@ index fb026c4..053d3e0 100644
  	@echo CC $<
  	@${CC} -c ${CFLAGS} $<
 diff --git a/config.def.h b/config.def.h
-index 32d107d..41129e4 100644
+index a719e36..49ca50b 100644
 --- a/config.def.h
 +++ b/config.def.h
 @@ -38,13 +38,13 @@ static char worddelimiters[] = " ";
@@ -73,8 +73,8 @@ index 32d107d..41129e4 100644
  
  /* default TERM value */
  static char termname[] = "st-256color";
-@@ -131,11 +133,9 @@ static unsigned int defaultrcs = 257;
- static unsigned int cursorshape = 2;
+@@ -138,11 +140,9 @@ static unsigned int cols = 80;
+ static unsigned int rows = 24;
  
  /*
 - * Default colour and shape of the mouse cursor
@@ -87,7 +87,7 @@ index 32d107d..41129e4 100644
  
  /*
   * Color used to display font attributes when fontconfig selected a font which
-@@ -149,36 +149,38 @@ static unsigned int defaultattr = 11;
+@@ -156,36 +156,38 @@ static unsigned int defaultattr = 11;
   */
  static MouseShortcut mshortcuts[] = {
  	/* button               mask            string */
@@ -145,7 +145,7 @@ index 32d107d..41129e4 100644
   * appkey value:
   * * 0: no value
   * * > 0: keypad application mode enabled
-@@ -194,7 +196,7 @@ static Shortcut shortcuts[] = {
+@@ -201,7 +203,7 @@ static Shortcut shortcuts[] = {
   * * < 0: crlf mode is disabled
   *
   * Be careful with the order of the definitions because st searches in
@@ -154,7 +154,7 @@ index 32d107d..41129e4 100644
   * position for a key.
   */
  
-@@ -202,239 +204,233 @@ static Shortcut shortcuts[] = {
+@@ -209,239 +211,233 @@ static Shortcut shortcuts[] = {
   * If you want keys other than the X11 function keys (0xFD00 - 0xFFFF)
   * to be mapped below, add them to this array.
   */
@@ -610,7 +610,7 @@ index 32d107d..41129e4 100644
  };
  
  /*
-@@ -445,7 +441,7 @@ static Key key[] = {
+@@ -452,7 +448,7 @@ static Key key[] = {
   * If no match is found, regular selection is used.
   */
  static uint selmasks[] = {
@@ -645,7 +645,7 @@ index c84c5ee..7da06f1 100644
  # flags
  CPPFLAGS = -DVERSION=\"${VERSION}\" -D_XOPEN_SOURCE=600
 diff --git a/st.c b/st.c
-index e50e884..b891b07 100644
+index fbcd9e0..d3bcfd8 100644
 --- a/st.c
 +++ b/st.c
 @@ -3,6 +3,8 @@
@@ -1879,7 +1879,7 @@ index e50e884..b891b07 100644
  	/* resize to new height */
  	term.line = xrealloc(term.line, row * sizeof(Line));
  	term.alt  = xrealloc(term.alt,  row * sizeof(Line));
-@@ -3228,190 +3062,141 @@ tresize(int col, int row)
+@@ -3228,155 +3062,107 @@ tresize(int col, int row)
  }
  
  void
@@ -2070,19 +2070,30 @@ index e50e884..b891b07 100644
 -xloadfont(Font *f, FcPattern *pattern)
 +wlloadfont(Font *f, FcPattern *pattern)
  {
+ 	FcPattern *configured;
  	FcPattern *match;
  	FcResult result;
 -	XGlyphInfo extents;
 +	struct wld_extents extents;
  	int wantattr, haveattr;
  
--	match = XftFontMatch(xw.dpy, xw.scr, pattern, &result);
-+	match = FcFontMatch(NULL, pattern, &result);
- 	if (!match)
+ 	/*
+@@ -3389,7 +3175,7 @@ xloadfont(Font *f, FcPattern *pattern)
  		return 1;
+ 
+ 	FcConfigSubstitute(NULL, configured, FcMatchPattern);
+-	XftDefaultSubstitute(xw.dpy, xw.scr, configured);
++	FcDefaultSubstitute(configured);
+ 
+ 	match = FcFontMatch(NULL, configured, &result);
+ 	if (!match) {
+@@ -3397,37 +3183,36 @@ xloadfont(Font *f, FcPattern *pattern)
+ 		return 1;
+ 	}
  
 -	if (!(f->match = XftFontOpenPattern(xw.dpy, match))) {
 +	if (!(f->match = wld_font_open_pattern(wld.fontctx, match))) {
+ 		FcPatternDestroy(configured);
  		FcPatternDestroy(match);
  		return 1;
  	}
@@ -2124,8 +2135,8 @@ index e50e884..b891b07 100644
 +	wld_font_text_extents(f->match, ascii_printable, &extents);
  
  	f->set = NULL;
- 	f->pattern = FcPatternDuplicate(pattern);
-@@ -3419,23 +3204,24 @@ xloadfont(Font *f, FcPattern *pattern)
+ 	f->pattern = configured;
+@@ -3435,23 +3220,24 @@ xloadfont(Font *f, FcPattern *pattern)
  	f->ascent = f->match->ascent;
  	f->descent = f->match->descent;
  	f->lbearing = 0;
@@ -2154,7 +2165,7 @@ index e50e884..b891b07 100644
  	} else {
  		pattern = FcNameParse((FcChar8 *)fontstr);
  	}
-@@ -3466,14 +3252,17 @@ xloadfonts(char *fontstr, double fontsize)
+@@ -3482,11 +3268,14 @@ xloadfonts(char *fontstr, double fontsize)
  		defaultfontsize = usedfontsize;
  	}
  
@@ -2169,13 +2180,9 @@ index e50e884..b891b07 100644
 -		FcPatternGetDouble(dc.font.match->pattern,
 +		FcPatternGetDouble(dc.font.pattern,
  		                   FC_PIXEL_SIZE, 0, &fontval);
- 		FcPatternAddDouble(pattern, FC_PIXEL_SIZE, fontval);
--		if (xloadfont(&dc.font, pattern))
-+		if (wlloadfont(&dc.font, pattern))
- 			die("st: can't open font %s\n", fontstr);
  		usedfontsize = fontval;
  		if (fontsize == 0)
-@@ -3481,279 +3270,331 @@ xloadfonts(char *fontstr, double fontsize)
+@@ -3494,279 +3283,331 @@ xloadfonts(char *fontstr, double fontsize)
  	}
  
  	/* Setting character width and height. */
@@ -2693,7 +2700,7 @@ index e50e884..b891b07 100644
  			FcPatternAddCharSet(fcpattern, FC_CHARSET,
  					fccharset);
  			FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
-@@ -3770,186 +3611,58 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
+@@ -3783,186 +3624,58 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
  			 */
  			if (frclen >= LEN(frc)) {
  				frclen = LEN(frc) - 1;
@@ -2897,7 +2904,7 @@ index e50e884..b891b07 100644
  
  	LIMIT(oldx, 0, term.col-1);
  	LIMIT(oldy, 0, term.row-1);
-@@ -3966,7 +3679,11 @@ xdrawcursor(void)
+@@ -3979,7 +3692,11 @@ xdrawcursor(void)
  	og = term.line[oldy][oldx];
  	if (ena_sel && selected(oldx, oldy))
  		og.mode ^= ATTR_REVERSE;
@@ -2910,7 +2917,7 @@ index e50e884..b891b07 100644
  
  	g.u = term.line[term.c.y][term.c.x].u;
  
-@@ -3997,198 +3714,152 @@ xdrawcursor(void)
+@@ -4010,198 +3727,152 @@ xdrawcursor(void)
  		return;
  
  	/* draw the new one */
@@ -3184,7 +3191,7 @@ index e50e884..b891b07 100644
  }
  
  void
-@@ -4198,7 +3869,7 @@ numlock(const Arg *dummy)
+@@ -4211,7 +3882,7 @@ numlock(const Arg *dummy)
  }
  
  char*
@@ -3193,7 +3200,7 @@ index e50e884..b891b07 100644
  {
  	Key *kp;
  	int i;
-@@ -4238,38 +3909,179 @@ kmap(KeySym k, uint state)
+@@ -4251,38 +3922,179 @@ kmap(KeySym k, uint state)
  }
  
  void
@@ -3248,7 +3255,10 @@ index e50e884..b891b07 100644
 +
 +void
 +surfenter(void *data, struct wl_surface *surface, struct wl_output *output)
-+{
+ {
+-	XKeyEvent *e = &ev->xkey;
+-	KeySym ksym;
+-	char buf[32], *customkey;
 +	wl.vis++;
 +	if (!(wl.state & WIN_VISIBLE))
 +		wl.state |= WIN_VISIBLE;
@@ -3274,10 +3284,7 @@ index e50e884..b891b07 100644
 +void
 +kbdkeymap(void *data, struct wl_keyboard *keyboard, uint32_t format, int32_t fd,
 +          uint32_t size)
- {
--	XKeyEvent *e = &ev->xkey;
--	KeySym ksym;
--	char buf[32], *customkey;
++{
 +	char *string;
 +
 +	if (format != WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1) {
@@ -3384,7 +3391,7 @@ index e50e884..b891b07 100644
  		if (IS_SET(MODE_8BIT)) {
  			if (*buf < 0177) {
  				c = *buf | 0x80;
-@@ -4281,101 +4093,327 @@ kpress(XEvent *ev)
+@@ -4294,101 +4106,327 @@ kpress(XEvent *ev)
  			len = 2;
  		}
  	}
@@ -3532,11 +3539,7 @@ index e50e884..b891b07 100644
 +				ttysend(ms->s, strlen(ms->s));
 +				return;
 +			}
- 		}
--	} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
--		/* Send SIGHUP to shell */
--		kill(pid, SIGHUP);
--		exit(0);
++		}
 +
 +		if (button == BTN_LEFT) {
 +			/* Clear previous selection, logically and visually. */
@@ -3564,7 +3567,11 @@ index e50e884..b891b07 100644
 +			tsetdirt(sel.nb.y, sel.ne.y);
 +			sel.tclick2 = sel.tclick1;
 +			sel.tclick1 = time;
-+		}
+ 		}
+-	} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
+-		/* Send SIGHUP to shell */
+-		kill(pid, SIGHUP);
+-		exit(0);
 +		break;
  	}
  }
@@ -3719,7 +3726,8 @@ index e50e884..b891b07 100644
 +	int wlfd = wl_display_get_fd(wl.dpy), blinkset = 0;
  	struct timespec drawtimeout, *tv = NULL, now, last, lastblink;
 -	long deltatime;
--
++	ulong msecs;
+ 
 -	/* Waiting for window mapping */
 -	do {
 -		XNextEvent(xw.dpy, &ev);
@@ -3735,8 +3743,7 @@ index e50e884..b891b07 100644
 -			h = ev.xconfigure.height;
 -		}
 -	} while (ev.type != MapNotify);
-+	ulong msecs;
- 
+-
 -	cresize(w, h);
 +	/* Look for initial configure. */
 +	wl_display_roundtrip(wl.dpy);
@@ -3766,7 +3773,7 @@ index e50e884..b891b07 100644
  		if (FD_ISSET(cmdfd, &rfd)) {
  			ttyread();
  			if (blinktimeout) {
-@@ -4385,60 +4423,54 @@ run(void)
+@@ -4398,60 +4436,54 @@ run(void)
  			}
  		}
  
@@ -3867,12 +3874,10 @@ index e50e884..b891b07 100644
  	}
  }
  
-@@ -4458,11 +4490,7 @@ usage(void)
+@@ -4471,9 +4503,7 @@ usage(void)
  int
  main(int argc, char *argv[])
  {
--	uint cols = 80, rows = 24;
--
 -	xw.l = xw.t = 0;
 -	xw.isfixed = False;
 -	xw.cursor = cursorshape;
@@ -3880,7 +3885,7 @@ index e50e884..b891b07 100644
  
  	ARGBEGIN {
  	case 'a':
-@@ -4478,13 +4506,6 @@ main(int argc, char *argv[])
+@@ -4489,13 +4519,6 @@ main(int argc, char *argv[])
  	case 'f':
  		opt_font = EARGF(usage());
  		break;
@@ -3894,18 +3899,17 @@ index e50e884..b891b07 100644
  	case 'o':
  		opt_io = EARGF(usage());
  		break;
-@@ -4516,9 +4537,8 @@ run:
+@@ -4527,9 +4550,8 @@ run:
  			opt_title = basename(xstrdup(argv[0]));
  	}
  	setlocale(LC_CTYPE, "");
 -	XSetLocaleModifiers("");
--	tnew(MAX(cols, 1), MAX(rows, 1));
+ 	tnew(MAX(cols, 1), MAX(rows, 1));
 -	xinit();
-+	tnew(80, 24);
 +	wlinit();
  	selinit();
  	run();
  
 -- 
-2.10.2
+2.11.0
 
