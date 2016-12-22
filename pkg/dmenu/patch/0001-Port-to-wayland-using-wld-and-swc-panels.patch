@@ -1,4 +1,4 @@
-From d0d4bd1e7d5d39fe955dab33fa39d5a5115c89a7 Mon Sep 17 00:00:00 2001
+From f1c24212900247c1dc3c5359abce4fa66ec883c6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 27 Oct 2016 21:04:23 -0700
 Subject: [PATCH] Port to wayland using wld and swc panels
@@ -6,10 +6,10 @@ Subject: [PATCH] Port to wayland using wld and swc panels
 ---
  Makefile  |  16 +-
  config.mk |  20 +--
- dmenu.c   | 540 +++++++++++++++++++++++++++++++++-----------------------------
+ dmenu.c   | 541 +++++++++++++++++++++++++++++++++-----------------------------
  drw.c     | 123 +++++++-------
  drw.h     |  26 ++-
- 5 files changed, 372 insertions(+), 353 deletions(-)
+ 5 files changed, 372 insertions(+), 354 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index a7cd04f..5747934 100644
@@ -83,7 +83,7 @@ index 4d908a5..c6416ad 100644
  LDFLAGS  = -s ${LIBS}
  
 diff --git a/dmenu.c b/dmenu.c
-index 9278e91..9cd3c23 100644
+index d605ab4..d9470b7 100644
 --- a/dmenu.c
 +++ b/dmenu.c
 @@ -5,18 +5,18 @@
@@ -484,7 +484,7 @@ index 9278e91..9cd3c23 100644
  }
  
  static void
-@@ -506,145 +497,203 @@ readstdin(void)
+@@ -506,146 +497,203 @@ readstdin(void)
  static void
  run(void)
  {
@@ -659,15 +659,16 @@ index 9278e91..9cd3c23 100644
 +static void
  setup(void)
  {
--	int x, y;
+-	int x, y, i = 0;
+-	unsigned int du;
 -	XSetWindowAttributes swa;
 -	XIM xim;
+-	Window w, dw, *dws;
+-	XWindowAttributes wa;
 -#ifdef XINERAMA
 -	XineramaScreenInfo *info;
--	Window w, pw, dw, *dws;
--	XWindowAttributes wa;
--	int a, j, di, n, i = 0, area = 0;
--	unsigned int du;
+-	Window pw;
+-	int a, j, di, n, area = 0;
 -#endif
 +	if (!compositor || !seat || !panelman)
 +		exit(1);
@@ -795,7 +796,7 @@ index 9278e91..9cd3c23 100644
  
  	for (i = 1; i < argc; i++)
  		/* these options take no arguments */
-@@ -653,8 +702,6 @@ main(int argc, char *argv[])
+@@ -654,8 +702,6 @@ main(int argc, char *argv[])
  			exit(0);
  		} else if (!strcmp(argv[i], "-b")) /* appears at the bottom of the screen */
  			topbar = 0;
@@ -804,7 +805,7 @@ index 9278e91..9cd3c23 100644
  		else if (!strcmp(argv[i], "-i")) { /* case-insensitive item matching */
  			fstrncmp = strncasecmp;
  			fstrstr = cistrstr;
-@@ -677,34 +724,23 @@ main(int argc, char *argv[])
+@@ -678,34 +724,23 @@ main(int argc, char *argv[])
  			colors[SchemeSel][ColBg] = argv[++i];
  		else if (!strcmp(argv[i], "-sf"))  /* selected foreground color */
  			colors[SchemeSel][ColFg] = argv[++i];
@@ -1230,5 +1231,5 @@ index 4c67419..1f1967e 100644
 -void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
 +void drw_map(Drw *drw, struct wl_surface *surface, int x, int y, unsigned int w, unsigned int h);
 -- 
-2.10.1
+2.11.0
 
