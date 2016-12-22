@@ -96,7 +96,7 @@
 #define HAVE_COCOA 0
 #define HAVE_DRM 1
 #define HAVE_GBM 0
-#define HAVE_WAYLAND 0
+#define HAVE_WAYLAND 1
 #define HAVE_X11 0
 #define HAVE_XSS 0
 #define HAVE_XEXT 0
