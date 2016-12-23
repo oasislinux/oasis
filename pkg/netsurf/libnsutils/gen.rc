@@ -1,0 +1,2 @@
+lib libnsutils.a src/^(base64.c time.c unistd.c)
+fetch git

@@ -47,6 +47,7 @@ subgen mpv
 subgen msmtp
 subgen nasm
 subgen ncurses
+subgen netsurf
 subgen ninja
 subgen openbsd
 subgen openssh

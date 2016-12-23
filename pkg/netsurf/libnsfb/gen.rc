@@ -1,0 +1,26 @@
+cflags\
+	-isystem '$builddir'/pkg/wayland/include\
+	-isystem '$builddir'/pkg/wayland-protocols/include\
+	-isystem pkg/libxkbcommon/src\
+	-I '$srcdir'/include\
+	-I '$srcdir'/src
+
+deps=(\
+	pkg/^(wayland wayland-protocols)^/headers\
+	'$builddir'/pkg/libxkbcommon/fetch.stamp\
+	'$outdir'/fetch.stamp\
+)
+build '$outdir'/wl.c.o cc '$dir'/wl.c '||' $deps
+cc src/surface/ram.c
+
+lib libnsfb.a src/^(\
+	libnsfb.c dump.c cursor.c palette.c\
+	plot/^(api.c util.c generic.c 32bpp-xrgb8888.c 32bpp-xbgr8888.c 16bpp.c 8bpp.c)\
+	surface/surface.c\
+) '$builddir'/pkg/^(\
+	wayland/libwayland-client.a.d\
+	wayland-protocols/xdg-shell-unstable-v5-protocol.c.o\
+	libxkbcommon/libxkbcommon.a\
+)
+
+fetch git

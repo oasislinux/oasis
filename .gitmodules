@@ -132,6 +132,45 @@
 	path = pkg/msmtp/src
 	url = git://git.code.sf.net/p/msmtp/code
 	ignore = all
+[submodule "pkg/netsurf/src"]
+	path = pkg/netsurf/src
+	url = git://git.netsurf-browser.org/netsurf.git
+	ignore = all
+[submodule "pkg/netsurf/libcss/src"]
+	path = pkg/netsurf/libcss/src
+	url = git://git.netsurf-browser.org/libcss.git
+[submodule "pkg/netsurf/libdom/src"]
+	path = pkg/netsurf/libdom/src
+	url = git://git.netsurf-browser.org/libdom.git
+[submodule "pkg/netsurf/libhubbub/src"]
+	path = pkg/netsurf/libhubbub/src
+	url = git://git.netsurf-browser.org/libhubbub.git
+[submodule "pkg/netsurf/libnsbmp/src"]
+	path = pkg/netsurf/libnsbmp/src
+	url = git://git.netsurf-browser.org/libnsbmp.git
+[submodule "pkg/netsurf/libnsfb/src"]
+	path = pkg/netsurf/libnsfb/src
+	url = git://git.netsurf-browser.org/libnsfb.git
+	ignore = all
+[submodule "pkg/netsurf/libnsgif/src"]
+	path = pkg/netsurf/libnsgif/src
+	url = git://git.netsurf-browser.org/libnsgif.git
+[submodule "pkg/netsurf/libnsutils/src"]
+	path = pkg/netsurf/libnsutils/src
+	url = git://git.netsurf-browser.org/libnsutils.git
+[submodule "pkg/netsurf/libparserutils/src"]
+	path = pkg/netsurf/libparserutils/src
+	url = git://git.netsurf-browser.org/libparserutils.git
+[submodule "pkg/netsurf/libutf8proc/src"]
+	path = pkg/netsurf/libutf8proc/src
+	url = git://git.netsurf-browser.org/libutf8proc.git
+[submodule "pkg/netsurf/libwapcaplet/src"]
+	path = pkg/netsurf/libwapcaplet/src
+	url = git://git.netsurf-browser.org/libwapcaplet.git
+[submodule "pkg/netsurf/nsgenbind/src"]
+	path = pkg/netsurf/nsgenbind/src
+	url = git://git.netsurf-browser.org/nsgenbind.git
+	ignore = all
 [submodule "pkg/ninja/src"]
 	path = pkg/ninja/src
 	url = https://github.com/ninja-build/ninja

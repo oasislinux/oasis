@@ -1,0 +1,8 @@
+#ifndef NETSURF_REVISION_TESTAMENT
+#define NETSURF_REVISION_TESTAMENT 1
+
+#define WT_NO_GIT 1
+#define WT_MODIFIED 0
+#define WT_MODIFICATIONS {}
+
+#endif

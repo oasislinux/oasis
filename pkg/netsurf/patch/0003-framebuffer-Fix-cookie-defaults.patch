@@ -1,0 +1,100 @@
+From 8a15a5505db85870f340c61fea1db3da16fde039 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 24 Dec 2016 16:57:34 -0800
+Subject: [PATCH] framebuffer: Fix cookie defaults
+
+---
+ frontends/framebuffer/gui.c | 48 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 46 insertions(+), 2 deletions(-)
+
+diff --git a/frontends/framebuffer/gui.c b/frontends/framebuffer/gui.c
+index 2e819e6fa..e176ac9e4 100644
+--- a/frontends/framebuffer/gui.c
++++ b/frontends/framebuffer/gui.c
+@@ -31,6 +31,7 @@
+ 
+ #include "utils/utils.h"
+ #include "utils/nsoption.h"
++#include "utils/file.h"
+ #include "utils/filepath.h"
+ #include "utils/log.h"
+ #include "utils/messages.h"
+@@ -61,6 +62,7 @@
+ fbtk_widget_t *fbtk;
+ 
+ static bool fb_complete = false;
++static char *fb_data_home;
+ 
+ struct gui_window *input_window = NULL;
+ struct gui_window *search_current_window;
+@@ -527,9 +529,18 @@ process_cmdline(int argc, char** argv)
+  */
+ static nserror set_defaults(struct nsoption_s *defaults)
+ {
++	char *fname;
++
+ 	/* Set defaults for absent option strings */
+-	nsoption_setnull_charp(cookie_file, strdup("~/.netsurf/Cookies"));
+-	nsoption_setnull_charp(cookie_jar, strdup("~/.netsurf/Cookies"));
++	fname = NULL;
++	netsurf_mkpath(&fname, NULL, 2, fb_data_home, "Cookies");
++	if (fname != NULL)
++		nsoption_setnull_charp(cookie_file, fname);
++
++	fname = NULL;
++	netsurf_mkpath(&fname, NULL, 2, fb_data_home, "Cookies");
++	if (fname != NULL)
++		nsoption_setnull_charp(cookie_jar, fname);
+ 
+ 	if (nsoption_charp(cookie_file) == NULL ||
+ 	    nsoption_charp(cookie_jar) == NULL) {
+@@ -2076,6 +2087,34 @@ static struct gui_misc_table framebuffer_misc_table = {
+ 	.quit = gui_quit,
+ };
+ 
++static nserror get_data_home(char **data_home_out)
++{
++	nserror ret;
++	char *xdg_data_home, *data_home, *home;
++
++	xdg_data_home = getenv("XDG_DATA_HOME");
++	if ((xdg_data_home == NULL) || (*xdg_data_home == '\0')) {
++		home = getenv("HOME");
++		if (home == NULL)
++			return NSERROR_NOT_DIRECTORY;
++		ret = netsurf_mkpath(&data_home, NULL, 5, home, ".local", "share", "netsurf", "/");
++	} else {
++		ret = netsurf_mkpath(&data_home, NULL, 3, xdg_data_home, "netsurf", "/");
++	}
++	if (ret != NSERROR_OK)
++		return ret;
++
++	ret = netsurf_mkdir_all(data_home);
++	if (ret != NSERROR_OK) {
++		free(data_home);
++		return ret;
++	}
++	data_home[strlen(data_home) - 1] = 0;
++	*data_home_out = data_home;
++
++	return NSERROR_OK;
++}
++
+ /** Entry point from OS.
+  *
+  * /param argc The number of arguments in the string vector.
+@@ -2106,6 +2145,11 @@ main(int argc, char** argv)
+ 		die("NetSurf operation table failed registration");
+         }
+ 
++	ret = get_data_home(&fb_data_home);
++	if (ret != NSERROR_OK) {
++		die("Failed to get home data directory");
++	}
++
+ 	respaths = fb_init_resource(NETSURF_FB_RESPATH":"NETSURF_FB_FONTPATH);
+ 
+ 	/* initialise logging. Not fatal if it fails but not much we
+-- 
+2.11.0
+

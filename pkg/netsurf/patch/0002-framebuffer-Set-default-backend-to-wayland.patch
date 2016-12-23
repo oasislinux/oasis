@@ -1,0 +1,25 @@
+From ecd460198f101721260d770a6dcc52922f643a62 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 23 Dec 2016 15:13:31 -0800
+Subject: [PATCH] framebuffer: Set default backend to wayland
+
+---
+ frontends/framebuffer/gui.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/frontends/framebuffer/gui.c b/frontends/framebuffer/gui.c
+index 4d4c7334f..2e819e6fa 100644
+--- a/frontends/framebuffer/gui.c
++++ b/frontends/framebuffer/gui.c
+@@ -466,7 +466,7 @@ process_cmdline(int argc, char** argv)
+ 
+ 	LOG("argc %d, argv %p", argc, argv);
+ 
+-	fename = "sdl";
++	fename = "wayland";
+ 	febpp = 32;
+ 
+ 	fewidth = nsoption_int(window_width);
+-- 
+2.11.0
+
