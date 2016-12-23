@@ -97,6 +97,9 @@
 	path = pkg/libpciaccess/src
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
 	ignore = all
+[submodule "pkg/libpng/src"]
+	path = pkg/libpng/src
+	url = git://git.code.sf.net/p/libpng/code
 [submodule "pkg/libressl/src"]
 	path = pkg/libressl/src
 	url = https://github.com/libressl-portable/openbsd

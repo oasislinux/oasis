@@ -29,6 +29,7 @@ subgen libffi
 subgen libfuse
 subgen libnl
 subgen libpciaccess
+subgen libpng
 subgen libressl
 subgen libtermkey
 subgen libusb

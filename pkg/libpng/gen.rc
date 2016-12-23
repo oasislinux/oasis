@@ -1,0 +1,31 @@
+cflags\
+	-D HAVE_CONFIG_H\
+	-I include\
+	-I '$dir' \
+	-I '$outdir'/include
+
+build '$outdir'/pnglibconf.tf4 awk '$srcdir'/^(pngconf.h scripts/pnglibconf.dfa pngusr.dfa) ; with\
+	expr '-f $srcdir/scripts/options.awk out=/dev/stdout version=search'
+build '$outdir'/pnglibconf.c awk '$outdir'/pnglibconf.tf4 ; with\
+	expr '-f $srcdir/scripts/options.awk out=/dev/stdout'
+build '$outdir'/pnglibconf.tf1 cc '$outdir'/pnglibconf.c ; with\
+	cflags '$cflags -E'
+build '$outdir'/include/pnglibconf.h awk '$outdir'/pnglibconf.tf1 ; with\
+	expr '-f $srcdir/scripts/dfn.awk out=/dev/stdout'
+
+hdrs=(png.h pngconf.h)
+for(hdr in $hdrs) {
+	build '$outdir'/include/$hdr copy '$srcdir'/$hdr
+	file include/$hdr '$srcdir'/$hdr 644
+}
+phony headers '$outdir'/include/^($hdrs pnglibconf.h)
+file include/pnglibconf.h '$outdir'/include/pnglibconf.h 644
+
+lib libpng.a -d '$outdir'/include/pnglibconf.h\
+	png.c pngerror.c\
+	pngget.c pngmem.c pngpread.c pngread.c pngrio.c pngrtran.c pngrutil.c\
+	pngset.c pngtrans.c pngwio.c pngwrite.c pngwtran.c pngwutil.c\
+	'$builddir'/pkg/zlib/libz.a
+file lib/libpng.a '$outdir'/libpng.a 644
+
+fetch git
