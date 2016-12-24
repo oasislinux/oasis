@@ -13,7 +13,7 @@ shift
 if([ -e src ]) rm -rf src
 
 if(! sha256sum -c sha256 >[2]/dev/null) {
-	curl -L -O -K url
+	curl -L -K url -O
 	sha256sum -c sha256
 }
 
