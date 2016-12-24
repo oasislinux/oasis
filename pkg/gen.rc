@@ -1,3 +1,4 @@
+subgen adobe-source-fonts
 subgen alsa-lib
 subgen alsa-utils
 subgen awk

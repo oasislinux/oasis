@@ -1,0 +1,46 @@
+fn fonts {
+	fontdir=$1
+	shift
+	for(font)
+		file share/fonts/$fontdir/$font.otf '$srcdir'/OTF/$font.otf 644
+}
+
+fonts source-code-pro\
+	SourceCodePro-Black\
+	SourceCodePro-BlackIt\
+	SourceCodePro-Bold\
+	SourceCodePro-BoldIt\
+	SourceCodePro-ExtraLight\
+	SourceCodePro-ExtraLightIt\
+	SourceCodePro-It\
+	SourceCodePro-Light\
+	SourceCodePro-LightIt\
+	SourceCodePro-Medium\
+	SourceCodePro-MediumIt\
+	SourceCodePro-Regular\
+	SourceCodePro-Semibold\
+	SourceCodePro-SemiboldIt
+
+fonts source-sans-pro\
+	SourceSansPro-Black\
+	SourceSansPro-BlackIt\
+	SourceSansPro-Bold\
+	SourceSansPro-BoldIt\
+	SourceSansPro-ExtraLight\
+	SourceSansPro-ExtraLightIt\
+	SourceSansPro-It\
+	SourceSansPro-Light\
+	SourceSansPro-LightIt\
+	SourceSansPro-Regular\
+	SourceSansPro-Semibold\
+	SourceSansPro-SemiboldIt
+
+fonts source-serif-pro\
+	SourceSerifPro-Black\
+	SourceSerifPro-Bold\
+	SourceSerifPro-ExtraLight\
+	SourceSerifPro-Light\
+	SourceSerifPro-Regular\
+	SourceSerifPro-Semibold
+
+fetch curl

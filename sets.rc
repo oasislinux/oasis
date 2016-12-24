@@ -57,6 +57,7 @@ net=(\
 	transmission\
 )
 desktop=(\
+	adobe-source-fonts\
 	dmenu\
 	st\
 	swc\
