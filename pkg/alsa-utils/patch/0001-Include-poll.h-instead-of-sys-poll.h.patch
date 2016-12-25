@@ -1,4 +1,4 @@
-From 16fb793861d8833c81b4a7bb0eb8372099699772 Mon Sep 17 00:00:00 2001
+From 570d67318c396c6d969b32e2f29379b637a25a19 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 23:48:43 -0700
 Subject: [PATCH] Include poll.h instead of sys/poll.h
@@ -12,12 +12,12 @@ Subject: [PATCH] Include poll.h instead of sys/poll.h
  5 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/amidi/amidi.c b/amidi/amidi.c
-index cedf18c..46f5767 100644
+index a8264f1..81c9ac4 100644
 --- a/amidi/amidi.c
 +++ b/amidi/amidi.c
-@@ -29,7 +29,7 @@
- #include <errno.h>
+@@ -31,7 +31,7 @@
  #include <signal.h>
+ #include <sys/timerfd.h>
  #include <sys/types.h>
 -#include <sys/poll.h>
 +#include <poll.h>
@@ -38,7 +38,7 @@ index f9b09cb..8241148 100644
  #include "amixer.h"
  #include "../alsamixer/volume_mapping.h"
 diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 2da7dda..172287b 100644
+index ee480f2..b45320a 100644
 --- a/aplay/aplay.c
 +++ b/aplay/aplay.c
 @@ -43,7 +43,7 @@
@@ -77,5 +77,5 @@ index 24c5d21..05892e0 100644
  #include "aconfig.h"
  #include "version.h"
 -- 
-2.9.2
+2.11.0
 
