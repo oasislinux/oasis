@@ -28,6 +28,7 @@ subgen libevdev
 subgen libevent
 subgen libffi
 subgen libfuse
+subgen libjpeg-turbo
 subgen libnl
 subgen libpciaccess
 subgen libpng
