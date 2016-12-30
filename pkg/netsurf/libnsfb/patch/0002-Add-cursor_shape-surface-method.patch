@@ -1,0 +1,106 @@
+From 82405df494578e57152a70c0736bd27d6b8eee34 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 30 Dec 2016 01:54:41 -0800
+Subject: [PATCH] Add cursor_shape surface method
+
+---
+ include/libnsfb_cursor.h | 25 +++++++++++++++++++++++++
+ src/cursor.c             |  8 ++++++++
+ src/surface.h            |  5 +++++
+ 3 files changed, 38 insertions(+)
+
+diff --git a/include/libnsfb_cursor.h b/include/libnsfb_cursor.h
+index 525bd83..a71f056 100644
+--- a/include/libnsfb_cursor.h
++++ b/include/libnsfb_cursor.h
+@@ -11,6 +11,28 @@
+ #ifndef _LIBNSFB_CURSOR_H
+ #define _LIBNSFB_CURSOR_H 1
+ 
++enum nsfb_cursor_shape_e {
++	NSFB_CURSOR_DEFAULT,
++	NSFB_CURSOR_POINT,
++	NSFB_CURSOR_CARET,
++	NSFB_CURSOR_MENU,
++	NSFB_CURSOR_UP,
++	NSFB_CURSOR_DOWN,
++	NSFB_CURSOR_LEFT,
++	NSFB_CURSOR_RIGHT,
++	NSFB_CURSOR_RU,
++	NSFB_CURSOR_LD,
++	NSFB_CURSOR_LU,
++	NSFB_CURSOR_RD,
++	NSFB_CURSOR_CROSS,
++	NSFB_CURSOR_MOVE,
++	NSFB_CURSOR_WAIT,
++	NSFB_CURSOR_HELP,
++	NSFB_CURSOR_NO_DROP,
++	NSFB_CURSOR_NOT_ALLOWED,
++	NSFB_CURSOR_PROGRESS,
++};
++
+ /** Initialise the cursor.
+  */
+ bool nsfb_cursor_init(nsfb_t *nsfb);
+@@ -34,6 +56,9 @@ bool nsfb_cursor_init(nsfb_t *nsfb);
+  */
+ bool nsfb_cursor_set(nsfb_t *nsfb, const nsfb_colour_t *pixel, int bmp_width, int bmp_height, int bmp_stride, int hotspot_x, int hotspot_y);
+ 
++/** Set cursor shape. */
++bool nsfb_cursor_shape_set(nsfb_t *nsfb, enum nsfb_cursor_shape_e shape);
++
+ /** Set cursor location.
+  *
+  * @param nsfb The frambuffer context.
+diff --git a/src/cursor.c b/src/cursor.c
+index 87633dc..96cc45b 100644
+--- a/src/cursor.c
++++ b/src/cursor.c
+@@ -56,6 +56,14 @@ bool nsfb_cursor_set(nsfb_t *nsfb, const nsfb_colour_t *pixel,
+     return nsfb->surface_rtns->cursor(nsfb, nsfb->cursor);
+ }
+ 
++bool nsfb_cursor_shape_set(nsfb_t *nsfb, enum nsfb_cursor_shape_e shape)
++{
++	if (nsfb->cursor == NULL)
++		return false;
++
++	return nsfb->surface_rtns->cursor_shape(nsfb, shape);
++}
++
+ bool nsfb_cursor_loc_set(nsfb_t *nsfb, const nsfb_bbox_t *loc)
+ {
+     if (nsfb->cursor == NULL) 
+diff --git a/src/surface.h b/src/surface.h
+index efb84fb..ac72cd9 100644
+--- a/src/surface.h
++++ b/src/surface.h
+@@ -2,6 +2,7 @@
+ 
+ #include "libnsfb.h" 
+ #include "libnsfb_plot.h"
++#include "libnsfb_cursor.h"
+ #include "nsfb.h"
+ 
+ /* surface default options */
+@@ -31,6 +32,9 @@ typedef int (nsfb_surfacefn_update_t)(nsfb_t *nsfb, nsfb_bbox_t *box);
+ /* surface cursor display */
+ typedef int (nsfb_surfacefn_cursor_t)(nsfb_t *nsfb, struct nsfb_cursor_s *cursor);
+ 
++/* surface cursor shape */
++typedef int (nsfb_surfacefn_cursor_shape_t)(nsfb_t *nsfb, enum nsfb_cursor_shape_e shape);
++
+ typedef struct nsfb_surface_rtns_s {
+     nsfb_surfacefn_defaults_t *defaults;
+     nsfb_surfacefn_init_t *initialise;
+@@ -41,6 +45,7 @@ typedef struct nsfb_surface_rtns_s {
+     nsfb_surfacefn_claim_t *claim;
+     nsfb_surfacefn_update_t *update;
+     nsfb_surfacefn_cursor_t *cursor;
++    nsfb_surfacefn_cursor_shape_t *cursor_shape;
+ } nsfb_surface_rtns_t;
+ 
+ void _nsfb_register_surface(const enum nsfb_type_e type, const nsfb_surface_rtns_t *rtns, const char *name);
+-- 
+2.11.0
+

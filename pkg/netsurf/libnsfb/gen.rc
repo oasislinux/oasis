@@ -18,7 +18,7 @@ lib libnsfb.a src/^(\
 	plot/^(api.c util.c generic.c 32bpp-xrgb8888.c 32bpp-xbgr8888.c 16bpp.c 8bpp.c)\
 	surface/surface.c\
 ) '$builddir'/pkg/^(\
-	wayland/libwayland-client.a.d\
+	wayland/^(libwayland-client.a.d libwayland-cursor.a)\
 	wayland-protocols/xdg-shell-unstable-v5-protocol.c.o\
 	libxkbcommon/libxkbcommon.a\
 )

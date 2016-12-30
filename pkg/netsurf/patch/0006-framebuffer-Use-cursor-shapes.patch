@@ -1,0 +1,154 @@
+From 735dc3f45505fffbc7c621dfef4adc7c997efcd4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 30 Dec 2016 01:50:18 -0800
+Subject: [PATCH] framebuffer: Use cursor shapes
+
+---
+ frontends/framebuffer/bitmap.c       |  1 +
+ frontends/framebuffer/fbtk/text.c    |  1 +
+ frontends/framebuffer/framebuffer.c  |  6 ++++++
+ frontends/framebuffer/framebuffer.h  |  1 +
+ frontends/framebuffer/gui.c          | 19 ++++++++++---------
+ frontends/framebuffer/localhistory.c |  1 +
+ 6 files changed, 20 insertions(+), 9 deletions(-)
+
+diff --git a/frontends/framebuffer/bitmap.c b/frontends/framebuffer/bitmap.c
+index 027e0122b..f3f6a6406 100644
+--- a/frontends/framebuffer/bitmap.c
++++ b/frontends/framebuffer/bitmap.c
+@@ -27,6 +27,7 @@
+ #include <assert.h>
+ #include <libnsfb.h>
+ #include <libnsfb_plot.h>
++#include <libnsfb_cursor.h>
+ 
+ #include "utils/log.h"
+ #include "utils/utils.h"
+diff --git a/frontends/framebuffer/fbtk/text.c b/frontends/framebuffer/fbtk/text.c
+index 95333a52f..90e0ed9ab 100644
+--- a/frontends/framebuffer/fbtk/text.c
++++ b/frontends/framebuffer/fbtk/text.c
+@@ -25,6 +25,7 @@
+ #include <libnsfb.h>
+ #include <libnsfb_plot.h>
+ #include <libnsfb_plot_util.h>
++#include <libnsfb_cursor.h>
+ #include <libnsfb_event.h>
+ #include <xkbcommon/xkbcommon.h>
+ 
+diff --git a/frontends/framebuffer/framebuffer.c b/frontends/framebuffer/framebuffer.c
+index 74c72fe71..9344b8277 100644
+--- a/frontends/framebuffer/framebuffer.c
++++ b/frontends/framebuffer/framebuffer.c
+@@ -456,6 +456,12 @@ bool
+ framebuffer_set_cursor(struct fbtk_bitmap *bm)
+ {
+     return nsfb_cursor_set(nsfb, (nsfb_colour_t *)bm->pixdata, bm->width, bm->height, bm->width, bm->hot_x, bm->hot_y);
++}
++
++bool
++framebuffer_set_cursor_shape(enum nsfb_cursor_shape_e shape)
++{
++    return nsfb_cursor_shape_set(nsfb, shape);
+ } 
+ 
+ nsfb_t *framebuffer_set_surface(nsfb_t *new_nsfb)
+diff --git a/frontends/framebuffer/framebuffer.h b/frontends/framebuffer/framebuffer.h
+index d99049f52..e4050f51d 100644
+--- a/frontends/framebuffer/framebuffer.h
++++ b/frontends/framebuffer/framebuffer.h
+@@ -30,6 +30,7 @@ nsfb_t *framebuffer_initialise(const char *fename, int width, int height, int bp
+ bool framebuffer_resize(nsfb_t *nsfb, int width, int height, int bpp);
+ void framebuffer_finalise(void);
+ bool framebuffer_set_cursor(struct fbtk_bitmap *bm);
++bool framebuffer_set_cursor_shape(enum nsfb_cursor_shape_e shape);
+ 
+ /** Set framebuffer surface to render into
+  *
+diff --git a/frontends/framebuffer/gui.c b/frontends/framebuffer/gui.c
+index 6bf5152c0..2704f3dbf 100644
+--- a/frontends/framebuffer/gui.c
++++ b/frontends/framebuffer/gui.c
+@@ -27,6 +27,7 @@
+ 
+ #include <libnsfb.h>
+ #include <libnsfb_plot.h>
++#include <libnsfb_cursor.h>
+ #include <libnsfb_event.h>
+ #include <xkbcommon/xkbcommon.h>
+ 
+@@ -1096,14 +1097,14 @@ fb_url_enter(void *pw, char *text)
+ static int
+ fb_url_move(fbtk_widget_t *widget, fbtk_callback_info *cbi)
+ {
+-	framebuffer_set_cursor(&caret_image);
++	framebuffer_set_cursor_shape(NSFB_CURSOR_CARET);
+ 	return 0;
+ }
+ 
+ static int
+ set_ptr_default_move(fbtk_widget_t *widget, fbtk_callback_info *cbi)
+ {
+-	framebuffer_set_cursor(&pointer_image);
++	framebuffer_set_cursor_shape(NSFB_CURSOR_DEFAULT);
+ 	return 0;
+ }
+ 
+@@ -1851,27 +1852,27 @@ gui_window_set_pointer(struct gui_window *g, gui_pointer_shape shape)
+ {
+ 	switch (shape) {
+ 	case GUI_POINTER_POINT:
+-		framebuffer_set_cursor(&hand_image);
++		framebuffer_set_cursor_shape(NSFB_CURSOR_POINT);
+ 		break;
+ 
+ 	case GUI_POINTER_CARET:
+-		framebuffer_set_cursor(&caret_image);
++		framebuffer_set_cursor_shape(NSFB_CURSOR_CARET);
+ 		break;
+ 
+ 	case GUI_POINTER_MENU:
+-		framebuffer_set_cursor(&menu_image);
++		framebuffer_set_cursor_shape(NSFB_CURSOR_MENU);
+ 		break;
+ 
+ 	case GUI_POINTER_PROGRESS:
+-		framebuffer_set_cursor(&progress_image);
++		framebuffer_set_cursor_shape(NSFB_CURSOR_PROGRESS);
+ 		break;
+ 
+ 	case GUI_POINTER_MOVE:
+-		framebuffer_set_cursor(&move_image);
++		framebuffer_set_cursor_shape(NSFB_CURSOR_MOVE);
+ 		break;
+ 
+ 	default:
+-		framebuffer_set_cursor(&pointer_image);
++		framebuffer_set_cursor_shape(NSFB_CURSOR_DEFAULT);
+ 		break;
+ 	}
+ }
+@@ -2145,7 +2146,7 @@ main(int argc, char** argv)
+ 	if (nsfb == NULL)
+ 		die("Unable to initialise framebuffer");
+ 
+-	framebuffer_set_cursor(&pointer_image);
++	framebuffer_set_cursor_shape(NSFB_CURSOR_DEFAULT);
+ 
+ 	if (fb_font_init() == false)
+ 		die("Unable to initialise the font system");
+diff --git a/frontends/framebuffer/localhistory.c b/frontends/framebuffer/localhistory.c
+index 3192f0747..97d0f2036 100644
+--- a/frontends/framebuffer/localhistory.c
++++ b/frontends/framebuffer/localhistory.c
+@@ -22,6 +22,7 @@
+ 
+ #include <libnsfb.h>
+ #include <libnsfb_plot.h>
++#include <libnsfb_cursor.h>
+ #include <libnsfb_event.h>
+ 
+ #include "desktop/browser_history.h"
+-- 
+2.11.0
+

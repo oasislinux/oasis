@@ -12,10 +12,13 @@
 #include <time.h>
 #include <unistd.h>
 #include <wayland-client.h>
+#include <wayland-cursor.h>
 #include <xdg-shell-unstable-v5-client-protocol.h>
 #include <xkbcommon/xkbcommon.h>
 
 #include "libnsfb.h"
+#include "libnsfb_plot.h"
+#include "libnsfb_cursor.h"
 #include "libnsfb_event.h"
 
 #include "nsfb.h"
@@ -76,6 +79,13 @@ struct wlstate {
 		bool started;
 		xkb_keysym_t sym;
 	} repeat;
+
+	struct {
+		enum nsfb_cursor_shape_e shape;
+		struct wl_surface *surface;
+		struct wl_cursor_theme *theme;
+		struct wl_cursor_image *image;
+	} cursor;
 };
 
 static nsfb_event_t *
@@ -274,10 +284,27 @@ static struct wl_keyboard_listener keyboard_listener = {
 };
 
 static void
+updatecursor(struct wlstate *wl)
+{
+	struct wl_cursor_image *image = wl->cursor.image;
+	struct wl_buffer *buffer;
+
+	if (!image)
+		return;
+	wl_pointer_set_cursor(wl->pointer, 0, wl->cursor.surface, image->hotspot_x, image->hotspot_y);
+	buffer = wl_cursor_image_get_buffer(wl->cursor.image);
+	wl_surface_damage(wl->cursor.surface, 0, 0, image->width, image->height);
+	wl_surface_attach(wl->cursor.surface, buffer, 0, 0);
+	wl_surface_commit(wl->cursor.surface);
+}
+
+static void
 pointer_enter(void *data, struct wl_pointer *pointer, uint32_t serial, struct wl_surface *surface, wl_fixed_t x, wl_fixed_t y)
 {
 	struct wlstate *wl = data;
 	nsfb_event_t *event;
+
+	updatecursor(wl);
 
 	event = queue_event(wl);
 	if (!event)
@@ -626,14 +653,21 @@ wayland_initialise(nsfb_t *nsfb)
 	xdg_shell_use_unstable_version(wl->shell, XDG_SHELL_VERSION_CURRENT);
 	xdg_shell_add_listener(wl->shell, &shell_listener, NULL);
 
+	wl->cursor.theme = wl_cursor_theme_load(NULL, 32, wl->shm);
+	if (!wl->cursor.theme)
+		return -1;
+	wl->cursor.surface = wl_compositor_create_surface(wl->compositor);
+	if (!wl->cursor.surface)
+		return -1;
 	wl->surface = wl_compositor_create_surface(wl->compositor);
 	if (!wl->surface)
 		return -1;
-
 	wl->xdg_surface = xdg_shell_get_xdg_surface(wl->shell, wl->surface);
 	if (!wl->xdg_surface)
 		return -1;
 	xdg_surface_add_listener(wl->xdg_surface, &xdg_surface_listener, wl);
+
+
 	wl_display_roundtrip(wl->display);
 
 	nsfb->surface_priv = wl;
@@ -667,6 +701,8 @@ wayland_finalise(nsfb_t *nsfb)
 		else
 			wl_pointer_destroy(wl->pointer);
 	}
+	wl_surface_destroy(wl->cursor.surface);
+	wl_cursor_theme_destroy(wl->cursor.theme);
 	wl_seat_destroy(wl->seat);
 	wl_shm_destroy(wl->shm);
 	wl_compositor_destroy(wl->compositor);
@@ -778,12 +814,98 @@ wayland_update(nsfb_t *nsfb, nsfb_bbox_t *box)
 	return 0;
 }
 
+static int
+wayland_cursor_shape(nsfb_t *nsfb, enum nsfb_cursor_shape_e shape)
+{
+	struct wlstate *wl = nsfb->surface_priv;
+	const char *str = NULL;
+	struct wl_cursor *cursor;
+	struct wl_cursor_image *image;
+	struct wl_buffer *buffer;
+
+	if (!wl || wl->cursor.shape == shape)
+		return 0;
+	wl->cursor.shape = shape;
+
+	switch (shape) {
+	case NSFB_CURSOR_DEFAULT:
+		str = "left_ptr";
+		break;
+	case NSFB_CURSOR_POINT:
+		str = "hand2";
+		break;
+	case NSFB_CURSOR_CARET:
+		str = "xterm";
+		break;
+	case NSFB_CURSOR_MENU:
+		break;
+	case NSFB_CURSOR_UP:
+		str = "top_side";
+		break;
+	case NSFB_CURSOR_DOWN:
+		str = "bottom_side";
+		break;
+	case NSFB_CURSOR_LEFT:
+		str = "left_side";
+		break;
+	case NSFB_CURSOR_RIGHT:
+		str = "right_side";
+		break;
+	case NSFB_CURSOR_LD:
+		str = "bottom_left_corner";
+		break;
+	case NSFB_CURSOR_RD:
+		str = "bottom_right_corner";
+		break;
+	case NSFB_CURSOR_LU:
+		str = "top_left_corner";
+		break;
+	case NSFB_CURSOR_RU:
+		str = "top_right_corner";
+		break;
+	case NSFB_CURSOR_CROSS:
+		str = "cross";
+		break;
+	case NSFB_CURSOR_MOVE:
+		str = "grabbing";
+		break;
+	case NSFB_CURSOR_WAIT:
+		str = "watch";
+		break;
+	case NSFB_CURSOR_HELP:
+		str = "question_arrow";
+		break;
+	case NSFB_CURSOR_NO_DROP:
+		break;
+	case NSFB_CURSOR_NOT_ALLOWED:
+		break;
+	case NSFB_CURSOR_PROGRESS:
+		str = "watch";
+		break;
+	}
+
+	if (!str)
+		str = "left_ptr";
+
+	cursor = wl_cursor_theme_get_cursor(wl->cursor.theme, str);
+	if (!cursor) {
+		printf("no cursor image: %s (%d)\n", str, shape);
+		return -1;
+	}
+
+	image = cursor->images[0];
+	wl->cursor.image = image;
+	updatecursor(wl);
+	return 0;
+}
+
 const nsfb_surface_rtns_t wayland_rtns = {
 	.initialise = wayland_initialise,
 	.finalise = wayland_finalise,
 	.input = wayland_input,
 	.update = wayland_update,
 	.geometry = wayland_geometry,
+	.cursor_shape = wayland_cursor_shape,
 };
 
 NSFB_SURFACE_DEF(wayland, NSFB_SURFACE_WL, &wayland_rtns)
