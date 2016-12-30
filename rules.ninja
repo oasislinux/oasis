@@ -68,20 +68,20 @@ rule waylandproto
   command = wayland-scanner $type $in $out.tmp && mv $out.tmp $out
 
 rule githash
-  command = rc ./scripts/hash.rc $builddir/$repo.git $args $in >$out.tmp && mv $out.tmp $out
+  command = rc ./scripts/hash.rc $repo $args $in >$out.tmp && mv $out.tmp $out
 
 rule gittree
-  command = rc ./scripts/tree.rc $builddir/$repo.git $repo_tag $in $out
+  command = rc ./scripts/tree.rc $repo $repo_tag $in $out
   restat = 1
 
 rule gitcommit
-  command = rc ./scripts/commit.rc $builddir/$repo.git $repo_branch $repo_tag $out
+  command = rc ./scripts/commit.rc $repo $repo_branch $repo_tag $out
 
 rule gitarchive
-  command = git -C $builddir/$repo.git archive -o $$PWD/$out $repo_tag
+  command = git -C $repo archive -o $$PWD/$out $repo_tag
 
 rule gitinit
-  command = mkdir -p $builddir/$repo.git && git -C $builddir/$repo.git init --bare && touch $out
+  command = git init $repo_flags $repo && touch $out
 
 rule fetchcurl
   command = rc ./scripts/fetch-curl.rc $dir $args && touch $out

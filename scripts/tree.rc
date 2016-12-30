@@ -9,11 +9,16 @@ out=$4
 
 fn checkstatus {}
 
-wd=`{pwd}
-cd $repo
+git -C $repo read-tree --empty
+git -C $repo update-index --index-info <$index
+tree=`{git -C $repo write-tree} ; checkstatus
+git -C $repo update-ref refs/tags/$tag $tree
 
-git read-tree --empty
-git update-index --index-info <$wd/$index
-tree=`{git write-tree} ; checkstatus
-git update-ref refs/tags/$tag $tree
-ln -f refs/tags/$tag $wd/$out
+if([ -e $out ]) {
+	oldtree=`{cat $out} ; checkstatus
+	if(~ $tree $oldtree)
+		exit 0
+}
+
+echo $tree >$out.tmp
+mv $out.tmp $out

@@ -20,7 +20,7 @@ tzdata=(\
 	factory\
 )
 build '$outdir'/tzdata.index awk '$srcdir'/$tzdata '|' scripts/hash.rc '$dir/tzdata.awk' ; with\
-	expr '-f $dir/tzdata.awk out=$outdir/zoneinfo repo=$builddir/$repo.git'
+	expr '-f $dir/tzdata.awk out=$outdir/zoneinfo repo=$repo'
 index_inputs=($index_inputs '$outdir'/tzdata.index)
 
 fetch git

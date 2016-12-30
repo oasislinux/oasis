@@ -16,7 +16,8 @@ python = python
 yacc = yacc
 zic = zic
 
-repo = root
+repo = $builddir/root.git
+repo_flags = --bare
 repo_tag = tree
 repo_branch = master
 

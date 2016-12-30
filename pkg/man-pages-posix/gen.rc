@@ -1,4 +1,4 @@
-rule manpages 'rc ./$dir/manpages.rc $builddir/$repo.git $out $srcdir $outdir' ; with\
+rule manpages 'rc ./$dir/manpages.rc $repo $out $srcdir $outdir' ; with\
 	deps gcc\
 	depfile '$out.d'
 build '$outdir'/manpages.index manpages '|' '$dir'/manpages.rc config.rc '||' '$outdir'/fetch.stamp

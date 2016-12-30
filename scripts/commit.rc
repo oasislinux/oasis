@@ -9,13 +9,11 @@ out=$4
 
 fn checkstatus {}
 
-wd=`{pwd}
-cd $repo
-
-if([ -f refs/heads/$branch ]) parent=(-p $branch)
+if(git -C $repo show-ref -q --verify refs/heads/$branch)
+	parent=(-p $branch)
 if not parent=()
 
 message='oasis built by '`{id -un}
-commit=`{echo $message | git commit-tree $tag $parent} ; checkstatus
-git update-ref refs/heads/$branch $commit
-ln -f refs/heads/$branch $wd/$out
+commit=`{echo $message | git -C $repo commit-tree $tag $parent} ; checkstatus
+git -C $repo update-ref refs/heads/$branch $commit
+echo $commit > $out.tmp && mv $out.tmp $out

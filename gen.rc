@@ -5,10 +5,10 @@ subgen util
 
 file .perms '$outdir'/root.perms 644
 
-build '$builddir/$repo.stamp' gitinit
-build '$builddir/$repo.tree' gittree '$outdir/root.index' '|' '$builddir/$repo.stamp' ./scripts/tree.rc
-build '$builddir/$repo.tar' gitarchive '|' '$builddir/$repo.tree'
-build '$builddir/$repo.commit' gitcommit '|' '$builddir/$repo.tree'
-build commit phony '$builddir/$repo.commit'
+build '$builddir'/root.stamp gitinit
+build '$builddir'/root.tree gittree '$outdir'/root.index '|' ./scripts/tree.rc '||' '$builddir'/root.stamp
+build '$builddir'/root.tar gitarchive '|' '$builddir'/root.tree
+build '$builddir'/root.commit gitcommit '|' '$builddir'/root.tree
+build commit phony '$builddir'/root.commit
 
-echo default '$builddir/$repo.tree'
+echo default '$builddir'/root.tree
