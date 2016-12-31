@@ -240,6 +240,7 @@
 [submodule "pkg/vis/src"]
 	path = pkg/vis/src
 	url = https://github.com/martanne/vis
+	ignore = all
 [submodule "pkg/wayland-protocols/src"]
 	path = pkg/wayland-protocols/src
 	url = https://anongit.freedesktop.org/git/wayland/wayland-protocols.git

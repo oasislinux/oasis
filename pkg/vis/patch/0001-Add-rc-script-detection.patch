@@ -1,0 +1,26 @@
+From 0375c1d0c147b9ec7e8b273044de44c6de760f81 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 30 Dec 2016 20:34:04 -0800
+Subject: [PATCH] Add rc script detection
+
+---
+ lua/plugins/filetype.lua | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/lua/plugins/filetype.lua b/lua/plugins/filetype.lua
+index 819a246..9bbfadc 100644
+--- a/lua/plugins/filetype.lua
++++ b/lua/plugins/filetype.lua
+@@ -290,6 +290,9 @@ vis.ftdetect.filetypes = {
+ 		ext = { "%.sc$", "%.py$", "%.pyw$" },
+ 		mime = { "text/x-python" },
+ 	},
++	rc = {
++		ext = { "%.rc$" },
++	},
+ 	rebol = {
+ 		ext = { "%.r$", "%.reb$" },
+ 	},
+-- 
+2.11.0
+
