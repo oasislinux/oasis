@@ -152,6 +152,7 @@ lexers=(\
 		pure.lua\
 		python.lua\
 		rails.lua\
+		rc.lua\
 		rebol.lua\
 		rest.lua\
 		rexx.lua\
