@@ -3,3 +3,4 @@
 #define Objsuffix ".o"
 #define Symprefix ""
 #define Defaultasm Gnugaself
+#define Sysinit

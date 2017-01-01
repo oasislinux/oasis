@@ -43,7 +43,7 @@ file bin/6m '$outdir'/bin/6m 755
 exe bin/muse muse/muse.c libparse.a libutil.a
 file bin/muse '$outdir'/bin/muse 755
 
-man -d doc 1 mc.1 muse.1
+man -d doc 1 6m.1 muse.1
 
 build '$outdir'/_myrrt.s cat '$srcdir'/rt/^(start-linux.s common.s abort-linux.s)
 build '$outdir'/_myrrt.o as '$outdir'/_myrrt.s
