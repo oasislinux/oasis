@@ -46,10 +46,6 @@ lib libutil.a libutil/^(\
 	writeall.c\
 )
 lib libutf.a libutf/^(\
-	rune.c\
-	runetype.c\
-	utf.c\
-	utftorunestr.c\
 	fgetrune.c\
 	fputrune.c\
 	isalnumrune.c\
@@ -64,7 +60,11 @@ lib libutf.a libutf/^(\
 	istitlerune.c\
 	isxdigitrune.c\
 	lowerrune.c\
+	rune.c\
+	runetype.c\
 	upperrune.c\
+	utf.c\
+	utftorunestr.c\
 )
 
 rule getconf '$srcdir/getconf.sh >$out.tmp && mv $out.tmp $out'
@@ -145,6 +145,7 @@ x printf
 x pwd
 x readlink
 x renice
+x rev
 x rm
 x rmdir
 x sed
