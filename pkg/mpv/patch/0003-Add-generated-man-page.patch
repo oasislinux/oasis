@@ -1,22 +1,22 @@
-From 85c80cb0f48c4d51dd5192b79c543a4b8fd863ec Mon Sep 17 00:00:00 2001
+From 7c5945cec9829ba1d6d692359b9d618669935955 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
 
 This requires python and rst2man to generate.
 
-$ rst2man.py DOCS/man/mpv.rst DOCS/man/mpv.1
+$ rst2man.py --strip-elements-with-class=contents DOCS/man/mpv.rst DOCS/man/mpv.1
 ---
- DOCS/man/mpv.1 | 14137 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 14137 insertions(+)
+ DOCS/man/mpv.1 | 14084 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 14084 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 000000000..c411fc606
+index 000000000..f5fa84578
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,14137 @@
+@@ -0,0 +1,14084 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -246,9 +246,6 @@ index 000000000..c411fc606
 +.TP
 +.B command + f (OSX only)
 +Toggle fullscreen (see also \fB\-\-fs\fP).
-+.TP
-+.B command + [ and command + ] (OSX only)
-+Set video window alpha.
 +.UNINDENT
 +.sp
 +(The following keys are valid if you have a keyboard with multimedia keys.)
@@ -285,12 +282,38 @@ index 000000000..c411fc606
 +.UNINDENT
 +.SH USAGE
 +.sp
++Command line arguments starting with \fB\-\fP are interpreted as options,
++everything else as filenames or URLs. All options except \fIflag\fP options (or
++choice options which include \fByes\fP) require a parameter in the form
++\fB\-\-option=value\fP\&.
++.sp
++One exception is the lone \fB\-\fP (without anything else), which means media data
++will be read from stdin. Also, \fB\-\-\fP (without anything else) will make the
++player interpret all following arguments as filenames, even if they start with
++\fB\-\fP\&. (To play a file named \fB\-\fP, you need to use \fB\&./\-\fP\&.)
++.sp
 +Every \fIflag\fP option has a \fIno\-flag\fP counterpart, e.g. the opposite of the
 +\fB\-\-fs\fP option is \fB\-\-no\-fs\fP\&. \fB\-\-fs=yes\fP is same as \fB\-\-fs\fP, \fB\-\-fs=no\fP
 +is the same as \fB\-\-no\-fs\fP\&.
 +.sp
 +If an option is marked as \fI(XXX only)\fP, it will only work in combination with
 +the \fIXXX\fP option or if \fIXXX\fP is compiled in.
++.SS Legacy option syntax
++.sp
++The \fB\-\-option=value\fP syntax is not strictly enforced, and the alternative
++legacy syntax \fB\-option value\fP and \fB\-\-option value\fP will also work. This is
++mostly  for compatibility with MPlayer. Using these should be avoided. Their
++semantics can change any time in the future.
++.sp
++For example, the alternative syntax will consider an argument following the
++option a filename. \fBmpv \-fs no\fP will attempt to play a file named \fBno\fP,
++because \fB\-\-fs\fP is a flag option that requires no parameter. If an option
++changes and its parameter becomes optional, then a command line using the
++alternative syntax will break.
++.sp
++Currently, the parser makes no difference whether an option starts with \fB\-\-\fP
++or a single \fB\-\fP\&. This might also change in the future, and \fB\-\-option value\fP
++might always interpret \fBvalue\fP as filename in order to reduce ambiguities.
 +.SS Escaping spaces and other special characters
 +.sp
 +Keep in mind that the shell will partially parse and mangle the arguments you
@@ -1123,11 +1146,11 @@ index 000000000..c411fc606
 +speed higher than normal automatically inserts the \fBscaletempo\fP audio
 +filter.
 +.TP
-+.B \fB\-\-loop=<N|inf|force|no>\fP
++.B \fB\-\-loop=<N|inf|force|no>\fP, \fB\-\-loop\fP
 +Loops playback \fBN\fP times. A value of \fB1\fP plays it one time (default),
 +\fB2\fP two times, etc. \fBinf\fP means forever. \fBno\fP is the same as \fB1\fP and
 +disables looping. If several files are specified on command line, the
-+entire playlist is looped.
++entire playlist is looped. \fB\-\-loop\fP is the same as \fB\-\-loop=inf\fP\&.
 +.sp
 +The \fBforce\fP mode is like \fBinf\fP, but does not skip playlist entries
 +which have been marked as failing. This means the player might waste CPU
@@ -1276,6 +1299,26 @@ index 000000000..c411fc606
 +Note that \fB\-\-playlist\fP always loads all entries, so you use that instead
 +if you really have the need for this functionality.
 +.TP
++.B \fB\-\-access\-references=<yes|no>\fP
++Follow any references in the file being opened (default: yes). Disabling
++this is helpful if the file is automatically scanned (e.g. thumbnail
++generation). If the thumbnail scanner for example encounters a playlist
++file, which contains network URLs, and the scanner should not open these,
++enabling this option will prevent it. This option also disables ordered
++chapters, mov reference files, opening of archives, and a number of other
++features.
++.sp
++On older FFmpeg versions, this will not work in some cases. Some FFmpeg
++demuxers might not respect this option.
++.sp
++This option does not prevent opening of paired subtitle files and such. Use
++\fB\-\-autoload\-files=no\fP to prevent this.
++.sp
++This option does not always work if you open non\-files (for example using
++\fBdvd://directory\fP would open a whole bunch of files in the given
++directory). Prefixing the filename with \fB\&./\fP if it doesn\(aqt start with
++a \fB/\fP will avoid this.
++.TP
 +.B \fB\-\-loop\-file=<N|inf|no>\fP
 +Loop a single file N times. \fBinf\fP means forever, \fBno\fP means normal
 +playback. For compatibility, \fB\-\-loop\-file\fP and \fB\-\-loop\-file=yes\fP are
@@ -1342,9 +1385,10 @@ index 000000000..c411fc606
 +.B \fB\-\-help\fP, \fB\-\-h\fP
 +Show short summary of options.
 +.sp
-+You can also pass a shell pattern to this option, which will list all
-+matching top\-level options, e.g. \fB\-\-h=*scale*\fP for all options that
-+contain the word "scale".
++You can also pass a string to this option, which will list all top\-level
++options which contain the string in the name, e.g. \fB\-\-h=scale\fP for all
++options that contain the word \fBscale\fP\&. The special string \fB*\fP lists
++all top\-level options.
 +.TP
 +.B \fB\-v\fP
 +Increment verbosity level, one level for each \fB\-v\fP found on the command
@@ -1570,7 +1614,7 @@ index 000000000..c411fc606
 +Specify the video output backend to be used. See \fI\%VIDEO OUTPUT DRIVERS\fP for
 +details and descriptions of available drivers.
 +.TP
-+.B \fB\-\-vd=<[+|\-]family1:(*|decoder1),[+|\-]family2:(*|decoder2),...[\-]>\fP
++.B \fB\-\-vd=<...>\fP
 +Specify a priority list of video decoders to be used, according to their
 +family and name. See \fB\-\-ad\fP for further details. Both of these options
 +use the same syntax and semantics; the only difference is that they
@@ -1795,8 +1839,8 @@ index 000000000..c411fc606
 +mechanism in the opengl output path. To use this deinterlacing you
 +must pass the option: \fBvd\-lavc\-o=deint=[weave|bob|adaptive]\fP\&. Pass
 +\fBweave\fP to not attempt any deinterlacing.
-+10bit HEVC is available if the hardware supports it but it will be
-+rounded down to 8 bits.
++10 and 12bit HEVC is available if the hardware supports it and a
++sufficiently new driver (> 375.xx) is used.
 +.sp
 +\fBcuda\-copy\fP has the same behaviour as \fBcuda\fP \- including the ability
 +to deinterlace inside the decoder. However, traditional deinterlacing
@@ -2265,11 +2309,10 @@ index 000000000..c411fc606
 +Possible codecs are \fBac3\fP, \fBdts\fP, \fBdts\-hd\fP\&. Multiple codecs can be
 +specified by separating them with \fB,\fP\&. \fBdts\fP refers to low bitrate DTS
 +core, while \fBdts\-hd\fP refers to DTS MA (receiver and OS support varies).
-+You should only use either \fBdts\fP or \fBdts\-hd\fP (if both are specified,
-+and \fBdts\fP comes first, only \fBdts\fP will be used).
++If both \fBdts\fP and \fBdts\-hd\fP are specified, it behaves equivalent to
++specifying \fBdts\-hd\fP only.
 +.sp
-+In general, all codecs in the \fBspdif\fP family listed with \fB\-\-ad=help\fP
-+are supported in theory.
++In earlier mpv versions
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Warning"
@@ -2282,29 +2325,33 @@ index 000000000..c411fc606
 +.TP
 +.B \fB\-\-ad=<[+|\-]family1:(*|decoder1),[+|\-]family2:(*|decoder2),...[\-]>\fP
 +Specify a priority list of audio decoders to be used, according to their
-+family and decoder name. Entries like \fBfamily:*\fP prioritize all decoders
-+of the given family. When determining which decoder to use, the first
-+decoder that matches the audio format is selected. If that is unavailable,
-+the next decoder is used. Finally, it tries all other decoders that are not
++decoder name. When determining which decoder to use, the first decoder that
++matches the audio format is selected. If that is unavailable, the next
++decoder is used. Finally, it tries all other decoders that are not
 +explicitly selected or rejected by the option.
++.sp
++Specifying family names is deprecated. Entries like \fBfamily:*\fP prioritize
++all decoders of the given family.
 +.sp
 +\fB\-\fP at the end of the list suppresses fallback on other available
 +decoders not on the \fB\-\-ad\fP list. \fB+\fP in front of an entry forces the
 +decoder. Both of these should not normally be used, because they break
-+normal decoder auto\-selection!
++normal decoder auto\-selection! Both of these methods are deprecated.
 +.sp
-+\fB\-\fP in front of an entry disables selection of the decoder.
++\fB\-\fP in front of an entry disables selection of the decoder. This is
++deprecated.
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Examples"
 +.INDENT 0.0
 +.TP
-+.B \fB\-\-ad=lavc:mp3float\fP
++.B \fB\-\-ad=mp3float\fP
 +Prefer the FFmpeg/Libav \fBmp3float\fP decoder over all other MP3
 +decoders.
 +.TP
-+.B \fB\-\-ad=spdif:ac3,lavc:*\fP
-+Always prefer spdif AC3 over FFmpeg/Libav over anything else.
++.B \fB\-\-ad=lavc:mp3float\fP
++Prefer the FFmpeg/Libav \fBmp3float\fP decoder over all other MP3
++decoders. (Using deprecated family syntax.)
 +.TP
 +.B \fB\-\-ad=help\fP
 +List all available decoders.
@@ -3034,82 +3081,43 @@ index 000000000..c411fc606
 +.UNINDENT
 +.TP
 +.B \fB\-\-sub\-codepage=<codepage>\fP
-+If your system supports \fBiconv(3)\fP, you can use this option to specify
-+the subtitle codepage. By default, uchardet will be used to guess the
-+charset. If mpv is not compiled with uchardet, enca will be used.
-+If mpv is compiled with neither uchardet nor enca, \fBUTF\-8:UTF\-8\-BROKEN\fP
-+is the default, which means it will try to use UTF\-8, otherwise the
-+\fBUTF\-8\-BROKEN\fP pseudo codepage (see below).
++You can use this option to specify the subtitle codepage. uchardet will be
++used to guess the charset. (If mpv was not compiled with uchardet, then
++\fButf\-8\fP is the effective default.)
 +.sp
-+The default value for this option is \fBauto\fP, whose actual effect depends
-+on whether ENCA is compiled.
++The default value for this option is \fBauto\fP, which enables autodetection.
++.sp
++The following steps are taken to determine the final codepage, in order:
 +.INDENT 7.0
-+.INDENT 3.5
-+.IP "Warning"
-+.sp
-+If you force the charset, even subtitles that are known to be
-+UTF\-8 will be recoded, which is perhaps not what you expect. Prefix
-+codepages with \fButf8:\fP if you want the codepage to be used only if the
-+input is not valid UTF\-8.
-+.UNINDENT
-+.UNINDENT
-+.INDENT 7.0
-+.INDENT 3.5
-+.IP "Examples"
-+.INDENT 0.0
 +.IP \(bu 2
-+\fB\-\-sub\-codepage=utf8:latin2\fP Use Latin 2 if input is not UTF\-8.
++if the specific codepage has a \fB+\fP, use that codepage
 +.IP \(bu 2
-+\fB\-\-sub\-codepage=cp1250\fP Always force recoding to cp1250.
++if the data looks like UTF\-8, assume it is UTF\-8
++.IP \(bu 2
++if \fB\-\-sub\-codepage\fP is set to a specific codepage, use that
++.IP \(bu 2
++run uchardet, and if successful, use that
++.IP \(bu 2
++otherwise, use \fBUTF\-8\-BROKEN\fP
 +.UNINDENT
-+.UNINDENT
-+.UNINDENT
-+.sp
-+The pseudo codepage \fBUTF\-8\-BROKEN\fP is used internally. When it
-+is the codepage, subtitles are interpreted as UTF\-8 with "Latin 1" as
-+fallback for bytes which are not valid UTF\-8 sequences. iconv is
-+never involved in this mode.
-+.sp
-+If the player was compiled with ENCA support, you can control it with the
-+following syntax:
-+.sp
-+\fB\-\-sub\-codepage=enca:<language>:<fallback codepage>\fP
-+.sp
-+Language is specified using a two letter code to help ENCA detect
-+the codepage automatically. If an invalid language code is
-+entered, mpv will complain and list valid languages.  (Note
-+however that this list will only be printed when the conversion code is actually
-+called, for example when loading an external subtitle). The
-+fallback codepage is used if autodetection fails.  If no fallback
-+is specified, \fBUTF\-8\-BROKEN\fP is used.
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Examples"
 +.INDENT 0.0
 +.IP \(bu 2
-+\fB\-\-sub\-codepage=enca:pl:cp1250\fP guess the encoding, assuming the subtitles
-+are Polish, fall back on cp1250
++\fB\-\-sub\-codepage=latin2\fP Use Latin 2 if input is not UTF\-8.
 +.IP \(bu 2
-+\fB\-\-sub\-codepage=enca:pl\fP guess the encoding for Polish, fall back on UTF\-8.
-+.IP \(bu 2
-+\fB\-\-sub\-codepage=enca\fP try universal detection, fall back on UTF\-8.
++\fB\-\-sub\-codepage=+cp1250\fP Always force recoding to cp1250.
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
 +.sp
-+If the player was compiled with libguess support, you can use it with:
++The pseudo codepage \fBUTF\-8\-BROKEN\fP is used internally. If it\(aqs set,
++subtitles are interpreted as UTF\-8 with "Latin 1" as fallback for bytes
++which are not valid UTF\-8 sequences. iconv is never involved in this mode.
 +.sp
-+\fB\-\-sub\-codepage=guess:<language>:<fallback codepage>\fP
-+.sp
-+libguess always needs a language. There is no universal detection
-+mode. Use \fB\-\-sub\-codepage=guess:help\fP to get a list of
-+languages subject to the same caveat as with ENCA above.
-+.sp
-+If the player was compiled with uchardet support you can use it with:
-+.sp
-+\fB\-\-sub\-codepage=uchardet\fP
-+.sp
-+This mode doesn\(aqt take language or fallback codepage.
++This option changed in mpv 0.23.0. The old syntax is still emulated to some
++degree.
 +.TP
 +.B \fB\-\-sub\-fix\-timing\fP, \fB\-\-no\-sub\-fix\-timing\fP
 +By default, subtitle timing is adjusted to remove minor gaps or overlaps
@@ -3411,15 +3419,6 @@ index 000000000..c411fc606
 +.UNINDENT
 +.sp
 +See also \fB\-\-screen\fP\&.
-+.UNINDENT
-+.sp
-+\fB\-\-fs\-black\-out\-screens\fP
-+.INDENT 0.0
-+.INDENT 3.5
-+OS X only. Black out other displays when going fullscreen.
-+.UNINDENT
-+.UNINDENT
-+.INDENT 0.0
 +.TP
 +.B \fB\-\-keep\-open=<yes|no|always>\fP
 +Do not terminate when playing or seeking beyond the end of the file, and
@@ -3583,7 +3582,7 @@ index 000000000..c411fc606
 +.B \fB50%x50%\fP
 +Forces the window width and height to half the screen width and
 +height. Will show black borders to compensate for the video aspect
-+ration (with most VOs and without \fB\-\-no\-keepaspect\fP).
++ratio (with most VOs and without \fB\-\-no\-keepaspect\fP).
 +.TP
 +.B \fB50%+10+10\fP
 +Sets the window to half the screen widths, and positions it 10
@@ -3737,7 +3736,7 @@ index 000000000..c411fc606
 +ensure it does not cause security problems (e.g. make sure to use full
 +paths if "." is in your path like on Windows). It also only works when
 +playing video (i.e. not with \fB\-\-no\-video\fP but works with
-+\fB\-vo=null\fP).
++\fB\-\-vo=null\fP).
 +.UNINDENT
 +.UNINDENT
 +.sp
@@ -5440,23 +5439,7 @@ index 000000000..c411fc606
 +.SS OpenGL renderer options
 +.sp
 +The following video options are currently all specific to \fB\-\-vo=opengl\fP and
-+\fB\-vo=opengl\-cb\fP only, which are the only VOs that implement them.
-+.INDENT 0.0
-+.TP
-+.B \fB\-\-opengl\-dumb\-mode=<yes|no>\fP
-+This mode is extremely restricted, and will disable most extended OpenGL
-+features. This includes high quality scalers and custom shaders!
-+.sp
-+It is intended for hardware that does not support FBOs (including GLES,
-+which supports it insufficiently), or to get some more performance out of
-+bad or old hardware.
-+.sp
-+This mode is forced automatically if needed, and this option is mostly
-+useful for debugging. It\(aqs also enabled automatically if nothing uses
-+features which require FBOs.
-+.sp
-+This option might be silently removed in the future.
-+.UNINDENT
++\fB\-\-vo=opengl\-cb\fP only, which are the only VOs that implement them.
 +.sp
 +\fB\-\-scale=<filter>\fP
 +.INDENT 0.0
@@ -6390,6 +6373,20 @@ index 000000000..c411fc606
 +the renderer is going to wait for a while after rendering, instead of
 +flipping GL front and backbuffers immediately (i.e. it doesn\(aqt call it
 +in display\-sync mode).
++.TP
++.B \fB\-\-opengl\-dumb\-mode=<yes|no>\fP
++This mode is extremely restricted, and will disable most extended OpenGL
++features. This includes high quality scalers and custom shaders!
++.sp
++It is intended for hardware that does not support FBOs (including GLES,
++which supports it insufficiently), or to get some more performance out of
++bad or old hardware.
++.sp
++This mode is forced automatically if needed, and this option is mostly
++useful for debugging. It\(aqs also enabled automatically if nothing uses
++features which require FBOs.
++.sp
++This option might be silently removed in the future.
 +.UNINDENT
 +.SS Miscellaneous
 +.INDENT 0.0
@@ -6663,13 +6660,6 @@ index 000000000..c411fc606
 +.sp
 +If the list has a trailing \(aq,\(aq, mpv will fall back on drivers not contained
 +in the list.
-+.INDENT 0.0
-+.TP
-+.B \fB\-\-ao\-defaults=<driver1[:parameter1:parameter2:...],driver2,...>\fP
-+Set defaults for each driver.
-+.sp
-+Deprecated. No replacement.
-+.UNINDENT
 +.sp
 +\fBNOTE:\fP
 +.INDENT 0.0
@@ -7000,13 +6990,6 @@ index 000000000..c411fc606
 +.sp
 +If the list has a trailing \fB,\fP, mpv will fall back on drivers not contained
 +in the list.
-+.INDENT 0.0
-+.TP
-+.B \fB\-\-vo\-defaults=<driver1[:parameter1:parameter2:...],driver2,...>\fP
-+Set defaults for each driver.
-+.sp
-+Deprecated. No replacement.
-+.UNINDENT
 +.sp
 +\fBNOTE:\fP
 +.INDENT 0.0
@@ -7606,9 +7589,9 @@ index 000000000..c411fc606
 +.sp
 +This is deprecated. Use \fB\-\-vo=opengl\fP instead, which is the default and
 +provides the same functionality. The \fBrpi\fP VO will be removed in
-+mpv 0.22.0. Its functionality was folded into \-\-vo=opengl, which now uses
++mpv 0.23.0. Its functionality was folded into \-\-vo=opengl, which now uses
 +RPI hardware decoding by treating it as a hardware overlay (without applying
-+GL filtering). Also to be changed in 0.22.0: the \-\-fs flag will be reset to
++GL filtering). Also to be changed in 0.23.0: the \-\-fs flag will be reset to
 +"no" by default (like on the other platforms).
 +.sp
 +The following deprecated global options are supported by this video output:
@@ -9410,15 +9393,6 @@ index 000000000..c411fc606
 +Apply high quality VDPAU scaling (needs capable hardware).
 +.UNINDENT
 +.UNINDENT
-+.TP
-+.B \fBvdpaurb\fP
-+This filter is deprecated. Use \fB\-\-hwdec=vdpau\-copy\fP instead.
-+.sp
-+VDPAU video read back. Works with \fB\-\-vo=vdpau\fP and \fB\-\-vo=opengl\fP only.
-+This filter will read back frames decoded by VDPAU so that other filters,
-+which are not normally compatible with VDPAU, can be used like normal.
-+This filter must be specified before \fBvdpaupp\fP in the filter chain if
-+\fBvdpaupp\fP is used.
 +.TP
 +.B \fBd3d11vpp\fP
 +Direct3D 11 video post processing. Currently requires D3D11 hardware
@@ -12002,10 +11976,9 @@ index 000000000..c411fc606
 +Strictly speaking, option access via API (e.g. \fBmpv_set_option_string()\fP)
 +has the same problem, and it\(aqs only a difference between CLI/API.
 +.TP
-+.B \fBdemuxer\fP, \fBidle\fP, \fBlength\fP, \fBaudio\-samplerate\fP, \fBaudio\-channels\fP, \fBaudio\-format\fP, \fBfps\fP, \fBcache\fP, \fBplaylist\-pos\fP, \fBchapter\fP
-+These behave completely different as property, but are deprecated (newer
-+aliases which don\(aqt conflict have been added). After the deprecation period
-+they will be changed to the proper option behavior.
++.B \fBplaylist\-pos\fP, \fBchapter\fP
++These properties behave different from the deprecated options with the same
++names.
 +.UNINDENT
 +.SS Property Expansion
 +.sp
@@ -12618,9 +12591,8 @@ index 000000000..c411fc606
 +.sp
 +When the player quits, all scripts will be asked to terminate. This happens via
 +a \fBshutdown\fP event, which by default will make the event loop return. If your
-+script got into an endless loop, mpv will probably behave fine during playback
-+(unless the player is suspended, see \fBmp.suspend\fP), but it won\(aqt terminate
-+when quitting, because it\(aqs waiting on your script.
++script got into an endless loop, mpv will probably behave fine during playback,
++but it won\(aqt terminate when quitting, because it\(aqs waiting on your script.
 +.sp
 +Internally, the C code will call the Lua function \fBmp_event_loop\fP after
 +loading a Lua script. This function is normally defined by the default prelude
@@ -13028,27 +13000,16 @@ index 000000000..c411fc606
 +.INDENT 0.0
 +.TP
 +.B \fBmp.suspend()\fP
-+This function has been deprecated in mpv 0.21.0 (no replacement).
-+.sp
-+Suspend the mpv main loop. There is a long\-winded explanation of this in
-+the C API function \fBmpv_suspend()\fP\&. In short, this prevents the player
-+from displaying the next video frame, so that you don\(aqt get blocked when
-+trying to access the player.
-+.sp
-+Before mpv 0.17.0, this was automatically called by the event handler.
++This function has been deprecated in mpv 0.21.0 and does nothing starting
++with mpv 0.23.0 (no replacement).
 +.TP
 +.B \fBmp.resume()\fP
-+This function has been deprecated in mpv 0.21.0 (no replacement).
-+.sp
-+Undo one \fBmp.suspend()\fP call. \fBmp.suspend()\fP increments an internal
-+counter, and \fBmp.resume()\fP decrements it. When 0 is reached, the player
-+is actually resumed.
++This function has been deprecated in mpv 0.21.0 and does nothing starting
++with mpv 0.23.0 (no replacement).
 +.TP
 +.B \fBmp.resume_all()\fP
-+This function has been deprecated in mpv 0.21.0 (no replacement).
-+.sp
-+This resets the internal suspend counter and resumes the player. (It\(aqs
-+like calling \fBmp.resume()\fP until the player is actually resumed.)
++This function has been deprecated in mpv 0.21.0 and does nothing starting
++with mpv 0.23.0 (no replacement).
 +.TP
 +.B \fBmp.get_wakeup_pipe()\fP
 +Calls \fBmpv_get_wakeup_pipe()\fP and returns the read end of the wakeup
@@ -13837,20 +13798,6 @@ index 000000000..c411fc606
 +.sp
 +By default, most events are enabled, and there is not much use for this
 +command.
-+.TP
-+.B \fBsuspend\fP
-+Deprecated, will be removed completely in 0.21.0.
-+.sp
-+Suspend the mpv main loop. There is a long\-winded explanation of this in
-+the C API function \fBmpv_suspend()\fP\&. In short, this prevents the player
-+from displaying the next video frame, so that you don\(aqt get blocked when
-+trying to access the player.
-+.TP
-+.B \fBresume\fP
-+Deprecated, will be removed completely in 0.21.0.
-+.sp
-+Undo one \fBsuspend\fP call. \fBsuspend\fP increments an internal counter, and
-+\fBresume\fP decrements it. When 0 is reached, the player is actually resumed.
 +.TP
 +.B \fBget_version\fP
 +Returns the client API version the C API of the remote mpv instance
