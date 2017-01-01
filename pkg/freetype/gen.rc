@@ -13,31 +13,34 @@ cflags\
 cc src/gzip/ftgzip.c '||' pkg/zlib/headers
 lib libfreetype.a builds/unix/ftsystem.c src/^(\
 	base/^(\
-		ftdebug.c ftbase.c ftbbox.c ftbdf.c ftbitmap.c ftcid.c\
-		ftfntfmt.c ftfstype.c ftgasp.c ftglyph.c ftgxval.c ftlcdfil.c\
-		ftmm.c ftotval.c ftpatent.c ftpfr.c ftstroke.c ftsynth.c\
-		fttype1.c ftwinfnt.c ftinit.c\
+		ftdebug.c ftinit.c ftbase.c\
+		ftbbox.c ftbdf.c ftbitmap.c ftcid.c ftfntfmt.c ftfstype.c\
+		ftgasp.c ftglyph.c ftgxval.c ftlcdfil.c ftmm.c ftotval.c\
+		ftpatent.c ftpfr.c ftstroke.c ftsynth.c fttype1.c ftwinfnt.c\
 	)\
-	autofit/autofit.c\
-	bdf/bdf.c\
-	bzip2/ftbzip2.c\
-	cache/ftcache.c\
-	cff/cff.c\
-	cid/type1cid.c\
-	gzip/ftgzip.c.o\
-	lzw/ftlzw.c\
-	pcf/pcf.c\
-	pfr/pfr.c\
-	psaux/psaux.c\
-	pshinter/pshinter.c\
-	psnames/psnames.c\
-	raster/raster.c\
-	sfnt/sfnt.c\
-	smooth/smooth.c\
 	truetype/truetype.c\
 	type1/type1.c\
+	cff/cff.c\
+	cid/type1cid.c\
+	pfr/pfr.c\
 	type42/type42.c\
 	winfonts/winfnt.c\
+	pcf/pcf.c\
+	bdf/bdf.c\
+	sfnt/sfnt.c\
+	\
+	autofit/autofit.c\
+	pshinter/pshinter.c\
+	\
+	raster/raster.c\
+	smooth/smooth.c\
+	\
+	cache/ftcache.c\
+	gzip/ftgzip.c.o\
+	lzw/ftlzw.c\
+	bzip2/ftbzip2.c\
+	psaux/psaux.c\
+	psnames/psnames.c\
 ) '$builddir'/pkg/zlib/libz.a
 
 fetch git
