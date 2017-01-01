@@ -49,4 +49,22 @@ build '$outdir'/_myrrt.s cat '$srcdir'/rt/^(start-linux.s common.s abort-linux.s
 build '$outdir'/_myrrt.o as '$outdir'/_myrrt.s
 file lib/myr/_myrrt.o '$outdir'/_myrrt.o 644
 
+# TODO: Add flag to 6m to change quote search directory.
+mcflags=('$mcflags' \
+	-I '"$$OLDPWD"/$outdir/lib/sys' \
+	-I '"$$OLDPWD"/$outdir/lib/std' \
+	-I '"$$OLDPWD"/$outdir/lib/bio' \
+	-I '"$$OLDPWD"/$outdir/lib/regex' \
+	-I '"$$OLDPWD"/$outdir/lib/thread' \
+) set mcflags $"mcflags
+
+include '$dir'/bld.ninja
+for(lib in bio crypto date escfmt fileutil inifile regex std sys testr thread) {
+	file lib/myr/lib$lib.use '$outdir'/lib/$lib/lib$lib.use 644
+	file lib/myr/lib$lib.a '$outdir'/lib/$lib/lib$lib.a 644
+}
+file bin/mbld '$outdir'/mbld/mbld 755
+
+man -d mbld 1 mbld.1
+
 fetch git
