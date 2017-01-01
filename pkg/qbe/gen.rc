@@ -3,7 +3,9 @@ cflags\
 	-I '$dir'
 
 abi=sysv
-exe qbe main.c util.c parse.c mem.c ssa.c copy.c fold.c live.c isel.c spill.c rega.c emit.c $abi.c
+exe qbe\
+	main.c util.c parse.c cfg.c mem.c ssa.c alias.c load.c copy.c fold.c\
+	live.c isel.c spill.c rega.c emit.c $abi.c
 file bin/qbe '$outdir'/qbe 755
 
 fetch git
