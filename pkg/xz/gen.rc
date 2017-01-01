@@ -38,6 +38,8 @@ lib liblzma.a src/^(\
 			stream_flags_common.c\
 			vli_size.c\
 			\
+			hardware_cputhreads.c\
+			\
 			alone_encoder.c\
 			block_buffer_encoder.c\
 			block_encoder.c\
@@ -54,7 +56,6 @@ lib liblzma.a src/^(\
 			stream_flags_encoder.c\
 			vli_encoder.c\
 			\
-			hardware_cputhreads.c\
 			outqueue.c\
 			stream_encoder_mt.c\
 			\
@@ -85,8 +86,8 @@ lib liblzma.a src/^(\
 			lz_decoder.c\
 		)\
 		lzma/^(\
-			lzma_encoder.c\
 			lzma_encoder_presets.c\
+			lzma_encoder.c\
 			lzma_encoder_optimum_fast.c\
 			lzma_encoder_optimum_normal.c\
 			fastpos_table.c\
@@ -115,7 +116,6 @@ exe xz src/^(\
 		coder.c\
 		file_io.c\
 		hardware.c\
-		list.c\
 		main.c\
 		message.c\
 		mytime.c\
@@ -123,6 +123,7 @@ exe xz src/^(\
 		signals.c\
 		suffix.c\
 		util.c\
+		list.c\
 	)\
 	common/^(\
 		tuklib_open_stdxxx.c\

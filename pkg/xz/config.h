@@ -7,6 +7,7 @@
 #define HAVE_BSWAP_32 1
 #define HAVE_BSWAP_64 1
 #define HAVE_BYTESWAP_H 1
+/* #undef HAVE_CAPSICUM */
 /* #undef HAVE_CC_SHA256_CTX */
 /* #undef HAVE_CC_SHA256_INIT */
 /* #undef HAVE_CFLOCALECOPYCURRENT */
@@ -18,6 +19,7 @@
 /* #undef HAVE_DCGETTEXT */
 #define HAVE_DECL_CLOCK_MONOTONIC 1
 #define HAVE_DECL_PROGRAM_INVOCATION_NAME 1
+#define HAVE_DECODERS 1
 #define HAVE_DECODER_ARM 1
 #define HAVE_DECODER_ARMTHUMB 1
 #define HAVE_DECODER_DELTA 1
@@ -27,6 +29,7 @@
 #define HAVE_DECODER_POWERPC 1
 #define HAVE_DECODER_SPARC 1
 #define HAVE_DECODER_X86 1
+#define HAVE_ENCODERS 1
 #define HAVE_ENCODER_ARM 1
 #define HAVE_ENCODER_ARMTHUMB 1
 #define HAVE_ENCODER_DELTA 1
@@ -48,7 +51,6 @@
 #define HAVE_MF_BT4 1
 #define HAVE_MF_HC3 1
 #define HAVE_MF_HC4 1
-/* #undef HAVE_MINIX_SHA2_H */
 #define HAVE_OPTRESET 1
 #define HAVE_PTHREAD_PRIO_INHERIT 1
 /* #undef HAVE_SHA256INIT */
@@ -64,10 +66,12 @@
 #define HAVE_STRUCT_STAT_ST_ATIM_TV_NSEC 1
 /* #undef HAVE_STRUCT_STAT_ST_UATIME */
 /* #undef HAVE_SYS_BYTEORDER_H */
+/* #undef HAVE_SYS_CAPSICUM_H */
 /* #undef HAVE_SYS_ENDIAN_H */
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_VISIBILITY 1
 #define HAVE__BOOL 1
+/* #undef HAVE__FUTIME */
 #define HAVE__MM_MOVEMASK_EPI8 1
 #define LT_OBJDIR ".libs/"
 #define MYTHREAD_POSIX 1
@@ -77,15 +81,16 @@
 #define PACKAGE "xz"
 #define PACKAGE_BUGREPORT "lasse.collin@tukaani.org"
 #define PACKAGE_NAME "XZ Utils"
-#define PACKAGE_STRING "XZ Utils 5.2.2"
+#define PACKAGE_STRING "XZ Utils 5.2.3"
 #define PACKAGE_TARNAME "xz"
 #define PACKAGE_URL "http://tukaani.org/xz/"
-#define PACKAGE_VERSION "5.2.2"
+#define PACKAGE_VERSION "5.2.3"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define SIZEOF_SIZE_T 8
 /* #undef TUKLIB_CPUCORES_CPUSET */
 /* #undef TUKLIB_CPUCORES_PSTAT_GETDYNAMIC */
-#define TUKLIB_CPUCORES_SYSCONF 1
+#define TUKLIB_CPUCORES_SCHED_GETAFFINITY 1
+/* #undef TUKLIB_CPUCORES_SYSCONF */
 /* #undef TUKLIB_CPUCORES_SYSCTL */
 #define TUKLIB_FAST_UNALIGNED_ACCESS 1
 /* #undef TUKLIB_PHYSMEM_AIX */
@@ -110,7 +115,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.2.2"
+#define VERSION "5.2.3"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
