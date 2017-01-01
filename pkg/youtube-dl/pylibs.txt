@@ -1,4 +1,4 @@
-# <cd src && find youtube_dl -type f -name '*.py'
+# 2,<cd src && find youtube_dl -type f -name '*.py'
 youtube_dl/swfinterp.py
 youtube_dl/compat.py
 youtube_dl/version.py
@@ -36,6 +36,7 @@ youtube_dl/extractor/fox9.py
 youtube_dl/extractor/morningstar.py
 youtube_dl/extractor/everyonesmixtape.py
 youtube_dl/extractor/ccc.py
+youtube_dl/extractor/piksel.py
 youtube_dl/extractor/rtlnl.py
 youtube_dl/extractor/varzesh3.py
 youtube_dl/extractor/toggle.py
@@ -59,8 +60,8 @@ youtube_dl/extractor/watchindianporn.py
 youtube_dl/extractor/wrzuta.py
 youtube_dl/extractor/voicerepublic.py
 youtube_dl/extractor/noco.py
+youtube_dl/extractor/meipai.py
 youtube_dl/extractor/vidio.py
-youtube_dl/extractor/freevideo.py
 youtube_dl/extractor/ina.py
 youtube_dl/extractor/traileraddict.py
 youtube_dl/extractor/kontrtube.py
@@ -96,6 +97,7 @@ youtube_dl/extractor/ninecninemedia.py
 youtube_dl/extractor/laola1tv.py
 youtube_dl/extractor/techtalks.py
 youtube_dl/extractor/libraryofcongress.py
+youtube_dl/extractor/teamfourstar.py
 youtube_dl/extractor/fczenit.py
 youtube_dl/extractor/crooksandliars.py
 youtube_dl/extractor/mtv.py
@@ -116,6 +118,7 @@ youtube_dl/extractor/internetvideoarchive.py
 youtube_dl/extractor/infoq.py
 youtube_dl/extractor/streamable.py
 youtube_dl/extractor/patreon.py
+youtube_dl/extractor/videa.py
 youtube_dl/extractor/rozhlas.py
 youtube_dl/extractor/streamcz.py
 youtube_dl/extractor/tube8.py
@@ -260,6 +263,7 @@ youtube_dl/extractor/biqle.py
 youtube_dl/extractor/vuclip.py
 youtube_dl/extractor/globo.py
 youtube_dl/extractor/jove.py
+youtube_dl/extractor/tvanouvelles.py
 youtube_dl/extractor/freespeech.py
 youtube_dl/extractor/kusi.py
 youtube_dl/extractor/turbo.py
@@ -286,6 +290,7 @@ youtube_dl/extractor/limelight.py
 youtube_dl/extractor/closertotruth.py
 youtube_dl/extractor/threeqsdn.py
 youtube_dl/extractor/uol.py
+youtube_dl/extractor/webcaster.py
 youtube_dl/extractor/allocine.py
 youtube_dl/extractor/viceland.py
 youtube_dl/extractor/funnyordie.py
@@ -346,6 +351,7 @@ youtube_dl/extractor/dctp.py
 youtube_dl/extractor/wistia.py
 youtube_dl/extractor/rockstargames.py
 youtube_dl/extractor/adultswim.py
+youtube_dl/extractor/ccma.py
 youtube_dl/extractor/pornhub.py
 youtube_dl/extractor/skysports.py
 youtube_dl/extractor/khanacademy.py
@@ -354,6 +360,7 @@ youtube_dl/extractor/breakcom.py
 youtube_dl/extractor/tonline.py
 youtube_dl/extractor/jpopsukitv.py
 youtube_dl/extractor/mailru.py
+youtube_dl/extractor/vvvvid.py
 youtube_dl/extractor/gameinformer.py
 youtube_dl/extractor/people.py
 youtube_dl/extractor/tf1.py
@@ -446,6 +453,7 @@ youtube_dl/extractor/radiobremen.py
 youtube_dl/extractor/telegraaf.py
 youtube_dl/extractor/xboxclips.py
 youtube_dl/extractor/metacafe.py
+youtube_dl/extractor/viu.py
 youtube_dl/extractor/condenast.py
 youtube_dl/extractor/motherless.py
 youtube_dl/extractor/livestream.py
@@ -516,7 +524,6 @@ youtube_dl/extractor/voxmedia.py
 youtube_dl/extractor/unistra.py
 youtube_dl/extractor/onionstudios.py
 youtube_dl/extractor/franceculture.py
-youtube_dl/extractor/screenwavemedia.py
 youtube_dl/extractor/abcotvs.py
 youtube_dl/extractor/bloomberg.py
 youtube_dl/extractor/myspace.py
@@ -544,6 +551,7 @@ youtube_dl/extractor/soundgasm.py
 youtube_dl/extractor/worldstarhiphop.py
 youtube_dl/extractor/biobiochiletv.py
 youtube_dl/extractor/redtube.py
+youtube_dl/extractor/melonvod.py
 youtube_dl/extractor/footyroom.py
 youtube_dl/extractor/commonprotocols.py
 youtube_dl/extractor/cwtv.py
@@ -582,6 +590,7 @@ youtube_dl/extractor/lnkgo.py
 youtube_dl/extractor/goshgay.py
 youtube_dl/extractor/ndr.py
 youtube_dl/extractor/vessel.py
+youtube_dl/extractor/ondemandkorea.py
 youtube_dl/extractor/makerschannel.py
 youtube_dl/extractor/cartoonnetwork.py
 youtube_dl/extractor/ctsnews.py
@@ -607,6 +616,7 @@ youtube_dl/extractor/francetv.py
 youtube_dl/extractor/usatoday.py
 youtube_dl/extractor/nick.py
 youtube_dl/extractor/presstv.py
+youtube_dl/extractor/showroomlive.py
 youtube_dl/extractor/youporn.py
 youtube_dl/extractor/oktoberfesttv.py
 youtube_dl/extractor/howstuffworks.py
@@ -629,6 +639,7 @@ youtube_dl/extractor/moviezine.py
 youtube_dl/extractor/sina.py
 youtube_dl/extractor/wsj.py
 youtube_dl/extractor/srgssr.py
+youtube_dl/extractor/uktvplay.py
 youtube_dl/extractor/foxnews.py
 youtube_dl/extractor/senateisvp.py
 youtube_dl/extractor/nfb.py
