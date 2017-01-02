@@ -1,0 +1,24 @@
+From c3556dfb4b2b6467e5d0b0468c2dac8b602ae733 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 1 Jan 2017 16:42:21 -0800
+Subject: [PATCH] Remove redundant linux/in6.h include
+
+---
+ include/linux-private/linux/ipv6.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/include/linux-private/linux/ipv6.h b/include/linux-private/linux/ipv6.h
+index e05e684..f16349d 100644
+--- a/include/linux-private/linux/ipv6.h
++++ b/include/linux-private/linux/ipv6.h
+@@ -2,7 +2,6 @@
+ #define _IPV6_H
+ 
+ #include <asm/byteorder.h>
+-#include <linux/in6.h>
+ 
+ /* The latest drafts declared increase in minimal mtu up to 1280. */
+ 
+-- 
+2.11.0
+

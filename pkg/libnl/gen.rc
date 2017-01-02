@@ -28,14 +28,14 @@ hdrs=include/netlink/^(\
 )
 for(hdr in $hdrs) build '$outdir'/$hdr copy '$srcdir'/$hdr
 build '$outdir'/include/netlink/version.h sed '$srcdir'/include/netlink/version.h.in ; exprs=(\
-	-e s,@PACKAGE_STRING@,'''libnl 3.2.27''',\
-	-e s,@PACKAGE_VERSION@,3.2.27,\
+	-e s,@PACKAGE_STRING@,'''libnl 3.2.29''',\
+	-e s,@PACKAGE_VERSION@,3.2.29,\
 	-e s,@MAJ_VERSION@,3,\
 	-e s,@MIN_VERSION@,2,\
-	-e s,@MIC_VERSION@,27,\
-	-e s,@LT_CURRENT@,222,\
+	-e s,@MIC_VERSION@,29,\
+	-e s,@LT_CURRENT@,224,\
 	-e s,@LT_REVISION@,0,\
-	-e s,@LT_AGE@,22,\
+	-e s,@LT_AGE@,24,\
 ) with expr $"exprs
 hdrs=($hdrs include/netlink/version.h)
 phony headers '$outdir'/$hdrs

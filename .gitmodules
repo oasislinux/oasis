@@ -96,6 +96,7 @@
 [submodule "pkg/libnl/src"]
 	path = pkg/libnl/src
 	url = https://github.com/thom311/libnl
+	ignore = all
 [submodule "pkg/libpciaccess/src"]
 	path = pkg/libpciaccess/src
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
