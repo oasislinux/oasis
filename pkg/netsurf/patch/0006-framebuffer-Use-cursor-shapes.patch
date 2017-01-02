@@ -1,16 +1,18 @@
-From 735dc3f45505fffbc7c621dfef4adc7c997efcd4 Mon Sep 17 00:00:00 2001
+From f035892771ed294255b5516547419704827c8f19 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 30 Dec 2016 01:50:18 -0800
 Subject: [PATCH] framebuffer: Use cursor shapes
 
 ---
  frontends/framebuffer/bitmap.c       |  1 +
- frontends/framebuffer/fbtk/text.c    |  1 +
+ frontends/framebuffer/fbtk/bitmap.c  |  4 +++-
+ frontends/framebuffer/fbtk/fbtk.c    | 12 +++---------
+ frontends/framebuffer/fbtk/text.c    |  4 +++-
  frontends/framebuffer/framebuffer.c  |  6 ++++++
  frontends/framebuffer/framebuffer.h  |  1 +
  frontends/framebuffer/gui.c          | 19 ++++++++++---------
  frontends/framebuffer/localhistory.c |  1 +
- 6 files changed, 20 insertions(+), 9 deletions(-)
+ 8 files changed, 28 insertions(+), 20 deletions(-)
 
 diff --git a/frontends/framebuffer/bitmap.c b/frontends/framebuffer/bitmap.c
 index 027e0122b..f3f6a6406 100644
@@ -24,8 +26,60 @@ index 027e0122b..f3f6a6406 100644
  
  #include "utils/log.h"
  #include "utils/utils.h"
+diff --git a/frontends/framebuffer/fbtk/bitmap.c b/frontends/framebuffer/fbtk/bitmap.c
+index 759b626d9..40b2e6255 100644
+--- a/frontends/framebuffer/fbtk/bitmap.c
++++ b/frontends/framebuffer/fbtk/bitmap.c
+@@ -23,6 +23,7 @@
+ 
+ #include <libnsfb.h>
+ #include <libnsfb_plot.h>
++#include <libnsfb_cursor.h>
+ 
+ #include "netsurf/browser_window.h"
+ 
+@@ -114,6 +115,7 @@ fbtk_create_button(fbtk_widget_t *parent,
+ 		   fbtk_callback click,
+ 		   void *pw)
+ {
++	static enum nsfb_cursor_shape_e shape = NSFB_CURSOR_POINT;
+ 	fbtk_widget_t *neww;
+ 
+ 	neww = fbtk_widget_new(parent, FB_WIDGET_TYPE_BITMAP, x, y, width, height);
+@@ -124,7 +126,7 @@ fbtk_create_button(fbtk_widget_t *parent,
+ 
+ 	fbtk_set_handler(neww, FBTK_CBT_REDRAW, fb_redraw_bitmap, NULL);
+ 	fbtk_set_handler(neww, FBTK_CBT_CLICK, click, pw);
+-	fbtk_set_handler(neww, FBTK_CBT_POINTERENTER, fbtk_set_ptr, &hand_image);
++	fbtk_set_handler(neww, FBTK_CBT_POINTERENTER, fbtk_set_ptr, &shape);
+ 
+ 	return neww;
+ }
+diff --git a/frontends/framebuffer/fbtk/fbtk.c b/frontends/framebuffer/fbtk/fbtk.c
+index c63a6d8c9..65bf4c532 100644
+--- a/frontends/framebuffer/fbtk/fbtk.c
++++ b/frontends/framebuffer/fbtk/fbtk.c
+@@ -387,15 +387,9 @@ int
+ fbtk_set_ptr(fbtk_widget_t *widget, fbtk_callback_info *cbi)
+ {
+ 	fbtk_widget_t *root = fbtk_get_root_widget(widget);
+-	struct fbtk_bitmap *bm = cbi->context;
+-
+-	nsfb_cursor_set(root->u.root.fb,
+-			(nsfb_colour_t *)bm->pixdata,
+-			bm->width,
+-			bm->height,
+-			bm->width,
+-			bm->hot_x,
+-			bm->hot_y);
++	enum nsfb_cursor_shape_e *shape = cbi->context;
++
++	nsfb_cursor_shape_set(root->u.root.fb, *shape);
+ 
+ 	return 0;
+ }
 diff --git a/frontends/framebuffer/fbtk/text.c b/frontends/framebuffer/fbtk/text.c
-index 95333a52f..90e0ed9ab 100644
+index 95333a52f..ec1d285c1 100644
 --- a/frontends/framebuffer/fbtk/text.c
 +++ b/frontends/framebuffer/fbtk/text.c
 @@ -25,6 +25,7 @@
@@ -36,6 +90,23 @@ index 95333a52f..90e0ed9ab 100644
  #include <libnsfb_event.h>
  #include <xkbcommon/xkbcommon.h>
  
+@@ -585,6 +586,7 @@ fbtk_create_text_button(fbtk_widget_t *parent,
+ 			fbtk_callback click,
+ 			void *pw)
+ {
++	static enum nsfb_cursor_shape_e shape = NSFB_CURSOR_POINT;
+ 	fbtk_widget_t *neww;
+ 
+ 	neww = fbtk_widget_new(parent, FB_WIDGET_TYPE_TEXT, x, y, width, height);
+@@ -597,7 +599,7 @@ fbtk_create_text_button(fbtk_widget_t *parent,
+ 	fbtk_set_handler(neww, FBTK_CBT_REDRAW, fb_redraw_text_button, NULL);
+ 	fbtk_set_handler(neww, FBTK_CBT_DESTROY, fb_destroy_text, NULL);
+ 	fbtk_set_handler(neww, FBTK_CBT_CLICK, click, pw);
+-	fbtk_set_handler(neww, FBTK_CBT_POINTERENTER, fbtk_set_ptr, &hand_image);
++	fbtk_set_handler(neww, FBTK_CBT_POINTERENTER, fbtk_set_ptr, &shape);
+ 
+ 	return neww;
+ }
 diff --git a/frontends/framebuffer/framebuffer.c b/frontends/framebuffer/framebuffer.c
 index 74c72fe71..9344b8277 100644
 --- a/frontends/framebuffer/framebuffer.c

@@ -71,13 +71,6 @@ convert_image history_image_g framebuffer/res/icons/history_g.png
 
 convert_image osk_image framebuffer/res/icons/osk.png
 
-convert_image pointer_image framebuffer/res/pointers/default.png
-convert_image hand_image framebuffer/res/pointers/point.png
-convert_image caret_image framebuffer/res/pointers/caret.png
-convert_image menu_image framebuffer/res/pointers/menu.png
-convert_image progress_image framebuffer/res/pointers/progress.png
-convert_image move_image framebuffer/res/pointers/move.png
-
 for(d in l r u d)
 	convert_image scroll$d framebuffer/res/icons/scroll$d.png
 for(n in 0 1 2 3 4 5 6 7 8)
@@ -159,7 +152,6 @@ exe netsurf -d '$dir'/deps\
 		left_arrow_g.c right_arrow_g.c reload_g.c stop_image_g.c history_image_g.c\
 		scroll^(l r u d)^.c\
 		osk_image.c\
-		(pointer hand caret menu progress move)^_image.c\
 		throbber^(0 1 2 3 4 5 6 7 8)^.c\
 		\
 		libcss/libcss.a.d\
