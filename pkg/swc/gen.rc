@@ -28,8 +28,7 @@ build '$outdir'/wayland-drm-server-protocol.h copy '$builddir'/pkg/wld/protocol/
 {
 	toolchain host
 	exe convert_font cursor/convert_font.c
-} >tools.ninja
-subninja '$dir'/tools.ninja
+} >tools.ninja ; subninja tools.ninja
 
 rule convert_font '$outdir/convert_font $in $out.tmp 2>/dev/null && mv $out.tmp $out'
 build '$outdir'/cursor/cursor_data.h convert_font '$srcdir'/cursor/cursor.pcf '|' '$outdir'/convert_font
