@@ -162,7 +162,7 @@ x sleep
 x sort
 x split
 x sponge
-x strings
+# use strings from binutils
 x sync
 x tail
 # use tar from OpenBSD
