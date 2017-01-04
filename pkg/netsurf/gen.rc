@@ -24,6 +24,8 @@ cflags\
 	-isystem '$builddir'/pkg/curl/include\
 	-isystem '$builddir'/pkg/libjpeg-turbo/include\
 	-isystem '$builddir'/pkg/libpng/include\
+	-isystem '$builddir'/pkg/libressl/include\
+	-isystem '$builddir'/pkg/zlib/include\
 	-isystem '$dir'/libcss/src/include\
 	-isystem '$dir'/libdom/src/include\
 	-isystem '$dir'/libhubbub/src/include\
@@ -82,7 +84,7 @@ phony deps '$outdir'/duktape/binding.c\
 		libparserutils libutf8proc libwapcaplet libnsutils\
 	)^/fetch.stamp\
 	'$builddir'/pkg/^(freetype libxkbcommon)^/fetch.stamp\
-	('$dir'/libdom pkg/^(curl libjpeg-turbo libpng))^/headers
+	('$dir'/libdom pkg/^(curl libjpeg-turbo libpng libressl zlib))^/headers
 
 exe netsurf -d '$dir'/deps\
 	desktop/^(\
