@@ -59,6 +59,7 @@ net=(\
 desktop=(\
 	adobe-source-fonts\
 	dmenu\
+	netsurf\
 	st\
 	swc\
 	terminus-font\
