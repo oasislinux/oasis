@@ -33,6 +33,8 @@ for(archive in `{awk '{print $2}' sha256}) {
 		pats=($pats $1)
 		shift
 	}
+	if(~ $#pats 0)
+		pats='*/*'
 	shift
 	if(! ~ $#tool 0) $tool $archive | pax -r -s '/^\.\|[^\/]*/src/' $pats
 }
