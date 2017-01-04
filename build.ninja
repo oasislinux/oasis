@@ -1,14 +1,14 @@
 builddir = out
 
-target_toolchain = default
+target_toolchain = x86_64-linux-musl
 target_cflags = -O2 -pipe
 target_cxxflags = $cflags
 target_ldflags = -s -static
 
-host_toolchain = $target_toolchain
-host_cflags = $target_cflags
-host_cxxflags = $target_cxxflags
-host_ldflags = $target_ldflags
+host_toolchain = default
+host_cflags = -pipe
+host_cxxflags = $host_cflags
+host_ldflags =
 
 lex = lex
 perl = perl
