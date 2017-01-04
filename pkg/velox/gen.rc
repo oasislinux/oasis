@@ -39,4 +39,6 @@ exe status_bar -d '$dir'/deps clients/status_bar.c velox-protocol.c.o '$builddir
 )
 file libexec/velox/status_bar '$outdir'/status_bar 755
 
+file share/doc/velox/velox.conf.sample '$srcdir'/velox.conf.sample 644
+
 fetch git
