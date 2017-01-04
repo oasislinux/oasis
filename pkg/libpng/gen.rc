@@ -1,5 +1,6 @@
 cflags\
 	-D HAVE_CONFIG_H\
+	-isystem '$builddir'/pkg/zlib/include\
 	-I include\
 	-I '$dir' \
 	-I '$outdir'/include
@@ -8,7 +9,7 @@ build '$outdir'/pnglibconf.tf4 awk '$srcdir'/^(pngconf.h scripts/pnglibconf.dfa 
 	expr '-f $srcdir/scripts/options.awk out=/dev/stdout version=search'
 build '$outdir'/pnglibconf.c awk '$outdir'/pnglibconf.tf4 ; with\
 	expr '-f $srcdir/scripts/options.awk out=/dev/stdout'
-build '$outdir'/pnglibconf.tf1 cc '$outdir'/pnglibconf.c ; with\
+build '$outdir'/pnglibconf.tf1 cc '$outdir'/pnglibconf.c '||' pkg/zlib/headers ; with\
 	cflags '$cflags -E'
 build '$outdir'/include/pnglibconf.h awk '$outdir'/pnglibconf.tf1 ; with\
 	expr '-f $srcdir/scripts/dfn.awk out=/dev/stdout'
@@ -21,7 +22,8 @@ for(hdr in $hdrs) {
 phony headers '$outdir'/include/^($hdrs pnglibconf.h)
 file include/pnglibconf.h '$outdir'/include/pnglibconf.h 644
 
-lib libpng.a -d '$outdir'/include/pnglibconf.h\
+phony deps '$outdir'/include/pnglibconf.h pkg/zlib/headers
+lib libpng.a -d '$dir'/deps\
 	png.c pngerror.c\
 	pngget.c pngmem.c pngpread.c pngread.c pngrio.c pngrtran.c pngrutil.c\
 	pngset.c pngtrans.c pngwio.c pngwrite.c pngwtran.c pngwutil.c\
