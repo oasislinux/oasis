@@ -1,6 +1,7 @@
 cflags\
 	-I include\
 	-I '$dir' \
+	-I '$outdir' \
 	-I '$srcdir'
 
 hdrs=libevdev/libevdev.h
@@ -10,7 +11,9 @@ for(hdr in $hdrs) {
 }
 phony headers '$outdir'/include/$hdrs
 
-lib libevdev.a libevdev/^(libevdev.c libevdev-names.c)
+build '$outdir'/event-names.h awk '$srcdir'/include/linux/^(input.h input-event-codes.h) '|' '$dir'/eventnames.awk ; with\
+	expr '-f $dir/eventnames.awk'
+lib libevdev.a -d '$outdir'/event-names.h libevdev/^(libevdev.c libevdev-names.c)
 file lib/libevdev.a '$outdir'/libevdev.a 644
 
 fetch git
