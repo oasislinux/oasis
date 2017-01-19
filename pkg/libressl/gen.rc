@@ -5,93 +5,88 @@ cflags\
 	-D OPENSSL_NO_ASM\
 	-D '''__warn_references(sym,msg)=''' \
 	-isystem pkg/openbsd/include\
-	-I '$outdir'/include\
-	-I '$outdir'/internal\
-	-I '$srcdir'/src/lib/libcrypto\
-	-I '$srcdir'/src/lib/libcrypto/asn1\
-	-I '$srcdir'/src/lib/libcrypto/evp\
-	-I '$srcdir'/src/lib/libcrypto/modes
+	-I '$srcdir'/include\
+	-I '$srcdir'/crypto\
+	-I '$srcdir'/crypto/asn1\
+	-I '$srcdir'/crypto/evp\
+	-I '$srcdir'/crypto/modes
 
-srchdrs=(\
-	libcrypto/^(\
-		aes/aes.h\
-		asn1/asn1.h\
-		asn1/asn1_mac.h\
-		asn1/asn1t.h\
-		bf/blowfish.h\
-		bio/bio.h\
-		bn/bn.h\
-		buffer/buffer.h\
-		camellia/camellia.h\
-		cast/cast.h\
-		chacha/chacha.h\
-		cmac/cmac.h\
-		comp/comp.h\
-		conf/conf.h\
-		conf/conf_api.h\
-		crypto.h\
-		des/des.h\
-		dh/dh.h\
-		dsa/dsa.h\
-		dso/dso.h\
-		ec/ec.h\
-		ecdh/ecdh.h\
-		ecdsa/ecdsa.h\
-		engine/engine.h\
-		err/err.h\
-		evp/evp.h\
-		gost/gost.h\
-		hmac/hmac.h\
-		idea/idea.h\
-		krb5/krb5_asn.h\
-		lhash/lhash.h\
-		md4/md4.h\
-		md5/md5.h\
-		modes/modes.h\
-		objects/objects.h\
-		ocsp/ocsp.h\
-		opensslfeatures.h\
-		opensslv.h\
-		ossl_typ.h\
-		pem/pem.h\
-		pem/pem2.h\
-		pkcs12/pkcs12.h\
-		pkcs7/pkcs7.h\
-		poly1305/poly1305.h\
-		rand/rand.h\
-		rc2/rc2.h\
-		rc4/rc4.h\
-		ripemd/ripemd.h\
-		rsa/rsa.h\
-		sha/sha.h\
-		stack/safestack.h\
-		stack/stack.h\
-		ts/ts.h\
-		txt_db/txt_db.h\
-		ui/ui.h\
-		ui/ui_compat.h\
-		whrlpool/whrlpool.h\
-		x509/x509.h\
-		x509/x509_vfy.h\
-		x509v3/x509v3.h\
-		\
-		objects/obj_mac.h\
-	)\
-	libssl/^(srtp.h ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h)\
-	libcrypto/arch/amd64/opensslconf.h\
+srchdrs=openssl/^(\
+	aes.h\
+	asn1.h\
+	asn1_mac.h\
+	asn1t.h\
+	blowfish.h\
+	bio.h\
+	bn.h\
+	buffer.h\
+	camellia.h\
+	cast.h\
+	chacha.h\
+	cmac.h\
+	comp.h\
+	conf.h\
+	conf_api.h\
+	crypto.h\
+	des.h\
+	dh.h\
+	dsa.h\
+	dso.h\
+	ec.h\
+	ecdh.h\
+	ecdsa.h\
+	engine.h\
+	err.h\
+	evp.h\
+	gost.h\
+	hmac.h\
+	idea.h\
+	krb5_asn.h\
+	lhash.h\
+	md4.h\
+	md5.h\
+	modes.h\
+	objects.h\
+	ocsp.h\
+	opensslfeatures.h\
+	opensslv.h\
+	ossl_typ.h\
+	pem.h\
+	pem2.h\
+	pkcs12.h\
+	pkcs7.h\
+	poly1305.h\
+	rand.h\
+	rc2.h\
+	rc4.h\
+	ripemd.h\
+	rsa.h\
+	sha.h\
+	safestack.h\
+	stack.h\
+	ts.h\
+	txt_db.h\
+	ui.h\
+	ui_compat.h\
+	whrlpool.h\
+	x509.h\
+	x509_vfy.h\
+	x509v3.h\
+	\
+	opensslconf.h obj_mac.h\
+	\
+	srtp.h ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h\
 )
 hdrs=()
-for(srchdr in $srchdrs) {
-	base=`{basename $srchdr}
-	hdr='$outdir'/include/openssl/$base
-	hdrs=($hdrs $hdr)
-	build $hdr copy '$srcdir'/src/lib/$srchdr
-	file include/openssl/$base '$srcdir'/src/lib/$srchdr 644
+for(hdr in include/$srchdrs) {
+	hdrs=($hdrs '$outdir'/$hdr)
+	build '$outdir'/$hdr copy '$srcdir'/$hdr
+	file $hdr '$srcdir'/$hdr 644
 }
 phony headers $hdrs
 
-# src/lib/libcrypto/crypto/Makefile
-lib libcrypto.a -d '$dir'/headers src/lib/libcrypto/^(\
+# src/crypto/Makefile.am
+lib libcrypto.a crypto/^(\
 	cryptlib.c malloc-wrapper.c mem_dbg.c cversion.c ex_data.c cpt_err.c\
 	o_time.c o_str.c o_init.c\
 	mem_clr.c\
@@ -165,7 +160,6 @@ lib libcrypto.a -d '$dir'/headers src/lib/libcrypto/^(\
 		ec_lib.c ecp_smpl.c ecp_mont.c ecp_nist.c ec_cvt.c ec_mult.c\
 		ec_err.c ec_curve.c ec_check.c ec_print.c ec_asn1.c ec_key.c\
 		ec2_smpl.c ec2_mult.c ec_ameth.c ec_pmeth.c eck_prn.c\
-		ecp_nistp224.c ecp_nistp256.c ecp_nistp521.c ecp_nistputil.c\
 		ecp_oct.c ec2_oct.c ec_oct.c\
 	)\
 	ecdh/^(ech_lib.c ech_key.c ech_err.c)\
@@ -271,8 +265,8 @@ lib libcrypto.a -d '$dir'/headers src/lib/libcrypto/^(\
 ) '$builddir'/pkg/openbsd/libbsd.a
 file lib/libcrypto.a '$outdir'/libcrypto.a 644
 
-# src/lib/libssl/ssl/Makefile
-lib libssl.a -d '$dir'/headers src/lib/libssl/^(\
+# src/ssl/Makefile.am
+lib libssl.a ssl/^(\
 	s3_srvr.c s3_clnt.c s3_lib.c s3_pkt.c s3_both.c \
 	s23_srvr.c s23_clnt.c s23_lib.c s23_pkt.c \
 	t1_meth.c t1_srvr.c t1_clnt.c t1_lib.c t1_enc.c \
@@ -289,8 +283,8 @@ lib libssl.a -d '$dir'/headers src/lib/libssl/^(\
 ) libcrypto.a.d
 file lib/libssl.a '$outdir'/libssl.a 644
 
-# src/usr.bin/openssl/Makefile
-exe openssl -d '$dir'/headers src/usr.bin/openssl/^(\
+# src/apps/openssl/Makefile.am
+exe openssl apps/openssl/^(\
 	apps.c apps_posix.c asn1pars.c ca.c certhash.c ciphers.c crl.c\
 	crl2p7.c dgst.c dh.c dhparam.c dsa.c dsaparam.c ec.c ecparam.c enc.c\
 	errstr.c gendh.c gendsa.c genpkey.c genrsa.c nseq.c ocsp.c\
@@ -300,8 +294,8 @@ exe openssl -d '$dir'/headers src/usr.bin/openssl/^(\
 	verify.c version.c x509.c\
 ) libssl.a.d libcrypto.a.d
 file bin/openssl '$outdir'/openssl 755
-man -d src/usr.bin/openssl 1 openssl.1
+man -d apps/openssl 1 openssl.1
 
-file share/libressl/cert.pem '$srcdir'/src/lib/libcrypto/cert.pem 644
+file share/libressl/cert.pem '$srcdir'/apps/openssl/cert.pem 644
 
-fetch git
+fetch curl

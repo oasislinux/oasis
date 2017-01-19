@@ -103,10 +103,6 @@
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = git://git.code.sf.net/p/libpng/code
-[submodule "pkg/libressl/src"]
-	path = pkg/libressl/src
-	url = https://github.com/libressl-portable/openbsd
-	ignore = all
 [submodule "pkg/libusb/src"]
 	path = pkg/libusb/src
 	url = https://github.com/libusb/libusb
