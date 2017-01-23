@@ -2,7 +2,7 @@ cflags\
 	-I include\
 	-I '$dir' \
 	-I '$outdir' \
-	-I '$srcdir'
+	-I '$srcdir'/include
 
 hdrs=libevdev/libevdev.h
 for(hdr in $hdrs) {
