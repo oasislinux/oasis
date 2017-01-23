@@ -11,5 +11,6 @@ pkg config =
 	const Sharepath = "share"
 	const Binpath = "bin"
 	const Libpath = "lib/myr"
+	const Env : (byte[:], byte[:])[:] = [][:]
 	const Arch = "x64"
 ;;

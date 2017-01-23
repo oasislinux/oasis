@@ -131,7 +131,7 @@ build $outdir/lib/std/bigint.o | $outdir/lib/std/bigint.use: mc $srcdir/lib/std/
   mcdir = $outdir/lib/std
 build $outdir/lib/std/cstrconv.o | $outdir/lib/std/cstrconv.use: mc $srcdir/lib/std/cstrconv.myr | $outdir/lib/std/types.use $outdir/lib/sys/libsys.use
   mcdir = $outdir/lib/std
-build $outdir/lib/std/env.o | $outdir/lib/std/env.use: mc $srcdir/lib/std/env+posixy.myr | $outdir/lib/std/extremum.use $outdir/lib/std/option.use $outdir/lib/std/sleq.use $outdir/lib/sys/libsys.use
+build $outdir/lib/std/env.o | $outdir/lib/std/env.use: mc $srcdir/lib/std/env+posixy.myr | $outdir/lib/std/alloc.use $outdir/lib/std/cstrconv.use $outdir/lib/std/die.use $outdir/lib/std/extremum.use $outdir/lib/std/fmt.use $outdir/lib/std/memops.use $outdir/lib/std/option.use $outdir/lib/std/sldup.use $outdir/lib/std/slcp.use $outdir/lib/std/sleq.use $outdir/lib/sys/libsys.use
   mcdir = $outdir/lib/std
 build $outdir/lib/std/fmt.o | $outdir/lib/std/fmt.use: mc $srcdir/lib/std/fmt.myr | $outdir/lib/std/alloc.use $outdir/lib/std/consts.use $outdir/lib/std/chartype.use $outdir/lib/std/die.use $outdir/lib/std/extremum.use $outdir/lib/std/fltfmt.use $outdir/lib/std/hashfuncs.use $outdir/lib/std/hasprefix.use $outdir/lib/std/htab.use $outdir/lib/std/intparse.use $outdir/lib/std/introspect.use $outdir/lib/std/memops.use $outdir/lib/std/option.use $outdir/lib/std/result.use $outdir/lib/std/sldup.use $outdir/lib/std/sleq.use $outdir/lib/std/slpush.use $outdir/lib/std/strbuf.use $outdir/lib/std/strfind.use $outdir/lib/std/striter.use $outdir/lib/std/strsplit.use $outdir/lib/std/syswrap.use $outdir/lib/std/syswrap-ss.use $outdir/lib/std/types.use $outdir/lib/std/utf.use $outdir/lib/std/varargs.use $outdir/lib/std/writeall.use $outdir/lib/sys/libsys.use
   mcdir = $outdir/lib/std
@@ -310,7 +310,7 @@ build $outdir/mbld/util.o | $outdir/mbld/util.use: mc $srcdir/mbld/util.myr | $o
   mcdir = $outdir/mbld
 build $outdir/mbld/install.o | $outdir/mbld/install.use: mc $srcdir/mbld/install.myr | $outdir/mbld/config.use $outdir/mbld/deps.use $outdir/mbld/opts.use $outdir/mbld/parse.use $outdir/mbld/types.use $outdir/mbld/util.use $outdir/mbld/build.use $outdir/lib/sys/libsys.use $outdir/lib/std/libstd.use $outdir/lib/bio/libbio.use $outdir/lib/regex/libregex.use
   mcdir = $outdir/mbld
-build $outdir/mbld/subtest.o | $outdir/mbld/subtest.use: mc $srcdir/mbld/subtest.myr | $outdir/mbld/types.use $outdir/lib/sys/libsys.use $outdir/lib/std/libstd.use $outdir/lib/bio/libbio.use $outdir/lib/regex/libregex.use
+build $outdir/mbld/subtest.o | $outdir/mbld/subtest.use: mc $srcdir/mbld/subtest.myr | $outdir/mbld/types.use $outdir/mbld/util.use $outdir/lib/sys/libsys.use $outdir/lib/std/libstd.use $outdir/lib/bio/libbio.use $outdir/lib/regex/libregex.use
   mcdir = $outdir/mbld
 build $outdir/mbld/main.o | $outdir/mbld/main.use: mc $srcdir/mbld/main.myr | $outdir/mbld/build.use $outdir/mbld/clean.use $outdir/mbld/config.use $outdir/mbld/deps.use $outdir/mbld/install.use $outdir/mbld/opts.use $outdir/mbld/parse.use $outdir/mbld/test.use $outdir/mbld/types.use $outdir/mbld/util.use $outdir/mbld/syssel.use $outdir/lib/sys/libsys.use $outdir/lib/std/libstd.use $outdir/lib/bio/libbio.use $outdir/lib/regex/libregex.use
   mcdir = $outdir/mbld
