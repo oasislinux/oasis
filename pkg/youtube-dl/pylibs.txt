@@ -87,7 +87,6 @@ youtube_dl/extractor/ntvru.py
 youtube_dl/extractor/sendtonews.py
 youtube_dl/extractor/teletask.py
 youtube_dl/extractor/tv3.py
-youtube_dl/extractor/sharesix.py
 youtube_dl/extractor/rts.py
 youtube_dl/extractor/nrk.py
 youtube_dl/extractor/imdb.py
@@ -129,6 +128,7 @@ youtube_dl/extractor/vlive.py
 youtube_dl/extractor/camdemy.py
 youtube_dl/extractor/eroprofile.py
 youtube_dl/extractor/viewster.py
+youtube_dl/extractor/beampro.py
 youtube_dl/extractor/photobucket.py
 youtube_dl/extractor/parliamentliveuk.py
 youtube_dl/extractor/tele13.py
@@ -434,6 +434,7 @@ youtube_dl/extractor/radiocanada.py
 youtube_dl/extractor/vesti.py
 youtube_dl/extractor/sunporno.py
 youtube_dl/extractor/skynewsarabia.py
+youtube_dl/extractor/hitrecord.py
 youtube_dl/extractor/ketnet.py
 youtube_dl/extractor/nerdcubed.py
 youtube_dl/extractor/shahid.py
@@ -459,6 +460,7 @@ youtube_dl/extractor/motherless.py
 youtube_dl/extractor/livestream.py
 youtube_dl/extractor/cbsnews.py
 youtube_dl/extractor/cctv.py
+youtube_dl/extractor/egghead.py
 youtube_dl/extractor/xvideos.py
 youtube_dl/extractor/novamov.py
 youtube_dl/extractor/tumblr.py
@@ -469,9 +471,9 @@ youtube_dl/extractor/cnn.py
 youtube_dl/extractor/porncom.py
 youtube_dl/extractor/xnxx.py
 youtube_dl/extractor/archiveorg.py
+youtube_dl/extractor/pornflip.py
 youtube_dl/extractor/xxxymovies.py
 youtube_dl/extractor/cliprs.py
-youtube_dl/extractor/videott.py
 youtube_dl/extractor/flickr.py
 youtube_dl/extractor/crunchyroll.py
 youtube_dl/extractor/hgtv.py
@@ -497,6 +499,7 @@ youtube_dl/extractor/canalc2.py
 youtube_dl/extractor/nova.py
 youtube_dl/extractor/normalboots.py
 youtube_dl/extractor/soundcloud.py
+youtube_dl/extractor/inc.py
 youtube_dl/extractor/theweatherchannel.py
 youtube_dl/extractor/arkena.py
 youtube_dl/extractor/streamcloud.py
@@ -560,7 +563,6 @@ youtube_dl/extractor/dailymotion.py
 youtube_dl/extractor/naver.py
 youtube_dl/extractor/facebook.py
 youtube_dl/extractor/acast.py
-youtube_dl/extractor/screenjunkies.py
 youtube_dl/extractor/noz.py
 youtube_dl/extractor/vodlocker.py
 youtube_dl/extractor/fivetv.py
@@ -588,6 +590,7 @@ youtube_dl/extractor/lcp.py
 youtube_dl/extractor/mwave.py
 youtube_dl/extractor/lnkgo.py
 youtube_dl/extractor/goshgay.py
+youtube_dl/extractor/azmedien.py
 youtube_dl/extractor/ndr.py
 youtube_dl/extractor/vessel.py
 youtube_dl/extractor/ondemandkorea.py
