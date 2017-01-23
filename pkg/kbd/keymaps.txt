@@ -1,10 +1,12 @@
-# <cd src/data/keymaps && find * -type f '!' '(' -name README -o -name mk_modmap ')'
+# 2,<cd src/data/keymaps && find * -type f '!' '(' -name README -o -name mk_modmap ')'
 amiga/amiga-us.map
 amiga/amiga-de.map
 atari/atari-se.map
 atari/atari-uk-falcon.map
 atari/atari-de.map
 atari/atari-us.map
+i386/carpalx/carpalx-full.map
+i386/carpalx/carpalx.map
 i386/dvorak/dvorak.map
 i386/dvorak/dvorak-l.map
 i386/dvorak/dvorak-fr.map

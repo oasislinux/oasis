@@ -66,10 +66,6 @@
 	path = pkg/iproute2/src
 	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
 	ignore = all
-[submodule "pkg/kbd/src"]
-	path = pkg/kbd/src
-	url = https://git.kernel.org/pub/scm/linux/kernel/git/legion/kbd.git
-	ignore = all
 [submodule "pkg/libass/src"]
 	path = pkg/libass/src
 	url = https://github.com/libass/libass
