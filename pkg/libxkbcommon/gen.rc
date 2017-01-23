@@ -38,4 +38,4 @@ lib libxkbcommon.a src/^(\
 	utils.c\
 )
 
-fetch git
+fetch curl

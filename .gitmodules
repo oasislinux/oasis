@@ -102,10 +102,6 @@
 [submodule "pkg/libusb/src"]
 	path = pkg/libusb/src
 	url = https://github.com/libusb/libusb
-[submodule "pkg/libxkbcommon/src"]
-	path = pkg/libxkbcommon/src
-	url = https://github.com/xkbcommon/libxkbcommon
-	ignore = all
 [submodule "pkg/loksh/src"]
 	path = pkg/loksh/src
 	url = https://github.com/dimkr/loksh
