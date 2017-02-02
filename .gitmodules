@@ -71,7 +71,7 @@
 	url = https://github.com/libass/libass
 [submodule "pkg/libdrm/src"]
 	path = pkg/libdrm/src
-	url = https://cgit.freedesktop.org/mesa/drm
+	url = https://anongit.freedesktop.org/git/mesa/drm.git
 [submodule "pkg/libevdev/src"]
 	path = pkg/libevdev/src
 	url = https://anongit.freedesktop.org/git/libevdev.git
