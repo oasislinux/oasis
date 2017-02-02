@@ -3,6 +3,7 @@ cflags\
 	'-std=c99' \
 	-D 'CONFIG_ACL=0' \
 	-D 'CONFIG_LPEG=1' \
+	-D 'CONFIG_TRE=0' \
 	-D 'CONFIG_LUA=1' \
 	-D 'CONFIG_SELINUX=0' \
 	-D '_POSIX_C_SOURCE=200809L' \
@@ -24,9 +25,9 @@ phony deps '$outdir'/config.h '$builddir'/pkg/^(\
 
 exe vis -d '$dir'/deps \
 	array.c buffer.c libutf.c main.c map.c register.c ring-buffer.c\
-	sam.c text.c text-motions.c text-objects.c text-regex.c text-util.c\
+	sam.c text.c text-motions.c text-objects.c text-util.c\
 	ui-curses.c view.c vis.c vis-lua.c vis-modes.c vis-motions.c\
-	vis-operators.c vis-prompt.c vis-text-objects.c\
+	vis-operators.c vis-prompt.c vis-text-objects.c text-regex.c\
 	'$builddir'/pkg/^(\
 		libtermkey/libtermkey.a.d\
 		lpeg/liblpeg.a\
@@ -35,12 +36,15 @@ exe vis -d '$dir'/deps \
 	)
 file bin/vis '$outdir'/vis 755
 
+exe vis-digraph vis-digraph.c
+file bin/vis-digraph '$outdir'/vis-digraph 755
+
 exe vis-menu vis-menu.c
 file bin/vis-menu '$outdir'/vis-menu 755
 
 file bin/vis-open '$srcdir'/vis-open 755
 
-for(f in vis.1 vis-menu.1 vis-open.1) {
+for(f in vis.1 vis-digraph.1 vis-menu.1 vis-open.1) {
 	build '$outdir'/$f sed '$srcdir'/man/$f ; with\
 		expr s,VERSION,$version,
 	man -d '$outdir' 1 $f
