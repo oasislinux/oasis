@@ -109,8 +109,8 @@
 #define HAVE_LINUX_CAN_RAW_FD_FRAMES 1
 #define HAVE_LINUX_CAN_RAW_H 1
 #define HAVE_LINUX_NETLINK_H 1
-#define HAVE_LINUX_TIPC_H 1
 #define HAVE_LINUX_RANDOM_H 1
+#define HAVE_LINUX_TIPC_H 1
 #define HAVE_LONG_DOUBLE 1
 #define HAVE_LONG_LONG 1
 #define HAVE_LUTIMES 1
@@ -131,7 +131,6 @@
 /* #undef HAVE_PTHREAD_DESTRUCTOR */
 /* #undef HAVE_PTHREAD_INIT */
 #define HAVE_PTY_H 1
-/* #undef HAVE_RAND_EGD */
 /* #undef HAVE_RL_APPEND_HISTORY */
 /* #undef HAVE_RL_CALLBACK */
 /* #undef HAVE_RL_CATCH_SIGNAL */
@@ -179,6 +178,7 @@
 /* #undef HAVE_SYS_NDIR_H */
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_POLL_H 1
+/* #undef HAVE_SYS_RANDOM_H */
 #define HAVE_SYS_SENDFILE_H 1
 #define HAVE_SYS_SYSCALL_H 1
 /* #undef HAVE_SYS_SYS_DOMAIN_H */
