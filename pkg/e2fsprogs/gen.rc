@@ -1,4 +1,4 @@
-version=1.43.1
+version=1.43.4
 cflags\
 	-D HAVE_CONFIG_H\
 	-I include\
@@ -150,6 +150,7 @@ lib libext2fs.a -d '$dir'/deps '$outdir'/ext2_err.c lib/ext2fs/^(\
 	dupfs.c\
 )
 lib libsupport.a -d '$dir'/deps '$outdir'/prof_err.c lib/support/^(\
+	cstring.c\
 	mkquota.c\
 	plausible.c\
 	profile.c\

@@ -56,10 +56,10 @@
 /* #undef HAVE_KEYCTL */
 #define HAVE_LANGINFO_CODESET 1
 #define HAVE_LC_MESSAGES 1
-/* #undef HAVE_LINUX_FALLOC_H */
-/* #undef HAVE_LINUX_FD_H */
-/* #undef HAVE_LINUX_LOOP_H */
-/* #undef HAVE_LINUX_MAJOR_H */
+#define HAVE_LINUX_FALLOC_H 1
+#define HAVE_LINUX_FD_H 1
+#define HAVE_LINUX_LOOP_H 1
+#define HAVE_LINUX_MAJOR_H 1
 #define HAVE_LLISTXATTR 1
 /* #undef HAVE_LLSEEK */
 /* #undef HAVE_LLSEEK_PROTOTYPE */
