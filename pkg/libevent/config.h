@@ -7,6 +7,7 @@
 #define DISABLE_DEBUG_MODE 1
 #define DISABLE_MM_REPLACEMENT 1
 /* #undef DISABLE_THREAD_SUPPORT */
+#define HAVE_ACCEPT4 1
 /* #undef HAVE_ARC4RANDOM */
 /* #undef HAVE_ARC4RANDOM_BUF */
 #define HAVE_ARPA_INET_H 1
@@ -18,7 +19,10 @@
 /* #undef HAVE_DEVPOLL */
 #define HAVE_DLFCN_H 1
 #define HAVE_EPOLL 1
+#define HAVE_EPOLL_CREATE1 1
 #define HAVE_EPOLL_CTL 1
+#define HAVE_ERRNO_H 1
+/* #undef HAVE_ERR_REMOVE_THREAD_STATE */
 #define HAVE_EVENTFD 1
 /* #undef HAVE_EVENT_PORTS */
 #define HAVE_FCNTL 1
@@ -31,25 +35,30 @@
 /* #undef HAVE_GETHOSTBYNAME_R_3_ARG */
 /* #undef HAVE_GETHOSTBYNAME_R_5_ARG */
 /* #undef HAVE_GETHOSTBYNAME_R_6_ARG */
+#define HAVE_GETIFADDRS 1
 #define HAVE_GETNAMEINFO 1
 #define HAVE_GETPROTOBYNUMBER 1
-/* #undef HAVE_GETSERVBYNAME */
+#define HAVE_GETSERVBYNAME 1
 #define HAVE_GETTIMEOFDAY 1
-#define HAVE_INET_ATON 1
+#define HAVE_IFADDRS_H 1
 #define HAVE_INET_NTOP 1
 #define HAVE_INET_PTON 1
 #define HAVE_INTTYPES_H 1
 #define HAVE_ISSETUGID 1
 /* #undef HAVE_KQUEUE */
 /* #undef HAVE_LIBZ */
+/* #undef HAVE_MACH_ABSOLUTE_TIME */
+/* #undef HAVE_MACH_MACH_TIME_H */
 #define HAVE_MEMORY_H 1
 #define HAVE_MMAP 1
+#define HAVE_NANOSLEEP 1
 #define HAVE_NETDB_H 1
 /* #undef HAVE_NETINET_IN6_H */
 #define HAVE_NETINET_IN_H 1
+#define HAVE_NETINET_TCP_H 1
 /* #undef HAVE_OPENSSL */
-/* #undef HAVE_OPENSSL_BIO_H */
 #define HAVE_PIPE 1
+#define HAVE_PIPE2 1
 #define HAVE_POLL_H 1
 /* #undef HAVE_PORT_CREATE */
 /* #undef HAVE_PORT_H */
@@ -60,6 +69,7 @@
 #define HAVE_SENDFILE 1
 #define HAVE_SETENV 1
 #define HAVE_SETFD 1
+#define HAVE_SETRLIMIT 1
 #define HAVE_SIGACTION 1
 #define HAVE_SIGNAL 1
 #define HAVE_SPLICE 1
@@ -83,6 +93,7 @@
 #define HAVE_STRUCT_SOCKADDR_STORAGE 1
 #define HAVE_STRUCT_SOCKADDR_STORAGE_SS_FAMILY 1
 /* #undef HAVE_STRUCT_SOCKADDR_STORAGE___SS_FAMILY */
+/* #undef HAVE_STRUCT_SO_LINGER */
 /* #undef HAVE_SYSCTL */
 /* #undef HAVE_SYS_DEVPOLL_H */
 #define HAVE_SYS_EPOLL_H 1
@@ -92,11 +103,13 @@
 #define HAVE_SYS_MMAN_H 1
 #define HAVE_SYS_PARAM_H 1
 /* #undef HAVE_SYS_QUEUE_H */
+#define HAVE_SYS_RESOURCE_H 1
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_SENDFILE_H 1
 #define HAVE_SYS_SOCKET_H 1
 #define HAVE_SYS_STAT_H 1
 /* #undef HAVE_SYS_SYSCTL_H */
+#define HAVE_SYS_TIMERFD_H 1
 #define HAVE_SYS_TIME_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_UIO_H 1
@@ -105,6 +118,7 @@
 #define HAVE_TIMERADD 1
 #define HAVE_TIMERCLEAR 1
 #define HAVE_TIMERCMP 1
+#define HAVE_TIMERFD_CREATE 1
 #define HAVE_TIMERISSET 1
 #define HAVE_UINT16_T 1
 #define HAVE_UINT32_T 1
@@ -114,18 +128,20 @@
 #define HAVE_UMASK 1
 #define HAVE_UNISTD_H 1
 #define HAVE_UNSETENV 1
+#define HAVE_USLEEP 1
 #define HAVE_VASPRINTF 1
+/* #undef HAVE_WAITPID_WITH_WNOWAIT */
 /* #undef HAVE_WORKING_KQUEUE */
 /* #undef HAVE_ZLIB_H */
 #define LT_OBJDIR ".libs/"
-#define NUMERIC_VERSION 0x02001600
+#define NUMERIC_VERSION 0x02010800
 #define PACKAGE "libevent"
 #define PACKAGE_BUGREPORT ""
-#define PACKAGE_NAME ""
-#define PACKAGE_STRING ""
-#define PACKAGE_TARNAME ""
+#define PACKAGE_NAME "libevent"
+#define PACKAGE_STRING "libevent 2.1.8-stable"
+#define PACKAGE_TARNAME "libevent"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION ""
+#define PACKAGE_VERSION "2.1.8-stable"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 8
@@ -137,7 +153,30 @@
 #define SIZEOF_VOID_P 8
 #define STDC_HEADERS 1
 #define TIME_WITH_SYS_TIME 1
-#define VERSION "2.0.22-stable"
+#ifndef _ALL_SOURCE
+# define _ALL_SOURCE 1
+#endif
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE 1
+#endif
+#ifndef _POSIX_PTHREAD_SEMANTICS
+# define _POSIX_PTHREAD_SEMANTICS 1
+#endif
+#ifndef _TANDEM_SOURCE
+# define _TANDEM_SOURCE 1
+#endif
+#ifndef __EXTENSIONS__
+# define __EXTENSIONS__ 1
+#endif
+#define VERSION "2.1.8-stable"
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
+#endif
+/* #undef _FILE_OFFSET_BITS */
+/* #undef _LARGE_FILES */
+/* #undef _MINIX */
+/* #undef _POSIX_1_SOURCE */
+/* #undef _POSIX_SOURCE */
 /* #undef __func__ */
 /* #undef const */
 #ifndef __cplusplus

@@ -1,4 +1,5 @@
 cflags\
+	-I '$dir' \
 	-I '$outdir'/include\
 	-I '$srcdir'/include\
 	-I include\
@@ -12,13 +13,26 @@ phony headers '$outdir'/include/event2/event-config.h
 phony deps '$dir'/headers '$builddir'/pkg/openbsd/fetch.stamp
 
 lib libevent.a -d '$dir'/deps\
-	event.c evthread.c buffer.c \
-	bufferevent.c bufferevent_sock.c bufferevent_filter.c \
-	bufferevent_pair.c listener.c bufferevent_ratelim.c \
-	evmap.c log.c evutil.c evutil_rand.c strlcpy.c\
+	buffer.c\
+	bufferevent.c\
+	bufferevent_filter.c\
+	bufferevent_pair.c\
+	bufferevent_ratelim.c\
+	bufferevent_sock.c\
+	event.c\
+	evmap.c\
+	evthread.c\
+	evutil.c\
+	evutil_rand.c\
+	evutil_time.c\
+	listener.c\
+	log.c\
 	\
-	epoll.c signal.c\
+	evdns.c\
+	event_tagging.c\
+	evrpc.c\
+	http.c\
 	\
-	event_tagging.c http.c evdns.c evrpc.c
+	epoll.c signal.c
 
 fetch git
