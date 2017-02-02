@@ -4,7 +4,7 @@
 /* #undef HAVE_POLL */
 /* #undef HAVE_SELECT */
 
-/* #undef DISABLE_DEBUG_MODE */
+#define DISABLE_DEBUG_MODE 1
 #define DISABLE_MM_REPLACEMENT 1
 /* #undef DISABLE_THREAD_SUPPORT */
 /* #undef HAVE_ARC4RANDOM */
