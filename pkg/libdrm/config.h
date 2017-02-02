@@ -7,15 +7,16 @@
 /* #undef HAVE_AMDGPU */
 /* #undef HAVE_CAIRO */
 /* #undef HAVE_CUNIT */
+/* #undef HAVE_ETNAVIV */
 /* #undef HAVE_EXYNOS */
 /* #undef HAVE_FREEDRENO */
 /* #undef HAVE_FREEDRENO_KGSL */
 /* #undef HAVE_INSTALL_TESTS */
 #define HAVE_LIBDRM_ATOMIC_PRIMITIVES 1
-/* #undef HAVE_LIBUDEV */
 /* #undef HAVE_LIB_ATOMIC_OPS */
 #define HAVE_MEMORY_H 1
 /* #undef HAVE_OMAP */
+/* #undef HAVE_RADEON */
 /* #undef HAVE_SYS_SYSCTL_H */
 /* #undef HAVE_TEGRA */
 /* #undef HAVE_VALGRIND */
@@ -28,10 +29,10 @@
 #define PACKAGE "libdrm"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=DRI"
 #define PACKAGE_NAME "libdrm"
-#define PACKAGE_STRING "libdrm 2.4.74"
+#define PACKAGE_STRING "libdrm 2.4.75"
 #define PACKAGE_TARNAME "libdrm"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.4.74"
+#define PACKAGE_VERSION "2.4.75"
 /* #undef STACK_DIRECTION */
 /* #undef UDEV */
 #ifndef _ALL_SOURCE
@@ -49,7 +50,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.4.74"
+#define VERSION "2.4.75"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
