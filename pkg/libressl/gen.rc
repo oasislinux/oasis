@@ -3,11 +3,14 @@ cflags\
 	-D LIBRESSL_INTERNAL\
 	-D OPENSSL_NO_HW_PADLOCK\
 	-D OPENSSL_NO_ASM\
+	-D '__BEGIN_HIDDEN_DECLS=' \
+	-D '__END_HIDDEN_DECLS=' \
 	-D '''__warn_references(sym,msg)=''' \
 	-isystem pkg/openbsd/include\
 	-I '$srcdir'/include\
 	-I '$srcdir'/crypto\
 	-I '$srcdir'/crypto/asn1\
+	-I '$srcdir'/crypto/bn\
 	-I '$srcdir'/crypto/evp\
 	-I '$srcdir'/crypto/modes
 
@@ -28,6 +31,7 @@ srchdrs=openssl/^(\
 	conf.h\
 	conf_api.h\
 	crypto.h\
+	curve25519.h\
 	des.h\
 	dh.h\
 	dsa.h\
@@ -41,7 +45,6 @@ srchdrs=openssl/^(\
 	gost.h\
 	hmac.h\
 	idea.h\
-	krb5_asn.h\
 	lhash.h\
 	md4.h\
 	md5.h\
@@ -137,6 +140,7 @@ lib libcrypto.a crypto/^(\
 		conf_err.c conf_lib.c conf_api.c conf_def.c conf_mod.c\
 		conf_mall.c conf_sap.c\
 	)\
+	curve25519/^(curve25519.c curve25519-generic.c)\
 	des/^(\
 		cbc_cksm.c cbc_enc.c cfb64enc.c cfb_enc.c\
 		ecb3_enc.c ecb_enc.c  enc_read.c enc_writ.c\
@@ -196,7 +200,6 @@ lib libcrypto.a crypto/^(\
 	)\
 	hmac/^(hmac.c hm_ameth.c hm_pmeth.c)\
 	idea/^(i_cbc.c i_cfb64.c i_ofb64.c i_ecb.c i_skey.c)\
-	krb5/krb5_asn.c\
 	lhash/^(lhash.c lh_stats.c)\
 	md4/^(md4_dgst.c md4_one.c)\
 	md5/^(md5_dgst.c md5_one.c)\
@@ -267,16 +270,15 @@ file lib/libcrypto.a '$outdir'/libcrypto.a 644
 
 # src/ssl/Makefile.am
 lib libssl.a ssl/^(\
-	s3_srvr.c s3_clnt.c s3_lib.c s3_pkt.c s3_both.c \
-	s23_srvr.c s23_clnt.c s23_lib.c s23_pkt.c \
-	t1_meth.c t1_srvr.c t1_clnt.c t1_lib.c t1_enc.c \
-	d1_meth.c d1_srvr.c d1_clnt.c d1_lib.c d1_pkt.c \
-	d1_both.c d1_enc.c d1_srtp.c \
-	ssl_lib.c ssl_err2.c ssl_cert.c ssl_sess.c \
-	ssl_ciph.c ssl_stat.c ssl_rsa.c \
-	ssl_asn1.c ssl_txt.c ssl_algs.c \
-	bio_ssl.c ssl_err.c t1_reneg.c \
-	pqueue.c\
+	ssl_srvr.c ssl_clnt.c s3_lib.c ssl_pkt.c ssl_both.c\
+	t1_meth.c t1_srvr.c t1_clnt.c t1_lib.c t1_enc.c\
+	d1_meth.c d1_srvr.c d1_clnt.c d1_lib.c d1_pkt.c\
+	d1_both.c d1_enc.c d1_srtp.c\
+	ssl_lib.c ssl_cert.c ssl_sess.c\
+	ssl_ciph.c ssl_stat.c ssl_rsa.c\
+	ssl_asn1.c ssl_txt.c ssl_algs.c\
+	bio_ssl.c ssl_err.c t1_reneg.c\
+	ssl_packet.c ssl_versions.c pqueue.c\
 	\
 	s3_cbc.c\
 	bs_ber.c bs_cbb.c bs_cbs.c\
