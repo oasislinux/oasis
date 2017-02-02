@@ -1,7 +1,6 @@
 *static*
 # from Setup.local
 _thread _threadmodule.c
-_signal signalmodule.c
 
 # from Setup.dist
 posix posixmodule.c
@@ -15,6 +14,7 @@ _operator _operator.c
 _collections _collectionsmodule.c
 itertools itertoolsmodule.c
 atexit atexitmodule.c
+_signal signalmodule.c
 _stat _stat.c
 time timemodule.c
 _locale _localemodule.c
@@ -35,6 +35,7 @@ _pickle _pickle.c
 _datetime _datetimemodule.c
 _bisect _bisectmodule.c
 _heapq _heapqmodule.c
+_asyncio _asynciomodule.c
 unicodedata unicodedata.c
 fcntl fcntlmodule.c
 spwd spwdmodule.c
@@ -50,10 +51,12 @@ termios termios.c
 resource resource.c
 _posixsubprocess _posixsubprocess.c
 #audioop audioop.c
+_blake2 _blake2/blake2module.c _blake2/blake2b_impl.c _blake2/blake2s_impl.c
 #_md5 md5module.c
 #_sha1 sha1module.c
 #_sha256 sha256module.c
 #_sha512 sha512module.c
+_sha3 _sha3/sha3module.c
 #_tkinter _tkinter.c tkappinit.c
 #syslog syslogmodule.c
 #_curses _cursesmodule.c

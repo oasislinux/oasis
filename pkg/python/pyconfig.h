@@ -4,6 +4,7 @@
 #define Py_PYCONFIG_H
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 /* #undef AIX_GENUINE_CPLUSPLUS */
+/* #undef ANDROID_API_LEVEL */
 /* #undef DOUBLE_IS_ARM_MIXED_ENDIAN_IEEE754 */
 /* #undef DOUBLE_IS_BIG_ENDIAN_IEEE754 */
 #define DOUBLE_IS_LITTLE_ENDIAN_IEEE754 1
@@ -29,7 +30,6 @@
 /* #undef HAVE_BROKEN_SEM_GETVALUE */
 /* #undef HAVE_BROKEN_UNSETENV */
 #define HAVE_BUILTIN_ATOMIC 1
-#define HAVE_C99_BOOL 1
 /* #undef HAVE_CHFLAGS */
 #define HAVE_CHROOT 1
 #define HAVE_COMPUTED_GOTOS 1
@@ -42,6 +42,13 @@
 #define HAVE_DECL_ISFINITE 1
 #define HAVE_DECL_ISINF 1
 #define HAVE_DECL_ISNAN 1
+/* #undef HAVE_DECL_RTLD_DEEPBIND */
+#define HAVE_DECL_RTLD_GLOBAL 1
+#define HAVE_DECL_RTLD_LAZY 1
+#define HAVE_DECL_RTLD_LOCAL 1
+#define HAVE_DECL_RTLD_NODELETE 1
+#define HAVE_DECL_RTLD_NOLOAD 1
+#define HAVE_DECL_RTLD_NOW 1
 /* #undef HAVE_DECL_TZNAME */
 #define HAVE_DEVICE_MACROS 1
 /* #undef HAVE_DEV_PTC */
@@ -88,8 +95,6 @@
 /* #undef HAVE_IEEEFP_H */
 #define HAVE_INET_ATON 1
 #define HAVE_INITGROUPS 1
-#define HAVE_INT32_T 1
-#define HAVE_INT64_T 1
 /* #undef HAVE_IO_H */
 /* #undef HAVE_IPA_PURE_CONST_BUG */
 /* #undef HAVE_KQUEUE */
@@ -112,7 +117,6 @@
 #define HAVE_LINUX_RANDOM_H 1
 #define HAVE_LINUX_TIPC_H 1
 #define HAVE_LONG_DOUBLE 1
-#define HAVE_LONG_LONG 1
 #define HAVE_LUTIMES 1
 #define HAVE_MAKEDEV 1
 #define HAVE_MEMORY_H 1
@@ -122,7 +126,6 @@
 /* #undef HAVE_NDIR_H */
 #define HAVE_NETPACKET_PACKET_H 1
 #define HAVE_OPENPTY 1
-/* #undef HAVE_OSX105_SDK */
 #define HAVE_PIPE2 1
 /* #undef HAVE_PLOCK */
 #define HAVE_PRLIMIT 1
@@ -147,6 +150,7 @@
 #define HAVE_SETRESGID 1
 #define HAVE_SETRESUID 1
 #define HAVE_SHADOW_H 1
+#define HAVE_SOCKADDR_ALG 1
 /* #undef HAVE_SOCKADDR_SA_LEN */
 #define HAVE_SOCKADDR_STORAGE 1
 #define HAVE_STAT_TV_NSEC 1
@@ -154,6 +158,8 @@
 #define HAVE_STDARG_PROTOTYPES 1
 #define HAVE_STD_ATOMIC 1
 #define HAVE_STRLCPY 1
+#define HAVE_STRUCT_PASSWD_PW_GECOS 1
+#define HAVE_STRUCT_PASSWD_PW_PASSWD 1
 /* #undef HAVE_STRUCT_STAT_ST_BIRTHTIME */
 #define HAVE_STRUCT_STAT_ST_BLKSIZE 1
 #define HAVE_STRUCT_STAT_ST_BLOCKS 1
@@ -178,7 +184,6 @@
 /* #undef HAVE_SYS_NDIR_H */
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_POLL_H 1
-/* #undef HAVE_SYS_RANDOM_H */
 #define HAVE_SYS_SENDFILE_H 1
 #define HAVE_SYS_SYSCALL_H 1
 /* #undef HAVE_SYS_SYS_DOMAIN_H */
@@ -189,8 +194,6 @@
 /* #undef HAVE_TMPNAM_R */
 #define HAVE_TM_ZONE 1
 /* #undef HAVE_UCS4_TCL */
-#define HAVE_UINT32_T 1
-#define HAVE_UINT64_T 1
 /* #undef HAVE_USABLE_WCHAR_T */
 /* #undef HAVE_UTIL_H */
 #define HAVE_WAIT3 1
@@ -211,7 +214,6 @@
 /* #undef POSIX_SEMAPHORES_NOT_ENABLED */
 #define PTHREAD_SYSTEM_SCHED_SUPPORTED 1
 /* #undef PYLONG_BITS_IN_DIGIT */
-#define PY_FORMAT_LONG_LONG "ll"
 #define PY_FORMAT_SIZE_T "z"
 /* #undef Py_DEBUG */
 /* #undef Py_ENABLE_SHARED */
@@ -257,16 +259,15 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VA_LIST_IS_ARRAY 1
 /* #undef WANT_SIGFPE_HANDLER */
 /* #undef WINDOW_HAS_FLAGS */
 #define WITH_DOC_STRINGS 1
+/* #undef WITH_DTRACE */
 /* #undef WITH_DYLD */
 /* #undef WITH_LIBINTL */
 /* #undef WITH_NEXT_FRAMEWORK */
 #define WITH_PYMALLOC 1
 #define WITH_THREAD 1
-/* #undef WITH_TSC */
 /* #undef WITH_VALGRIND */
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
@@ -293,10 +294,6 @@
 /* #undef _POSIX_SOURCE */
 /* #undef _POSIX_THREADS */
 #define _REENTRANT 1
-   #define below would cause a syntax error. */
-/* #undef _UINT32_T */
-   #define below would cause a syntax error. */
-/* #undef _UINT64_T */
 #define _XOPEN_SOURCE 700
 #define _XOPEN_SOURCE_EXTENDED 1
 #define __BSD_VISIBLE 1
@@ -309,8 +306,6 @@
 #ifndef __cplusplus
 /* #undef inline */
 #endif
-/* #undef int32_t */
-/* #undef int64_t */
 /* #undef mode_t */
 /* #undef off_t */
 /* #undef pid_t */
@@ -318,8 +313,6 @@
 /* #undef size_t */
 /* #undef socklen_t */
 /* #undef uid_t */
-/* #undef uint32_t */
-/* #undef uint64_t */
 /* #undef volatile */
 #if defined(__USLC__) && defined(__SCO_VERSION__)
 #define STRICT_SYSV_CURSES /* Don't use ncurses extensions */
