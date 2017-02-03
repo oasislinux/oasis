@@ -148,7 +148,7 @@ if(grep -q '^zlib' Setup) {
 	libs=($libs zlib/libz.a)
 }
 
-rule makesetup 'wd=$$PWD && cd $outdir && $$wd/$srcdir/Modules/makesetup -s $$wd/$srcdir -m - $$wd/$in'
+rule makesetup 'cd $outdir && $$OLDPWD/$srcdir/Modules/makesetup -s $$OLDPWD/$srcdir -m - $$OLDPWD/$in'
 build '$outdir'/config.c makesetup '$dir'/Setup '|' '$srcdir'/Modules/^(makesetup config.c.in)
 
 cflags $cflags

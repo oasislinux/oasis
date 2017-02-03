@@ -53,7 +53,7 @@ build '$outdir'/include/term.h mkterm '$srcdir'/include/Caps '|' '$outdir'/MKter
 build '$outdir'/codes.c awk '$srcdir'/include/Caps '|' '$srcdir'/ncurses/tinfo/MKcodes.awk ; with\
 	expr '-f $srcdir/ncurses/tinfo/MKcodes.awk bigstrings=1'
 
-rule mkcaptab '(wd=$$PWD && cd $outdir && $$wd/$srcdir/ncurses/tinfo/MKcaptab.sh awk 1 $$wd/$srcdir/ncurses/tinfo/MKcaptab.awk $$wd/$in) >$out.tmp && mv $out.tmp $out'
+rule mkcaptab '(cd $outdir && $$OLDPWD/$srcdir/ncurses/tinfo/MKcaptab.sh awk 1 $$OLDPWD/$srcdir/ncurses/tinfo/MKcaptab.awk $$OLDPWD/$in) >$out.tmp && mv $out.tmp $out'
 build '$outdir'/comp_captab.c mkcaptab '$srcdir'/include/Caps '|' '$outdir'/make_hash '$srcdir'/tinfo/^(MKcaptab.awk MKcaptab.sh)
 
 rule mkfallback 'sh $srcdir/ncurses/tinfo/MKfallback.sh /dev/null /dev/null /dev/null >$out.tmp && mv $out.tmp $out'
