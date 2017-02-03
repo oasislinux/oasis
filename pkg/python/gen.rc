@@ -161,8 +161,15 @@ cc Modules/getpath.c ; defs='-D '''^(\
 	'VPATH='""\
 )^'''' with cflags '$cflags '$"defs
 
-cc Python/getplatform.c ; with cflags '$cflags -D PLATFORM=''"linux"'''
-cc Python/sysmodule.c ; with cflags '$cflags -D ABIFLAGS=''"m"'''
+platform=linux
+abiflags=''
+if(grep -q '^#define WITH_PYMALLOC 1' pyconfig.h)
+	abiflags=$abiflags^m
+if(grep -q '^#define Py_DEBUG 1' pyconfig.h)
+	abiflags=$abiflags^d
+
+cc Python/getplatform.c ; with cflags '$cflags -D PLATFORM=''"'$platform'"'''
+cc Python/sysmodule.c ; with cflags '$cflags -D ABIFLAGS=''"'$abiflags'"'''
 
 phony deps $deps
 lib libpython.a -d '$dir'/deps $srcs
@@ -175,9 +182,9 @@ pylibs=`{grep -v '^#' pylibs.txt}
 checkstatus
 for(f in $pylibs)
 	file lib/python3.5/$f '$srcdir'/Lib/$f 644
-file lib/python3.5/_sysconfigdata_m_linux_.py '$dir'/lib/_sysconfigdata.py 644
+file lib/python3.5/_sysconfigdata_$abiflags^_$platform^_.py '$dir'/lib/_sysconfigdata.py 644
 file lib/python3.5/Makefile '$dir'/lib/Makefile 644
 dir lib/python3.5/lib-dynload 755
 
-gen_inputs='$dir'/^(Setup modules.awk)
+gen_inputs='$dir'/^(Setup modules.awk pyconfig.h)
 fetch curl

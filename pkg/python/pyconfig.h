@@ -266,7 +266,7 @@
 /* #undef WITH_DYLD */
 /* #undef WITH_LIBINTL */
 /* #undef WITH_NEXT_FRAMEWORK */
-#define WITH_PYMALLOC 1
+/* #undef WITH_PYMALLOC */
 #define WITH_THREAD 1
 /* #undef WITH_VALGRIND */
 #if defined AC_APPLE_UNIVERSAL_BUILD
