@@ -1,4 +1,4 @@
-# <cd src/Documentation && printf '%s\n' git-*.txt
+# 2,<cd src/Documentation && printf '%s\n' git-*.txt
 git-add.txt
 git-am.txt
 git-annotate.txt

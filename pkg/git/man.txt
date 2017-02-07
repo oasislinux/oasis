@@ -1,4 +1,4 @@
-# <xzcat git-manpages-2.11.0.tar.xz | pax -s '/\.\///' '*.[1-9]'
+# 2,<xzcat git-manpages-2.11.1.tar.xz | pax -s '/\.\///' '*.[1-9]'
 man5/githooks.5
 man5/gitattributes.5
 man5/gitweb.conf.5
