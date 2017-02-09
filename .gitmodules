@@ -192,6 +192,7 @@
 [submodule "pkg/scc/src"]
 	path = pkg/scc/src
 	url = git://git.suckless.org/scc
+	ignore = all
 [submodule "pkg/sdhcp/src"]
 	path = pkg/sdhcp/src
 	url = git://git.2f30.org/sdhcp

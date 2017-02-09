@@ -1,0 +1,24 @@
+From eca0568e51f6c14648a9ca0e0cba4897d961e644 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 9 Feb 2017 13:03:30 -0800
+Subject: [PATCH] [cc1] Add missing icode declaration
+
+---
+ cc1/cc1.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/cc1/cc1.h b/cc1/cc1.h
+index 705e0b9..06484fc 100644
+--- a/cc1/cc1.h
++++ b/cc1/cc1.h
+@@ -410,6 +410,7 @@ extern int setloc(char *fname, unsigned line);
+ #define accept(t) ((yytoken == (t)) ? next() : 0)
+ 
+ /* code.c */
++extern void icode(void);
+ extern void prtree(Node *np);
+ extern void emit(unsigned, void *);
+ extern Node *node(unsigned op, Type *tp, Node *left, Node *rigth);
+-- 
+2.11.1
+

@@ -1,0 +1,81 @@
+From e44ceb42cf228e57264e657ea1fa3767811e68cf Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 9 Feb 2017 13:01:13 -0800
+Subject: [PATCH] Allow generated sysincludes.h in separate directory
+
+---
+ cc1/Makefile               | 2 +-
+ cc1/arch/amd64-sysv/arch.c | 2 +-
+ cc1/arch/i386-sysv/arch.c  | 2 +-
+ cc1/arch/qbe/arch.c        | 2 +-
+ cc1/arch/z80/arch.c        | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/cc1/Makefile b/cc1/Makefile
+index b9f73ce..3ec023b 100644
+--- a/cc1/Makefile
++++ b/cc1/Makefile
+@@ -1,7 +1,7 @@
+ # See LICENSE file for copyright and license details.
+ .POSIX:
+ 
+-CSTDINC = -I../inc/$(STD)
++CSTDINC = -I../inc -I../inc/$(STD)
+ 
+ include ../config.mk
+ 
+diff --git a/cc1/arch/amd64-sysv/arch.c b/cc1/arch/amd64-sysv/arch.c
+index f4492b4..f72d275 100644
+--- a/cc1/arch/amd64-sysv/arch.c
++++ b/cc1/arch/amd64-sysv/arch.c
+@@ -2,7 +2,7 @@
+ static char sccsid[] = "@(#) ./cc1/arch/amd64-sysv/arch.c";
+ #include <stdio.h>
+ 
+-#include "../../../inc/sysincludes.h"
++#include <sysincludes.h>
+ #include "../../../inc/cc.h"
+ #include "../../cc1.h"
+ 
+diff --git a/cc1/arch/i386-sysv/arch.c b/cc1/arch/i386-sysv/arch.c
+index f72f889..3672acd 100644
+--- a/cc1/arch/i386-sysv/arch.c
++++ b/cc1/arch/i386-sysv/arch.c
+@@ -2,7 +2,7 @@
+ static char sccsid[] = "@(#) ./cc1/arch/i386-sysv/arch.c";
+ #include <stdio.h>
+ 
+-#include "../../../inc/sysincludes.h"
++#include <sysincludes.h>
+ #include "../../../inc/cc.h"
+ #include "../../cc1.h"
+ 
+diff --git a/cc1/arch/qbe/arch.c b/cc1/arch/qbe/arch.c
+index 233a390..e633a40 100644
+--- a/cc1/arch/qbe/arch.c
++++ b/cc1/arch/qbe/arch.c
+@@ -2,7 +2,7 @@
+ static char sccsid[] = "@(#) ./cc1/arch/qbe/arch.c";
+ #include <stdio.h>
+ 
+-#include "../../../inc/sysincludes.h"
++#include <sysincludes.h>
+ #include "../../../inc/cc.h"
+ #include "../../cc1.h"
+ 
+diff --git a/cc1/arch/z80/arch.c b/cc1/arch/z80/arch.c
+index 0c603f6..e709bfb 100644
+--- a/cc1/arch/z80/arch.c
++++ b/cc1/arch/z80/arch.c
+@@ -2,7 +2,7 @@
+ static char sccsid[] = "@(#) ./cc1/arch/z80/arch.c";
+ #include <stdio.h>
+ 
+-#include "../../../inc/sysincludes.h"
++#include <sysincludes.h>
+ #include "../../../inc/cc.h"
+ #include "../../cc1.h"
+ 
+-- 
+2.11.1
+
