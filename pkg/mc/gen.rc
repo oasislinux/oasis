@@ -59,7 +59,7 @@ mcflags=('$mcflags' \
 ) set mcflags $"mcflags
 
 include '$dir'/bld.ninja
-for(lib in bio crypto date escfmt fileutil inifile regex std sys testr thread) {
+for(lib in bio crypto date escfmt fileutil inifile json regex std sys testr thread) {
 	file lib/myr/lib$lib.use '$outdir'/lib/$lib/lib$lib.use 644
 	file lib/myr/lib$lib.a '$outdir'/lib/$lib/lib$lib.a 644
 }

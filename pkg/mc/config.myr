@@ -1,13 +1,13 @@
 pkg config =
 	const Sys = "Linux"
 	const Linkcmd = ["ld", "-o"]
+	const Manpath = "share/man/man"
 	const Instroot = "/"
 	const Objsuffix = ".o"
 	const Arcmd = ["ar", "-rcs"]
 	const Ascmd = ["as", "-g"]
 	const Directlib = false
 	const Runtime = "_myrrt.o"
-	const Manpath = "share/man/man"
 	const Sharepath = "share"
 	const Binpath = "bin"
 	const Libpath = "lib/myr"
