@@ -13,7 +13,8 @@ cflags\
 		-D EFIVAR_BUILD_ENVIRONMENT\
 		-I '$srcdir'/src/include/efivar
 	build '$outdir'/host-guid.c.o cc '$srcdir'/src/guid.c
-	exe makeguids src/makeguids.c host-guid.c.o
+	exe makeguids src/makeguids.c host-guid.c.o ; with\
+		ldlibs '-ldl'
 } >tools.ninja ; subninja tools.ninja
 
 rule makeguids '$outdir/makeguids $in $out'
