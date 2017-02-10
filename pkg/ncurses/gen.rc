@@ -18,7 +18,7 @@ cflags '$common_cflags'
 
 build '$outdir'/curses.head sed '$srcdir'/include/curses.h.in '|' '$dir'/subst.sed ; with\
 	expr '-f $dir/subst.sed'
-rule mkkeydefs '{ cat $outdir/curses.head && sh $srcdir/include/MKkey_defs.sh $in && cat $srcdir/include/curses.{wide,tail}; } >$out.tmp && mv $out.tmp $out'
+rule mkkeydefs '{ cat $outdir/curses.head && sh $srcdir/include/MKkey_defs.sh $in && cat $srcdir/include/curses.wide $srcdir/include/curses.tail; } >$out.tmp && mv $out.tmp $out'
 build '$outdir'/include/curses.h mkkeydefs '$srcdir'/include/Caps '|' '$outdir'/curses.head '$srcdir'/include/^(curses.^(wide tail) MKkey_defs.sh)
 
 rule mkhashsize 'sh $srcdir/include/MKhashsize.sh $in >$out.tmp && mv $out.tmp $out'

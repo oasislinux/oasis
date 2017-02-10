@@ -1,4 +1,4 @@
-# <cd src && printf '%s\n' terminus/{*.font,*.*-*}
+# <cd src && printf '%s\n' terminus/*.font terminus/*.*-*
 terminus/ter-u12n.font
 terminus/ter-u14n.font
 terminus/ter-u14v.font
