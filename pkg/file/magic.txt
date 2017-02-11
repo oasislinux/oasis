@@ -1,4 +1,4 @@
-# <cd src/magic/Magdir && printf '%s\n' *
+# 2,<cd src/magic/Magdir && printf '%s\n' *
 acorn
 adi
 adventure
@@ -95,6 +95,7 @@ gnome
 gnu
 gnumeric
 gpt
+gpu
 grace
 graphviz
 gringotts
@@ -277,6 +278,7 @@ xenix
 xilinx
 xo65
 xwindows
+yara
 zfs
 zilog
 zyxel
