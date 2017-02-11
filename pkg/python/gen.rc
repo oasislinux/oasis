@@ -157,7 +157,7 @@ cc Modules/getpath.c ; defs='-D '''^(\
 	'PYTHONPATH='":plat-linux"\
 	'PREFIX='"/"\
 	'EXEC_PREFIX='"/"\
-	'VERSION='"3.5"\
+	'VERSION='"3.6"\
 	'VPATH='""\
 )^'''' with cflags '$cflags '$"defs
 
@@ -181,10 +181,10 @@ sym bin/python python3
 pylibs=`{grep -v '^#' pylibs.txt}
 checkstatus
 for(f in $pylibs)
-	file lib/python3.5/$f '$srcdir'/Lib/$f 644
-file lib/python3.5/_sysconfigdata_$abiflags^_$platform^_.py '$dir'/lib/_sysconfigdata.py 644
-file lib/python3.5/Makefile '$dir'/lib/Makefile 644
-dir lib/python3.5/lib-dynload 755
+	file lib/python3.6/$f '$srcdir'/Lib/$f 644
+file lib/python3.6/_sysconfigdata_$abiflags^_$platform^_.py '$dir'/lib/_sysconfigdata.py 644
+file lib/python3.6/Makefile '$dir'/lib/Makefile 644
+dir lib/python3.6/lib-dynload 755
 
 gen_inputs='$dir'/^(Setup modules.awk pyconfig.h)
 fetch curl
