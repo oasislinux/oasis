@@ -10,6 +10,8 @@ oasis is a small linux system
 * Sources can be referenced through a URL or git submodule, but not included
   directly in the oasis repository. This way, users only need to download the
   sources they are interested in.
+* `/etc` directory should be simple enough for system administrators to
+  understand in its entirety and customize appropriately.
 
 # Components
 
