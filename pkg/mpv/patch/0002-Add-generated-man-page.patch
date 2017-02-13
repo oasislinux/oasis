@@ -1,4 +1,4 @@
-From 7c5945cec9829ba1d6d692359b9d618669935955 Mon Sep 17 00:00:00 2001
+From e30be2ad83090568bbb0a5861d5bc0e79faa0733 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
@@ -7,16 +7,16 @@ This requires python and rst2man to generate.
 
 $ rst2man.py --strip-elements-with-class=contents DOCS/man/mpv.rst DOCS/man/mpv.1
 ---
- DOCS/man/mpv.1 | 14084 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 14084 insertions(+)
+ DOCS/man/mpv.1 | 14268 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 14268 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 000000000..f5fa84578
+index 000000000..695e39493
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,14084 @@
+@@ -0,0 +1,14268 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -175,7 +175,7 @@ index 000000000..f5fa84578
 +Toggle infinite looping.
 +.TP
 +.B Ctrl + and Ctrl \-
-+Adjust audio delay by +/\- 0.1 seconds.
++Adjust audio delay (A/V sync) by +/\- 0.1 seconds.
 +.TP
 +.B u
 +Switch between applying no style overrides to SSA/ASS subtitles, and
@@ -851,6 +851,10 @@ index 000000000..f5fa84578
 +Note that not all prefixes are documented here. Undocumented prefixes are
 +either aliases to documented protocols, or are just redirections to
 +protocols implemented and documented in FFmpeg.
++.sp
++\fBdata:\fP is supported in FFmpeg (not in Libav), but needs to be in the
++format \fBdata://\fP\&. This is done to avoid ambiguity with filenames. You
++can also prefix it with \fBlavf://\fP or \fBffmpeg://\fP\&.
 +.TP
 +.B \fBytdl://...\fP
 +By default, the youtube\-dl hook script (enabled by default for mpv CLI)
@@ -1736,10 +1740,10 @@ index 000000000..f5fa84578
 +.TP
 +.B d3d11va
 +requires \fB\-\-vo=opengl\fP with \fB\-\-opengl\-backend=angle\fP
-+(Windows only)
++(Windows 8+ only)
 +.TP
 +.B d3d11va\-copy
-+copies video back to system RAM (Windows only)
++copies video back to system RAM (Windows 8+ only)
 +.TP
 +.B mediacodec
 +copies video back to system RAM (Android only)
@@ -1779,6 +1783,14 @@ index 000000000..f5fa84578
 +(automatically used if available). You can also try the old GLX backend by
 +forcing it with \fB\-\-opengl\-backend=x11\fP, but the vaapi/GLX interop is
 +said to be slower than \fBvaapi\-copy\fP\&.
++.sp
++The \fBcuda\fP and \fBcuda\-copy\fP modes provides deinterlacing in the decoder
++which is useful as there is no other deinterlacing mechanism in the opengl
++output path. To use this deinterlacing you must pass the option:
++\fBvd\-lavc\-o=deint=[weave|bob|adaptive]\fP\&.
++Pass \fBweave\fP (or leave the option unset) to not attempt any
++deinterlacing. \fBcuda\fP should always be preferred unless the \fBopengl\fP
++vo is not being used or filters are required.
 +.sp
 +Most video filters will not work with hardware decoding as they are
 +primarily implemented on the CPU. Some exceptions are \fBvdpaupp\fP,
@@ -1834,18 +1846,6 @@ index 000000000..f5fa84578
 +affect this additionally. This can give incorrect results even with
 +completely ordinary video sources.
 +.sp
-+\fBcuda\fP is usually safe. Interlaced content can be deinterlaced by
-+the decoder, which is useful as there is no other deinterlacing
-+mechanism in the opengl output path. To use this deinterlacing you
-+must pass the option: \fBvd\-lavc\-o=deint=[weave|bob|adaptive]\fP\&. Pass
-+\fBweave\fP to not attempt any deinterlacing.
-+10 and 12bit HEVC is available if the hardware supports it and a
-+sufficiently new driver (> 375.xx) is used.
-+.sp
-+\fBcuda\-copy\fP has the same behaviour as \fBcuda\fP \- including the ability
-+to deinterlace inside the decoder. However, traditional deinterlacing
-+filters can be used in this case.
-+.sp
 +\fBrpi\fP always uses the hardware overlay renderer, even with
 +\fB\-\-vo=opengl\fP\&.
 +.sp
@@ -1863,12 +1863,12 @@ index 000000000..f5fa84578
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-hwdec\-preload=<api>\fP
++.B \fB\-\-opengl\-hwdec\-interop=<name>\fP
 +This is useful for the \fBopengl\fP and \fBopengl\-cb\fP VOs for creating the
 +hardware decoding OpenGL interop context, but without actually enabling
 +hardware decoding itself (like \fB\-\-hwdec\fP does).
 +.sp
-+If set to \fBno\fP (default), the \fB\-\-hwdec\fP option is used.
++If set to an empty string (default), the \fB\-\-hwdec\fP option is used.
 +.sp
 +For \fBopengl\fP, if set, do not create the interop context on demand, but
 +when the VO is created.
@@ -1878,6 +1878,19 @@ index 000000000..f5fa84578
 +allows enabling hardware decoding at runtime at all, without having
 +to temporarily set the \fBhwdec\fP option just during OpenGL context
 +initialization with \fBmpv_opengl_cb_init_gl()\fP\&.
++.sp
++See \fB\-\-opengl\-hwdec\-interop=help\fP for accepted values. This lists the
++interop backend, with the \fB\-\-hwdec\fP alias after it in \fB[...]\fP\&. Consider
++all values except the proper interop backend name, \fBauto\fP, and \fBno\fP as
++silently deprecated and subject to change. Also, if you use this in
++application code (e.g. via libmpv), any value other than \fBauto\fP and \fBno\fP
++should be avoided, as backends can change.
++.sp
++Currently the option sets a single value. It is possible that the option
++type changes to a list in the future.
++.sp
++The old alias \fB\-\-hwdec\-preload\fP has different behavior if the option value
++is \fBno\fP\&.
 +.TP
 +.B \fB\-\-videotoolbox\-format=<name>\fP
 +Set the internal pixel format used by \fB\-\-hwdec=videotoolbox\fP on OSX. The
@@ -2323,23 +2336,17 @@ index 000000000..f5fa84578
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-ad=<[+|\-]family1:(*|decoder1),[+|\-]family2:(*|decoder2),...[\-]>\fP
++.B \fB\-\-ad=<decoder1,decoder2,...[\-]>\fP
 +Specify a priority list of audio decoders to be used, according to their
 +decoder name. When determining which decoder to use, the first decoder that
 +matches the audio format is selected. If that is unavailable, the next
 +decoder is used. Finally, it tries all other decoders that are not
 +explicitly selected or rejected by the option.
 +.sp
-+Specifying family names is deprecated. Entries like \fBfamily:*\fP prioritize
-+all decoders of the given family.
-+.sp
 +\fB\-\fP at the end of the list suppresses fallback on other available
 +decoders not on the \fB\-\-ad\fP list. \fB+\fP in front of an entry forces the
 +decoder. Both of these should not normally be used, because they break
 +normal decoder auto\-selection! Both of these methods are deprecated.
-+.sp
-+\fB\-\fP in front of an entry disables selection of the decoder. This is
-+deprecated.
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Examples"
@@ -2348,10 +2355,6 @@ index 000000000..f5fa84578
 +.B \fB\-\-ad=mp3float\fP
 +Prefer the FFmpeg/Libav \fBmp3float\fP decoder over all other MP3
 +decoders.
-+.TP
-+.B \fB\-\-ad=lavc:mp3float\fP
-+Prefer the FFmpeg/Libav \fBmp3float\fP decoder over all other MP3
-+decoders. (Using deprecated family syntax.)
 +.TP
 +.B \fB\-\-ad=help\fP
 +List all available decoders.
@@ -2363,7 +2366,7 @@ index 000000000..f5fa84578
 +.IP "Warning"
 +.sp
 +Enabling compressed audio passthrough (AC3 and DTS via SPDIF/HDMI) with
-+this option is deprecated. Use \fB\-\-audio\-spdif\fP instead.
++this option is not possible. Use \fB\-\-audio\-spdif\fP instead.
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -3035,6 +3038,13 @@ index 000000000..f5fa84578
 +.sp
 +Disabled by default.
 +.TP
++.B \fB\-\-image\-subs\-video\-resolution=<yes|no>\fP
++Override the image subtitle resolution with the video resolution
++(default: no). Normally, the subtitle canvas is fit into the video canvas
++(e.g. letterboxed). Setting this option uses the video size as subtitle
++canvas size. Can be useful to test broken subtitles, which often happen
++when the video was trancoded, while attempting to keep the old subtitles.
++.TP
 +.B \fB\-\-sub\-ass\fP, \fB\-\-no\-sub\-ass\fP
 +Render ASS subtitles natively (enabled by default).
 +.sp
@@ -3116,8 +3126,8 @@ index 000000000..f5fa84578
 +subtitles are interpreted as UTF\-8 with "Latin 1" as fallback for bytes
 +which are not valid UTF\-8 sequences. iconv is never involved in this mode.
 +.sp
-+This option changed in mpv 0.23.0. The old syntax is still emulated to some
-+degree.
++This option changed in mpv 0.23.0. Support for the old syntax was fully
++removed in mpv 0.24.0.
 +.TP
 +.B \fB\-\-sub\-fix\-timing\fP, \fB\-\-no\-sub\-fix\-timing\fP
 +By default, subtitle timing is adjusted to remove minor gaps or overlaps
@@ -3343,6 +3353,18 @@ index 000000000..f5fa84578
 +Vertical position (default: \fBbottom\fP).
 +Details see \fB\-\-sub\-align\-x\fP\&.
 +.TP
++.B \fB\-\-sub\-justify=<auto|left|center|right>\fP
++Control how multi line subs are justified irrespective of where they
++are aligned (default: \fBauto\fP which justifies as defined by
++\fB\-\-sub\-align\-y\fP).
++Left justification is recommended to make the subs easier to read
++as it is easier for the eyes.
++.TP
++.B \fB\-\-sub\-ass\-justify=<yes|no>\fP
++Applies justification as defined by \fB\-\-sub\-justify\fP on ASS subtitles
++if \fB\-\-sub\-ass\-style\-override\fP is not set to \fBno\fP\&.
++Default: \fBno\fP\&.
++.TP
 +.B \fB\-\-sub\-shadow\-color=<color>\fP
 +See \fB\-\-sub\-color\fP\&. Color used for sub text shadow.
 +.TP
@@ -3503,6 +3525,9 @@ index 000000000..f5fa84578
 +Enable/disable playback progress rendering in taskbar (Windows 7 and above).
 +.sp
 +Enabled by default.
++.TP
++.B \fB\-\-snap\-window\fP
++(Windows only) Snap the player window to screen edges.
 +.TP
 +.B \fB\-\-ontop\fP
 +Makes the player window stay on top of other windows.
@@ -3804,7 +3829,7 @@ index 000000000..f5fa84578
 +.UNINDENT
 +.TP
 +.B \fB\-\-hidpi\-window\-scale\fP, \fB\-\-no\-hidpi\-window\-scale\fP
-+(OS X only)
++(OS X and X11 only)
 +Scale the window size according to the backing scale factor (default: yes).
 +On regular HiDPI resolutions the window opens with double the size but appears
 +as having the same size as on none\-HiDPI resolutions. This is the default OS X
@@ -4215,6 +4240,27 @@ index 000000000..f5fa84578
 +.sp
 +(This value tends to be fuzzy, because many file formats don\(aqt store linear
 +timestamps.)
++.TP
++.B \fB\-\-prefetch\-playlist=<yes|no>\fP
++Prefetch next playlist entry while playback of the current entry is ending
++(default: no). This merely opens the URL of the next playlist entry as soon
++as the current URL is fully read.
++.sp
++This does \fBnot\fP work with URLs resolved by the \fByoutube\-dl\fP wrapper,
++and it won\(aqt.
++.sp
++This does not affect HLS (\fB\&.m3u8\fP URLs) \- HLS prefetching depends on the
++demuxer cache settings and is on by default.
++.sp
++This can give subtly wrong results if per\-file options are used, or if
++options are changed in the time window between prefetching start and next
++file played.
++.sp
++This can occasionally make wrong prefetching decisions. For example, it
++can\(aqt predict whether you go backwards in the playlist, and assumes you
++won\(aqt edit the playlist.
++.sp
++Highly experimental.
 +.TP
 +.B \fB\-\-force\-seekable=<yes|no>\fP
 +If the player thinks that the media is not seekable (e.g. playing from a
@@ -6003,15 +6049,69 @@ index 000000000..f5fa84578
 +.sp
 +Windows only.
 +.TP
-+.B \fB\-\-opengl\-dcomposition=<yes|no>\fP
-+Allows DirectComposition when using the ANGLE backend (default: yes).
-+DirectComposition implies flip\-model presentation, which can improve
-+rendering efficiency on Windows 8+ by avoiding a copy of the video frame.
-+mpv uses it by default where possible, but it can cause poor behaviour with
-+some drivers, such as a black screen or graphical corruption when leaving
-+full\-screen mode. Use "no" to disable it.
++.B \fB\-\-angle\-d3d11\-feature\-level=<11_0|10_1|10_0|9_3>\fP
++Selects a specific feature level when using the ANGLE backend with D3D11.
++By default, the highest available feature level is used. This option can be
++used to select a lower feature level, which is mainly useful for debugging.
++Note that OpenGL ES 3.0 is only supported at feature level 10_1 or higher.
++Most extended OpenGL features will not work at lower feature levels
++(similar to \fB\-\-opengl\-dumb\-mode\fP).
 +.sp
 +Windows with ANGLE only.
++.TP
++.B \fB\-\-angle\-d3d11\-warp=<yes|no|auto>\fP
++Use WARP (Windows Advanced Rasterization Platform) when using the ANGLE
++backend with D3D11 (default: auto). This is a high performance software
++renderer. By default, it is used when the Direct3D hardware does not
++support Direct3D 11 feature level 9_3. While the extended OpenGL features
++will work with WARP, they can be very slow.
++.sp
++Windows with ANGLE only.
++.TP
++.B \fB\-\-angle\-egl\-windowing=<yes|no|auto>\fP
++Use ANGLE\(aqs built in EGL windowing functions to create a swap chain
++(default: auto). If this is set to \fBno\fP and the D3D11 renderer is in use,
++ANGLE\(aqs built in swap chain will not be used and a custom swap chain that
++is optimized for video rendering will be created instead. If set to
++\fBauto\fP, a custom swap chain will be used for D3D11 and the built in swap
++chain will be used for D3D9. This option is mainly for debugging purposes,
++in case the custom swap chain has poor performance or does not work.
++.sp
++If set to \fByes\fP, the \fB\-\-angle\-max\-frame\-latency\fP and
++\fB\-\-angle\-swapchain\-length\fP options will have no effect.
++.sp
++Windows with ANGLE only.
++.TP
++.B \fB\-\-angle\-max\-frame\-latency=<1\-16>\fP
++Sets the maximum number of frames that the system is allowed to queue for
++rendering with the ANGLE backend (default: 3). Lower values should make
++VSync timing more accurate, but a value of \fB1\fP requires powerful
++hardware, since the CPU will not be able to "render ahead" of the GPU.
++.sp
++Windows with ANGLE only.
++.TP
++.B \fB\-\-angle\-renderer=<d3d9|d3d11|auto>\fP
++Forces a specific renderer when using the ANGLE backend (default: auto). In
++auto mode this will pick D3D11 for systems that support Direct3D 11 feature
++level 9_3 or higher, and D3D9 otherwise. This option is mainly for
++debugging purposes. Normally there is no reason to force a specific
++renderer, though \fB\-\-angle\-renderer=d3d9\fP may give slightly better
++performance on old hardware. Note that the D3D9 renderer only supports
++OpenGL ES 2.0, so most extended OpenGL features will not work if this
++renderer is selected (similar to \fB\-\-opengl\-dumb\-mode\fP).
++.sp
++Windows with ANGLE only.
++.TP
++.B \fB\-\-angle\-swapchain\-length=<2\-16>\fP
++Sets the number of buffers in the D3D11 presentation queue when using the
++ANGLE backend (default: 6). At least 2 are required, since one is the back
++buffer that mpv renders to and the other is the front buffer that is
++presented by the DWM. Additional buffers can improve performance, because
++for example, mpv will not have to wait on the DWM to release the front
++buffer before rendering a new frame to it. For this reason, Microsoft
++recommends at least 4.
++.sp
++Windows 8+ with ANGLE only.
 +.TP
 +.B \fB\-\-opengl\-sw\fP
 +Continue even if a software renderer is detected.
@@ -6043,6 +6143,10 @@ index 000000000..f5fa84578
 +.TP
 +.B x11
 +X11/GLX
++.TP
++.B x11probe
++For internal autoprobing, equivalent to \fBx11\fP otherwise. Don\(aqt use
++directly, it could be removed without warning as autoprobing is changed.
 +.TP
 +.B wayland
 +Wayland/EGL
@@ -6346,6 +6450,7 @@ index 000000000..f5fa84578
 +unavailable, it silently falls back on a normal framebuffer. Note that
 +if you set the \fB\-\-opengl\-fbo\-format\fP option to a non\-default value, a
 +format with alpha must be specified, or this won\(aqt work.
++This does not work on X11 with EGL and Mesa (freedesktop bug 67676).
 +.TP
 +.B no
 +Ignore alpha component.
@@ -6520,21 +6625,10 @@ index 000000000..f5fa84578
 +Input file type for \fBmf://\fP (available: jpeg, png, tga, sgi). By default,
 +this is guessed from the file extension.
 +.TP
-+.B \fB\-\-stream\-capture=<filename>\fP
-+Allows capturing the primary stream (not additional audio tracks or other
-+kind of streams) into the given file. Capturing can also be started and
-+stopped by changing the filename with the \fBstream\-capture\fP property.
-+Generally this will not produce usable results for anything else than MPEG
-+or raw streams, unless capturing includes the file headers and is not
-+interrupted. Note that, due to cache latencies, captured data may begin and
-+end somewhat delayed compared to what you see displayed.
-+.sp
-+The destination file is always appended. (Before mpv 0.8.0, the file was
-+overwritten.)
-+.TP
-+.B \fB\-\-stream\-dump=<filename>\fP
-+Same as \fB\-\-stream\-capture\fP, but do not start playback. Instead, the entire
-+file is dumped.
++.B \fB\-\-stream\-dump=<destination\-filename>\fP
++Instead of playing a file, read its byte stream and write it to the given
++destination file. The destination is overwritten. Can be useful to test
++network\-related behavior.
 +.TP
 +.B \fB\-\-stream\-lavf\-o=opt1=value1,opt2=value2,...\fP
 +Set AVOptions on streams opened with libavformat. Unknown or misspelled
@@ -6581,6 +6675,29 @@ index 000000000..f5fa84578
 +.sp
 +This does not affect playlist expansion, redirection, or other loading of
 +referenced files like with ordered chapters.
++.TP
++.B \fB\-\-record\-file=<file>\fP
++Record the current stream to the given target file. The target file will
++always be overwritten without asking.
++.sp
++This remuxes the source stream without reencoding, which makes this a
++highly fragile and experimental feature. It\(aqs entirely possible that this
++writes files which are broken, not standards compliant, not playable with
++all players (including mpv), or incomplete.
++.sp
++The target file format is determined by the file extension of the target
++filename. It is recommended to use the same target container as the source
++container if possible, and preferring Matroska as fallback.
++.sp
++Seeking during stream recording, or enabling/disabling stream recording
++during playback, can cut off data, or produce "holes" in the output file.
++These are technical restrictions. In particular, video data or subtitles
++which were read ahead can produce such holes, which might cause playback
++problems with various players (including mpv).
++.sp
++The behavior of this option might changed in the future, such as changing
++it to a template (similar to \fB\-\-screenshot\-template\fP), being renamed,
++removed, or anything else, until it is declared semi\-stable.
 +.TP
 +.B \fB\-\-lavfi\-complex=<string>\fP
 +Set a "complex" libavfilter filter, which means a single filter graph can
@@ -10663,14 +10780,18 @@ index 000000000..f5fa84578
 +Total A\-V sync correction done. Unavailable if audio or video is
 +disabled.
 +.TP
-+.B \fBdrop\-frame\-count\fP
++.B \fBdecoder\-frame\-drop\-count\fP
 +Video frames dropped by decoder, because video is too far behind audio (when
 +using \fB\-\-framedrop=decoder\fP). Sometimes, this may be incremented in other
 +situations, e.g. when video packets are damaged, or the decoder doesn\(aqt
 +follow the usual rules. Unavailable if video is disabled.
++.sp
++\fBdrop\-frame\-count\fP is a deprecated alias.
 +.TP
-+.B \fBvo\-drop\-frame\-count\fP
++.B \fBframe\-drop\-count\fP
 +Frames dropped by VO (when using \fB\-\-framedrop=vo\fP).
++.sp
++\fBvo\-drop\-frame\-count\fP is a deprecated alias.
 +.TP
 +.B \fBmistimed\-frame\-count\fP
 +Number of video frames that were not timed correctly in display\-sync mode
@@ -11086,8 +11207,8 @@ index 000000000..f5fa84578
 +This is known only once the VO has opened (and possibly later). With some
 +VOs (like \fBopengl\fP), this might be never known in advance, but only when
 +the decoder attempted to create the hw decoder successfully. (Using
-+\fB\-\-hwdec\-preload\fP can load it eagerly.) If there are multiple drivers
-+loaded, they will be separated by \fB,\fP\&.
++\fB\-\-opengl\-hwdec\-interop\fP can load it eagerly.) If there are multiple
++drivers loaded, they will be separated by \fB,\fP\&.
 +.sp
 +If no VO is active or no interop driver is known, this property is
 +unavailable.
@@ -11095,6 +11216,9 @@ index 000000000..f5fa84578
 +This does not necessarily use the same values as \fBhwdec\fP\&. There can be
 +multiple interop drivers for the same hardware decoder, depending on
 +platform and VO.
++.sp
++This is somewhat similar to the \fB\-\-opengl\-hwdec\-interop\fP option, but
++it returns the actually loaded backend, not the value of this option.
 +.TP
 +.B \fBvideo\-format\fP
 +Video format as string.
@@ -11307,10 +11431,6 @@ index 000000000..f5fa84578
 +text\-based (i.e. DVD/BD subtitles), an empty string is returned.
 +.sp
 +This property is experimental and might be removed in the future.
-+.TP
-+.B \fBstream\-capture\fP (RW)
-+A filename, see \fB\-\-stream\-capture\fP\&. Setting this will start capture using
-+the given filename. Setting it to an empty string will stop it.
 +.TP
 +.B \fBtv\-brightness\fP, \fBtv\-contrast\fP, \fBtv\-saturation\fP, \fBtv\-hue\fP (RW)
 +TV stuff.
@@ -13040,6 +13160,11 @@ index 000000000..f5fa84578
 +multiple properties at once, you might not want to act on each property
 +change, but only when all change notifications have been received.
 +.TP
++.B \fBmp.unregister_idle(fn)\fP
++Undo \fBmp.register_idle(fn)\fP\&. This removes all idle handlers that
++are equal to the \fBfn\fP parameter. This uses normal Lua \fB==\fP comparison,
++so be careful when dealing with closures.
++.TP
 +.B \fBmp.enable_messages(level)\fP
 +Set the minimum log level of which mpv message output to receive. These
 +messages are normally printed to the terminal. By calling this function,
@@ -13858,6 +13983,65 @@ index 000000000..f5fa84578
 +.IP \(bu 2
 +\fI\%https://github.com/mpv\-player/mpv\-examples/tree/master/libmpv\fP
 +.UNINDENT
++.SH C PLUGINS
++.sp
++You can write C plugins for mpv. These use the libmpv API, although they do not
++use the libmpv library itself.
++.sp
++Currently, they must be explicitly enabled at build time with
++\fB\-\-enable\-cplugins\fP\&. They are available on Linux/BSD platforms only.
++.SS C plugins location
++.sp
++C plugins are put into the mpv scripts directory in its config directory
++(see the \fI\%FILES\fP section for details). They must have a \fB\&.so\fP file extension.
++They can also be explicitly loaded with the \fB\-\-script\fP option.
++.SS API
++.sp
++A C plugin must export the following function:
++.INDENT 0.0
++.INDENT 3.5
++.sp
++.nf
++.ft C
++int mpv_open_cplugin(mpv_handle *handle)
++.ft P
++.fi
++.UNINDENT
++.UNINDENT
++.sp
++The plugin function will be called on loading time. This function does not
++return as long as your plugin is loaded (it runs in its own thread). The
++\fBhandle\fP will be deallocated as soon as the plugin function returns.
++.sp
++The return value is interpreted as error status. A value of \fB0\fP is
++interpreted as success, while \fB\-1\fP signals an error. In the latter case,
++the player prints an uninformative error message that loading failed.
++.sp
++Return values other than \fB0\fP and \fB\-1\fP are reserved, and trigger undefined
++behavior.
++.sp
++Within the plugin function, you can call libmpv API functions. The \fBhandle\fP
++is created by \fBmpv_create_client()\fP (or actually an internal equivalent),
++and belongs to you. You can call \fBmpv_wait_event()\fP to wait for things
++happening, and so on.
++.sp
++Note that the player might block until your plugin calls \fBmpv_wait_event()\fP
++for the first time. This gives you a chance to install initial hooks etc.
++before playback begins.
++.sp
++The details are quite similar to Lua scripts.
++.SS Linkage to libmpv
++.sp
++The current implementation requires that your plugins are \fBnot\fP linked against
++libmpv. What your plugins uses are not symbols from a libmpv binary, but
++symbols from the mpv host binary.
++.SS Examples
++.sp
++See:
++.INDENT 0.0
++.IP \(bu 2
++\fI\%https://github.com/mpv\-player/mpv\-examples/tree/master/cplugins\fP
++.UNINDENT
 +.SH ENVIRONMENT VARIABLES
 +.sp
 +There are a number of environment variables that can be used to control the
@@ -14102,5 +14286,5 @@ index 000000000..f5fa84578
 +.\" Generated by docutils manpage writer.
 +.
 -- 
-2.11.0
+2.11.1
 
