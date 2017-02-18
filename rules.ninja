@@ -34,7 +34,7 @@ rule nasm
   deps = gcc
 
 rule mc
-  command = cd $mcdir && $mc $mcflags -o "$$OLDPWD"/$out "$$OLDPWD"/$in
+  command = $mc $mcflags -o $out $in
 
 rule muse
   command = muse $museflags -o $out $in
