@@ -2,6 +2,7 @@ cc src/guids.S '||' '$outdir'/^(guids.bin names.bin) ; with\
 	cflags '$cflags -I $outdir'
 
 cflags\
+	-Wall -Wextra\
 	-D _GNU_SOURCE\
 	-include '$dir'/compat.h\
 	-I '$outdir'/include\
@@ -32,7 +33,7 @@ lib libefiboot.a -d '$outdir'/include/efivar-guids.h src/^(\
 )
 lib libefivar.a -d '$outdir'/include/efivar-guids.h src/^(\
 	dp.c dp-acpi.c dp-hw.c dp-media.c dp-message.c\
-	efivarfs.c export.c guid.c guids.S.o\
+	efivarfs.c error.c export.c guid.c guids.S.o\
 	lib.c vars.c\
 ) '$outdir'/guid-symbols.c
 

@@ -1,11 +1,12 @@
 cflags\
-	-I '$builddir'/pkg/efivar/include\
+	-D 'EFIBOOTMGR_VERSION=''"14"''' \
+	-isystem '$builddir'/pkg/efivar/include\
 	-I '$srcdir'/src/include
 
 exe efibootmgr -d pkg/efivar/headers\
-	src/^(efibootmgr/efibootmgr.c lib/^(efi.c unparse_path.c))\
+	src/^(efibootmgr.c efi.c unparse_path.c)\
 	'$builddir'/pkg/efivar/^(libefiboot.a libefivar.a)
 file bin/efibootmgr '$outdir'/efibootmgr 755
-man -d src/man man8/efibootmgr.8
+man -d src 8 efibootmgr.8
 
 fetch git
