@@ -14,7 +14,10 @@ build '$outdir'/inc/error.h awk '$srcdir'/cc2/cc2.h '|' '$srcdir'/cc2/generror.a
 build '$outdir'/inc/sysincludes.h copy '$srcdir'/inc/sysincludes.def.h
 
 set baseoutdir '$outdir'
-hdrs=()
+hdrs=(\
+	assert.h stddef.h errno.h locale.h string.h stdarg.h stdbool.h stdlib.h\
+	signal.h stdio.h ctype.h stdint.h\
+)
 for(arch in $archs) {
 	{
 		set outdir '$outdir'/$arch
@@ -22,7 +25,8 @@ for(arch in $archs) {
 
 		exe cc1-$arch -d '$baseoutdir'/inc/sysincludes.h cc1/^(\
 			types.c decl.c lex.c error.c symbol.c main.c expr.c\
-			code.c stmt.c cpp.c fold.c init.c arch/$arch/arch.c\
+			code.c stmt.c cpp.c fold.c init.c builtin.c\
+			arch/$arch/arch.c\
 		) '$baseoutdir'/libcc.a
 		file libexec/scc/cc1-$arch '$outdir'/cc1-$arch 755
 
@@ -33,15 +37,13 @@ for(arch in $archs) {
 		file libexec/scc/cc2-$arch '$outdir'/cc2-$arch 755
 	} >$arch.ninja ; subninja $arch.ninja
 
-	hdrs=($hdrs $arch/^(assert.h ctype.h errno.h signal.h stdint.h stdio.h stdlib.h string.h))
+	hdrs=($hdrs bits/$arch/arch/^(stddef.h string.h stdlib.h signal.h stdio.h stdint.h))
 }
 
 cflags -D 'ARCH=''"'^$archs(1)^'"'''
 exe scc driver/posix/scc.c libcc.a
 file bin/scc '$outdir'/scc 755
 
-if(~ amd64-sysv $archs)
-	hdrs=($hdrs amd64-sysv/stdarg.h)
 for(hdr in $hdrs)
 	file include/scc/$hdr '$srcdir'/libc/include/$hdr 644
 
