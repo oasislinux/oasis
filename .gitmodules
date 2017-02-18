@@ -119,6 +119,9 @@
 	path = pkg/msmtp/src
 	url = https://git.code.sf.net/p/msmtp/code
 	ignore = all
+[submodule "pkg/mtdev/src"]
+	path = pkg/mtdev/src
+	url = https://github.com/rydberg/mtdev
 [submodule "pkg/netsurf/src"]
 	path = pkg/netsurf/src
 	url = git://git.netsurf-browser.org/netsurf.git
