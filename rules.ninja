@@ -4,7 +4,7 @@ rule gen
 
 # toolchain
 rule cc
-  command = $cc -MMD -MF $out.d $cflags -c -o $out $in
+  command = $cc -MD -MF $out.d $cflags -c -o $out $in
   depfile = $out.d
   deps = gcc
 
