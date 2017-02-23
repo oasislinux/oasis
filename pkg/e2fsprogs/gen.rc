@@ -29,10 +29,9 @@ fn subst {
 fn substman {
 	subdir=$1
 	src=$2
-	base=`{basename $src .in}
-	sec=`{printf $base | tail -c 1}
-	subst $subdir/$base $subdir/$src
-	man -d '$outdir'/$subdir $sec $base
+	sec=$3
+	subst $subdir/$src $subdir/$src.$sec.in
+	man -d '$outdir'/$subdir $sec $src
 }
 
 subst ext2_err.et lib/ext2fs/ext2_err.et.in
@@ -185,14 +184,14 @@ exe bin/e2fsck -d '$dir'/headers e2fsck/^(\
 	extents.c\
 ) $libs
 file bin/e2fsck '$outdir'/bin/e2fsck 755
-substman e2fsck e2fsck.8.in
-substman e2fsck e2fsck.conf.5.in
+substman e2fsck e2fsck 8
+substman e2fsck e2fsck.conf 5
 
 exe bin/resize2fs -d '$dir'/headers resize/^(\
 	extent.c resize2fs.c main.c online.c resource_track.c\
 	sim_progress.c\
 ) $libs
 file bin/resize2fs '$outdir'/bin/resize2fs 755
-substman resize resize2fs.8.in
+substman resize resize2fs 8
 
 fetch git
