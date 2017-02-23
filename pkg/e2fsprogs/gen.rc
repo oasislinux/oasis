@@ -173,7 +173,7 @@ lib libuuid.a -d '$dir'/deps lib/uuid/^(\
 	uuid_time.c\
 )
 
-libs=(libext2fs.a libe2p.a libblkid.a libuuid.a libcomm_err.a libsupport.a)
+libs=(libsupport.a libext2fs.a libe2p.a libblkid.a libuuid.a libcomm_err.a)
 
 exe bin/e2fsck -d '$dir'/headers e2fsck/^(\
 	unix.c e2fsck.c super.c pass1.c pass1b.c pass2.c\
@@ -193,5 +193,15 @@ exe bin/resize2fs -d '$dir'/headers resize/^(\
 ) $libs
 file bin/resize2fs '$outdir'/bin/resize2fs 755
 substman resize resize2fs 8
+
+build '$outdir'/default_profile.c awk '$srcdir'/misc/mke2fs.conf.in '|' '$srcdir'/misc/profile-to-c.awk ; with\
+	expr '-f $srcdir/misc/profile-to-c.awk'
+
+exe bin/mke2fs -d '$dir'/headers misc/^(\
+	mke2fs.c util.c mk_hugefiles.c\
+	create_inode.c\
+) '$outdir'/default_profile.c $libs
+file bin/mke2fs '$outdir'/bin/mke2fs 755
+substman misc mke2fs 8
 
 fetch git
