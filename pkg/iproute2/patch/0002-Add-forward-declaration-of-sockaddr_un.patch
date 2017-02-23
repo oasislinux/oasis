@@ -1,0 +1,25 @@
+From de53ffffbdbaeaaf8b70b4930e067e367de644ef Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 22 Feb 2017 18:45:48 -0800
+Subject: [PATCH] Add forward declaration of sockaddr_un
+
+---
+ include/bpf_scm.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/bpf_scm.h b/include/bpf_scm.h
+index 35117d1..612d17d 100644
+--- a/include/bpf_scm.h
++++ b/include/bpf_scm.h
+@@ -11,6 +11,8 @@
+ #define BPF_SCM_MAX_FDS		ELF_MAX_MAPS
+ #define BPF_SCM_MSG_SIZE	1024
+ 
++struct sockaddr_un;
++
+ struct bpf_elf_st {
+ 	dev_t st_dev;
+ 	ino_t st_ino;
+-- 
+2.11.1
+

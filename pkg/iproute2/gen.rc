@@ -11,7 +11,7 @@ lib libnetlink.a lib/^(\
 	\
 	utils.c rt_names.c ll_types.c ll_proto.c ll_addr.c\
 	inet_proto.c namespace.c json_writer.c\
-	names.c color.c\
+	names.c color.c bpf.c exec.c fs.c\
 	(dnet ipx mpls)^_ntop.c (dnet ipx mpls)^_pton.c\
 )
 
@@ -20,12 +20,13 @@ exe bin/ip ip/^(\
 	rtm_map.c iptunnel.c ip6tunnel.c tunnel.c ipneigh.c ipntable.c iplink.c\
 	ipmaddr.c ipmonitor.c ipmroute.c ipprefix.c iptuntap.c iptoken.c\
 	ipxfrm.c xfrm_state.c xfrm_policy.c xfrm_monitor.c\
-	iplink_vlan.c link_veth.c link_gre.c iplink_can.c\
+	iplink_vlan.c link_veth.c link_gre.c iplink_can.c iplink_xdp.c\
 	iplink_macvlan.c ipl2tp.c link_vti.c link_vti6.c\
 	iplink_vxlan.c tcp_metrics.c iplink_ipoib.c ipnetconf.c link_ip6tnl.c\
 	link_iptnl.c link_gre6.c iplink_bond.c iplink_bond_slave.c iplink_hsr.c\
 	iplink_bridge.c iplink_bridge_slave.c ipfou.c iplink_ipvlan.c\
 	iplink_geneve.c iplink_vrf.c iproute_lwtunnel.c ipmacsec.c ipila.c\
+	ipvrf.c\
 ) libnetlink.a
 
 exe bin/bridge\
