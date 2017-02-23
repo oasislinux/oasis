@@ -9,10 +9,9 @@ cflags\
 	-I '$srcdir'/lib\
 	-I '$srcdir'/src
 
-hdrs=include/curl/^(curl.h curlrules.h curlver.h easy.h mprintf.h multi.h stdcheaders.h typecheck-gcc.h)
+hdrs=include/curl/^(curl.h curlbuild.h curlrules.h curlver.h easy.h mprintf.h multi.h stdcheaders.h typecheck-gcc.h)
 for(hdr in $hdrs) build '$outdir'/$hdr copy '$srcdir'/$hdr
-build '$outdir'/include/curl/curlbuild.h copy '$srcdir'/include/curl/curlbuild.h.dist
-phony headers '$outdir'/^($hdrs include/curl/curlbuild.h)
+phony headers '$outdir'/$hdrs
 
 phony deps '$dir'/headers pkg/^(libressl zlib)^/headers
 
@@ -103,4 +102,4 @@ exe curl -d '$dir'/deps\
 file bin/curl '$outdir'/curl 755
 man -d docs 1 curl.1
 
-fetch git
+fetch curl
