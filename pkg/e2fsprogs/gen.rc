@@ -28,9 +28,9 @@ fn subst {
 
 fn substman {
 	subdir=$1
-	src=$2
 	sec=$3
-	subst $subdir/$src $subdir/$src.$sec.in
+	src=$2.$sec
+	subst $subdir/$src $subdir/$src.in
 	man -d '$outdir'/$subdir $sec $src
 }
 
