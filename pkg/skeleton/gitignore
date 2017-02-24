@@ -4,6 +4,7 @@
 /proc
 /root
 /run
+/share/man/mandoc.db
 /src
 /sys
 /tmp
