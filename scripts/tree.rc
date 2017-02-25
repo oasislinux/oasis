@@ -6,13 +6,17 @@ repo=$1
 tag=$2
 index=$3
 out=$4
+ifs='
+'
 
 fn checkstatus {}
 
-GIT_INDEX_FILE=$tag.index {
+GIT_INDEX_FILE=`{pwd}^/$out.index {
+	checkstatus
 	git -C $repo read-tree --empty
 	git -C $repo update-index --index-info <$index
 	tree=`{git -C $repo write-tree} ; checkstatus
+	rm $out.index
 }
 git -C $repo update-ref refs/tags/$tag $tree
 
