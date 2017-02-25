@@ -68,6 +68,7 @@ subgen sinit
 subgen skeleton
 subgen sshfs
 subgen st
+subgen strace
 subgen swc
 subgen terminus-font
 subgen the_silver_searcher
