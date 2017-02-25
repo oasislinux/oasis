@@ -1,4 +1,4 @@
-# 2,<xzcat git-manpages-2.11.1.tar.xz | pax -s '/\.\///' '*.[1-9]'
+# 2,<xzcat git-manpages-2.12.0.tar.xz | pax -s '/\.\///' '*.[1-9]'
 man5/githooks.5
 man5/gitattributes.5
 man5/gitweb.conf.5
@@ -27,7 +27,6 @@ man1/git-check-mailmap.1
 man1/git-sh-i18n--envsubst.1
 man1/git-hash-object.1
 man1/git-send-email.1
-man1/git-relink.1
 man1/git-mailinfo.1
 man1/git-archive.1
 man1/git-check-ref-format.1

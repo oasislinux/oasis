@@ -42,6 +42,7 @@ lib libgit.a -d '$dir'/deps\
 	compat/obstack.c\
 	compat/regex/regex.c.o\
 	compat/terminal.c\
+	compat/qsort_s.c\
 	config.c\
 	connect.c\
 	connected.c\
@@ -229,6 +230,7 @@ exe git -d '$dir'/deps git.c common-main.c.o builtin/^(\
 	diff-index.c\
 	diff-tree.c\
 	diff.c\
+	difftool.c\
 	fast-export.c\
 	fetch-pack.c\
 	fetch.c\

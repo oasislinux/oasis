@@ -100,7 +100,6 @@ git-read-tree.txt
 git-rebase.txt
 git-receive-pack.txt
 git-reflog.txt
-git-relink.txt
 git-remote-ext.txt
 git-remote-fd.txt
 git-remote-testgit.txt
