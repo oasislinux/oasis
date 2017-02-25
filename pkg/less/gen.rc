@@ -3,17 +3,27 @@ cflags\
 	-I include\
 	-I '$dir'
 
+cc version.c
+
 exe less -d pkg/ncurses/headers\
 	main.c screen.c brac.c ch.c charset.c cmdbuf.c\
 	command.c cvt.c decode.c edit.c filename.c forwback.c\
 	help.c ifile.c input.c jump.c line.c linenum.c\
 	lsystem.c mark.c optfunc.c option.c opttbl.c os.c\
 	output.c pattern.c position.c prompt.c search.c signal.c\
-	tags.c ttyin.c version.c\
+	tags.c ttyin.c version.c.o\
 	'$builddir'/pkg/ncurses/libncurses.a
 file bin/less '$outdir'/less 755
 
-build '$outdir'/less.1.gz gzip '$srcdir'/less.nro
-file share/man/man1/less.1.gz '$outdir'/less.1.gz 644
+exe lessecho lessecho.c version.c.o
+file bin/lessecho '$outdir'/lessecho 755
+
+exe lesskey lesskey.c version.c.o
+file bin/lesskey '$outdir'/lesskey 755
+
+for(man in less lessecho lesskey) {
+	build '$outdir'/$man.1.gz gzip '$srcdir'/$man.nro
+	file share/man/man1/$man.1.gz '$outdir'/$man.1.gz 644
+}
 
 fetch curl
