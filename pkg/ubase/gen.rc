@@ -80,7 +80,6 @@ x respawn 1
 x rmmod 8
 x stat 1
 x stty
-x -m 4755 su 1
 x swaplabel 8
 x swapoff 8
 x swapon 8
