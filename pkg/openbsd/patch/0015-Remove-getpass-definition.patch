@@ -1,0 +1,36 @@
+From 0cbb9dbd472c79ecbb53e8c977955d7782fbb18b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 26 Feb 2017 17:12:56 -0800
+Subject: [PATCH] Remove getpass definition
+
+It is a legacy function and musl already provides an implementation.
+---
+ lib/libc/gen/readpassphrase.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/lib/libc/gen/readpassphrase.c b/lib/libc/gen/readpassphrase.c
+index 55fe687ed32..1a327d35a6d 100644
+--- a/lib/libc/gen/readpassphrase.c
++++ b/lib/libc/gen/readpassphrase.c
+@@ -179,16 +179,8 @@ restart:
+ }
+ DEF_WEAK(readpassphrase);
+ 
+-char *
+-getpass(const char *prompt)
+-{
+-	static char buf[_PASSWORD_LEN + 1];
+-
+-	return(readpassphrase(prompt, buf, sizeof(buf), RPP_ECHO_OFF));
+-}
+-
+-static void handler(int s)
++static void
++handler(int s)
+ {
+-
+ 	signo[s] = 1;
+ }
+-- 
+2.11.1
+

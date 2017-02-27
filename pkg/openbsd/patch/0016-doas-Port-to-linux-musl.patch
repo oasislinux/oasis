@@ -1,0 +1,199 @@
+From e03e4343423178d21fbe7a6687c199367f3252e0 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 26 Feb 2017 16:50:55 -0800
+Subject: [PATCH] doas: Port to linux/musl
+
+Remove -a login style option and BSD authentication. Instead, compare
+against shadow file.
+
+Use initgroups/setgid/setuid instead of setusercontext.
+
+Provide UID_MAX and GID_MAX defaults.
+
+Use LOGIN_NAME_MAX instead of _PW_NAME_LEN.
+
+Remove call to closefrom.
+
+Replace calls to errc with err after setting errno.
+---
+ usr.bin/doas/doas.1 |  9 --------
+ usr.bin/doas/doas.c | 63 ++++++++++++++++++++++++++++++++++-------------------
+ 2 files changed, 41 insertions(+), 31 deletions(-)
+
+diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
+index c5b8e00f32c..fca943f6fc2 100644
+--- a/usr.bin/doas/doas.1
++++ b/usr.bin/doas/doas.1
+@@ -22,7 +22,6 @@
+ .Sh SYNOPSIS
+ .Nm doas
+ .Op Fl ns
+-.Op Fl a Ar style
+ .Op Fl C Ar config
+ .Op Fl u Ar user
+ .Ar command
+@@ -41,14 +40,6 @@ is specified.
+ .Pp
+ The options are as follows:
+ .Bl -tag -width tenletters
+-.It Fl a Ar style
+-Use the specified authentication style when validating the user,
+-as allowed by
+-.Pa /etc/login.conf .
+-A list of doas-specific authentication methods may be configured by adding an
+-.Sq auth-doas
+-entry in
+-.Xr login.conf 5 .
+ .It Fl C Ar config
+ Parse and check the configuration file
+ .Ar config ,
+diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
+index b17c8f13c8a..c9eb3bb3049 100644
+--- a/usr.bin/doas/doas.c
++++ b/usr.bin/doas/doas.c
+@@ -20,7 +20,6 @@
+ 
+ #include <limits.h>
+ #include <login_cap.h>
+-#include <bsd_auth.h>
+ #include <readpassphrase.h>
+ #include <string.h>
+ #include <stdio.h>
+@@ -31,9 +30,18 @@
+ #include <grp.h>
+ #include <syslog.h>
+ #include <errno.h>
++#include <shadow.h>
+ 
+ #include "doas.h"
+ 
++#ifndef UID_MAX
++#define UID_MAX 65535
++#endif
++
++#ifndef GID_MAX
++#define GID_MAX 65535
++#endif
++
+ static void __dead
+ usage(void)
+ {
+@@ -203,17 +211,34 @@ checkconfig(const char *confpath, int argc, char **argv,
+ 	}
+ }
+ 
++static int
++verifypasswd(const char *user, const char *pass)
++{
++	struct spwd *sp;
++	char *p1, *p2;
++
++	sp = getspnam(user);
++	if (!sp)
++		return 0;
++	p1 = sp->sp_pwdp;
++	if (p1[0] == '!' || p1[0] == '*')
++		return 0;
++	p2 = crypt(pass, p1);
++	if (!p2)
++		return 0;
++	return strcmp(p1, p2) == 0;
++}
++
+ int
+ main(int argc, char **argv)
+ {
+-	const char *safepath = "/bin:/sbin:/usr/bin:/usr/sbin:"
+-	    "/usr/local/bin:/usr/local/sbin";
++	const char *safepath = "/bin";
+ 	const char *confpath = NULL;
+ 	char *shargv[] = { NULL, NULL };
+ 	char *sh;
+ 	const char *cmd;
+ 	char cmdline[LINE_MAX];
+-	char myname[_PW_NAME_LEN + 1];
++	char myname[LOGIN_NAME_MAX + 1];
+ 	struct passwd *pw;
+ 	struct rule *rule;
+ 	uid_t uid;
+@@ -225,7 +250,6 @@ main(int argc, char **argv)
+ 	int nflag = 0;
+ 	char cwdpath[PATH_MAX];
+ 	const char *cwd;
+-	char *login_style = NULL;
+ 	char **envp;
+ 
+ 	setprogname("doas");
+@@ -233,15 +257,10 @@ main(int argc, char **argv)
+ 	if (pledge("stdio rpath getpw tty recvfd proc exec id", NULL) == -1)
+ 		err(1, "pledge");
+ 
+-	closefrom(STDERR_FILENO + 1);
+-
+ 	uid = getuid();
+ 
+-	while ((ch = getopt(argc, argv, "a:C:nsu:")) != -1) {
++	while ((ch = getopt(argc, argv, "C:nsu:")) != -1) {
+ 		switch (ch) {
+-		case 'a':
+-			login_style = optarg;
+-			break;
+ 		case 'C':
+ 			confpath = optarg;
+ 			break;
+@@ -313,19 +332,16 @@ main(int argc, char **argv)
+ 	    (const char **)argv + 1)) {
+ 		syslog(LOG_AUTHPRIV | LOG_NOTICE,
+ 		    "failed command for %s: %s", myname, cmdline);
+-		errc(1, EPERM, NULL);
++		errno = EPERM;
++		err(1, NULL);
+ 	}
+ 
+ 	if (!(rule->options & NOPASS)) {
+ 		char *challenge = NULL, *response, rbuf[1024], cbuf[128];
+-		auth_session_t *as;
+ 
+ 		if (nflag)
+ 			errx(1, "Authorization required");
+ 
+-		if (!(as = auth_userchallenge(myname, login_style, "auth-doas",
+-		    &challenge)))
+-			errx(1, "Authorization failed");
+ 		if (!challenge) {
+ 			char host[HOST_NAME_MAX + 1];
+ 			if (gethostname(host, sizeof(host)))
+@@ -341,10 +357,11 @@ main(int argc, char **argv)
+ 			    "tty required for %s", myname);
+ 			errx(1, "a tty is required");
+ 		}
+-		if (!auth_userresponse(as, response, 0)) {
++		if (!verifypasswd(myname, response)) {
+ 			syslog(LOG_AUTHPRIV | LOG_NOTICE,
+ 			    "failed auth for %s", myname);
+-			errc(1, EPERM, NULL);
++			errno = EPERM;
++			err(1, NULL);
+ 		}
+ 		explicit_bzero(rbuf, sizeof(rbuf));
+ 	}
+@@ -356,10 +373,12 @@ main(int argc, char **argv)
+ 	if (!pw)
+ 		errx(1, "no passwd entry for target");
+ 
+-	if (setusercontext(NULL, pw, target, LOGIN_SETGROUP |
+-	    LOGIN_SETPRIORITY | LOGIN_SETRESOURCES | LOGIN_SETUMASK |
+-	    LOGIN_SETUSER) != 0)
+-		errx(1, "failed to set user context for target");
++	if (initgroups(pw->pw_name, pw->pw_gid) < 0)
++		err(1, "initgroups");
++	if (setgid(pw->pw_gid) < 0)
++		err(1, "setgid");
++	if (setuid(pw->pw_uid) < 0)
++		err(1, "setuid");
+ 
+ 	if (pledge("stdio rpath exec", NULL) == -1)
+ 		err(1, "pledge");
+-- 
+2.11.1
+
