@@ -167,7 +167,7 @@ fn waylandproto {
 
 fn file {
 	~ $#* 3
-	if(~ $dir . util || fs $pkg $1) {
+	if(~ $dir . src || fs $pkg $1) {
 		out='$builddir'/root.hash/$1
 		mode=`{printf %4s $3 | tr ' ' 0 | tail -c 4}
 		build $out githash $2 '|' scripts/hash.rc '||' '$builddir'/root.stamp ; with\
