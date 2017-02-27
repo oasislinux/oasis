@@ -4,7 +4,7 @@ cflags\
 	'-std=c11'
 
 exe applyperms applyperms.c
-file libexec/oasis/applyperms '$outdir'/applyperms 755
+file libexec/applyperms '$outdir'/applyperms 755
 
 exe shutdown shutdown.c
-file libexec/oasis/shutdown '$outdir'/shutdown 755
+file libexec/shutdown '$outdir'/shutdown 755
