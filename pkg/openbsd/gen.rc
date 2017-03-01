@@ -30,8 +30,8 @@ man -d usr.bin/diff 1 diff.1
 yacc parse '$srcdir'/usr.bin/doas/parse.y
 cc '$outdir'/parse.tab.c ; with cflags '$cflags -I $srcdir/usr.bin/doas'
 cc usr.bin/doas/doas.c ; with cflags '$cflags -D_GNU_SOURCE'
-exe doas usr.bin/doas/^(doas.c.o env.c) parse.tab.c.o libbsd.a
-file bin/doas '$outdir'/doas 4755
+exe doas usr.bin/doas/^(doas.c.o env.c persist.c) parse.tab.c.o libbsd.a
+file bin/doas '$outdir'/doas 6755
 man -d usr.bin/doas\
 	1 doas.1\
 	5 doas.conf.5
