@@ -14,7 +14,6 @@ usage(void)
 int
 main(int argc, char *argv[])
 {
-	int fd;
 	char buf[4096], *s, *table_name;
 	ssize_t n;
 	size_t total = 0, pad, align = 0;
@@ -58,7 +57,7 @@ main(int argc, char *argv[])
 	}
 
 	printf("\n};\n\nconst unsigned int %s_len = %zu;\n", table_name, total);
-	printf("\nconst int %s_mtime = %d;\n", table_name, st.st_mtime);
+	printf("\nconst int %s_mtime = %ld;\n", table_name, st.st_mtime);
 
 	return 0;
 }

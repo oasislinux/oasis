@@ -12,6 +12,7 @@ build '$outdir'/version.h awk '$srcdir'/version '|' '$dir'/version.awk ; with\
 
 {
 	toolchain host
+	cflags '-std=c99' -pedantic -Wall -Wextra
 	set srcdir '$dir'
 	exe bin2c bin2c.c
 } >tools.ninja ; subninja tools.ninja
