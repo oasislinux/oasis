@@ -70,6 +70,7 @@ subgen sshfs
 subgen st
 subgen strace
 subgen swc
+subgen syslinux
 subgen terminus-font
 subgen the_silver_searcher
 subgen transmission
