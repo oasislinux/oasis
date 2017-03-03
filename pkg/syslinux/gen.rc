@@ -2,7 +2,7 @@ cflags\
 	-I '$dir' \
 	-I '$outdir' \
 	-I '$srcdir'/libinstaller\
-	-I '$srcdir'/com32/include/libinstaller
+	-I '$srcdir'/com32/include/syslinux
 # NOTE: we should only have to include $srcdir/libinstaller, but BSD pax/tar
 # transforms symlink targets as well as filenames, trashing the
 # libinstaller/advconst.h symlink.
