@@ -1,4 +1,4 @@
-From 8f291c14b3c345ec66fb530dd719b2106ddc25e2 Mon Sep 17 00:00:00 2001
+From 1b13579bba43fabda6165cb2354c9eb61467b03e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -270,7 +270,7 @@ index 9a30e1ea7..fb59d3130 100644
  #include <stdio.h>
 diff --git a/usr.bin/doas/persist.c b/usr.bin/doas/persist.c
 new file mode 100644
-index 000000000..1ba1560d4
+index 000000000..dd9cc0411
 --- /dev/null
 +++ b/usr.bin/doas/persist.c
 @@ -0,0 +1,128 @@
@@ -370,7 +370,7 @@ index 000000000..1ba1560d4
 +		}
 +		*valid = 0;
 +	} else {
-+		*valid = clock_gettime(CLOCK_MONOTONIC, &ts) == 0 &&
++		*valid = clock_gettime(CLOCK_BOOTTIME, &ts) == 0 &&
 +		         fstat(fd, &st) == 0 &&
 +		         (ts.tv_sec < st.st_mtim.tv_sec ||
 +		          ts.tv_sec == st.st_mtim.tv_sec && ts.tv_nsec < st.st_mtim.tv_nsec) &&
@@ -384,7 +384,7 @@ index 000000000..1ba1560d4
 +{
 +	struct timespec times[2];
 +
-+	if (clock_gettime(CLOCK_MONOTONIC, &times[1]) < 0)
++	if (clock_gettime(CLOCK_BOOTTIME, &times[1]) < 0)
 +		return -1;
 +	times[0].tv_nsec = UTIME_OMIT;
 +	times[1].tv_sec += PERSIST_TIMEOUT;
