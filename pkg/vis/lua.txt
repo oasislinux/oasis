@@ -127,8 +127,10 @@ lexers/json.lua
 lexers/coffeescript.lua
 lexers/css.lua
 lexers/texinfo.lua
+plugins/complete-word.lua
 plugins/digraph.lua
 plugins/filetype.lua
+plugins/complete-filename.lua
 plugins/textobject-lexer.lua
 plugins/number-inc-dec.lua
 themes/solarized.lua
