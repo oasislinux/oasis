@@ -194,8 +194,7 @@
 	ignore = all
 [submodule "pkg/sdhcp/src"]
 	path = pkg/sdhcp/src
-	url = git://git.2f30.org/sdhcp
-	ignore = all
+	url = https://github.com/michaelforney/sdhcp
 [submodule "pkg/sinit/src"]
 	path = pkg/sinit/src
 	url = git://git.suckless.org/sinit
