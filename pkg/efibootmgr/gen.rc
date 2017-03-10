@@ -1,5 +1,6 @@
 cflags\
 	-D 'EFIBOOTMGR_VERSION=''"14"''' \
+	-D 'DEFAULT_LOADER=''"/linux"''' \
 	-isystem '$builddir'/pkg/efivar/include\
 	-I '$srcdir'/src/include
 
