@@ -81,6 +81,9 @@
 	path = pkg/libfuse/src
 	url = https://github.com/libfuse/libfuse
 	ignore = all
+[submodule "pkg/libinput/src"]
+	path = pkg/libinput/src
+	url = https://github.com/michaelforney/libinput
 [submodule "pkg/libjpeg-turbo/src"]
 	path = pkg/libjpeg-turbo/src
 	url = https://github.com/libjpeg-turbo/libjpeg-turbo
