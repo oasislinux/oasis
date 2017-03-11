@@ -5,7 +5,7 @@ cflags\
 	-isystem pkg/fontconfig/src\
 	-isystem pkg/libdrm/src/include/drm\
 	-isystem pkg/libdrm/src\
-	-isystem pkg/libevdev/src\
+	-isystem pkg/libinput/src/src\
 	-isystem pkg/libxkbcommon/src\
 	-isystem '$builddir'/pkg/pixman/include\
 	-isystem '$builddir'/pkg/wayland-protocols/include\
@@ -39,7 +39,7 @@ phony deps\
 		include/swc-server-protocol.h\
 		cursor/cursor_data.h\
 	)\
-	'$builddir'/pkg/^(fontconfig libdrm libevdev libxkbcommon)^/fetch.stamp\
+	'$builddir'/pkg/^(fontconfig libdrm libinput libxkbcommon)^/fetch.stamp\
 	pkg/^(pixman wayland wayland-protocols wld)^/headers
 
 lib libswc.a -d '$dir'/deps\
@@ -51,7 +51,6 @@ lib libswc.a -d '$dir'/deps\
 		data_device.c\
 		data_device_manager.c\
 		drm.c\
-		evdev_device.c\
 		input.c\
 		keyboard.c\
 		launch.c\
@@ -82,7 +81,7 @@ lib libswc.a -d '$dir'/deps\
 	launch/protocol.c.o\
 	swc-protocol.c.o\
 	'$builddir'/^(\
-		pkg/libevdev/libevdev.a\
+		pkg/libinput/libinput.a.d\
 		pkg/libxkbcommon/libxkbcommon.a\
 		pkg/wayland-protocols/xdg-shell-unstable-v5-protocol.c.o\
 		pkg/wayland/libwayland-server.a.d\
