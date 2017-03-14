@@ -21,6 +21,7 @@ lib libinput.a -d '$dir'/deps src/^(\
 	evdev-tablet-pad.c\
 	evdev-tablet-pad-leds.c\
 	filter.c\
+	netlink-seat.c\
 	path-seat.c\
 	timer.c\
 ) '$builddir'/pkg/^(\
