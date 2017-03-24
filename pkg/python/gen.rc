@@ -9,7 +9,7 @@ cflags=(\
 
 srcs=(\
 	Modules/^(\
-		getbuildinfo.c\
+		getbuildinfo.c.o\
 		getpath.c.o\
 		main.c\
 		gcmodule.c\
@@ -153,6 +153,8 @@ build '$outdir'/config.c makesetup '$dir'/Setup '|' '$srcdir'/Modules/^(makesetu
 
 cflags $cflags
 
+cc Modules/getbuildinfo.c ; with\
+	cflags '$cflags -D ''DATE="Dec 22 2016"'' -D ''TIME="18:38:47"'''
 cc Modules/getpath.c ; defs='-D '''^(\
 	'PYTHONPATH='":plat-linux"\
 	'PREFIX='"/"\
