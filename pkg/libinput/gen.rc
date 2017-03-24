@@ -11,6 +11,7 @@ lib libinput.a -d '$dir'/deps src/^(\
 	libinput.c\
 	libinput-util.c\
 	evdev.c\
+	evdev-lid.c\
 	evdev-middle-button.c\
 	evdev-mt-touchpad.c\
 	evdev-mt-touchpad-tap.c\

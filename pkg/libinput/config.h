@@ -7,17 +7,17 @@
 /* #undef HAVE_LIBWACOM_GET_PAIRED_DEVICE */
 #define HAVE_MEMORY_H 1
 #define LIBINPUT_VERSION_MAJOR 1
-#define LIBINPUT_VERSION_MICRO 3
-#define LIBINPUT_VERSION_MINOR 6
-#define LIBINPUT_VERSION "1.6.3"
+#define LIBINPUT_VERSION_MICRO 0
+#define LIBINPUT_VERSION_MINOR 7
+#define LIBINPUT_VERSION "1.7.0"
 #define LT_OBJDIR ".libs/"
 #define PACKAGE "libinput"
-#define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=Wayland&component=libinput&version=1.6.1"
+#define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=Wayland&component=libinput&version=1.7.0"
 #define PACKAGE_NAME "libinput"
-#define PACKAGE_STRING "libinput 1.6.3"
+#define PACKAGE_STRING "libinput 1.7.0"
 #define PACKAGE_TARNAME "libinput"
 #define PACKAGE_URL "http://www.freedesktop.org/wiki/Software/libinput/"
-#define PACKAGE_VERSION "1.6.3"
+#define PACKAGE_VERSION "1.7.0"
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
@@ -33,7 +33,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.6.3"
+#define VERSION "1.7.0"
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */
