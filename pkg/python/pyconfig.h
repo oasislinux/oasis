@@ -184,6 +184,7 @@
 /* #undef HAVE_SYS_NDIR_H */
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_POLL_H 1
+/* #undef HAVE_SYS_RANDOM_H */
 #define HAVE_SYS_SENDFILE_H 1
 #define HAVE_SYS_SYSCALL_H 1
 /* #undef HAVE_SYS_SYS_DOMAIN_H */
