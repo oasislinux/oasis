@@ -1,4 +1,4 @@
-version=v0.2-539-g37d98f3
+version=v0.3
 cflags\
 	'-std=c99' \
 	-D 'CONFIG_HELP=1' \
