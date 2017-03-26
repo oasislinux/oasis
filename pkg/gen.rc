@@ -50,6 +50,7 @@ subgen mtdev
 subgen nasm
 subgen ncurses
 subgen netsurf
+subgen nginx
 subgen ninja
 subgen openbsd
 subgen openssh

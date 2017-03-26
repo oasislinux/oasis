@@ -54,6 +54,7 @@ net=(\
 	hostap\
 	ii\
 	msmtp\
+	nginx\
 	sshfs\
 	transmission\
 )

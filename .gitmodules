@@ -161,6 +161,9 @@
 	path = pkg/netsurf/nsgenbind/src
 	url = git://git.netsurf-browser.org/nsgenbind.git
 	ignore = all
+[submodule "pkg/nginx/src"]
+	path = pkg/nginx/src
+	url = https://github.com/nginx/nginx
 [submodule "pkg/ninja/src"]
 	path = pkg/ninja/src
 	url = https://github.com/ninja-build/ninja

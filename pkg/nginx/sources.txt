@@ -1,0 +1,113 @@
+# CORE_MODULES
+core
+errlog
+conf
+
+openssl event/ngx_event_openssl.c event/ngx_event_openssl_stapling.c
+regex core/ngx_regex.c
+
+# EVENT_MODULES
+events
+event_core
+epoll
+
+# THREAD_POOL_MODULE
+thread_pool core/ngx_thread_pool.c os/unix/ngx_thread_cond.c os/unix/ngx_thread_mutex.c os/unix/ngx_thread_id.c
+
+# HTTP_MODULES
+http http/ngx_http.c http/ngx_http_special_response.c http/ngx_http_request.c http/ngx_http_parse.c http/ngx_http_request_body.c http/ngx_http_variables.c http/ngx_http_script.c
+http_core http/ngx_http_core_module.c
+http_log http/modules/ngx_http_log_module.c
+http_upstream http/ngx_http_upstream.c http/ngx_http_upstream_round_robin.c
+
+http_v2 http/v2/ngx_http_v2.c http/v2/ngx_http_v2_table.c http/v2/ngx_http_v2_huff_decode.c http/v2/ngx_http_v2/huff_encode.c http/v2/ngx_http_v2_module.c
+http_static http/modules/ngx_http_static_module.c
+http_gzip_static http/modules/ngx_http_gzip_static_module.c
+http_dav http/modules/ngx_http_dav_module.c
+http_autoindex http/modules/ngx_http_autoindex_module.c
+http_index http/modules/ngx_http_index_module.c
+http_random_index http/modules/ngx_http_random_index_module.c
+http_auth_request http/modules/ngx_http_auth_request_module.c
+http_auth_basic http/modules/ngx_http_auth_basic_module.c
+http_access http/modules/ngx_http_access_module.c
+http_limit_conn http/modules/ngx_http_limit_conn_module.c
+http_limit_req http/modules/ngx_http_limit_req_module.c
+http_realip http/modules/ngx_http_realip_module.c
+http_status http/modules/ngx_http_status_module.c
+http_geo http/modules/ngx_http_geo_module.c
+http_geoip http/modules/ngx_http_geoip_module.c
+http_map http/modules/ngx_http_map_module.c
+http_split_clients http/modules/ngx_http_split_clients_module.c
+http_referer http/modules/ngx_http_referer_module.c
+http_rewrite http/modules/ngx_http_rewrite_module.c
+http_ssl http/modules/ngx_http_ssl_module.c
+http_proxy http/modules/ngx_http_proxy_module.c
+http_fastcgi http/modules/ngx_http_fastcgi_module.c
+http_uwsgi http/modules/ngx_http_uwsgi_module.c
+http_scgi http/modules/ngx_http_sgi_module.c
+http_perl http/modules/perl/ngx_http_perl_module.c
+http_memcached http/modules/ngx_http_memcached_module.c
+http_empty_gif http/modules/ngx_http_empty_gif_module.c
+http_browser http/modules/ngx_http_browser_module.c
+http_secure_link http/modules/ngx_http_secure_link_module.c
+http_degradation http/modules/ngx_http_degredation_module.c
+http_flv http/modules/ngx_http_flv_module.c
+http_mp4 http/modules/ngx_http_mp4_module.c
+http_upstream_hash http/modules/ngx_http_upstream_hash_module.c
+http_upstream_ip_hash http/modules/ngx_http_upstream_ip_hash_module.c
+http_upstream_least_conn http/modules/ngx_http_upstream_least_conn_module.c
+http_upstream_keepalive http/modules/ngx_http_upstream_keepalive_module.c
+http_upstream_zone http/modules/ngx_http_upstream_zone_module.c
+http_stub_status http/modules/ngx_http_stub_status_module.c
+
+# HTTP_FILTER_MODULES
+http_write_filter http/ngx_http_write_filter_module.c
+http_header_filter http/ngx_http_header_filter_module.c
+http_chunked_filter http/modules/ngx_http_chunked_filter_module.c
+http_v2_filter http/v2/ngx_http_v2_filter_module.c
+http_range_header_filter http/modules/ngx_http_range_filter_module.c
+http_gzip_filter http/modules/ngx_http_gzip_filter_module.c
+http_postpone_filter http/ngx_http_postpone_filter_module.c
+http_ssi_filter http/modules/ngx_http_ssi_filter_module.c
+http_charset_filter http/modules/ngx_http_charset_filter_module.c
+http_xslt_filter http/modules/ngx_http_filter_module.c
+http_image_filter http/modules/ngx_http_image_filter_module.c
+http_sub_filter http/modules/ngx_http_sub_filter_module.c
+http_addition_filter http/modules/ngx_http_addition_filter_module.c
+http_gunzip_filter http/modules/ngx_http_gunzip_filter_module.c
+http_userid_filter http/modules/ngx_http_userid_filter_module.c
+http_headers_filter http/modules/ngx_http_headers_filter_module.c
+
+# HTTP_INIT_FILTER_MODULES
+http_copy_filter http/ngx_http_copy_filter_module.c
+http_range_body_filter
+http_not_modified_filter http/modules/ngx_http_not_modified_filter_module.c
+http_slice_filter http/modules/ngx_http_slice_filter_module.c
+
+# MAIL_MODULES
+mail mail/ngx_mail.c mail/ngx_mail_handler.c mail/ngx_mail_parse.c
+mail_core mail/ngx_mail_core_module.c
+
+mail_ssl mail/ngx_mail_ssl_module.c
+mail_pop3 mail/ngx_mail_pop3_module.c mail/ngx_mail_pop3_handler.c
+mail_imap mail/ngx_mail_imap_module.c mail/ngx_mail_imap_handler.c
+mail_smtp mail/ngx_mail_smtp_module.c mail/ngx_mail_smtp_handler.c
+mail_auth_http mail/ngx_mail_auth_http_module.c
+mail_proxy mail/ngx_mail_proxy_module.c
+
+# STREAM_MODULES
+stream stream/ngx_stream.c stream/ngx_stream_handler.c
+stream_core stream/ngx_stream_core_module.c
+stream_proxy stream/ngx_stream_proxy_module.c
+stream_upstream stream/ngx_stream_upstream.c stream/ngx_stream_upstream_round_robin.c
+
+stream_ssl stream/ngx_stream_ssl_module.c
+stream_limit_conn stream/ngx_stream_limit_conn_module.c
+stream_access stream/ngx_stream_access_module.c
+stream_upstream_hash stream/ngx_stream_upstream_hash_module.c
+stream_upstream_least_conn stream/ngx_stream_upstream_least_conn_module.c
+stream_upstream_zone stream/ngx_stream_upstream_zone_module.c
+
+# MISC_MODULES
+google_perftools misc/ngx_google_perftools_module.c
+cpp_test misc/ngx_cpp_test_module.cpp
