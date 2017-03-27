@@ -1,0 +1,38 @@
+From dc52122121b078efbfc914ab256848cc0007c14e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 26 Mar 2017 17:12:30 -0700
+Subject: [PATCH] tain_now: Use clock_gettime
+
+---
+ lasagna/tain/tain_now.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/lasagna/tain/tain_now.c b/lasagna/tain/tain_now.c
+index 3c790be..ba53864 100644
+--- a/lasagna/tain/tain_now.c
++++ b/lasagna/tain/tain_now.c
+@@ -6,18 +6,17 @@
+ 
+ #include <stdlib.h>
+ #include <time.h>
+-#include <sys/time.h>
+ 
+ #include "tain.h"
+ 
+ struct tain *
+ tain_now(struct tain *t)
+ {
+-  struct timeval now;
++  struct timespec now;
+ 
+-  gettimeofday(&now, NULL);
++  clock_gettime(CLOCK_REALTIME, &now);
+   tain_load_utc(t, now.tv_sec);
+-  t->nsec = (1000 * now.tv_usec) + 500;
++  t->nsec = now.tv_nsec;
+ 
+   return t;
+ }
+-- 
+2.12.1
+

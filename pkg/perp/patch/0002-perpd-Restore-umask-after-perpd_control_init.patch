@@ -1,0 +1,47 @@
+From dc80561853acb99cbd29e555546dfa77ac10d8e1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 26 Mar 2017 17:28:36 -0700
+Subject: [PATCH] perpd: Restore umask after perpd_control_init
+
+---
+ perp/perpd.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/perp/perpd.c b/perp/perpd.c
+index 2bf5553..1b29577 100644
+--- a/perp/perpd.c
++++ b/perp/perpd.c
+@@ -217,8 +217,9 @@ static
+ void
+ perpd_control_init(void)
+ {
+-  int  fdbase;  
+-  int  fd = -1;
++  int     fdbase;
++  int     fd = -1;
++  mode_t  umask_orig;
+ 
+   /* setup for return to base directory: */
+   if((fdbase = open(".", O_RDONLY)) == -1){
+@@ -226,7 +227,7 @@ perpd_control_init(void)
+   }
+ 
+   /* setup umask for intentional mode on file creation: */
+-  umask(0);
++  umask_orig = umask(0);
+ 
+   /* initialize .control directory: */
+   if(mkdir(PERP_CONTROL, 0700) == -1){
+@@ -286,6 +287,9 @@ perpd_control_init(void)
+   }
+   close(fdbase);
+ 
++  /* restore umask: */
++  umask(umask_orig);
++
+   return;
+ }
+ 
+-- 
+2.12.1
+
