@@ -44,6 +44,7 @@ main(int argc, char *argv[])
 	f = fdopen(s, "r");
 	if (!f)
 		err(1, "fdopen");
+	setlinebuf(stdout);
 	for (;;) {
 		n = getline(&line, &sz, f);
 		if (n == -1)
