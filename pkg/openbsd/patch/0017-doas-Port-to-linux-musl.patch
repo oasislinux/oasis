@@ -1,4 +1,4 @@
-From 1b13579bba43fabda6165cb2354c9eb61467b03e Mon Sep 17 00:00:00 2001
+From d9031a1a34741f517760680305a9776d41bdcb32 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -18,13 +18,15 @@ Use LOGIN_NAME_MAX instead of _PW_NAME_LEN.
 Remove call to closefrom.
 
 Replace calls to errc with err after setting errno.
+
+Call openlog at start to set syslog identity.
 ---
  usr.bin/doas/doas.1    |   9 ----
- usr.bin/doas/doas.c    |  86 +++++++++++++++++++--------------
+ usr.bin/doas/doas.c    |  98 ++++++++++++++++++++-----------------
  usr.bin/doas/doas.h    |   4 ++
  usr.bin/doas/parse.y   |   1 +
  usr.bin/doas/persist.c | 128 +++++++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 183 insertions(+), 45 deletions(-)
+ 5 files changed, 188 insertions(+), 52 deletions(-)
  create mode 100644 usr.bin/doas/persist.c
 
 diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
@@ -55,7 +57,7 @@ index d39c4aab2..3097991bc 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index d82d9f119..fb3f077f1 100644
+index d82d9f119..c84faf9ee 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -21,7 +21,6 @@
@@ -137,15 +139,21 @@ index d82d9f119..fb3f077f1 100644
  	if (!challenge) {
  		char host[HOST_NAME_MAX + 1];
  		if (gethostname(host, sizeof(host)))
-@@ -237,16 +258,16 @@ authuser(char *myname, char *login_style, int persist)
- 		    "tty required for %s", myname);
+@@ -233,20 +254,18 @@ authuser(char *myname, char *login_style, int persist)
+ 	response = readpassphrase(challenge, rbuf, sizeof(rbuf),
+ 	    RPP_REQUIRE_TTY);
+ 	if (response == NULL && errno == ENOTTY) {
+-		syslog(LOG_AUTHPRIV | LOG_NOTICE,
+-		    "tty required for %s", myname);
++		syslog(LOG_NOTICE, "tty required for %s", myname);
  		errx(1, "a tty is required");
  	}
 -	if (!auth_userresponse(as, response, 0)) {
-+	if (!verifypasswd(myname, response)) {
- 		syslog(LOG_AUTHPRIV | LOG_NOTICE,
- 		    "failed auth for %s", myname);
+-		syslog(LOG_AUTHPRIV | LOG_NOTICE,
+-		    "failed auth for %s", myname);
 -		errc(1, EPERM, NULL);
++	if (!verifypasswd(myname, response)) {
++		syslog(LOG_NOTICE, "failed auth for %s", myname);
 +		errno = EPERM;
 +		err(1, NULL);
  	}
@@ -158,7 +166,7 @@ index d82d9f119..fb3f077f1 100644
  		close(fd);
  	}
  }
-@@ -254,14 +275,13 @@ good:
+@@ -254,14 +273,13 @@ good:
  int
  main(int argc, char **argv)
  {
@@ -175,7 +183,7 @@ index d82d9f119..fb3f077f1 100644
  	struct passwd *pw;
  	struct rule *rule;
  	uid_t uid;
-@@ -273,28 +293,19 @@ main(int argc, char **argv)
+@@ -273,28 +291,20 @@ main(int argc, char **argv)
  	int nflag = 0;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
@@ -183,9 +191,10 @@ index d82d9f119..fb3f077f1 100644
  	char **envp;
  
  	setprogname("doas");
- 
--	closefrom(STDERR_FILENO + 1);
 -
+-	closefrom(STDERR_FILENO + 1);
++	openlog("doas", 0, LOG_AUTHPRIV);
+ 
  	uid = getuid();
  
 -	while ((ch = getopt(argc, argv, "a:C:Lnsu:")) != -1) {
@@ -206,11 +215,14 @@ index d82d9f119..fb3f077f1 100644
  		case 'u':
  			if (parseuid(optarg, &target) != 0)
  				errx(1, "unknown user");
-@@ -363,14 +374,15 @@ main(int argc, char **argv)
+@@ -361,16 +371,16 @@ main(int argc, char **argv)
+ 	cmd = argv[0];
+ 	if (!permit(uid, groups, ngroups, &rule, target, cmd,
  	    (const char **)argv + 1)) {
- 		syslog(LOG_AUTHPRIV | LOG_NOTICE,
- 		    "failed command for %s: %s", myname, cmdline);
+-		syslog(LOG_AUTHPRIV | LOG_NOTICE,
+-		    "failed command for %s: %s", myname, cmdline);
 -		errc(1, EPERM, NULL);
++		syslog(LOG_NOTICE, "failed command for %s: %s", myname, cmdline);
 +		errno = EPERM;
 +		err(1, NULL);
  	}
@@ -224,7 +236,7 @@ index d82d9f119..fb3f077f1 100644
  	}
  
  	if (pledge("stdio rpath getpw exec id", NULL) == -1)
-@@ -380,10 +392,12 @@ main(int argc, char **argv)
+@@ -380,10 +390,12 @@ main(int argc, char **argv)
  	if (!pw)
  		errx(1, "no passwd entry for target");
  
@@ -241,6 +253,15 @@ index d82d9f119..fb3f077f1 100644
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
+@@ -396,7 +408,7 @@ main(int argc, char **argv)
+ 	if (pledge("stdio exec", NULL) == -1)
+ 		err(1, "pledge");
+ 
+-	syslog(LOG_AUTHPRIV | LOG_INFO, "%s ran command %s as %s from %s",
++	syslog(LOG_INFO, "%s ran command %s as %s from %s",
+ 	    myname, cmdline, pw->pw_name, cwd);
+ 
+ 	envp = prepenv(rule);
 diff --git a/usr.bin/doas/doas.h b/usr.bin/doas/doas.h
 index 93b68fadc..daf4307e7 100644
 --- a/usr.bin/doas/doas.h
@@ -403,5 +424,5 @@ index 000000000..dd9cc0411
 +	return 0;
 +}
 -- 
-2.12.0
+2.12.1
 
