@@ -210,6 +210,7 @@
 #define HAVE_LINUX_FILTER_H 1
 #define HAVE_LINUX_IF_TUN_H 1
 #define HAVE_LINUX_SECCOMP_H 1
+#define HAVE_LLABS 1
 /* #undef HAVE_LOGIN */
 /* #undef HAVE_LOGIN_CAP_H */
 /* #undef HAVE_LOGIN_GETCAPBOOL */
