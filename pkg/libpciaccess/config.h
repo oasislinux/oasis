@@ -12,13 +12,13 @@
 #define PACKAGE "libpciaccess"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=xorg&component=libpciaccess"
 #define PACKAGE_NAME "libpciaccess"
-#define PACKAGE_STRING "libpciaccess 0.13.4"
+#define PACKAGE_STRING "libpciaccess 0.13.5"
 #define PACKAGE_TARNAME "libpciaccess"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "0.13.4"
+#define PACKAGE_VERSION "0.13.5"
 #define PACKAGE_VERSION_MAJOR 0
 #define PACKAGE_VERSION_MINOR 13
-#define PACKAGE_VERSION_PATCHLEVEL 4
+#define PACKAGE_VERSION_PATCHLEVEL 5
 #define PCIIDS_PATH "/share/hwdata"
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
@@ -35,7 +35,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "0.13.4"
+#define VERSION "0.13.5"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
