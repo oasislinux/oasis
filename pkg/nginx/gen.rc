@@ -52,6 +52,7 @@ srcs=src/^(\
 		ngx_crc32.c\
 		ngx_murmurhash.c\
 		ngx_md5.c\
+		ngx_sha1.c\
 		ngx_rbtree.c\
 		ngx_radix_tree.c\
 		ngx_slab.c\
@@ -92,6 +93,7 @@ srcs=src/^(\
 		ngx_send.c\
 		ngx_writev_chain.c\
 		ngx_udp_send.c\
+		ngx_udp_sendmsg_chain.c\
 		ngx_channel.c\
 		ngx_shmem.c\
 		ngx_process.c\

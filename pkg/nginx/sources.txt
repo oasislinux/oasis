@@ -96,17 +96,26 @@ mail_auth_http mail/ngx_mail_auth_http_module.c
 mail_proxy mail/ngx_mail_proxy_module.c
 
 # STREAM_MODULES
-stream stream/ngx_stream.c stream/ngx_stream_handler.c
+stream stream/ngx_stream.c stream/ngx_stream_variables.c stream/ngx_stream_script.c stream/ngx_stream_handler.c
 stream_core stream/ngx_stream_core_module.c
+stream_log stream/ngx_stream_log_module.c
 stream_proxy stream/ngx_stream_proxy_module.c
 stream_upstream stream/ngx_stream_upstream.c stream/ngx_stream_upstream_round_robin.c
+stream_write_filter stream/ngx_stream_write_filter_module.c
 
 stream_ssl stream/ngx_stream_ssl_module.c
+stream_realip stream/ngx_stream_realip_module.c
 stream_limit_conn stream/ngx_stream_limit_conn_module.c
 stream_access stream/ngx_stream_access_module.c
+stream_geo stream/ngx_stream_geo_module.c
+stream_geoip stream/ngx_stream_geoip_module.c
+stream_map stream/ngx_stream_map_module.c
+stream_split_clients stream/ngx_stream_split_clients_module.c
+stream_return stream/ngx_stream_return_module.c
 stream_upstream_hash stream/ngx_stream_upstream_hash_module.c
 stream_upstream_least_conn stream/ngx_stream_upstream_least_conn_module.c
 stream_upstream_zone stream/ngx_stream_upstream_zone_module.c
+stream_ssl_preread stream/ngx_stream_ssl_preread_module.c
 
 # MISC_MODULES
 google_perftools misc/ngx_google_perftools_module.c
