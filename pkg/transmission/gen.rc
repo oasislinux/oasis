@@ -16,7 +16,9 @@ cflags\
 	-idirafter pkg/openbsd/src/sys\
 	-include config.h
 
-phony deps pkg/^(curl libevent libressl zlib)^/headers
+phony deps\
+	pkg/^(curl libevent libressl zlib)^/headers\
+	'$builddir'/pkg/openbsd/fetch.stamp
 
 lib libtransmission.a -d '$dir'/deps libtransmission/^(\
 	announcer.c\
