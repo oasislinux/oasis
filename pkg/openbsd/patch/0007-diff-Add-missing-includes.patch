@@ -1,4 +1,4 @@
-From cd4851a8e922a6bda085b6d345df2a291004ffb8 Mon Sep 17 00:00:00 2001
+From 7ce395bfbff36cf0020d0a425ff3053fcf2eaa3d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 4 Jun 2016 14:48:20 -0700
 Subject: [PATCH] diff: Add missing includes
@@ -9,7 +9,7 @@ Subject: [PATCH] diff: Add missing includes
  2 files changed, 2 insertions(+)
 
 diff --git a/usr.bin/diff/diff.c b/usr.bin/diff/diff.c
-index 2b075f12c49..80c7f842ef6 100644
+index 2b075f12c..80c7f842e 100644
 --- a/usr.bin/diff/diff.c
 +++ b/usr.bin/diff/diff.c
 @@ -20,6 +20,7 @@
@@ -21,7 +21,7 @@ index 2b075f12c49..80c7f842ef6 100644
  
  #include <ctype.h>
 diff --git a/usr.bin/diff/diffreg.c b/usr.bin/diff/diffreg.c
-index 35d61c349cb..953018cf553 100644
+index 35d61c349..953018cf5 100644
 --- a/usr.bin/diff/diffreg.c
 +++ b/usr.bin/diff/diffreg.c
 @@ -77,6 +77,7 @@
@@ -33,5 +33,5 @@ index 35d61c349cb..953018cf553 100644
  #include <limits.h>
  
 -- 
-2.11.0
+2.12.2
 

@@ -1,5 +1,5 @@
 remote-name
-url = "http://mirrors.sonic.net/pub/OpenBSD/6.0/src.tar.gz"
+url = "http://mirrors.sonic.net/pub/OpenBSD/6.1/src.tar.gz"
 
 remote-name
-url = "http://mirrors.sonic.net/pub/OpenBSD/6.0/sys.tar.gz"
+url = "http://mirrors.sonic.net/pub/OpenBSD/6.1/sys.tar.gz"

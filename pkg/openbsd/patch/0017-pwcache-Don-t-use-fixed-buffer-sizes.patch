@@ -1,0 +1,96 @@
+From 145b2b78355f1024c1bb2c179ca2b947dded7921 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 14 Apr 2017 11:25:01 -0700
+Subject: [PATCH] pwcache: Don't use fixed buffer sizes
+
+---
+ lib/libc/gen/pwcache.c | 37 +++++++++++++++++++------------------
+ 1 file changed, 19 insertions(+), 18 deletions(-)
+
+diff --git a/lib/libc/gen/pwcache.c b/lib/libc/gen/pwcache.c
+index 743cad456..fa5a22f4d 100644
+--- a/lib/libc/gen/pwcache.c
++++ b/lib/libc/gen/pwcache.c
+@@ -33,6 +33,7 @@
+ #include <grp.h>
+ #include <pwd.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ #include <string.h>
+ 
+ #define	NCACHE	16			/* power of 2 */
+@@ -46,26 +47,26 @@ user_from_uid(uid_t uid, int nouser)
+ 	static struct ncache {
+ 		uid_t	uid;
+ 		short	noname;
+-		char	name[_PW_NAME_LEN + 1];
++		char	*name;
+ 	} c_uid[NLINES * NCACHE];
+-	char pwbuf[_PW_BUF_LEN];
+-	struct passwd pwstore, *pw;
++	static char nbuf[15];		/* 32 bits == 10 digits */
++	struct passwd *pw;
+ 	struct ncache *cp;
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < NLINES; i++) {
+ 		cp = &c_uid[IDX(uid, i)];
+-		if (!*cp->name) {
++		if (cp->name == NULL) {
+ fillit:
+ 			cp->uid = uid;
+-			pw = NULL;
+-			getpwuid_r(uid, &pwstore, pwbuf, sizeof(pwbuf), &pw);
++			pw = getpwuid(uid);
+ 			if (pw == NULL) {
+-				snprintf(cp->name, sizeof(cp->name), "%u", uid);
++				snprintf(nbuf, sizeof(nbuf), "%u", uid);
+ 				cp->noname = 1;
+-			} else {
+-				strlcpy(cp->name, pw->pw_name, sizeof(cp->name));
+ 			}
++			if (cp->name != NULL)
++				free(cp->name);
++			cp->name = strdup(pw ? pw->pw_name : nbuf);
+ 		}
+ 		if (cp->uid == uid) {
+ 			if (nouser && cp->noname)
+@@ -91,26 +92,26 @@ group_from_gid(gid_t gid, int nogroup)
+ 	static struct ncache {
+ 		gid_t	gid;
+ 		short 	noname;
+-		char	name[_PW_NAME_LEN + 1];
++		char	*name;
+ 	} c_gid[NLINES * NCACHE];
+-	char grbuf[_GR_BUF_LEN];
+-	struct group grstore, *gr;
++	static char nbuf[15];		/* 32 bits == 10 digits */
++	struct group *gr;
+ 	struct ncache *cp;
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < NLINES; i++) {
+ 		cp = &c_gid[IDX(gid, i)];
+-		if (!*cp->name) {
++		if (cp->name == NULL) {
+ fillit:
+ 			cp->gid = gid;
+-			gr = NULL;
+-			getgrgid_r(gid, &grstore, grbuf, sizeof(grbuf), &gr);
++			gr = getgrgid(gid);
+ 			if (gr == NULL) {
+-				snprintf(cp->name, sizeof(cp->name), "%u", gid);
++				snprintf(nbuf, sizeof(nbuf), "%u", gid);
+ 				cp->noname = 1;
+-			} else {
+-				strlcpy(cp->name, gr->gr_name, sizeof(cp->name));
+ 			}
++			if (cp->name != NULL)
++				free(cp->name);
++			cp->name = strdup(gr ? gr->gr_name : nbuf);
+ 		}
+ 		if (cp->gid == gid) {
+ 			if (nogroup && cp->noname)
+-- 
+2.12.2
+

@@ -1,4 +1,4 @@
-From 633eb1c50eb77216f4049c1ec983c5616fef13da Mon Sep 17 00:00:00 2001
+From fdfd554d5e24850f7ebbc67798c893c4ec6b7506 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 3 Dec 2016 20:49:24 -0800
 Subject: [PATCH] pax: Fix GNU long name handling with short read
@@ -10,17 +10,17 @@ Subject: [PATCH] pax: Fix GNU long name handling with short read
  3 files changed, 51 insertions(+), 44 deletions(-)
 
 diff --git a/bin/pax/ar_subs.c b/bin/pax/ar_subs.c
-index 91b843645af..4071b71e2e0 100644
+index f70ec4ed0..222bfafa5 100644
 --- a/bin/pax/ar_subs.c
 +++ b/bin/pax/ar_subs.c
 @@ -37,6 +37,7 @@
  #include <sys/types.h>
- #include <sys/time.h>
  #include <sys/stat.h>
+ #include <sys/time.h>
 +#include <err.h>
+ #include <errno.h>
+ #include <fcntl.h>
  #include <signal.h>
- #include <string.h>
- #include <stdio.h>
 @@ -51,6 +52,7 @@
  static void wr_archive(ARCHD *, int is_app);
  static int get_arc(void);
@@ -29,7 +29,7 @@ index 91b843645af..4071b71e2e0 100644
  extern sigset_t s_mask;
  
  /*
-@@ -96,16 +98,8 @@ list(void)
+@@ -93,16 +95,8 @@ list(void)
  	 * step through the archive until the format says it is done
  	 */
  	while (next_head(arcn) == 0) {
@@ -47,7 +47,7 @@ index 91b843645af..4071b71e2e0 100644
  
  		/*
  		 * check for pattern, and user specified options match.
-@@ -211,15 +205,8 @@ extract(void)
+@@ -208,15 +202,8 @@ extract(void)
  	 * says it is done
  	 */
  	while (next_head(arcn) == 0) {
@@ -64,7 +64,7 @@ index 91b843645af..4071b71e2e0 100644
  
  		/*
  		 * check for pattern, and user specified options match. When
-@@ -1246,3 +1233,48 @@ get_arc(void)
+@@ -1243,3 +1230,48 @@ get_arc(void)
  	paxwarn(1, "Sorry, unable to determine archive format.");
  	return(-1);
  }
@@ -114,7 +114,7 @@ index 91b843645af..4071b71e2e0 100644
 +	return 1;
 +}
 diff --git a/bin/pax/buf_subs.c b/bin/pax/buf_subs.c
-index cac45294436..31a05c300a6 100644
+index 30be3dc46..6a9594918 100644
 --- a/bin/pax/buf_subs.c
 +++ b/bin/pax/buf_subs.c
 @@ -673,9 +673,7 @@ rd_wrfile(ARCHD *arcn, int ofd, off_t *left)
@@ -129,10 +129,10 @@ index cac45294436..31a05c300a6 100644
  			sz = (int)sb.st_blksize;
  	} else
 diff --git a/bin/pax/file_subs.c b/bin/pax/file_subs.c
-index b7239c87409..5b7f81b713b 100644
+index 57ebdb490..1a8f58d57 100644
 --- a/bin/pax/file_subs.c
 +++ b/bin/pax/file_subs.c
-@@ -920,7 +920,6 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
+@@ -917,7 +917,6 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
  	char *end;
  	int wcnt;
  	char *st = str;
@@ -140,7 +140,7 @@ index b7239c87409..5b7f81b713b 100644
  
  	/*
  	 * while we have data to process
-@@ -979,29 +978,7 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
+@@ -976,29 +975,7 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
  		/*
  		 * have non-zero data in this file system block, have to write
  		 */
@@ -172,5 +172,5 @@ index b7239c87409..5b7f81b713b 100644
  			return(-1);
  		}
 -- 
-2.11.0
+2.12.2
 

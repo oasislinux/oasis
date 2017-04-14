@@ -1,4 +1,4 @@
-From 4eaf0cae80ad349f877a6c29d71d7dcdfa077481 Mon Sep 17 00:00:00 2001
+From e16acc0e80f475b2139eabe1b07b7eb0521a7918 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 4 Jun 2016 20:13:35 -0700
 Subject: [PATCH] patch: Fix with musl's basename/dirname
@@ -8,7 +8,7 @@ Subject: [PATCH] patch: Fix with musl's basename/dirname
  1 file changed, 8 insertions(+), 7 deletions(-)
 
 diff --git a/usr.bin/patch/backupfile.c b/usr.bin/patch/backupfile.c
-index 1d7858a..243d00e 100644
+index 1d7858ae3..243d00e32 100644
 --- a/usr.bin/patch/backupfile.c
 +++ b/usr.bin/patch/backupfile.c
 @@ -53,21 +53,22 @@ static void	invalid_arg(const char *, const char *, int);
@@ -42,5 +42,5 @@ index 1d7858a..243d00e 100644
  		return concat(file, simple_backup_suffix);
  	return make_version_name(file, highest_backup + 1);
 -- 
-2.8.1
+2.12.2
 

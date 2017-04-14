@@ -1,4 +1,4 @@
-From 148c9835e6304a4247c7116156e8c5a97f153c0e Mon Sep 17 00:00:00 2001
+From f926c3a15c772a7d54561e01682dea486c2a2833 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Apr 2016 17:34:01 -0700
 Subject: [PATCH] yacc: Add some includes
@@ -8,7 +8,7 @@ Subject: [PATCH] yacc: Add some includes
  1 file changed, 1 insertion(+)
 
 diff --git a/usr.bin/yacc/defs.h b/usr.bin/yacc/defs.h
-index 7300cae..fab6e12 100644
+index 7300caec2..fab6e1266 100644
 --- a/usr.bin/yacc/defs.h
 +++ b/usr.bin/yacc/defs.h
 @@ -35,6 +35,7 @@
@@ -20,5 +20,5 @@ index 7300cae..fab6e12 100644
  #include <ctype.h>
  #include <stdio.h>
 -- 
-2.8.1
+2.12.2
 

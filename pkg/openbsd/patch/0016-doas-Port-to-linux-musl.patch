@@ -1,4 +1,4 @@
-From d9031a1a34741f517760680305a9776d41bdcb32 Mon Sep 17 00:00:00 2001
+From 545c416a156628d6e5682184af2be5caaaa3262e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -57,7 +57,7 @@ index d39c4aab2..3097991bc 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index d82d9f119..c84faf9ee 100644
+index 328834cc4..4cab9d272 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -21,7 +21,6 @@
@@ -92,7 +92,7 @@ index d82d9f119..c84faf9ee 100644
  	    " command [args]\n");
  	exit(1);
  }
-@@ -205,23 +213,36 @@ checkconfig(const char *confpath, int argc, char **argv,
+@@ -193,23 +201,36 @@ checkconfig(const char *confpath, int argc, char **argv,
  	}
  }
  
@@ -139,7 +139,7 @@ index d82d9f119..c84faf9ee 100644
  	if (!challenge) {
  		char host[HOST_NAME_MAX + 1];
  		if (gethostname(host, sizeof(host)))
-@@ -233,20 +254,18 @@ authuser(char *myname, char *login_style, int persist)
+@@ -221,20 +242,18 @@ authuser(char *myname, char *login_style, int persist)
  	response = readpassphrase(challenge, rbuf, sizeof(rbuf),
  	    RPP_REQUIRE_TTY);
  	if (response == NULL && errno == ENOTTY) {
@@ -166,7 +166,7 @@ index d82d9f119..c84faf9ee 100644
  		close(fd);
  	}
  }
-@@ -254,14 +273,13 @@ good:
+@@ -242,14 +261,13 @@ good:
  int
  main(int argc, char **argv)
  {
@@ -183,7 +183,7 @@ index d82d9f119..c84faf9ee 100644
  	struct passwd *pw;
  	struct rule *rule;
  	uid_t uid;
-@@ -273,28 +291,20 @@ main(int argc, char **argv)
+@@ -261,28 +279,20 @@ main(int argc, char **argv)
  	int nflag = 0;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
@@ -210,12 +210,12 @@ index d82d9f119..c84faf9ee 100644
 -			i = open("/dev/tty", O_RDWR);
 -			if (i != -1)
 -				ioctl(i, TIOCCLRVERAUTH);
--			exit(i != -1);
+-			exit(i == -1);
 +			exit(clearpersist() != 0);
  		case 'u':
  			if (parseuid(optarg, &target) != 0)
  				errx(1, "unknown user");
-@@ -361,16 +371,16 @@ main(int argc, char **argv)
+@@ -352,16 +362,16 @@ main(int argc, char **argv)
  	cmd = argv[0];
  	if (!permit(uid, groups, ngroups, &rule, target, cmd,
  	    (const char **)argv + 1)) {
@@ -236,7 +236,7 @@ index d82d9f119..c84faf9ee 100644
  	}
  
  	if (pledge("stdio rpath getpw exec id", NULL) == -1)
-@@ -380,10 +390,12 @@ main(int argc, char **argv)
+@@ -371,10 +381,12 @@ main(int argc, char **argv)
  	if (!pw)
  		errx(1, "no passwd entry for target");
  
@@ -253,7 +253,7 @@ index d82d9f119..c84faf9ee 100644
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
-@@ -396,7 +408,7 @@ main(int argc, char **argv)
+@@ -387,7 +399,7 @@ main(int argc, char **argv)
  	if (pledge("stdio exec", NULL) == -1)
  		err(1, "pledge");
  
@@ -263,10 +263,10 @@ index d82d9f119..c84faf9ee 100644
  
  	envp = prepenv(rule);
 diff --git a/usr.bin/doas/doas.h b/usr.bin/doas/doas.h
-index 93b68fadc..daf4307e7 100644
+index ba54c3f71..0c1f5fa4e 100644
 --- a/usr.bin/doas/doas.h
 +++ b/usr.bin/doas/doas.h
-@@ -17,6 +17,10 @@ size_t arraylen(const char **);
+@@ -31,6 +31,10 @@ extern int parse_errors;
  
  char **prepenv(struct rule *);
  
@@ -278,7 +278,7 @@ index 93b68fadc..daf4307e7 100644
  #define DENY	2
  
 diff --git a/usr.bin/doas/parse.y b/usr.bin/doas/parse.y
-index 9a30e1ea7..fb59d3130 100644
+index fde406bcf..474415859 100644
 --- a/usr.bin/doas/parse.y
 +++ b/usr.bin/doas/parse.y
 @@ -19,6 +19,7 @@
@@ -424,5 +424,5 @@ index 000000000..dd9cc0411
 +	return 0;
 +}
 -- 
-2.12.1
+2.12.2
 

@@ -1,0 +1,42 @@
+From fcc6087729cc9b0514008876780782e2d1e5afbd Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 14 Apr 2017 11:56:51 -0700
+Subject: [PATCH] Use explicit_bzero + reallocarray instead of recallocarray
+
+---
+ lib/libc/gen/fts.c  | 4 ++--
+ usr.bin/patch/pch.c | 3 ++-
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/lib/libc/gen/fts.c b/lib/libc/gen/fts.c
+index f41254c71..6f10c534f 100644
+--- a/lib/libc/gen/fts.c
++++ b/lib/libc/gen/fts.c
+@@ -967,8 +967,8 @@ fts_palloc(FTS *sp, size_t more)
+ 		errno = ENAMETOOLONG;
+ 		return (1);
+ 	}
+-	p = recallocarray(sp->fts_path, sp->fts_pathlen,
+-	    sp->fts_pathlen + more, 1);
++	explicit_bzero(sp->fts_path, sp->fts_pathlen);
++	p = realloc(sp->fts_path, sp->fts_pathlen + more);
+ 	if (p == NULL) {
+ 		free(sp->fts_path);
+ 		sp->fts_path = NULL;
+diff --git a/usr.bin/patch/pch.c b/usr.bin/patch/pch.c
+index 251dd7c58..5c69ba281 100644
+--- a/usr.bin/patch/pch.c
++++ b/usr.bin/patch/pch.c
+@@ -157,7 +157,8 @@ grow_hunkmax(void)
+ 	if (new_p_len == NULL)
+ 		free(p_len);
+ 
+-	new_p_char = recallocarray(p_char, hunkmax, new_hunkmax, sizeof(char));
++	explicit_bzero(p_char, hunkmax);
++	new_p_char = reallocarray(p_char, new_hunkmax, sizeof(char));
+ 	if (new_p_char == NULL)
+ 		free(p_char);
+ 
+-- 
+2.12.2
+

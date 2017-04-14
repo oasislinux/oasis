@@ -1,4 +1,4 @@
-From d64f92d2e1242a0dbdbd58c4c2fc34375266abb9 Mon Sep 17 00:00:00 2001
+From d36036bbd959091b6442d003128342ed515af01b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 17:01:33 -0800
 Subject: [PATCH] readpassphrase: Support systems without VSTATUS and TCSASOFT
@@ -8,7 +8,7 @@ Subject: [PATCH] readpassphrase: Support systems without VSTATUS and TCSASOFT
  1 file changed, 6 insertions(+)
 
 diff --git a/lib/libc/gen/readpassphrase.c b/lib/libc/gen/readpassphrase.c
-index 3837b0881de..55fe687ed32 100644
+index a1aeb342b..a50eaf003 100644
 --- a/lib/libc/gen/readpassphrase.c
 +++ b/lib/libc/gen/readpassphrase.c
 @@ -32,6 +32,10 @@
@@ -34,5 +34,5 @@ index 3837b0881de..55fe687ed32 100644
  	} else {
  		memset(&term, 0, sizeof(term));
 -- 
-2.11.1
+2.12.2
 

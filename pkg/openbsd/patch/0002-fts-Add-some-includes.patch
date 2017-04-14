@@ -1,4 +1,4 @@
-From de6a55b9392c80bb9be3dd8b9bb816d8d269ee5b Mon Sep 17 00:00:00 2001
+From e73065515ec3b6c03e45ee7c8c10543ff44a407c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Apr 2016 01:25:29 -0700
 Subject: [PATCH] fts: Add some includes
@@ -9,7 +9,7 @@ Subject: [PATCH] fts: Add some includes
  2 files changed, 4 insertions(+)
 
 diff --git a/include/fts.h b/include/fts.h
-index eaf6be0..a5b3aff 100644
+index eaf6be07c..a5b3aff91 100644
 --- a/include/fts.h
 +++ b/include/fts.h
 @@ -35,6 +35,8 @@
@@ -22,7 +22,7 @@ index eaf6be0..a5b3aff 100644
  	struct _ftsent *fts_cur;	/* current node */
  	struct _ftsent *fts_child;	/* linked list of children */
 diff --git a/lib/libc/gen/fts.c b/lib/libc/gen/fts.c
-index 77e1e77..eff297c 100644
+index c186b7af2..f41254c71 100644
 --- a/lib/libc/gen/fts.c
 +++ b/lib/libc/gen/fts.c
 @@ -31,6 +31,7 @@
@@ -42,5 +42,5 @@ index 77e1e77..eff297c 100644
  
  #define MAXIMUM(a, b)	(((a) > (b)) ? (a) : (b))
 -- 
-2.9.3
+2.12.2
 
