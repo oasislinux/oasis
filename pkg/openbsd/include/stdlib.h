@@ -1,6 +1,7 @@
 #include_next <stdlib.h>
 #include <stdint.h>
 void *reallocarray(void *, size_t, size_t);
+void *recallocarray(void *, size_t, size_t, size_t);
 long long strtonum(const char *, long long, long long, const char **);
 uint32_t arc4random(void);
 uint32_t arc4random_uniform(uint32_t);

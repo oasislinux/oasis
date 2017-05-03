@@ -16,7 +16,7 @@ lib libbsd.a -d pkg/libressl/headers\
 	lib/libc/^(\
 		crypt/^(arc4random.c.o arc4random_uniform.c)\
 		gen/^(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c vis.c warnc.c vwarnc.c)\
-		stdlib/^(reallocarray.c strtonum.c)\
+		stdlib/^(reallocarray.c recallocarray.c strtonum.c)\
 		string/^(explicit_bzero.c strmode.c timingsafe_memcmp.c)\
 	)\
 	lib/libcrypto/arc4random/getentropy_linux.c
