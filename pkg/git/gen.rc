@@ -104,6 +104,7 @@ lib libgit.a -d '$dir'/deps\
 	notes-utils.c\
 	notes.c\
 	object.c\
+	oidset.c\
 	pack-bitmap-write.c\
 	pack-bitmap.c\
 	pack-check.c\
@@ -131,6 +132,7 @@ lib libgit.a -d '$dir'/deps\
 	refs.c\
 	refs/files-backend.c\
 	refs/iterator.c\
+	refs/ref-cache.c\
 	remote.c\
 	replace_object.c\
 	rerere.c\
@@ -272,6 +274,7 @@ exe git -d '$dir'/deps git.c common-main.c.o builtin/^(\
 	pull.c\
 	push.c\
 	read-tree.c\
+	rebase--helper.c\
 	receive-pack.c\
 	reflog.c\
 	remote.c\
