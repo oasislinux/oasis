@@ -12,7 +12,7 @@
 #define HAVE_PTHREAD_SETAFFINITY_NP 1
 #define HAVE_STRLCPY 1
 #define HAVE_VASPRINTF 1
-/* #undef HAVE_ZLIB_H */
+#define HAVE_ZLIB_H 1
 #define PACKAGE_BUGREPORT "https://github.com/ggreer/the_silver_searcher/issues"
 #define PACKAGE_NAME "the_silver_searcher"
 #define PACKAGE_STRING "the_silver_searcher 1.0.2"
