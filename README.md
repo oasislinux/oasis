@@ -43,5 +43,5 @@ up from the following:
 * [perp](http://b0llix.net/perp/) (process supervisor)
 * [pigz](http://zlib.net/pigz/) (gzip)
 * [tz](https://www.iana.org/time-zones)
-* util-linux (for fdisk)
+* util-linux
 * [xz](http://tukaani.org/xz/)
