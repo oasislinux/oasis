@@ -3,6 +3,7 @@ subgen alsa-lib
 subgen alsa-utils
 subgen awk
 subgen bc
+subgen bearssl
 subgen bzip2
 subgen ccid
 subgen curl

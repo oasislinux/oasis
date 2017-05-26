@@ -10,6 +10,9 @@
 	path = pkg/awk/src
 	url = https://github.com/onetrueawk/awk
 	ignore = all
+[submodule "pkg/bearssl/src"]
+	path = pkg/bearssl/src
+	url = https://www.bearssl.org/git/BearSSL
 [submodule "pkg/ccid/src"]
 	path = pkg/ccid/src
 	url = https://anonscm.debian.org/git/pcsclite/CCID.git
