@@ -1,7 +1,6 @@
 cflags\
 	-include '$dir'/config.h\
 	-isystem '$builddir'/pkg/curl/include\
-	-isystem '$builddir'/pkg/libressl/include\
 	-isystem '$builddir'/pkg/zlib/include\
 	-I '$srcdir' \
 	-I '$srcdir'/compat/regex\
@@ -10,10 +9,11 @@ cflags\
 rule cmdlist 'wd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$wd/$in >$$wd/$out.tmp && mv $$wd/$out.tmp $$wd/$out'
 build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/Documentation/`{grep -v '^#' commands.txt}
 
-phony deps '$outdir'/common-cmds.h pkg/^(curl libressl zlib)^/headers
+phony deps '$outdir'/common-cmds.h pkg/^(curl zlib)^/headers
 
 cc exec_cmd.c '||' '$dir'/deps ; with cflags '$cflags ''-DPREFIX=""'''
 cc common-main.c '||' '$dir'/deps
+cc http.c '||' '$dir'/deps
 cc compat/regex/regex.c '||' '$dir'/deps ; with cflags '$cflags -DGAWK -DNO_MBSUPPORT'
 
 # src/Makefile:/^LIB_OBJS.\+=
@@ -188,6 +188,7 @@ lib libgit.a -d '$dir'/deps\
 	\
 	sha1dc/sha1.c\
 	sha1dc/ubc_check.c\
+	\
 	thread-utils.c\
 	libxdiff.a\
 	'$builddir'/pkg/zlib/libz.a
@@ -327,14 +328,14 @@ x credential-store
 x daemon
 x fast-import
 x http-backend
-x imap-send imap-send.c '$builddir'/pkg/libressl/libssl.a.d
+x imap-send imap-send.c http.c.o '$builddir'/pkg/curl/libcurl.a.d
 x sh-i18n--envsubst
 x shell
 x show-index
 x upload-pack
 # git-remote-testsvn is intentionally omitted.
 
-x remote-http remote-curl.c http.c http-walker.c '$builddir'/pkg/curl/libcurl.a.d
+x remote-http remote-curl.c http.c.o http-walker.c '$builddir'/pkg/curl/libcurl.a.d
 for(remote in https ftp ftps) sym libexec/git-core/git-remote-$remote git-remote-http
 
 rule sh_gen 'sed -f $dir/sh_gen.sed $in >$out.tmp && mv $out.tmp $out'

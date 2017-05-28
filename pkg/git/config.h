@@ -10,6 +10,8 @@
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
 #define GIT_VERSION "2.13.0"
-#define NO_SYS_POLL_H
 #define PAGER_ENV "LESS=FRX LV=-c"
+#define NO_SYS_POLL_H
+#define NO_OPENSSL
+#define USE_CURL_FOR_IMAP_SEND
 #define SHA1_DC
