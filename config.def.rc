@@ -11,6 +11,9 @@ fn fs {
 	}
 }
 
+# TLS implementation (possible values: libressl bearssl)
+config_tls=libressl
+
 # depends on your video card
 # config_video_drivers=intel
 # config_video_drivers=nouveau
