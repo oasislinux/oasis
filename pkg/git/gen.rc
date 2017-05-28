@@ -186,9 +186,11 @@ lib libgit.a -d '$dir'/deps\
 	xdiff-interface.c\
 	zlib.c\
 	\
+	sha1dc/sha1.c\
+	sha1dc/ubc_check.c\
 	thread-utils.c\
 	libxdiff.a\
-	'$builddir'/pkg/^(libressl/libcrypto.a.d zlib/libz.a)
+	'$builddir'/pkg/zlib/libz.a
 
 # src/Makefile:/^XDIFF_OBJS.\+=
 lib libxdiff.a xdiff/^(\

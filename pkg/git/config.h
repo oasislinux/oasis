@@ -12,4 +12,4 @@
 #define GIT_VERSION "2.13.0"
 #define NO_SYS_POLL_H
 #define PAGER_ENV "LESS=FRX LV=-c"
-#define SHA1_OPENSSL
+#define SHA1_DC
