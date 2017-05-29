@@ -15,10 +15,10 @@
 #define HAVE_ZLIB_H 1
 #define PACKAGE_BUGREPORT "https://github.com/ggreer/the_silver_searcher/issues"
 #define PACKAGE_NAME "the_silver_searcher"
-#define PACKAGE_STRING "the_silver_searcher 1.0.2"
+#define PACKAGE_STRING "the_silver_searcher 1.0.3"
 #define PACKAGE_TARNAME "the_silver_searcher"
 #define PACKAGE_URL "https://github.com/ggreer/the_silver_searcher"
-#define PACKAGE_VERSION "1.0.2"
+#define PACKAGE_VERSION "1.0.3"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define USE_CPU_SET /**/
 #define USE_PCRE_JIT 1
