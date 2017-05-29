@@ -25,6 +25,7 @@ print_timeval.c
 print_timex.c
 printrusage.c
 printsiginfo.c
+rt_sigreturn.c
 rtc.c
 sg_io_v3.c
 sigaltstack.c

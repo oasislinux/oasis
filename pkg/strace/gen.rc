@@ -16,6 +16,7 @@ build '$outdir'/ioctl_iocdef.h sed '$outdir'/ioctl_iocdef.i ; with\
 {
 	toolchain host
 	cflags\
+		-D 'X86_64=1' \
 		-I '$srcdir'/linux/x86_64\
 		-I '$srcdir'/linux\
 		-I '$outdir'
@@ -47,8 +48,8 @@ mpers native_printer_defs.h printerdefs.awk
 
 build '$outdir'/syscallent.i cc '$srcdir'/linux/x86_64/syscallent.h ; with\
 	cflags '$cflags -P -E'
-build '$outdir'/scno-syscallent.h sed '$outdir'/syscallent.i ; with\
-	expr '-n ''/TRACE_INDIRECT_SUBCALL/d; s/^\[[[:space:]]*\($$(digits)\)\][[:space:]]*=[[:space:]]*{[^,]*,[^,]*,[^,]*,[[:space:]]*"\($$(al_nums)\)"[[:space:]]*},.*/\#ifndef __NR_\2\n\# define __NR_\2 (SYSCALL_BIT |\1)\n\#endif/p'''
+build '$outdir'/scno-syscallent.h awk '$outdir'/syscallent.i '|' '$dir'/scno.awk ; with\
+	expr '-f $dir/scno.awk'
 build '$outdir'/scno.h cat '$srcdir'/scno.head '$outdir'/scno-syscallent.h
 
 # this seems to be enough syscall headers to build
@@ -60,6 +61,7 @@ libsrcs=(\
 	fstatfs.c\
 	fstatfs64.c\
 	ipc.c\
+	sigreturn.c\
 	socketcall.c\
 	statfs.c\
 	statfs64.c\
@@ -145,6 +147,7 @@ srcs=(\
 	mtd.c\
 	net.c\
 	netlink.c\
+	nsfs.c\
 	numa.c\
 	oldstat.c\
 	open.c\
@@ -179,6 +182,8 @@ srcs=(\
 	reboot.c\
 	renameat.c\
 	resource.c\
+	rt_sigframe.c\
+	rt_sigreturn.c\
 	rtc.c\
 	sched.c\
 	scsi.c\
@@ -189,13 +194,13 @@ srcs=(\
 	sigaltstack.c\
 	signal.c\
 	signalfd.c\
-	sigreturn.c\
 	sock.c\
 	sockaddr.c\
 	socketutils.c\
 	sram_alloc.c\
 	stat.c\
 	stat64.c\
+	statx.c\
 	strace.c\
 	swapon.c\
 	syscall.c\
