@@ -7,17 +7,43 @@
 #define HAVE_DECL_STRLCPY 1
 #define HAVE_DECL_STRNCASECMP 1
 #define HAVE_DECL_STRNICMP 0
+#define HAVE_DECL_STRNLEN 1
 #define HAVE_DECL_STRSEP 1
+#define HAVE_FUNC_ATTRIBUTE_ALLOC_SIZE 1
+#define HAVE_FUNC_ATTRIBUTE_CONST 1
+#define HAVE_FUNC_ATTRIBUTE_ERROR 1
+#define HAVE_FUNC_ATTRIBUTE_FORMAT 1
+#define HAVE_FUNC_ATTRIBUTE_MALLOC 1
+#define HAVE_FUNC_ATTRIBUTE_NORETURN 1
+#define HAVE_FUNC_ATTRIBUTE_PURE 1
+#define HAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL 1
+#define HAVE_GETPAGESIZE 1
+/* #undef HAVE_IO_H */
 #define HAVE_MEMORY_H 1
+#define HAVE_STDNORETURN_H 1
 /* #undef HAVE_STRICMP */
 #define HAVE_STRLCPY 1
 /* #undef HAVE_STRNICMP */
 #define HAVE_STRSEP 1
+#define HAVE_STRUCT_STAT 1
+/* #undef HAVE_STRUCT__STATI64 */
 #define HAVE_SYS_PARAM_H 1
-#define HAVE_WORKING_BOOL 1
+/* #undef HAVE__ACCESS */
+#define HAVE__BOOL 1
+/* #undef HAVE__CHSIZE */
+/* #undef HAVE__CHSIZE_S */
+/* #undef HAVE__FILELENGTHI64 */
+/* #undef HAVE__FILENO */
+/* #undef HAVE__FSEEKI64 */
+/* #undef HAVE__FSTATI64 */
 /* #undef HAVE__FULLPATH */
 /* #undef HAVE__SNPRINTF */
+/* #undef HAVE__STATI64 */
 /* #undef HAVE__VSNPRINTF */
+#define HAVE___BUILTIN_CLZ 1
+#define HAVE___BUILTIN_CLZL 1
+#define HAVE___BUILTIN_CLZLL 1
+#define HAVE___BUILTIN_EXPECT 1
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME ""
 #define PACKAGE_STRING ""
@@ -45,6 +71,7 @@
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
 /* #undef _FILE_OFFSET_BITS */
+/* #undef _LARGEFILE_SOURCE */
 /* #undef _LARGE_FILES */
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
@@ -59,3 +86,4 @@
 # define __restrict__
 #endif
 /* #undef size_t */
+/* #undef uintptr_t */
