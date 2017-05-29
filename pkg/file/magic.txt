@@ -11,6 +11,7 @@ amigaos
 android
 animation
 aout
+apache
 apl
 apple
 application
@@ -268,6 +269,7 @@ vorbis
 vxl
 warc
 weak
+webassembly
 windows
 wireless
 wordprocessors
