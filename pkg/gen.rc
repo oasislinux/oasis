@@ -12,6 +12,7 @@ subgen e2fsprogs
 subgen efibootmgr
 subgen efivar
 subgen expat
+subgen farbfeld
 subgen ffmpeg
 subgen file
 subgen fontconfig

@@ -34,6 +34,9 @@
 [submodule "pkg/expat/src"]
 	path = pkg/expat/src
 	url = https://github.com/libexpat/libexpat
+[submodule "pkg/farbfeld/src"]
+	path = pkg/farbfeld/src
+	url = git://git.suckless.org/farbfeld
 [submodule "pkg/ffmpeg/src"]
 	path = pkg/ffmpeg/src
 	url = https://git.ffmpeg.org/ffmpeg.git

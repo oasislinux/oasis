@@ -1,0 +1,25 @@
+cflags\
+	'-std=c99' -pedantic -Wall -Wextra\
+	-D _DEFAULT_SOURCE \
+	-isystem '$builddir'/pkg/libjpeg-turbo/include\
+	-isystem '$builddir'/pkg/libpng/include
+
+cc util.c
+
+exe png2ff -d pkg/libpng/headers png2ff.c util.c.o\
+	'$builddir'/pkg/libpng/libpng.a.d
+exe ff2png -d pkg/libpng/headers ff2png.c util.c.o\
+	'$builddir'/pkg/libpng/libpng.a.d
+exe jpg2ff -d pkg/libjpeg-turbo/headers jpg2ff.c util.c.o\
+	'$builddir'/pkg/libjpeg-turbo/libjpeg-turbo.a
+exe ff2jpg -d pkg/libjpeg-turbo/headers ff2jpg.c util.c.o\
+	'$builddir'/pkg/libjpeg-turbo/libjpeg-turbo.a
+exe ff2pam ff2pam.c util.c.o
+exe ff2ppm ff2ppm.c util.c.o
+
+exes=(png2ff ff2png jpg2ff ff2jpg ff2pam ff2ppm)
+for(exe in $exes)
+	file bin/$exe '$outdir'/$exe 755
+man 1 $exes.1 5 farbfeld.5
+
+fetch git
