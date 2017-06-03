@@ -4,7 +4,6 @@ subgen libcss
 subgen libdom
 subgen libhubbub
 subgen libnsbmp
-subgen libnsfb
 subgen libnsgif
 subgen libnsutils
 subgen libparserutils
@@ -25,12 +24,14 @@ cflags\
 	-isystem '$builddir'/pkg/libjpeg-turbo/include\
 	-isystem '$builddir'/pkg/libpng/include\
 	-isystem '$builddir'/pkg/libressl/include\
+	-isystem '$builddir'/pkg/pixman/include\
+	-isystem '$builddir'/pkg/wayland/include\
+	-isystem '$builddir'/pkg/wayland-protocols/include\
 	-isystem '$builddir'/pkg/zlib/include\
 	-isystem '$dir'/libcss/src/include\
 	-isystem '$dir'/libdom/src/include\
 	-isystem '$dir'/libhubbub/src/include\
 	-isystem '$dir'/libnsbmp/src/include\
-	-isystem '$dir'/libnsfb/src/include\
 	-isystem '$dir'/libnsgif/src/include\
 	-isystem '$dir'/libnsutils/src/include\
 	-isystem '$dir'/libparserutils/src/include\
@@ -38,6 +39,7 @@ cflags\
 	-isystem '$dir'/libwapcaplet/src/include\
 	-isystem pkg/freetype/src/include\
 	-isystem pkg/libxkbcommon/src\
+	-isystem pkg/openbsd/include\
 	-I '$dir' \
 	-I '$srcdir' \
 	-I '$srcdir'/include\
@@ -53,35 +55,10 @@ rule nsgenbind '$outdir/nsgenbind/nsgenbind -v -I $srcdir/content/handlers/javas
 nsgenbind_srcs='$outdir'/duktape/`{cat nsgenbind.txt}
 build $"nsgenbind_srcs nsgenbind '$srcdir'/content/handlers/javascript/duktape/netsurf.bnd '|' '$outdir'/nsgenbind/nsgenbind
 
-rule convert_image '$outdir/convert_image $in $out $var'
-fn convert_image {
-	build '$outdir'/$1.c convert_image '$srcdir'/frontends/$2 '|' '$outdir'/convert_image ; with\
-		var $1
-}
-
-convert_image left_arrow framebuffer/res/icons/back.png
-convert_image right_arrow framebuffer/res/icons/forward.png
-convert_image reload framebuffer/res/icons/reload.png
-convert_image stop_image framebuffer/res/icons/stop.png
-convert_image history_image framebuffer/res/icons/history.png
-
-convert_image left_arrow_g framebuffer/res/icons/back_g.png
-convert_image right_arrow_g framebuffer/res/icons/forward_g.png
-convert_image reload_g framebuffer/res/icons/reload_g.png
-convert_image stop_image_g framebuffer/res/icons/stop_g.png
-convert_image history_image_g framebuffer/res/icons/history_g.png
-
-convert_image osk_image framebuffer/res/icons/osk.png
-
-for(d in l r u d)
-	convert_image scroll$d framebuffer/res/icons/scroll$d.png
-for(n in 0 1 2 3 4 5 6 7 8)
-	convert_image throbber$n gtk/res/throbber/throbber$n.png
-
 phony deps '$outdir'/duktape/binding.c\
 	'$outdir'/^(\
-		libcss libdom libhubbub libnsbmp libnsfb libnsgif\
-		libparserutils libutf8proc libwapcaplet libnsutils\
+		libcss libdom libhubbub libnsbmp libnsgif libparserutils\
+		libutf8proc libwapcaplet libnsutils\
 	)^/fetch.stamp\
 	'$builddir'/pkg/^(freetype libxkbcommon)^/fetch.stamp\
 	('$dir'/libdom pkg/^(curl libjpeg-turbo libpng libressl zlib))^/headers
@@ -97,15 +74,7 @@ exe netsurf -d '$dir'/deps\
 		save_complete.c save_text.c selection.c textinput.c gui_factory.c\
 		save_pdf.c font_haru.c\
 	)\
-	frontends/framebuffer/^(\
-		gui.c framebuffer.c schedule.c bitmap.c fetch.c\
-		findfile.c localhistory.c clipboard.c\
-		font_freetype.c\
-		fbtk/^(\
-			fbtk.c event.c fill.c bitmap.c user.c window.c\
-			text.c scroll.c osk.c\
-		)\
-	)\
+	frontends/tiny/^(fetch.c icons.c gui.c render.c schedule.c ui.c wl.c)\
 	content/^(\
 		content.c content_factory.c dirlist.c fetch.c hlcache.c\
 		llcache.c mimesniff.c urldb.c no_backing_store.c\
@@ -150,16 +119,10 @@ exe netsurf -d '$dir'/deps\
 	)\
 	'$outdir'/^(\
 		duktape/`{grep '\.c$' nsgenbind.txt}\
-		left_arrow.c right_arrow.c reload.c stop_image.c history_image.c\
-		left_arrow_g.c right_arrow_g.c reload_g.c stop_image_g.c history_image_g.c\
-		scroll^(l r u d)^.c\
-		osk_image.c\
-		throbber^(0 1 2 3 4 5 6 7 8)^.c\
 		\
 		libcss/libcss.a.d\
 		libdom/libdom.a.d\
 		libnsbmp/libnsbmp.a\
-		libnsfb/^(libnsfb.a.d src/surface/ram.c.o wl.c.o)\
 		libnsgif/libnsgif.a\
 		libnsutils/libnsutils.a\
 		libutf8proc/libutf8proc.a\
@@ -169,7 +132,12 @@ exe netsurf -d '$dir'/deps\
 		freetype/libfreetype.a.d\
 		libjpeg-turbo/libjpeg-turbo.a\
 		libpng/libpng.a\
+		libxkbcommon/libxkbcommon.a\
+		pixman/libpixman.a\
+		wayland/^(libwayland-client.a.d libwayland-cursor.a)\
 		zlib/libz.a\
+		\
+		wayland-protocols/xdg-shell-unstable-v5-protocol.c.o\
 	)
 file bin/netsurf '$outdir'/netsurf 755
 
@@ -191,5 +159,7 @@ sym share/netsurf/maps.html welcome.html
 file share/netsurf/netsurf.png '$srcdir'/!NetSurf/Resources/netsurf.png,b60 644
 file share/netsurf/quirks.css '$srcdir'/!NetSurf/Resources/Quirks,f79 644
 file share/netsurf/welcome.html '$srcdir'/!NetSurf/Resources/en/welcome.html,faf 644
+for(icon in back forward add remove home reload stop close)
+	file share/netsurf/icons/$icon.ff '$srcdir'/frontends/tiny/res/icons/$icon.ff 644
 
 fetch git

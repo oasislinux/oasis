@@ -130,8 +130,7 @@
 	url = https://github.com/rydberg/mtdev
 [submodule "pkg/netsurf/src"]
 	path = pkg/netsurf/src
-	url = git://git.netsurf-browser.org/netsurf.git
-	ignore = all
+	url = https://github.com/michaelforney/netsurf
 [submodule "pkg/netsurf/libcss/src"]
 	path = pkg/netsurf/libcss/src
 	url = git://git.netsurf-browser.org/libcss.git
@@ -144,10 +143,6 @@
 [submodule "pkg/netsurf/libnsbmp/src"]
 	path = pkg/netsurf/libnsbmp/src
 	url = git://git.netsurf-browser.org/libnsbmp.git
-[submodule "pkg/netsurf/libnsfb/src"]
-	path = pkg/netsurf/libnsfb/src
-	url = git://git.netsurf-browser.org/libnsfb.git
-	ignore = all
 [submodule "pkg/netsurf/libnsgif/src"]
 	path = pkg/netsurf/libnsgif/src
 	url = git://git.netsurf-browser.org/libnsgif.git
