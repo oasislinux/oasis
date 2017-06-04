@@ -16,7 +16,7 @@ data=(\
 		hhk hp keytronic kinesis\
 		macintosh microsoft nec nokia\
 		northgate pc sanwa sony thinkpad\
-		sun teck typematrix winbook README\
+		sun teck steelseries typematrix winbook README\
 	)\
 	keycodes/^(\
 		digital_vndr/^(lk pc)\
@@ -73,7 +73,7 @@ data=(\
 		af al am apl\
 		ara at au az\
 		ba bd be\
-		bg bn br brai\
+		bg br brai\
 		bt bw by\
 		ca cd ch\
 		cm cn cz\
