@@ -26,6 +26,7 @@
 /* #undef HAVE_LIBRESMGR */
 #define HAVE_LIBRT 1
 #define HAVE_MEMORY_H 1
+#define HAVE_PTHREAD_MUTEX_RECURSIVE 1
 /* #undef HAVE_SOFT_FLOAT */
 /* #undef HAVE_SYS_ENDIAN_H */
 #define HAVE___THREAD 1
@@ -34,10 +35,10 @@
 #define PACKAGE "alsa-lib"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "alsa-lib"
-#define PACKAGE_STRING "alsa-lib 1.1.4"
+#define PACKAGE_STRING "alsa-lib 1.1.4.1"
 #define PACKAGE_TARNAME "alsa-lib"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.1.4"
+#define PACKAGE_VERSION "1.1.4.1"
 #define SND_MAX_CARDS 32
 #define SUPPORT_ALOAD "1"
 /* #undef SUPPORT_RESMGR */
@@ -59,7 +60,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.1.4"
+#define VERSION "1.1.4.1"
 #define VERSIONED_SYMBOLS /**/
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
