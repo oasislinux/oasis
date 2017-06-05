@@ -3,7 +3,6 @@ cflags\
 	-Wall -Wno-maybe-uninitialized -Wno-overflow\
 	-D _GNU_SOURCE\
 	-D '_XOPEN_SOURCE=700' \
-	-D '_FILE_OFFSET_BITS=64' \
 	-I '$dir'
 
 lib libutil.a libutil/^(\

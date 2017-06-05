@@ -1,6 +1,4 @@
-cflags\
-	-Wall -Winline\
-	-D '_FILE_OFFSET_BITS=64'
+cflags -Wall -Winline
 
 lib libbz2.a blocksort.c huffman.c crctable.c randtable.c compress.c decompress.c bzlib.c
 exe bzip2 bzip2.c libbz2.a
