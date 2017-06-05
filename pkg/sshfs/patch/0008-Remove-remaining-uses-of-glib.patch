@@ -1,17 +1,17 @@
-From 4d8a47a8754e549dc75d5201547762718de8ce52 Mon Sep 17 00:00:00 2001
+From 4bbbae8849274c24b3fdbd938876ef0c1afa47f7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 18:24:31 -0700
 Subject: [PATCH] Remove remaining uses of glib
 
 ---
- sshfs.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sshfs.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index 9af8814..44c13d1 100644
+index 0b12ef6..2b274bd 100644
 --- a/sshfs.c
 +++ b/sshfs.c
-@@ -42,7 +42,6 @@
+@@ -44,7 +44,6 @@
  #include <sys/poll.h>
  #include <netinet/in.h>
  #include <netinet/tcp.h>
@@ -19,18 +19,14 @@ index 9af8814..44c13d1 100644
  #include <pwd.h>
  #include <grp.h>
  #include <limits.h>
-@@ -4011,11 +4010,7 @@ int main(int argc, char *argv[])
- 	if (!realpath(*exec_path, sshfs_program_path)) {
+@@ -4014,7 +4013,6 @@ int main(int argc, char *argv[])
  		memset(sshfs_program_path, 0, PATH_MAX);
  	}
--
--	/* Until this gets fixed somewhere else. */
--	g_slice_set_config(G_SLICE_CONFIG_ALWAYS_MALLOC, TRUE);
  #endif /* __APPLE__ */
 -	g_thread_init(NULL);
  
  	sshfs.blksize = 4096;
  	/* SFTP spec says all servers should allow at least 32k I/O */
 -- 
-2.9.0
+2.13.1
 

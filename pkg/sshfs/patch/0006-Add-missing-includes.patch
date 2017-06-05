@@ -1,4 +1,4 @@
-From e969e57612df9b24df2ac16ac545466fca0989f1 Mon Sep 17 00:00:00 2001
+From dd47e1904e2b7f7359008743769a02a77b4611e2 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 18:21:02 -0700
 Subject: [PATCH] Add missing includes
@@ -10,10 +10,10 @@ sys/param.h for MIN
  1 file changed, 2 insertions(+)
 
 diff --git a/sshfs.c b/sshfs.c
-index 4f3bfe4..cd6abf6 100644
+index e4a44f1..dcc3707 100644
 --- a/sshfs.c
 +++ b/sshfs.c
-@@ -17,6 +17,7 @@
+@@ -19,6 +19,7 @@
  #endif
  #include <assert.h>
  #include <stdbool.h>
@@ -21,7 +21,7 @@ index 4f3bfe4..cd6abf6 100644
  #include <stdio.h>
  #include <stdlib.h>
  #include <unistd.h>
-@@ -37,6 +38,7 @@
+@@ -39,6 +40,7 @@
  #include <sys/socket.h>
  #include <sys/utsname.h>
  #include <sys/mman.h>
@@ -30,5 +30,5 @@ index 4f3bfe4..cd6abf6 100644
  #include <netinet/in.h>
  #include <netinet/tcp.h>
 -- 
-2.9.0
+2.13.1
 
