@@ -1,9 +1,13 @@
+version=1.7-13-g704ab92
 cflags\
 	-Wall\
-	-D 'VERSION=''"1.7-12-g714bd0c"'''
+	-D 'VERSION=''"'$version'"'''
 
 exe ii ii.c
 file bin/ii '$outdir'/ii 755
-man 1 ii.1
+
+build '$outdir'/ii.1 sed '$srcdir'/ii.1 ; with\
+	expr s,VERSION,$version,
+man -d '$outdir' 1 ii.1
 
 fetch git
