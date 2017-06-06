@@ -10,6 +10,7 @@
 #define FC_ADD_FONTS "yes"
 /* #undef FC_ARCHITECTURE */
 #define FC_DEFAULT_FONTS "/share/fonts"
+#define FC_GPERF_SIZE_T unsigned int
 #define FLEXIBLE_ARRAY_MEMBER /**/
 /* #undef HAVE_DOPRNT */
 #define HAVE_FSTATFS 1
@@ -55,10 +56,10 @@
 #define PACKAGE "fontconfig"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=fontconfig"
 #define PACKAGE_NAME "fontconfig"
-#define PACKAGE_STRING "fontconfig 2.12.1"
+#define PACKAGE_STRING "fontconfig 2.12.3"
 #define PACKAGE_TARNAME "fontconfig"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.12.1"
+#define PACKAGE_VERSION "2.12.3"
 /* #undef PTHREAD_CREATE_JOINABLE */
 /* #undef SIZEOF_CHAR */
 /* #undef SIZEOF_INT */
@@ -82,7 +83,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.12.1"
+#define VERSION "2.12.3"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
