@@ -39,6 +39,7 @@
 /* #undef HAVE_OLD_GSSMIT */
 /* #undef USE_ARES */
 /* #undef USE_BLOCKING_SOCKETS */
+/* #undef USE_DARWINSSL */
 /* #undef USE_GNUTLS */
 /* #undef USE_LIBSSH2 */
 /* #undef USE_MANUAL */
