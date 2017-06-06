@@ -1,3 +1,4 @@
+version=2.30.0
 cflags\
 	-include '$dir'/config.h\
 	-I include\
@@ -7,9 +8,9 @@ cflags\
 	-I '$srcdir'/libuuid/src
 
 build '$outdir'/libsmartcols.h sed '$srcdir'/libsmartcols/src/libsmartcols.h.in ; with\
-	expr '''s,"@LIBSMARTCOLS_VERSION@",PACKAGE_VERSION,'''
+	expr s,@LIBSMARTCOLS_VERSION@,$version,
 build '$outdir'/libfdisk.h sed '$srcdir'/libfdisk/src/libfdisk.h.in ; expr=(\
-	-e '''s,"@LIBFDISK_VERSION@",PACKAGE_VERSION,''' \
+	-e s,@LIBFDISK_VERSION@,$version,\
 	-e /@LIBFDISK_MAJOR_VERSION@/d\
 	-e /@LIBFDISK_MINOR_VERSION@/d\
 	-e /@LIBFDISK_PATCH_VERSION@/d\
