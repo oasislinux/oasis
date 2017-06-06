@@ -1,4 +1,4 @@
-From e30be2ad83090568bbb0a5861d5bc0e79faa0733 Mon Sep 17 00:00:00 2001
+From 774d2757d012e61a10e4e0763add9c729a3bfe8b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
@@ -7,16 +7,16 @@ This requires python and rst2man to generate.
 
 $ rst2man.py --strip-elements-with-class=contents DOCS/man/mpv.rst DOCS/man/mpv.1
 ---
- DOCS/man/mpv.1 | 14268 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 14268 insertions(+)
+ DOCS/man/mpv.1 | 14558 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 14558 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 000000000..695e39493
+index 000000000..7819ab9b2
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,14268 @@
+@@ -0,0 +1,14558 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -573,6 +573,8 @@ index 000000000..695e39493
 +\fBNOTE:\fP
 +.INDENT 0.0
 +.INDENT 3.5
++DVD library choices
++.sp
 +mpv uses a different default DVD library than MPlayer. MPlayer
 +uses libdvdread by default, and mpv uses libdvdnav by default.
 +Both libraries are developed in parallel, but libdvdnav is
@@ -584,7 +586,16 @@ index 000000000..695e39493
 +when using libdvdnav, in which playback gets stuck in a DVD menu
 +stream. These problems are reported to go away when auto\-selecting
 +the title (\fBdvd://\fP rather than \fBdvd://1\fP) or when using
-+libdvdread (e.g. \fBdvdread://0\fP).
++libdvdread (e.g. \fBdvdread://0\fP). There are also outstanding bugs
++in libdvdnav with seeking backwards and forwards in a video
++stream. Specify \fBdvdread://...\fP to fix such problems.
++.UNINDENT
++.UNINDENT
++.sp
++\fBNOTE:\fP
++.INDENT 0.0
++.INDENT 3.5
++DVD subtitles
 +.sp
 +DVDs use image\-based subtitles. Image subtitles are implemented as
 +a bitmap video stream which can be superimposed over the main
@@ -841,9 +852,10 @@ index 000000000..695e39493
 +kilobytes. (\fBdemuxer\-cache\-duration\fP and \fBcache\-used\fP properties.)
 +.UNINDENT
 +.SH PROTOCOLS
++.sp
++\fBhttp://...\fP, \fBhttps://\fP, ...
 +.INDENT 0.0
-+.TP
-+.B \fBhttp://...\fP, \fBhttps://\fP, ...
++.INDENT 3.5
 +Many network protocols are supported, but the protocol prefix must always
 +be specified. mpv will never attempt to guess whether a filename is
 +actually a network address. A protocol prefix is always required.
@@ -855,8 +867,12 @@ index 000000000..695e39493
 +\fBdata:\fP is supported in FFmpeg (not in Libav), but needs to be in the
 +format \fBdata://\fP\&. This is done to avoid ambiguity with filenames. You
 +can also prefix it with \fBlavf://\fP or \fBffmpeg://\fP\&.
-+.TP
-+.B \fBytdl://...\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBytdl://...\fP
++.INDENT 0.0
++.INDENT 3.5
 +By default, the youtube\-dl hook script (enabled by default for mpv CLI)
 +only looks at http URLs. Prefixing an URL with \fBytdl://\fP forces it to
 +be always processed by the script. This can also be used to invoke special
@@ -864,50 +880,99 @@ index 000000000..695e39493
 +.sp
 +Keep in mind that you can\(aqt pass youtube\-dl command line options by this,
 +and you have to use \fB\-\-ytdl\-raw\-options\fP instead.
-+.TP
-+.B \fB\-\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fB\-\fP
++.INDENT 0.0
++.INDENT 3.5
 +Play data from stdin.
-+.TP
-+.B \fBsmb://PATH\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBsmb://PATH\fP
++.INDENT 0.0
++.INDENT 3.5
 +Play a path from  Samba share.
-+.TP
-+.B \fBbd://[title][/device]\fP \fB\-\-bluray\-device=PATH\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBbd://[title][/device]\fP \fB\-\-bluray\-device=PATH\fP
++.INDENT 0.0
++.INDENT 3.5
 +Play a Blu\-ray disc. Currently, this does not accept ISO files. Instead,
 +you must mount the ISO file as filesystem, and point \fB\-\-bluray\-device\fP
 +to the mounted directory directly.
-+.TP
-+.B \fBdvd://[title|[starttitle]\-endtitle][/device]\fP \fB\-\-dvd\-device=PATH\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBdvd://[title|[starttitle]\-endtitle][/device]\fP \fB\-\-dvd\-device=PATH\fP
++.INDENT 0.0
++.INDENT 3.5
 +Play a DVD. DVD menus are not supported. If no title is given, the longest
 +title is auto\-selected.
 +.sp
 +\fBdvdnav://\fP is an old alias for \fBdvd://\fP and does exactly the same
 +thing.
-+.TP
-+.B \fBdvdread://...:\fP
-+Play a DVD using the old libdvdread code. This is what MPlayer and older
-+mpv versions use for \fBdvd://\fP\&. Use is discouraged. It\(aqs provided only
-+for compatibility and for transition.
-+.TP
-+.B \fBtv://[channel][/input_id]\fP \fB\-\-tv\-...\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBdvdread://...:\fP
++.INDENT 0.0
++.INDENT 3.5
++Play a DVD using the old libdvdread code. This is what MPlayer and
++older mpv versions use for \fBdvd://\fP\&. Use is discouraged. It\(aqs
++provided only for compatibility and for transition, and to work
++around outstanding dvdnav bugs (see "DVD library choices" above).
++.UNINDENT
++.UNINDENT
++.sp
++\fBtv://[channel][/input_id]\fP \fB\-\-tv\-...\fP
++.INDENT 0.0
++.INDENT 3.5
 +Analogue TV via V4L. Also useful for webcams. (Linux only.)
-+.TP
-+.B \fBpvr://\fP \fB\-\-pvr\-...\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBpvr://\fP \fB\-\-pvr\-...\fP
++.INDENT 0.0
++.INDENT 3.5
 +PVR. (Linux only.)
-+.TP
-+.B \fBdvb://[cardnumber@]channel\fP \fB\-\-dvbin\-...\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBdvb://[cardnumber@]channel\fP \fB\-\-dvbin\-...\fP
++.INDENT 0.0
++.INDENT 3.5
 +Digital TV via DVB. (Linux only.)
-+.TP
-+.B \fBmf://[filemask|@listfile]\fP \fB\-\-mf\-...\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBmf://[filemask|@listfile]\fP \fB\-\-mf\-...\fP
++.INDENT 0.0
++.INDENT 3.5
 +Play a series of images as video.
-+.TP
-+.B \fBcdda://[device]\fP \fB\-\-cdrom\-device=PATH\fP \fB\-\-cdda\-...\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBcdda://[device]\fP \fB\-\-cdrom\-device=PATH\fP \fB\-\-cdda\-...\fP
++.INDENT 0.0
++.INDENT 3.5
 +Play CD.
-+.TP
-+.B \fBlavf://...\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBlavf://...\fP
++.INDENT 0.0
++.INDENT 3.5
 +Access any FFmpeg/Libav libavformat protocol. Basically, this passed the
 +string after the \fB//\fP directly to libavformat.
-+.TP
-+.B \fBav://type:options\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBav://type:options\fP
++.INDENT 0.0
++.INDENT 3.5
 +This is intended for using libavdevice inputs. \fBtype\fP is the libavdevice
 +demuxer name, and \fBoptions\fP is the (pseudo\-)filename passed to the
 +demuxer.
@@ -917,29 +982,54 @@ index 000000000..695e39493
 +filter to generate input data.
 +.sp
 +\fBavdevice://\fP is an alias.
-+.TP
-+.B \fBfile://PATH\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBfile://PATH\fP
++.INDENT 0.0
++.INDENT 3.5
 +A local path as URL. Might be useful in some special use\-cases. Note that
 +\fBPATH\fP itself should start with a third \fB/\fP to make the path an
 +absolute path.
-+.TP
-+.B \fBfd://123\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBfd://123\fP
++.INDENT 0.0
++.INDENT 3.5
 +Read data from the given file descriptor (for example 123). This is similar
 +to piping data to stdin via \fB\-\fP, but can use an arbitrary file descriptor.
-+.TP
-+.B \fBedl://[edl specification as in edl\-mpv.rst]\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBedl://[edl specification as in edl\-mpv.rst]\fP
++.INDENT 0.0
++.INDENT 3.5
 +Stitch together parts of multiple files and play them.
-+.TP
-+.B \fBnull://\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBnull://\fP
++.INDENT 0.0
++.INDENT 3.5
 +Simulate an empty file. If opened for writing, it will discard all data.
 +The \fBnull\fP demuxer will specifically pass autoprobing if this protocol
 +is used (while it\(aqs not automatically invoked for empty files).
-+.TP
-+.B \fBmemory://data\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBmemory://data\fP
++.INDENT 0.0
++.INDENT 3.5
 +Use the \fBdata\fP part as source data.
-+.TP
-+.B \fBhex://data\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBhex://data\fP
++.INDENT 0.0
++.INDENT 3.5
 +Like \fBmemory://\fP, but the string is interpreted as hexdump.
++.UNINDENT
 +.UNINDENT
 +.SH PSEUDO GUI MODE
 +.sp
@@ -1150,17 +1240,6 @@ index 000000000..695e39493
 +speed higher than normal automatically inserts the \fBscaletempo\fP audio
 +filter.
 +.TP
-+.B \fB\-\-loop=<N|inf|force|no>\fP, \fB\-\-loop\fP
-+Loops playback \fBN\fP times. A value of \fB1\fP plays it one time (default),
-+\fB2\fP two times, etc. \fBinf\fP means forever. \fBno\fP is the same as \fB1\fP and
-+disables looping. If several files are specified on command line, the
-+entire playlist is looped. \fB\-\-loop\fP is the same as \fB\-\-loop=inf\fP\&.
-+.sp
-+The \fBforce\fP mode is like \fBinf\fP, but does not skip playlist entries
-+which have been marked as failing. This means the player might waste CPU
-+time trying to loop a file that doesn\(aqt exist. But it might be useful for
-+playing webradios under very bad network conditions.
-+.TP
 +.B \fB\-\-pause\fP
 +Start the player in paused state.
 +.TP
@@ -1323,15 +1402,31 @@ index 000000000..695e39493
 +directory). Prefixing the filename with \fB\&./\fP if it doesn\(aqt start with
 +a \fB/\fP will avoid this.
 +.TP
++.B \fB\-\-loop\-playlist=<N|inf|force|no>\fP, \fB\-\-loop\-playlist\fP
++Loops playback \fBN\fP times. A value of \fB1\fP plays it one time (default),
++\fB2\fP two times, etc. \fBinf\fP means forever. \fBno\fP is the same as \fB1\fP and
++disables looping. If several files are specified on command line, the
++entire playlist is looped. \fB\-\-loop\-playlist\fP is the same as
++\fB\-\-loop\-playlist=inf\fP\&.
++.sp
++The \fBforce\fP mode is like \fBinf\fP, but does not skip playlist entries
++which have been marked as failing. This means the player might waste CPU
++time trying to loop a file that doesn\(aqt exist. But it might be useful for
++playing webradios under very bad network conditions.
++.TP
++.B \fB\-\-loop\fP
++Currently a deprecated alias to \fB\-\-loop\-playlist\fP\&. After a deprecation
++period, it will be undeprecated, but changed to alias \fB\-\-loop\-file\fP\&.
++.TP
 +.B \fB\-\-loop\-file=<N|inf|no>\fP
 +Loop a single file N times. \fBinf\fP means forever, \fBno\fP means normal
 +playback. For compatibility, \fB\-\-loop\-file\fP and \fB\-\-loop\-file=yes\fP are
 +also accepted, and are the same as \fB\-\-loop\-file=inf\fP\&.
 +.sp
-+The difference to \fB\-\-loop\fP is that this doesn\(aqt loop the playlist, just
-+the file itself. If the playlist contains only a single file, the difference
-+between the two option is that this option performs a seek on loop, instead
-+of reloading the file.
++The difference to \fB\-\-loop\-playlist\fP is that this doesn\(aqt loop the playlist,
++just the file itself. If the playlist contains only a single file, the
++difference between the two option is that this option performs a seek on
++loop, instead of reloading the file.
 +.TP
 +.B \fB\-\-ab\-loop\-a=<time>\fP, \fB\-\-ab\-loop\-b=<time>\fP
 +Set loop points. If playback passes the \fBb\fP timestamp, it will seek to
@@ -1726,10 +1821,11 @@ index 000000000..695e39493
 +copies video back into system RAM (Linux with Intel GPUs only)
 +.TP
 +.B videotoolbox
-+requires \fB\-\-vo=opengl\fP (OS X 10.8 and up only)
++requires \fB\-\-vo=opengl\fP (OS X 10.8 and up),
++or \fB\-\-vo=opengl\-cb\fP (iOS 9.0 and up)
 +.TP
 +.B videotoolbox\-copy
-+copies video back into system RAM (OS X 10.8 and up only)
++copies video back into system RAM (OS X 10.8 or iOS 9.0 and up)
 +.TP
 +.B dxva2
 +requires \fB\-\-vo=opengl\fP with \fB\-\-opengl\-backend=angle\fP or
@@ -1897,8 +1993,10 @@ index 000000000..695e39493
 +choice of the format can influence performance considerably. On the other
 +hand, there doesn\(aqt appear to be a good way to detect the best format for
 +the given hardware. \fBnv12\fP, the default, works better on modern hardware,
-+while \fBuyvy422\fP appears to be better for old hardware. \fBrgb0\fP and
-+\fByuv420p\fP also work.
++while \fBuyvy422\fP appears to be better for old hardware. \fByuv420p\fP also
++works.
++Since mpv 0.25.0, \fBno\fP is an accepted value, which lets the decoder pick
++the format on newer FFmpeg versions (will use \fBnv12\fP on older versions).
 +.TP
 +.B \fB\-\-panscan=<0.0\-1.0>\fP
 +Enables pan\-and\-scan functionality (cropping the sides of e.g. a 16:9
@@ -2655,18 +2753,6 @@ index 000000000..695e39493
 +if you want to force a different audio profile (e.g. with PulseAudio),
 +or to set your own application name when using libmpv.
 +.TP
-+.B \fB\-\-volume\-restore\-data=<string>\fP
-+Used internally for use by playback resume (e.g. with \fBquit\-watch\-later\fP).
-+Restoring value has to be done carefully, because different AOs as well as
-+softvol can have different value ranges, and we don\(aqt want to restore
-+volume if setting the volume changes it system wide. The normal options
-+(like \fB\-\-volume\fP) would always set the volume. This option was added for
-+restoring volume in a safer way (by storing the method used to set the
-+volume), and is not generally useful. Its semantics are considered private
-+to mpv.
-+.sp
-+Do not use.
-+.TP
 +.B \fB\-\-audio\-buffer=<seconds>\fP
 +Set the audio output minimum buffer. The audio device might actually create
 +a larger buffer if it pleases. If the device creates a smaller buffer,
@@ -3180,6 +3266,8 @@ index 000000000..695e39493
 +Multiple directories can be separated by ":" (";" on Windows).
 +Paths can be relative or absolute. Relative paths are interpreted relative
 +to video file directory.
++If the file is a URL, only absolute paths and \fBsub\fP configuration
++subdirectory will be scanned.
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Example"
@@ -3380,6 +3468,23 @@ index 000000000..695e39493
 +values are allowed.
 +.sp
 +Default: 0.
++.TP
++.B \fB\-\-sub\-filter\-sdh=<yes|no>\fP
++Applies filter removing subtitle additions for the deaf or hard\-of\-hearing (SDH).
++This is intended for English, but may in part work for other languages too.
++The intention is that it can be always enabled so may not remove
++all parts added.
++It removes speaker labels (like MAN:), upper case text in parentheses and
++any text in brackets.
++.sp
++Default: \fBno\fP\&.
++.TP
++.B \fB\-\-sub\-filter\-sdh\-harder=<yes|no>\fP
++Do harder SDH filtering (if enabled by \fB\-\-sub\-filter\-sdh\fP).
++Will also remove speaker labels and text within parentheses using both
++lower and upper case letters.
++.sp
++Default: \fBno\fP\&.
 +.UNINDENT
 +.SS Window
 +.INDENT 0.0
@@ -3448,6 +3553,9 @@ index 000000000..695e39493
 +Instead, pause the player. When trying to seek beyond end of the file, the
 +player will attempt to seek to the last frame.
 +.sp
++Normally, this will act like \fBset pause yes\fP on EOF, unless the
++\fB\-\-keep\-open\-pause=no\fP option is set.
++.sp
 +The following arguments can be given:
 +.INDENT 7.0
 +.TP
@@ -3483,6 +3591,11 @@ index 000000000..695e39493
 +is not the case (e.g. \fBmpv \-\-keep\-open file.mkv /dev/null\fP will play
 +file.mkv normally, then fail to open \fB/dev/null\fP, then exit). (In
 +mpv 0.8.0, \fBalways\fP was introduced, which restores the old behavior.)
++.TP
++.B \fB\-\-keep\-open\-pause=<yes|no>\fP
++If set to \fBno\fP, instead of pausing when \fB\-\-keep\-open\fP is active, just
++stop at end of file and continue playing forward when you seek backwards
++until end where it stops again. Default: \fByes\fP\&.
 +.TP
 +.B \fB\-\-image\-display\-duration=<seconds|inf>\fP
 +If the current file is an image, play the image for the given amount of
@@ -3535,6 +3648,21 @@ index 000000000..695e39493
 +On Windows, if combined with fullscreen mode, this causes mpv to be
 +treated as exclusive fullscreen window that bypasses the Desktop Window
 +Manager.
++.TP
++.B \fB\-\-ontop\-level=<window|system|level>\fP
++(OS X only)
++Sets the level of an ontop window (default: window).
++.INDENT 7.0
++.TP
++.B window
++On top of all other windows.
++.TP
++.B system
++On top of system elements like Taskbar, Menubar and Dock.
++.TP
++.B level
++A level as integer.
++.UNINDENT
 +.TP
 +.B \fB\-\-border\fP, \fB\-\-no\-border\fP
 +Play video with window border and decorations. Since this is on by
@@ -4036,6 +4164,15 @@ index 000000000..695e39493
 +.B \fB\-\-demuxer\-lavf\-analyzeduration=<value>\fP
 +Maximum length in seconds to analyze the stream properties.
 +.TP
++.B \fB\-\-demuxer\-lavf\-probe\-info=<yes|no|auto>\fP
++Whether to probe stream information (default: auto). Technically, this
++controls whether libavformat\(aqs \fBavformat_find_stream_info()\fP function
++is called. Usually it\(aqs safer to call it, but it can also make startup
++slower.
++.sp
++The \fBauto\fP choice (the default) tries to skip this for a few know\-safe
++whitelisted formats, while calling it for everything else.
++.TP
 +.B \fB\-\-demuxer\-lavf\-probescore=<1\-100>\fP
 +Minimum required libavformat probe score. Lower values will require
 +less data to be loaded (makes streams start faster), but makes file
@@ -4209,19 +4346,25 @@ index 000000000..695e39493
 +.B \fB\-\-demuxer\-rawvideo\-size=<value>\fP
 +Frame size in bytes when using \fB\-\-demuxer=rawvideo\fP\&.
 +.TP
-+.B \fB\-\-demuxer\-max\-packets=<packets>\fP, \fB\-\-demuxer\-max\-bytes=<bytes>\fP
++.B \fB\-\-demuxer\-max\-bytes=<bytes>\fP
 +This controls how much the demuxer is allowed to buffer ahead. The demuxer
 +will normally try to read ahead as much as necessary, or as much is
-+requested with \fB\-\-demuxer\-readahead\-secs\fP\&. The \fB\-\-demuxer\-max\-...\fP
-+options can be used to restrict the maximum readahead. This limits excessive
-+readahead in case of broken files or desynced playback. The demuxer will
-+stop reading additional packets as soon as one of the limits is reached.
-+(The limits still can be slightly overstepped due to technical reasons.)
++requested with \fB\-\-demuxer\-readahead\-secs\fP\&. The option can be used to
++restrict the maximum readahead. This limits excessive readahead in case of
++broken files or desynced playback. The demuxer will stop reading additional
++packets as soon as one of the limits is reached. (The limits still can be
++slightly overstepped due to technical reasons.)
 +.sp
 +Set these limits higher if you get a packet queue overflow warning, and
 +you think normal playback would be possible with a larger packet queue.
 +.sp
 +See \fB\-\-list\-options\fP for defaults and value range.
++.TP
++.B \fB\-\-demuxer\-max\-packets=<packets>\fP
++Quite similar \fB\-\-demuxer\-max\-bytes=<bytes>\fP\&. Deprecated, because the
++other option does basically the same job. Since mpv 0.25.0, the code
++tries to account for per\-packet overhead, which is why this option becomes
++rather pointless.
 +.TP
 +.B \fB\-\-demuxer\-thread=<yes|no>\fP
 +Run the demuxer in a separate thread, and let it prefetch a certain amount
@@ -4395,11 +4538,6 @@ index 000000000..695e39493
 +the mpv default key bindings.
 +.sp
 +(This option was renamed from \fB\-\-input\-x11\-keyboard\fP\&.)
-+.TP
-+.B \fB\-\-input\-app\-events=<yes|no>\fP
-+(OS X only)
-+Enable/disable application wide keyboard events so that keyboard shortcuts
-+can be processed without a window. Enabled by default (except for libmpv).
 +.UNINDENT
 +.SS OSD
 +.INDENT 0.0
@@ -4618,23 +4756,11 @@ index 000000000..695e39493
 +.B png
 +PNG
 +.TP
-+.B ppm
-+PPM
-+.TP
-+.B pgm
-+PGM
-+.TP
-+.B pgmyuv
-+PGM with YV12 pixel format
-+.TP
-+.B tga
-+TARGA
-+.TP
 +.B jpg
 +JPEG (default)
 +.TP
 +.B jpeg
-+JPEG (same as jpg, but with .jpeg file ending)
++JPEG (alias for jpg)
 +.UNINDENT
 +.TP
 +.B \fB\-\-screenshot\-tag\-colorspace=<yes|no>\fP
@@ -5839,9 +5965,11 @@ index 000000000..695e39493
 +Specifies the size of the resulting texture for this pass. \fBszexpr\fP
 +refers to an expression in RPN (reverse polish notation), using the
 +operators + \- * / > < !, floating point literals, and references to
-+sizes of existing texture and OUTPUT (such as MAIN.width or
-+CHROMA.height). By default, these are set to HOOKED.w and HOOKED.h,
-+respectively.
++sizes of existing texture (such as MAIN.width or CHROMA.height),
++OUTPUT, or NATIVE_CROPPED (size of an input texture cropped after
++pan\-and\-scan, video\-align\-x/y, video\-pan\-x/y, etc. and possibly
++prescaled). By default, these are set to HOOKED.w and HOOKED.h,
++espectively.
 +.TP
 +.B WHEN <szexpr>
 +Specifies a condition that needs to be true (non\-zero) for the shader
@@ -5907,12 +6035,15 @@ index 000000000..695e39493
 +A simple count of frames rendered, increases by one per frame and never
 +resets (regardless of seeks).
 +.TP
-+.B vec2 image_size
-+The size in pixels of the input image.
++.B vec2 input_size
++The size in pixels of the input image (possibly cropped and prescaled).
 +.TP
 +.B vec2 target_size
 +The size in pixels of the visible part of the scaled (and possibly
 +cropped) image.
++.TP
++.B vec2 tex_offset
++Texture offset introduced by user shaders or options like panscan, video\-align\-x/y, video\-pan\-x/y.
 +.UNINDENT
 +.sp
 +Internally, vo_opengl may generate any number of the following textures.
@@ -6077,8 +6208,21 @@ index 000000000..695e39493
 +chain will be used for D3D9. This option is mainly for debugging purposes,
 +in case the custom swap chain has poor performance or does not work.
 +.sp
-+If set to \fByes\fP, the \fB\-\-angle\-max\-frame\-latency\fP and
-+\fB\-\-angle\-swapchain\-length\fP options will have no effect.
++If set to \fByes\fP, the \fB\-\-angle\-max\-frame\-latency\fP,
++\fB\-\-angle\-swapchain\-length\fP and \fB\-\-angle\-flip\fP options will have no
++effect.
++.sp
++Windows with ANGLE only.
++.TP
++.B \fB\-\-angle\-flip=<yes|no>\fP
++Enable flip\-model presentation, which avoids unnecessarily copying the
++backbuffer by sharing surfaces with the DWM (default: yes). This may cause
++performance issues with older drivers. If flip\-model presentation is not
++supported (for example, on Windows 7 without the platform update), mpv will
++automatically fall back to the older bitblt presentation model.
++.sp
++If set to \fBno\fP, the \fB\-\-angle\-swapchain\-length\fP option will have no
++effect.
 +.sp
 +Windows with ANGLE only.
 +.TP
@@ -6112,6 +6256,12 @@ index 000000000..695e39493
 +recommends at least 4.
 +.sp
 +Windows 8+ with ANGLE only.
++.TP
++.B \fB\-\-cocoa\-force\-dedicated\-gpu=<yes|no>\fP
++Deactivates the automatic graphics switching and forces the dedicated GPU.
++(default: no)
++.sp
++OS X only.
 +.TP
 +.B \fB\-\-opengl\-sw\fP
 +Continue even if a software renderer is detected.
@@ -6159,6 +6309,12 @@ index 000000000..695e39493
 +.TP
 +.B mali\-fbdev
 +Direct fbdev/EGL support on some ARM/MALI devices.
++.TP
++.B vdpauglx
++Use vdpau presentation with GLX as backing. Experimental use only.
++Using this will have no advantage (other than additional bugs or
++performance problems), and is for doing experiments only. Will not
++be used automatically.
 +.UNINDENT
 +.TP
 +.B \fB\-\-opengl\-es=<mode>\fP
@@ -6167,6 +6323,9 @@ index 000000000..695e39493
 +.TP
 +.B yes
 +Try to prefer ES over Desktop GL
++.TP
++.B force2
++Try to request a ES 2.0 context (the driver might ignore this)
 +.TP
 +.B no
 +Try to prefer desktop GL over ES
@@ -6492,6 +6651,18 @@ index 000000000..695e39493
 +features which require FBOs.
 +.sp
 +This option might be silently removed in the future.
++.TP
++.B \fB\-\-opengl\-shader\-cache\-dir=<dirname>\fP
++Store and load compiled GL shaders in this directory. Normally, shader
++compilation is very fast, so this is usually not needed. But some GL
++implementations (notably ANGLE, the default on Windows) have relatively
++slow shader compilation, and can cause startup delays.
++.sp
++NOTE: This is not cleaned automatically, so old, unused cache files may
++stick around indefinitely.
++.sp
++This option might be silently removed in the future, if ANGLE fixes shader
++compilation speed.
 +.UNINDENT
 +.SS Miscellaneous
 +.INDENT 0.0
@@ -6524,6 +6695,10 @@ index 000000000..695e39493
 +.TP
 +.B \fB\-\-video\-sync=<audio|...>\fP
 +How the player synchronizes audio and video.
++.sp
++If you use this option, you usually want to set it to \fBdisplay\-resample\fP
++to enable a timing mode that tries to not skip or repeat frames when for
++example playing 24fps video on a 24Hz screen.
 +.sp
 +The modes starting with \fBdisplay\-\fP try to output video frames completely
 +synchronously to the display, using the detected display vertical refresh
@@ -7495,9 +7670,8 @@ index 000000000..695e39493
 +.TP
 +.B \fBvaapi\fP
 +Intel VA API video output driver with support for hardware decoding. Note
-+that there is absolutely no reason to use this, other than wanting to use
-+hardware decoding to save power on laptops, or possibly preventing video
-+tearing with some setups.
++that there is absolutely no reason to use this, other than compatibility.
++This is low quality, and has issues with OSD.
 +.sp
 +\fBNOTE:\fP
 +.INDENT 7.0
@@ -7624,18 +7798,6 @@ index 000000000..695e39493
 +.TP
 +.B png
 +PNG files.
-+.TP
-+.B ppm
-+Portable bitmap format.
-+.TP
-+.B pgm
-+Portable graymap format.
-+.TP
-+.B pgmyuv
-+Portable graymap format, using the YV12 pixel format.
-+.TP
-+.B tga
-+Truevision TGA.
 +.UNINDENT
 +.TP
 +.B \fB\-\-vo\-image\-png\-compression=<0\-9>\fP
@@ -7762,8 +7924,8 @@ index 000000000..695e39493
 +syntax is:
 +.INDENT 0.0
 +.TP
-+.B \fB\-\-af=<filter1[=parameter1:parameter2:...],filter2,...>\fP
-+Setup a chain of audio filters.
++.B \fB\-\-af=...\fP
++Setup a chain of audio filters. See \fB\-\-vf\fP for the syntax.
 +.UNINDENT
 +.sp
 +\fBNOTE:\fP
@@ -7777,31 +7939,8 @@ index 000000000..695e39493
 +.UNINDENT
 +.UNINDENT
 +.sp
-+You can also set defaults for each filter. The defaults are applied before the
-+normal filter parameters.
-+.INDENT 0.0
-+.TP
-+.B \fB\-\-af\-defaults=<filter1[=parameter1:parameter2:...],filter2,...>\fP
-+Set defaults for each filter.
-+.UNINDENT
-+.sp
-+Audio filters are managed in lists. There are a few commands to manage the
-+filter list:
-+.INDENT 0.0
-+.TP
-+.B \fB\-\-af\-add=<filter1[,filter2,...]>\fP
-+Appends the filters given as arguments to the filter list.
-+.TP
-+.B \fB\-\-af\-pre=<filter1[,filter2,...]>\fP
-+Prepends the filters given as arguments to the filter list.
-+.TP
-+.B \fB\-\-af\-del=<index1[,index2,...]>\fP
-+Deletes the filters at the given indexes. Index numbers start at 0,
-+negative numbers address the end of the list (\-1 is the last).
-+.TP
-+.B \fB\-\-af\-clr\fP
-+Completely empties the filter list.
-+.UNINDENT
++See \fB\-\-vf\fP group of options for info on how \fB\-\-af\-defaults\fP, \fB\-\-af\-add\fP,
++\fB\-\-af\-pre\fP, \fB\-\-af\-del\fP, \fB\-\-af\-clr\fP, and possibly others work.
 +.sp
 +Available filters are:
 +.INDENT 0.0
@@ -8213,37 +8352,6 @@ index 000000000..695e39493
 +chain.
 +.UNINDENT
 +.TP
-+.B \fBdrc[=method:target]\fP
-+Applies dynamic range compression. This maximizes the volume by compressing
-+the audio signal\(aqs dynamic range. (Formerly called \fBvolnorm\fP\&.)
-+.INDENT 7.0
-+.TP
-+.B \fB<method>\fP
-+Sets the used method.
-+.INDENT 7.0
-+.TP
-+.B 1
-+Use a single sample to smooth the variations via the standard
-+weighted mean over past samples (default).
-+.TP
-+.B 2
-+Use several samples to smooth the variations via the standard
-+weighted mean over past samples.
-+.UNINDENT
-+.TP
-+.B \fB<target>\fP
-+Sets the target amplitude as a fraction of the maximum for the sample
-+type (default: 0.25).
-+.UNINDENT
-+.sp
-+\fBNOTE:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+This filter can cause distortion with audio signals that have a very
-+large dynamic range.
-+.UNINDENT
-+.UNINDENT
-+.TP
 +.B \fBscaletempo[=option1:option2:...]\fP
 +Scales audio tempo without altering pitch, optionally synced to playback
 +speed (default).
@@ -8391,7 +8499,53 @@ index 000000000..695e39493
 +.INDENT 0.0
 +.TP
 +.B \fB\-\-vf=<filter1[=parameter1:parameter2:...],filter2,...>\fP
-+Setup a chain of video filters.
++Setup a chain of video filters. This consists on the filter name, and an
++option list of parameters after \fB=\fP\&. The parameters are separated by
++\fB:\fP (not \fB,\fP, as that starts a new filter entry).
++.sp
++Before the filter name, a label can be specified with \fB@name:\fP, where
++name is an arbitrary user\-given name, which identifies the filter. This
++is only needed if you want to toggle the filter at runtime.
++.sp
++A \fB!\fP before the filter name means the filter is enabled by default. It
++will be skipped on filter creation. This is also useful for runtime filter
++toggling.
++.sp
++See the \fBvf\fP command (and \fBtoggle\fP sub\-command) for further explanations
++and examples.
++.sp
++The general filter entry syntax is:
++.INDENT 7.0
++.INDENT 3.5
++\fB["@"<label\-name>":"] ["!"] <filter\-name> [ "=" <filter\-parameter\-list> ]\fP
++.UNINDENT
++.UNINDENT
++.sp
++or for the special "toggle" syntax (see \fBvf\fP command):
++.INDENT 7.0
++.INDENT 3.5
++\fB"@"<label\-name>\fP
++.UNINDENT
++.UNINDENT
++.sp
++and the \fBfilter\-parameter\-list\fP:
++.INDENT 7.0
++.INDENT 3.5
++\fB<filter\-parameter> | <filter\-parameter> "," <filter\-parameter\-list>\fP
++.UNINDENT
++.UNINDENT
++.sp
++and \fBfilter\-parameter\fP:
++.INDENT 7.0
++.INDENT 3.5
++\fB( <param\-name> "=" <param\-value> ) | <param\-value>\fP
++.UNINDENT
++.UNINDENT
++.sp
++\fBparam\-value\fP can further be quoted in \fB[\fP / \fB]\fP in case the value
++contains characters like \fB,\fP or \fB=\fP\&. This is used in particular with
++the \fBlavfi\fP filter, which uses a very similar syntax as mpv (MPlayer
++historically) to specify filters and their parameters.
 +.UNINDENT
 +.sp
 +You can also set defaults for each filter. The defaults are applied before the
@@ -8410,6 +8564,17 @@ index 000000000..695e39493
 +Also, keep in mind that most actual filters are available via the \fBlavfi\fP
 +wrapper, which gives you access to most of libavfilter\(aqs filters. This
 +includes all filters that have been ported from MPlayer to libavfilter.
++.sp
++Most filters are deprecated in some ways, unless they\(aqre only available
++in mpv (such as filters which deal with mpv specifics, or which are
++implemented in mpv only).
++.sp
++If a filter is not builtin, the \fBlavfi\-bridge\fP will be automatically
++tried. This bridge does not support help output, and does not verify
++parameters before the filter is actually used. Although the mpv syntax
++is rather similar to libavfilter\(aqs, it\(aqs not the same. (Which means not
++everything accepted by vf_lavfi\(aqs \fBgraph\fP option will be accepted by
++\fB\-\-vf\fP\&.)
 +.UNINDENT
 +.UNINDENT
 +.sp
@@ -9439,6 +9604,21 @@ index 000000000..695e39493
 +.B yes
 +Only deinterlace frames marked as interlaced (default).
 +.UNINDENT
++.TP
++.B \fBreversal\-bug=<yes|no>\fP
++.INDENT 7.0
++.TP
++.B no
++Use the API as it was interpreted by older Mesa drivers. While
++this interpretation was more obvious and inuitive, it was
++apparently wrong, and not shared by Intel driver developers.
++.TP
++.B yes
++Use Intel interpretation of surface forward and backwards
++references (default). This is what Intel drivers and newer Mesa
++drivers expect. Matters only for the advanced deinterlacing
++algorithms.
++.UNINDENT
 +.UNINDENT
 +.TP
 +.B \fBvdpaupp\fP
@@ -9911,10 +10091,10 @@ index 000000000..695e39493
 +.B \fBmultiply <property> <factor>\fP
 +Multiplies the value of a property with the numeric factor.
 +.TP
-+.B \fBscreenshot [subtitles|video|window|\- [single|each\-frame]]\fP
++.B \fBscreenshot [subtitles|video|window|single|each\-frame]\fP
 +Take a screenshot.
 +.sp
-+First argument:
++Multiple flags are available (some can be combined with \fB+\fP):
 +.INDENT 7.0
 +.TP
 +.B <subtitles> (default)
@@ -9938,6 +10118,16 @@ index 000000000..695e39493
 +frame was dropped. This flag can be combined with the other flags,
 +e.g. \fBvideo+each\-frame\fP\&.
 +.UNINDENT
++.sp
++Older mpv versions required passing \fBsingle\fP and \fBeach\-frame\fP as
++second argument (and did not have flags). This syntax is still understood,
++but deprecated and might be removed in the future.
++.sp
++Setting the \fBasync\fP flag will make encoding and writing the actual image
++file asynchronous in most cases. (\fBeach\-frame\fP mode ignores this flag
++currently.) Requesting async screenshots too early or too often could lead
++to the same filenames being chosen, and overwriting each others in undefined
++order.
 +.TP
 +.B \fBscreenshot\-to\-file "<filename>" [subtitles|video|window]\fP
 +Take a screenshot and save it to a given file. The format of the file will
@@ -9950,6 +10140,9 @@ index 000000000..695e39493
 +.sp
 +Like all input command parameters, the filename is subject to property
 +expansion as described in \fI\%Property Expansion\fP\&.
++.sp
++The \fBasync\fP flag has an effect on this command (see \fBscreenshot\fP
++command).
 +.TP
 +.B \fBplaylist\-next [weak|force]\fP
 +Go to the next entry on the playlist.
@@ -10134,6 +10327,11 @@ index 000000000..695e39493
 +The minimum OSD level to show the text at (see \fB\-\-osd\-level\fP).
 +.UNINDENT
 +.TP
++.B \fBexpand\-text "<string>"\fP
++Property\-expand the argument and return the expanded string. This can be
++used only through the client API or from a script using
++\fBmp.command_native\fP\&. (see \fI\%Property Expansion\fP).
++.TP
 +.B \fBshow\-progress\fP
 +Show the progress bar, the elapsed time and the total duration of the file
 +on the OSD.
@@ -10234,6 +10432,10 @@ index 000000000..695e39493
 +in the video chain. If yes, remove the filter. If no, add the filter.
 +(If several filters are passed to the command, this is done for
 +each filter.)
++.sp
++A special variant is combining this with labels, and using \fB@name\fP
++without filter name and parameters as filter entry. This toggles the
++enable/disable flag.
 +.TP
 +.B del
 +Remove the given filters from the video chain. Unlike in the other
@@ -10274,6 +10476,22 @@ index 000000000..695e39493
 +\fBb vf set ""\fP remove all video filters on \fBb\fP
 +.IP \(bu 2
 +\fBc vf toggle lavfi=gradfun\fP toggle debanding on \fBc\fP
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.INDENT 7.0
++.INDENT 3.5
++.IP "Example how to toggle disabled filters at runtime"
++.INDENT 0.0
++.IP \(bu 2
++Add something \fBvf\-add=@deband:!lavfi=[gradfun]\fP to \fBmpv.conf\fP\&. The
++\fB@deband:\fP is the label, and \fBdeband\fP is an arbitrary, user\-given
++name for this filter entry. The \fB!\fP before the filter name disables
++the filter by default. Everything after this is the normal filter name
++and the filter parameters.
++.IP \(bu 2
++Add \fBa vf toggle @deband\fP to \fBinput.conf\fP\&. This toggles the
++"disabled" flag for the filter identified with \fBdeband\fP\&.
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
@@ -10486,11 +10704,12 @@ index 000000000..695e39493
 +.B \fBscreenshot\-raw [subtitles|video|window]\fP
 +Return a screenshot in memory. This can be used only through the client
 +API. The MPV_FORMAT_NODE_MAP returned by this command has the \fBw\fP, \fBh\fP,
-+\fBstride\fP fields set to obvious contents. A \fBformat\fP field is set to
++\fBstride\fP fields set to obvious contents. The \fBformat\fP field is set to
 +\fBbgr0\fP by default. This format is organized as \fBB8G8R8X8\fP (where \fBB\fP
-+is the LSB). The contents of the padding \fBX\fP is undefined. The \fBdata\fP
++is the LSB). The contents of the padding \fBX\fP are undefined. The \fBdata\fP
 +field is of type MPV_FORMAT_BYTE_ARRAY with the actual image data. The image
-+is freed as soon as the result node is freed.
++is freed as soon as the result mpv_node is freed. As usual with client API
++semantics, you are not allowed to write to the image data.
 +.TP
 +.B \fBvf\-command "<label>" "<cmd>" "<args>"\fP
 +Send a command to the filter with the given \fB<label>\fP\&. Use \fBall\fP to send
@@ -10601,8 +10820,10 @@ index 000000000..695e39493
 +prefixes can be specified. They are separated by whitespace.
 +.INDENT 0.0
 +.TP
-+.B \fBosd\-auto\fP (default)
-+Use the default behavior for this command.
++.B \fBosd\-auto\fP
++Use the default behavior for this command. This is the default for
++\fBinput.conf\fP commands. Some libmpv/scripting/IPC APIs do not use this as
++default, but use \fBno\-osd\fP instead.
 +.TP
 +.B \fBno\-osd\fP
 +Do not use any OSD for this command.
@@ -10621,13 +10842,23 @@ index 000000000..695e39493
 +.TP
 +.B \fBraw\fP
 +Do not expand properties in string arguments. (Like \fB"${property\-name}"\fP\&.)
++This is the default for some libmpv/scripting/IPC APIs.
 +.TP
-+.B \fBexpand\-properties\fP (default)
++.B \fBexpand\-properties\fP
 +All string arguments are expanded as described in \fI\%Property Expansion\fP\&.
++This is the default for \fBinput.conf\fP commands.
 +.TP
 +.B \fBrepeatable\fP
 +For some commands, keeping a key pressed doesn\(aqt run the command repeatedly.
 +This prefix forces enabling key repeat in any case.
++.TP
++.B \fBasync\fP
++Allow asynchronous execution (if possible). Note that only a few commands
++will support this (usually this is explicitly documented). Some commands
++are asynchronous by default (or rather, their effects might manifest
++after completion of the command). The semantics of this flag might change
++in the future. Set it only if you don\(aqt rely on the effects of this command
++being fully realized when it returns.
 +.UNINDENT
 +.sp
 +All of the osd prefixes are still overridden by the global \fB\-\-osd\-level\fP
@@ -11082,6 +11313,17 @@ index 000000000..695e39493
 +.B \fBdemuxer\-cache\-idle\fP
 +Returns \fByes\fP if the demuxer is idle, which means the demuxer cache is
 +filled to the requested amount, and is currently not reading more data.
++.TP
++.B \fBdemuxer\-via\-network\fP
++Returns \fByes\fP if the stream demuxed via the main demuxer is most likely
++played via network. What constitutes "network" is not always clear, might
++be used for other types of untrusted streams, could be wrong in certain
++cases, and its definition might be changing. Also, external files (like
++separate audio files or streams) do not influence the value of this
++property (currently).
++.TP
++.B \fBdemuxer\-start\-time\fP (R)
++Returns the start time reported by the demuxer in fractional seconds.
 +.TP
 +.B \fBpaused\-for\-cache\fP
 +Returns \fByes\fP when playback is paused because of waiting for the cache.
@@ -11677,6 +11919,7 @@ index 000000000..695e39493
 +    MPV_FORMAT_NODE_MAP (for each filter entry)
 +        "name"      MPV_FORMAT_STRING
 +        "label"     MPV_FORMAT_STRING [optional]
++        "enabled"   MPV_FORMAT_FLAG [optional]
 +        "params"    MPV_FORMAT_NODE_MAP [optional]
 +            "key"   MPV_FORMAT_STRING
 +            "value" MPV_FORMAT_STRING
@@ -12225,12 +12468,12 @@ index 000000000..695e39493
 +.sp
 +.nf
 +.ft C
-++\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-+
-+| pl prev | pl next  |  title                     |       cache |
-++\-\-\-\-\-\-+\-\-+\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-+\-\-\-\-\-+
-+| play | skip | skip | time    |  seekbar  | time | audio | sub |
-+|      | back | frwd | elapsed |           | left |       |     |
-++\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-+\-\-\-\-\-+
+++\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-+
++| pl prev | pl next  |  title                                   |    cache |
+++\-\-\-\-\-\-+\-\-+\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-+\-\-\-\-\-+\-\-\-\-\-+\-\-\-\-+
++| play | skip | skip | time    |  seekbar  | time | audio | sub | vol | fs |
++|      | back | frwd | elapsed |           | left |       |     |     |    |
+++\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-\-\-\-\-\-+\-\-\-\-\-\-+\-\-\-\-\-\-\-+\-\-\-\-\-+\-\-\-\-\-+\-\-\-\-+
 +.ft P
 +.fi
 +.UNINDENT
@@ -12289,7 +12532,7 @@ index 000000000..695e39493
 +.TP
 +.B title
 +.nf
-+Displays current media\-title or filename
++Displays current media\-title, filename, or custom title
 +.fi
 +.sp
 +.TS
@@ -12458,6 +12701,38 @@ index 000000000..695e39493
 +T}
 +_
 +.TE
++.TP
++.B vol
++.TS
++center;
++|l|l|.
++_
++T{
++left\-click
++T}	T{
++toggle mute
++T}
++_
++T{
++mouse wheel
++T}	T{
++volume up/down
++T}
++_
++.TE
++.TP
++.B fs
++.TS
++center;
++|l|l|.
++_
++T{
++left\-click
++T}	T{
++toggle fullscreen
++T}
++_
++.TE
 +.UNINDENT
 +.SS Key Bindings
 +.sp
@@ -12610,6 +12885,13 @@ index 000000000..695e39493
 +.sp
 +Duration of fade out in ms, 0 = no fade
 +.TP
++.B \fBtitle\fP
++Default: ${media\-title}
++.sp
++String that supports property expansion that will be displayed as
++OSC title.
++ASS tags are escaped, and newlines and trailing slashes are stripped.
++.TP
 +.B \fBtooltipborder\fP
 +Default: 1
 +.sp
@@ -12629,6 +12911,14 @@ index 000000000..695e39493
 +Default: auto (auto hide/show on mouse move)
 +.sp
 +Also supports \fBnever\fP and \fBalways\fP
++.TP
++.B \fBboxmaxchars\fP
++Default: 80
++.sp
++Max chars for the osc title at the box layout. mpv does not measure the
++text width on screen and so it needs to limit it by number of chars. The
++default is conservative to allow wide fonts to be used without overflow.
++However, with many common fonts a bigger number can be used. YMMV.
 +.UNINDENT
 +.SS Script Commands
 +.sp
@@ -12925,7 +13215,7 @@ index 000000000..695e39493
 +This will print the message \fBthe key was pressed\fP when \fBx\fP was pressed.
 +.sp
 +The user can remap these key bindings. Then the user has to put the
-+following into his input.conf to remap the command to the \fBy\fP key:
++following into their input.conf to remap the command to the \fBy\fP key:
 +.INDENT 7.0
 +.INDENT 3.5
 +.sp
@@ -12955,7 +13245,7 @@ index 000000000..695e39493
 +.TP
 +.B \fBmp.add_forced_key_binding(...)\fP
 +This works almost the same as \fBmp.add_key_binding\fP, but registers the
-+key binding in a way that will overwrite the user\(aqs custom bindings in his
++key binding in a way that will overwrite the user\(aqs custom bindings in their
 +input.conf. (\fBmp.add_key_binding\fP overwrites default key bindings only,
 +but not those by the user\(aqs input.conf.)
 +.TP
@@ -14286,5 +14576,5 @@ index 000000000..695e39493
 +.\" Generated by docutils manpage writer.
 +.
 -- 
-2.11.1
+2.13.1
 

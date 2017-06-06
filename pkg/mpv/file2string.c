@@ -29,6 +29,10 @@ int main(int argc, char *argv[]) {
 		}
 		printf("\"\n");
 	}
+	if (ferror(f)) {
+		fprintf(stderr, "ferror: %s\n", strerror(errno));
+		return 1;
+	}
 
 	return 0;
 }
