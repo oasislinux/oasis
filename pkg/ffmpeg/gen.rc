@@ -74,7 +74,9 @@ fflib libavcodec\
 	jni.c\
 	mathtables.c\
 	mediacodec.c\
+	mpeg12framerate.c\
 	options.c\
+	mjpegenc_huffman.c\
 	parser.c\
 	profiles.c\
 	qsv_api.c\
@@ -101,6 +103,7 @@ fflib libavfilter\
 	fifo.c\
 	formats.c\
 	framepool.c\
+	framequeue.c\
 	graphdump.c\
 	graphparser.c\
 	opencl_allkernels.c\
@@ -186,6 +189,7 @@ fflib libavutil\
 	samplefmt.c\
 	sha.c\
 	sha512.c\
+	spherical.c\
 	stereo3d.c\
 	threadmessage.c\
 	time.c\
@@ -197,8 +201,8 @@ fflib libavutil\
 	xtea.c\
 	tea.c\
 	x86/^(\
-		cpu.c fixed_dsp_init.c float_dsp_init.c lls_init.c\
-		cpuid.asm fixed_dsp.asm float_dsp.asm lls.asm\
+		cpu.c fixed_dsp_init.c float_dsp_init.c imgutils_init.c lls_init.c\
+		cpuid.asm fixed_dsp.asm float_dsp.asm imgutils.asm lls.asm\
 	)
 
 fflib libswresample\

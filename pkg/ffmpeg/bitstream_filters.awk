@@ -13,6 +13,7 @@ END {
 	bsf("chomp")
 	bsf("dump_extradata")
 	bsf("dca_core")
+	bsf("extract_extradata")
 	bsf("h264_mp4toannexb")
 	bsf("hevc_mp4toannexb")
 	bsf("imx_dump_header")

@@ -29,6 +29,7 @@ END {
 	proto("mmst")
 	proto("md5")
 	proto("pipe")
+	proto("prompeg")
 	proto("rtmp")
 	proto("rtmpe")
 	proto("rtmps")

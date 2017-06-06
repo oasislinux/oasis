@@ -162,11 +162,11 @@ HAVE_LOCAL_ALIGNED_8
 HAVE_LOCAL_ALIGNED_16
 HAVE_LOCAL_ALIGNED_32
 HAVE_SIMD_ALIGN_16
+HAVE_SIMD_ALIGN_32
 HAVE_ATOMICS_GCC
 HAVE_ATOMICS_SUNCC
 HAVE_ATOMICS_WIN32
 HAVE_ATOMIC_CAS_PTR
-HAVE_ATOMIC_COMPARE_EXCHANGE
 HAVE_MACHINE_RW_BARRIER
 HAVE_MEMORYBARRIER
 HAVE_MM_EMPTY
@@ -187,6 +187,7 @@ HAVE_ARPA_INET_H
 HAVE_ASM_TYPES_H
 HAVE_CDIO_PARANOIA_H
 HAVE_CDIO_PARANOIA_PARANOIA_H
+HAVE_CUDA_H
 HAVE_DISPATCH_DISPATCH_H
 HAVE_DEV_BKTR_IOCTL_BT848_H
 HAVE_DEV_BKTR_IOCTL_METEOR_H
@@ -213,6 +214,7 @@ HAVE_OPENGL_GL3_H
 HAVE_POLL_H
 HAVE_SNDIO_H
 HAVE_SOUNDCARD_H
+HAVE_STDATOMIC_H
 HAVE_SYS_MMAN_H
 HAVE_SYS_PARAM_H
 HAVE_SYS_RESOURCE_H
@@ -316,6 +318,7 @@ HAVE_PTHREADS
 HAVE_OS2THREADS
 HAVE_W32THREADS
 HAVE_AS_DN_DIRECTIVE
+HAVE_AS_FPU_DIRECTIVE
 HAVE_AS_FUNC
 HAVE_AS_OBJECT_ARCH
 HAVE_ASM_MOD_Q
@@ -390,8 +393,11 @@ CONFIG_PODPAGES
 CONFIG_TXTPAGES
 CONFIG_AVIO_DIR_CMD_EXAMPLE
 CONFIG_AVIO_READING_EXAMPLE
-CONFIG_DECODING_ENCODING_EXAMPLE
+CONFIG_DECODE_AUDIO_EXAMPLE
+CONFIG_DECODE_VIDEO_EXAMPLE
 CONFIG_DEMUXING_DECODING_EXAMPLE
+CONFIG_ENCODE_AUDIO_EXAMPLE
+CONFIG_ENCODE_VIDEO_EXAMPLE
 CONFIG_EXTRACT_MVS_EXAMPLE
 CONFIG_FILTER_AUDIO_EXAMPLE
 CONFIG_FILTERING_AUDIO_EXAMPLE
@@ -405,27 +411,48 @@ CONFIG_RESAMPLING_AUDIO_EXAMPLE
 CONFIG_SCALING_VIDEO_EXAMPLE
 CONFIG_TRANSCODE_AAC_EXAMPLE
 CONFIG_TRANSCODING_EXAMPLE
-CONFIG_AVISYNTH libavformat/avisynth.c
 CONFIG_BZLIB
+CONFIG_ICONV
+CONFIG_LIBXCB
+CONFIG_LIBXCB_SHM
+CONFIG_LIBXCB_SHAPE
+CONFIG_LIBXCB_XFIXES
+CONFIG_LZMA
+CONFIG_SCHANNEL
+CONFIG_SDL
+CONFIG_SDL2
+CONFIG_SECURETRANSPORT
+CONFIG_XLIB
+CONFIG_ZLIB
+CONFIG_AVISYNTH
+CONFIG_FREI0R
+CONFIG_LIBCDIO
+CONFIG_LIBRUBBERBAND
+CONFIG_LIBVIDSTAB
+CONFIG_LIBX264
+CONFIG_LIBX265
+CONFIG_LIBXAVS
+CONFIG_LIBXVID libavcodec/libxvid_rc.c
+CONFIG_DECKLINK
+CONFIG_LIBFDK_AAC
+CONFIG_OPENSSL
+CONFIG_GMP
+CONFIG_LIBOPENCORE_AMRNB
+CONFIG_LIBOPENCORE_AMRWB
+CONFIG_LIBVO_AMRWBENC
+CONFIG_LIBSMBCLIENT
 CONFIG_CHROMAPRINT
 CONFIG_CRYSTALHD libavcodec/crystalhd.c
-CONFIG_DECKLINK
-CONFIG_FREI0R
 CONFIG_GCRYPT
-CONFIG_GMP
 CONFIG_GNUTLS
-CONFIG_ICONV
 CONFIG_JNI libavcodec/ffjni.c libavcodec/jni.c
 CONFIG_LADSPA
 CONFIG_LIBASS
 CONFIG_LIBBLURAY
 CONFIG_LIBBS2B
 CONFIG_LIBCACA
-CONFIG_LIBCDIO
 CONFIG_LIBCELT
 CONFIG_LIBDC1394
-CONFIG_LIBEBUR128
-CONFIG_LIBFDK_AAC
 CONFIG_LIBFLITE
 CONFIG_LIBFONTCONFIG
 CONFIG_LIBFREETYPE
@@ -438,8 +465,6 @@ CONFIG_LIBKVAZAAR
 CONFIG_LIBMODPLUG
 CONFIG_LIBMP3LAME
 CONFIG_LIBNUT
-CONFIG_LIBOPENCORE_AMRNB
-CONFIG_LIBOPENCORE_AMRWB
 CONFIG_LIBOPENCV
 CONFIG_LIBOPENH264
 CONFIG_LIBOPENJPEG
@@ -447,7 +472,6 @@ CONFIG_LIBOPENMPT
 CONFIG_LIBOPUS
 CONFIG_LIBPULSE
 CONFIG_LIBRTMP libavformat/librtmp.c
-CONFIG_LIBRUBBERBAND
 CONFIG_LIBSCHROEDINGER
 CONFIG_LIBSHINE
 CONFIG_LIBSMBCLIENT
@@ -459,53 +483,34 @@ CONFIG_LIBTESSERACT
 CONFIG_LIBTHEORA
 CONFIG_LIBTWOLAME
 CONFIG_LIBV4L2
-CONFIG_LIBVIDSTAB
-CONFIG_LIBVO_AMRWBENC
 CONFIG_LIBVORBIS
 CONFIG_LIBVPX
 CONFIG_LIBWAVPACK
 CONFIG_LIBWEBP
-CONFIG_LIBX264
-CONFIG_LIBX265
-CONFIG_LIBXAVS
-CONFIG_LIBXCB
-CONFIG_LIBXCB_SHM
-CONFIG_LIBXCB_SHAPE
-CONFIG_LIBXCB_XFIXES
-CONFIG_LIBXVID libavcodec/libxvid_rc.c
 CONFIG_LIBZIMG
 CONFIG_LIBZMQ
 CONFIG_LIBZVBI
-CONFIG_LZMA
 CONFIG_MEDIACODEC libavcodec/mediacodecdec_common.c libavcodec/mediacodec_surface.c libavcodec/mediacodec_wrapper.c libavcodec/mediacodec_sw_buffer.c
 CONFIG_NETCDF
 CONFIG_OPENAL
 CONFIG_OPENCL libavfilter/deshake_opencl.c libavfilter/unsharp_opencl.c libavutil/opencl.c libavutil/opencl_internal.c
 CONFIG_OPENGL
-CONFIG_OPENSSL
-CONFIG_SCHANNEL
-CONFIG_SDL
-CONFIG_SDL2
-CONFIG_SECURETRANSPORT
 CONFIG_VIDEOTOOLBOX libavcodec/videotoolbox.c
-CONFIG_X11GRAB
-CONFIG_XLIB
-CONFIG_ZLIB
 CONFIG_AUDIOTOOLBOX
 CONFIG_CUDA libavutil/hwcontext_cuda.c
 CONFIG_CUVID
 CONFIG_D3D11VA libavcodec/dxva2.c
 CONFIG_DXVA2 libavcodec/dxva2.c libavutil/hwcontext_dxva2.c
-CONFIG_LIBMFX
-CONFIG_LIBNPP
-CONFIG_MMAL
 CONFIG_NVENC libavcodec/nvenc.c
-CONFIG_OMX
-CONFIG_VAAPI libavcodec/vaapi.c libavutil/hwcontext_vaapi.c
+CONFIG_VAAPI libavcodec/vaapi_decode.c libavutil/hwcontext_vaapi.c
 CONFIG_VDA libavcodec/vda.c libavcodec/videotoolbox.c
 CONFIG_VDPAU libavcodec/vdpau.c libavutil/hwcontext_vdpau.c
 CONFIG_VIDEOTOOLBOX_HWACCEL
 CONFIG_XVMC
+CONFIG_LIBNPP
+CONFIG_LIBMFX
+CONFIG_MMAL
+CONFIG_OMX
 CONFIG_FTRAPV
 CONFIG_GRAY
 CONFIG_HARDCODED_TABLES
@@ -545,17 +550,15 @@ CONFIG_PIXELUTILS libavutil/x86/pixelutils_init.c libavutil/x86/pixelutils.asm
 CONFIG_NETWORK libavformat/network.c
 CONFIG_RDFT libavcodec/rdft.c
 CONFIG_FONTCONFIG
-CONFIG_MEMALIGN_HACK
 CONFIG_MEMORY_POISONING
 CONFIG_NEON_CLOBBER_TEST
 CONFIG_PIC
-CONFIG_POD2MAN
 CONFIG_RAISE_MAJOR
 CONFIG_THUMB
 CONFIG_VALGRIND_BACKTRACE
 CONFIG_XMM_CLOBBER_TEST libavcodec/x86/w64xmmtest.c libswresample/x86/w64xmmtest.c libswscale/x86/w64xmmtest.c
 CONFIG_AANDCTTABLES libavcodec/aandcttab.c
-CONFIG_AC3DSP libavcodec/ac3dsp.c libavcodec/x86/ac3dsp_init.c libavcodec/x86/ac3dsp.asm
+CONFIG_AC3DSP libavcodec/ac3dsp.c libavcodec/x86/ac3dsp_init.c libavcodec/x86/ac3dsp.asm libavcodec/x86/ac3dsp_downmix.asm
 CONFIG_AUDIO_FRAME_QUEUE libavcodec/audio_frame_queue.c
 CONFIG_AUDIODSP libavcodec/audiodsp.c libavcodec/x86/audiodsp_init.c libavcodec/x86/audiodsp.asm
 CONFIG_BLOCKDSP libavcodec/blockdsp.c libavcodec/x86/blockdsp_init.c libavcodec/x86/blockdsp.asm
@@ -576,15 +579,16 @@ CONFIG_GPLV3
 CONFIG_H263DSP libavcodec/h263dsp.c libavcodec/x86/h263dsp_init.c libavcodec/x86/h263_loopfilter.asm
 CONFIG_H264CHROMA libavcodec/h264chroma.c libavcodec/x86/h264chroma_init.c libavcodec/x86/h264_chromamc.asm libavcodec/x86/h264_chromamc_10bit.asm
 CONFIG_H264DSP libavcodec/h264dsp.c libavcodec/h264idct.c libavcodec/x86/h264dsp_init.c libavcodec/x86/h264_deblock.asm libavcodec/x86/h264_deblock_10bit.asm libavcodec/x86/h264_idct.asm libavcodec/x86/h264_idct_10bit.asm libavcodec/x86/h264_weight.asm libavcodec/x86/h264_weight_10bit.asm
+CONFIG_H264PARSE libavcodec/h264_parse.c libavcodec/h2645_parse.c libavcodec/h264_ps.c
 CONFIG_H264PRED libavcodec/h264pred.c libavcodec/x86/h264_intrapred_init.c libavcodec/x86/h264_intrapred.asm libavcodec/x86/h264_intrapred_10bit.asm
 CONFIG_H264QPEL libavcodec/h264qpel.c libavcodec/x86/h264_qpel.c libavcodec/x86/h264_qpel_8bit.asm libavcodec/x86/h264_qpel_10bit.asm libavcodec/x86/fpel.asm libavcodec/x86/qpel.asm
 CONFIG_HPELDSP libavcodec/hpeldsp.c libavcodec/x86/hpeldsp_init.c libavcodec/x86/fpel.asm libavcodec/x86/hpeldsp.asm
 CONFIG_HUFFMAN libavcodec/huffman.c
 CONFIG_HUFFYUVDSP libavcodec/huffyuvdsp.c libavcodec/x86/huffyuvdsp_init.c libavcodec/x86/huffyuvdsp.asm
-CONFIG_HUFFYUVENCDSP libavcodec/huffyuvencdsp.c libavcodec/x86/huffyuvencdsp_mmx.c libavcodec/x86/huffyuvencdsp.asm
+CONFIG_HUFFYUVENCDSP libavcodec/huffyuvencdsp.c libavcodec/x86/huffyuvencdsp_init.c libavcodec/x86/huffyuvencdsp.asm
 CONFIG_IDCTDSP libavcodec/idctdsp.c libavcodec/simple_idct.c libavcodec/jrevdct.c libavcodec/x86/idctdsp_init.c libavcodec/x86/simple_idct.c libavcodec/x86/idctdsp.asm libavcodec/x86/simple_idct10.asm
 CONFIG_IIRFILTER libavcodec/iirfilter.c
-CONFIG_IMDCT15 libavcodec/imdct15.c
+CONFIG_MDCT15 libavcodec/mdct15.c
 CONFIG_INTRAX8 libavcodec/intrax8.c libavcodec/intrax8dsp.c
 CONFIG_ISO_MEDIA libavcodec/mpeg4audio.c libavcodec/mpegaudiodata.c libavformat/isom.c
 CONFIG_IVIDSP libavcodec/ivi_dsp.c
@@ -593,6 +597,7 @@ CONFIG_LGPLV3
 CONFIG_LIBX262
 CONFIG_LLAUDDSP libavcodec/lossless_audiodsp.c libavcodec/x86/lossless_audiodsp_init.c libavcodec/x86/lossless_audiodsp.asm
 CONFIG_LLVIDDSP libavcodec/lossless_videodsp.c libavcodec/x86/lossless_videodsp_init.c libavcodec/x86/lossless_videodsp.asm
+CONFIG_LLVIDENCDSP libavcodec/lossless_videoencdsp.c libavcodec/x86/lossless_videoencdsp_init.c libavcodec/x86/lossless_videoencdsp.asm
 CONFIG_LPC libavcodec/lpc.c libavcodec/x86/lpc.c
 CONFIG_LZF libavcodec/lzf.c
 CONFIG_ME_CMP libavcodec/me_cmp.c libavcodec/x86/me_cmp_init.c libavcodec/x86/me_cmp.asm
@@ -633,6 +638,7 @@ CONFIG_AAC_ADTSTOASC_BSF libavcodec/aac_adtstoasc_bsf.c libavcodec/aacadtsdec.c 
 CONFIG_CHOMP_BSF libavcodec/chomp_bsf.c
 CONFIG_DUMP_EXTRADATA_BSF libavcodec/dump_extradata_bsf.c
 CONFIG_DCA_CORE_BSF libavcodec/dca_core_bsf.c
+CONFIG_EXTRACT_EXTRADATA_BSF libavcodec/extract_extradata_bsf.c libavcodec/h2645_parse.c
 CONFIG_H264_MP4TOANNEXB_BSF libavcodec/h264_mp4toannexb_bsf.c
 CONFIG_HEVC_MP4TOANNEXB_BSF libavcodec/hevc_mp4toannexb_bsf.c
 CONFIG_IMX_DUMP_HEADER_BSF libavcodec/imx_dump_header_bsf.c
@@ -668,11 +674,12 @@ CONFIG_BMP_DECODER libavcodec/bmp.c libavcodec/msrledec.c
 CONFIG_BMV_VIDEO_DECODER libavcodec/bmvvideo.c
 CONFIG_BRENDER_PIX_DECODER libavcodec/brenderpix.c
 CONFIG_C93_DECODER libavcodec/c93.c
-CONFIG_CAVS_DECODER libavcodec/cavs.c libavcodec/cavsdec.c libavcodec/cavsdsp.c libavcodec/cavsdata.c libavcodec/mpeg12data.c libavcodec/x86/cavsdsp.c
+CONFIG_CAVS_DECODER libavcodec/cavs.c libavcodec/cavsdec.c libavcodec/cavsdsp.c libavcodec/cavsdata.c libavcodec/x86/cavsdsp.c
 CONFIG_CDGRAPHICS_DECODER libavcodec/cdgraphics.c
 CONFIG_CDXL_DECODER libavcodec/cdxl.c
 CONFIG_CFHD_DECODER libavcodec/cfhd.c libavcodec/cfhddata.c
 CONFIG_CINEPAK_DECODER libavcodec/cinepak.c
+CONFIG_CLEARVIDEO_DECODER libavcodec/clearvideo.c
 CONFIG_CLJR_DECODER libavcodec/cljrdec.c
 CONFIG_CLLC_DECODER libavcodec/cllc.c libavcodec/canopus.c
 CONFIG_COMFORTNOISE_DECODER libavcodec/cngdec.c libavcodec/celp_filters.c
@@ -681,7 +688,7 @@ CONFIG_CSCD_DECODER libavcodec/cscd.c
 CONFIG_CYUV_DECODER libavcodec/cyuv.c
 CONFIG_DDS_DECODER libavcodec/dds.c
 CONFIG_DFA_DECODER libavcodec/dfa.c
-CONFIG_DIRAC_DECODER libavcodec/diracdec.c libavcodec/dirac.c libavcodec/diracdsp.c libavcodec/diractab.c libavcodec/dirac_arith.c libavcodec/mpeg12data.c libavcodec/dirac_dwt.c libavcodec/dirac_vlc.c libavcodec/x86/diracdsp_init.c libavcodec/x86/dirac_dwt_init.c libavcodec/x86/diracdsp.asm libavcodec/x86/dirac_dwt.asm
+CONFIG_DIRAC_DECODER libavcodec/diracdec.c libavcodec/dirac.c libavcodec/diracdsp.c libavcodec/diractab.c libavcodec/dirac_arith.c libavcodec/dirac_dwt.c libavcodec/dirac_vlc.c libavcodec/x86/diracdsp_init.c libavcodec/x86/dirac_dwt_init.c libavcodec/x86/diracdsp.asm libavcodec/x86/dirac_dwt.asm
 CONFIG_DNXHD_DECODER libavcodec/dnxhddec.c libavcodec/dnxhddata.c
 CONFIG_DPX_DECODER libavcodec/dpx.c
 CONFIG_DSICINVIDEO_DECODER libavcodec/dsicinvideo.c
@@ -708,6 +715,7 @@ CONFIG_FLASHSV_DECODER libavcodec/flashsv.c
 CONFIG_FLASHSV2_DECODER libavcodec/flashsv.c
 CONFIG_FLIC_DECODER libavcodec/flicvideo.c
 CONFIG_FLV_DECODER
+CONFIG_FMVC_DECODER libavcodec/fmvc.c
 CONFIG_FOURXM_DECODER libavcodec/4xm.c
 CONFIG_FRAPS_DECODER libavcodec/fraps.c
 CONFIG_FRWU_DECODER libavcodec/frwu.c
@@ -717,7 +725,7 @@ CONFIG_H261_DECODER libavcodec/h261dec.c libavcodec/h261data.c libavcodec/h261.c
 CONFIG_H263_DECODER libavcodec/h263dec.c libavcodec/h263.c libavcodec/ituh263dec.c libavcodec/mpeg4video.c libavcodec/mpeg4videodec.c libavcodec/flvdec.c libavcodec/intelh263dec.c libavcodec/h263data.c
 CONFIG_H263I_DECODER
 CONFIG_H263P_DECODER
-CONFIG_H264_DECODER libavcodec/h264dec.c libavcodec/h264_cabac.c libavcodec/h264_cavlc.c libavcodec/h264_direct.c libavcodec/h264_loopfilter.c libavcodec/h264_mb.c libavcodec/h264_picture.c libavcodec/h264_ps.c libavcodec/h264_refs.c libavcodec/h264_sei.c libavcodec/h264_slice.c libavcodec/h264data.c libavcodec/h264_parse.c libavcodec/h2645_parse.c
+CONFIG_H264_DECODER libavcodec/h264dec.c libavcodec/h264_cabac.c libavcodec/h264_cavlc.c libavcodec/h264_direct.c libavcodec/h264_loopfilter.c libavcodec/h264_mb.c libavcodec/h264_picture.c libavcodec/h264_refs.c libavcodec/h264_sei.c libavcodec/h264_slice.c libavcodec/h264data.c
 CONFIG_H264_CRYSTALHD_DECODER
 CONFIG_H264_MEDIACODEC_DECODER libavcodec/mediacodecdec.c
 CONFIG_H264_MMAL_DECODER libavcodec/mmaldec.c
@@ -725,7 +733,7 @@ CONFIG_H264_QSV_DECODER libavcodec/qsvdec_h2645.c
 CONFIG_H264_VDA_DECODER libavcodec/vda_h264_dec.c
 CONFIG_H264_VDPAU_DECODER
 CONFIG_HAP_DECODER libavcodec/hapdec.c libavcodec/hap.c
-CONFIG_HEVC_DECODER libavcodec/hevc.c libavcodec/hevc_mvs.c libavcodec/hevc_ps.c libavcodec/hevc_sei.c libavcodec/hevc_cabac.c libavcodec/hevc_refs.c libavcodec/hevcpred.c libavcodec/hevcdsp.c libavcodec/hevc_filter.c libavcodec/h2645_parse.c libavcodec/hevc_data.c libavcodec/x86/hevcdsp_init.c libavcodec/x86/hevc_mc.asm libavcodec/x86/hevc_deblock.asm libavcodec/x86/hevc_idct.asm libavcodec/x86/hevc_res_add.asm libavcodec/x86/hevc_sao.asm libavcodec/x86/hevc_sao_10bit.asm
+CONFIG_HEVC_DECODER libavcodec/hevcdec.c libavcodec/hevc_mvs.c libavcodec/hevc_ps.c libavcodec/hevc_sei.c libavcodec/hevc_cabac.c libavcodec/hevc_refs.c libavcodec/hevcpred.c libavcodec/hevcdsp.c libavcodec/hevc_filter.c libavcodec/h2645_parse.c libavcodec/hevc_data.c libavcodec/x86/hevcdsp_init.c libavcodec/x86/hevc_add_res.asm libavcodec/x86/hevc_deblock.asm libavcodec/x86/hevc_idct.asm libavcodec/x86/hevc_mc.asm libavcodec/x86/hevc_sao.asm libavcodec/x86/hevc_sao_10bit.asm
 CONFIG_HEVC_QSV_DECODER libavcodec/qsvdec_h2645.c
 CONFIG_HNM4_VIDEO_DECODER libavcodec/hnm4video.c
 CONFIG_HQ_HQA_DECODER libavcodec/hq_hqa.c libavcodec/hq_hqadata.c libavcodec/hq_hqadsp.c libavcodec/canopus.c
@@ -765,12 +773,12 @@ CONFIG_MPEG_VDPAU_DECODER
 CONFIG_MPEG1_VDPAU_DECODER
 CONFIG_MPEG2_MMAL_DECODER libavcodec/mmaldec.c
 CONFIG_MPEG2_CRYSTALHD_DECODER
-CONFIG_MPEG2_QSV_DECODER libavcodec/qsvdec_mpeg2.c
+CONFIG_MPEG2_QSV_DECODER libavcodec/qsvdec_other.c
 CONFIG_MSA1_DECODER libavcodec/mss3.c
-CONFIG_MSMPEG4_CRYSTALHD_DECODER
 CONFIG_MSMPEG4V1_DECODER libavcodec/msmpeg4dec.c libavcodec/msmpeg4.c libavcodec/msmpeg4data.c
 CONFIG_MSMPEG4V2_DECODER libavcodec/msmpeg4dec.c libavcodec/msmpeg4.c libavcodec/msmpeg4data.c
 CONFIG_MSMPEG4V3_DECODER libavcodec/msmpeg4dec.c libavcodec/msmpeg4.c libavcodec/msmpeg4data.c
+CONFIG_MSMPEG4_CRYSTALHD_DECODER
 CONFIG_MSRLE_DECODER libavcodec/msrle.c libavcodec/msrledec.c
 CONFIG_MSS1_DECODER libavcodec/mss1.c libavcodec/mss12.c
 CONFIG_MSS2_DECODER libavcodec/mss2.c libavcodec/mss12.c libavcodec/mss2dsp.c libavcodec/wmv2data.c
@@ -788,10 +796,12 @@ CONFIG_PCX_DECODER libavcodec/pcx.c
 CONFIG_PGM_DECODER libavcodec/pnmdec.c libavcodec/pnm.c
 CONFIG_PGMYUV_DECODER libavcodec/pnmdec.c libavcodec/pnm.c
 CONFIG_PICTOR_DECODER libavcodec/pictordec.c libavcodec/cga_data.c
+CONFIG_PIXLET_DECODER libavcodec/pixlet.c
 CONFIG_PNG_DECODER libavcodec/png.c libavcodec/pngdec.c libavcodec/pngdsp.c libavcodec/x86/pngdsp_init.c libavcodec/x86/pngdsp.asm
 CONFIG_PPM_DECODER libavcodec/pnmdec.c libavcodec/pnm.c
 CONFIG_PRORES_DECODER libavcodec/proresdec2.c libavcodec/proresdsp.c libavcodec/proresdata.c libavcodec/x86/proresdsp_init.c libavcodec/x86/proresdsp.asm
 CONFIG_PRORES_LGPL_DECODER libavcodec/proresdec_lgpl.c libavcodec/proresdsp.c libavcodec/proresdata.c libavcodec/x86/proresdsp_init.c libavcodec/x86/proresdsp.asm
+CONFIG_PSD_DECODER libavcodec/psd.c
 CONFIG_PTX_DECODER libavcodec/ptx.c
 CONFIG_QDRAW_DECODER libavcodec/qdrw.c
 CONFIG_QPEG_DECODER libavcodec/qpeg.c
@@ -809,6 +819,7 @@ CONFIG_RV30_DECODER libavcodec/rv30.c libavcodec/rv34.c libavcodec/rv30dsp.c
 CONFIG_RV40_DECODER libavcodec/rv40.c libavcodec/rv34.c libavcodec/rv40dsp.c libavcodec/x86/rv40dsp_init.c libavcodec/x86/rv40dsp.asm
 CONFIG_S302M_DECODER libavcodec/s302m.c
 CONFIG_SANM_DECODER libavcodec/sanm.c
+CONFIG_SCPR_DECODER libavcodec/scpr.c
 CONFIG_SCREENPRESSO_DECODER libavcodec/screenpresso.c
 CONFIG_SDX2_DPCM_DECODER libavcodec/dpcm.c
 CONFIG_SGI_DECODER libavcodec/sgidec.c
@@ -819,9 +830,10 @@ CONFIG_SMC_DECODER libavcodec/smc.c
 CONFIG_SMVJPEG_DECODER libavcodec/smvjpegdec.c
 CONFIG_SNOW_DECODER libavcodec/snowdec.c libavcodec/snow.c libavcodec/snow_dwt.c libavcodec/x86/snowdsp.c
 CONFIG_SP5X_DECODER libavcodec/sp5xdec.c
+CONFIG_SPEEDHQ_DECODER libavcodec/speedhq.c libavcodec/simple_idct.c
 CONFIG_SUNRAST_DECODER libavcodec/sunrast.c
 CONFIG_SVQ1_DECODER libavcodec/svq1dec.c libavcodec/svq1.c libavcodec/svq13.c libavcodec/h263data.c
-CONFIG_SVQ3_DECODER libavcodec/svq3.c libavcodec/svq13.c libavcodec/mpegutils.c libavcodec/h264_parse.c libavcodec/h264data.c libavcodec/h264_ps.c libavcodec/h2645_parse.c
+CONFIG_SVQ3_DECODER libavcodec/svq3.c libavcodec/svq13.c libavcodec/mpegutils.c libavcodec/h264data.c
 CONFIG_TARGA_DECODER libavcodec/targa.c
 CONFIG_TARGA_Y216_DECODER libavcodec/targa_y216dec.c
 CONFIG_TDSC_DECODER libavcodec/tdsc.c
@@ -850,18 +862,18 @@ CONFIG_VC1_CRYSTALHD_DECODER
 CONFIG_VC1_VDPAU_DECODER
 CONFIG_VC1IMAGE_DECODER
 CONFIG_VC1_MMAL_DECODER libavcodec/mmaldec.c
-CONFIG_VC1_QSV_DECODER libavcodec/qsvdec_vc1.c
+CONFIG_VC1_QSV_DECODER libavcodec/qsvdec_other.c
 CONFIG_VCR1_DECODER libavcodec/vcr1.c
 CONFIG_VMDVIDEO_DECODER libavcodec/vmdvideo.c
 CONFIG_VMNC_DECODER libavcodec/vmnc.c
-CONFIG_VP3_DECODER libavcodec/vp3.c
+CONFIG_VP3_DECODER libavcodec/vp3.c libavcodec/x86/hpeldsp_vp3_init.c libavcodec/x86/hpeldsp_vp3.asm
 CONFIG_VP5_DECODER libavcodec/vp5.c libavcodec/vp56.c libavcodec/vp56data.c libavcodec/vp56rac.c
 CONFIG_VP6_DECODER libavcodec/vp6.c libavcodec/vp56.c libavcodec/vp56data.c libavcodec/vp6dsp.c libavcodec/vp56rac.c libavcodec/x86/vp6dsp_init.c libavcodec/x86/vp6dsp.asm
 CONFIG_VP6A_DECODER
 CONFIG_VP6F_DECODER
 CONFIG_VP7_DECODER libavcodec/vp8.c libavcodec/vp56rac.c
 CONFIG_VP8_DECODER libavcodec/vp8.c libavcodec/vp56rac.c
-CONFIG_VP9_DECODER libavcodec/vp9.c libavcodec/vp9dsp.c libavcodec/vp56rac.c libavcodec/vp9dsp_8bpp.c libavcodec/vp9dsp_10bpp.c libavcodec/vp9dsp_12bpp.c libavcodec/x86/vp9dsp_init.c libavcodec/x86/vp9dsp_init_10bpp.c libavcodec/x86/vp9dsp_init_12bpp.c libavcodec/x86/vp9dsp_init_16bpp.c libavcodec/x86/vp9intrapred.asm libavcodec/x86/vp9intrapred_16bpp.asm libavcodec/x86/vp9itxfm.asm libavcodec/x86/vp9itxfm_16bpp.asm libavcodec/x86/vp9lpf.asm libavcodec/x86/vp9lpf_16bpp.asm libavcodec/x86/vp9mc.asm libavcodec/x86/vp9mc_16bpp.asm
+CONFIG_VP9_DECODER libavcodec/vp9.c libavcodec/vp9data.c libavcodec/vp9dsp.c libavcodec/vp9lpf.c libavcodec/vp9recon.c libavcodec/vp9block.c libavcodec/vp9prob.c libavcodec/vp9mvs.c libavcodec/vp56rac.c libavcodec/vp9dsp_8bpp.c libavcodec/vp9dsp_10bpp.c libavcodec/vp9dsp_12bpp.c libavcodec/x86/vp9dsp_init.c libavcodec/x86/vp9dsp_init_10bpp.c libavcodec/x86/vp9dsp_init_12bpp.c libavcodec/x86/vp9dsp_init_16bpp.c libavcodec/x86/vp9intrapred.asm libavcodec/x86/vp9intrapred_16bpp.asm libavcodec/x86/vp9itxfm.asm libavcodec/x86/vp9itxfm_16bpp.asm libavcodec/x86/vp9lpf.asm libavcodec/x86/vp9lpf_16bpp.asm libavcodec/x86/vp9mc.asm libavcodec/x86/vp9mc_16bpp.asm
 CONFIG_VQA_DECODER libavcodec/vqavideo.c
 CONFIG_WEBP_DECODER libavcodec/webp.c libavcodec/x86/vp8dsp_init.c libavcodec/x86/vp8dsp.asm
 CONFIG_WMV1_DECODER libavcodec/msmpeg4dec.c libavcodec/msmpeg4.c libavcodec/msmpeg4data.c
@@ -876,6 +888,7 @@ CONFIG_XAN_WC4_DECODER libavcodec/xxan.c
 CONFIG_XBM_DECODER libavcodec/xbmdec.c
 CONFIG_XFACE_DECODER libavcodec/xfacedec.c libavcodec/xface.c
 CONFIG_XL_DECODER libavcodec/xl.c
+CONFIG_XPM_DECODER libavcodec/xpmdec.c
 CONFIG_XWD_DECODER libavcodec/xwddec.c
 CONFIG_Y41P_DECODER libavcodec/y41pdec.c
 CONFIG_YLC_DECODER libavcodec/ylc.c
@@ -897,7 +910,9 @@ CONFIG_AMRWB_DECODER libavcodec/amrwbdec.c libavcodec/celp_filters.c libavcodec/
 CONFIG_APE_DECODER libavcodec/apedec.c
 CONFIG_ATRAC1_DECODER libavcodec/atrac1.c libavcodec/atrac.c
 CONFIG_ATRAC3_DECODER libavcodec/atrac3.c libavcodec/atrac.c
+CONFIG_ATRAC3AL_DECODER libavcodec/atrac3.c libavcodec/atrac.c
 CONFIG_ATRAC3P_DECODER libavcodec/atrac3plusdec.c libavcodec/atrac3plus.c libavcodec/atrac3plusdsp.c libavcodec/atrac.c
+CONFIG_ATRAC3PAL_DECODER libavcodec/atrac3plusdec.c libavcodec/atrac3plus.c libavcodec/atrac3plusdsp.c libavcodec/atrac.c
 CONFIG_BINKAUDIO_DCT_DECODER libavcodec/binkaudio.c
 CONFIG_BINKAUDIO_RDFT_DECODER libavcodec/binkaudio.c
 CONFIG_BMV_AUDIO_DECODER libavcodec/bmvaudio.c
@@ -939,10 +954,11 @@ CONFIG_MPC7_DECODER libavcodec/mpc7.c libavcodec/mpc.c
 CONFIG_MPC8_DECODER libavcodec/mpc8.c libavcodec/mpc.c
 CONFIG_NELLYMOSER_DECODER libavcodec/nellymoserdec.c libavcodec/nellymoser.c
 CONFIG_ON2AVC_DECODER libavcodec/on2avc.c libavcodec/on2avcdata.c
-CONFIG_OPUS_DECODER libavcodec/opusdec.c libavcodec/opus.c libavcodec/opus_celt.c libavcodec/opus_silk.c libavcodec/vorbis_data.c
+CONFIG_OPUS_DECODER libavcodec/opusdec.c libavcodec/opus.c libavcodec/opus_celt.c libavcodec/opus_rc.c libavcodec/opus_pvq.c libavcodec/opus_silk.c libavcodec/opustab.c libavcodec/vorbis_data.c
 CONFIG_PAF_AUDIO_DECODER libavcodec/pafaudio.c
 CONFIG_QCELP_DECODER libavcodec/qcelpdec.c libavcodec/celp_filters.c libavcodec/acelp_vectors.c libavcodec/acelp_filters.c
 CONFIG_QDM2_DECODER libavcodec/qdm2.c
+CONFIG_QDMC_DECODER libavcodec/qdmc.c
 CONFIG_RA_144_DECODER libavcodec/ra144dec.c libavcodec/ra144.c libavcodec/celp_filters.c
 CONFIG_RA_288_DECODER libavcodec/ra288.c libavcodec/celp_filters.c
 CONFIG_RALF_DECODER libavcodec/ralf.c
@@ -969,6 +985,8 @@ CONFIG_XMA2_DECODER libavcodec/wmaprodec.c libavcodec/wma.c libavcodec/wma_commo
 CONFIG_PCM_ALAW_DECODER libavcodec/pcm.c
 CONFIG_PCM_BLURAY_DECODER libavcodec/pcm-bluray.c
 CONFIG_PCM_DVD_DECODER libavcodec/pcm-dvd.c
+CONFIG_PCM_F16LE_DECODER libavcodec/pcm.c
+CONFIG_PCM_F24LE_DECODER libavcodec/pcm.c
 CONFIG_PCM_F32BE_DECODER libavcodec/pcm.c
 CONFIG_PCM_F32LE_DECODER libavcodec/pcm.c
 CONFIG_PCM_F64BE_DECODER libavcodec/pcm.c
@@ -1099,7 +1117,6 @@ CONFIG_BINTEXT_DECODER libavcodec/bintext.c libavcodec/cga_data.c
 CONFIG_XBIN_DECODER libavcodec/bintext.c libavcodec/cga_data.c
 CONFIG_IDF_DECODER libavcodec/bintext.c libavcodec/cga_data.c
 CONFIG_LIBOPENH264_DECODER libavcodec/libopenh264dec.c libavcodec/libopenh264.c
-CONFIG_H263_CUVID_DECODER
 CONFIG_H264_CUVID_DECODER libavcodec/cuvid.c
 CONFIG_HEVC_CUVID_DECODER libavcodec/cuvid.c
 CONFIG_HEVC_MEDIACODEC_DECODER libavcodec/mediacodecdec.c libavcodec/hevc_parse.c
@@ -1111,6 +1128,7 @@ CONFIG_MPEG4_MEDIACODEC_DECODER libavcodec/mediacodecdec.c
 CONFIG_VC1_CUVID_DECODER libavcodec/cuvid.c
 CONFIG_VP8_CUVID_DECODER libavcodec/cuvid.c
 CONFIG_VP8_MEDIACODEC_DECODER libavcodec/mediacodecdec.c
+CONFIG_VP8_QSV_DECODER libavcodec/qsvdec_other.c
 CONFIG_VP9_CUVID_DECODER libavcodec/cuvid.c
 CONFIG_VP9_MEDIACODEC_DECODER libavcodec/mediacodecdec.c
 CONFIG_AA_DEMUXER libavformat/aadec.c
@@ -1138,7 +1156,7 @@ CONFIG_ASS_DEMUXER libavformat/assdec.c libavformat/subtitles.c
 CONFIG_AST_DEMUXER libavformat/ast.c libavformat/astdec.c
 CONFIG_AU_DEMUXER libavformat/au.c libavformat/pcm.c
 CONFIG_AVI_DEMUXER libavformat/avidec.c
-CONFIG_AVISYNTH_DEMUXER
+CONFIG_AVISYNTH_DEMUXER libavformat/avisynth.c
 CONFIG_AVR_DEMUXER libavformat/avr.c libavformat/pcm.c
 CONFIG_AVS_DEMUXER libavformat/avs.c libavformat/voc_packet.c libavformat/vocdec.c libavformat/voc.c
 CONFIG_BETHSOFTVID_DEMUXER libavformat/bethsoftvid.c
@@ -1179,7 +1197,7 @@ CONFIG_EPAF_DEMUXER libavformat/epafdec.c libavformat/pcm.c
 CONFIG_FFM_DEMUXER libavformat/ffmdec.c
 CONFIG_FFMETADATA_DEMUXER libavformat/ffmetadec.c
 CONFIG_FILMSTRIP_DEMUXER libavformat/filmstripdec.c
-CONFIG_FLAC_DEMUXER libavcodec/flac.c libavcodec/flacdata.c libavcodec/vorbis_data.c libavformat/flacdec.c libavformat/rawdec.c libavformat/flac_picture.c libavformat/oggparsevorbis.c libavformat/replaygain.c libavformat/vorbiscomment.c
+CONFIG_FLAC_DEMUXER libavformat/flacdec.c libavformat/rawdec.c libavformat/flac_picture.c libavformat/oggparsevorbis.c libavformat/replaygain.c libavformat/vorbiscomment.c
 CONFIG_FLIC_DEMUXER libavformat/flic.c
 CONFIG_FLV_DEMUXER libavcodec/mpeg4audio.c libavformat/flvdec.c
 CONFIG_LIVE_FLV_DEMUXER libavformat/flvdec.c
@@ -1192,7 +1210,7 @@ CONFIG_G729_DEMUXER libavformat/g729dec.c
 CONFIG_GENH_DEMUXER libavformat/genh.c
 CONFIG_GIF_DEMUXER libavformat/gifdec.c
 CONFIG_GSM_DEMUXER libavformat/gsmdec.c
-CONFIG_GXF_DEMUXER libavcodec/mpeg12data.c libavformat/gxf.c
+CONFIG_GXF_DEMUXER libavformat/gxf.c
 CONFIG_H261_DEMUXER libavformat/h261dec.c libavformat/rawdec.c
 CONFIG_H263_DEMUXER libavformat/h263dec.c libavformat/rawdec.c
 CONFIG_H264_DEMUXER libavformat/h264dec.c libavformat/rawdec.c
@@ -1202,7 +1220,7 @@ CONFIG_HNM_DEMUXER libavformat/hnm.c
 CONFIG_ICO_DEMUXER libavformat/icodec.c
 CONFIG_IDCIN_DEMUXER libavformat/idcin.c
 CONFIG_IDF_DEMUXER libavformat/bintext.c libavformat/sauce.c
-CONFIG_IFF_DEMUXER libavcodec/iff.c libavformat/iff.c
+CONFIG_IFF_DEMUXER libavformat/iff.c
 CONFIG_ILBC_DEMUXER libavformat/ilbc.c
 CONFIG_IMAGE2_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE2PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
@@ -1227,6 +1245,7 @@ CONFIG_MATROSKA_DEMUXER libavformat/matroskadec.c libavformat/matroska.c libavfo
 CONFIG_MGSTS_DEMUXER libavformat/mgsts.c
 CONFIG_MICRODVD_DEMUXER libavformat/microdvddec.c libavformat/subtitles.c
 CONFIG_MJPEG_DEMUXER libavformat/rawdec.c
+CONFIG_MJPEG_2000_DEMUXER libavformat/rawdec.c libavformat/mj2kdec.c
 CONFIG_MLP_DEMUXER libavformat/rawdec.c libavformat/mlpdec.c
 CONFIG_MLV_DEMUXER libavformat/mlvdec.c libavformat/riffdec.c
 CONFIG_MM_DEMUXER libavformat/mm.c
@@ -1256,7 +1275,7 @@ CONFIG_NISTSPHERE_DEMUXER libavformat/nistspheredec.c libavformat/pcm.c
 CONFIG_NSV_DEMUXER libavformat/nsvdec.c
 CONFIG_NUT_DEMUXER libavcodec/mpegaudiodata.c libavcodec/mpeg4audio.c libavformat/nutdec.c libavformat/nut.c libavformat/isom.c
 CONFIG_NUV_DEMUXER libavformat/nuv.c
-CONFIG_OGG_DEMUXER libavcodec/mpeg12data.c libavcodec/dirac.c libavcodec/vorbis_data.c libavformat/oggdec.c libavformat/oggparsecelt.c libavformat/oggparsedaala.c libavformat/oggparsedirac.c libavformat/oggparseflac.c libavformat/oggparseogm.c libavformat/oggparseopus.c libavformat/oggparseskeleton.c libavformat/oggparsespeex.c libavformat/oggparsetheora.c libavformat/oggparsevorbis.c libavformat/oggparsevp8.c libavformat/replaygain.c libavformat/vorbiscomment.c libavformat/flac_picture.c
+CONFIG_OGG_DEMUXER libavformat/oggdec.c libavformat/oggparsecelt.c libavformat/oggparsedaala.c libavformat/oggparsedirac.c libavformat/oggparseflac.c libavformat/oggparseogm.c libavformat/oggparseopus.c libavformat/oggparseskeleton.c libavformat/oggparsespeex.c libavformat/oggparsetheora.c libavformat/oggparsevorbis.c libavformat/oggparsevp8.c libavformat/replaygain.c libavformat/vorbiscomment.c libavformat/flac_picture.c
 CONFIG_OMA_DEMUXER libavformat/omadec.c libavformat/pcm.c libavformat/oma.c
 CONFIG_PAF_DEMUXER libavformat/paf.c
 CONFIG_PCM_ALAW_DEMUXER libavformat/pcmdec.c libavformat/pcm.c
@@ -1299,8 +1318,11 @@ CONFIG_RTSP_DEMUXER libavformat/rtsp.c libavformat/rtspdec.c libavformat/httpaut
 CONFIG_SAMI_DEMUXER libavformat/samidec.c libavformat/subtitles.c
 CONFIG_SAP_DEMUXER libavformat/sapdec.c
 CONFIG_SBG_DEMUXER libavformat/sbgdec.c
+CONFIG_SCC_DEMUXER libavformat/sccdec.c libavformat/subtitles.c
 CONFIG_SDP_DEMUXER libavformat/rtsp.c
 CONFIG_SDR2_DEMUXER libavformat/sdr2.c
+CONFIG_SDS_DEMUXER libavformat/sdsdec.c
+CONFIG_SDX_DEMUXER libavformat/sdxdec.c
 CONFIG_SEGAFILM_DEMUXER libavformat/segafilm.c
 CONFIG_SHORTEN_DEMUXER libavformat/shortendec.c libavformat/rawdec.c
 CONFIG_SIFF_DEMUXER libavformat/siff.c
@@ -1374,11 +1396,13 @@ CONFIG_IMAGE_PGM_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE_PICTOR_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE_PNG_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE_PPM_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
+CONFIG_IMAGE_PSD_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE_QDRAW_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE_SGI_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE_SUNRAST_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE_TIFF_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_IMAGE_WEBP_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
+CONFIG_IMAGE_XPM_PIPE_DEMUXER libavformat/img2dec.c libavformat/img2.c
 CONFIG_LIBGME_DEMUXER libavformat/libgme.c
 CONFIG_LIBMODPLUG_DEMUXER libavformat/libmodplug.c
 CONFIG_LIBNUT_DEMUXER libavformat/libnut.c
@@ -1386,7 +1410,7 @@ CONFIG_LIBOPENMPT_DEMUXER libavformat/libopenmpt.c
 CONFIG_A64MULTI_ENCODER libavcodec/a64multienc.c libavcodec/elbg.c
 CONFIG_A64MULTI5_ENCODER libavcodec/a64multienc.c libavcodec/elbg.c
 CONFIG_ALIAS_PIX_ENCODER libavcodec/aliaspixenc.c
-CONFIG_AMV_ENCODER libavcodec/mjpegenc.c libavcodec/mjpegenc_common.c libavcodec/mpegvideo_enc.c libavcodec/motion_est.c libavcodec/ratecontrol.c libavcodec/mpeg12data.c libavcodec/mpegvideo.c
+CONFIG_AMV_ENCODER libavcodec/mjpegenc.c libavcodec/mjpegenc_common.c libavcodec/mjpegenc_huffman.c
 CONFIG_APNG_ENCODER libavcodec/png.c libavcodec/pngenc.c
 CONFIG_ASV1_ENCODER libavcodec/asvenc.c libavcodec/asv.c libavcodec/mpeg12data.c
 CONFIG_ASV2_ENCODER libavcodec/asvenc.c libavcodec/asv.c libavcodec/mpeg12data.c
@@ -1414,7 +1438,7 @@ CONFIG_HUFFYUV_ENCODER libavcodec/huffyuv.c libavcodec/huffyuvenc.c
 CONFIG_JPEG2000_ENCODER libavcodec/j2kenc.c libavcodec/mqcenc.c libavcodec/mqc.c libavcodec/jpeg2000.c libavcodec/jpeg2000dwt.c
 CONFIG_JPEGLS_ENCODER libavcodec/jpeglsenc.c libavcodec/jpegls.c
 CONFIG_LJPEG_ENCODER libavcodec/ljpegenc.c libavcodec/mjpegenc_common.c
-CONFIG_MJPEG_ENCODER libavcodec/mjpegenc.c libavcodec/mjpegenc_common.c
+CONFIG_MJPEG_ENCODER libavcodec/mjpegenc.c libavcodec/mjpegenc_common.c libavcodec/mjpegenc_huffman.c
 CONFIG_MPEG1VIDEO_ENCODER libavcodec/mpeg12enc.c libavcodec/mpeg12.c
 CONFIG_MPEG2VIDEO_ENCODER libavcodec/mpeg12enc.c libavcodec/mpeg12.c
 CONFIG_MPEG4_ENCODER
@@ -1465,7 +1489,7 @@ CONFIG_AAC_ENCODER libavcodec/aacenc.c libavcodec/aaccoder.c libavcodec/aacencta
 CONFIG_AC3_ENCODER libavcodec/ac3enc_float.c libavcodec/ac3enc.c libavcodec/ac3tab.c libavcodec/ac3.c libavcodec/kbdwin.c
 CONFIG_AC3_FIXED_ENCODER libavcodec/ac3enc_fixed.c libavcodec/ac3enc.c libavcodec/ac3tab.c libavcodec/ac3.c
 CONFIG_ALAC_ENCODER libavcodec/alacenc.c libavcodec/alac_data.c
-CONFIG_DCA_ENCODER libavcodec/dcaenc.c libavcodec/dca.c libavcodec/dcadata.c
+CONFIG_DCA_ENCODER libavcodec/dcaenc.c libavcodec/dca.c libavcodec/dcadata.c libavcodec/dcahuff.c
 CONFIG_EAC3_ENCODER libavcodec/eac3enc.c libavcodec/eac3_data.c
 CONFIG_FLAC_ENCODER libavcodec/flacenc.c libavcodec/flacdata.c libavcodec/flac.c libavcodec/vorbis_data.c libavcodec/x86/flac_dsp_gpl.asm
 CONFIG_G723_1_ENCODER libavcodec/g723_1enc.c libavcodec/g723_1.c libavcodec/acelp_vectors.c libavcodec/celp_filters.c libavcodec/celp_math.c
@@ -1473,6 +1497,7 @@ CONFIG_MLP_ENCODER libavcodec/mlpenc.c libavcodec/mlp.c
 CONFIG_MP2_ENCODER libavcodec/mpegaudioenc_float.c libavcodec/mpegaudio.c libavcodec/mpegaudiodata.c libavcodec/mpegaudiodsp_data.c
 CONFIG_MP2FIXED_ENCODER libavcodec/mpegaudioenc_fixed.c libavcodec/mpegaudio.c libavcodec/mpegaudiodata.c libavcodec/mpegaudiodsp_data.c
 CONFIG_NELLYMOSER_ENCODER libavcodec/nellymoserenc.c libavcodec/nellymoser.c
+CONFIG_OPUS_ENCODER libavcodec/opusenc.c libavcodec/opus_rc.c libavcodec/opustab.c libavcodec/opus_pvq.c
 CONFIG_RA_144_ENCODER libavcodec/ra144enc.c libavcodec/ra144.c libavcodec/celp_filters.c
 CONFIG_SONIC_ENCODER libavcodec/sonic.c
 CONFIG_SONIC_LS_ENCODER libavcodec/sonic.c
@@ -1575,6 +1600,8 @@ CONFIG_HEVC_VAAPI_ENCODER libavcodec/vaapi_encode_h265.c libavcodec/vaapi_encode
 CONFIG_LIBKVAZAAR_ENCODER libavcodec/libkvazaar.c
 CONFIG_MJPEG_VAAPI_ENCODER libavcodec/vaapi_encode_mjpeg.c
 CONFIG_MPEG2_QSV_ENCODER libavcodec/qsvenc_mpeg2.c
+CONFIG_MPEG2_VAAPI_ENCODER libavcodec/vaapi_encode_mpeg2.c
+CONFIG_VP8_VAAPI_ENCODER libavcodec/vaapi_encode_vp8.c
 CONFIG_ABENCH_FILTER libavfilter/f_bench.c
 CONFIG_ACOMPRESSOR_FILTER libavfilter/af_sidechaincompress.c
 CONFIG_ACROSSFADE_FILTER libavfilter/af_afade.c
@@ -1614,7 +1641,6 @@ CONFIG_ASIDEDATA_FILTER libavfilter/f_sidedata.c
 CONFIG_ASPLIT_FILTER libavfilter/split.c
 CONFIG_ASTATS_FILTER libavfilter/af_astats.c
 CONFIG_ASTREAMSELECT_FILTER libavfilter/f_streamselect.c
-CONFIG_ASYNCTS_FILTER libavfilter/af_asyncts.c
 CONFIG_ATEMPO_FILTER libavfilter/af_atempo.c
 CONFIG_ATRIM_FILTER libavfilter/trim.c
 CONFIG_AZMQ_FILTER libavfilter/f_zmq.c
@@ -1641,7 +1667,7 @@ CONFIG_HDCD_FILTER libavfilter/af_hdcd.c
 CONFIG_HIGHPASS_FILTER libavfilter/af_biquads.c
 CONFIG_JOIN_FILTER libavfilter/af_join.c
 CONFIG_LADSPA_FILTER libavfilter/af_ladspa.c
-CONFIG_LOUDNORM_FILTER libavfilter/af_loudnorm.c
+CONFIG_LOUDNORM_FILTER libavfilter/af_loudnorm.c libavfilter/ebur128.c
 CONFIG_LOWPASS_FILTER libavfilter/af_biquads.c
 CONFIG_PAN_FILTER libavfilter/af_pan.c
 CONFIG_REPLAYGAIN_FILTER libavfilter/af_replaygain.c
@@ -1699,6 +1725,8 @@ CONFIG_DCTDNOIZ_FILTER libavfilter/vf_dctdnoiz.c
 CONFIG_DEBAND_FILTER libavfilter/vf_deband.c
 CONFIG_DECIMATE_FILTER libavfilter/vf_decimate.c
 CONFIG_DEFLATE_FILTER libavfilter/vf_neighbor.c
+CONFIG_DEINTERLACE_QSV_FILTER libavfilter/vf_deinterlace_qsv.c
+CONFIG_DEINTERLACE_VAAPI_FILTER libavfilter/vf_deinterlace_vaapi.c
 CONFIG_DEJUDDER_FILTER libavfilter/vf_dejudder.c
 CONFIG_DELOGO_FILTER libavfilter/vf_delogo.c
 CONFIG_DESHAKE_FILTER libavfilter/vf_deshake.c
@@ -1740,6 +1768,7 @@ CONFIG_HQX_FILTER libavfilter/vf_hqx.c
 CONFIG_HSTACK_FILTER libavfilter/vf_stack.c libavfilter/framesync.c
 CONFIG_HUE_FILTER libavfilter/vf_hue.c
 CONFIG_HWDOWNLOAD_FILTER libavfilter/vf_hwdownload.c
+CONFIG_HWMAP_FILTER libavfilter/vf_hwmap.c
 CONFIG_HWUPLOAD_FILTER libavfilter/vf_hwupload.c
 CONFIG_HWUPLOAD_CUDA_FILTER libavfilter/vf_hwupload_cuda.c
 CONFIG_HYSTERESIS_FILTER libavfilter/vf_hysteresis.c libavfilter/framesync.c
@@ -1762,6 +1791,7 @@ CONFIG_MCDEINT_FILTER libavfilter/vf_mcdeint.c
 CONFIG_MERGEPLANES_FILTER libavfilter/vf_mergeplanes.c libavfilter/framesync.c
 CONFIG_MESTIMATE_FILTER libavfilter/vf_mestimate.c libavfilter/motion_estimation.c
 CONFIG_METADATA_FILTER libavfilter/f_metadata.c
+CONFIG_MIDEQUALIZER_FILTER libavfilter/vf_midequalizer.c libavfilter/framesync.c
 CONFIG_MINTERPOLATE_FILTER libavfilter/vf_minterpolate.c libavfilter/motion_estimation.c
 CONFIG_MPDECIMATE_FILTER libavfilter/vf_mpdecimate.c
 CONFIG_NEGATE_FILTER libavfilter/vf_lut.c
@@ -1783,11 +1813,13 @@ CONFIG_PHASE_FILTER libavfilter/vf_phase.c
 CONFIG_PIXDESCTEST_FILTER libavfilter/vf_pixdesctest.c
 CONFIG_PP_FILTER libavfilter/vf_pp.c
 CONFIG_PP7_FILTER libavfilter/vf_pp7.c libavfilter/x86/vf_pp7_init.c libavfilter/x86/vf_pp7.asm
+CONFIG_PREMULTIPLY_FILTER libavfilter/vf_premultiply.c libavfilter/framesync.c
 CONFIG_PREWITT_FILTER libavfilter/vf_convolution.c
 CONFIG_PSNR_FILTER libavfilter/vf_psnr.c libavfilter/dualinput.c libavfilter/framesync.c libavfilter/x86/vf_psnr_init.c libavfilter/x86/vf_psnr.asm
 CONFIG_PULLUP_FILTER libavfilter/vf_pullup.c libavfilter/x86/vf_pullup_init.c libavfilter/x86/vf_pullup.asm
 CONFIG_QP_FILTER libavfilter/vf_qp.c
 CONFIG_RANDOM_FILTER libavfilter/vf_random.c
+CONFIG_READEIA608_FILTER libavfilter/vf_readeia608.c
 CONFIG_READVITC_FILTER libavfilter/vf_readvitc.c
 CONFIG_REALTIME_FILTER libavfilter/f_realtime.c
 CONFIG_REMAP_FILTER libavfilter/vf_remap.c libavfilter/framesync.c
@@ -1797,10 +1829,11 @@ CONFIG_REPEATFIELDS_FILTER libavfilter/vf_repeatfields.c
 CONFIG_REVERSE_FILTER libavfilter/f_reverse.c
 CONFIG_ROTATE_FILTER libavfilter/vf_rotate.c
 CONFIG_SAB_FILTER libavfilter/vf_sab.c
-CONFIG_SCALE_FILTER libavfilter/vf_scale.c
-CONFIG_SCALE_NPP_FILTER libavfilter/vf_scale_npp.c
-CONFIG_SCALE_VAAPI_FILTER libavfilter/vf_scale_vaapi.c
-CONFIG_SCALE2REF_FILTER libavfilter/vf_scale.c
+CONFIG_SCALE_FILTER libavfilter/vf_scale.c libavfilter/scale.c
+CONFIG_SCALE_NPP_FILTER libavfilter/vf_scale_npp.c libavfilter/scale.c
+CONFIG_SCALE_QSV_FILTER libavfilter/vf_scale_qsv.c
+CONFIG_SCALE_VAAPI_FILTER libavfilter/vf_scale_vaapi.c libavfilter/scale.c
+CONFIG_SCALE2REF_FILTER libavfilter/vf_scale.c libavfilter/scale.c
 CONFIG_SELECT_FILTER libavfilter/f_select.c
 CONFIG_SELECTIVECOLOR_FILTER libavfilter/vf_selectivecolor.c
 CONFIG_SENDCMD_FILTER libavfilter/f_sendcmd.c
@@ -1816,6 +1849,7 @@ CONFIG_SHUFFLEFRAMES_FILTER libavfilter/vf_shuffleframes.c
 CONFIG_SHUFFLEPLANES_FILTER libavfilter/vf_shuffleplanes.c
 CONFIG_SIDEDATA_FILTER libavfilter/f_sidedata.c
 CONFIG_SIGNALSTATS_FILTER libavfilter/vf_signalstats.c
+CONFIG_SIGNATURE_FILTER libavfilter/vf_signature.c
 CONFIG_SMARTBLUR_FILTER libavfilter/vf_smartblur.c
 CONFIG_SOBEL_FILTER libavfilter/vf_convolution.c
 CONFIG_SPLIT_FILTER libavfilter/split.c
@@ -1829,6 +1863,7 @@ CONFIG_SWAPRECT_FILTER libavfilter/vf_swaprect.c
 CONFIG_SWAPUV_FILTER libavfilter/vf_swapuv.c
 CONFIG_TBLEND_FILTER libavfilter/vf_blend.c libavfilter/dualinput.c libavfilter/framesync.c libavfilter/x86/vf_blend_init.c libavfilter/x86/vf_blend.asm
 CONFIG_TELECINE_FILTER libavfilter/vf_telecine.c
+CONFIG_THRESHOLD_FILTER libavfilter/vf_threshold.c
 CONFIG_THUMBNAIL_FILTER libavfilter/vf_thumbnail.c
 CONFIG_TILE_FILTER libavfilter/vf_tile.c
 CONFIG_TINTERLACE_FILTER libavfilter/vf_tinterlace.c libavfilter/x86/vf_tinterlace_init.c libavfilter/x86/vf_interlace.asm
@@ -1869,6 +1904,7 @@ CONFIG_TESTSRC_FILTER libavfilter/vsrc_testsrc.c
 CONFIG_TESTSRC2_FILTER libavfilter/vsrc_testsrc.c
 CONFIG_YUVTESTSRC_FILTER libavfilter/vsrc_testsrc.c
 CONFIG_NULLSINK_FILTER libavfilter/vsink_nullsink.c
+CONFIG_ABITSCOPE_FILTER libavfilter/avf_abitscope.c
 CONFIG_ADRAWGRAPH_FILTER libavfilter/f_drawgraph.c
 CONFIG_AHISTOGRAM_FILTER libavfilter/avf_ahistogram.c
 CONFIG_APHASEMETER_FILTER libavfilter/avf_aphasemeter.c
@@ -1884,7 +1920,6 @@ CONFIG_SHOWWAVESPIC_FILTER libavfilter/avf_showwaves.c
 CONFIG_SPECTRUMSYNTH_FILTER libavfilter/vaf_spectrumsynth.c libavfilter/window_func.c
 CONFIG_AMOVIE_FILTER libavfilter/src_movie.c
 CONFIG_MOVIE_FILTER libavfilter/src_movie.c
-CONFIG_H263_CUVID_HWACCEL
 CONFIG_H263_VAAPI_HWACCEL libavcodec/vaapi_mpeg4.c
 CONFIG_H263_VIDEOTOOLBOX_HWACCEL libavcodec/videotoolbox.c
 CONFIG_H264_CUVID_HWACCEL
@@ -1934,6 +1969,7 @@ CONFIG_VC1_MMAL_HWACCEL
 CONFIG_VC1_QSV_HWACCEL
 CONFIG_VP8_CUVID_HWACCEL
 CONFIG_VP8_MEDIACODEC_HWACCEL
+CONFIG_VP8_QSV_HWACCEL
 CONFIG_VP9_CUVID_HWACCEL
 CONFIG_VP9_D3D11VA_HWACCEL libavcodec/dxva2_vp9.c
 CONFIG_VP9_DXVA2_HWACCEL libavcodec/dxva2_vp9.c
@@ -1961,15 +1997,14 @@ CONFIG_QTKIT_INDEV libavdevice/qtkit.c
 CONFIG_SNDIO_INDEV libavdevice/sndio_dec.c libavdevice/sndio.c
 CONFIG_V4L2_INDEV libavdevice/v4l2.c libavdevice/v4l2-common.c libavdevice/timefilter.c
 CONFIG_VFWCAP_INDEV libavdevice/vfwcap.c
-CONFIG_X11GRAB_INDEV libavdevice/x11grab.c
-CONFIG_X11GRAB_XCB_INDEV libavdevice/xcbgrab.c
+CONFIG_XCBGRAB_INDEV libavdevice/xcbgrab.c
 CONFIG_LIBCDIO_INDEV libavdevice/libcdio.c
 CONFIG_LIBDC1394_INDEV libavdevice/libdc1394.c
 CONFIG_A64_MUXER libavformat/a64.c libavformat/rawenc.c
 CONFIG_AC3_MUXER libavformat/rawenc.c
 CONFIG_ADTS_MUXER libavcodec/mpeg4audio.c libavformat/adtsenc.c libavformat/apetag.c libavformat/img2.c libavformat/id3v2enc.c
 CONFIG_ADX_MUXER libavformat/rawenc.c
-CONFIG_AIFF_MUXER libavformat/aiffenc.c libavformat/isom.c libavformat/id3v2enc.c
+CONFIG_AIFF_MUXER libavformat/aiffenc.c libavformat/id3v2enc.c
 CONFIG_AMR_MUXER libavformat/amr.c
 CONFIG_APNG_MUXER libavformat/apngenc.c
 CONFIG_ASF_MUXER libavformat/asfenc.c libavformat/asf.c libavformat/avlanguage.c
@@ -1980,11 +2015,11 @@ CONFIG_AU_MUXER libavformat/au.c libavformat/rawenc.c
 CONFIG_AVI_MUXER libavformat/avienc.c libavformat/mpegtsenc.c libavformat/avlanguage.c libavformat/rawutils.c
 CONFIG_AVM2_MUXER libavformat/swfenc.c libavformat/swf.c
 CONFIG_BIT_MUXER libavformat/bit.c
-CONFIG_CAF_MUXER libavformat/cafenc.c libavformat/caf.c libavformat/riff.c libavformat/isom.c
+CONFIG_CAF_MUXER libavformat/cafenc.c libavformat/caf.c libavformat/riff.c
 CONFIG_CAVSVIDEO_MUXER libavformat/rawenc.c
 CONFIG_CRC_MUXER libavformat/crcenc.c
 CONFIG_DASH_MUXER libavformat/dashenc.c
-CONFIG_DATA_MUXER libavformat/rawdec.c
+CONFIG_DATA_MUXER libavformat/rawenc.c
 CONFIG_DAUD_MUXER libavformat/daudenc.c
 CONFIG_DIRAC_MUXER libavformat/rawenc.c
 CONFIG_DNXHD_MUXER libavformat/rawenc.c
@@ -1996,7 +2031,7 @@ CONFIG_FFM_MUXER libavformat/ffmenc.c
 CONFIG_FFMETADATA_MUXER libavformat/ffmetaenc.c
 CONFIG_FIFO_MUXER libavformat/fifo.c
 CONFIG_FILMSTRIP_MUXER libavformat/filmstripenc.c
-CONFIG_FLAC_MUXER libavcodec/flac.c libavcodec/flacdata.c libavcodec/vorbis_data.c libavformat/flacenc.c libavformat/flacenc_header.c libavformat/vorbiscomment.c
+CONFIG_FLAC_MUXER libavformat/flacenc.c libavformat/flacenc_header.c libavformat/vorbiscomment.c
 CONFIG_FLV_MUXER libavformat/flvenc.c libavformat/avc.c
 CONFIG_FRAMECRC_MUXER libavformat/framecrcenc.c libavformat/framehash.c
 CONFIG_FRAMEHASH_MUXER libavformat/hashenc.c libavformat/framehash.c
@@ -2026,14 +2061,14 @@ CONFIG_LATM_MUXER libavcodec/mpeg4audio.c libavformat/latmenc.c libavformat/rawe
 CONFIG_LRC_MUXER libavformat/lrcenc.c libavformat/lrc.c
 CONFIG_M4V_MUXER libavformat/rawenc.c
 CONFIG_MD5_MUXER libavformat/hashenc.c
-CONFIG_MATROSKA_MUXER libavcodec/flac.c libavcodec/flacdata.c libavcodec/vorbis_data.c libavformat/matroskaenc.c libavformat/matroska.c libavformat/avc.c libavformat/hevc.c libavformat/flacenc_header.c libavformat/avlanguage.c libavformat/vorbiscomment.c libavformat/wv.c libavformat/webmdashenc.c libavformat/webm_chunk.c
-CONFIG_MATROSKA_AUDIO_MUXER libavcodec/mpeg4audio.c libavcodec/vorbis_data.c libavcodec/flac.c libavcodec/flacdata.c
+CONFIG_MATROSKA_MUXER libavcodec/mpeg4audio.c libavformat/matroskaenc.c libavformat/matroska.c libavformat/avc.c libavformat/hevc.c libavformat/flacenc_header.c libavformat/avlanguage.c libavformat/vorbiscomment.c libavformat/wv.c libavformat/webmdashenc.c libavformat/webm_chunk.c
+CONFIG_MATROSKA_AUDIO_MUXER libavcodec/mpeg4audio.c
 CONFIG_MICRODVD_MUXER libavformat/microdvdenc.c
 CONFIG_MJPEG_MUXER libavformat/rawenc.c
 CONFIG_MLP_MUXER libavformat/rawenc.c
 CONFIG_MMF_MUXER libavformat/mmf.c libavformat/rawenc.c
 CONFIG_MOV_MUXER libavformat/movenc.c libavformat/avc.c libavformat/hevc.c libavformat/vpcc.c libavformat/movenchint.c libavformat/mov_chan.c libavformat/rtp.c libavformat/movenccenc.c libavformat/rawutils.c
-CONFIG_MP2_MUXER libavcodec/mpegaudiodata.c libavcodec/mpegaudiodecheader.c libavformat/mp3enc.c libavformat/rawenc.c libavformat/id3v2enc.c
+CONFIG_MP2_MUXER libavformat/rawenc.c
 CONFIG_MP3_MUXER libavcodec/mpegaudiodata.c libavcodec/mpegaudiodecheader.c libavformat/mp3enc.c libavformat/rawenc.c libavformat/id3v2enc.c
 CONFIG_MP4_MUXER
 CONFIG_MPEG1SYSTEM_MUXER libavformat/mpegenc.c
@@ -2043,15 +2078,15 @@ CONFIG_MPEG2DVD_MUXER libavformat/mpegenc.c
 CONFIG_MPEG2SVCD_MUXER libavformat/mpegenc.c
 CONFIG_MPEG2VIDEO_MUXER libavformat/rawenc.c
 CONFIG_MPEG2VOB_MUXER libavformat/mpegenc.c
-CONFIG_MPEGTS_MUXER libavcodec/mpeg4audio.c libavformat/mpegtsenc.c
+CONFIG_MPEGTS_MUXER libavformat/mpegtsenc.c
 CONFIG_MPJPEG_MUXER libavformat/mpjpeg.c
 CONFIG_MXF_MUXER libavcodec/dnxhddata.c libavformat/mxfenc.c libavformat/mxf.c libavformat/audiointerleave.c
 CONFIG_MXF_D10_MUXER
 CONFIG_MXF_OPATOM_MUXER
 CONFIG_NULL_MUXER libavformat/nullenc.c
 CONFIG_NUT_MUXER libavcodec/mpegaudiodata.c libavformat/nutenc.c libavformat/nut.c
-CONFIG_OGA_MUXER libavcodec/flac.c libavcodec/flacdata.c libavformat/oggenc.c libavformat/vorbiscomment.c
-CONFIG_OGG_MUXER libavcodec/flac.c libavcodec/flacdata.c libavcodec/vorbis_data.c libavformat/oggenc.c libavformat/vorbiscomment.c
+CONFIG_OGA_MUXER libavformat/oggenc.c libavformat/vorbiscomment.c
+CONFIG_OGG_MUXER libavformat/oggenc.c libavformat/vorbiscomment.c
 CONFIG_OGV_MUXER libavformat/oggenc.c libavformat/vorbiscomment.c
 CONFIG_OMA_MUXER libavformat/omaenc.c libavformat/rawenc.c libavformat/oma.c libavformat/id3v2enc.c
 CONFIG_OPUS_MUXER libavformat/oggenc.c libavformat/vorbiscomment.c
@@ -2084,6 +2119,7 @@ CONFIG_RTP_MUXER libavcodec/mpeg4audio.c libavformat/rtp.c libavformat/rtpenc_aa
 CONFIG_RTP_MPEGTS_MUXER libavformat/rtpenc_mpegts.c
 CONFIG_RTSP_MUXER libavformat/rtsp.c libavformat/rtspenc.c libavformat/httpauth.c libavformat/urldecode.c
 CONFIG_SAP_MUXER libavformat/sapenc.c
+CONFIG_SCC_MUXER libavformat/sccenc.c libavformat/subtitles.c
 CONFIG_SEGMENT_MUXER libavformat/segment.c
 CONFIG_STREAM_SEGMENT_MUXER
 CONFIG_SINGLEJPEG_MUXER libavformat/rawenc.c
@@ -2106,7 +2142,7 @@ CONFIG_VC1T_MUXER libavformat/vc1testenc.c
 CONFIG_VOC_MUXER libavformat/vocenc.c libavformat/voc.c
 CONFIG_W64_MUXER libavformat/wavenc.c libavformat/w64.c
 CONFIG_WAV_MUXER libavformat/wavenc.c
-CONFIG_WEBM_MUXER libavcodec/mpeg4audio.c libavcodec/mpegaudiodata.c libavcodec/flac.c libavcodec/flacdata.c libavcodec/vorbis_data.c libavformat/matroskaenc.c libavformat/matroska.c libavformat/avc.c libavformat/hevc.c libavformat/flacenc_header.c libavformat/avlanguage.c libavformat/wv.c libavformat/vorbiscomment.c libavformat/webmdashenc.c libavformat/webm_chunk.c
+CONFIG_WEBM_MUXER libavcodec/mpeg4audio.c libavformat/matroskaenc.c libavformat/matroska.c libavformat/avc.c libavformat/hevc.c libavformat/flacenc_header.c libavformat/avlanguage.c libavformat/wv.c libavformat/vorbiscomment.c libavformat/webmdashenc.c libavformat/webm_chunk.c
 CONFIG_WEBM_DASH_MANIFEST_MUXER libavformat/webmdashenc.c libavformat/matroska.c
 CONFIG_WEBM_CHUNK_MUXER libavformat/webm_chunk.c libavformat/matroska.c
 CONFIG_WEBP_MUXER libavformat/webpenc.c
@@ -2147,7 +2183,7 @@ CONFIG_G729_PARSER libavcodec/g729_parser.c
 CONFIG_GSM_PARSER libavcodec/gsm_parser.c
 CONFIG_H261_PARSER libavcodec/h261_parser.c
 CONFIG_H263_PARSER libavcodec/h263_parser.c
-CONFIG_H264_PARSER libavcodec/h264_parser.c libavcodec/h264_parse.c libavcodec/h2645_parse.c libavcodec/h264_ps.c libavcodec/h264_sei.c libavcodec/h264data.c
+CONFIG_H264_PARSER libavcodec/h264_parser.c libavcodec/h264_sei.c libavcodec/h264data.c
 CONFIG_HEVC_PARSER libavcodec/hevc_parser.c libavcodec/h2645_parse.c libavcodec/hevc_ps.c libavcodec/hevc_data.c
 CONFIG_MJPEG_PARSER libavcodec/mjpeg_parser.c
 CONFIG_MLP_PARSER libavcodec/mlp_parser.c libavcodec/mlp.c
@@ -2159,12 +2195,14 @@ CONFIG_PNG_PARSER libavcodec/png_parser.c libavcodec/png_parser.c
 CONFIG_PNM_PARSER libavcodec/pnm_parser.c libavcodec/pnm.c
 CONFIG_RV30_PARSER libavcodec/rv34_parser.c
 CONFIG_RV40_PARSER libavcodec/rv34_parser.c
+CONFIG_SIPR_PARSER libavcodec/sipr_parser.c
 CONFIG_TAK_PARSER libavcodec/tak_parser.c libavcodec/tak.c
 CONFIG_VC1_PARSER libavcodec/vc1_parser.c libavcodec/vc1.c libavcodec/vc1data.c libavcodec/simple_idct.c libavcodec/wmv2data.c
 CONFIG_VORBIS_PARSER
 CONFIG_VP3_PARSER libavcodec/vp3_parser.c
 CONFIG_VP8_PARSER libavcodec/vp8_parser.c
 CONFIG_VP9_PARSER libavcodec/vp9_parser.c
+CONFIG_XMA_PARSER libavcodec/xma_parser.c
 CONFIG_ASYNC_PROTOCOL libavformat/async.c
 CONFIG_BLURAY_PROTOCOL libavformat/bluray.c
 CONFIG_CACHE_PROTOCOL libavformat/cache.c
@@ -2185,6 +2223,7 @@ CONFIG_MMSH_PROTOCOL libavformat/mmsh.c libavformat/mms.c libavformat/asf.c
 CONFIG_MMST_PROTOCOL libavformat/mmst.c libavformat/mms.c libavformat/asf.c
 CONFIG_MD5_PROTOCOL libavformat/md5proto.c
 CONFIG_PIPE_PROTOCOL libavformat/file.c
+CONFIG_PROMPEG_PROTOCOL libavformat/prompeg.c
 CONFIG_RTMP_PROTOCOL libavformat/rtmpproto.c libavformat/rtmppkt.c
 CONFIG_RTMPE_PROTOCOL libavformat/rtmpproto.c libavformat/rtmppkt.c
 CONFIG_RTMPS_PROTOCOL libavformat/rtmpproto.c libavformat/rtmppkt.c

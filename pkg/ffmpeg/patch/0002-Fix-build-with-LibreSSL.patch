@@ -1,4 +1,4 @@
-From cfe9464c798d231d389053ba3b8f9b49ac0a578b Mon Sep 17 00:00:00 2001
+From cb1b1947c5e0526973c080ac7f70710363a37a44 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 28 Oct 2016 00:33:53 -0700
 Subject: [PATCH] Fix build with LibreSSL
@@ -9,7 +9,7 @@ Signed-off-by: Michael Forney <mforney@mforney.org>
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/libavformat/tls_openssl.c b/libavformat/tls_openssl.c
-index c551ac7..9712856 100644
+index 38af8a21c0..059954479a 100644
 --- a/libavformat/tls_openssl.c
 +++ b/libavformat/tls_openssl.c
 @@ -43,7 +43,7 @@ typedef struct TLSContext {
@@ -36,10 +36,10 @@ index c551ac7..9712856 100644
  
 -#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
 +#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
- #define GET_BIO_DATA(x) BIO_get_data(x);
+ #define GET_BIO_DATA(x) BIO_get_data(x)
  #else
- #define GET_BIO_DATA(x) (x)->ptr;
-@@ -133,7 +133,7 @@ static int url_bio_bputs(BIO *b, const char *str)
+ #define GET_BIO_DATA(x) (x)->ptr
+@@ -129,7 +129,7 @@ static int url_bio_bputs(BIO *b, const char *str)
      return url_bio_bwrite(b, str, strlen(str));
  }
  
@@ -48,7 +48,7 @@ index c551ac7..9712856 100644
  static BIO_METHOD url_bio_method = {
      .type = BIO_TYPE_SOURCE_SINK,
      .name = "urlprotocol bio",
-@@ -212,7 +212,7 @@ static int tls_close(URLContext *h)
+@@ -208,7 +208,7 @@ static int tls_close(URLContext *h)
          SSL_CTX_free(c->ctx);
      if (c->tls_shared.tcp)
          ffurl_close(c->tls_shared.tcp);
@@ -57,7 +57,7 @@ index c551ac7..9712856 100644
      if (c->url_bio_method)
          BIO_meth_free(c->url_bio_method);
  #endif
-@@ -265,7 +265,7 @@ static int tls_open(URLContext *h, const char *uri, int flags, AVDictionary **op
+@@ -266,7 +266,7 @@ static int tls_open(URLContext *h, const char *uri, int flags, AVDictionary **op
          ret = AVERROR(EIO);
          goto fail;
      }
@@ -67,5 +67,5 @@ index c551ac7..9712856 100644
      BIO_meth_set_write(p->url_bio_method, url_bio_bwrite);
      BIO_meth_set_read(p->url_bio_method, url_bio_bread);
 -- 
-2.10.2
+2.13.1
 

@@ -12,6 +12,5 @@ END {
 	print "#define AVUTIL_AVCONFIG_H"
 	printvar("HAVE_BIGENDIAN")
 	printvar("HAVE_FAST_UNALIGNED")
-	printvar("HAVE_INCOMPATIBLE_LIBAV_ABI")
 	print "#endif /* AVUTIL_AVCONFIG_H */"
 }
