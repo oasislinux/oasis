@@ -55,4 +55,4 @@ lib libfontconfig.a -d '$dir'/deps src/^(\
 	freetype/libfreetype.a.d\
 )
 
-fetch git
+fetch curl

@@ -44,10 +44,6 @@
 [submodule "pkg/file/src"]
 	path = pkg/file/src
 	url = https://github.com/file/file
-[submodule "pkg/fontconfig/src"]
-	path = pkg/fontconfig/src
-	url = https://anongit.freedesktop.org/git/fontconfig
-	ignore = all
 [submodule "pkg/freetype/src"]
 	path = pkg/freetype/src
 	url = git://git.sv.nongnu.org/freetype/freetype2.git
