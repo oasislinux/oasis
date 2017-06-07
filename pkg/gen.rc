@@ -50,6 +50,7 @@ subgen mdocml
 subgen mpv
 subgen msmtp
 subgen mtdev
+subgen mupdf
 subgen nasm
 subgen ncurses
 subgen netsurf

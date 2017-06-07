@@ -1,0 +1,25 @@
+From beb3fdfeb1556f7a2f4d5a4e59abd5847fead84d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 6 Jun 2017 23:32:04 -0700
+Subject: [PATCH] Remove hb.h include from font.c
+
+---
+ source/fitz/font.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/source/fitz/font.c b/source/fitz/font.c
+index b9c05b8d..6e83ba18 100644
+--- a/source/fitz/font.c
++++ b/source/fitz/font.c
+@@ -3,8 +3,6 @@
+ #include "font-imp.h"
+ 
+ #include <ft2build.h>
+-#include "hb.h"
+-#include "hb-ft.h"
+ 
+ #include FT_FREETYPE_H
+ #include FT_ADVANCES_H
+-- 
+2.13.1
+

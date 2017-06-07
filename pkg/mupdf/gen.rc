@@ -1,0 +1,56 @@
+# HTML/EPUB require harfbuzz, JPX requires openjpeg
+cflags\
+	-D 'FZ_ENABLE_JS=0' \
+	-D 'FZ_ENABLE_HTML=0' \
+	-D 'FZ_ENABLE_EPUB=0' \
+	-D 'FZ_ENABLE_JPX=0' \
+	-D NOTO_SMALL\
+	-D NOCJK\
+	-D SHARE_JPEG\
+	-isystem pkg/freetype/src/include\
+	-isystem pkg/jbig2dec/src\
+	-isystem '$builddir'/pkg/libjpeg-turbo/include\
+	-I '$srcdir'/include\
+	-I '$outdir'
+
+{
+	toolchain host
+	cflags -Wall
+
+	exe namedump scripts/namedump.c
+	exe hexdump scripts/hexdump.c
+} >tools.ninja && subninja tools.ninja
+
+rule namedump '$outdir/namedump $in $out'
+outs='$outdir'/^(mupdf/pdf/name-table.h pdf-name-table.h)
+build $"outs namedump '$srcdir'/resources/pdf/names.txt '|' '$outdir'/namedump
+
+rule hexdump '$outdir/hexdump -p $srcdir/ $out.tmp $in && mv $out.tmp $out'
+fonts=`{grep -v '^#' fonts.txt} ; checkstatus
+for(font in $fonts)
+	build '$outdir'/$font.c hexdump '$srcdir'/resources/fonts/$font '|' '$outdir'/hexdump
+
+phony deps\
+	pkg/libjpeg-turbo/headers\
+	'$builddir'/pkg/^(freetype jbig2dec)^/fetch.stamp\
+	'$outdir'/mupdf/pdf/name-table.h
+
+srcs=`{grep -v -e '^#' -e harfbuzz.c sources.txt} ; checkstatus
+lib libmupdf.a -d '$dir'/deps source/$srcs '$outdir'/$fonts.c\
+	'$builddir'/pkg/^(\
+		freetype/libfreetype.a.d\
+		jbig2dec/libjbig2dec.a\
+		libjpeg-turbo/libjpeg-turbo.a\
+	)
+
+exe bin/mutool -d '$dir'/deps source/tools/^(\
+	mutool.c muconvert.c mudraw.c murun.c\
+	pdfclean.c pdfcreate.c pdfextract.c pdfinfo.c pdfmerge.c pdfpages.c\
+	pdfportfolio.c pdfposter.c pdfshow.c\
+) libmupdf.a.d
+file bin/mutool '$outdir'/bin/mutool 755
+
+man -d docs/man 1 mutool.1
+
+fetch git
+gen_inputs='$dir'/^(sources.txt fonts.txt)

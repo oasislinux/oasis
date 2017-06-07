@@ -127,6 +127,10 @@
 [submodule "pkg/mtdev/src"]
 	path = pkg/mtdev/src
 	url = https://github.com/rydberg/mtdev
+[submodule "pkg/mupdf/src"]
+	path = pkg/mupdf/src
+	url = git://git.ghostscript.com/mupdf.git
+	ignore = all
 [submodule "pkg/netsurf/src"]
 	path = pkg/netsurf/src
 	url = https://github.com/michaelforney/netsurf
