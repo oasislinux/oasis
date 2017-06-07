@@ -65,6 +65,9 @@
 	path = pkg/iproute2/src
 	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
 	ignore = all
+[submodule "pkg/jbig2dec/src"]
+	path = pkg/jbig2dec/src
+	url = git://git.ghostscript.com/jbig2dec.git
 [submodule "pkg/libass/src"]
 	path = pkg/libass/src
 	url = https://github.com/libass/libass

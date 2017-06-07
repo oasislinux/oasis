@@ -22,6 +22,7 @@ subgen git
 subgen hostap
 subgen ii
 subgen iproute2
+subgen jbig2dec
 subgen kbd
 subgen less
 subgen libass
