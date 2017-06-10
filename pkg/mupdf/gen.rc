@@ -1,5 +1,8 @@
 # HTML/EPUB require harfbuzz, JPX requires openjpeg
 cflags\
+	-D NDEBUG\
+	-Wall\
+	-Wno-maybe-uninitialized\
 	-D 'FZ_ENABLE_JS=0' \
 	-D 'FZ_ENABLE_HTML=0' \
 	-D 'FZ_ENABLE_EPUB=0' \
