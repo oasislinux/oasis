@@ -31,7 +31,7 @@ for(font in $fonts)
 	build '$outdir'/$font.c hexdump '$srcdir'/resources/fonts/$font '|' '$outdir'/hexdump
 
 phony deps\
-	pkg/libjpeg-turbo/headers\
+	pkg/^(curl libjpeg-turbo)^/headers\
 	'$builddir'/pkg/^(freetype jbig2dec)^/fetch.stamp\
 	'$outdir'/mupdf/pdf/name-table.h
 
@@ -50,7 +50,28 @@ exe bin/mutool -d '$dir'/deps source/tools/^(\
 ) libmupdf.a.d
 file bin/mutool '$outdir'/bin/mutool 755
 
-man -d docs/man 1 mutool.1
+cc platform/x11/curl_stream.c ; with\
+	cflags '$cflags -isystem $builddir/pkg/curl/include'
+cc platform/x11/wl_main.c ; cflags=(\
+	-isystem '$builddir'/pkg/pixman/include\
+	-isystem '$builddir'/pkg/wayland/include\
+	-isystem '$builddir'/pkg/wayland-protocols/include\
+	-isystem pkg/libxkbcommon/src\
+) with cflags '$cflags '$"cflags
+exe bin/mupdf platform/x11/^(pdfapp.c curl_stream.c.o wl_main.c.o)\
+	libmupdf.a.d\
+	'$builddir'/pkg/^(\
+		curl/libcurl.a.d\
+		jbig2dec/libjbig2dec.a\
+		libxkbcommon/libxkbcommon.a\
+		pixman/libpixman.a\
+		wayland-protocols/xdg-shell-unstable-v5-protocol.c.o\
+		wayland/libwayland-client.a.d\
+		wayland/libwayland-cursor.a\
+	)
+file bin/mupdf '$outdir'/bin/mupdf 755
+
+man -d docs/man 1 mutool.1 mupdf.1
 
 fetch git
 gen_inputs='$dir'/^(sources.txt fonts.txt)
