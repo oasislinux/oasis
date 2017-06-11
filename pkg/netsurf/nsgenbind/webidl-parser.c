@@ -580,24 +580,24 @@ static const yytype_uint16 yyrline[] =
      509,   520,   548,   585,   589,   598,   600,   608,   615,   618,
      624,   628,   636,   646,   651,   652,   658,   659,   666,   674,
      682,   714,   732,   734,   736,   743,   751,   758,   768,   778,
-     788,   798,   811,   816,   818,   823,   825,   831,   841,   870,
-     879,   898,   918,   926,   928,   933,   943,   947,   959,   963,
-     972,   980,   988,  1004,  1008,  1016,  1023,  1030,  1040,  1047,
-    1057,  1069,  1073,  1085,  1089,  1098,  1102,  1111,  1119,  1128,
-    1140,  1142,  1148,  1152,  1160,  1165,  1174,  1178,  1186,  1188,
-    1193,  1199,  1203,  1214,  1218,  1230,  1235,  1241,  1247,  1255,
-    1267,  1281,  1293,  1297,  1306,  1310,  1319,  1329,  1339,  1350,
-    1357,  1362,  1367,  1372,  1377,  1382,  1387,  1392,  1397,  1402,
-    1407,  1412,  1417,  1422,  1427,  1432,  1437,  1442,  1447,  1452,
-    1457,  1462,  1467,  1472,  1477,  1482,  1487,  1492,  1497,  1502,
-    1507,  1512,  1517,  1522,  1527,  1537,  1542,  1547,  1552,  1557,
-    1562,  1567,  1572,  1577,  1582,  1587,  1592,  1597,  1602,  1607,
-    1612,  1617,  1622,  1627,  1632,  1637,  1642,  1650,  1655,  1663,
-    1668,  1677,  1679,  1689,  1697,  1702,  1708,  1717,  1721,  1732,
-    1737,  1743,  1748,  1755,  1760,  1765,  1773,  1778,  1790,  1792,
-    1794,  1799,  1804,  1812,  1819,  1824,  1829,  1837,  1844,  1849,
-    1854,  1867,  1871,  1879,  1888,  1892,  1897,  1906,  1910,  1917,
-    1920,  1925,  1927
+     788,   798,   811,   816,   818,   823,   825,   831,   841,   872,
+     881,   902,   923,   931,   933,   938,   948,   952,   964,   968,
+     977,   985,   993,  1009,  1013,  1021,  1028,  1035,  1045,  1052,
+    1062,  1074,  1078,  1090,  1094,  1103,  1107,  1116,  1124,  1133,
+    1145,  1147,  1153,  1157,  1165,  1170,  1179,  1183,  1191,  1193,
+    1198,  1204,  1208,  1219,  1223,  1235,  1240,  1246,  1252,  1260,
+    1272,  1286,  1298,  1302,  1311,  1315,  1324,  1334,  1344,  1355,
+    1362,  1367,  1372,  1377,  1382,  1387,  1392,  1397,  1402,  1407,
+    1412,  1417,  1422,  1427,  1432,  1437,  1442,  1447,  1452,  1457,
+    1462,  1467,  1472,  1477,  1482,  1487,  1492,  1497,  1502,  1507,
+    1512,  1517,  1522,  1527,  1532,  1542,  1547,  1552,  1557,  1562,
+    1567,  1572,  1577,  1582,  1587,  1592,  1597,  1602,  1607,  1612,
+    1617,  1622,  1627,  1632,  1637,  1642,  1647,  1655,  1660,  1668,
+    1673,  1682,  1684,  1695,  1703,  1708,  1714,  1723,  1727,  1738,
+    1743,  1749,  1756,  1765,  1772,  1779,  1789,  1794,  1808,  1810,
+    1812,  1819,  1826,  1836,  1843,  1848,  1855,  1865,  1872,  1877,
+    1884,  1901,  1905,  1913,  1922,  1926,  1931,  1940,  1944,  1951,
+    1954,  1959,  1961
 };
 #endif
 
@@ -2278,9 +2278,9 @@ yyreduce:
   case 54:
 #line 737 "webidl-parser.y" /* yacc.c:1646  */
     {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_LITERAL_INT,
-                                     NULL,
-                                     (void *)(yyvsp[0].value));
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_LITERAL_INT,
+                                            NULL,
+                                            (yyvsp[0].value));
         }
 #line 2286 "webidl-parser.c" /* yacc.c:1646  */
     break;
@@ -2296,9 +2296,9 @@ yyreduce:
   case 56:
 #line 752 "webidl-parser.y" /* yacc.c:1646  */
     {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_LITERAL_BOOL,
-                                     NULL,
-                                     (void *)true);
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_LITERAL_BOOL,
+                                            NULL,
+                                            (int)true);
         }
 #line 2304 "webidl-parser.c" /* yacc.c:1646  */
     break;
@@ -2306,9 +2306,9 @@ yyreduce:
   case 57:
 #line 759 "webidl-parser.y" /* yacc.c:1646  */
     {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_LITERAL_BOOL,
-                                     NULL,
-                                     (void *)false);
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_LITERAL_BOOL,
+                                            NULL,
+                                            (int)false);
         }
 #line 2314 "webidl-parser.c" /* yacc.c:1646  */
     break;
@@ -2399,63 +2399,68 @@ yyreduce:
 
                 /* deal with inherit modifier */
                 if ((yyvsp[-2].isit)) {
-                        attribute = webidl_node_new(WEBIDL_NODE_TYPE_MODIFIER,
+                        attribute = webidl_new_number_node(
+                                          WEBIDL_NODE_TYPE_MODIFIER,
                                           attribute,
-                                          (void *)WEBIDL_TYPE_MODIFIER_INHERIT);
+                                          WEBIDL_TYPE_MODIFIER_INHERIT);
                 }
 
                 /* deal with readonly modifier */
                 if ((yyvsp[-1].isit)) {
-                        attribute = webidl_node_new(WEBIDL_NODE_TYPE_MODIFIER,
+                        attribute = webidl_new_number_node(
+                                         WEBIDL_NODE_TYPE_MODIFIER,
                                          attribute,
-                                         (void *)WEBIDL_TYPE_MODIFIER_READONLY);
+                                         WEBIDL_TYPE_MODIFIER_READONLY);
                 }
 
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_ATTRIBUTE,
                                      NULL,
                                      attribute);
         }
-#line 2419 "webidl-parser.c" /* yacc.c:1646  */
+#line 2421 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 871 "webidl-parser.y" /* yacc.c:1646  */
+#line 873 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = (yyvsp[0].node);
         }
-#line 2427 "webidl-parser.c" /* yacc.c:1646  */
+#line 2429 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 880 "webidl-parser.y" /* yacc.c:1646  */
+#line 882 "webidl-parser.y" /* yacc.c:1646  */
     {
                 struct webidl_node *attribute;
 
-                attribute = webidl_node_new(WEBIDL_NODE_TYPE_MODIFIER,
-                                       (yyvsp[0].node), (void *)WEBIDL_TYPE_MODIFIER_STATIC);
+                attribute = webidl_new_number_node(WEBIDL_NODE_TYPE_MODIFIER,
+                                                   (yyvsp[0].node),
+                                                   WEBIDL_TYPE_MODIFIER_STATIC);
 
                 /* deal with readonly modifier */
                 if ((yyvsp[-1].isit)) {
-                        attribute = webidl_node_new(WEBIDL_NODE_TYPE_MODIFIER,
+                        attribute = webidl_new_number_node(
+                                         WEBIDL_NODE_TYPE_MODIFIER,
                                          attribute,
-                                         (void *)WEBIDL_TYPE_MODIFIER_READONLY);
+                                         WEBIDL_TYPE_MODIFIER_READONLY);
                 }
 
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_ATTRIBUTE,
                                      NULL,
                                      attribute);
         }
-#line 2449 "webidl-parser.c" /* yacc.c:1646  */
+#line 2453 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 899 "webidl-parser.y" /* yacc.c:1646  */
+#line 903 "webidl-parser.y" /* yacc.c:1646  */
     {
                 struct webidl_node *operation;
 
                 /* add static modifier */
-                operation = webidl_node_new(WEBIDL_NODE_TYPE_MODIFIER,
-                                       (yyvsp[0].node), (void *)WEBIDL_TYPE_MODIFIER_STATIC);
+                operation = webidl_new_number_node(WEBIDL_NODE_TYPE_MODIFIER,
+                                                   (yyvsp[0].node),
+                                                   WEBIDL_TYPE_MODIFIER_STATIC);
 
                 /* put return type on the operation */
                 operation = webidl_node_prepend((yyvsp[-1].node), operation);
@@ -2464,78 +2469,78 @@ yyreduce:
                                      NULL,
                                      operation);
         }
-#line 2468 "webidl-parser.c" /* yacc.c:1646  */
+#line 2473 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 919 "webidl-parser.y" /* yacc.c:1646  */
+#line 924 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_IDENT, (yyvsp[-2].node), (yyvsp[-1].text));
         }
-#line 2476 "webidl-parser.c" /* yacc.c:1646  */
+#line 2481 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 934 "webidl-parser.y" /* yacc.c:1646  */
+#line 939 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("required");
         }
-#line 2484 "webidl-parser.c" /* yacc.c:1646  */
+#line 2489 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 943 "webidl-parser.y" /* yacc.c:1646  */
+#line 948 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.isit) = false;
         }
-#line 2492 "webidl-parser.c" /* yacc.c:1646  */
+#line 2497 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 948 "webidl-parser.y" /* yacc.c:1646  */
+#line 953 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.isit) = true;
         }
-#line 2500 "webidl-parser.c" /* yacc.c:1646  */
+#line 2505 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 959 "webidl-parser.y" /* yacc.c:1646  */
+#line 964 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.isit) = false;
         }
-#line 2508 "webidl-parser.c" /* yacc.c:1646  */
+#line 2513 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 964 "webidl-parser.y" /* yacc.c:1646  */
+#line 969 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.isit) = true;
         }
-#line 2516 "webidl-parser.c" /* yacc.c:1646  */
+#line 2521 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 973 "webidl-parser.y" /* yacc.c:1646  */
+#line 978 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* put return type on the operation */
                 (yyvsp[0].node) = webidl_node_prepend((yyvsp[-1].node), (yyvsp[0].node));
 
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_OPERATION, NULL, (yyvsp[0].node));
         }
-#line 2527 "webidl-parser.c" /* yacc.c:1646  */
+#line 2532 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 981 "webidl-parser.y" /* yacc.c:1646  */
+#line 986 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_OPERATION, NULL, (yyvsp[0].node));
         }
-#line 2535 "webidl-parser.c" /* yacc.c:1646  */
+#line 2540 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 989 "webidl-parser.y" /* yacc.c:1646  */
+#line 994 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* put return type on the operation */
                 (yyval.node) = webidl_node_prepend((yyvsp[0].node), (yyvsp[-1].node));
@@ -2546,147 +2551,147 @@ yyreduce:
                 /* special */
                 (yyval.node) = webidl_node_prepend((yyval.node), (yyvsp[-3].node));
         }
-#line 2550 "webidl-parser.c" /* yacc.c:1646  */
+#line 2555 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 1004 "webidl-parser.y" /* yacc.c:1646  */
+#line 1009 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2558 "webidl-parser.c" /* yacc.c:1646  */
+#line 2563 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 1009 "webidl-parser.y" /* yacc.c:1646  */
+#line 1014 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_prepend((yyvsp[0].node), (yyvsp[-1].node));
         }
-#line 2566 "webidl-parser.c" /* yacc.c:1646  */
+#line 2571 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 1017 "webidl-parser.y" /* yacc.c:1646  */
+#line 1022 "webidl-parser.y" /* yacc.c:1646  */
     {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_SPECIAL,
-                                     NULL,
-                                     (void *)WEBIDL_TYPE_SPECIAL_GETTER);
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_SPECIAL,
+                                            NULL,
+                                            WEBIDL_TYPE_SPECIAL_GETTER);
         }
-#line 2576 "webidl-parser.c" /* yacc.c:1646  */
+#line 2581 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 1024 "webidl-parser.y" /* yacc.c:1646  */
+#line 1029 "webidl-parser.y" /* yacc.c:1646  */
     {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_SPECIAL,
-                                     NULL,
-                                     (void *)WEBIDL_TYPE_SPECIAL_SETTER);
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_SPECIAL,
+                                            NULL,
+                                            WEBIDL_TYPE_SPECIAL_SETTER);
         }
-#line 2586 "webidl-parser.c" /* yacc.c:1646  */
+#line 2591 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 1031 "webidl-parser.y" /* yacc.c:1646  */
+#line 1036 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* second edition removed this special but the
                  * specifications still use it!
                  */
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_SPECIAL,
-                                     NULL,
-                                     (void *)WEBIDL_TYPE_SPECIAL_CREATOR);
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_SPECIAL,
+                                            NULL,
+                                            WEBIDL_TYPE_SPECIAL_CREATOR);
         }
-#line 2599 "webidl-parser.c" /* yacc.c:1646  */
+#line 2604 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 1041 "webidl-parser.y" /* yacc.c:1646  */
+#line 1046 "webidl-parser.y" /* yacc.c:1646  */
     {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_SPECIAL,
-                                     NULL,
-                                     (void *)WEBIDL_TYPE_SPECIAL_DELETER);
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_SPECIAL,
+                                            NULL,
+                                            WEBIDL_TYPE_SPECIAL_DELETER);
         }
-#line 2609 "webidl-parser.c" /* yacc.c:1646  */
+#line 2614 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 1048 "webidl-parser.y" /* yacc.c:1646  */
+#line 1053 "webidl-parser.y" /* yacc.c:1646  */
     {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_SPECIAL,
-                                     NULL,
-                                     (void *)WEBIDL_TYPE_SPECIAL_LEGACYCALLER);
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_SPECIAL,
+                                            NULL,
+                                            WEBIDL_TYPE_SPECIAL_LEGACYCALLER);
         }
-#line 2619 "webidl-parser.c" /* yacc.c:1646  */
+#line 2624 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 1058 "webidl-parser.y" /* yacc.c:1646  */
+#line 1063 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* argument list */
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_LIST, NULL, (yyvsp[-2].node));
 
                 (yyval.node) = webidl_node_prepend((yyvsp[-4].node), (yyval.node)); /* identifier */
         }
-#line 2630 "webidl-parser.c" /* yacc.c:1646  */
+#line 2635 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 1069 "webidl-parser.y" /* yacc.c:1646  */
+#line 1074 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2638 "webidl-parser.c" /* yacc.c:1646  */
+#line 2643 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 1074 "webidl-parser.y" /* yacc.c:1646  */
+#line 1079 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_IDENT, NULL, (yyvsp[0].text));
         }
-#line 2646 "webidl-parser.c" /* yacc.c:1646  */
+#line 2651 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 1085 "webidl-parser.y" /* yacc.c:1646  */
+#line 1090 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2654 "webidl-parser.c" /* yacc.c:1646  */
+#line 2659 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 1090 "webidl-parser.y" /* yacc.c:1646  */
+#line 1095 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_append((yyvsp[0].node), (yyvsp[-1].node));
         }
-#line 2662 "webidl-parser.c" /* yacc.c:1646  */
+#line 2667 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 1098 "webidl-parser.y" /* yacc.c:1646  */
+#line 1103 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2670 "webidl-parser.c" /* yacc.c:1646  */
+#line 2675 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 1103 "webidl-parser.y" /* yacc.c:1646  */
+#line 1108 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_append((yyvsp[0].node), (yyvsp[-1].node));
         }
-#line 2678 "webidl-parser.c" /* yacc.c:1646  */
+#line 2683 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 1112 "webidl-parser.y" /* yacc.c:1646  */
+#line 1117 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = (yyvsp[0].node);
         }
-#line 2686 "webidl-parser.c" /* yacc.c:1646  */
+#line 2691 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 1120 "webidl-parser.y" /* yacc.c:1646  */
+#line 1125 "webidl-parser.y" /* yacc.c:1646  */
     {
             struct webidl_node *argument;
             argument = webidl_node_new(WEBIDL_NODE_TYPE_IDENT, NULL, (yyvsp[-1].text));
@@ -2694,11 +2699,11 @@ yyreduce:
             argument = webidl_node_prepend(argument, (yyvsp[-2].node)); /* add type node */
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_ARGUMENT, NULL, argument);
         }
-#line 2698 "webidl-parser.c" /* yacc.c:1646  */
+#line 2703 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 1129 "webidl-parser.y" /* yacc.c:1646  */
+#line 1134 "webidl-parser.y" /* yacc.c:1646  */
     {
             struct webidl_node *argument;
             argument = webidl_node_new(WEBIDL_NODE_TYPE_IDENT, NULL, (yyvsp[0].text));
@@ -2706,132 +2711,132 @@ yyreduce:
             argument = webidl_node_prepend(argument, (yyvsp[-2].node)); /* add type node */
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_ARGUMENT, NULL, argument);
         }
-#line 2710 "webidl-parser.c" /* yacc.c:1646  */
+#line 2715 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 1148 "webidl-parser.y" /* yacc.c:1646  */
+#line 1153 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2718 "webidl-parser.c" /* yacc.c:1646  */
+#line 2723 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 1153 "webidl-parser.y" /* yacc.c:1646  */
+#line 1158 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_ELLIPSIS, NULL, NULL);
         }
-#line 2726 "webidl-parser.c" /* yacc.c:1646  */
+#line 2731 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 1161 "webidl-parser.y" /* yacc.c:1646  */
-    {
-                (yyval.node) = NULL;
-        }
-#line 2734 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 105:
 #line 1166 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2742 "webidl-parser.c" /* yacc.c:1646  */
+#line 2739 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
-  case 106:
-#line 1174 "webidl-parser.y" /* yacc.c:1646  */
+  case 105:
+#line 1171 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2750 "webidl-parser.c" /* yacc.c:1646  */
+#line 2747 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
-  case 107:
+  case 106:
 #line 1179 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2758 "webidl-parser.c" /* yacc.c:1646  */
+#line 2755 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
-  case 111:
-#line 1199 "webidl-parser.y" /* yacc.c:1646  */
+  case 107:
+#line 1184 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2766 "webidl-parser.c" /* yacc.c:1646  */
+#line 2763 "webidl-parser.c" /* yacc.c:1646  */
+    break;
+
+  case 111:
+#line 1204 "webidl-parser.y" /* yacc.c:1646  */
+    {
+                (yyval.node) = NULL;
+        }
+#line 2771 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 112:
-#line 1204 "webidl-parser.y" /* yacc.c:1646  */
+#line 1209 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE,
                                      (yyvsp[-1].node),
                                      (yyvsp[-2].node));
         }
-#line 2776 "webidl-parser.c" /* yacc.c:1646  */
+#line 2781 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 113:
-#line 1214 "webidl-parser.y" /* yacc.c:1646  */
+#line 1219 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2784 "webidl-parser.c" /* yacc.c:1646  */
+#line 2789 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 114:
-#line 1219 "webidl-parser.y" /* yacc.c:1646  */
+#line 1224 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE,
                                      (yyvsp[0].node),
                                      (yyvsp[-1].node));
         }
-#line 2794 "webidl-parser.c" /* yacc.c:1646  */
+#line 2799 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 115:
-#line 1231 "webidl-parser.y" /* yacc.c:1646  */
+#line 1236 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE, (yyvsp[0].node), (yyvsp[-2].node));
         }
-#line 2802 "webidl-parser.c" /* yacc.c:1646  */
+#line 2807 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 116:
-#line 1236 "webidl-parser.y" /* yacc.c:1646  */
+#line 1241 "webidl-parser.y" /* yacc.c:1646  */
     {
             /* @todo should be a WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE_SQUARE */
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE, (yyvsp[0].node), (yyvsp[-2].node));
         }
-#line 2811 "webidl-parser.c" /* yacc.c:1646  */
+#line 2816 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 1242 "webidl-parser.y" /* yacc.c:1646  */
+#line 1247 "webidl-parser.y" /* yacc.c:1646  */
     {
             /* @todo should be a WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE_CURLY */
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE, (yyvsp[0].node), (yyvsp[-2].node));
         }
-#line 2820 "webidl-parser.c" /* yacc.c:1646  */
+#line 2825 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 118:
-#line 1248 "webidl-parser.y" /* yacc.c:1646  */
+#line 1253 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* Constructor */
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_IDENT,
                                      NULL,
                                      strdup("Constructor"));
         }
-#line 2831 "webidl-parser.c" /* yacc.c:1646  */
+#line 2836 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 119:
-#line 1256 "webidl-parser.y" /* yacc.c:1646  */
+#line 1261 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* Constructor */
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_OPERATION,
@@ -2842,11 +2847,11 @@ yyreduce:
                                                      NULL,
                                                      (yyvsp[-1].node)));
         }
-#line 2846 "webidl-parser.c" /* yacc.c:1646  */
+#line 2851 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 120:
-#line 1268 "webidl-parser.y" /* yacc.c:1646  */
+#line 1273 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* Constructor */
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_OPERATION,
@@ -2859,46 +2864,46 @@ yyreduce:
                                                                      (yyvsp[-3].text)),
                                                      (yyvsp[-1].node)));
         }
-#line 2863 "webidl-parser.c" /* yacc.c:1646  */
+#line 2868 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 121:
-#line 1282 "webidl-parser.y" /* yacc.c:1646  */
+#line 1287 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_append((yyvsp[0].node),
                                         webidl_node_new(WEBIDL_NODE_TYPE_IDENT,
                                                         NULL,
                                                         (yyvsp[-1].text)));
         }
-#line 2874 "webidl-parser.c" /* yacc.c:1646  */
+#line 2879 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 122:
-#line 1293 "webidl-parser.y" /* yacc.c:1646  */
+#line 1298 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2882 "webidl-parser.c" /* yacc.c:1646  */
+#line 2887 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 123:
-#line 1298 "webidl-parser.y" /* yacc.c:1646  */
+#line 1303 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = (yyvsp[0].node);
         }
-#line 2890 "webidl-parser.c" /* yacc.c:1646  */
+#line 2895 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 124:
-#line 1306 "webidl-parser.y" /* yacc.c:1646  */
+#line 1311 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 2898 "webidl-parser.c" /* yacc.c:1646  */
+#line 2903 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 125:
-#line 1311 "webidl-parser.y" /* yacc.c:1646  */
+#line 1316 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_prepend(
                         webidl_node_new(WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE,
@@ -2906,11 +2911,11 @@ yyreduce:
                                         (yyvsp[-2].node)),
                         (yyvsp[0].node));
         }
-#line 2910 "webidl-parser.c" /* yacc.c:1646  */
+#line 2915 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 126:
-#line 1320 "webidl-parser.y" /* yacc.c:1646  */
+#line 1325 "webidl-parser.y" /* yacc.c:1646  */
     {
             /* @todo should be a WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE_SQUARE */
             (yyval.node) = webidl_node_prepend(
@@ -2919,11 +2924,11 @@ yyreduce:
                                      (yyvsp[-2].node)),
                      (yyvsp[0].node));
         }
-#line 2923 "webidl-parser.c" /* yacc.c:1646  */
+#line 2928 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 127:
-#line 1330 "webidl-parser.y" /* yacc.c:1646  */
+#line 1335 "webidl-parser.y" /* yacc.c:1646  */
     {
             /* @todo should be a WEBIDL_NODE_TYPE_EXTENDED_ATTRIBUTE_CURLY */
             (yyval.node) = webidl_node_prepend(
@@ -2932,812 +2937,843 @@ yyreduce:
                                      (yyvsp[-2].node)),
                      (yyvsp[0].node));
         }
-#line 2936 "webidl-parser.c" /* yacc.c:1646  */
+#line 2941 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 128:
-#line 1340 "webidl-parser.y" /* yacc.c:1646  */
+#line 1345 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_append((yyvsp[0].node),
                                         webidl_node_new(WEBIDL_NODE_TYPE_IDENT,
                                                         NULL,
                                                         (yyvsp[-1].text)));
         }
-#line 2947 "webidl-parser.c" /* yacc.c:1646  */
+#line 2952 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 129:
-#line 1351 "webidl-parser.y" /* yacc.c:1646  */
+#line 1356 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* @todo loosing base info here might break the attribute */
                 (yyval.text) = calloc(1, 32);
                 snprintf((yyval.text), 32, "%ld", (yyvsp[0].value));
         }
-#line 2957 "webidl-parser.c" /* yacc.c:1646  */
+#line 2962 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 130:
-#line 1358 "webidl-parser.y" /* yacc.c:1646  */
-    {
-                (yyval.text) = (yyvsp[0].text);
-        }
-#line 2965 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 131:
 #line 1363 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = (yyvsp[0].text);
         }
-#line 2973 "webidl-parser.c" /* yacc.c:1646  */
+#line 2970 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
-  case 132:
+  case 131:
 #line 1368 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = (yyvsp[0].text);
         }
-#line 2981 "webidl-parser.c" /* yacc.c:1646  */
+#line 2978 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
-  case 133:
+  case 132:
 #line 1373 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = (yyvsp[0].text);
         }
-#line 2989 "webidl-parser.c" /* yacc.c:1646  */
+#line 2986 "webidl-parser.c" /* yacc.c:1646  */
+    break;
+
+  case 133:
+#line 1378 "webidl-parser.y" /* yacc.c:1646  */
+    {
+                (yyval.text) = (yyvsp[0].text);
+        }
+#line 2994 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 134:
-#line 1378 "webidl-parser.y" /* yacc.c:1646  */
+#line 1383 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("-");
         }
-#line 2997 "webidl-parser.c" /* yacc.c:1646  */
+#line 3002 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 135:
-#line 1383 "webidl-parser.y" /* yacc.c:1646  */
+#line 1388 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup(".");
         }
-#line 3005 "webidl-parser.c" /* yacc.c:1646  */
+#line 3010 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 136:
-#line 1388 "webidl-parser.y" /* yacc.c:1646  */
+#line 1393 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("...");
         }
-#line 3013 "webidl-parser.c" /* yacc.c:1646  */
+#line 3018 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 137:
-#line 1393 "webidl-parser.y" /* yacc.c:1646  */
+#line 1398 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup(":");
         }
-#line 3021 "webidl-parser.c" /* yacc.c:1646  */
+#line 3026 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 138:
-#line 1398 "webidl-parser.y" /* yacc.c:1646  */
+#line 1403 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup(";");
         }
-#line 3029 "webidl-parser.c" /* yacc.c:1646  */
+#line 3034 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 139:
-#line 1403 "webidl-parser.y" /* yacc.c:1646  */
+#line 1408 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("<");
         }
-#line 3037 "webidl-parser.c" /* yacc.c:1646  */
+#line 3042 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 140:
-#line 1408 "webidl-parser.y" /* yacc.c:1646  */
+#line 1413 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("=");
         }
-#line 3045 "webidl-parser.c" /* yacc.c:1646  */
+#line 3050 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 141:
-#line 1413 "webidl-parser.y" /* yacc.c:1646  */
+#line 1418 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup(">");
         }
-#line 3053 "webidl-parser.c" /* yacc.c:1646  */
+#line 3058 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 142:
-#line 1418 "webidl-parser.y" /* yacc.c:1646  */
+#line 1423 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("?");
         }
-#line 3061 "webidl-parser.c" /* yacc.c:1646  */
+#line 3066 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 143:
-#line 1423 "webidl-parser.y" /* yacc.c:1646  */
+#line 1428 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("Date");
         }
-#line 3069 "webidl-parser.c" /* yacc.c:1646  */
+#line 3074 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 144:
-#line 1428 "webidl-parser.y" /* yacc.c:1646  */
+#line 1433 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("DOMString");
         }
-#line 3077 "webidl-parser.c" /* yacc.c:1646  */
+#line 3082 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 145:
-#line 1433 "webidl-parser.y" /* yacc.c:1646  */
+#line 1438 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("Infinity");
         }
-#line 3085 "webidl-parser.c" /* yacc.c:1646  */
+#line 3090 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 146:
-#line 1438 "webidl-parser.y" /* yacc.c:1646  */
+#line 1443 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("NaN");
         }
-#line 3093 "webidl-parser.c" /* yacc.c:1646  */
+#line 3098 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 147:
-#line 1443 "webidl-parser.y" /* yacc.c:1646  */
+#line 1448 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("any");
         }
-#line 3101 "webidl-parser.c" /* yacc.c:1646  */
+#line 3106 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 148:
-#line 1448 "webidl-parser.y" /* yacc.c:1646  */
+#line 1453 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("boolean");
         }
-#line 3109 "webidl-parser.c" /* yacc.c:1646  */
+#line 3114 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 149:
-#line 1453 "webidl-parser.y" /* yacc.c:1646  */
+#line 1458 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("byte");
         }
-#line 3117 "webidl-parser.c" /* yacc.c:1646  */
+#line 3122 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 150:
-#line 1458 "webidl-parser.y" /* yacc.c:1646  */
+#line 1463 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("double");
         }
-#line 3125 "webidl-parser.c" /* yacc.c:1646  */
+#line 3130 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 151:
-#line 1463 "webidl-parser.y" /* yacc.c:1646  */
+#line 1468 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.text) = strdup("false");
         }
-#line 3133 "webidl-parser.c" /* yacc.c:1646  */
+#line 3138 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 152:
-#line 1468 "webidl-parser.y" /* yacc.c:1646  */
+#line 1473 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("float");
         }
-#line 3141 "webidl-parser.c" /* yacc.c:1646  */
+#line 3146 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 153:
-#line 1473 "webidl-parser.y" /* yacc.c:1646  */
+#line 1478 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("long");
         }
-#line 3149 "webidl-parser.c" /* yacc.c:1646  */
+#line 3154 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 154:
-#line 1478 "webidl-parser.y" /* yacc.c:1646  */
+#line 1483 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("null");
         }
-#line 3157 "webidl-parser.c" /* yacc.c:1646  */
+#line 3162 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 155:
-#line 1483 "webidl-parser.y" /* yacc.c:1646  */
+#line 1488 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("object");
         }
-#line 3165 "webidl-parser.c" /* yacc.c:1646  */
+#line 3170 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 156:
-#line 1488 "webidl-parser.y" /* yacc.c:1646  */
+#line 1493 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("octet");
         }
-#line 3173 "webidl-parser.c" /* yacc.c:1646  */
+#line 3178 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 157:
-#line 1493 "webidl-parser.y" /* yacc.c:1646  */
+#line 1498 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("or");
         }
-#line 3181 "webidl-parser.c" /* yacc.c:1646  */
+#line 3186 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 158:
-#line 1498 "webidl-parser.y" /* yacc.c:1646  */
+#line 1503 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("optional");
         }
-#line 3189 "webidl-parser.c" /* yacc.c:1646  */
+#line 3194 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 159:
-#line 1503 "webidl-parser.y" /* yacc.c:1646  */
+#line 1508 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("sequence");
         }
-#line 3197 "webidl-parser.c" /* yacc.c:1646  */
+#line 3202 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 160:
-#line 1508 "webidl-parser.y" /* yacc.c:1646  */
+#line 1513 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("short");
         }
-#line 3205 "webidl-parser.c" /* yacc.c:1646  */
+#line 3210 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 161:
-#line 1513 "webidl-parser.y" /* yacc.c:1646  */
+#line 1518 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("true");
         }
-#line 3213 "webidl-parser.c" /* yacc.c:1646  */
+#line 3218 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 162:
-#line 1518 "webidl-parser.y" /* yacc.c:1646  */
+#line 1523 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("unsigned");
         }
-#line 3221 "webidl-parser.c" /* yacc.c:1646  */
+#line 3226 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 163:
-#line 1523 "webidl-parser.y" /* yacc.c:1646  */
+#line 1528 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("void");
         }
-#line 3229 "webidl-parser.c" /* yacc.c:1646  */
+#line 3234 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 164:
-#line 1528 "webidl-parser.y" /* yacc.c:1646  */
+#line 1533 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = (yyvsp[0].text);
         }
-#line 3237 "webidl-parser.c" /* yacc.c:1646  */
+#line 3242 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 165:
-#line 1538 "webidl-parser.y" /* yacc.c:1646  */
+#line 1543 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("attribute");
         }
-#line 3245 "webidl-parser.c" /* yacc.c:1646  */
+#line 3250 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 166:
-#line 1543 "webidl-parser.y" /* yacc.c:1646  */
+#line 1548 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("callback");
         }
-#line 3253 "webidl-parser.c" /* yacc.c:1646  */
+#line 3258 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 167:
-#line 1548 "webidl-parser.y" /* yacc.c:1646  */
+#line 1553 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("const");
         }
-#line 3261 "webidl-parser.c" /* yacc.c:1646  */
+#line 3266 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 168:
-#line 1553 "webidl-parser.y" /* yacc.c:1646  */
+#line 1558 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("creator");
         }
-#line 3269 "webidl-parser.c" /* yacc.c:1646  */
+#line 3274 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 169:
-#line 1558 "webidl-parser.y" /* yacc.c:1646  */
+#line 1563 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("deleter");
         }
-#line 3277 "webidl-parser.c" /* yacc.c:1646  */
+#line 3282 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 170:
-#line 1563 "webidl-parser.y" /* yacc.c:1646  */
+#line 1568 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("dictionary");
         }
-#line 3285 "webidl-parser.c" /* yacc.c:1646  */
+#line 3290 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 171:
-#line 1568 "webidl-parser.y" /* yacc.c:1646  */
+#line 1573 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("enum");
         }
-#line 3293 "webidl-parser.c" /* yacc.c:1646  */
+#line 3298 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 172:
-#line 1573 "webidl-parser.y" /* yacc.c:1646  */
+#line 1578 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("exception");
         }
-#line 3301 "webidl-parser.c" /* yacc.c:1646  */
+#line 3306 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 173:
-#line 1578 "webidl-parser.y" /* yacc.c:1646  */
+#line 1583 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("getter");
         }
-#line 3309 "webidl-parser.c" /* yacc.c:1646  */
+#line 3314 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 174:
-#line 1583 "webidl-parser.y" /* yacc.c:1646  */
+#line 1588 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("implements");
         }
-#line 3317 "webidl-parser.c" /* yacc.c:1646  */
+#line 3322 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 175:
-#line 1588 "webidl-parser.y" /* yacc.c:1646  */
+#line 1593 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("inherit");
         }
-#line 3325 "webidl-parser.c" /* yacc.c:1646  */
+#line 3330 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 176:
-#line 1593 "webidl-parser.y" /* yacc.c:1646  */
+#line 1598 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("interface");
         }
-#line 3333 "webidl-parser.c" /* yacc.c:1646  */
+#line 3338 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 177:
-#line 1598 "webidl-parser.y" /* yacc.c:1646  */
+#line 1603 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("iterable");
         }
-#line 3341 "webidl-parser.c" /* yacc.c:1646  */
+#line 3346 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 178:
-#line 1603 "webidl-parser.y" /* yacc.c:1646  */
+#line 1608 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("legacycaller");
         }
-#line 3349 "webidl-parser.c" /* yacc.c:1646  */
+#line 3354 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 179:
-#line 1608 "webidl-parser.y" /* yacc.c:1646  */
+#line 1613 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("legacyiterable");
         }
-#line 3357 "webidl-parser.c" /* yacc.c:1646  */
+#line 3362 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 180:
-#line 1613 "webidl-parser.y" /* yacc.c:1646  */
+#line 1618 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("partial");
         }
-#line 3365 "webidl-parser.c" /* yacc.c:1646  */
+#line 3370 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 181:
-#line 1618 "webidl-parser.y" /* yacc.c:1646  */
+#line 1623 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("required");
         }
-#line 3373 "webidl-parser.c" /* yacc.c:1646  */
+#line 3378 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 182:
-#line 1623 "webidl-parser.y" /* yacc.c:1646  */
+#line 1628 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("setter");
         }
-#line 3381 "webidl-parser.c" /* yacc.c:1646  */
+#line 3386 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 183:
-#line 1628 "webidl-parser.y" /* yacc.c:1646  */
+#line 1633 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("static");
         }
-#line 3389 "webidl-parser.c" /* yacc.c:1646  */
+#line 3394 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 184:
-#line 1633 "webidl-parser.y" /* yacc.c:1646  */
+#line 1638 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("stringifier");
         }
-#line 3397 "webidl-parser.c" /* yacc.c:1646  */
+#line 3402 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 185:
-#line 1638 "webidl-parser.y" /* yacc.c:1646  */
+#line 1643 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("typedef");
         }
-#line 3405 "webidl-parser.c" /* yacc.c:1646  */
+#line 3410 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 186:
-#line 1643 "webidl-parser.y" /* yacc.c:1646  */
+#line 1648 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup("unrestricted");
         }
-#line 3413 "webidl-parser.c" /* yacc.c:1646  */
+#line 3418 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 187:
-#line 1651 "webidl-parser.y" /* yacc.c:1646  */
+#line 1656 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = (yyvsp[0].text);
         }
-#line 3421 "webidl-parser.c" /* yacc.c:1646  */
+#line 3426 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 188:
-#line 1656 "webidl-parser.y" /* yacc.c:1646  */
+#line 1661 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.text) = strdup(",");
         }
-#line 3429 "webidl-parser.c" /* yacc.c:1646  */
+#line 3434 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 189:
-#line 1664 "webidl-parser.y" /* yacc.c:1646  */
+#line 1669 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE, NULL, (yyvsp[0].node));
         }
-#line 3437 "webidl-parser.c" /* yacc.c:1646  */
+#line 3442 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 190:
-#line 1669 "webidl-parser.y" /* yacc.c:1646  */
+#line 1674 "webidl-parser.y" /* yacc.c:1646  */
     {
             /* todo handle suffix */
             (yyval.node) = (yyvsp[-1].node);
         }
-#line 3446 "webidl-parser.c" /* yacc.c:1646  */
+#line 3451 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 192:
-#line 1680 "webidl-parser.y" /* yacc.c:1646  */
+#line 1685 "webidl-parser.y" /* yacc.c:1646  */
     {
                 /* todo deal with TypeSuffixStartingWithArray */
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE,
-                                     NULL, (void *)WEBIDL_TYPE_ANY);
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                            NULL,
+                                            WEBIDL_TYPE_ANY);
         }
-#line 3456 "webidl-parser.c" /* yacc.c:1646  */
+#line 3462 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 193:
-#line 1690 "webidl-parser.y" /* yacc.c:1646  */
+#line 1696 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_prepend((yyvsp[-4].node), webidl_node_prepend((yyvsp[-2].node), (yyvsp[-1].node)));
         }
-#line 3464 "webidl-parser.c" /* yacc.c:1646  */
+#line 3470 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 194:
-#line 1698 "webidl-parser.y" /* yacc.c:1646  */
+#line 1704 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE, NULL, (yyvsp[0].node));
         }
-#line 3472 "webidl-parser.c" /* yacc.c:1646  */
+#line 3478 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 195:
-#line 1703 "webidl-parser.y" /* yacc.c:1646  */
+#line 1709 "webidl-parser.y" /* yacc.c:1646  */
     {
             /* todo handle suffix */
             (yyval.node) = (yyvsp[-1].node);
         }
-#line 3481 "webidl-parser.c" /* yacc.c:1646  */
+#line 3487 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 196:
-#line 1709 "webidl-parser.y" /* yacc.c:1646  */
+#line 1715 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 3489 "webidl-parser.c" /* yacc.c:1646  */
+#line 3495 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 197:
-#line 1717 "webidl-parser.y" /* yacc.c:1646  */
+#line 1723 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = NULL;
         }
-#line 3497 "webidl-parser.c" /* yacc.c:1646  */
+#line 3503 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 198:
-#line 1722 "webidl-parser.y" /* yacc.c:1646  */
+#line 1728 "webidl-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = webidl_node_prepend((yyvsp[-1].node), (yyvsp[0].node));
         }
-#line 3505 "webidl-parser.c" /* yacc.c:1646  */
+#line 3511 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 199:
-#line 1733 "webidl-parser.y" /* yacc.c:1646  */
+#line 1739 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.node) = webidl_node_prepend((yyvsp[-1].node), (yyvsp[0].node));
         }
-#line 3513 "webidl-parser.c" /* yacc.c:1646  */
+#line 3519 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 200:
-#line 1738 "webidl-parser.y" /* yacc.c:1646  */
+#line 1744 "webidl-parser.y" /* yacc.c:1646  */
     {
             /* second edition adds promise types */
             (yyval.node) = webidl_node_prepend((yyvsp[-1].node), (yyvsp[0].node));
         }
-#line 3522 "webidl-parser.c" /* yacc.c:1646  */
+#line 3528 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 201:
-#line 1744 "webidl-parser.y" /* yacc.c:1646  */
+#line 1750 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, (yyvsp[0].node), (void *)WEBIDL_TYPE_STRING);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        (yyvsp[0].node),
+                                        WEBIDL_TYPE_STRING);
         }
-#line 3530 "webidl-parser.c" /* yacc.c:1646  */
+#line 3538 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 202:
-#line 1749 "webidl-parser.y" /* yacc.c:1646  */
+#line 1757 "webidl-parser.y" /* yacc.c:1646  */
     {
             struct webidl_node *type;
-            type = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, (yyvsp[0].node), (void *)WEBIDL_TYPE_USER);
+            type = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                          (yyvsp[0].node),
+                                          WEBIDL_TYPE_USER);
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_IDENT, type, (yyvsp[-1].text));
         }
-#line 3540 "webidl-parser.c" /* yacc.c:1646  */
+#line 3550 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 203:
-#line 1756 "webidl-parser.y" /* yacc.c:1646  */
+#line 1766 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, (yyvsp[-2].node), (void *)WEBIDL_TYPE_SEQUENCE);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        (yyvsp[-2].node),
+                                        WEBIDL_TYPE_SEQUENCE);
         }
-#line 3548 "webidl-parser.c" /* yacc.c:1646  */
+#line 3560 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 204:
-#line 1761 "webidl-parser.y" /* yacc.c:1646  */
+#line 1773 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, (yyvsp[0].node), (void *)WEBIDL_TYPE_OBJECT);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        (yyvsp[0].node),
+                                        WEBIDL_TYPE_OBJECT);
         }
-#line 3556 "webidl-parser.c" /* yacc.c:1646  */
+#line 3570 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 205:
-#line 1766 "webidl-parser.y" /* yacc.c:1646  */
+#line 1780 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, (yyvsp[0].node), (void *)WEBIDL_TYPE_DATE);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        (yyvsp[0].node),
+                                        WEBIDL_TYPE_DATE);
         }
-#line 3564 "webidl-parser.c" /* yacc.c:1646  */
+#line 3580 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 206:
-#line 1774 "webidl-parser.y" /* yacc.c:1646  */
+#line 1790 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE, NULL, (yyvsp[-1].node));
         }
-#line 3572 "webidl-parser.c" /* yacc.c:1646  */
+#line 3588 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 207:
-#line 1779 "webidl-parser.y" /* yacc.c:1646  */
+#line 1795 "webidl-parser.y" /* yacc.c:1646  */
     {
             struct webidl_node *type;
-            type = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_USER);
+            type = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                          NULL,
+                                          WEBIDL_TYPE_USER);
             type = webidl_node_new(WEBIDL_NODE_TYPE_IDENT, type, (yyvsp[-1].text));
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE, NULL, type);
         }
-#line 3583 "webidl-parser.c" /* yacc.c:1646  */
+#line 3601 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 210:
-#line 1795 "webidl-parser.y" /* yacc.c:1646  */
+#line 1813 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_BOOL);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        NULL,
+                                        WEBIDL_TYPE_BOOL);
         }
-#line 3591 "webidl-parser.c" /* yacc.c:1646  */
+#line 3611 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 211:
-#line 1800 "webidl-parser.y" /* yacc.c:1646  */
+#line 1820 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_BYTE);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        NULL,
+                                        WEBIDL_TYPE_BYTE);
         }
-#line 3599 "webidl-parser.c" /* yacc.c:1646  */
+#line 3621 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 212:
-#line 1805 "webidl-parser.y" /* yacc.c:1646  */
+#line 1827 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_OCTET);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        NULL,
+                                        WEBIDL_TYPE_OCTET);
         }
-#line 3607 "webidl-parser.c" /* yacc.c:1646  */
+#line 3631 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 213:
-#line 1813 "webidl-parser.y" /* yacc.c:1646  */
+#line 1837 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_MODIFIER,
-                                 (yyvsp[0].node),
-                                 (void *)WEBIDL_TYPE_MODIFIER_UNRESTRICTED);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_MODIFIER,
+                                        (yyvsp[0].node),
+                                        WEBIDL_TYPE_MODIFIER_UNRESTRICTED);
         }
-#line 3617 "webidl-parser.c" /* yacc.c:1646  */
+#line 3641 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 215:
-#line 1825 "webidl-parser.y" /* yacc.c:1646  */
+#line 1849 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_FLOAT);
-        }
-#line 3625 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 216:
-#line 1830 "webidl-parser.y" /* yacc.c:1646  */
-    {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_DOUBLE);
-        }
-#line 3633 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 217:
-#line 1838 "webidl-parser.y" /* yacc.c:1646  */
-    {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_MODIFIER,
-                                 (yyvsp[0].node),
-                                 (void *)WEBIDL_TYPE_MODIFIER_UNSIGNED);
-        }
-#line 3643 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 219:
-#line 1850 "webidl-parser.y" /* yacc.c:1646  */
-    {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_SHORT);
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        NULL,
+                                        WEBIDL_TYPE_FLOAT);
         }
 #line 3651 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
-  case 220:
-#line 1855 "webidl-parser.y" /* yacc.c:1646  */
+  case 216:
+#line 1856 "webidl-parser.y" /* yacc.c:1646  */
     {
-            if ((yyvsp[0].isit)) {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_LONGLONG);
-            } else {
-                (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_LONG);
-            }
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        NULL,
+                                        WEBIDL_TYPE_DOUBLE);
         }
-#line 3663 "webidl-parser.c" /* yacc.c:1646  */
+#line 3661 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
-  case 221:
-#line 1867 "webidl-parser.y" /* yacc.c:1646  */
+  case 217:
+#line 1866 "webidl-parser.y" /* yacc.c:1646  */
     {
-            (yyval.isit) = false;
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_MODIFIER,
+                                        (yyvsp[0].node),
+                                        WEBIDL_TYPE_MODIFIER_UNSIGNED);
         }
 #line 3671 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
+  case 219:
+#line 1878 "webidl-parser.y" /* yacc.c:1646  */
+    {
+            (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                        NULL,
+                                        WEBIDL_TYPE_SHORT);
+        }
+#line 3681 "webidl-parser.c" /* yacc.c:1646  */
+    break;
+
+  case 220:
+#line 1885 "webidl-parser.y" /* yacc.c:1646  */
+    {
+            if ((yyvsp[0].isit)) {
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                            NULL,
+                                            WEBIDL_TYPE_LONGLONG);
+            } else {
+                (yyval.node) = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                            NULL,
+                                            WEBIDL_TYPE_LONG);
+            }
+        }
+#line 3697 "webidl-parser.c" /* yacc.c:1646  */
+    break;
+
+  case 221:
+#line 1901 "webidl-parser.y" /* yacc.c:1646  */
+    {
+            (yyval.isit) = false;
+        }
+#line 3705 "webidl-parser.c" /* yacc.c:1646  */
+    break;
+
   case 222:
-#line 1872 "webidl-parser.y" /* yacc.c:1646  */
+#line 1906 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.isit) = true;
         }
-#line 3679 "webidl-parser.c" /* yacc.c:1646  */
+#line 3713 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 223:
-#line 1880 "webidl-parser.y" /* yacc.c:1646  */
+#line 1914 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.node) = NULL;
         }
-#line 3687 "webidl-parser.c" /* yacc.c:1646  */
+#line 3721 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 224:
-#line 1888 "webidl-parser.y" /* yacc.c:1646  */
+#line 1922 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.node) = NULL;
         }
-#line 3695 "webidl-parser.c" /* yacc.c:1646  */
+#line 3729 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
   case 225:
-#line 1893 "webidl-parser.y" /* yacc.c:1646  */
+#line 1927 "webidl-parser.y" /* yacc.c:1646  */
     {
             (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_ARRAY, (yyvsp[0].node), NULL);
-        }
-#line 3703 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 226:
-#line 1898 "webidl-parser.y" /* yacc.c:1646  */
-    {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_NULLABLE, (yyvsp[0].node), NULL);
-        }
-#line 3711 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 227:
-#line 1906 "webidl-parser.y" /* yacc.c:1646  */
-    {
-            (yyval.node) = NULL;
-        }
-#line 3719 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 228:
-#line 1911 "webidl-parser.y" /* yacc.c:1646  */
-    {
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_ARRAY, (yyvsp[0].node), NULL);
-        }
-#line 3727 "webidl-parser.c" /* yacc.c:1646  */
-    break;
-
-  case 232:
-#line 1928 "webidl-parser.y" /* yacc.c:1646  */
-    {
-            struct webidl_node *type;
-            type = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_BASE, NULL, (void *)WEBIDL_TYPE_VOID);
-            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE, NULL, type);
         }
 #line 3737 "webidl-parser.c" /* yacc.c:1646  */
     break;
 
+  case 226:
+#line 1932 "webidl-parser.y" /* yacc.c:1646  */
+    {
+            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_NULLABLE, (yyvsp[0].node), NULL);
+        }
+#line 3745 "webidl-parser.c" /* yacc.c:1646  */
+    break;
 
-#line 3741 "webidl-parser.c" /* yacc.c:1646  */
+  case 227:
+#line 1940 "webidl-parser.y" /* yacc.c:1646  */
+    {
+            (yyval.node) = NULL;
+        }
+#line 3753 "webidl-parser.c" /* yacc.c:1646  */
+    break;
+
+  case 228:
+#line 1945 "webidl-parser.y" /* yacc.c:1646  */
+    {
+            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE_ARRAY, (yyvsp[0].node), NULL);
+        }
+#line 3761 "webidl-parser.c" /* yacc.c:1646  */
+    break;
+
+  case 232:
+#line 1962 "webidl-parser.y" /* yacc.c:1646  */
+    {
+            struct webidl_node *type;
+            type = webidl_new_number_node(WEBIDL_NODE_TYPE_TYPE_BASE,
+                                          NULL,
+                                          WEBIDL_TYPE_VOID);
+            (yyval.node) = webidl_node_new(WEBIDL_NODE_TYPE_TYPE, NULL, type);
+        }
+#line 3773 "webidl-parser.c" /* yacc.c:1646  */
+    break;
+
+
+#line 3777 "webidl-parser.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -3972,5 +4008,5 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1936 "webidl-parser.y" /* yacc.c:1906  */
+#line 1972 "webidl-parser.y" /* yacc.c:1906  */
 

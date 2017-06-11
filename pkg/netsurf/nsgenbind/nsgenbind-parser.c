@@ -304,17 +304,17 @@ add_method(struct genbind_node **genbind_ast,
         }
 
         location_node = genbind_new_node(GENBIND_NODE_TYPE_FILE,
-                                genbind_new_node(GENBIND_NODE_TYPE_LINE,
-                                                 cdata_node,
-                                                 (void *)lineno),
+                                genbind_new_number_node(GENBIND_NODE_TYPE_LINE,
+                                                        cdata_node,
+                                                        lineno),
                                          strdup(filename));
 
         /* generate method node */
         method_node = genbind_new_node(GENBIND_NODE_TYPE_METHOD,
                                  NULL,
-                                 genbind_new_node(GENBIND_NODE_TYPE_METHOD_TYPE,
+                                 genbind_new_number_node(GENBIND_NODE_TYPE_METHOD_TYPE,
                                                   location_node,
-                                                  (void *)methodtype));
+                                                  methodtype));
 
         class_node = genbind_node_find_type_ident(*genbind_ast,
                                                   NULL,
@@ -1660,11 +1660,11 @@ yyreduce:
     {
                 (yyval.node) = genbind_new_node(GENBIND_NODE_TYPE_METHOD,
                         NULL,
-                        genbind_new_node(GENBIND_NODE_TYPE_METHOD_TYPE,
+                        genbind_new_number_node(GENBIND_NODE_TYPE_METHOD_TYPE,
                                 genbind_new_node(GENBIND_NODE_TYPE_CDATA,
                                                  NULL,
                                                  (yyvsp[-1].text)),
-                                (void *)(yyvsp[-2].value)));
+                                (yyvsp[-2].value)));
         }
 #line 1670 "nsgenbind-parser.c" /* yacc.c:1646  */
     break;
@@ -1990,11 +1990,11 @@ yyreduce:
 #line 569 "nsgenbind-parser.y" /* yacc.c:1646  */
     {
                 (yyval.node) = genbind_new_node(GENBIND_NODE_TYPE_PROPERTY, NULL,
-                        genbind_new_node(GENBIND_NODE_TYPE_MODIFIER,
+                        genbind_new_number_node(GENBIND_NODE_TYPE_MODIFIER,
                                 genbind_new_node(GENBIND_NODE_TYPE_IDENT,
                                                  NULL,
                                                  (yyvsp[-1].text)),
-                                         (void *)(yyvsp[-2].value)));
+                                         (yyvsp[-2].value)));
         }
 #line 2000 "nsgenbind-parser.c" /* yacc.c:1646  */
     break;
@@ -2012,11 +2012,11 @@ yyreduce:
     {
                 (yyval.node) = genbind_new_node(GENBIND_NODE_TYPE_METHOD,
                         NULL,
-                        genbind_new_node(GENBIND_NODE_TYPE_METHOD_TYPE,
+                        genbind_new_number_node(GENBIND_NODE_TYPE_METHOD_TYPE,
                                 genbind_new_node(GENBIND_NODE_TYPE_CDATA,
                                                  NULL,
                                                  (yyvsp[-1].text)),
-                                (void *)(yyvsp[-2].value)));
+                                (yyvsp[-2].value)));
         }
 #line 2022 "nsgenbind-parser.c" /* yacc.c:1646  */
     break;

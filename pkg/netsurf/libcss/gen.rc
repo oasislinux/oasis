@@ -56,7 +56,7 @@ lib libcss.a -d '$dir'/deps src/^(\
 		)\
 	)\
 	select/^(\
-		computed.c dispatch.c hash.c select.c font_face.c\
+		arena.c computed.c dispatch.c hash.c select.c font_face.c\
 		properties/^(\
 			helpers.c\
 			azimuth.c\
@@ -80,6 +80,7 @@ lib libcss.a -d '$dir'/deps src/^(\
 			border_top_style.c\
 			border_top_width.c\
 			bottom.c\
+			box_sizing.c\
 			break_after.c\
 			break_before.c\
 			break_inside.c\

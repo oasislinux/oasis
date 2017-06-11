@@ -67,8 +67,8 @@ exe netsurf -d '$dir'/deps\
 	desktop/^(\
 		cookie_manager.c knockout.c hotlist.c mouse.c\
 		plot_style.c print.c search.c searchweb.c scrollbar.c\
-		sslcert_viewer.c textarea.c tree.c version.c\
-		system_colour.c global_history.c treeview.c\
+		sslcert_viewer.c textarea.c version.c system_colour.c\
+		local_history.c global_history.c treeview.c\
 		\
 		browser.c browser_history.c download.c frames.c netsurf.c\
 		save_complete.c save_text.c selection.c textinput.c gui_factory.c\
@@ -86,7 +86,6 @@ exe netsurf -d '$dir'/deps\
 		)\
 	)\
 	utils/^(\
-		base64.c\
 		bloom.c\
 		corestrings.c\
 		file.c\
@@ -98,7 +97,6 @@ exe netsurf -d '$dir'/deps\
 		log.c\
 		messages.c\
 		nsoption.c\
-		nsurl.c\
 		punycode.c\
 		talloc.c\
 		time.c\
@@ -110,12 +108,17 @@ exe netsurf -d '$dir'/deps\
 			challenge.c generics.c primitives.c parameter.c\
 			content-disposition.c content-type.c www-authenticate.c\
 		)\
+		nsurl/^(\
+			nsurl.c\
+			parse.c\
+		)\
 	)\
 	render/^(\
 		box.c box_construct.c box_normalise.c box_textarea.c\
 		font.c form.c imagemap.c layout.c search.c table.c textplain.c\
 		html.c html_css.c html_css_fetcher.c html_script.c\
-		html_interaction.c html_redraw.c html_forms.c html_object.c\
+		html_interaction.c html_redraw.c html_redraw_border.c\
+		html_forms.c html_object.c\
 	)\
 	'$outdir'/^(\
 		duktape/`{grep '\.c$' nsgenbind.txt}\
@@ -141,7 +144,7 @@ exe netsurf -d '$dir'/deps\
 	)
 file bin/netsurf '$outdir'/netsurf 755
 
-build '$outdir'/netsurf.1 sed '$srcdir'/Docs/netsurf-fb.1 ; with\
+build '$outdir'/netsurf.1 sed '$srcdir'/docs/netsurf-fb.1 ; with\
 	expr 's,netsurf-fb,netsurf,g'
 man -d '$outdir' 1 netsurf.1
 
