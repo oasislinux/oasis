@@ -49,7 +49,7 @@ cflags\
 	-I '$outdir'/libdom/include
 
 gen_inputs=($gen_inputs '$dir'/nsgenbind.txt) ; checkstatus
-rule nsgenbind '$outdir/nsgenbind/nsgenbind -v -I $srcdir/content/handlers/javascript/WebIDL $in $outdir/duktape' ; with\
+rule nsgenbind '$outdir/nsgenbind/nsgenbind -I $srcdir/content/handlers/javascript/WebIDL $in $outdir/duktape' ; with\
 	restat 1
 
 nsgenbind_srcs='$outdir'/duktape/`{cat nsgenbind.txt}
