@@ -74,7 +74,7 @@ exe netsurf -d '$dir'/deps\
 		save_complete.c save_text.c selection.c textinput.c gui_factory.c\
 		save_pdf.c font_haru.c\
 	)\
-	frontends/tiny/^(fetch.c icons.c gui.c render.c schedule.c ui.c wl.c)\
+	frontends/tiny/^(download.c fetch.c icons.c gui.c render.c schedule.c ui.c wl.c)\
 	content/^(\
 		content.c content_factory.c dirlist.c fetch.c hlcache.c\
 		llcache.c mimesniff.c urldb.c no_backing_store.c\
