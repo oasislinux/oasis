@@ -154,9 +154,6 @@
 [submodule "pkg/netsurf/libparserutils/src"]
 	path = pkg/netsurf/libparserutils/src
 	url = git://git.netsurf-browser.org/libparserutils.git
-[submodule "pkg/netsurf/libutf8proc/src"]
-	path = pkg/netsurf/libutf8proc/src
-	url = git://git.netsurf-browser.org/libutf8proc.git
 [submodule "pkg/netsurf/libwapcaplet/src"]
 	path = pkg/netsurf/libwapcaplet/src
 	url = git://git.netsurf-browser.org/libwapcaplet.git

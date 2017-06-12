@@ -7,7 +7,6 @@ subgen libnsbmp
 subgen libnsgif
 subgen libnsutils
 subgen libparserutils
-subgen libutf8proc
 subgen libwapcaplet
 subgen nsgenbind
 
@@ -35,11 +34,11 @@ cflags\
 	-isystem '$dir'/libnsgif/src/include\
 	-isystem '$dir'/libnsutils/src/include\
 	-isystem '$dir'/libparserutils/src/include\
-	-isystem '$dir'/libutf8proc/src/include\
 	-isystem '$dir'/libwapcaplet/src/include\
 	-isystem pkg/freetype/src/include\
 	-isystem pkg/libxkbcommon/src\
 	-isystem pkg/openbsd/include\
+	-isystem pkg/utf8proc/src\
 	-I '$dir' \
 	-I '$srcdir' \
 	-I '$srcdir'/include\
@@ -58,9 +57,9 @@ build $"nsgenbind_srcs nsgenbind '$srcdir'/content/handlers/javascript/duktape/n
 phony deps '$outdir'/duktape/binding.c\
 	'$outdir'/^(\
 		libcss libdom libhubbub libnsbmp libnsgif libparserutils\
-		libutf8proc libwapcaplet libnsutils\
+		libwapcaplet libnsutils\
 	)^/fetch.stamp\
-	'$builddir'/pkg/^(freetype libxkbcommon)^/fetch.stamp\
+	'$builddir'/pkg/^(freetype libxkbcommon utf8proc)^/fetch.stamp\
 	('$dir'/libdom pkg/^(curl libjpeg-turbo libpng libressl zlib))^/headers
 
 exe netsurf -d '$dir'/deps\
@@ -128,7 +127,6 @@ exe netsurf -d '$dir'/deps\
 		libnsbmp/libnsbmp.a\
 		libnsgif/libnsgif.a\
 		libnsutils/libnsutils.a\
-		libutf8proc/libutf8proc.a\
 	)\
 	'$builddir'/pkg/^(\
 		curl/libcurl.a.d\
@@ -137,6 +135,7 @@ exe netsurf -d '$dir'/deps\
 		libpng/libpng.a\
 		libxkbcommon/libxkbcommon.a\
 		pixman/libpixman.a\
+		utf8proc/libutf8proc.a\
 		wayland/^(libwayland-client.a.d libwayland-cursor.a)\
 		zlib/libz.a\
 		\

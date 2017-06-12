@@ -1,3 +1,0 @@
-cflags -I '$srcdir'/include/libutf8proc
-lib libutf8proc.a src/utf8proc.c
-fetch git
