@@ -83,6 +83,7 @@ subgen transmission
 subgen tz
 subgen ubase
 subgen unzip
+subgen utf8proc
 subgen util-linux
 subgen velox
 subgen vis

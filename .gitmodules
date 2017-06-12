@@ -227,6 +227,9 @@
 [submodule "pkg/ubase/src"]
 	path = pkg/ubase/src
 	url = https://github.com/michaelforney/ubase
+[submodule "pkg/utf8proc/src"]
+	path = pkg/utf8proc/src
+	url = https://github.com/JuliaLang/utf8proc
 [submodule "pkg/util-linux/src"]
 	path = pkg/util-linux/src
 	url = https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
