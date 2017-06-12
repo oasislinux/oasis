@@ -1,0 +1,17 @@
+cflags\
+	-isystem '$builddir'/pkg/netsurf/libdom/include\
+	-isystem pkg/netsurf/libdom/src/include\
+	-isystem pkg/netsurf/libwapcaplet/src/include\
+	-I '$srcdir'/include\
+	-I '$srcdir'/src
+
+phony deps\
+	pkg/netsurf/libdom/headers\
+	'$builddir'/pkg/netsurf/^(libdom libwapcaplet)^/fetch.stamp
+
+build '$outdir'/src/src_colors.c.o cc '$dir'/src_colors.c '||' '$dir'/deps
+lib libsvgtiny.a -d '$dir'/deps\
+	src/^(src_colors.c.o svgtiny.c svgtiny_gradient.c svgtiny_list.c)\
+	'$builddir'/pkg/netsurf/libdom/libdom.a.d
+
+fetch git

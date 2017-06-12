@@ -7,6 +7,7 @@ subgen libnsbmp
 subgen libnsgif
 subgen libnsutils
 subgen libparserutils
+subgen libsvgtiny
 subgen libwapcaplet
 subgen nsgenbind
 
@@ -34,6 +35,7 @@ cflags\
 	-isystem '$dir'/libnsgif/src/include\
 	-isystem '$dir'/libnsutils/src/include\
 	-isystem '$dir'/libparserutils/src/include\
+	-isystem '$dir'/libsvgtiny/src/include\
 	-isystem '$dir'/libwapcaplet/src/include\
 	-isystem pkg/freetype/src/include\
 	-isystem pkg/libxkbcommon/src\
@@ -56,8 +58,8 @@ build $"nsgenbind_srcs nsgenbind '$srcdir'/content/handlers/javascript/duktape/n
 
 phony deps '$outdir'/duktape/binding.c\
 	'$outdir'/^(\
-		libcss libdom libhubbub libnsbmp libnsgif libparserutils\
-		libwapcaplet libnsutils\
+		libcss libdom libhubbub libnsbmp libnsgif libnsutils\
+		libparserutils libsvgtiny libwapcaplet\
 	)^/fetch.stamp\
 	'$builddir'/pkg/^(freetype libxkbcommon utf8proc)^/fetch.stamp\
 	('$dir'/libdom pkg/^(curl libjpeg-turbo libpng libressl zlib))^/headers
@@ -81,7 +83,7 @@ exe netsurf -d '$dir'/deps\
 		handlers/^(\
 			javascript/^(fetcher.c content.c duktape/^(dukky.c duktape.c))\
 			css/^(css.c dump.c internal.c hints.c select.c utils.c)\
-			image/^(image.c image_cache.c bmp.c ico.c gif.c jpeg.c png.c)\
+			image/^(image.c image_cache.c bmp.c gif.c ico.c jpeg.c png.c svg.c)\
 		)\
 	)\
 	utils/^(\
@@ -127,6 +129,7 @@ exe netsurf -d '$dir'/deps\
 		libnsbmp/libnsbmp.a\
 		libnsgif/libnsgif.a\
 		libnsutils/libnsutils.a\
+		libsvgtiny/libsvgtiny.a.d\
 	)\
 	'$builddir'/pkg/^(\
 		curl/libcurl.a.d\

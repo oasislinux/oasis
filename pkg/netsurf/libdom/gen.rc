@@ -2,6 +2,7 @@ cflags\
 	-isystem pkg/netsurf/libhubbub/src/include\
 	-isystem pkg/netsurf/libparserutils/src/include\
 	-isystem pkg/netsurf/libwapcaplet/src/include\
+	-isystem '$builddir'/pkg/expat/include\
 	-I '$srcdir'/include\
 	-I '$srcdir'/src
 
@@ -9,7 +10,9 @@ hdrs=bindings/hubbub/^(errors.h parser.h)
 for(hdr in $hdrs)
 	build '$outdir'/include/dom/$hdr copy '$srcdir'/$hdr
 phony headers '$outdir'/include/dom/$hdrs
-phony deps '$builddir'/pkg/netsurf/^(libhubbub libparserutils libwapcaplet)^/fetch.stamp
+phony deps\
+	pkg/expat/headers\
+	'$builddir'/pkg/netsurf/^(libhubbub libparserutils libwapcaplet)^/fetch.stamp
 
 lib libdom.a -d '$dir'/deps\
 	src/^(\
@@ -52,9 +55,13 @@ lib libdom.a -d '$dir'/deps\
 		utils/^(namespace.c hashtable.c character_valid.c validate.c)\
 	)\
 	bindings/hubbub/parser.c\
-	'$builddir'/pkg/netsurf/^(\
-		libhubbub/libhubbub.a.d\
-		libwapcaplet/libwapcaplet.a\
+	bindings/xml/expat_xmlparser.c\
+	'$builddir'/pkg/^(\
+		expat/libexpat.a\
+		netsurf/^(\
+			libhubbub/libhubbub.a.d\
+			libwapcaplet/libwapcaplet.a\
+		)\
 	)
 
 fetch git

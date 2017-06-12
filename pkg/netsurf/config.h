@@ -21,3 +21,4 @@
 #define WITH_JPEG 1
 #define WITH_OPENSSL 1
 #define WITH_PNG 1
+#define WITH_NS_SVG 1

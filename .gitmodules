@@ -154,6 +154,10 @@
 [submodule "pkg/netsurf/libparserutils/src"]
 	path = pkg/netsurf/libparserutils/src
 	url = git://git.netsurf-browser.org/libparserutils.git
+[submodule "pkg/netsurf/libsvgtiny/src"]
+	path = pkg/netsurf/libsvgtiny/src
+	url = git://git.netsurf-browser.org/libsvgtiny.git
+	ignore = all
 [submodule "pkg/netsurf/libwapcaplet/src"]
 	path = pkg/netsurf/libwapcaplet/src
 	url = git://git.netsurf-browser.org/libwapcaplet.git
