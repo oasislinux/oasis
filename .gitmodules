@@ -255,7 +255,7 @@
 	url = https://anongit.freedesktop.org/git/xkeyboard-config.git
 [submodule "pkg/xz/src"]
 	path = pkg/xz/src
-	url = http://git.tukaani.org/xz.git
+	url = https://git.tukaani.org/xz.git
 [submodule "pkg/youtube-dl/src"]
 	path = pkg/youtube-dl/src
 	url = https://github.com/rg3/youtube-dl
