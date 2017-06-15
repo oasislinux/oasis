@@ -13,6 +13,9 @@
 [submodule "pkg/bearssl/src"]
 	path = pkg/bearssl/src
 	url = https://www.bearssl.org/git/BearSSL
+[submodule "pkg/blind/src"]
+	path = pkg/blind/src
+	url = git://git.suckless.org/blind
 [submodule "pkg/ccid/src"]
 	path = pkg/ccid/src
 	url = https://anonscm.debian.org/git/pcsclite/CCID.git

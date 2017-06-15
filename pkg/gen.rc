@@ -4,6 +4,7 @@ subgen alsa-utils
 subgen awk
 subgen bc
 subgen bearssl
+subgen blind
 subgen bzip2
 subgen ccid
 subgen curl
