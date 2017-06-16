@@ -164,7 +164,7 @@ sym share/netsurf/maps.html welcome.html
 file share/netsurf/netsurf.png '$srcdir'/!NetSurf/Resources/netsurf.png,b60 644
 file share/netsurf/quirks.css '$srcdir'/!NetSurf/Resources/Quirks,f79 644
 file share/netsurf/welcome.html '$srcdir'/!NetSurf/Resources/en/welcome.html,faf 644
-for(icon in back forward add remove home reload stop close)
+for(icon in back forward add remove home reload stop close up down)
 	file share/netsurf/icons/$icon.ff '$srcdir'/frontends/tiny/res/icons/$icon.ff 644
 
 fetch git
