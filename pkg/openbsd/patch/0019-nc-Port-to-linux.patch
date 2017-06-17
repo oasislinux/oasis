@@ -1,0 +1,111 @@
+From 7c9b2a037c0c19b608f8a595bd1fe04d9651ebcf Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 16 Jun 2017 20:32:42 -0700
+Subject: [PATCH] nc: Port to linux
+
+---
+ usr.bin/nc/netcat.c | 45 +++++++++++++++++++++++++++++++--------------
+ 1 file changed, 31 insertions(+), 14 deletions(-)
+
+diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
+index e222e1e7311..cc94bdba196 100644
+--- a/usr.bin/nc/netcat.c
++++ b/usr.bin/nc/netcat.c
+@@ -73,6 +73,31 @@
+ #define TLS_CCERT	(1 << 4)
+ #define TLS_MUSTSTAPLE	(1 << 5)
+ 
++#ifndef IPTOS_DSCP_CS0
++# define IPTOS_DSCP_CS0 0x00
++#endif
++#ifndef IPTOS_DSCP_CS1
++# define IPTOS_DSCP_CS1 0x20
++#endif
++#ifndef IPTOS_DSCP_CS2
++# define IPTOS_DSCP_CS2 0x40
++#endif
++#ifndef IPTOS_DSCP_CS3
++# define IPTOS_DSCP_CS3 0x60
++#endif
++#ifndef IPTOS_DSCP_CS4
++# define IPTOS_DSCP_CS4 0x80
++#endif
++#ifndef IPTOS_DSCP_CS5
++# define IPTOS_DSCP_CS5 0xa0
++#endif
++#ifndef IPTOS_DSCP_CS6
++# define IPTOS_DSCP_CS6 0xc0
++#endif
++#ifndef IPTOS_DSCP_CS7
++# define IPTOS_DSCP_CS7 0xe0
++#endif
++
+ /* Command Line Options */
+ int	dflag;					/* detached, no stdin */
+ int	Fflag;					/* fdpass sock to stdout */
+@@ -95,7 +120,6 @@ int	Iflag;					/* TCP receive buffer size */
+ int	Oflag;					/* TCP send buffer size */
+ int	Sflag;					/* TCP MD5 signature option */
+ int	Tflag = -1;				/* IP Type of Service */
+-int	rtableid = -1;
+ 
+ int	usetls;					/* use TLS */
+ char    *Cflag;					/* Public cert file */
+@@ -259,12 +283,6 @@ main(int argc, char *argv[])
+ 		case 'u':
+ 			uflag = 1;
+ 			break;
+-		case 'V':
+-			rtableid = (int)strtonum(optarg, 0,
+-			    RT_TABLEID_MAX, &errstr);
+-			if (errstr)
+-				errx(1, "rtable %s: %s", errstr, optarg);
+-			break;
+ 		case 'v':
+ 			vflag = 1;
+ 			break;
+@@ -326,10 +344,6 @@ main(int argc, char *argv[])
+ 	argc -= optind;
+ 	argv += optind;
+ 
+-	if (rtableid >= 0)
+-		if (setrtable(rtableid) == -1)
+-			err(1, "setrtable");
+-
+ 	if (family == AF_UNIX) {
+ 		if (pledge("stdio rpath wpath cpath tmppath unix", NULL) == -1)
+ 			err(1, "pledge");
+@@ -880,8 +894,12 @@ remote_connect(const char *host, const char *port, struct addrinfo hints)
+ 		if (sflag || pflag) {
+ 			struct addrinfo ahints, *ares;
+ 
+-			/* try SO_BINDANY, but don't insist */
++			/* try SO_BINDANY/IP_TRANSPARENT, but don't insist */
++#if defined(SO_BINDANY)
+ 			setsockopt(s, SOL_SOCKET, SO_BINDANY, &on, sizeof(on));
++#elif defined(IP_TRANSPARENT)
++			setsockopt(s, SOL_IP, IP_TRANSPARENT, &on, sizeof(on));
++#endif
+ 			memset(&ahints, 0, sizeof(struct addrinfo));
+ 			ahints.ai_family = res->ai_family;
+ 			ahints.ai_socktype = uflag ? SOCK_DGRAM : SOCK_STREAM;
+@@ -1673,7 +1691,6 @@ help(void)
+ 	\t-t		Answer TELNET negotiation\n\
+ 	\t-U		Use UNIX domain socket\n\
+ 	\t-u		UDP mode\n\
+-	\t-V rtable	Specify alternate routing table\n\
+ 	\t-v		Verbose\n\
+ 	\t-w timeout	Timeout for connects and final net reads\n\
+ 	\t-X proto	Proxy protocol: \"4\", \"5\" (SOCKS) or \"connect\"\n\
+@@ -1692,7 +1709,7 @@ usage(int ret)
+ 	    "\t  [-i interval] [-K keyfile] [-M ttl] [-m minttl] [-O length]\n"
+ 	    "\t  [-o staplefile] [-P proxy_username] [-p source_port] "
+ 	    "[-R CAfile]\n"
+-	    "\t  [-s source] [-T keyword] [-V rtable] [-w timeout] "
++	    "\t  [-s source] [-T keyword] [-w timeout] "
+ 	    "[-X proxy_protocol]\n"
+ 	    "\t  [-x proxy_address[:port]] [destination] [port]\n");
+ 	if (ret)
+-- 
+2.13.1
+

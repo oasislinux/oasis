@@ -29,6 +29,7 @@ lib libbsd.a -d pkg/libressl/headers\
 	lib/libc/^(\
 		crypt/^(arc4random.c.o arc4random_uniform.c)\
 		gen/^(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c vis.c warnc.c vwarnc.c)\
+		net/base64.c\
 		stdlib/^(reallocarray.c recallocarray.c strtonum.c)\
 		string/^(explicit_bzero.c strmode.c timingsafe_memcmp.c)\
 	)\
@@ -54,6 +55,13 @@ man -d usr.bin/doas\
 exe fmt usr.bin/fmt/fmt.c
 file bin/fmt '$outdir'/fmt 755
 man -d usr.bin/fmt 1 fmt.1
+
+# nc
+exe nc -d pkg/libressl/headers\
+	usr.bin/nc/^(netcat.c atomicio.c socks.c)\
+	'$builddir'/pkg/libressl/libtls.a.d
+file bin/nc '$outdir'/nc 755
+man -d usr.bin/nc 1 nc.1
 
 # patch
 exe patch usr.bin/patch/^(patch.c pch.c inp.c util.c backupfile.c mkpath.c ed.c) libbsd.a
@@ -81,8 +89,8 @@ man -d usr.bin/yacc 1 yacc.1
 srcpats=./^(\
 	bin/pax\
 	include\
-	lib/^(libc/^(crypt gen stdlib string) libcrypto/arc4random)\
-	usr.bin/^(diff doas fmt patch yacc)\
+	lib/^(libc/^(crypt gen net stdlib string) libcrypto/arc4random)\
+	usr.bin/^(diff doas fmt nc patch yacc)\
 )^/'*'
 syspats='./sys/sys/*'
 fetch curl $srcpats ';' $syspats
