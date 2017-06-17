@@ -14,79 +14,80 @@ cflags\
 	-I '$srcdir'/crypto/evp\
 	-I '$srcdir'/crypto/modes
 
-srchdrs=openssl/^(\
-	aes.h\
-	asn1.h\
-	asn1_mac.h\
-	asn1t.h\
-	blowfish.h\
-	bio.h\
-	bn.h\
-	buffer.h\
-	camellia.h\
-	cast.h\
-	chacha.h\
-	cmac.h\
-	comp.h\
-	conf.h\
-	conf_api.h\
-	crypto.h\
-	curve25519.h\
-	des.h\
-	dh.h\
-	dsa.h\
-	dso.h\
-	ec.h\
-	ecdh.h\
-	ecdsa.h\
-	engine.h\
-	err.h\
-	evp.h\
-	gost.h\
-	hmac.h\
-	idea.h\
-	lhash.h\
-	md4.h\
-	md5.h\
-	modes.h\
-	objects.h\
-	ocsp.h\
-	opensslfeatures.h\
-	opensslv.h\
-	ossl_typ.h\
-	pem.h\
-	pem2.h\
-	pkcs12.h\
-	pkcs7.h\
-	poly1305.h\
-	rand.h\
-	rc2.h\
-	rc4.h\
-	ripemd.h\
-	rsa.h\
-	sha.h\
-	safestack.h\
-	stack.h\
-	ts.h\
-	txt_db.h\
-	ui.h\
-	ui_compat.h\
-	whrlpool.h\
-	x509.h\
-	x509_vfy.h\
-	x509v3.h\
-	\
-	opensslconf.h obj_mac.h\
-	\
-	srtp.h ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h\
+hdrs=include/^(\
+	tls.h\
+	openssl/^(\
+		aes.h\
+		asn1.h\
+		asn1_mac.h\
+		asn1t.h\
+		blowfish.h\
+		bio.h\
+		bn.h\
+		buffer.h\
+		camellia.h\
+		cast.h\
+		chacha.h\
+		cmac.h\
+		comp.h\
+		conf.h\
+		conf_api.h\
+		crypto.h\
+		curve25519.h\
+		des.h\
+		dh.h\
+		dsa.h\
+		dso.h\
+		ec.h\
+		ecdh.h\
+		ecdsa.h\
+		engine.h\
+		err.h\
+		evp.h\
+		gost.h\
+		hmac.h\
+		idea.h\
+		lhash.h\
+		md4.h\
+		md5.h\
+		modes.h\
+		objects.h\
+		ocsp.h\
+		opensslfeatures.h\
+		opensslv.h\
+		ossl_typ.h\
+		pem.h\
+		pem2.h\
+		pkcs12.h\
+		pkcs7.h\
+		poly1305.h\
+		rand.h\
+		rc2.h\
+		rc4.h\
+		ripemd.h\
+		rsa.h\
+		sha.h\
+		safestack.h\
+		stack.h\
+		ts.h\
+		txt_db.h\
+		ui.h\
+		ui_compat.h\
+		whrlpool.h\
+		x509.h\
+		x509_vfy.h\
+		x509v3.h\
+		\
+		opensslconf.h obj_mac.h\
+		\
+		srtp.h ssl.h ssl2.h ssl3.h ssl23.h tls1.h dtls1.h\
+	)\
 )
-hdrs=()
-for(hdr in include/$srchdrs) {
-	hdrs=($hdrs '$outdir'/$hdr)
+for(hdr in $hdrs) {
 	build '$outdir'/$hdr copy '$srcdir'/$hdr
 	file $hdr '$srcdir'/$hdr 644
 }
-phony headers $hdrs
+phony headers '$outdir'/$hdrs
 
 # src/crypto/Makefile.am
 lib libcrypto.a crypto/^(\
@@ -285,6 +286,13 @@ lib libssl.a ssl/^(\
 	bs_ber.c bs_cbb.c bs_cbs.c\
 ) libcrypto.a.d
 file lib/libssl.a '$outdir'/libssl.a 644
+
+# src/libtls/Makefile.am
+lib libtls.a tls/^(\
+	tls.c tls_bio_cb.c tls_client.c tls_config.c tls_conninfo.c tls_peer.c\
+	tls_server.c tls_util.c tls_ocsp.c tls_verify.c\
+) libssl.a.d libcrypto.a.d
+file lib/libtls.a '$outdir'/libtls.a 644
 
 # src/apps/openssl/Makefile.am
 exe openssl apps/openssl/^(\
