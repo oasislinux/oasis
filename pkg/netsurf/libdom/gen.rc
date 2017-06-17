@@ -6,7 +6,7 @@ cflags\
 	-I '$srcdir'/include\
 	-I '$srcdir'/src
 
-hdrs=bindings/hubbub/^(errors.h parser.h)
+hdrs=bindings/^(hubbub/^(errors.h parser.h) xml/^(xmlerror.h xmlparser.h))
 for(hdr in $hdrs)
 	build '$outdir'/include/dom/$hdr copy '$srcdir'/$hdr
 phony headers '$outdir'/include/dom/$hdrs
