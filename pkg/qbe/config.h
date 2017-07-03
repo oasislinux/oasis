@@ -1,1 +1,2 @@
-#define Defaultasm Gaself
+#define Defasm Gaself
+#define Deftgt T_amd64_sysv
