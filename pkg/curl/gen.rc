@@ -95,7 +95,6 @@ exe curl -d '$dir'/deps\
 		tool_urlglob.c\
 		tool_util.c\
 		tool_vms.c\
-		tool_writeenv.c\
 		tool_writeout.c\
 		tool_xattr.c\
 	)\

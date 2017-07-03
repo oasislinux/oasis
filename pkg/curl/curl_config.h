@@ -1,7 +1,7 @@
 #include <config-posix.h>
 
 /* features */
-#define CURL_CA_BUNDLE "/etc/ssl/cert.pem"
+#define CURL_CA_FALLBACK 1
 #define CURL_DISABLE_LDAP 1
 #define CURL_DISABLE_LDAPS 1
 #define CURL_DISABLE_POP3 1
@@ -14,6 +14,7 @@
 #define HAVE_ZLIB_H 1
 #define USE_OPENSSL 1
 #define USE_UNIX_SOCKETS 1
+/* #undef CURL_CA_BUNDLE "/etc/ssl/cert.pem" */
 /* #undef CURL_CA_PATH */
 /* #undef CURL_DISABLE_COOKIES */
 /* #undef CURL_DISABLE_CRYPTO_AUTH */
