@@ -47,6 +47,7 @@ youtube_dl/extractor/archiveorg.py
 youtube_dl/extractor/ard.py
 youtube_dl/extractor/arkena.py
 youtube_dl/extractor/arte.py
+youtube_dl/extractor/asiancrush.py
 youtube_dl/extractor/atresplayer.py
 youtube_dl/extractor/atttechchannel.py
 youtube_dl/extractor/atvat.py
@@ -510,6 +511,7 @@ youtube_dl/extractor/ruleporn.py
 youtube_dl/extractor/rutube.py
 youtube_dl/extractor/rutv.py
 youtube_dl/extractor/ruutu.py
+youtube_dl/extractor/ruv.py
 youtube_dl/extractor/safari.py
 youtube_dl/extractor/sandia.py
 youtube_dl/extractor/sapo.py
@@ -567,6 +569,7 @@ youtube_dl/extractor/syfy.py
 youtube_dl/extractor/sztvhu.py
 youtube_dl/extractor/tagesschau.py
 youtube_dl/extractor/tass.py
+youtube_dl/extractor/tastytrade.py
 youtube_dl/extractor/tbs.py
 youtube_dl/extractor/tdslifeway.py
 youtube_dl/extractor/teachertube.py
