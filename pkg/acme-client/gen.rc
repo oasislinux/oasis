@@ -1,0 +1,29 @@
+cflags\
+	-D _GNU_SOURCE\
+	-isystem pkg/openbsd/include\
+	-isystem '$builddir'/pkg/libressl/include
+
+exe acme-client -d pkg/libressl/headers\
+	acctproc.c\
+	base64.c\
+	certproc.c\
+	chngproc.c\
+	dbg.c\
+	dnsproc.c\
+	fileproc.c\
+	http.c\
+	jsmn.c\
+	json.c\
+	keyproc.c\
+	main.c\
+	netproc.c\
+	revokeproc.c\
+	rsa.c\
+	sandbox-pledge.c\
+	util.c\
+	util-pledge.c\
+	'$builddir'/pkg/libressl/libtls.a.d
+file bin/acme-client '$outdir'/acme-client 755
+man 1 acme-client.1
+
+fetch git
