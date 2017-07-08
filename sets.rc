@@ -18,6 +18,7 @@ core=(\
 	pigz\
 	plan9port\
 	sbase\
+	scron\
 	sdhcp\
 	sinit\
 	skeleton\
