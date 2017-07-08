@@ -209,6 +209,9 @@
 	path = pkg/scc/src
 	url = git://git.suckless.org/scc
 	ignore = all
+[submodule "pkg/scron/src"]
+	path = pkg/scron/src
+	url = git://git.2f30.org/scron.git
 [submodule "pkg/sdhcp/src"]
 	path = pkg/sdhcp/src
 	url = https://github.com/michaelforney/sdhcp
