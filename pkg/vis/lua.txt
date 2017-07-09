@@ -68,12 +68,14 @@ lexers/lexer.lua
 lexers/lilypond.lua
 lexers/lisp.lua
 lexers/litcoffee.lua
+lexers/logtalk.lua
 lexers/lua.lua
 lexers/makefile.lua
 lexers/man.lua
 lexers/markdown.lua
 lexers/matlab.lua
 lexers/moonscript.lua
+lexers/myrddin.lua
 lexers/nemerle.lua
 lexers/networkd.lua
 lexers/nim.lua
@@ -110,6 +112,7 @@ lexers/sml.lua
 lexers/snobol4.lua
 lexers/spin.lua
 lexers/sql.lua
+lexers/strace.lua
 lexers/systemd.lua
 lexers/taskpaper.lua
 lexers/tcl.lua

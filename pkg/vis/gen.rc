@@ -1,4 +1,4 @@
-version=v0.3
+version=v0.3-199-g4b0f94e
 cflags\
 	'-std=c99' \
 	-D 'CONFIG_HELP=1' \
@@ -6,8 +6,9 @@ cflags\
 	-D 'CONFIG_LUA=1' \
 	-D 'CONFIG_LPEG=1' \
 	-D 'CONFIG_TRE=0' \
-	-D 'CONFIG_ACL=0' \
 	-D 'CONFIG_SELINUX=0' \
+	-D 'CONFIG_ACL=0' \
+	-D 'HAVE_MEMRCHR=1' \
 	-D '_POSIX_C_SOURCE=200809L' \
 	-D '_XOPEN_SOURCE=700' \
 	-D 'VERSION=''"'$version'"''' \
@@ -26,10 +27,10 @@ phony deps '$outdir'/config.h '$builddir'/pkg/^(\
 ) pkg/ncurses/headers
 
 exe vis -d '$dir'/deps \
-	array.c buffer.c libutf.c main.c map.c register.c ring-buffer.c\
+	array.c buffer.c libutf.c main.c map.c\
 	sam.c text.c text-motions.c text-objects.c text-util.c\
 	ui-terminal.c view.c vis.c vis-lua.c vis-modes.c vis-motions.c\
-	vis-operators.c vis-prompt.c vis-text-objects.c text-regex.c\
+	vis-operators.c vis-registers.c vis-marks.c vis-prompt.c vis-text-objects.c text-regex.c\
 	'$builddir'/pkg/^(\
 		libtermkey/libtermkey.a.d\
 		lpeg/liblpeg.a\
