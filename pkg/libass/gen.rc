@@ -4,6 +4,13 @@ cflags\
 	-I include\
 	-I '$dir'
 
+set nasmflags\
+	-w -orphan-labels\
+	-D 'ARCH_X86_64=1' \
+	-D 'HAVE_ALIGNED_STACK=1' \
+	-i '$srcdir'/libass/x86/\
+	-f elf64
+
 hdrs=(ass.h ass_types.h)
 for(hdr in $hdrs)
 	build '$outdir'/include/ass/$hdr copy '$srcdir'/libass/$hdr
@@ -19,6 +26,11 @@ lib libass.a -d '$dir'/deps libass/^(\
 	ass_strtod.c ass_fontconfig.c\
 	ass_string.c\
 	ass_rasterizer.c ass_rasterizer_c.c\
+	x86/^(\
+		blend_bitmaps.asm blur.asm cpuid.asm utils.asm\
+		be_blur.asm\
+		rasterizer.asm\
+	)\
 ) '$builddir'/pkg/^(\
 	freetype/libfreetype.a.d\
 	fribidi/libfribidi.a\

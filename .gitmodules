@@ -78,6 +78,7 @@
 [submodule "pkg/libass/src"]
 	path = pkg/libass/src
 	url = https://github.com/libass/libass
+	ignore = all
 [submodule "pkg/libdrm/src"]
 	path = pkg/libdrm/src
 	url = https://anongit.freedesktop.org/git/mesa/drm.git

@@ -1,6 +1,6 @@
 #include <config-posix.h>
 
-/* #undef CONFIG_ASM */
+#define CONFIG_ASM 1
 /* #undef CONFIG_CORETEXT */
 /* #undef CONFIG_DIRECTWRITE */
 /* #undef CONFIG_FONTCONFIG */
