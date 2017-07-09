@@ -1,6 +1,5 @@
 cflags\
-	-D '_FILE_OFFSET_BITS=64' \
-	-D 'FUSE_USE_VERSION=26' \
+	-D 'FUSE_USE_VERSION=31' \
 	-I include\
 	-I '$dir' \
 	-I '$srcdir'/include\
@@ -8,25 +7,15 @@ cflags\
 
 cc lib/mount_util.c
 
-exe fusermount util/fusermount.c lib/mount_util.c.o
-file bin/fusermount '$outdir'/fusermount 4755
-man -d doc 1 fusermount.1
+exe fusermount3 util/fusermount.c lib/mount_util.c.o
+file bin/fusermount3 '$outdir'/fusermount3 4755
+man -d doc 1 fusermount3.1
 
 lib libfuse.a lib/^(\
-	fuse.c\
-	fuse_kern_chan.c\
-	fuse_loop.c\
-	fuse_loop_mt.c\
-	fuse_lowlevel.c\
-	fuse_mt.c\
-	fuse_opt.c\
-	fuse_session.c\
-	fuse_signals.c\
-	buffer.c\
-	cuse_lowlevel.c\
-	helper.c\
-	modules/subdir.c\
-	\
+	fuse.c fuse_loop.c fuse_loop_mt.c\
+	fuse_lowlevel.c fuse_opt.c\
+	fuse_signals.c buffer.c cuse_lowlevel.c\
+	helper.c modules/subdir.c\
 	mount.c mount_util.c.o\
 )
 

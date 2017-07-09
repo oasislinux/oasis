@@ -1,31 +1,20 @@
-From 1d990b641269c1b9be9e03d835444041df6cc0b8 Mon Sep 17 00:00:00 2001
+From 243d834a3d6b665bbc935278908d445f39a69100 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 17:13:58 -0700
 Subject: [PATCH] Add nocache.c stub
 
 ---
- nocache.c | 94 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 94 insertions(+)
+ nocache.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
  create mode 100644 nocache.c
 
 diff --git a/nocache.c b/nocache.c
 new file mode 100644
-index 0000000..58d7528
+index 0000000..7c2833e
 --- /dev/null
 +++ b/nocache.c
-@@ -0,0 +1,94 @@
+@@ -0,0 +1,24 @@
 +#include "cache.h"
-+
-+struct cache {
-+	struct fuse_cache_operations *next_oper;
-+};
-+
-+static struct cache cache;
-+
-+struct fuse_cache_dirhandle {
-+	fuse_dirh_t h;
-+	fuse_dirfil_t filler;
-+};
 +
 +void cache_invalidate(const char *path)
 +{
@@ -40,68 +29,9 @@ index 0000000..58d7528
 +	return 0;
 +}
 +
-+static int cache_unity_dirfill(fuse_cache_dirh_t ch, const char *name,
-+                               const struct stat *stbuf)
++struct fuse_operations *cache_wrap(struct fuse_operations *oper)
 +{
-+	(void) stbuf;
-+	return ch->filler(ch->h, name, 0, 0);
-+}
-+
-+static int cache_unity_getdir(const char *path, fuse_dirh_t h,
-+                              fuse_dirfil_t filler)
-+{
-+	struct fuse_cache_dirhandle ch;
-+	ch.h = h;
-+	ch.filler = filler;
-+	return cache.next_oper->cache_getdir(path, &ch, cache_unity_dirfill);
-+}
-+
-+static void cache_unity_fill(struct fuse_cache_operations *oper,
-+                             struct fuse_operations *cache_oper)
-+{
-+#if FUSE_VERSION >= 23
-+	cache_oper->init        = oper->oper.init;
-+#endif
-+	cache_oper->getattr     = oper->oper.getattr;
-+	cache_oper->access	= oper->oper.access;
-+	cache_oper->readlink    = oper->oper.readlink;
-+	cache_oper->getdir      = cache_unity_getdir;
-+	cache_oper->mknod       = oper->oper.mknod;
-+	cache_oper->mkdir       = oper->oper.mkdir;
-+	cache_oper->symlink     = oper->oper.symlink;
-+	cache_oper->unlink      = oper->oper.unlink;
-+	cache_oper->rmdir       = oper->oper.rmdir;
-+	cache_oper->rename      = oper->oper.rename;
-+	cache_oper->link        = oper->oper.link;
-+	cache_oper->chmod       = oper->oper.chmod;
-+	cache_oper->chown       = oper->oper.chown;
-+	cache_oper->truncate    = oper->oper.truncate;
-+	cache_oper->utime       = oper->oper.utime;
-+	cache_oper->open        = oper->oper.open;
-+	cache_oper->read        = oper->oper.read;
-+	cache_oper->write       = oper->oper.write;
-+	cache_oper->flush       = oper->oper.flush;
-+	cache_oper->release     = oper->oper.release;
-+	cache_oper->fsync       = oper->oper.fsync;
-+	cache_oper->statfs      = oper->oper.statfs;
-+	cache_oper->setxattr    = oper->oper.setxattr;
-+	cache_oper->getxattr    = oper->oper.getxattr;
-+	cache_oper->listxattr   = oper->oper.listxattr;
-+	cache_oper->removexattr = oper->oper.removexattr;
-+#if FUSE_VERSION >= 25
-+	cache_oper->create      = oper->oper.create;
-+	cache_oper->ftruncate   = oper->oper.ftruncate;
-+	cache_oper->fgetattr    = oper->oper.fgetattr;
-+#endif
-+}
-+
-+struct fuse_operations *cache_init(struct fuse_cache_operations *oper)
-+{
-+	static struct fuse_operations cache_oper;
-+	cache.next_oper = oper;
-+
-+	cache_unity_fill(oper, &cache_oper);
-+	return &cache_oper;
++	return oper;
 +}
 +
 +int cache_parse_options(struct fuse_args *args)
@@ -109,5 +39,5 @@ index 0000000..58d7528
 +	return 0;
 +}
 -- 
-2.13.1
+2.13.2
 

@@ -1,11 +1,12 @@
 cflags\
-	-D '_FILE_OFFSET_BITS=64' \
-	-D 'FUSE_USE_VERSION=26' \
+	-D 'FUSE_USE_VERSION=31' \
 	-isystem pkg/libfuse/src/include\
 	-I '$dir'
 
-build '$outdir'/sshfs.1 sed '$srcdir'/sshfs.1.in ; with\
-	expr 's,__UNMOUNT_COMMAND__,''fusermount -u'','
+build '$outdir'/sshfs.1 sed '$srcdir'/sshfs.1.in ; exprs=(\
+	-e 's,@UNMOUNT_COMMAND@,''fusermount3 -u'',' \
+	-e 's,@IDMAP_DEFAULT@,''"none"'',' \
+) with expr $"exprs
 
 exe sshfs -d '$builddir'/pkg/libfuse/fetch.stamp\
 	sshfs.c nocache.c '$builddir'/pkg/libfuse/libfuse.a

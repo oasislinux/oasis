@@ -1,4 +1,4 @@
-From 8926abd905339e40bf096c904d900caa42e3262f Mon Sep 17 00:00:00 2001
+From e96eee39316e30dfdf965e4894fc77a8bf43e40f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 15 Jul 2016 19:21:28 -0700
 Subject: [PATCH] Fix poll.h include
@@ -8,10 +8,10 @@ Subject: [PATCH] Fix poll.h include
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/mount.c b/lib/mount.c
-index 227a408..0fc7d15 100644
+index 2150189..7a18c11 100644
 --- a/lib/mount.c
 +++ b/lib/mount.c
-@@ -20,7 +20,7 @@
+@@ -21,7 +21,7 @@
  #include <string.h>
  #include <fcntl.h>
  #include <errno.h>
@@ -21,5 +21,5 @@ index 227a408..0fc7d15 100644
  #include <sys/un.h>
  #include <sys/wait.h>
 -- 
-2.9.1
+2.13.2
 
