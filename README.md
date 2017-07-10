@@ -24,6 +24,7 @@ up from the following:
 	- ubase
 	- sinit
 	- sdhcp
+	- scron
 * [openbsd](http://openbsd.org/)
 	- pax, yacc, fmt, diff, patch
 * [plan9port](http://swtch.com/plan9port/)
