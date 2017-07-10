@@ -13,6 +13,7 @@ cflags\
 	-isystem pkg/freetype/src/include\
 	-isystem pkg/jbig2dec/src\
 	-isystem '$builddir'/pkg/libjpeg-turbo/include\
+	-isystem '$builddir'/pkg/zlib/include\
 	-I '$srcdir'/include\
 	-I '$outdir'
 
@@ -34,7 +35,7 @@ for(font in $fonts)
 	build '$outdir'/$font.c hexdump '$srcdir'/resources/fonts/$font '|' '$outdir'/hexdump
 
 phony deps\
-	pkg/^(curl libjpeg-turbo)^/headers\
+	pkg/^(curl libjpeg-turbo zlib)^/headers\
 	'$builddir'/pkg/^(freetype jbig2dec)^/fetch.stamp\
 	'$outdir'/mupdf/pdf/name-table.h
 
@@ -44,6 +45,7 @@ lib libmupdf.a -d '$dir'/deps source/$srcs '$outdir'/$fonts.c\
 		freetype/libfreetype.a.d\
 		jbig2dec/libjbig2dec.a\
 		libjpeg-turbo/libjpeg-turbo.a\
+		zlib/libz.a\
 	)
 
 exe bin/mutool -d '$dir'/deps source/tools/^(\
