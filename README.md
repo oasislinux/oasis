@@ -5,8 +5,8 @@ oasis is a small linux system
 * Binaries should be linked statically. This is made possible by lightweight
   system components like musl libc, and a central source repository to keep
   track of system-wide dependencies.
-* Software components should be built in a generic way that allows the user to
-  easily customize and/or modify as needed.
+* Software components should be built in a way that allows the user to easily
+  customize and/or modify as needed.
 * Sources can be referenced through a URL or git submodule, but not included
   directly in the oasis repository. This way, users only need to download the
   sources they are interested in.
