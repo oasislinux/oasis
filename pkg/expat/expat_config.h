@@ -1,7 +1,7 @@
 #include <config-posix.h>
 
 #define BYTEORDER 1234
-/* #undef HAVE_ARC4RANDOM_BUF */
+#define HAVE_ARC4RANDOM_BUF 1
 #define HAVE_BCOPY 1
 #define HAVE_GETPAGESIZE 1
 /* #undef HAVE_GETRANDOM */

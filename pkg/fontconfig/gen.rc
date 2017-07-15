@@ -51,7 +51,7 @@ lib libfontconfig.a -d '$dir'/deps src/^(\
 	fcxml.c\
 	ftglue.c\
 ) '$builddir'/pkg/^(\
-	expat/libexpat.a\
+	expat/libexpat.a.d\
 	freetype/libfreetype.a.d\
 )
 

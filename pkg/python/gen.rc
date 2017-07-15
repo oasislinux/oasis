@@ -140,7 +140,7 @@ if(grep -qE '^(_hashlib|_ssl)' Setup) {
 if(grep -q '^pyexpat' Setup) {
 	cflags=($cflags -isystem '$builddir'/pkg/expat/include)
 	deps=($deps pkg/expat/headers)
-	libs=($libs expat/libexpat.a)
+	libs=($libs expat/libexpat.a.d)
 }
 if(grep -q '^zlib' Setup) {
 	cflags=($cflags -isystem '$builddir'/pkg/zlib/include)

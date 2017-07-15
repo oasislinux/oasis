@@ -20,7 +20,7 @@ cc src/connection.c '||' pkg/libffi/headers
 
 exe wayland-scanner -d 'pkg/expat/headers $outdir/include/wayland-version.h' \
 	src/^(scanner.c wayland-util.c.o)\
-	'$builddir'/pkg/expat/libexpat.a
+	'$builddir'/pkg/expat/libexpat.a.d
 file bin/wayland-scanner '$outdir'/wayland-scanner 755
 
 waylandproto protocol/wayland.xml\

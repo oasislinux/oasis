@@ -57,7 +57,7 @@ lib libdom.a -d '$dir'/deps\
 	bindings/hubbub/parser.c\
 	bindings/xml/expat_xmlparser.c\
 	'$builddir'/pkg/^(\
-		expat/libexpat.a\
+		expat/libexpat.a.d\
 		netsurf/^(\
 			libhubbub/libhubbub.a.d\
 			libwapcaplet/libwapcaplet.a\
