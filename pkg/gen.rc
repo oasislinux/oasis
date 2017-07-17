@@ -69,6 +69,7 @@ subgen plan9fonts
 subgen plan9port
 subgen python
 subgen qbe
+subgen samurai
 subgen sbase
 subgen scc
 subgen scron

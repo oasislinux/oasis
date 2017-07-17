@@ -1,0 +1,6 @@
+cflags -Wall '-std=c11' -pedantic
+
+exe samu build.c env.c graph.c htab.c lex.c parse.c samurai.c tool.c util.c
+file bin/samu '$outdir'/samu 755
+
+fetch git

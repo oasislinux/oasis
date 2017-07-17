@@ -203,6 +203,9 @@
 [submodule "pkg/qbe/src"]
 	path = pkg/qbe/src
 	url = git://c9x.me/qbe.git
+[submodule "pkg/samurai/src"]
+	path = pkg/samurai/src
+	url = https://github.com/michaelforney/samurai
 [submodule "pkg/sbase/src"]
 	path = pkg/sbase/src
 	url = https://github.com/michaelforney/sbase
