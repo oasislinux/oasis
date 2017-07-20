@@ -19,7 +19,7 @@ tzdata=(\
 	systemv\
 	factory\
 )
-build '$outdir'/tzdata.index awk '$srcdir'/$tzdata '|' scripts/hash.rc '$dir/tzdata.awk' ; with\
+build '$outdir'/tzdata.index awk '$srcdir'/$tzdata '|' scripts/hash.rc '$dir'/tzdata.awk '||' '$builddir'/root.stamp ; with\
 	expr '-f $dir/tzdata.awk out=$outdir/zoneinfo repo=$repo'
 index_inputs=($index_inputs '$outdir'/tzdata.index)
 
