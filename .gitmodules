@@ -24,6 +24,9 @@
 	path = pkg/ccid/src
 	url = https://anonscm.debian.org/git/pcsclite/CCID.git
 	ignore = all
+[submodule "pkg/discount/src"]
+	path = pkg/discount/src
+	url = https://github.com/Orc/discount
 [submodule "pkg/dmenu/src"]
 	path = pkg/dmenu/src
 	url = git://git.suckless.org/dmenu
