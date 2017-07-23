@@ -7,7 +7,6 @@ subgen bc
 subgen bearssl
 subgen blind
 subgen bzip2
-subgen ccid
 subgen curl
 subgen discount
 subgen dmenu
@@ -62,7 +61,6 @@ subgen ninja
 subgen openbsd
 subgen openssh
 subgen pcre
-subgen pcsc
 subgen perp
 subgen pigz
 subgen pixman

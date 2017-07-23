@@ -20,10 +20,6 @@
 [submodule "pkg/blind/src"]
 	path = pkg/blind/src
 	url = git://git.suckless.org/blind
-[submodule "pkg/ccid/src"]
-	path = pkg/ccid/src
-	url = https://anonscm.debian.org/git/pcsclite/CCID.git
-	ignore = all
 [submodule "pkg/discount/src"]
 	path = pkg/discount/src
 	url = https://github.com/Orc/discount
@@ -185,10 +181,6 @@
 [submodule "pkg/openssh/src"]
 	path = pkg/openssh/src
 	url = https://github.com/openssh/openssh-portable
-[submodule "pkg/pcsc/src"]
-	path = pkg/pcsc/src
-	url = https://anonscm.debian.org/git/pcsclite/PCSC.git
-	ignore = all
 [submodule "pkg/pigz/src"]
 	path = pkg/pigz/src
 	url = https://github.com/madler/pigz
