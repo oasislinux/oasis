@@ -39,7 +39,7 @@ up from the following:
 * [kbd](http://kbd-project.org/)
 * [libressl](http://www.libressl.org/)
 * [mdocml](http://mdocml.bsd.lv/)
-* [ninja](https://ninja-build.org/) (build tool)
+* [samurai](https://github.com/michaelforney/samurai) (ninja-compatible build tool)
 * [openssh](http://www.openssh.com/)
 * [perp](http://b0llix.net/perp/) (process supervisor)
 * [pigz](http://zlib.net/pigz/) (gzip)

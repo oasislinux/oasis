@@ -11,12 +11,12 @@ core=(\
 	loksh\
 	mdocml\
 	musl\
-	ninja\
 	openbsd\
 	openssh\
 	perp\
 	pigz\
 	plan9port\
+	samurai\
 	sbase\
 	scron\
 	sdhcp\
