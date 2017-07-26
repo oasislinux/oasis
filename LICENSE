@@ -19,21 +19,10 @@ projects. Unless specified below, these patches are original work, taken
 directly from upstream, or generated directly from scripts within the package's
 source tree.
 
-core/bc/patch/0001-Fix-use-of-uninitialized-f_void.patch
+pkg/bc/patch/0001-Fix-use-of-uninitialized-f_void.patch
 	http://www.pixelbeat.org/programming/oss_bug_flow.html
 
-core/ubase/patch/0003-Add-stty-1.patch
-	http://lists.suckless.org/hackers/1603/10467.html
-core/ubase/patch/0004-stty-cleaner-output-when-no-arguments-are-used.patch
-	http://lists.suckless.org/hackers/1603/10488.html
-core/ubase/patch/0005-stty-fix-casting-bug.patch
-	http://lists.suckless.org/hackers/1603/10489.html
-core/ubase/patch/0006-stty-add-symbolic-values-for-line-disciplines.patch
-	http://lists.suckless.org/hackers/1603/10490.html
-core/ubase/patch/0007-stty-simplify.patch
-	http://lists.suckless.org/hackers/1604/10506.html
-
-extra/unzip/patch/*
+pkg/unzip/patch/*
 	Taken from Debian's unzip package,
 	http://http.debian.net/debian/pool/main/u/unzip/unzip_6.0-16+deb8u2.debian.tar.xz
 --------------------------------------------------------------------------------
