@@ -1,0 +1,18 @@
+language: c
+dist: trusty
+sudo: false
+git:
+  submodules: false
+addons:
+  apt:
+    packages:
+    - 9base
+    - pax
+install:
+- git clone --depth=1 https://github.com/michaelforney/oasis-toolchain /tmp/toolchain
+- PATH=$PATH:/usr/lib/plan9/bin:/tmp/toolchain/bin
+script:
+- git submodule update --init pkg/samurai/src
+- make -C pkg/samurai/src
+- rc ./setup.rc
+- ./pkg/samurai/src/samu commit
