@@ -1,3 +1,5 @@
+# oasis
+
 oasis is a small linux system
 
 It is suitable for a range of uses including server and desktop. oasis provides
@@ -25,7 +27,7 @@ Updating your system is as simple as
 
 For more information, see the [wiki].
 
-# Principles
+## Principles
 
 * Binaries should be linked statically. This is made possible by lightweight
   system components like musl libc, and a central source repository to keep
@@ -38,7 +40,7 @@ For more information, see the [wiki].
 * `/etc` directory should be simple enough for system administrators to
   understand in its entirety and customize appropriately.
 
-# Components
+## Components
 
 oasis uses software from a lot of different [packages]. The core system is built
 up from the following:
