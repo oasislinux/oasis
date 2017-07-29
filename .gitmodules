@@ -175,9 +175,6 @@
 [submodule "pkg/nginx/src"]
 	path = pkg/nginx/src
 	url = https://github.com/nginx/nginx
-[submodule "pkg/ninja/src"]
-	path = pkg/ninja/src
-	url = https://github.com/ninja-build/ninja
 [submodule "pkg/openssh/src"]
 	path = pkg/openssh/src
 	url = https://github.com/openssh/openssh-portable
