@@ -1,5 +1,30 @@
 oasis is a small linux system
 
+It is suitable for a range of uses including server and desktop. oasis provides
+a solution for many common tasks:
+
+* Display server (velox, wayland-based)
+* Terminal (st)
+* Program launcher (dmenu)
+* Web browser (netsurf with custom frontend)
+* Document viewer (mupdf)
+* Media player (mpv)
+* HTTP server (nginx)
+* BitTorrent client (transmission)
+
+The entire system can be compiled in minutes, and uses up up only a couple
+hundred megabytes of disk space (despite being statically linked). It is almost
+entirely C-based, and only one optional component requires C++ (libutp for
+transmission).
+
+Updating your system is as simple as
+
+	git -C /src/oasis pull
+	samu -C /src/oasis commit
+	doas git -C / merge oasis
+
+For more information, see the [wiki].
+
 # Principles
 
 * Binaries should be linked statically. This is made possible by lightweight
@@ -15,7 +40,7 @@ oasis is a small linux system
 
 # Components
 
-oasis uses software from a lot of different projects. The core system is built
+oasis uses software from a lot of different [packages]. The core system is built
 up from the following:
 
 * [musl](http://musl-libc.org/) (libc)
@@ -46,3 +71,6 @@ up from the following:
 * [tz](https://www.iana.org/time-zones)
 * util-linux (for fdisk)
 * [xz](http://tukaani.org/xz/)
+
+[wiki]: https://github.com/michaelforney/oasis/wiki
+[packages]: https://github.com/michaelforney/oasis/tree/master/pkg
