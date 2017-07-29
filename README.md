@@ -1,5 +1,7 @@
 # oasis
 
+[![Build Status](https://travis-ci.org/michaelforney/oasis.svg?branch=master)](https://travis-ci.org/michaelforney/oasis)
+
 oasis is a small linux system
 
 It is suitable for a range of uses including server and desktop. oasis provides
