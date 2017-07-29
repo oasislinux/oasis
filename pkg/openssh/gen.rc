@@ -9,7 +9,9 @@ cflags\
 	-I '$srcdir' \
 	-I '$srcdir'/openbsd-compat\
 
-build '$outdir'/umac128.c.o cc '$srcdir'/umac.c ; defs=(\
+phony deps pkg/^(libressl zlib)^/headers
+
+build '$outdir'/umac128.c.o cc '$srcdir'/umac.c '||' '$dir'/deps ; defs=(\
 	'-DUMAC_OUTPUT_LEN=16' \
 	'-Dumac_new=umac128_new' \
 	'-Dumac_update=umac128_update' \
@@ -18,7 +20,7 @@ build '$outdir'/umac128.c.o cc '$srcdir'/umac.c ; defs=(\
 	'-Dumac_ctx=umac128_ctx' \
 ) with cflags '$cflags '$"defs
 
-lib libopenbsd-compat.a openbsd-compat/^(\
+lib libopenbsd-compat.a -d '$dir'/deps openbsd-compat/^(\
 	base64.c basename.c bcrypt_pbkdf.c bindresvport.c blowfish.c daemon.c\
 	dirname.c fmt_scaled.c getcwd.c getgrouplist.c getopt_long.c\
 	getrrsetbyname.c glob.c inet_aton.c inet_ntoa.c inet_ntop.c mktemp.c\
@@ -36,8 +38,6 @@ lib libopenbsd-compat.a openbsd-compat/^(\
 	\
 	port-aix.c port-irix.c port-linux.c port-solaris.c port-uw.c\
 )
-
-phony deps pkg/^(libressl zlib)^/headers
 
 # port-tun.c from openbsd-compat depends on sshbuf-getput-basic.c and ssherr.c
 # from libssh.a, so just include it in libssh.a.
@@ -72,14 +72,14 @@ lib libssh.a -d '$dir'/deps\
 	openbsd-compat/port-tun.c libopenbsd-compat.a\
 	'$builddir'/pkg/^(libressl/libcrypto.a.d zlib/libz.a)\
 
-exe ssh\
+exe ssh -d '$dir'/deps\
 	ssh.c readconf.c clientloop.c sshtty.c\
 	sshconnect.c sshconnect1.c sshconnect2.c mux.c\
 	libssh.a.d
 file bin/ssh '$outdir'/ssh 755
 
-cc sftp-server.c
-cc sftp-common.c
+cc sftp-server.c '||' $dir/deps
+cc sftp-common.c '||' $dir/deps
 
 exe sshd -d '$dir'/deps\
 	sshd.c auth-rhosts.c auth-passwd.c\
@@ -99,19 +99,19 @@ exe sshd -d '$dir'/deps\
 	libssh.a.d
 file bin/sshd '$outdir'/sshd 755
 
-exe scp scp.c libssh.a.d
+exe scp -d '$dir'/deps scp.c libssh.a.d
 file bin/scp '$outdir'/scp 755
 
-exe ssh-add ssh-add.c libssh.a.d
+exe ssh-add -d '$dir'/deps ssh-add.c libssh.a.d
 file bin/ssh-add '$outdir'/ssh-add 755
 
-exe ssh-agent ssh-agent.c ssh-pkcs11-client.c libssh.a.d
+exe ssh-agent -d '$dir'/deps ssh-agent.c ssh-pkcs11-client.c libssh.a.d
 file bin/ssh-agent '$outdir'/ssh-agent 755
 
-exe ssh-keygen ssh-keygen.c libssh.a.d
+exe ssh-keygen -d '$dir'/deps ssh-keygen.c libssh.a.d
 file bin/ssh-keygen '$outdir'/ssh-keygen 755
 
-exe sftp-server sftp-common.c.o sftp-server.c.o sftp-server-main.c libssh.a.d
+exe sftp-server -d '$dir'/deps sftp-common.c.o sftp-server.c.o sftp-server-main.c libssh.a.d
 file libexec/sftp-server '$outdir'/sftp-server 755
 
 man\
