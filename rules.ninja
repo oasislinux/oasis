@@ -28,10 +28,10 @@ rule lines
   rspfile = $out.tmp
   rspfile_content = $in_newline
 
+# TODO: Enable dependency-tracking for nasm when
+# https://bugzilla.nasm.us/show_bug.cgi?id=3392280#c6 is fixed.
 rule nasm
-  command = nasm -MD $out.d $nasmflags -o $out $in
-  depfile = $out.d
-  deps = gcc
+  command = nasm $nasmflags -o $out $in
 
 rule mc
   command = $mc $mcflags -o $out $in
