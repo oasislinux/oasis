@@ -4,7 +4,7 @@ cflags\
 	-I include\
 	-I '$dir'
 
-lib libexpat.a expat/lib/^(xmlparse.c xmltok.c xmlrole.c)\
+lib libexpat.a expat/lib/^(loadlibrary.c xmlparse.c xmltok.c xmlrole.c)\
 	'$builddir'/pkg/openbsd/libbsd.a.d
 
 hdrs=(expat.h expat_external.h)
