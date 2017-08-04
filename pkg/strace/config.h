@@ -184,6 +184,7 @@
 #define HAVE_LINUX_FALLOC_H 1
 #define HAVE_LINUX_FIEMAP_H 1
 #define HAVE_LINUX_FILTER_H 1
+#define HAVE_LINUX_GENETLINK_H 1
 #define HAVE_LINUX_HIDDEV_H 1
 #define HAVE_LINUX_INPUT_H 1
 #define HAVE_LINUX_IPC_H 1
@@ -195,6 +196,7 @@
 /* #undef HAVE_LINUX_NETFILTER_BRIDGE_EBTABLES_H */
 /* #undef HAVE_LINUX_NETFILTER_IPV4_IP_TABLES_H */
 /* #undef HAVE_LINUX_NETFILTER_IPV6_IP6_TABLES_H */
+#define HAVE_LINUX_NETFILTER_NFNETLINK_H 1
 /* #undef HAVE_LINUX_NSFS_H */
 #define HAVE_LINUX_PERF_EVENT_H 1
 #define HAVE_LINUX_QUOTA_H 1
@@ -222,6 +224,7 @@
 #define HAVE_PRCTL 1
 #define HAVE_PREADV 1
 #define HAVE_PROCESS_VM_READV 1
+#define HAVE_PROGRAM_INVOCATION_NAME 1
 #define HAVE_PWRITEV 1
 #define HAVE_READAHEAD 1
 #define HAVE_SCSI_SG_H 1
@@ -315,10 +318,10 @@
 #define PACKAGE "strace"
 #define PACKAGE_BUGREPORT "strace-devel@lists.sourceforge.net"
 #define PACKAGE_NAME "strace"
-#define PACKAGE_STRING "strace 4.17"
+#define PACKAGE_STRING "strace 4.18"
 #define PACKAGE_TARNAME "strace"
 #define PACKAGE_URL "https://strace.io"
-#define PACKAGE_VERSION "4.17"
+#define PACKAGE_VERSION "4.18"
 /* #undef POWERPC */
 /* #undef POWERPC64 */
 /* #undef RISCV */
@@ -350,7 +353,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "4.17"
+#define VERSION "4.18"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

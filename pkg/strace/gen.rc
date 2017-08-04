@@ -90,6 +90,7 @@ srcs=(\
 	dirent.c\
 	dirent64.c\
 	dm.c\
+	dyxlat.c\
 	epoll.c\
 	evdev.c\
 	eventfd.c\
@@ -147,6 +148,8 @@ srcs=(\
 	mtd.c\
 	net.c\
 	netlink.c\
+	netlink_sock_diag.c\
+	nlattr.c\
 	nsfs.c\
 	numa.c\
 	oldstat.c\
@@ -226,6 +229,7 @@ srcs=(\
 	v4l2.c\
 	wait.c\
 	xattr.c\
+	xlat.c\
 	xmalloc.c\
 )
 
