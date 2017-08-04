@@ -7,9 +7,9 @@ cflags\
 
 build '$outdir'/include/pcre.h sed '$srcdir'/pcre.h.in ; exprs=(\
 	-e s,@PCRE_MAJOR@,8,\
-	-e s,@PCRE_MINOR@,39,\
+	-e s,@PCRE_MINOR@,41,\
 	-e s,@PCRE_PRERELEASE@,,\
-	-e s,@PCRE_DATE@,2016-06-14,\
+	-e s,@PCRE_DATE@,2017-07-05,\
 ) with expr $"exprs
 
 phony headers '$outdir'/include/pcre.h
