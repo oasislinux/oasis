@@ -7,6 +7,8 @@ addons:
   apt:
     packages:
     - 9base
+    - libwayland-dev
+    - nasm
     - pax
 install:
 - git clone --depth=1 https://github.com/michaelforney/oasis-toolchain /tmp/toolchain
@@ -14,5 +16,10 @@ install:
 script:
 - git submodule update --init pkg/samurai/src
 - make -C pkg/samurai/src
+- echo 'fn fs { true }; config_tls=libressl; config_video_drivers=(intel nouveau)' > config.rc
 - rc ./setup.rc
+- ./pkg/samurai/src/samu out/pkg/openbsd/pax out/pkg/mc/bin/6m out/pkg/mc/bin/muse out/pkg/file/file
+- mkdir /tmp/bin
+- cp out/pkg/openbsd/pax out/pkg/mc/bin/6m out/pkg/mc/bin/muse out/pkg/file/file /tmp/bin
+- PATH=/tmp/bin:$PATH
 - ./pkg/samurai/src/samu commit
