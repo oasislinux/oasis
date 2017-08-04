@@ -1,4 +1,4 @@
-From 774d2757d012e61a10e4e0763add9c729a3bfe8b Mon Sep 17 00:00:00 2001
+From 7490064f9224ff72e75df314d843a464d2d045b8 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
@@ -7,16 +7,16 @@ This requires python and rst2man to generate.
 
 $ rst2man.py --strip-elements-with-class=contents DOCS/man/mpv.rst DOCS/man/mpv.1
 ---
- DOCS/man/mpv.1 | 14558 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 14558 insertions(+)
+ DOCS/man/mpv.1 | 15103 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 15103 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 000000000..7819ab9b2
+index 0000000000..120af562b8
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,14558 @@
+@@ -0,0 +1,15103 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -180,7 +180,7 @@ index 000000000..7819ab9b2
 +.B u
 +Switch between applying no style overrides to SSA/ASS subtitles, and
 +overriding them almost completely with the normal subtitle style. See
-+\fB\-\-sub\-ass\-style\-override\fP for more info.
++\fB\-\-sub\-ass\-override\fP for more info.
 +.TP
 +.B V
 +Toggle subtitle VSFilter aspect compatibility mode. See
@@ -199,9 +199,6 @@ index 000000000..7819ab9b2
 +.B Ctrl s
 +Take a screenshot, as the window shows it (with subtitles, OSD, and scaled
 +video).
-+.TP
-+.B I
-+Show filename on the OSD.
 +.TP
 +.B PGUP and PGDWN
 +Seek to the beginning of the previous/next chapter. In most cases,
@@ -261,16 +258,8 @@ index 000000000..7819ab9b2
 +Seek backward/forward 1 minute.
 +.UNINDENT
 +.sp
-+(The following keys are only valid if you compiled with TV or DVB input
-+support.)
-+.INDENT 0.0
-+.TP
-+.B h and k
-+Select previous/next tv\-channel.
-+.TP
-+.B H and K
-+Select previous/next dvb\-channel.
-+.UNINDENT
++If you miss some older key bindings, look at \fBetc/restore\-old\-bindings.conf\fP
++in the mpv git repository.
 +.SS Mouse Control
 +.INDENT 0.0
 +.TP
@@ -556,6 +545,70 @@ index 000000000..7819ab9b2
 +file stops playing. If option \fB\-\-c\fP is changed during playback of
 +\fBfile2.mkv\fP, it is reset when advancing to \fBfile3.mkv\fP\&. This only affects
 +file\-local options. The option \fB\-\-a\fP is never reset here.
++.SS List Options
++.sp
++Some options which store lists of option values can have action suffixes. For
++example, you can set a \fB,\fP\-separated list of filters with \fB\-\-vf\fP, but the
++option also allows you to append filters with \fB\-\-vf\-append\fP\&.
++.sp
++Options for filenames do not use \fB,\fP as separator, but \fB:\fP (Unix) or \fB;\fP
++(Windows).
++.TS
++center;
++|l|l|.
++_
++T{
++Suffix
++T}	T{
++Meaning
++T}
++_
++T{
++\-add
++T}	T{
++Append 1 or more items (may become alias for \-append)
++T}
++_
++T{
++\-append
++T}	T{
++Append single item (avoids need for escaping)
++T}
++_
++T{
++\-clr
++T}	T{
++Clear the option
++T}
++_
++T{
++\-del
++T}	T{
++Delete an existing item by integer index
++T}
++_
++T{
++\-pre
++T}	T{
++Prepend 1 or more items
++T}
++_
++T{
++\-set
++T}	T{
++Set a list of items
++T}
++_
++.TE
++.sp
++Although some operations allow specifiying multiple \fB,\fP\-separated items, using
++this is strongly discouraged and deprecated, except for \fB\-set\fP\&.
++.sp
++Without suffix, the action taken is normally \fB\-set\fP\&.
++.sp
++Some options (like \fB\-\-sub\-file\fP, \fB\-\-audio\-file\fP, \fB\-\-opengl\-shader\fP) are
++aliases for the proper option with \fB\-append\fP action. For example,
++\fB\-\-sub\-file\fP is an alias for \fB\-\-sub\-files\-append\fP\&.
 +.SS Playing DVDs
 +.sp
 +DVDs can be played with the \fBdvd://[title]\fP syntax. The optional
@@ -1002,6 +1055,14 @@ index 000000000..7819ab9b2
 +.UNINDENT
 +.UNINDENT
 +.sp
++\fBfdclose://123\fP
++.INDENT 0.0
++.INDENT 3.5
++Like \fBfd://\fP, but the file descriptor is closed after use. When using this
++you need to ensure that the same fd URL will only be used once.
++.UNINDENT
++.UNINDENT
++.sp
 +\fBedl://[edl specification as in edl\-mpv.rst]\fP
 +.INDENT 0.0
 +.INDENT 3.5
@@ -1097,13 +1158,12 @@ index 000000000..7819ab9b2
 +.INDENT 3.5
 +.IP "Examples"
 +.INDENT 0.0
-+.TP
-+.B \fBmpv dvd://1 \-\-alang=hu,en\fP
-+Chooses the Hungarian language track on a DVD and falls back on
-+English if Hungarian is not available.
-+.TP
-+.B \fBmpv \-\-alang=jpn example.mkv\fP
-+Plays a Matroska file in Japanese.
++.IP \(bu 2
++\fBmpv dvd://1 \-\-alang=hu,en\fP chooses the Hungarian language track
++on a DVD and falls back on English if Hungarian is not available.
++.IP \(bu 2
++\fBmpv \-\-alang=jpn example.mkv\fP plays a Matroska file with Japanese
++audio.
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
@@ -1163,7 +1223,7 @@ index 000000000..7819ab9b2
 +stream index is relatively arbitrary, but useful when interacting with
 +other software using FFmpeg (consider \fBffprobe\fP).
 +.sp
-+Note that with external tracks (added with \fB\-\-sub\-file\fP and similar
++Note that with external tracks (added with \fB\-\-sub\-files\fP and similar
 +options), there will be streams with duplicate IDs. In this case, the
 +first stream in order is selected.
 +.TP
@@ -1460,6 +1520,10 @@ index 000000000..7819ab9b2
 +.B \fB\-\-chapters\-file=<filename>\fP
 +Load chapters from this file, instead of using the chapter metadata found
 +in the main file.
++.sp
++This accepts a media file (like mkv) or even a pseudo\-format like ffmetadata
++and uses its chapters to replace the current file\(aqs chapters. This doesn\(aqt
++work with OGM or XML chapters directly.
 +.TP
 +.B \fB\-\-sstep=<sec>\fP
 +Skip <sec> seconds after every frame.
@@ -1676,6 +1740,30 @@ index 000000000..7819ab9b2
 +except when the client API / libmpv is used.)
 +.sp
 +If the script can\(aqt do anything with an URL, it will do nothing.
++.sp
++The \fIexclude\fP script option accepts a \fB|\fP\-separated list of URL patterns
++which mpv should not use with youtube\-dl. The patterns are matched after
++the \fBhttp(s)://\fP part of the URL.
++.sp
++\fB^\fP matches the beginning of the URL, \fB$\fP matches its end, and you
++should use \fB%\fP before any of the characters \fB^$()%|,.[]*+\-?\fP to match
++that character.
++.INDENT 7.0
++.INDENT 3.5
++.IP "Examples"
++.INDENT 0.0
++.IP \(bu 2
++\fB\-\-script\-opts=ytdl_hook\-exclude=\(aq^youtube%.com\(aq\fP
++will exclude any URL that starts with \fBhttp://youtube.com\fP or
++\fBhttps://youtube.com\fP\&.
++.IP \(bu 2
++\fB\-\-script\-opts=ytdl_hook\-exclude=\(aq%.mkv$|%.mp4$\(aq\fP
++will exclude any URL that ends with \fB\&.mkv\fP or \fB\&.mp4\fP\&.
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.sp
++See more lua patterns here: \fI\%https://www.lua.org/manual/5.1/manual.html#5.4.1\fP
 +.TP
 +.B \fB\-\-ytdl\-format=<best|worst|mp4|webm|...>\fP
 +Video format/quality that is directly passed to youtube\-dl. The possible
@@ -1694,9 +1782,12 @@ index 000000000..7819ab9b2
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Example"
-+.sp
++.INDENT 0.0
++.IP \(bu 2
 +\fB\-\-ytdl\-raw\-options=username=user,password=pass\fP
++.IP \(bu 2
 +\fB\-\-ytdl\-raw\-options=force\-ipv6=\fP
++.UNINDENT
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -2046,11 +2137,13 @@ index 000000000..7819ab9b2
 +.B hybrid
 +Prefer the container aspect ratio. If the bitstream aspect
 +switches mid\-stream, switch to preferring the bitstream aspect.
-+This is the default behavior in mpv and mplayer2.
++This was the default in older mpv and mplayer2. Deprecated.
 +.TP
 +.B container
 +Strictly prefer the container aspect ratio. This is apparently
-+the default behavior with VLC, at least with Matroska.
++the default behavior with VLC, at least with Matroska. Note that
++if the container has no aspect ratio set, the behavior is the
++same as with bitstream.
 +.TP
 +.B bitstream
 +Strictly prefer the bitstream aspect ratio, unless the bitstream
@@ -2058,9 +2151,11 @@ index 000000000..7819ab9b2
 +with XBMC/kodi, at least with Matroska.
 +.UNINDENT
 +.sp
-+Normally you should not set this. Try the \fBcontainer\fP and \fBbitstream\fP
-+choices if you encounter video that has the wrong aspect ratio in mpv,
-+but seems to be correct in other players.
++The current default for mpv is \fBcontainer\fP\&.
++.sp
++Normally you should not set this. Try the various choices if you encounter
++video that has the wrong aspect ratio in mpv, but seems to be correct in
++other players.
 +.TP
 +.B \fB\-\-video\-unscaled=<no|yes|downscale\-big>\fP
 +Disable scaling of the video. If the window is larger than the video,
@@ -2423,7 +2518,8 @@ index 000000000..7819ab9b2
 +If both \fBdts\fP and \fBdts\-hd\fP are specified, it behaves equivalent to
 +specifying \fBdts\-hd\fP only.
 +.sp
-+In earlier mpv versions
++In earlier mpv versions you could use \fB\-\-ad\fP to force the spdif wrapper.
++This does not work anymore.
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Warning"
@@ -2474,6 +2570,23 @@ index 000000000..7819ab9b2
 +treated as 0.
 +.sp
 +Since mpv 0.18.1, this always controls the internal mixer (aka "softvol").
++.TP
++.B \fB\-\-replaygain=<no|track|album>\fP
++Adjust volume gain according to the track\-gain or album\-gain replaygain
++value stored in the file metadata (default: no replaygain).
++.TP
++.B \fB\-\-replaygain\-preamp=<db>\fP
++Pre\-amplification gain in dB to apply to the selected replaygain gain
++(default: 0).
++.TP
++.B \fB\-\-replaygain\-clip=<yes|no>\fP
++Prevent clipping caused by replaygain by automatically lowering the
++gain (default). Use \fB\-\-replaygain\-clip=no\fP to disable this.
++.TP
++.B \fB\-\-replaygain\-fallback=<db>\fP
++Gain in dB to apply if the file has no replay gain tags. This option
++is always applied if the replaygain logic is somehow inactive. If this
++is applied, no other replaygain options are applied.
 +.TP
 +.B \fB\-\-balance=<value>\fP
 +How much left/right channels contribute to the audio. (The implementation
@@ -2652,8 +2765,13 @@ index 000000000..7819ab9b2
 +.sp
 +This option has no influence on files with normal video tracks.
 +.TP
-+.B \fB\-\-audio\-file=<filename>\fP
-+Play audio from an external file while viewing a video. Each use of this
++.B \fB\-\-audio\-files=<files>\fP
++Play audio from an external file while viewing a video.
++.sp
++This is a list option. See \fI\%List Options\fP for details.
++.TP
++.B \fB\-\-audio\-file=<file>\fP
++CLI/config file only alias for \fB\-\-audio\-files\-append\fP\&. Each use of this
 +option will add a new audio track. The details are similar to how
 +\fB\-\-sub\-file\fP works.
 +.TP
@@ -2741,12 +2859,12 @@ index 000000000..7819ab9b2
 +Load all audio files containing media filename.
 +.TP
 +.B all
-+Load all audio files in the current and \fB\-\-audio\-file\-paths\fP
++Load all audio files in the current and \fB\-\-audio\-file\-path\fP
 +directories.
 +.UNINDENT
 +.TP
 +.B \fB\-\-audio\-file\-paths=<path1:path2:...>\fP
-+Equivalent to \fB\-\-sub\-paths\fP option, but for auto\-loaded audio files.
++Equivalent to \fB\-\-sub\-file\-paths\fP option, but for auto\-loaded audio files.
 +.TP
 +.B \fB\-\-audio\-client\-name=<name>\fP
 +The application name the player reports to the audio API. Can be useful
@@ -2795,7 +2913,7 @@ index 000000000..7819ab9b2
 +Changing styling and position does not work with all subtitles. Image\-based
 +subtitles (DVD, Bluray/PGS, DVB) cannot changed for fundamental reasons.
 +Subtitles in ASS format are normally not changed intentionally, but
-+overriding them can be controlled with \fB\-\-sub\-ass\-style\-override\fP\&.
++overriding them can be controlled with \fB\-\-sub\-ass\-override\fP\&.
 +.sp
 +Previously some options working on text subtitles were called
 +\fB\-\-sub\-text\-*\fP, they are now named \fB\-\-sub\-*\fP, and those specifically
@@ -2812,7 +2930,7 @@ index 000000000..7819ab9b2
 +.B \fB\-\-sub\-delay=<sec>\fP
 +Delays subtitles by \fB<sec>\fP seconds. Can be negative.
 +.TP
-+.B \fB\-\-sub\-file=subtitlefile\fP
++.B \fB\-\-sub\-files=<file\-list>\fP
 +Add a subtitle file to the list of external subtitles.
 +.sp
 +If you use \fB\-\-sub\-file\fP only once, this subtitle file is displayed by
@@ -2823,6 +2941,8 @@ index 000000000..7819ab9b2
 +two subtitles at once: use \fB\-\-sid\fP to select the first subtitle index,
 +and \fB\-\-secondary\-sid\fP to select the second index. (The index is printed
 +on the terminal output after the \fB\-\-sid=\fP in the list of streams.)
++.sp
++This is a list option. See \fI\%List Options\fP for details.
 +.TP
 +.B \fB\-\-secondary\-sid=<ID|auto|no>\fP
 +Select a secondary subtitle stream. This is similar to \fB\-\-sid\fP\&. If a
@@ -2884,8 +3004,8 @@ index 000000000..7819ab9b2
 +scales with the approximate window size, while the other option disables
 +this scaling.
 +.sp
-+Affects plain text subtitles only (or ASS if \fB\-\-sub\-ass\-style\-override\fP is
-+set high enough).
++Affects plain text subtitles only (or ASS if \fB\-\-sub\-ass\-override\fP is set
++high enough).
 +.TP
 +.B \fB\-\-sub\-ass\-scale\-with\-window=<yes|no>\fP
 +Like \fB\-\-sub\-scale\-with\-window\fP, but affects subtitles in ASS format only.
@@ -2917,7 +3037,7 @@ index 000000000..7819ab9b2
 +.INDENT 3.5
 +.IP "Example"
 +.sp
-+\fI\-\-sub\-speed=25/23.976\(ga\fP plays frame based subtitles which have been
++\fB\-\-sub\-speed=25/23.976\fP plays frame based subtitles which have been
 +loaded assuming a framerate of 23.976 at 25 FPS.
 +.UNINDENT
 +.UNINDENT
@@ -2999,24 +3119,27 @@ index 000000000..7819ab9b2
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-sub\-ass\-style\-override=<yes|no|force|signfs|strip>\fP
-+Control whether user style overrides should be applied.
++.B \fB\-\-sub\-ass\-override=<yes|no|force|scale|strip>\fP
++Control whether user style overrides should be applied. Note that all of
++these overrides try to be somewhat smart about figuring out whether or not
++a subtitle is considered a "sign".
 +.INDENT 7.0
 +.TP
-+.B yes
-+Apply all the \fB\-\-sub\-ass\-*\fP style override options. Changing the default
-+for any of these options can lead to incorrect subtitle rendering
-+(default).
-+.TP
-+.B signfs
-+like \fByes\fP, but apply \fB\-\-sub\-scale\fP only to signs
-+.TP
 +.B no
-+Render subtitles as forced by subtitle scripts.
++Render subtitles as specified by the subtitle scripts, without
++overrides.
++.TP
++.B yes
++Apply all the \fB\-\-sub\-ass\-*\fP style override options. Changing the
++default for any of these options can lead to incorrect subtitle
++rendering (default).
 +.TP
 +.B force
-+Try to force the font style as defined by the \fB\-\-sub\-*\fP
-+options. Can break rendering easily.
++Like \fByes\fP, but also force all \fB\-\-sub\-*\fP options. Can break
++rendering easily.
++.TP
++.B scale
++Like \fByes\fP, but also apply \fB\-\-sub\-scale\fP\&.
 +.TP
 +.B strip
 +Radically strip all ASS tags and styles from the subtitle. This
@@ -3032,7 +3155,7 @@ index 000000000..7819ab9b2
 +.B \fB\-\-sub\-use\-margins\fP
 +Enables placing toptitles and subtitles in black borders when they are
 +available, if the subtitles are in a plain text format  (or ASS if
-+\fB\-\-sub\-ass\-style\-override\fP is set high enough).
++\fB\-\-sub\-ass\-override\fP is set high enough).
 +.sp
 +Default: yes.
 +.sp
@@ -3096,7 +3219,7 @@ index 000000000..7819ab9b2
 +.sp
 +Choosing anything other than \fBno\fP will make the subtitle color depend on
 +the video color space, and it\(aqs for example in theory not possible to reuse
-+a subtitle script with another video file. The \fB\-\-sub\-ass\-style\-override\fP
++a subtitle script with another video file. The \fB\-\-sub\-ass\-override\fP
 +option doesn\(aqt affect how this option is interpreted.
 +.TP
 +.B \fB\-\-stretch\-dvd\-subs=<yes|no>\fP
@@ -3137,9 +3260,9 @@ index 000000000..7819ab9b2
 +\fBNOTE:\fP
 +.INDENT 7.0
 +.INDENT 3.5
-+This has been deprecated by \fB\-\-sub\-ass\-style\-override=strip\fP\&. You also
++This has been deprecated by \fB\-\-sub\-ass\-override=strip\fP\&. You also
 +may need \fB\-\-embeddedfonts=no\fP to get the same behavior. Also,
-+using \fB\-\-sub\-ass\-style\-override=force\fP should give better results
++using \fB\-\-sub\-ass\-override=style\fP should give better results
 +without breaking subtitles too much.
 +.UNINDENT
 +.UNINDENT
@@ -3173,7 +3296,7 @@ index 000000000..7819ab9b2
 +Load all subs containing media filename.
 +.TP
 +.B all
-+Load all subs in the current and \fB\-\-sub\-paths\fP directories.
++Load all subs in the current and \fB\-\-sub\-file\-path\fP directories.
 +.UNINDENT
 +.TP
 +.B \fB\-\-sub\-codepage=<codepage>\fP
@@ -3215,10 +3338,10 @@ index 000000000..7819ab9b2
 +This option changed in mpv 0.23.0. Support for the old syntax was fully
 +removed in mpv 0.24.0.
 +.TP
-+.B \fB\-\-sub\-fix\-timing\fP, \fB\-\-no\-sub\-fix\-timing\fP
-+By default, subtitle timing is adjusted to remove minor gaps or overlaps
-+between subtitles (if the difference is smaller than 210 ms, the gap or
-+overlap is removed).
++.B \fB\-\-sub\-fix\-timing=<yes|no>\fP
++Adjust subtitle timing is to remove minor gaps or overlaps between
++subtitles (if the difference is smaller than 210 ms, the gap or overlap
++is removed).
 +.TP
 +.B \fB\-\-sub\-forced\-only\fP
 +Display only forced subtitles for the DVD subtitle stream selected by e.g.
@@ -3262,6 +3385,9 @@ index 000000000..7819ab9b2
 +.UNINDENT
 +.TP
 +.B \fB\-\-sub\-paths=<path1:path2:...>\fP
++Deprecated, use \fB\-\-sub\-file\-paths\fP\&.
++.TP
++.B \fB\-\-sub\-file\-paths=<path\-list>\fP
 +Specify extra directories to search for subtitles matching the video.
 +Multiple directories can be separated by ":" (";" on Windows).
 +Paths can be relative or absolute. Relative paths are interpreted relative
@@ -3273,8 +3399,8 @@ index 000000000..7819ab9b2
 +.IP "Example"
 +.sp
 +Assuming that \fB/path/to/video/video.avi\fP is played and
-+\fB\-\-sub\-paths=sub:subtitles:/tmp/subs\fP is specified, mpv searches for
-+subtitle files in these directories:
++\fB\-\-sub\-file\-paths=sub:subtitles\fP is specified, mpv
++searches for subtitle files in these directories:
 +.INDENT 0.0
 +.IP \(bu 2
 +\fB/path/to/video/\fP
@@ -3283,12 +3409,12 @@ index 000000000..7819ab9b2
 +.IP \(bu 2
 +\fB/path/to/video/subtitles/\fP
 +.IP \(bu 2
-+\fB/tmp/subs/\fP
-+.IP \(bu 2
 +the \fBsub\fP configuration subdirectory (usually \fB~/.config/mpv/sub/\fP)
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
++.sp
++This is a list option. See \fI\%List Options\fP for details.
 +.TP
 +.B \fB\-\-sub\-visibility\fP, \fB\-\-no\-sub\-visibility\fP
 +Can be used to disable display of subtitles, but still select and decode
@@ -3316,7 +3442,7 @@ index 000000000..7819ab9b2
 +.IP \(bu 2
 +\fB\-\-sub\-font=\(aqBitstream Vera Sans\(aq\fP
 +.IP \(bu 2
-+\fB\-\-sub\-font=\(aqMS Comic Sans\(aq\fP
++\fB\-\-sub\-font=\(aqComic Sans MS\(aq\fP
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
@@ -3450,7 +3576,7 @@ index 000000000..7819ab9b2
 +.TP
 +.B \fB\-\-sub\-ass\-justify=<yes|no>\fP
 +Applies justification as defined by \fB\-\-sub\-justify\fP on ASS subtitles
-+if \fB\-\-sub\-ass\-style\-override\fP is not set to \fBno\fP\&.
++if \fB\-\-sub\-ass\-override\fP is not set to \fBno\fP\&.
 +Default: \fBno\fP\&.
 +.TP
 +.B \fB\-\-sub\-shadow\-color=<color>\fP
@@ -4228,10 +4354,6 @@ index 000000000..7819ab9b2
 +libavformat might reallocate the buffer internally, or not fully use all
 +of it.
 +.TP
-+.B \fB\-\-demuxer\-lavf\-cryptokey=<hexstring>\fP
-+Encryption key the demuxer should use. This is the raw binary data of
-+the key converted to a hexadecimal string.
-+.TP
 +.B \fB\-\-demuxer\-mkv\-subtitle\-preroll=<yes|index|no>\fP, \fB\-\-mkv\-subtitle\-preroll\fP
 +Try harder to show embedded soft subtitles when seeking somewhere. Normally,
 +it can happen that the subtitle at the seek target is not shown due to how
@@ -4565,7 +4687,7 @@ index 000000000..7819ab9b2
 +.IP \(bu 2
 +\fB\-\-osd\-font=\(aqBitstream Vera Sans\(aq\fP
 +.IP \(bu 2
-+\fB\-\-osd\-font=\(aqMS Comic Sans\(aq\fP
++\fB\-\-osd\-font=\(aqComic Sans MS\(aq\fP
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
@@ -5612,11 +5734,11 @@ index 000000000..7819ab9b2
 +.sp
 +The following video options are currently all specific to \fB\-\-vo=opengl\fP and
 +\fB\-\-vo=opengl\-cb\fP only, which are the only VOs that implement them.
-+.sp
-+\fB\-\-scale=<filter>\fP
 +.INDENT 0.0
-+.INDENT 3.5
-+.INDENT 0.0
++.TP
++.B \fB\-\-scale=<filter>\fP
++The filter function to use when upscaling video.
++.INDENT 7.0
 +.TP
 +.B \fBbilinear\fP
 +Bilinear hardware texture filtering (fastest, very low quality). This
@@ -5665,7 +5787,7 @@ index 000000000..7819ab9b2
 +.sp
 +There are some more filters, but most are not as useful. For a complete
 +list, pass \fBhelp\fP as value, e.g.:
-+.INDENT 0.0
++.INDENT 7.0
 +.INDENT 3.5
 +.sp
 +.nf
@@ -5675,9 +5797,6 @@ index 000000000..7819ab9b2
 +.fi
 +.UNINDENT
 +.UNINDENT
-+.UNINDENT
-+.UNINDENT
-+.INDENT 0.0
 +.TP
 +.B \fB\-\-cscale=<filter>\fP
 +As \fB\-\-scale\fP, but for interpolating chroma information. If the image is
@@ -5723,12 +5842,24 @@ index 000000000..7819ab9b2
 +this too low (eg. 0.5) leads to bad results. It\(aqs generally recommended to
 +stick to values between 0.8 and 1.2.
 +.TP
-+.B \fB\-\-scale\-clamp\fP, \fB\-\-cscale\-clamp\fP, \fB\-\-dscale\-clamp\fP, \fB\-\-tscale\-clamp\fP
-+Clamp the filter kernel\(aqs value range to [0\-1]. This is especially useful
-+for \fB\-\-tscale\fP, where it reduces excessive ringing artifacts in the
-+temporal domain (which typically manifest themselves as short flashes or
-+fringes of black, mostly around moving edges) in exchange for potentially
-+adding more blur.
++.B \fB\-\-scale\-clamp=<0.0\-1.0>\fP, \fB\-\-cscale\-clamp\fP, \fB\-\-dscale\-clamp\fP, \fB\-\-tscale\-clamp\fP
++Specifies a weight bias to multiply into negative coefficients. Specifying
++\fB\-\-scale\-clamp=1\fP has the effect of removing negative weights completely,
++thus effectively clamping the value range to [0\-1]. Values between 0.0 and
++1.0 can be specified to apply only a moderate diminishment of negative
++weights. This is especially useful for \fB\-\-tscale\fP, where it reduces
++excessive ringing artifacts in the temporal domain (which typically
++manifest themselves as short flashes or fringes of black, mostly around
++moving edges) in exchange for potentially adding more blur. The default for
++\fB\-\-tscale\-clamp\fP is 1.0, the others default to 0.0.
++.TP
++.B \fB\-\-scale\-cutoff=<value>\fP, \fB\-\-cscale\-cutoff=<value>\fP, \fB\-\-dscale\-cutoff=<value>\fP
++Cut off the filter kernel prematurely once the value range drops below
++this threshold. Doing so allows more aggressive pruning of skippable
++coefficients by disregarding parts of the LUT which are effectively zeroed
++out by the window function. Only affects polar (EWA) filters. The default
++is 0.001 for each, which is perceptually transparent but provides a 10%\-20%
++speedup, depending on the exact radius and filter kernel chosen.
 +.TP
 +.B \fB\-\-scale\-taper=<value>\fP, \fB\-\-scale\-wtaper=<value>\fP, \fB\-\-dscale\-taper=<value>\fP, \fB\-\-dscale\-wtaper=<value>\fP, \fB\-\-cscale\-taper=<value>\fP, \fB\-\-cscale\-wtaper=<value>\fP, \fB\-\-tscale\-taper=<value>\fP, \fB\-\-tscale\-wtaper=<value>\fP
 +Kernel/window taper factor. Increasing this flattens the filter function.
@@ -5752,7 +5883,7 @@ index 000000000..7819ab9b2
 +0.0 and 1.0. The default value of 0.0 disables antiringing entirely.
 +.sp
 +Note that this doesn\(aqt affect the special filters \fBbilinear\fP and
-+\fBbicubic_fast\fP\&.
++\fBbicubic_fast\fP, nor does it affect any polar (EWA) scalers.
 +.TP
 +.B \fB\-\-scale\-window=<window>\fP, \fB\-\-cscale\-window=<window>\fP, \fB\-\-dscale\-window=<window>\fP, \fB\-\-tscale\-window=<window>\fP
 +(Advanced users only) Choose a custom windowing function for the kernel.
@@ -5843,9 +5974,6 @@ index 000000000..7819ab9b2
 +Enable use of PBOs. On some drivers this can be faster, especially if the
 +source video size is huge (e.g. so called "4K" video). On other drivers it
 +might be slower or cause latency issues.
-+.sp
-+In theory, this can sometimes lead to sporadic and temporary image
-+corruption (because reupload is not retried when it fails).
 +.TP
 +.B \fB\-\-dither\-depth=<N|no|auto>\fP
 +Set dither target depth to N. Default: no.
@@ -5906,10 +6034,11 @@ index 000000000..7819ab9b2
 +results, as can missing or incorrect display FPS information (see
 +\fB\-\-display\-fps\fP).
 +.TP
-+.B \fB\-\-opengl\-shaders=<files>\fP
++.B \fB\-\-opengl\-shaders=<file\-list>\fP
 +Custom GLSL hooks. These are a flexible way to add custom fragment shaders,
 +which can be injected at almost arbitrary points in the rendering pipeline,
-+and access all previous intermediate textures.
++and access all previous intermediate textures. Each use of the option will
++add another file to the internal list of shaders (see \fI\%List Options\fP).
 +.INDENT 7.0
 +.INDENT 3.5
 +.IP "Warning"
@@ -5944,6 +6073,11 @@ index 000000000..7819ab9b2
 +Each block of metadata, along with the non\-metadata lines after it, defines
 +a single pass. Each pass can set the following metadata:
 +.INDENT 7.0
++.TP
++.B DESC <title>
++User\-friendly description of the pass. This is the name used when
++representing this shader in the list of passes for property
++\fIvo\-passes\fP\&.
 +.TP
 +.B HOOK <name> (required)
 +The texture which to hook into. May occur multiple times within a
@@ -6019,10 +6153,19 @@ index 000000000..7819ab9b2
 +.B vec2 NAME_pt
 +The (unrotated) size of a single pixel, range [0,1].
 +.TP
++.B float NAME_mul
++The coefficient that needs to be multiplied into the texture contents
++in order to normalize it to the range [0,1].
++.TP
 +.B sampler NAME_raw
 +The raw bound texture itself. The use of this should be avoided unless
 +absolutely necessary.
 +.UNINDENT
++.sp
++Normally, users should use either NAME_tex or NAME_texOff to read from the
++texture. For some shaders however , it can be better for performance to do
++custom sampling from NAME_raw, in which case care needs to be taken to
++respect NAME_mul and NAME_rot.
 +.sp
 +In addition to these parameters, the following uniforms are also globally
 +available:
@@ -6094,6 +6237,9 @@ index 000000000..7819ab9b2
 +Only the textures labelled with \fBresizable\fP may be transformed by the
 +pass. When overwriting a texture marked \fBfixed\fP, the WIDTH, HEIGHT and
 +OFFSET must be left at their default values.
++.TP
++.B \fB\-\-opengl\-shader=<file>\fP
++CLI/config file only alias for \fB\-\-opengl\-shaders\-append\fP\&.
 +.TP
 +.B \fB\-\-deband\fP
 +Enable the debanding algorithm. This greatly reduces the amount of visible
@@ -6255,7 +6401,7 @@ index 000000000..7819ab9b2
 +buffer before rendering a new frame to it. For this reason, Microsoft
 +recommends at least 4.
 +.sp
-+Windows 8+ with ANGLE only.
++Windows with ANGLE only.
 +.TP
 +.B \fB\-\-cocoa\-force\-dedicated\-gpu=<yes|no>\fP
 +Deactivates the automatic graphics switching and forces the dedicated GPU.
@@ -6414,6 +6560,9 @@ index 000000000..7819ab9b2
 +.TP
 +.B v\-gamut
 +Panasonic V\-Gamut (VARICAM) primaries
++.TP
++.B s\-gamut
++Sony S\-Gamut (S\-Log) primaries
 +.UNINDENT
 +.TP
 +.B \fB\-\-target\-trc=<value>\fP
@@ -6446,14 +6595,20 @@ index 000000000..7819ab9b2
 +.B prophoto
 +ProPhoto RGB (ROMM)
 +.TP
-+.B st2084
-+SMPTE ST2084 (HDR) curve, PQ OETF
++.B pq
++ITU\-R BT.2100 PQ (Perceptual quantizer) curve, aka SMPTE ST2084
 +.TP
-+.B std\-b67
-+ARIB STD\-B67 (Hybrid Log\-gamma) curve, also known as BBC/NHK HDR
++.B hlg
++ITU\-R BT.2100 HLG (Hybrid Log\-gamma) curve, aka ARIB STD\-B67
 +.TP
 +.B v\-log
 +Panasonic V\-Log (VARICAM) curve
++.TP
++.B s\-log1
++Sony S\-Log1 curve
++.TP
++.B s\-log2
++Sony S\-Log2 curve
 +.UNINDENT
 +.sp
 +\fBNOTE:\fP
@@ -6467,28 +6622,36 @@ index 000000000..7819ab9b2
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-target\-brightness=<1..100000>\fP
-+Specifies the display\(aqs approximate brightness in cd/m^2. When playing HDR
-+content on a SDR display (or SDR content on an HDR display), video colors
-+will be tone mapped to this target brightness using the algorithm specified
-+by \fB\-\-hdr\-tone\-mapping\fP\&. The default of 250 cd/m^2 corresponds to a
-+typical consumer display.
-+.TP
 +.B \fB\-\-hdr\-tone\-mapping=<value>\fP
 +Specifies the algorithm used for tone\-mapping HDR images onto the target
 +display. Valid values are:
 +.INDENT 7.0
 +.TP
 +.B clip
-+Hard\-clip any out\-of\-range values.
++Hard\-clip any out\-of\-range values. Use this when you care about
++perfect color accuracy for in\-range values at the cost of completely
++distorting out\-of\-range values. Not generally recommended.
++.TP
++.B mobius
++Generalization of Reinhard to a Möbius transform with linear section.
++Smoothly maps out\-of\-range values while retaining contrast and colors
++for in\-range material as much as possible. Use this when you care about
++color accuracy more than detail preservation. This is somewhere in
++between \fBclip\fP and \fBreinhard\fP, depending on the value of
++\fB\-\-tone\-mapping\-param\fP\&. (default)
 +.TP
 +.B reinhard
 +Reinhard tone mapping algorithm. Very simple continuous curve.
-+Preserves dynamic range and peak but uses nonlinear contrast.
++Preserves overall image brightness but uses nonlinear contrast, which
++results in flattening of details and degradation in color accuracy.
 +.TP
 +.B hable
-+Similar to \fBreinhard\fP but preserves dark contrast better (slightly
-+sigmoidal). Developed by John Hable for use in video games. (default)
++Similar to \fBreinhard\fP but preserves both dark and bright details
++better (slightly sigmoidal), at the cost of slightly darkening
++everything. Developed by John Hable for use in video games. Use this
++when you care about detail preservation more than color/brightness
++accuracy. This is roughly equivalent to
++\fB\-\-hdr\-tone\-mapping=reinhard \-\-tone\-mapping\-param=0.24\fP\&.
 +.TP
 +.B gamma
 +Fits a logarithmic transfer between the tone curves.
@@ -6503,6 +6666,17 @@ index 000000000..7819ab9b2
 +tunable. This affects the following tone mapping algorithms:
 +.INDENT 7.0
 +.TP
++.B clip
++Specifies an extra linear coefficient to multiply into the signal
++before clipping. Defaults to 1.0.
++.TP
++.B mobius
++Specifies the transition point from linear to mobius transform. Every
++value below this point is guaranteed to be mapped 1:1. The higher the
++value, the more accurate the result will be, at the cost of losing
++bright details. Defaults to 0.3, which due to the steep initial slope
++still preserves in\-range colors fairly accurately.
++.TP
 +.B reinhard
 +Specifies the local contrast coefficient at the display peak. Defaults
 +to 0.5, which means that in\-gamut values will be about half as bright
@@ -6514,6 +6688,16 @@ index 000000000..7819ab9b2
 +.B linear
 +Specifies the scale factor to use while stretching. Defaults to 1.0.
 +.UNINDENT
++.TP
++.B \fB\-\-tone\-mapping\-desaturate=<value>\fP
++Apply desaturation for highlights that exceed this level of brightness. The
++higher the parameter, the more color information will be preserved. This
++setting helps prevent unnaturally blown\-out colors for super\-highlights, by
++(smoothly) turning into white instead. This makes images feel more natural,
++at the cost of reducing information about out\-of\-range colors.
++.sp
++The default of 2.0 is somewhat conservative and will mostly just apply to
++skies or directly sunlit surfaces. A setting of 0.0 disables this option.
 +.TP
 +.B \fB\-\-icc\-profile=<file>\fP
 +Load an ICC profile and use it to transform video RGB to screen output.
@@ -6638,17 +6822,17 @@ index 000000000..7819ab9b2
 +flipping GL front and backbuffers immediately (i.e. it doesn\(aqt call it
 +in display\-sync mode).
 +.TP
-+.B \fB\-\-opengl\-dumb\-mode=<yes|no>\fP
++.B \fB\-\-opengl\-dumb\-mode=<yes|no|auto>\fP
 +This mode is extremely restricted, and will disable most extended OpenGL
-+features. This includes high quality scalers and custom shaders!
++features. That includes high quality scalers and custom shaders!
 +.sp
 +It is intended for hardware that does not support FBOs (including GLES,
 +which supports it insufficiently), or to get some more performance out of
 +bad or old hardware.
 +.sp
 +This mode is forced automatically if needed, and this option is mostly
-+useful for debugging. It\(aqs also enabled automatically if nothing uses
-+features which require FBOs.
++useful for debugging. The default of \fBauto\fP will enable it automatically
++if nothing uses features which require FBOs.
 +.sp
 +This option might be silently removed in the future.
 +.TP
@@ -6663,6 +6847,16 @@ index 000000000..7819ab9b2
 +.sp
 +This option might be silently removed in the future, if ANGLE fixes shader
 +compilation speed.
++.TP
++.B \fB\-\-cuda\-decode\-device=<auto|0..>\fP
++Choose the GPU device used for decoding when using the \fBcuda\fP hwdec.
++.sp
++By default, the device that is being used to provide OpenGL output will
++also be used for decoding (and in the vast majority of cases, only one
++GPU will be present).
++.sp
++Note that when using the \fBcuda\-copy\fP hwdec, a different option must be
++passed: \fB\-\-vd\-lavc\-o=gpu=<0..>\fP\&.
 +.UNINDENT
 +.SS Miscellaneous
 +.INDENT 0.0
@@ -6836,17 +7030,28 @@ index 000000000..7819ab9b2
 +for scripts which want to set a title, without overriding the user\(aqs
 +setting in \fB\-\-title\fP\&.
 +.TP
-+.B \fB\-\-external\-file=<filename>\fP
-+Add all tracks from the given file. Unlike \fB\-\-sub\-file\fP and
-+\fB\-\-audio\-file\fP, this includes all tracks, and does not cause default
-+stream selection over the "proper" file.
++.B \fB\-\-external\-files=<file\-list>\fP
++Load a file and add all of its tracks. This is useful to play different
++files together (for example audio from one file, video from another), or
++for advanced \fB\-\-lavfi\-complex\fP used (like playing two video files at
++the same time).
++.sp
++Unlike \fB\-\-sub\-files\fP and \fB\-\-audio\-files\fP, this includes all tracks, and
++does not cause default stream selection over the "proper" file. This makes
++it slightly less intrusive.
++.sp
++This is a list option. See \fI\%List Options\fP for details.
++.TP
++.B \fB\-\-external\-file=<file>\fP
++CLI/config file only alias for \fB\-\-external\-files\-append\fP\&. Each use of this
++option will add a new external files.
 +.TP
 +.B \fB\-\-autoload\-files=<yes|no>\fP
 +Automatically load/select external files (default: yes).
 +.sp
 +If set to \fBno\fP, then do not automatically load external files as specified
 +by \fB\-\-sub\-auto\fP and \fB\-\-audio\-file\-auto\fP\&. If external files are forcibly
-+added (like with \fB\-\-sub\-file\fP), they will not be auto\-selected.
++added (like with \fB\-\-sub\-files\fP), they will not be auto\-selected.
 +.sp
 +This does not affect playlist expansion, redirection, or other loading of
 +referenced files like with ordered chapters.
@@ -6992,10 +7197,6 @@ index 000000000..7819ab9b2
 +The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fB\-\-oss\-device\fP
-+Sets the audio output device (default: \fB/dev/dsp\fP).
-+Deprecated, use \fB\-\-audio\-device\fP\&.
-+.TP
 +.B \fB\-\-oss\-mixer\-device\fP
 +Sets the audio mixer device (default: \fB/dev/mixer\fP).
 +.TP
@@ -7059,11 +7260,14 @@ index 000000000..7819ab9b2
 +setting in the \fBAudio Devices\fP dialog in the \fBAudio MIDI Setup\fP
 +utility. Note that this does not affect the selected speaker setup.
 +.TP
-+.B \fB\-\-coreaudio\-exclusive\fP
-+Deprecated, use \fB\-\-audio\-exclusive\fP\&.
-+Use exclusive mode access. This merely redirects to
-+\fBcoreaudio_exclusive\fP, but should be preferred over using that AO
-+directly.
++.B \fB\-\-coreaudio\-spdif\-hack=<yes|no>\fP
++Try to pass through AC3/DTS data as PCM. This is useful for drivers
++which do not report AC3 support. It converts the AC3 data to float,
++and assumes the driver will do the inverse conversion, which means
++a typical A/V receiver will pick it up as compressed IEC framed AC3
++stream, ignoring that it\(aqs marked as PCM. This disables normal AC3
++passthrough (even if the device reports it as supported). Use with
++extreme care.
 +.UNINDENT
 +.TP
 +.B \fBcoreaudio_exclusive\fP (Mac OS X only)
@@ -7087,11 +7291,9 @@ index 000000000..7819ab9b2
 +The following global options are supported by this audio output:
 +.INDENT 7.0
 +.TP
-+.B \fB\-\-pulse\-host=<host>\fP, \fB\-\-pulse\-sink=<sink>\fP
-+Specify the host and optionally output sink to use. An empty <host>
-+string uses a local connection, "localhost" uses network transfer
-+(most likely not what you want).
-+Deprecated, use \fB\-\-audio\-device\fP\&.
++.B \fB\-\-pulse\-host=<host>\fP
++Specify the host to use. An empty <host> string uses a local connection,
++"localhost" uses network transfer (most likely not what you want).
 +.TP
 +.B \fB\-\-pulse\-buffer=<1\-2000|native>\fP
 +Set the audio buffer size in milliseconds. A higher value buffers
@@ -7209,22 +7411,6 @@ index 000000000..7819ab9b2
 +different.
 +.UNINDENT
 +.UNINDENT
-+.sp
-+The following global options are supported by this audio output:
-+.INDENT 7.0
-+.TP
-+.B \fB\-\-rsound\-host=<name/path>\fP
-+Set the address of the server (default: localhost).  Can be either a
-+network hostname for TCP connections or a Unix domain socket path
-+starting with \(aq/\(aq.
-+.TP
-+.B \fB\-\-rsound\-port=<number>\fP
-+Set the TCP port used for connecting to the server (default: 12345).
-+Not used if connecting to a Unix domain socket.
-+.UNINDENT
-+.sp
-+These options are deprecated. If anyone cares enough, their functionality
-+can be added back using \fB\-\-audio\-device\fP\&.
 +.TP
 +.B \fBsndio\fP
 +Audio output to the OpenBSD sndio sound system
@@ -7238,37 +7424,9 @@ index 000000000..7819ab9b2
 +.sp
 +(Note: only supports mono, stereo, 4.0, 5.1 and 7.1 channel
 +layouts.)
-+.sp
-+The following global options are supported by this audio output:
-+.INDENT 7.0
-+.TP
-+.B \fB\-\-ao\-sndio\-device=<device>\fP
-+sndio device to use (default: \fB$AUDIODEVICE\fP, resp. \fBsnd0\fP).
-+Deprecated, use \fB\-\-audio\-device\fP\&.
-+.UNINDENT
 +.TP
 +.B \fBwasapi\fP
 +Audio output to the Windows Audio Session API.
-+.sp
-+The following global options are supported by this audio output:
-+.INDENT 7.0
-+.TP
-+.B \fB\-\-ao\-wasapi\-exclusive\fP
-+Deprecated, use \fB\-\-audio\-exclusive\fP\&.
-+Requests exclusive, direct hardware access. By definition prevents
-+sound playback of any other program until mpv exits.
-+.TP
-+.B \fB\-\-ao\-wasapi\-device=<id>\fP
-+Deprecated, use \fB\-\-audio\-device\fP\&.
-+.sp
-+Uses the requested endpoint instead of the system\(aqs default audio
-+endpoint. Both an ordinal number (0,1,2,...) and the GUID
-+String are valid; the GUID string is guaranteed to not change
-+unless the driver is uninstalled.
-+.sp
-+Also supports searching active devices by human\-readable name. If more
-+than one device matches the name, refuses loading it.
-+.UNINDENT
 +.UNINDENT
 +.SH VIDEO OUTPUT DRIVERS
 +.sp
@@ -7810,20 +7968,8 @@ index 000000000..7819ab9b2
 +.B \fB\-\-vo\-image\-jpeg\-quality=<0\-100>\fP
 +JPEG quality factor (default: 90)
 +.TP
-+.B \fB\-\-vo\-image\-jpeg\-progressive=<yes|no>\fP
-+Specify standard or progressive JPEG (default: no).
-+.TP
-+.B \fB\-\-vo\-image\-jpeg\-baseline=<yes|no>\fP
-+Specify use of JPEG baseline or not (default: yes).
-+.TP
 +.B \fB\-\-vo\-image\-jpeg\-optimize=<0\-100>\fP
 +JPEG optimization factor (default: 100)
-+.TP
-+.B \fB\-\-vo\-image\-jpeg\-smooth=<0\-100>\fP
-+smooth factor (default: 0)
-+.TP
-+.B \fB\-\-vo\-image\-jpeg\-dpi=<1\->\fP
-+JPEG DPI (default: 72)
 +.TP
 +.B \fB\-\-vo\-image\-outdir=<dirname>\fP
 +Specify the directory to save the image files to (default: \fB\&./\fP).
@@ -7936,6 +8082,9 @@ index 000000000..7819ab9b2
 +Also, keep in mind that most actual filters are available via the \fBlavfi\fP
 +wrapper, which gives you access to most of libavfilter\(aqs filters. This
 +includes all filters that have been ported from MPlayer to libavfilter.
++.sp
++The \fB\-\-vf\fP description describes how libavfilter can be used and how to
++workaround deprecated mpv filters.
 +.UNINDENT
 +.UNINDENT
 +.sp
@@ -8231,6 +8380,9 @@ index 000000000..7819ab9b2
 +can reduce the signal to noise ratio of the sound. In most cases it is
 +best to use the \fIMaster\fP volume control of your sound card or the volume
 +knob on your amplifier.
++.sp
++\fIWARNING\fP: This filter is deprecated. Use the top\-level options like
++\fB\-\-volume\fP and \fB\-\-replaygain...\fP instead.
 +.sp
 +\fINOTE\fP: This filter is not reentrant and can therefore only be enabled
 +once for every audio stream.
@@ -8559,13 +8711,14 @@ index 000000000..7819ab9b2
 +\fBNOTE:\fP
 +.INDENT 0.0
 +.INDENT 3.5
-+To get a full list of available video filters, see \fB\-\-vf=help\fP\&.
++To get a full list of available video filters, see \fB\-\-vf=help\fP and
++\fI\%http://ffmpeg.org/ffmpeg\-filters.html\fP .
 +.sp
 +Also, keep in mind that most actual filters are available via the \fBlavfi\fP
 +wrapper, which gives you access to most of libavfilter\(aqs filters. This
 +includes all filters that have been ported from MPlayer to libavfilter.
 +.sp
-+Most filters are deprecated in some ways, unless they\(aqre only available
++Most builtin filters are deprecated in some ways, unless they\(aqre only available
 +in mpv (such as filters which deal with mpv specifics, or which are
 +implemented in mpv only).
 +.sp
@@ -8575,6 +8728,11 @@ index 000000000..7819ab9b2
 +is rather similar to libavfilter\(aqs, it\(aqs not the same. (Which means not
 +everything accepted by vf_lavfi\(aqs \fBgraph\fP option will be accepted by
 +\fB\-\-vf\fP\&.)
++.sp
++You can also prefix the filter name with \fBlavfi\-\fP to force the wrapper.
++This is helpful if the filter name collides with a deprecated mpv builtin
++filter. For example \fB\-\-vf=lavfi\-scale=args\fP would use libavfilter\(aqs
++\fBscale\fP filter over mpv\(aqs deprecated builtin one.
 +.UNINDENT
 +.UNINDENT
 +.sp
@@ -8608,7 +8766,7 @@ index 000000000..7819ab9b2
 +set flag parameters.
 +.UNINDENT
 +.sp
-+Available filters are:
++Available mpv\-only filters are:
 +.INDENT 0.0
 +.TP
 +.B \fBcrop[=w:h:x:y]\fP
@@ -9029,23 +9187,59 @@ index 000000000..7819ab9b2
 +.B prophoto
 +ProPhoto RGB (ROMM) curve
 +.TP
-+.B st2084
-+SMPTE ST2084 (HDR) curve
++.B pq
++ITU\-R BT.2100 PQ (Perceptual quantizer) curve
 +.TP
-+.B std\-b67
-+ARIB STD\-B67 (Hybrid Log\-gamma) curve
++.B hlg
++ITU\-R BT.2100 HLG (Hybrid Log\-gamma) curve
 +.TP
 +.B v\-log
 +Panasonic V\-Log transfer curve
++.TP
++.B s\-log1
++Sony S\-Log1 transfer curve
++.TP
++.B s\-log2
++Sony S\-Log2 transfer curve
 +.UNINDENT
 +.TP
-+.B \fB<peak>\fP
-+Reference peak illumination for the video file. This is mostly
-+interesting for HDR, but it can also be used tone map SDR content
-+to a darker or brighter exposure.
++.B \fB<sig\-peak>\fP
++Reference peak illumination for the video file, relative to the
++signal\(aqs reference white level. This is mostly interesting for HDR, but
++it can also be used tone map SDR content to simulate a different
++exposure. Normally inferred from tags such as MaxCLL or mastering
++metadata.
 +.sp
-+The default of 0.0 will default to the display\(aqs reference brightness
-+for SDR and the source\(aqs reference brightness for HDR.
++The default of 0.0 will default to the source\(aqs nominal peak luminance.
++.TP
++.B \fB<light>\fP
++.INDENT 7.0
++.INDENT 3.5
++Light type of the scene. This is mostly correctly inferred based on the
++gamma function, but it can be useful to override this when viewing raw
++camera footage (e.g. V\-Log), which is normally scene\-referred instead
++of display\-referred.
++.sp
++Available light types are:
++.UNINDENT
++.UNINDENT
++.INDENT 7.0
++.TP
++.B auto
++Automatic selection (default)
++.TP
++.B display
++Display\-referred light (most content)
++.TP
++.B hlg
++Scene\-referred using the HLG OOTF (e.g. HLG content)
++.TP
++.B 709\-1886
++Scene\-referred using the BT709+BT1886 interaction
++.TP
++.B gamma1.2
++Scene\-referred using a pure power OOTF (gamma=1.2)
++.UNINDENT
 +.TP
 +.B \fB<stereo\-in>\fP
 +Set the stereo mode the video is assumed to be encoded in. Takes the
@@ -9397,35 +9591,6 @@ index 000000000..7819ab9b2
 +.B \fB<size>\fP
 +size of the filter in percent of the image diagonal size. This is
 +used to calculate the final radius size (default: 1).
-+.UNINDENT
-+.TP
-+.B \fBdlopen=dll[:a0[:a1[:a2[:a3]]]]\fP
-+Loads an external library to filter the image. The library interface
-+is the \fBvf_dlopen\fP interface specified using \fBlibmpcodecs/vf_dlopen.h\fP\&.
-+.sp
-+\fBWARNING:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+This filter is deprecated.
-+.UNINDENT
-+.UNINDENT
-+.INDENT 7.0
-+.TP
-+.B \fBdll=<library>\fP
-+Specify the library to load. This may require a full file system path
-+in some cases. This argument is required.
-+.TP
-+.B \fBa0=<string>\fP
-+Specify the first parameter to pass to the library.
-+.TP
-+.B \fBa1=<string>\fP
-+Specify the second parameter to pass to the library.
-+.TP
-+.B \fBa2=<string>\fP
-+Specify the third parameter to pass to the library.
-+.TP
-+.B \fBa3=<string>\fP
-+Specify the fourth parameter to pass to the library.
 +.UNINDENT
 +.TP
 +.B \fBvapoursynth=file:buffered\-frames:concurrent\-frames\fP
@@ -11516,11 +11681,11 @@ index 000000000..7819ab9b2
 +.B \fBvideo\-params/gamma\fP
 +The gamma function in use as string. (Exact values subject to change.)
 +.TP
-+.B \fBvideo\-params/nom\-peak\fP
-+The video encoding\(aqs nominal peak brightness as float.
-+.TP
 +.B \fBvideo\-params/sig\-peak\fP
 +The video file\(aqs tagged signal peak as float.
++.TP
++.B \fBvideo\-params/light\fP
++The light type in use as a string. (Exact values subject to change.)
 +.TP
 +.B \fBvideo\-params/chroma\-location\fP
 +Chroma location as string. (Exact values subject to change.)
@@ -11552,8 +11717,8 @@ index 000000000..7819ab9b2
 +    "colorlevels"       MPV_FORMAT_STRING
 +    "primaries"         MPV_FORMAT_STRING
 +    "gamma"             MPV_FORMAT_STRING
-+    "nom\-peak"          MPV_FORMAT_DOUBLE
 +    "sig\-peak"          MPV_FORMAT_DOUBLE
++    "light"             MPV_FORMAT_STRING
 +    "chroma\-location"   MPV_FORMAT_STRING
 +    "rotate"            MPV_FORMAT_INT64
 +    "stereo\-in"         MPV_FORMAT_STRING
@@ -11986,39 +12151,44 @@ index 000000000..7819ab9b2
 +whether the video window is visible. If the \fB\-\-force\-window\fP option is
 +used, this is usually always returns \fByes\fP\&.
 +.TP
-+.B \fBvo\-performance\fP
-+Some video output performance metrics. Not implemented by all VOs. This has
-+a number of sup\-properties, of the form \fBvo\-performance/<metric>\-<value>\fP,
-+all of them in milliseconds.
++.B \fBvo\-passes\fP
++Contains introspection about the VO\(aqs active render passes and their
++execution times. Not implemented by all VOs.
 +.sp
-+\fB<metric>\fP refers to one of:
++This is further subdivided into two frame types, \fBvo\-passes/fresh\fP for
++fresh frames (which have to be uploaded, scaled, etc.) and
++\fBvo\-passes/redraw\fP for redrawn frames (which only have to be re\-painted).
++The number of passes for any given subtype can change from frame to frame,
++and should not be relied upon.
++.sp
++Each frame type has a number of further sub\-properties. Replace \fBTYPE\fP
++with the frame type, \fBN\fP with the 0\-based pass index, and \fBM\fP with the
++0\-based sample index.
 +.INDENT 7.0
 +.TP
-+.B \fBupload\fP
-+Time needed to make the frame available to the GPU (if necessary).
++.B \fBvo\-passes/TYPE/count\fP
++Number of passes.
 +.TP
-+.B \fBrender\fP
-+Time needed to perform all necessary video postprocessing and rendering
-+passes (if necessary).
++.B \fBvo\-passes/TYPE/N/desc\fP
++Human\-friendy description of the pass.
 +.TP
-+.B \fBpresent\fP
-+Time needed to present a rendered frame on\-screen.
-+.UNINDENT
-+.sp
-+When a step is unnecessary or skipped, it will have the value 0.
-+.sp
-+\fB<value>\fP refers to one of:
-+.INDENT 7.0
++.B \fBvo\-passes/TYPE/N/last\fP
++Last measured execution time, in nanoseconds.
 +.TP
-+.B \fBlast\fP
-+Last measured value.
++.B \fBvo\-passes/TYPE/N/avg\fP
++Average execution time of this pass, in nanoseconds. The exact
++timeframe varies, but it should generally be a handful of seconds.
 +.TP
-+.B \fBavg\fP
-+Average over a fixed number of past samples. (The exact timeframe
-+varies, but it should generally be a handful of seconds)
++.B \fBvo\-passes/TYPE/N/peak\fP
++The peak execution time (highest value) within this averaging range, in
++nanoseconds.
 +.TP
-+.B \fBpeak\fP
-+The peak (highest value) within this averaging range.
++.B \fBvo\-passes/TYPE/N/count\fP
++The number of samples for this pass.
++.TP
++.B \fBvo\-passes/TYPE/N/samples/M\fP
++The raw execution time of a specific sample for this pass, in
++nanoseconds.
 +.UNINDENT
 +.sp
 +When querying the property with the client API using \fBMPV_FORMAT_NODE\fP,
@@ -12030,13 +12200,22 @@ index 000000000..7819ab9b2
 +.nf
 +.ft C
 +MPV_FORMAT_NODE_MAP
-+    "<metric>\-<value>"  MPV_FORMAT_INT64
++"TYPE" MPV_FORMAT_NODE_ARRAY
++    MPV_FORMAT_NODE_MAP
++        "desc"    MPV_FORMAT_STRING
++        "last"    MPV_FORMAT_INT64
++        "avg"     MPV_FORMAT_INT64
++        "peak"    MPV_FORMAT_INT64
++        "count"   MPV_FORMAT_INT64
++        "samples" MPV_FORMAT_NODE_ARRAY
++             MP_FORMAT_INT64
 +.ft P
 +.fi
 +.UNINDENT
 +.UNINDENT
 +.sp
-+(One entry for each \fB<metric>\fP and \fB<value>\fP combination)
++Note that directly accessing this structure via subkeys is not supported,
++the only access is through aforementioned \fBMPV_FORMAT_NODE\fP\&.
 +.TP
 +.B \fBvideo\-bitrate\fP, \fBaudio\-bitrate\fP, \fBsub\-bitrate\fP
 +Bitrate values calculated on the packet level. This works by dividing the
@@ -12342,6 +12521,14 @@ index 000000000..7819ab9b2
 +.B \fBplaylist\-pos\fP, \fBchapter\fP
 +These properties behave different from the deprecated options with the same
 +names.
++.TP
++.B \fBprofile\fP, \fBinclude\fP
++These are write\-only, and will perform actions as they are written to,
++exactly as if they were used on the mpv CLI commandline. Their only use is
++when using libmpv before \fBmpv_initialize()\fP, which in turn is probably
++only useful in encoding mode. Normal libmpv users should use other
++mechanisms, such as the \fBapply\-profile\fP command, and the
++\fBmpv_load_config_file\fP API function. Avoid these properties.
 +.UNINDENT
 +.SS Property Expansion
 +.sp
@@ -13874,6 +14061,336 @@ index 000000000..7819ab9b2
 +list is interesting; handling hook execution is done by the Lua script
 +function automatically.
 +.UNINDENT
++.SH JAVASCRIPT
++.sp
++JavaScript support in mpv is near identical to its Lua support. Use this section
++as reference on differences and availability of APIs, but otherwise you should
++refer to the Lua documentation for API details and general scripting in mpv.
++.SS Example
++.sp
++JavaScript code which leaves fullscreen mode when the player is paused:
++.INDENT 0.0
++.INDENT 3.5
++.sp
++.nf
++.ft C
++function on_pause_change(name, value) {
++    if (value == true)
++        mp.set_property("fullscreen", "no");
++}
++mp.observe_property("pause", "bool", on_pause_change);
++.ft P
++.fi
++.UNINDENT
++.UNINDENT
++.SS Similarities with Lua
++.sp
++mpv tries to load a script file as JavaScript if it has a \fB\&.js\fP extension, but
++otherwise, the documented Lua options, script directories, loading, etc apply to
++JavaScript files too.
++.sp
++Script initialization and lifecycle is the same as with Lua, and most of the Lua
++functions at the modules \fBmp\fP, \fBmp.utils\fP and \fBmp.msg\fP are available to
++JavaScript with identical APIs \- including running commands, getting/setting
++properties, registering events/key\-bindings/property\-changes/hooks, etc.
++.SS Differences from Lua
++.sp
++No need to load modules. \fBmp\fP, \fBmp.utils\fP and \fBmp.msg\fP are preloaded, and
++you can use e.g. \fBvar cwd = mp.utils.getcwd();\fP without prior setup.
++\fBmp.options\fP is currently not implemented, but \fBmp.get_opt(...)\fP is.
++.sp
++Errors are slightly different. Where the Lua APIs return \fBnil\fP for error,
++the JavaScript ones return \fBundefined\fP\&. Where Lua returns \fBsomething, error\fP
++JavaScript returns only \fBsomething\fP \- and makes \fBerror\fP available via
++\fBmp.last_error()\fP\&. Note that only some of the functions have this additional
++\fBerror\fP value \- typically the same ones which have it in Lua.
++.sp
++Standard APIs are preferred. For instance \fBsetTimeout\fP and \fBJSON.stringify\fP
++are available, but \fBmp.add_timeout\fP and \fBmp.utils.format_json\fP are not.
++.sp
++No standard library. This means that interaction with anything outside of mpv is
++limited to the available APIs, typically via \fBmp.utils\fP\&. However, some file
++functions were added, and CommonJS \fBrequire\fP is available too \- where the
++loaded modules have the same privileges as normal scripts.
++.SS Language features \- ECMAScript 5
++.sp
++The scripting backend which mpv currently uses is MuJS \- a compatible minimal
++ES5 interpreter. As such, \fBString.substring\fP is implemented for instance,
++while the common but non\-standard \fBString.substr\fP is not. Please consult the
++MuJS pages on language features and platform support \- \fI\%http://mujs.com\fP .
++.SS Unsupported Lua APIs and their JS alternatives
++.sp
++\fBmp.add_timeout(seconds, fn)\fP  JS: \fBid = setTimeout(fn, ms)\fP
++.sp
++\fBmp.add_periodic_timer(seconds, fn)\fP  JS: \fBid = setInterval(fn, ms)\fP
++.sp
++\fBmp.register_idle(fn)\fP  JS: \fBid = setTimeout(fn)\fP
++.sp
++\fBmp.unregister_idle(fn)\fP  JS:  \fBclearTimeout(id)\fP
++.sp
++\fButils.parse_json(str [, trail])\fP  JS: \fBJSON.parse(str)\fP
++.sp
++\fButils.format_json(v)\fP  JS: \fBJSON.stringify(v)\fP
++.sp
++\fButils.to_string(v)\fP  see \fBdump\fP below.
++.sp
++\fBmp.suspend()\fP JS: none (deprecated).
++.sp
++\fBmp.resume()\fP JS: none (deprecated).
++.sp
++\fBmp.resume_all()\fP JS: none (deprecated).
++.sp
++\fBmp.get_next_timeout()\fP see event loop below.
++.sp
++\fBmp.dispatch_events([allow_wait])\fP see event loop below.
++.sp
++\fBmp.options\fP module is not implemented currently for JS.
++.SS Scripting APIs \- identical to Lua
++.sp
++(LE) \- Last\-Error, indicates that \fBmp.last_error()\fP can be used after the
++call to test for success (empty string) or failure (non empty reason string).
++Otherwise, where the Lua APIs return \fBnil\fP on error, JS returns \fBundefined\fP\&.
++.sp
++\fBmp.command(string)\fP (LE)
++.sp
++\fBmp.commandv(arg1, arg2, ...)\fP (LE)
++.sp
++\fBmp.command_native(table [,def])\fP (LE)
++.sp
++\fBmp.get_property(name [,def])\fP (LE)
++.sp
++\fBmp.get_property_osd(name [,def])\fP (LE)
++.sp
++\fBmp.get_property_bool(name [,def])\fP (LE)
++.sp
++\fBmp.get_property_number(name [,def])\fP (LE)
++.sp
++\fBmp.get_property_native(name [,def])\fP (LE)
++.sp
++\fBmp.set_property(name, value)\fP (LE)
++.sp
++\fBmp.set_property_bool(name, value)\fP (LE)
++.sp
++\fBmp.set_property_number(name, value)\fP (LE)
++.sp
++\fBmp.set_property_native(name, value)\fP (LE)
++.sp
++\fBmp.get_time()\fP
++.sp
++\fBmp.add_key_binding(key, name|fn [,fn [,flags]])\fP
++.sp
++\fBmp.add_forced_key_binding(...)\fP
++.sp
++\fBmp.remove_key_binding(name)\fP
++.sp
++\fBmp.register_event(name, fn)\fP
++.sp
++\fBmp.unregister_event(fn)\fP
++.sp
++\fBmp.observe_property(name, type, fn)\fP
++.sp
++\fBmp.unobserve_property(fn)\fP
++.sp
++\fBmp.get_opt(key)\fP
++.sp
++\fBmp.get_script_name()\fP
++.sp
++\fBmp.osd_message(text [,duration])\fP
++.sp
++\fBmp.get_wakeup_pipe()\fP
++.sp
++\fBmp.enable_messages(level)\fP
++.sp
++\fBmp.register_script_message(name, fn)\fP
++.sp
++\fBmp.unregister_script_message(name)\fP
++.sp
++\fBmp.msg.log(level, ...)\fP
++.sp
++\fBmp.msg.fatal(...)\fP
++.sp
++\fBmp.msg.error(...)\fP
++.sp
++\fBmp.msg.warn(...)\fP
++.sp
++\fBmp.msg.info(...)\fP
++.sp
++\fBmp.msg.verbose(...)\fP
++.sp
++\fBmp.msg.debug(...)\fP
++.sp
++\fBmp.utils.getcwd()\fP (LE)
++.sp
++\fBmp.utils.readdir(path [, filter])\fP (LE)
++.sp
++\fBmp.utils.split_path(path)\fP
++.sp
++\fBmp.utils.join_path(p1, p2)\fP
++.sp
++\fBmp.utils.subprocess(t)\fP
++.sp
++\fBmp.utils.subprocess_detached(t)\fP
++.sp
++\fBmp.add_hook(type, priority, fn)\fP
++.SS Additional utilities
++.INDENT 0.0
++.TP
++.B \fBmp.last_error()\fP
++If used after an API call which updates last error, returns an empty string
++if the API call succeeded, or a non\-empty error reason string otherwise.
++.TP
++.B \fBError.stack\fP (string)
++When using \fBtry { ... } catch(e) { ... }\fP, then \fBe.stack\fP is the stack
++trace of the error \- if it was created using the \fBError(...)\fP constructor.
++.TP
++.B \fBprint\fP (global)
++A convenient alias to \fBmp.msg.info\fP\&.
++.TP
++.B \fBdump\fP (global)
++Like \fBprint\fP but also expands objects and arrays recursively.
++.TP
++.B \fBmp.utils.getenv(name)\fP
++Returns the value of the host environment variable \fBname\fP, or
++\fBundefined\fP if the variable is not defined.
++.TP
++.B \fBmp.utils.get_user_path(path)\fP
++Expands (mpv) meta paths like \fB~/x\fP, \fB~~/y\fP, \fB~~desktop/z\fP etc.
++\fBread_file\fP, \fBwrite_file\fP and \fBrequire\fP already use this internaly.
++.TP
++.B \fBmp.utils.read_file(fname [,max])\fP
++Returns the content of file \fBfname\fP as string. If \fBmax\fP is provided and
++not negative, limit the read to \fBmax\fP bytes.
++.TP
++.B \fBmp.utils.write_file(fname, str)\fP
++(Over)write file \fBfname\fP with text content \fBstr\fP\&. \fBfname\fP must be
++prefixed with \fBfile://\fP as simple protection against accidental arguments
++switch, e.g. \fBmp.utils.write_file("file://~/abc.txt", "hello world")\fP\&.
++.UNINDENT
++.sp
++Note: \fBread_file\fP and \fBwrite_file\fP throw on errors, allow text content only.
++.INDENT 0.0
++.TP
++.B \fBmp.get_time_ms()\fP
++Same as \fBmp.get_time()\fP but in ms instead of seconds.
++.TP
++.B \fBmp.get_script_file()\fP
++Returns the file name of the current script.
++.TP
++.B \fBexit()\fP (global)
++Make the script exit at the end of the current event loop iteration.
++Note: please reomve added key bindings before calling \fBexit()\fP\&.
++.TP
++.B \fBmp.utils.compile_js(fname, content_str)\fP
++Compiles the JS code \fBcontent_str\fP as file name \fBfname\fP (without loading
++anything from the filesystem), and returns it as a function. Very similar
++to a \fBFunction\fP constructor, but shows at stack traces as \fBfname\fP\&.
++.UNINDENT
++.SS Timers (global)
++.sp
++The standard HTML/node.js timers are available:
++.sp
++\fBid = setTimeout(fn [,duration [,arg1 [,arg2...]]])\fP
++.sp
++\fBid = setTimeout(code_string [,duration])\fP
++.sp
++\fBclearTimeout(id)\fP
++.sp
++\fBid = setInterval(fn [,duration [,arg1 [,arg2...]]])\fP
++.sp
++\fBid = setInterval(code_string [,duration])\fP
++.sp
++\fBclearInterval(id)\fP
++.sp
++\fBsetTimeout\fP and \fBsetInterval\fP return id, and later call \fBfn\fP (or execute
++\fBcode_string\fP) after \fBduration\fP ms. Interval also repeat every \fBduration\fP\&.
++.sp
++\fBduration\fP has a minimum and default value of 0, \fBcode_string\fP is
++a plain string which is evaluated as JS code, and \fB[,arg1 [,arg2..]]\fP are used
++as arguments (if provided) when calling back \fBfn\fP\&.
++.sp
++The \fBclear...(id)\fP functions cancel timer \fBid\fP, and are irreversible.
++.sp
++Note: timers always call back asynchronously, e.g. \fBsetTimeout(fn)\fP will never
++call \fBfn\fP before returning. \fBfn\fP will be called either at the end of this
++event loop iteration or at a later event loop iteration. This is true also for
++intervals \- which also never call back twice at the same event loop iteration.
++.sp
++Additionally, timers are processed after the event queue is empty, so it\(aqs valid
++to use \fBsetTimeout(fn)\fP instead of Lua\(aqs \fBmp.register_idle(fn)\fP\&.
++.SS CommonJS modules and \fBrequire(id)\fP
++.sp
++CommonJS Modules are a standard system where scripts can export common functions
++for use by other scripts. A module is a script which adds properties (functions,
++etc) to its invisible \fBexports\fP object, which another script can access by
++loading it with \fBrequire(module\-id)\fP \- which returns that \fBexports\fP object.
++.sp
++Modules and \fBrequire\fP are supported, standard compliant, and generally similar
++to node.js. However, most node.js modules won\(aqt run due to missing modules such
++as \fBfs\fP, \fBprocess\fP, etc, but some node.js modules with minimal dependencies
++do work. In general, this is for mpv modules and not a node.js replacement.
++.sp
++A \fB\&.js\fP file extension is always added to \fBid\fP, e.g. \fBrequire("./foo")\fP
++will load the file \fB\&./foo.js\fP and return its \fBexports\fP object.
++.sp
++An id is relative (to the script which \fBrequire\fP\(aqd it) if it starts with
++\fB\&./\fP or \fB\&../\fP\&. Otherwise, it\(aqs considered a "top\-level id" (CommonJS term).
++.sp
++Top level id is evaluated as absolute filesystem path if possible (e.g. \fB/x/y\fP
++or \fB~/x\fP). Otherwise, it\(aqs searched at \fBscripts/modules.js/\fP in mpv config
++dirs \- in normal config search order. E.g. \fBrequire("x")\fP is searched as file
++\fBx.js\fP at those dirs, and id \fBfoo/x\fP is searched as file \fBfoo/x.js\fP\&.
++.sp
++No \fBglobal\fP variable, but a module\(aqs \fBthis\fP at its top lexical scope is the
++global object \- also in strict mode. If you have a module which needs \fBglobal\fP
++as the global object, you could do \fBthis.global = this;\fP before \fBrequire\fP\&.
++.sp
++Functions and variables declared at a module don\(aqt pollute the global object.
++.SS The event loop
++.sp
++The event loop poll/dispatch mpv events as long as the queue is not empty, then
++processes the timers, then waits for the next event, and repeats this forever.
++.sp
++You could put this code at your script to replace the built\-in event loop, and
++also print every event which mpv sends to your script:
++.INDENT 0.0
++.INDENT 3.5
++.sp
++.nf
++.ft C
++function mp_event_loop() {
++    var wait = 0;
++    do {
++        var e = mp.wait_event(wait);
++        dump(e);  // there could be a lot of prints...
++        if (e.event != "none") {
++            mp.dispatch_event(e);
++            wait = 0;
++        } else {
++            wait = mp.process_timers() / 1000;
++        }
++    } while (mp.keep_running);
++}
++.ft P
++.fi
++.UNINDENT
++.UNINDENT
++.sp
++\fBmp_event_loop\fP is a name which mpv tries to call after the script loads.
++The internal implementation is similar to this (without \fBdump\fP though..).
++.sp
++\fBe = mp.wait_event(wait)\fP returns when the next mpv event arrives, or after
++\fBwait\fP seconds if positive and no mpv events arrived. \fBwait\fP value of 0
++returns immediately (with \fBe.event == "none"\fP if the queue is empty).
++.sp
++\fBmp.dispatch_event(e)\fP calls back the handlers registered for \fBe.event\fP,
++if there are such (event handlers, property observers, script messages, etc).
++.sp
++\fBmp.process_timers()\fP calls back the already\-added, non\-canceled due timers,
++and returns the duration in ms till the next due timer (possibly 0), or \-1 if
++there are no pending timers. Must not be called recursively.
++.sp
++Note: \fBexit()\fP is also registered for the \fBshutdown\fP event, and its
++implementation is a simple \fBmp.keep_running = false\fP\&.
 +.SH JSON IPC
 +.sp
 +mpv can be controlled by external programs using the JSON\-based IPC protocol.
@@ -14159,6 +14676,17 @@ index 000000000..7819ab9b2
 +{ "event": "property\-change", "id": 1, "data": 52.0, "name": "volume" }
 +.ft P
 +.fi
++.UNINDENT
++.UNINDENT
++.sp
++\fBWARNING:\fP
++.INDENT 7.0
++.INDENT 3.5
++If the connection is closed, the IPC client is destroyed internally,
++and the observed properties are unregistered. This happens for example
++when sending commands to a socket with separate \fBsocat\fP invocations.
++This can make it seem like property observation does not work. You must
++keep the IPC connection open to make it work.
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -14499,6 +15027,23 @@ index 000000000..7819ab9b2
 +.B \fB~/.config/mpv/input.conf\fP
 +key bindings (see \fI\%INPUT.CONF\fP section)
 +.TP
++.B \fB~/.config/mpv/fonts.conf\fP
++Fontconfig fonts.conf that is customized for mpv. You should include system
++fonts.conf in this file or mpv would not know about fonts that you already
++have in the system.
++.sp
++Only available when libass is built with fontconfig.
++.TP
++.B \fB~/.config/mpv/subfont.ttf\fP
++fallback subtitle font
++.TP
++.B \fB~/.config/mpv/fonts/\fP
++Font files in this directory are used by mpv/libass for subtitles. Useful
++if you do not want to install fonts to your system. Note that files in this
++directory are loaded into memory before being used by mpv. If you have a
++lot of fonts, consider using fonts.conf (see above) to include additional
++fonts, which is more memory\-efficient.
++.TP
 +.B \fB~/.config/mpv/scripts/\fP
 +All files in this directory are loaded as if they were passed to the
 +\fB\-\-script\fP option. They are loaded in alphabetical order, and sub\-directories
@@ -14576,5 +15121,5 @@ index 000000000..7819ab9b2
 +.\" Generated by docutils manpage writer.
 +.
 -- 
-2.13.1
+2.13.3
 

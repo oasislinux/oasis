@@ -2,9 +2,14 @@
 
 BEGIN {
 	FS = "\""
+	ignore["osdep/terminal-dummy.c"] = 1
+	ignore["input/ipc-dummy.c"] = 1
+	ignore["osdep/subprocess-dummy.c"] = 1
 }
 
 / +\(.*\),$/ {
+	if (ignore[$2])
+		next
 	if (NF == 3)
 		print $2
 	else if (NF == 5)

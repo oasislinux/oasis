@@ -1,4 +1,5 @@
 cflags=(\
+	-D _GNU_SOURCE\
 	-isystem '$builddir'/pkg/ffmpeg/include\
 	-isystem '$builddir'/pkg/zlib/include\
 	-isystem pkg/ffmpeg/src\
@@ -8,7 +9,6 @@ cflags=(\
 )
 
 srcs=(\
-	osdep/^(main-fn-unix.c terminal-unix.c timer-linux.c)\
         ta/^(ta.c ta_talloc.c ta_utils.c)\
 	`{awk -f sources.awk 'sources=sources.txt' config.h}\
 )

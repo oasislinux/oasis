@@ -9,14 +9,12 @@
 #define HAVE_STATIC_BUILD 0
 #define HAVE_BUILD_DATE 1
 #define HAVE_OPTIMIZE 1
-#define HAVE_DEBUG_BUILD 1
+#define HAVE_DEBUG_BUILD 0
 #define HAVE_MANPAGE_BUILD 0
 #define HAVE_HTML_BUILD 0
 #define HAVE_PDF_BUILD 0
 #define HAVE_LIBDL 1
 #define HAVE_CPLUGINS 0
-#define HAVE_DLOPEN 0
-#define HAVE_VF_DLOPEN_FILTERS 0
 #define HAVE_ZSH_COMP 0
 #define HAVE_ASM 1
 #define HAVE_TEST 0
@@ -26,14 +24,13 @@
 #define HAVE_MINGW 0
 #define HAVE_POSIX 1
 #define HAVE_POSIX_OR_MINGW 1
-#define HAVE_WIN32 0
+#define HAVE_UWP 0
+#define HAVE_WIN32_DESKTOP 0
 #define HAVE_WIN32_INTERNAL_PTHREADS 0
 #define HAVE_PTHREADS 1
 #define HAVE_GNUC 1
 #define HAVE_STDATOMIC 1
 #define HAVE_ATOMICS 1
-#define HAVE_C11_TLS 1
-#define HAVE_GCC_TLS 1
 #define HAVE_LIBRT 1
 #define HAVE_ICONV 1
 #define HAVE_DOS_PATHS 0
@@ -43,20 +40,19 @@
 #define HAVE_SHM 1
 #define HAVE_NANOSLEEP 1
 #define HAVE_POSIX_SPAWN 1
-#define HAVE_SUBPROCESS 1
-#define HAVE_GLOB 1
-#define HAVE_GLOB_WIN32_REPLACEMENT 0
+#define HAVE_WIN32_PIPES 0
+#define HAVE_GLOB_WIN32 0
 #define HAVE_FCHMOD 1
 #define HAVE_VT_H 1
 #define HAVE_GBM_H 0
-#define HAVE_GLIBC_THREAD_NAME 0
+#define HAVE_GLIBC_THREAD_NAME 1
 #define HAVE_OSX_THREAD_NAME 0
 #define HAVE_BSD_THREAD_NAME 0
-#define HAVE_NETBSD_THREAD_NAME 0
 #define HAVE_BSD_FSTATFS 0
 #define HAVE_LINUX_FSTATFS 1
 #define HAVE_LIBSMBCLIENT 0
 #define HAVE_LUA 1
+#define HAVE_JAVASCRIPT 0
 #define HAVE_LIBASS 1
 #define HAVE_LIBASS_OSD 1
 #define HAVE_DUMMY_OSD 0
@@ -76,9 +72,6 @@
 #define HAVE_LIBARCHIVE 0
 #define HAVE_SDL2 0
 #define HAVE_SDL1 0
-#define HAVE_OSS_AUDIO_4FRONT 0
-#define HAVE_OSS_AUDIO_NATIVE 1
-#define HAVE_OSS_AUDIO_SUNAUDIO 0
 #define HAVE_OSS_AUDIO 0
 #define HAVE_RSOUND 0
 #define HAVE_SNDIO 0
@@ -105,6 +98,7 @@
 #define HAVE_GL_DXINTEROP 0
 #define HAVE_EGL_ANGLE 0
 #define HAVE_EGL_ANGLE_LIB 0
+#define HAVE_EGL_ANGLE_WIN32 0
 #define HAVE_VDPAU 0
 #define HAVE_VDPAU_GL_X11 0
 #define HAVE_VAAPI 0
@@ -129,18 +123,18 @@
 #define HAVE_IS_LIBAV 0
 #define HAVE_LIBAV 1
 #define HAVE_LIBAVDEVICE 1
-#define HAVE_AVUTIL_IMGCPY_UC 0
+#define HAVE_AVUTIL_IMGCPY_UC 1
+#define HAVE_AVUTIL_CONTENT_LIGHT_LEVEL 0
 #define HAVE_VAAPI_HWACCEL 0
-#define HAVE_VAAPI_HWACCEL_NEW 0
-#define HAVE_VAAPI_HWACCEL_OLD 0
-#define HAVE_VIDEOTOOLBOX_VIDEOTOOLBOX_H 0
-#define HAVE_VIDEO_TOOLBOX_VIDEO_TOOLBOX_H 0
+#define HAVE_VIDEOTOOLBOX_HWACCEL_NEW 0
+#define HAVE_VIDEOTOOLBOX_HWACCEL_OLD 0
 #define HAVE_VIDEOTOOLBOX_HWACCEL 0
 #define HAVE_VIDEOTOOLBOX_GL 0
 #define HAVE_VDPAU_HWACCEL 0
-#define HAVE_VDPAU_HWACCEL_NEW 0
-#define HAVE_VDPAU_HWACCEL_OLD 0
 #define HAVE_D3D_HWACCEL 0
+#define HAVE_D3D_HWACCEL_NEW 0
+#define HAVE_D3D9_HWACCEL 0
+#define HAVE_GL_DXINTEROP_D3D9 0
 #define HAVE_CUDA_HWACCEL 0
 #define HAVE_SSE4_INTRINSICS 0
 #define HAVE_TV 0
@@ -153,10 +147,8 @@
 #define HAVE_WIN32_EXECUTABLE 0
 #define HAVE_APPLE_REMOTE 0
 #define HAVE_MACOS_TOUCHBAR 0
-#define HAVE_SYS_SOUNDCARD_H (HAVE_OSS_AUDIO_NATIVE || HAVE_OSS_AUDIO_4FRONT)
-#define HAVE_SOUNDCARD_H HAVE_OSS_AUDIO_SUNAUDIO
-#define CONFIGURATION "./waf configure --disable-libass --disable-gl"
+#define CONFIGURATION "(missing)"
 #define MPV_CONFDIR "/etc/mpv"
-#define FULLCONFIG "asm atomics audio-input av-pix-fmt-mmal av-version-info avcodec-chroma-pos-api avframe-metadata avframe-skip-samples build-date c11-tls cplayer debug-build dlopen dummy-osd dvbin encoding fchmod glob iconv libav libavdevice libavfilter libdl libm librt libswresample linux-fstatfs nanosleep optimize oss-audio oss-audio-native posix posix-or-mingw posix-spawn pthreads resampler shm stdatomic subprocess termios tv tv-v4l2 videodev vt.h zlib"
+#define HAVE_GPL 1
 
 #endif /* W_CONFIG_H_WAF */
