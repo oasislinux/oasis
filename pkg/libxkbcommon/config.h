@@ -19,10 +19,10 @@
 #define PACKAGE "libxkbcommon"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=libxkbcommon"
 #define PACKAGE_NAME "libxkbcommon"
-#define PACKAGE_STRING "libxkbcommon 0.7.1"
+#define PACKAGE_STRING "libxkbcommon 0.7.2"
 #define PACKAGE_TARNAME "libxkbcommon"
 #define PACKAGE_URL "http://xkbcommon.org"
-#define PACKAGE_VERSION "0.7.1"
+#define PACKAGE_VERSION "0.7.2"
 #define PACKAGE_VERSION_MAJOR 0
 #define PACKAGE_VERSION_MINOR 7
 #define PACKAGE_VERSION_PATCHLEVEL 1
@@ -41,7 +41,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "0.7.1"
+#define VERSION "0.7.2"
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */
