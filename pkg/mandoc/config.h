@@ -35,4 +35,5 @@
 
 /* paths */
 #define MAN_CONF_FILE "/etc/man.conf"
+#define MANPATH_BASE "/share/man"
 #define MANPATH_DEFAULT "/share/man"

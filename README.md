@@ -67,7 +67,7 @@ up from the following:
 * [iproute2](http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2)
 * [kbd](http://kbd-project.org/)
 * [libressl](http://www.libressl.org/)
-* [mdocml](http://mdocml.bsd.lv/)
+* [mandoc](http://mandoc.bsd.lv/)
 * [samurai](https://github.com/michaelforney/samurai) (ninja-compatible build tool)
 * [openssh](http://www.openssh.com/)
 * [perp](http://b0llix.net/perp/) (process supervisor)

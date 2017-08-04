@@ -47,8 +47,8 @@ subgen lpeg
 subgen lua
 subgen make
 subgen man-pages-posix
+subgen mandoc
 subgen mc
-subgen mdocml
 subgen mpv
 subgen msmtp
 subgen mtdev

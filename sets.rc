@@ -9,7 +9,7 @@ core=(\
 	kbd\
 	libressl\
 	loksh\
-	mdocml\
+	mandoc\
 	musl\
 	openbsd\
 	openssh\

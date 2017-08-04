@@ -6,7 +6,6 @@ cflags\
 
 lib libmandoc.a -d pkg/zlib/headers\
 	man.c\
-	man_hash.c\
 	man_macro.c\
 	man_validate.c\
 	\
@@ -14,7 +13,6 @@ lib libmandoc.a -d pkg/zlib/headers\
 	lib.c\
 	mdoc.c\
 	mdoc_argv.c\
-	mdoc_hash.c\
 	mdoc_macro.c\
 	mdoc_state.c\
 	mdoc_validate.c\
@@ -22,6 +20,7 @@ lib libmandoc.a -d pkg/zlib/headers\
 	\
 	eqn.c\
 	roff.c\
+	roff_validate.c\
 	tbl.c\
 	tbl_data.c\
 	tbl_layout.c\
@@ -31,6 +30,7 @@ lib libmandoc.a -d pkg/zlib/headers\
 	mandoc.c\
 	mandoc_aux.c\
 	mandoc_ohash.c\
+	mandoc_xr.c\
 	msec.c\
 	preconv.c\
 	read.c\
@@ -41,6 +41,8 @@ lib libmandoc.a -d pkg/zlib/headers\
 exe mandoc\
 	main.c\
 	manpath.c\
+	mdoc_man.c\
+	mdoc_markdown.c\
 	out.c\
 	tag.c\
 	tree.c\
@@ -49,16 +51,17 @@ exe mandoc\
 	html.c\
 	man_html.c\
 	mdoc_html.c\
+	roff_html.c\
 	tbl_html.c\
-	\
-	mdoc_man.c\
 	\
 	eqn_term.c\
 	man_term.c\
 	mdoc_term.c\
+	roff_term.c\
 	term.c\
 	term_ascii.c\
 	term_ps.c\
+	term_tab.c\
 	tbl_term.c\
 	\
 	dbm.c\
