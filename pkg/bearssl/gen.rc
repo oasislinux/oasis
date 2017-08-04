@@ -5,6 +5,7 @@ cflags\
 
 hdrs=(\
 	bearssl.h\
+	bearssl_aead.h\
 	bearssl_block.h\
 	bearssl_ec.h\
 	bearssl_hash.h\
@@ -20,6 +21,7 @@ for(hdr in $hdrs)
 	file include/$hdr '$srcdir'/inc/$hdr 644
 
 lib libbearssl.a src/^(\
+	aead/gcm.c\
 	codec/ccopy.c\
 	codec/dec16be.c\
 	codec/dec16le.c\
@@ -179,6 +181,7 @@ lib libbearssl.a src/^(\
 	ssl/ssl_hs_client.c\
 	ssl/ssl_hs_server.c\
 	ssl/ssl_io.c\
+	ssl/ssl_keyexport.c\
 	ssl/ssl_lru.c\
 	ssl/ssl_rec_cbc.c\
 	ssl/ssl_rec_chapol.c\
@@ -227,6 +230,7 @@ lib libbearssl.a src/^(\
 	symcipher/aes_x86ni_cbcenc.c\
 	symcipher/aes_x86ni_ctr.c\
 	symcipher/chacha20_ct.c\
+	symcipher/chacha20_sse2.c\
 	symcipher/des_ct.c\
 	symcipher/des_ct_cbcdec.c\
 	symcipher/des_ct_cbcenc.c\
@@ -259,6 +263,7 @@ exe brssl tools/^(\
 	skey.c\
 	sslio.c\
 	ta.c\
+	twrch.c\
 	vector.c\
 	verify.c\
 	xmem.c\
