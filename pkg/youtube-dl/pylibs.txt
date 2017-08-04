@@ -108,7 +108,7 @@ youtube_dl/extractor/chaturbate.py
 youtube_dl/extractor/chilloutzone.py
 youtube_dl/extractor/chirbit.py
 youtube_dl/extractor/cinchcast.py
-youtube_dl/extractor/clipfish.py
+youtube_dl/extractor/cjsw.py
 youtube_dl/extractor/cliphunter.py
 youtube_dl/extractor/cliprs.py
 youtube_dl/extractor/clipsyndicate.py
@@ -288,6 +288,7 @@ youtube_dl/extractor/iwara.py
 youtube_dl/extractor/izlesene.py
 youtube_dl/extractor/jamendo.py
 youtube_dl/extractor/jeuxvideo.py
+youtube_dl/extractor/joj.py
 youtube_dl/extractor/jove.py
 youtube_dl/extractor/jpopsukitv.py
 youtube_dl/extractor/jwplatform.py
@@ -340,6 +341,7 @@ youtube_dl/extractor/mdr.py
 youtube_dl/extractor/medialaan.py
 youtube_dl/extractor/mediaset.py
 youtube_dl/extractor/medici.py
+youtube_dl/extractor/megaphone.py
 youtube_dl/extractor/meipai.py
 youtube_dl/extractor/melonvod.py
 youtube_dl/extractor/meta.py
@@ -391,6 +393,7 @@ youtube_dl/extractor/netzkino.py
 youtube_dl/extractor/newgrounds.py
 youtube_dl/extractor/newstube.py
 youtube_dl/extractor/nextmedia.py
+youtube_dl/extractor/nexx.py
 youtube_dl/extractor/nfb.py
 youtube_dl/extractor/nfl.py
 youtube_dl/extractor/nhk.py
@@ -439,6 +442,7 @@ youtube_dl/extractor/pandoratv.py
 youtube_dl/extractor/parliamentliveuk.py
 youtube_dl/extractor/patreon.py
 youtube_dl/extractor/pbs.py
+youtube_dl/extractor/pearvideo.py
 youtube_dl/extractor/people.py
 youtube_dl/extractor/periscope.py
 youtube_dl/extractor/philharmoniedeparis.py
@@ -706,6 +710,7 @@ youtube_dl/extractor/vzaar.py
 youtube_dl/extractor/walla.py
 youtube_dl/extractor/washingtonpost.py
 youtube_dl/extractor/wat.py
+youtube_dl/extractor/watchbox.py
 youtube_dl/extractor/watchindianporn.py
 youtube_dl/extractor/wdr.py
 youtube_dl/extractor/webcaster.py
@@ -729,7 +734,7 @@ youtube_dl/extractor/xuite.py
 youtube_dl/extractor/xvideos.py
 youtube_dl/extractor/xxxymovies.py
 youtube_dl/extractor/yahoo.py
-youtube_dl/extractor/yam.py
+youtube_dl/extractor/yandexdisk.py
 youtube_dl/extractor/yandexmusic.py
 youtube_dl/extractor/yesjapan.py
 youtube_dl/extractor/yinyuetai.py
