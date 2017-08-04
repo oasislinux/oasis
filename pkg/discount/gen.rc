@@ -28,7 +28,7 @@ lib libmarkdown.a -d '$dir'/deps\
 	xml.c Csio.c xmlpage.c basename.c emmatch.c\
 	github_flavoured.c setup.c tags.c html5.c flags.c
 
-exe markdown main.c pgm_options.c libmarkdown.a
+exe markdown -d '$dir'/deps main.c pgm_options.c libmarkdown.a
 file bin/markdown '$outdir'/markdown 755
 man 1 markdown.1 7 markdown.7
 

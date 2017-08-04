@@ -55,15 +55,19 @@ exe bin/mutool -d '$dir'/deps source/tools/^(\
 ) libmupdf.a.d
 file bin/mutool '$outdir'/bin/mutool 755
 
-cc platform/x11/curl_stream.c ; with\
+cc platform/x11/curl_stream.c '||' pkg/curl/headers ; with\
 	cflags '$cflags -isystem $builddir/pkg/curl/include'
-cc platform/x11/wl_main.c ; cflags=(\
+phony wldeps\
+	'$dir'/deps\
+	'$builddir'/pkg/libxkbcommon/fetch.stamp\
+	pkg/^(pixman wayland wayland-protocols)^/headers
+cc platform/x11/wl_main.c '||' '$dir'/wldeps ; cflags=(\
 	-isystem '$builddir'/pkg/pixman/include\
 	-isystem '$builddir'/pkg/wayland/include\
 	-isystem '$builddir'/pkg/wayland-protocols/include\
 	-isystem pkg/libxkbcommon/src\
 ) with cflags '$cflags '$"cflags
-exe bin/mupdf platform/x11/^(pdfapp.c curl_stream.c.o wl_main.c.o)\
+exe bin/mupdf -d '$dir'/deps platform/x11/^(pdfapp.c curl_stream.c.o wl_main.c.o)\
 	libmupdf.a.d\
 	'$builddir'/pkg/^(\
 		curl/libcurl.a.d\

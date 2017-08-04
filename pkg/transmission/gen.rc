@@ -110,7 +110,7 @@ lib libdht.a third-party/dht/dht.c
 	build $hdr sed '$srcdir'/third-party/miniupnp/miniupnpcstrings.h.in ; with\
 		expr '-e s,OS/version,Linux, -e s,version,,'
 
-	lib libminiupnp.a -d $hdr third-party/miniupnp/^(\
+	lib libminiupnp.a -d '$dir/deps '$hdr third-party/miniupnp/^(\
 		connecthostport.c\
 		igd_desc_parse.c\
 		minisoap.c\
