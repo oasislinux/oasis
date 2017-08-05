@@ -30,6 +30,7 @@ lib libgit.a -d '$dir'/deps\
 	attr.c\
 	base85.c\
 	bisect.c\
+	blame.c\
 	blob.c\
 	branch.c\
 	bulk-checkin.c\
@@ -135,6 +136,7 @@ lib libgit.a -d '$dir'/deps\
 	refs/ref-cache.c\
 	remote.c\
 	replace_object.c\
+	repository.c\
 	rerere.c\
 	resolve-undo.c\
 	revision.c\
@@ -156,6 +158,7 @@ lib libgit.a -d '$dir'/deps\
 	string-list.c\
 	submodule-config.c\
 	submodule.c\
+	sub-process.c\
 	symlinks.c\
 	tag.c\
 	tempfile.c\

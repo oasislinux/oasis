@@ -1,4 +1,4 @@
-# 2,<xzcat git-manpages-2.13.4.tar.xz | pax -s '/\.\///' '*.[1-9]' | sort
+# 2,<xzcat git-manpages-2.14.0.tar.xz | pax -s '/\.\///' '*.[1-9]' | sort
 man1/git-add.1
 man1/git-am.1
 man1/git-annotate.1
@@ -165,6 +165,7 @@ man7/giteveryday.7
 man7/gitglossary.7
 man7/gitnamespaces.7
 man7/gitrevisions.7
+man7/gitsubmodules.7
 man7/gittutorial-2.7
 man7/gittutorial.7
 man7/gitworkflows.7

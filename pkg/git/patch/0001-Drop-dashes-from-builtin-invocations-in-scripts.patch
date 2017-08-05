@@ -1,4 +1,4 @@
-From 49e7a40ddc34263816f46144a0d5944e7b6b1dc0 Mon Sep 17 00:00:00 2001
+From 04ab5cf17fdc9252910817a1e1e73900239b18ed Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 3 Dec 2016 00:41:41 -0800
 Subject: [PATCH] Drop dashes from builtin invocations in scripts
@@ -76,10 +76,10 @@ index d3c39980f..dcfa27177 100644
  GIT_DIR=$(git rev-parse -q --git-dir) || :;
  
 diff --git a/git-submodule.sh b/git-submodule.sh
-index c0d0e9a4c..32c880377 100755
+index e131760ee..ffa2d6648 100755
 --- a/git-submodule.sh
 +++ b/git-submodule.sh
-@@ -863,7 +863,7 @@ cmd_summary() {
+@@ -864,7 +864,7 @@ cmd_summary() {
  				test $status != A && test $ignore_config = all && continue
  			fi
  			# Also show added or modified modules which are checked out
@@ -88,7 +88,7 @@ index c0d0e9a4c..32c880377 100755
  			printf '%s\n' "$sm_path"
  		done
  	)
-@@ -897,11 +897,11 @@ cmd_summary() {
+@@ -898,11 +898,11 @@ cmd_summary() {
  		missing_dst=
  
  		test $mod_src = 160000 &&
@@ -103,5 +103,5 @@ index c0d0e9a4c..32c880377 100755
  
  		display_name=$(git submodule--helper relative-path "$name" "$wt_prefix")
 -- 
-2.12.2
+2.13.4
 
