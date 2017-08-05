@@ -1,4 +1,4 @@
-From 6ff3918c325fb7cef56c081cbaa7538435bb2f7a Mon Sep 17 00:00:00 2001
+From 7b709a968b3505ac0e55a0fdea8c54791ed718d6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 17:25:36 -0700
 Subject: [PATCH] Use a compact array and free list for requests
@@ -8,7 +8,7 @@ Subject: [PATCH] Use a compact array and free list for requests
  1 file changed, 80 insertions(+), 45 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index a20f727..5adb290 100644
+index 3c4f242..c5ed603 100644
 --- a/sshfs.c
 +++ b/sshfs.c
 @@ -171,6 +171,17 @@ struct request {
@@ -38,7 +38,7 @@ index a20f727..5adb290 100644
  	pthread_mutex_t lock;
  	pthread_mutex_t lock_write;
  	int processing_thread_started;
-@@ -1149,12 +1160,6 @@ static int do_write(struct iovec *iov, size_t count)
+@@ -1154,12 +1165,6 @@ static int do_write(struct iovec *iov, size_t count)
  	return 0;
  }
  
@@ -51,7 +51,7 @@ index a20f727..5adb290 100644
  static void buf_to_iov(const struct buffer *buf, struct iovec *iov)
  {
  	iov->iov_base = buf->p;
-@@ -1247,6 +1252,43 @@ static void request_free(struct request *req)
+@@ -1252,6 +1257,43 @@ static void request_free(struct request *req)
  	g_free(req);
  }
  
@@ -95,7 +95,7 @@ index a20f727..5adb290 100644
  static void chunk_free(struct read_chunk *chunk)
  {
  	while (!list_empty(&chunk->reqs)) {
-@@ -1276,21 +1318,6 @@ static void chunk_put_locked(struct read_chunk *chunk)
+@@ -1281,21 +1323,6 @@ static void chunk_put_locked(struct read_chunk *chunk)
  	pthread_mutex_unlock(&sshfs.lock);
  }
  
@@ -117,7 +117,7 @@ index a20f727..5adb290 100644
  static int process_one_request(void)
  {
  	int res;
-@@ -1307,8 +1334,7 @@ static int process_one_request(void)
+@@ -1312,8 +1339,7 @@ static int process_one_request(void)
  		return -1;
  
  	pthread_mutex_lock(&sshfs.lock);
@@ -127,7 +127,7 @@ index a20f727..5adb290 100644
  	if (req == NULL)
  		fprintf(stderr, "request %i not found\n", id);
  	else {
-@@ -1320,7 +1346,7 @@ static int process_one_request(void)
+@@ -1325,7 +1351,7 @@ static int process_one_request(void)
  		    sshfs.outstanding_len <= sshfs.max_outstanding_len) {
  			pthread_cond_broadcast(&sshfs.outstanding_cond);
  		}
@@ -136,7 +136,7 @@ index a20f727..5adb290 100644
  	}
  	pthread_mutex_unlock(&sshfs.lock);
  	if (req != NULL) {
-@@ -1381,6 +1407,9 @@ static void close_conn(void)
+@@ -1386,6 +1412,9 @@ static void close_conn(void)
  
  static void *process_requests(void *data_)
  {
@@ -146,7 +146,7 @@ index a20f727..5adb290 100644
  	(void) data_;
  
  	while (1) {
-@@ -1391,7 +1420,20 @@ static void *process_requests(void *data_)
+@@ -1396,7 +1425,20 @@ static void *process_requests(void *data_)
  	pthread_mutex_lock(&sshfs.lock);
  	sshfs.processing_thread_started = 0;
  	close_conn();
@@ -168,7 +168,7 @@ index a20f727..5adb290 100644
  	sshfs.connver ++;
  	sshfs.outstanding_len = 0;
  	pthread_cond_broadcast(&sshfs.outstanding_cond);
-@@ -1539,7 +1581,6 @@ static int sftp_error_to_errno(uint32_t error)
+@@ -1544,7 +1586,6 @@ static int sftp_error_to_errno(uint32_t error)
  static void sftp_detect_uid()
  {
  	int flags;
@@ -176,7 +176,7 @@ index a20f727..5adb290 100644
  	uint32_t replid;
  	uint8_t type;
  	struct buffer buf;
-@@ -1549,7 +1590,7 @@ static void sftp_detect_uid()
+@@ -1554,7 +1595,7 @@ static void sftp_detect_uid()
  	buf_init(&buf, 5);
  	buf_add_string(&buf, ".");
  	buf_to_iov(&buf, &iov[0]);
@@ -185,7 +185,7 @@ index a20f727..5adb290 100644
  		goto out;
  	buf_clear(&buf);
  	if (sftp_read(&type, &buf) == -1)
-@@ -1560,7 +1601,7 @@ static void sftp_detect_uid()
+@@ -1565,7 +1606,7 @@ static void sftp_detect_uid()
  	}
  	if (buf_get_uint32(&buf, &replid) == -1)
  		goto out;
@@ -194,7 +194,7 @@ index a20f727..5adb290 100644
  		fprintf(stderr, "bad reply ID\n");
  		goto out;
  	}
-@@ -1597,7 +1638,6 @@ out:
+@@ -1602,7 +1643,6 @@ out:
  static int sftp_check_root(const char *base_path)
  {
  	int flags;
@@ -202,7 +202,7 @@ index a20f727..5adb290 100644
  	uint32_t replid;
  	uint8_t type;
  	struct buffer buf;
-@@ -1609,7 +1649,7 @@ static int sftp_check_root(const char *base_path)
+@@ -1614,7 +1654,7 @@ static int sftp_check_root(const char *base_path)
  	buf_init(&buf, 0);
  	buf_add_string(&buf, remote_dir);
  	buf_to_iov(&buf, &iov[0]);
@@ -211,7 +211,7 @@ index a20f727..5adb290 100644
  		goto out;
  	buf_clear(&buf);
  	if (sftp_read(&type, &buf) == -1)
-@@ -1620,7 +1660,7 @@ static int sftp_check_root(const char *base_path)
+@@ -1625,7 +1665,7 @@ static int sftp_check_root(const char *base_path)
  	}
  	if (buf_get_uint32(&buf, &replid) == -1)
  		goto out;
@@ -275,7 +275,7 @@ index a20f727..5adb290 100644
  		return 1;
  	else
  		return 0;
-@@ -3277,11 +3317,6 @@ static int processing_init(void)
+@@ -3285,11 +3325,6 @@ static int processing_init(void)
  	pthread_mutex_init(&sshfs.lock, NULL);
  	pthread_mutex_init(&sshfs.lock_write, NULL);
  	pthread_cond_init(&sshfs.outstanding_cond, NULL);
@@ -288,5 +288,5 @@ index a20f727..5adb290 100644
  }
  
 -- 
-2.13.2
+2.14.0
 
