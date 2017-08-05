@@ -11,6 +11,7 @@ cflags\
 {
 	toolchain host
 	cflags\
+		'-std=c99' \
 		-D EFIVAR_BUILD_ENVIRONMENT\
 		-I '$srcdir'/src/include/efivar
 	build '$outdir'/host-guid.c.o cc '$srcdir'/src/guid.c
