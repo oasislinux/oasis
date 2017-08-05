@@ -27,6 +27,7 @@ build '$outdir'/wayland-drm-server-protocol.h copy '$builddir'/pkg/wld/protocol/
 
 {
 	toolchain host
+	cflags '-std=c99'
 	exe convert_font cursor/convert_font.c
 } >tools.ninja ; subninja tools.ninja
 
