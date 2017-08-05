@@ -74,7 +74,7 @@ rule tic
   command = tic $ticflags $in
 
 rule waylandproto
-  command = wayland-scanner $type $in $out.tmp && mv $out.tmp $out
+  command = wayland-scanner $type <$in >$out.tmp && mv $out.tmp $out
 
 rule githash
   command = rc ./scripts/hash.rc $repo $args $in >$out.tmp && mv $out.tmp $out
