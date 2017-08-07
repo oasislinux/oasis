@@ -59,7 +59,7 @@
 [submodule "pkg/git/src"]
 	path = pkg/git/src
 	url = https://github.com/git/git
-	ignore = all
+	ignore = untracked
 [submodule "pkg/hostap/src"]
 	path = pkg/hostap/src
 	url = git://w1.fi/hostap.git
