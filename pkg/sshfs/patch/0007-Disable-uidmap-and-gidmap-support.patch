@@ -1,4 +1,4 @@
-From 28e5307aac095886980afe80f8fa5730c0333f5d Mon Sep 17 00:00:00 2001
+From dd4e958a1aedb579c7ebbc4fae78849c3db42d9f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 18:24:16 -0700
 Subject: [PATCH] Disable uidmap and gidmap support
@@ -8,10 +8,10 @@ Subject: [PATCH] Disable uidmap and gidmap support
  1 file changed, 16 insertions(+)
 
 diff --git a/sshfs.c b/sshfs.c
-index 567c3fa..ace6e8e 100644
+index 58cf1ff..b7effca 100644
 --- a/sshfs.c
 +++ b/sshfs.c
-@@ -246,10 +246,12 @@ struct sshfs {
+@@ -247,10 +247,12 @@ struct sshfs {
  	char *mountpoint;
  	char *uid_file;
  	char *gid_file;
@@ -24,7 +24,7 @@ index 567c3fa..ace6e8e 100644
  	unsigned max_read;
  	unsigned max_write;
  	unsigned ssh_ver;
-@@ -381,7 +383,9 @@ enum {
+@@ -382,7 +384,9 @@ enum {
  enum {
  	IDMAP_NONE,
  	IDMAP_USER,
@@ -34,7 +34,7 @@ index 567c3fa..ace6e8e 100644
  };
  
  enum {
-@@ -402,7 +406,9 @@ static struct fuse_opt sshfs_opts[] = {
+@@ -403,7 +407,9 @@ static struct fuse_opt sshfs_opts[] = {
  	SSHFS_OPT("workaround=%s",     workarounds, 0),
  	SSHFS_OPT("idmap=none",        idmap, IDMAP_NONE),
  	SSHFS_OPT("idmap=user",        idmap, IDMAP_USER),
@@ -44,7 +44,7 @@ index 567c3fa..ace6e8e 100644
  	SSHFS_OPT("uidfile=%s",        uid_file, 0),
  	SSHFS_OPT("gidfile=%s",        gid_file, 0),
  	SSHFS_OPT("nomap=ignore",      nomap, NOMAP_IGNORE),
-@@ -535,6 +541,7 @@ static int list_empty(const struct list_head *head)
+@@ -537,6 +543,7 @@ static int list_empty(const struct list_head *head)
  	return head->next == head;
  }
  
@@ -52,7 +52,7 @@ index 567c3fa..ace6e8e 100644
  /* given a pointer to the uid/gid, and the mapping table, remap the
   * uid/gid, if necessary */
  static inline int translate_id(uint32_t *id, GHashTable *map)
-@@ -552,6 +559,7 @@ static inline int translate_id(uint32_t *id, GHashTable *map)
+@@ -554,6 +561,7 @@ static inline int translate_id(uint32_t *id, GHashTable *map)
  		abort();
  	}
  }
@@ -60,7 +60,7 @@ index 567c3fa..ace6e8e 100644
  
  static inline void buf_init(struct buffer *buf, size_t size)
  {
-@@ -799,12 +807,14 @@ static int buf_get_attrs(struct buffer *buf, struct stat *stbuf, int *flagsp)
+@@ -801,12 +809,14 @@ static int buf_get_attrs(struct buffer *buf, struct stat *stbuf, int *flagsp)
  	if (sshfs.remote_uid_detected && uid == sshfs.remote_uid)
  		uid = sshfs.local_uid;
  #endif /* __APPLE__ */
@@ -75,7 +75,7 @@ index 567c3fa..ace6e8e 100644
  
  	memset(stbuf, 0, sizeof(struct stat));
  	stbuf->st_mode = mode;
-@@ -2464,12 +2474,14 @@ static int sshfs_chown(const char *path, uid_t uid, gid_t gid,
+@@ -2466,12 +2476,14 @@ static int sshfs_chown(const char *path, uid_t uid, gid_t gid,
  	if (sshfs.remote_uid_detected && uid == sshfs.local_uid)
  		uid = sshfs.remote_uid;
  #endif /* __APPLE__ */
@@ -90,7 +90,7 @@ index 567c3fa..ace6e8e 100644
  
  	buf_init(&buf, 0);
  	if (sf == NULL)
-@@ -3689,6 +3701,7 @@ static int ssh_connect(void)
+@@ -3713,6 +3725,7 @@ static int ssh_connect(void)
  	return 0;
  }
  
@@ -98,7 +98,7 @@ index 567c3fa..ace6e8e 100644
  /* number of ':' separated fields in a passwd/group file that we care
   * about */
  #define IDMAP_FIELDS 3
-@@ -3863,6 +3876,7 @@ static inline void load_gid_map(void)
+@@ -3887,6 +3900,7 @@ static inline void load_gid_map(void)
  {
  	read_id_map(sshfs.gid_file, &groupname_to_gid, "gid", &sshfs.gid_map, &sshfs.r_gid_map);
  }
@@ -106,7 +106,7 @@ index 567c3fa..ace6e8e 100644
  
  #ifdef __APPLE__
  int main(int argc, char *argv[], __unused char *envp[], char **exec_path)
-@@ -3956,6 +3970,7 @@ int main(int argc, char *argv[])
+@@ -3977,6 +3991,7 @@ int main(int argc, char *argv[])
  
  	if (sshfs.idmap == IDMAP_USER)
  		sshfs.detect_uid = 1;
@@ -114,7 +114,7 @@ index 567c3fa..ace6e8e 100644
  	else if (sshfs.idmap == IDMAP_FILE) {
  		sshfs.uid_map = NULL;
  		sshfs.gid_map = NULL;
-@@ -3970,6 +3985,7 @@ int main(int argc, char *argv[])
+@@ -3991,6 +4006,7 @@ int main(int argc, char *argv[])
  		if (sshfs.gid_file)
  			load_gid_map();
  	}
@@ -123,5 +123,5 @@ index 567c3fa..ace6e8e 100644
  	free(sshfs.gid_file);
  
 -- 
-2.14.0
+2.14.1
 
