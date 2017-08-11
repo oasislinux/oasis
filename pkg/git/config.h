@@ -9,7 +9,7 @@
 #define GIT_LOCALE_PATH "/share/locale"
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
-#define GIT_VERSION "2.14.0"
+#define GIT_VERSION "2.14.1"
 #define PAGER_ENV "LESS=FRX LV=-c"
 #define NO_SYS_POLL_H
 #define NO_OPENSSL
