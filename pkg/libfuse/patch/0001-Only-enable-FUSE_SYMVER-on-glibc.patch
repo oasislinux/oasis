@@ -1,4 +1,4 @@
-From a414502133306dc4292ba45a43d77bd88b0ded92 Mon Sep 17 00:00:00 2001
+From 3ebf1956536d0becda1267bb465010d919bca0ed Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 9 Jul 2017 02:35:33 -0700
 Subject: [PATCH] Only enable FUSE_SYMVER on glibc
@@ -21,5 +21,5 @@ index 2f6663e..c95ca57 100644
  #else
  #define FUSE_SYMVER(x)
 -- 
-2.13.2
+2.14.1
 

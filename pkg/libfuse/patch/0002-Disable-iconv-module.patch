@@ -1,4 +1,4 @@
-From 3729102830a97d81d7d1ad19c459addd2d2cb6b8 Mon Sep 17 00:00:00 2001
+From 9e9c7141aceb6e144bd132fa44f605213125d15a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 9 Jul 2017 02:35:45 -0700
 Subject: [PATCH] Disable iconv module
@@ -8,7 +8,7 @@ Subject: [PATCH] Disable iconv module
  1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/lib/fuse.c b/lib/fuse.c
-index ce29819..cdece7f 100644
+index 75f13d7..42b0cec 100644
 --- a/lib/fuse.c
 +++ b/lib/fuse.c
 @@ -196,9 +196,8 @@ struct fuse_context_i {
@@ -30,7 +30,7 @@ index ce29819..cdece7f 100644
  
  	/* Parse command line options in case we need to
  	   activate more modules */
-@@ -4683,7 +4681,6 @@ struct fuse *fuse_new(struct fuse_args *args,
+@@ -4662,7 +4660,6 @@ struct fuse *fuse_new_31(struct fuse_args *args,
  	if (builtin_modules_registered == 0) {
  		/* If not, register them. */
  		fuse_register_module("subdir", fuse_module_subdir_factory, NULL);
@@ -39,5 +39,5 @@ index ce29819..cdece7f 100644
  	}
  	pthread_mutex_unlock(&fuse_context_lock);
 -- 
-2.13.2
+2.14.1
 
