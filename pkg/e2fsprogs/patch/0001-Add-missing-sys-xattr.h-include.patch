@@ -1,4 +1,4 @@
-From c713c7d7f1d5e0a36d607eb0050cc4da992ff4c4 Mon Sep 17 00:00:00 2001
+From d83c405659c8516cb32a1e57dcfbb1752d26319d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 28 May 2017 16:34:32 -0700
 Subject: [PATCH] Add missing sys/xattr.h include
@@ -8,7 +8,7 @@ Subject: [PATCH] Add missing sys/xattr.h include
  1 file changed, 2 insertions(+)
 
 diff --git a/misc/create_inode.c b/misc/create_inode.c
-index ae22ff6f..bb99394d 100644
+index 8ce3fafa..a972f936 100644
 --- a/misc/create_inode.c
 +++ b/misc/create_inode.c
 @@ -20,6 +20,8 @@
@@ -19,7 +19,7 @@ index ae22ff6f..bb99394d 100644
 +#include <sys/xattr.h>
  #endif
  #include <sys/ioctl.h>
- #include <ext2fs/ext2fs.h>
+ #ifdef HAVE_SYS_SYSMACROS_H
 -- 
-2.13.0
+2.14.1
 

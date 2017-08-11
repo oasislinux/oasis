@@ -67,7 +67,7 @@ lib libblkid.a -d '$dir'/deps lib/blkid/^(\
 )
 lib libe2p.a -d '$dir'/deps lib/e2p/^(\
 	feature.c fgetflags.c fsetflags.c fgetversion.c fsetversion.c\
-	getflags.c getversion.c hashstr.c iod.c ls.c mntopts.c\
+	getflags.c getversion.c hashstr.c iod.c ls.c ljs.c mntopts.c\
 	parse_num.c pe.c pf.c ps.c setflags.c setversion.c uuid.c\
 	ostype.c percent.c crypto_mode.c fgetproject.c fsetproject.c\
 )
