@@ -10,7 +10,7 @@ build '$outdir'/pnglibconf.tf4 awk '$srcdir'/^(pngconf.h scripts/pnglibconf.dfa 
 build '$outdir'/pnglibconf.c awk '$outdir'/pnglibconf.tf4 ; with\
 	expr '-f $srcdir/scripts/options.awk out=/dev/stdout'
 build '$outdir'/pnglibconf.tf1 cc '$outdir'/pnglibconf.c '||' pkg/zlib/headers ; with\
-	cflags '$cflags -E'
+	cflags '$cflags -E -MT $outdir/pnglibconf.tf1'
 build '$outdir'/include/pnglibconf.h awk '$outdir'/pnglibconf.tf1 ; with\
 	expr '-f $srcdir/scripts/dfn.awk out=/dev/stdout'
 
