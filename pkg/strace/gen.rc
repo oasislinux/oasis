@@ -9,7 +9,7 @@ cflags\
 	-I '$outdir'
 
 build '$outdir'/ioctl_iocdef.i cc '$srcdir'/ioctl_iocdef.c ; with\
-	cflags '$cflags -P -E'
+	cflags '$cflags -P -E -MT $outdir/ioctl_iocdef.i'
 build '$outdir'/ioctl_iocdef.h sed '$outdir'/ioctl_iocdef.i ; with\
 	expr '-n ''s/^DEFINE HOST/#define /p'''
 
@@ -34,7 +34,7 @@ build '$outdir'/ioctl_iocdef.h sed '$outdir'/ioctl_iocdef.i ; with\
 mpers=`{grep -v '^#' mpers.txt} ; checkstatus
 for(f in $mpers) {
 	build '$outdir'/$f.mpers.i cc '$srcdir'/$f ; with\
-		cflags '$cflags -P -E -DIN_MPERS_BOOTSTRAP'
+		cflags '$cflags -P -E -MT $outdir/'$f'.mpers.i -DIN_MPERS_BOOTSTRAP'
 }
 
 fn mpers {
@@ -47,7 +47,7 @@ mpers native_printer_decls.h printerdecls.awk
 mpers native_printer_defs.h printerdefs.awk
 
 build '$outdir'/syscallent.i cc '$srcdir'/linux/x86_64/syscallent.h ; with\
-	cflags '$cflags -P -E'
+	cflags '$cflags -P -E -MT $outdir/syscallent.i'
 build '$outdir'/scno-syscallent.h awk '$outdir'/syscallent.i '|' '$dir'/scno.awk ; with\
 	expr '-f $dir/scno.awk'
 build '$outdir'/scno.h cat '$srcdir'/scno.head '$outdir'/scno-syscallent.h
