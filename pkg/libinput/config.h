@@ -37,7 +37,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.8.0"
+#define VERSION "1.8.1"
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */
