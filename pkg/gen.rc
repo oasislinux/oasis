@@ -58,6 +58,7 @@ subgen ncurses
 subgen netsurf
 subgen nginx
 subgen openbsd
+subgen openntpd
 subgen openssh
 subgen pcre
 subgen perp
