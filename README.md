@@ -49,13 +49,9 @@ up from the following:
 
 * [musl](http://musl-libc.org/) (libc)
 * [suckless](http://core.suckless.org/)
-	- sbase
-	- ubase
-	- sinit
-	- sdhcp
-	- scron
+	- sbase, ubase, sinit, sdhcp, scron
 * [openbsd](http://openbsd.org/)
-	- pax, yacc, fmt, diff, patch
+	- pax, yacc, fmt, diff, patch, doas
 * [plan9port](http://swtch.com/plan9port/)
 	- rc, sam
 * [awk](http://github.com/onetrueawk/awk/)
@@ -69,6 +65,7 @@ up from the following:
 * [libressl](http://www.libressl.org/)
 * [mandoc](http://mandoc.bsd.lv/)
 * [samurai](https://github.com/michaelforney/samurai) (ninja-compatible build tool)
+* [openntpd](http://www.openntpd.org/)
 * [openssh](http://www.openssh.com/)
 * [perp](http://b0llix.net/perp/) (process supervisor)
 * [pigz](http://zlib.net/pigz/) (gzip)

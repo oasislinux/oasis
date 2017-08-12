@@ -12,6 +12,7 @@ core=(\
 	mandoc\
 	musl\
 	openbsd\
+	openntpd\
 	openssh\
 	perp\
 	pigz\
