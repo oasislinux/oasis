@@ -9,6 +9,7 @@ subgen blind
 subgen bzip2
 subgen curl
 subgen discount
+subgen dosfstools
 subgen dmenu
 subgen e2fsprogs
 subgen efibootmgr

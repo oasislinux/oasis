@@ -1,0 +1,21 @@
+version=4.1
+cflags\
+	-include '$dir'/config.h\
+	-I include\
+	-I '$dir' \
+	-I '$srcdir'/src/blkdev
+
+exe mkfs.fat src/^(mkfs.fat.c device_info.c blkdev/^(blkdev.c linux_version.c))
+file bin/mkfs.fat '$outdir'/mkfs.fat 755
+
+exe fsck.fat src/^(fsck.fat.c boot.c check.c common.c fat.c file.c io.c lfn.c charconv.c)
+file bin/fsck.fat '$outdir'/fsck.fat 755
+
+mans=(fsck.fat.8 mkfs.fat.8)
+for(man in $mans) {
+	build '$outdir'/$man sed '$srcdir'/manpages/$man.in ; with\
+		expr s,@PACKAGE_VERSION@,$version,
+}
+man -d '$outdir' 8 $mans
+
+fetch git
