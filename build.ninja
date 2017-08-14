@@ -2,7 +2,7 @@ builddir = out
 
 target_toolchain = x86_64-linux-musl
 target_cflags = -O2 -pipe
-target_cxxflags = $cflags
+target_cxxflags = $target_cflags
 target_ldflags = -s -static
 
 host_toolchain = default
