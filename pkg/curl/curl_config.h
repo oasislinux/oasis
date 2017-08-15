@@ -56,7 +56,6 @@
 /* #undef USE_WIN32_LDAP */
 /* #undef USE_WINDOWS_SSPI */
 /* #undef USE_YASSLEMUL */
-/* #undef WIN32_LEAN_AND_MEAN */
 
 /* headers */
 #define HAVE_ALLOCA_H 1
