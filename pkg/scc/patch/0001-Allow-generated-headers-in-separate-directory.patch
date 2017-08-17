@@ -1,7 +1,7 @@
-From e44ceb42cf228e57264e657ea1fa3767811e68cf Mon Sep 17 00:00:00 2001
+From 5ee9b6dbb259fd0ca6024c27e9af1730f01db2d4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 9 Feb 2017 13:01:13 -0800
-Subject: [PATCH] Allow generated sysincludes.h in separate directory
+Subject: [PATCH] Allow generated headers in separate directory
 
 ---
  cc1/Makefile               | 2 +-
@@ -9,10 +9,12 @@ Subject: [PATCH] Allow generated sysincludes.h in separate directory
  cc1/arch/i386-sysv/arch.c  | 2 +-
  cc1/arch/qbe/arch.c        | 2 +-
  cc1/arch/z80/arch.c        | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+ driver/posix/Makefile      | 2 ++
+ driver/posix/scc.c         | 4 ++--
+ 7 files changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/cc1/Makefile b/cc1/Makefile
-index b9f73ce..3ec023b 100644
+index bd37547..3881eae 100644
 --- a/cc1/Makefile
 +++ b/cc1/Makefile
 @@ -1,7 +1,7 @@
@@ -25,7 +27,7 @@ index b9f73ce..3ec023b 100644
  include ../config.mk
  
 diff --git a/cc1/arch/amd64-sysv/arch.c b/cc1/arch/amd64-sysv/arch.c
-index f4492b4..f72d275 100644
+index ba5d7ea..692a288 100644
 --- a/cc1/arch/amd64-sysv/arch.c
 +++ b/cc1/arch/amd64-sysv/arch.c
 @@ -2,7 +2,7 @@
@@ -38,7 +40,7 @@ index f4492b4..f72d275 100644
  #include "../../cc1.h"
  
 diff --git a/cc1/arch/i386-sysv/arch.c b/cc1/arch/i386-sysv/arch.c
-index f72f889..3672acd 100644
+index fd73eba..36d6366 100644
 --- a/cc1/arch/i386-sysv/arch.c
 +++ b/cc1/arch/i386-sysv/arch.c
 @@ -2,7 +2,7 @@
@@ -51,7 +53,7 @@ index f72f889..3672acd 100644
  #include "../../cc1.h"
  
 diff --git a/cc1/arch/qbe/arch.c b/cc1/arch/qbe/arch.c
-index 233a390..e633a40 100644
+index 01e2410..ab718c7 100644
 --- a/cc1/arch/qbe/arch.c
 +++ b/cc1/arch/qbe/arch.c
 @@ -2,7 +2,7 @@
@@ -64,7 +66,7 @@ index 233a390..e633a40 100644
  #include "../../cc1.h"
  
 diff --git a/cc1/arch/z80/arch.c b/cc1/arch/z80/arch.c
-index 0c603f6..e709bfb 100644
+index b5e31f3..a686c90 100644
 --- a/cc1/arch/z80/arch.c
 +++ b/cc1/arch/z80/arch.c
 @@ -2,7 +2,7 @@
@@ -76,6 +78,34 @@ index 0c603f6..e709bfb 100644
  #include "../../../inc/cc.h"
  #include "../../cc1.h"
  
+diff --git a/driver/posix/Makefile b/driver/posix/Makefile
+index 782a0a2..458b32b 100644
+--- a/driver/posix/Makefile
++++ b/driver/posix/Makefile
+@@ -1,6 +1,8 @@
+ # See LICENSE file for copyright and license details.
+ .POSIX:
+ 
++CSTDINC = -I../../inc
++
+ include ../../config.mk
+ 
+ OBJS = scc.o
+diff --git a/driver/posix/scc.c b/driver/posix/scc.c
+index dd74e26..26f4f8c 100644
+--- a/driver/posix/scc.c
++++ b/driver/posix/scc.c
+@@ -16,8 +16,8 @@ static char sccsid[] = "@(#) ./driver/posix/scc.c";
+ 
+ #include "../../inc/arg.h"
+ #include "../../inc/cc.h"
+-#include "../../inc/syslibs.h"
+-#include "../../inc/ldflags.h"
++#include <syslibs.h>
++#include <ldflags.h>
+ 
+ enum {
+ 	CC1,
 -- 
-2.11.1
+2.14.1
 

@@ -2,8 +2,10 @@ archs=(qbe amd64-sysv)
 std=c99
 cflags\
 	'-std=c99' \
+	-D 'SYS=''"linux"''' \
 	-D 'PREFIX=' \
 	-D NDEBUG\
+	-I '$dir'/inc\
 	-I '$srcdir'/inc/$std\
 	-I '$outdir'/inc
 
@@ -11,7 +13,6 @@ lib libcc.a lib/^(debug.c die.c newitem.c xcalloc.c xmalloc.c xrealloc.c xstrdup
 
 build '$outdir'/inc/error.h awk '$srcdir'/cc2/cc2.h '|' '$srcdir'/cc2/generror.awk ; with\
 	expr '-f $srcdir/cc2/generror.awk'
-build '$outdir'/inc/sysincludes.h copy '$srcdir'/inc/sysincludes.def.h
 
 set baseoutdir '$outdir'
 hdrs=(\
@@ -23,7 +24,7 @@ for(arch in $archs) {
 		set outdir '$outdir'/$arch
 		cflags -D 'ARCH=''"'^$arch^'"'''
 
-		exe cc1-$arch -d '$baseoutdir'/inc/sysincludes.h cc1/^(\
+		exe cc1-$arch cc1/^(\
 			types.c decl.c lex.c error.c symbol.c main.c expr.c\
 			code.c stmt.c cpp.c fold.c init.c builtin.c\
 			arch/$arch/arch.c\

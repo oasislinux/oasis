@@ -1,0 +1,41 @@
+From a67e93d3e3353aeba7eb4b1a94ae98fa54f76b49 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 16 Aug 2017 22:34:28 -0700
+Subject: [PATCH] Build with musl CRT files
+
+---
+ driver/posix/scc.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
+
+diff --git a/driver/posix/scc.c b/driver/posix/scc.c
+index 26f4f8c..aa61827 100644
+--- a/driver/posix/scc.c
++++ b/driver/posix/scc.c
+@@ -99,7 +99,6 @@ static int
+ inittool(int tool)
+ {
+ 	struct tool *t = &tools[tool];
+-	char *crt;
+ 	int n;
+ 
+ 	if (t->init)
+@@ -126,14 +125,8 @@ inittool(int tool)
+ 			addarg(tool, "-L");
+ 			addarg(tool, syslibs[n]);
+ 		}
+-		n = snprintf(NULL, 0, "%s-%s-%s.o",
+-		             PREFIX "/lib/scc/crt", arch, sys);
+-		if (n < 0)
+-			die("scc: wrong crt file name");
+-		crt = xmalloc(++n);
+-		n = snprintf(crt, n, "%s-%s-%s.o",
+-		             PREFIX "/lib/scc/crt", arch, sys);
+-		addarg(tool, crt);
++		addarg(tool, PREFIX "/lib/crt1.o");
++		addarg(tool, PREFIX "/lib/crtn.o");
+ 		break;
+ 	case AS:
+ 		addarg(tool, "-o");
+-- 
+2.14.1
+
