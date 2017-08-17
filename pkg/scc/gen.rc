@@ -15,10 +15,6 @@ build '$outdir'/inc/error.h awk '$srcdir'/cc2/cc2.h '|' '$srcdir'/cc2/generror.a
 	expr '-f $srcdir/cc2/generror.awk'
 
 set baseoutdir '$outdir'
-hdrs=(\
-	assert.h stddef.h errno.h locale.h string.h stdarg.h stdbool.h stdlib.h\
-	signal.h stdio.h ctype.h stdint.h\
-)
 for(arch in $archs) {
 	{
 		set outdir '$outdir'/$arch
@@ -37,15 +33,10 @@ for(arch in $archs) {
 		) '$baseoutdir'/libcc.a
 		file libexec/scc/cc2-$arch '$outdir'/cc2-$arch 755
 	} >$arch.ninja ; subninja $arch.ninja
-
-	hdrs=($hdrs bits/$arch/arch/^(stddef.h string.h stdlib.h signal.h stdio.h stdint.h))
 }
 
 cflags -D 'ARCH=''"'^$archs(1)^'"'''
 exe scc driver/posix/scc.c libcc.a
 file bin/scc '$outdir'/scc 755
-
-for(hdr in $hdrs)
-	file include/scc/$hdr '$srcdir'/libc/include/$hdr 644
 
 fetch git
