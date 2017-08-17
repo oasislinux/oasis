@@ -206,7 +206,7 @@
 	url = https://github.com/michaelforney/sbase
 [submodule "pkg/scc/src"]
 	path = pkg/scc/src
-	url = git://git.suckless.org/scc
+	url = git://bitreich.org/scc
 	ignore = all
 [submodule "pkg/scron/src"]
 	path = pkg/scron/src
