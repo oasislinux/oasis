@@ -56,7 +56,7 @@ set mcflags $"mcflags\
 	-I '$outdir'/lib/regex\
 	-I '$outdir'/lib/thread
 
-include '$dir'/bld.ninja
+include '$dir'/myr.ninja
 for(lib in bio crypto date escfmt fileutil inifile json regex std sys testr thread) {
 	file lib/myr/lib$lib.use '$outdir'/lib/$lib/lib$lib.use 644
 	file lib/myr/lib$lib.a '$outdir'/lib/$lib/lib$lib.a 644
