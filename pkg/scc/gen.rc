@@ -1,4 +1,4 @@
-archs=(qbe amd64-sysv)
+archs=(qbe)
 std=c99
 cflags\
 	'-std=c99' \
