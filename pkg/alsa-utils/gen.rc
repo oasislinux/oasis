@@ -1,8 +1,8 @@
 cflags\
-	-isystem '$builddir'/pkg/alsa-lib/include\
 	-I include\
 	-I '$dir' \
-	-I '$srcdir'/include
+	-I '$srcdir'/include\
+	-I '$builddir'/pkg/alsa-lib/include
 
 fn x {
 	name=$1

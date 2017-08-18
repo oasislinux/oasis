@@ -1,12 +1,12 @@
 cflags\
 	-D 'VERSION=''"0.7"''' \
-	-isystem pkg/fontconfig/src\
-	-isystem pkg/libxkbcommon/src\
-	-isystem '$builddir'/pkg/pixman/include\
-	-isystem '$builddir'/pkg/wayland/include\
-	-isystem '$builddir'/pkg/wayland-protocols/include\
-	-isystem '$builddir'/pkg/wld/include\
-	-I '$dir'
+	-I '$dir' \
+	-I pkg/fontconfig/src\
+	-I pkg/libxkbcommon/src\
+	-I '$builddir'/pkg/pixman/include\
+	-I '$builddir'/pkg/wayland/include\
+	-I '$builddir'/pkg/wayland-protocols/include\
+	-I '$builddir'/pkg/wld/include
 
 phony deps\
 	'$builddir'/pkg/^(fontconfig libxkbcommon)^/fetch.stamp\

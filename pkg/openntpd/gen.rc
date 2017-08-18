@@ -1,11 +1,11 @@
 cflags\
 	-D _GNU_SOURCE\
 	-include '$dir'/config.h\
-	-isystem pkg/openbsd/include\
-	-isystem '$builddir'/pkg/libressl/include\
 	-I include\
 	-I '$srcdir'/src\
-	-I '$srcdir'/include
+	-I '$srcdir'/include\
+	-I pkg/openbsd/include\
+	-I '$builddir'/pkg/libressl/include
 
 yacc parse '$srcdir'/src/parse.y
 exe ntpd -d pkg/libressl/headers\

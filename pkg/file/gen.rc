@@ -4,10 +4,10 @@ cflags\
 	-D HAVE_CONFIG_H\
 	-D 'MAGIC=''"/share/file/magic"''' \
 	-D _GNU_SOURCE\
-	-isystem '$builddir'/pkg/zlib/include\
 	-I include\
 	-I '$dir' \
-	-I '$outdir'/include
+	-I '$outdir'/include\
+	-I '$builddir'/pkg/zlib/include
 
 build '$outdir'/include/magic.h sed '$srcdir'/src/magic.h.in ; with\
 	expr s,X.YY,`{echo $version | tr -d .}^,

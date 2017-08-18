@@ -1,12 +1,12 @@
 cflags\
 	-D 'VELOX_LIBEXEC=''"/libexec/velox"''' \
-	-isystem pkg/fontconfig/src\
-	-isystem pkg/libxkbcommon/src\
-	-isystem '$builddir'/pkg/pixman/include\
-	-isystem '$builddir'/pkg/swc/include\
-	-isystem '$builddir'/pkg/wayland/include\
-	-isystem '$builddir'/pkg/wld/include\
-	-I '$outdir'
+	-I '$outdir' \
+	-I pkg/fontconfig/src\
+	-I pkg/libxkbcommon/src\
+	-I '$builddir'/pkg/pixman/include\
+	-I '$builddir'/pkg/swc/include\
+	-I '$builddir'/pkg/wayland/include\
+	-I '$builddir'/pkg/wld/include
 
 waylandproto protocol/velox.xml\
 	protocol/velox-^(client server)^-protocol.h velox-protocol.c

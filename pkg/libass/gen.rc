@@ -1,8 +1,8 @@
 cflags\
-	-isystem '$builddir'/pkg/fribidi/include\
-	-isystem pkg/freetype/src/include\
 	-I include\
-	-I '$dir'
+	-I '$dir' \
+	-I pkg/freetype/src/include\
+	-I '$builddir'/pkg/fribidi/include
 
 set nasmflags\
 	-w -orphan-labels\

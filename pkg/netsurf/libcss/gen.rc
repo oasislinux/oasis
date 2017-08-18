@@ -1,8 +1,8 @@
 cflags\
-	-isystem pkg/netsurf/libparserutils/src/include\
-	-isystem pkg/netsurf/libwapcaplet/src/include\
 	-I '$srcdir'/include\
-	-I '$srcdir'/src
+	-I '$srcdir'/src\
+	-I pkg/netsurf/libparserutils/src/include\
+	-I pkg/netsurf/libwapcaplet/src/include
 
 {
 	toolchain host

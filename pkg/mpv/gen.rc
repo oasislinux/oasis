@@ -1,11 +1,11 @@
 cflags=(\
 	-D _GNU_SOURCE\
-	-isystem '$builddir'/pkg/ffmpeg/include\
-	-isystem '$builddir'/pkg/zlib/include\
-	-isystem pkg/ffmpeg/src\
 	-I '$dir' \
 	-I '$outdir' \
 	-I '$srcdir' \
+	-I pkg/ffmpeg/src\
+	-I '$builddir'/pkg/ffmpeg/include\
+	-I '$builddir'/pkg/zlib/include\
 )
 
 srcs=(\
@@ -52,29 +52,29 @@ for(f in assdraw defaults options osc ytdl_hook)
 	file2string player/lua/$f.inc player/lua/$f.lua
 
 if(grep -qF 'HAVE_ALSA 1' config.h) {
-	cflags=($cflags -isystem '$builddir'/pkg/alsa-lib/include)
+	cflags=($cflags -I '$builddir'/pkg/alsa-lib/include)
 	libs=($libs alsa-lib/libasound.a)
 	deps=($deps pkg/alsa-lib/headers)
 }
 if(grep -qF 'HAVE_DRM 1' config.h) {
-	cflags=($cflags '-isystem pkg/libdrm/'^(src src/include/drm))
+	cflags=($cflags '-I pkg/libdrm/'^(src src/include/drm))
 	libs=($libs libdrm/libdrm.a)
 	deps=($deps '$builddir'/pkg/libdrm/fetch.stamp)
 }
 if(grep -qF 'HAVE_LIBASS 1' config.h) {
-	cflags=($cflags -isystem '$builddir'/pkg/libass/include)
+	cflags=($cflags -I '$builddir'/pkg/libass/include)
 	libs=($libs libass/libass.a.d)
 	deps=($deps pkg/libass/headers)
 }
 if(grep -qF 'HAVE_LUA 1' config.h) {
-	cflags=($cflags -isystem pkg/lua/src/src)
+	cflags=($cflags -I pkg/lua/src/src)
 	libs=($libs lua/liblua.a)
 	deps=($deps '$builddir'/pkg/lua/fetch.stamp)
 }
 if(grep -qF 'HAVE_WAYLAND 1' config.h) {
 	cflags=($cflags\
-		-isystem '$builddir'/pkg/wayland/include\
-		-isystem pkg/libxkbcommon/src\
+		-I '$builddir'/pkg/wayland/include\
+		-I pkg/libxkbcommon/src\
 	)
 	libs=($libs\
 		wayland/libwayland-^(client cursor)^.a.d\

@@ -1,10 +1,10 @@
 cflags\
 	-include '$dir'/config.h\
-	-isystem '$builddir'/pkg/curl/include\
-	-isystem '$builddir'/pkg/zlib/include\
 	-I '$srcdir' \
 	-I '$srcdir'/compat/regex\
-	-I '$outdir'
+	-I '$outdir' \
+	-I '$builddir'/pkg/curl/include\
+	-I '$builddir'/pkg/zlib/include
 
 rule cmdlist 'wd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$wd/$in >$$wd/$out.tmp && mv $$wd/$out.tmp $$wd/$out'
 build '$outdir'/common-cmds.h cmdlist '$srcdir'/command-list.txt '|' '$srcdir'/Documentation/`{grep -v '^#' commands.txt}

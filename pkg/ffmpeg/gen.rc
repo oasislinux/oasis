@@ -4,12 +4,12 @@ cflags\
 	-Wno-deprecated-declarations\
 	-Wno-discarded-qualifiers\
 	-D HAVE_AV_CONFIG_H\
-	-isystem '$builddir'/pkg/alsa-lib/include\
-	-isystem '$builddir'/pkg/libressl/include\
 	-I '$dir' \
 	-I '$outdir'/include\
 	-I '$outdir'/internal\
-	-I '$srcdir'
+	-I '$srcdir' \
+	-I '$builddir'/pkg/alsa-lib/include\
+	-I '$builddir'/pkg/libressl/include
 
 set nasmflags\
 	-i '$srcdir'/\

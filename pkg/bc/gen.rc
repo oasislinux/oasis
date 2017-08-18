@@ -1,6 +1,6 @@
 cflags\
 	-D HAVE_CONFIG_H\
-	-isystem include\
+	-I include\
 	-I '$dir' \
 	-I '$srcdir'/h
 

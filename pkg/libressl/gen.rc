@@ -6,13 +6,13 @@ cflags\
 	-D '__BEGIN_HIDDEN_DECLS=' \
 	-D '__END_HIDDEN_DECLS=' \
 	-D '''__warn_references(sym,msg)=''' \
-	-isystem pkg/openbsd/include\
 	-I '$srcdir'/include\
 	-I '$srcdir'/crypto\
 	-I '$srcdir'/crypto/asn1\
 	-I '$srcdir'/crypto/bn\
 	-I '$srcdir'/crypto/evp\
-	-I '$srcdir'/crypto/modes
+	-I '$srcdir'/crypto/modes\
+	-I pkg/openbsd/include
 
 hdrs=include/^(\
 	tls.h\

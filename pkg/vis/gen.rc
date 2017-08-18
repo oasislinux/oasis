@@ -14,10 +14,10 @@ cflags\
 	-D 'VERSION=''"'$version'"''' \
 	-D 'VIS_PATH=''"/share/vis"''' \
 	-D NDEBUG\
-	-isystem pkg/libtermkey/src\
-	-isystem pkg/lua/src/src\
-	-isystem '$builddir'/pkg/ncurses/include\
-	-I '$outdir'
+	-I '$outdir' \
+	-I pkg/libtermkey/src\
+	-I pkg/lua/src/src\
+	-I '$builddir'/pkg/ncurses/include
 
 build '$outdir'/config.h copy '$srcdir'/config.def.h
 

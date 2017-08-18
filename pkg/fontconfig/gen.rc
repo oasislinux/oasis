@@ -1,11 +1,11 @@
 cflags\
 	-D HAVE_CONFIG_H\
-	-isystem '$builddir'/pkg/expat/include\
-	-isystem pkg/freetype/src/include\
 	-I include\
 	-I '$dir' \
 	-I '$outdir' \
-	-I '$srcdir'
+	-I '$srcdir' \
+	-I pkg/freetype/src/include\
+	-I '$builddir'/pkg/expat/include
 
 deps=(pkg/expat/headers '$builddir'/pkg/freetype/fetch.stamp)
 

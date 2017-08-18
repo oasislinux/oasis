@@ -5,10 +5,10 @@ cflags\
 	-D HAVE_FCNTL_H\
 	-D HAVE_STDINT_H\
 	-D HAVE_UNISTD_H\
-	-isystem '$builddir'/pkg/zlib/include\
 	-I '$srcdir'/builds/unix\
 	-I '$srcdir'/include/freetype/config\
-	-I '$srcdir'/include
+	-I '$srcdir'/include\
+	-I '$builddir'/pkg/zlib/include
 
 cc src/gzip/ftgzip.c '||' pkg/zlib/headers
 lib libfreetype.a builds/unix/ftsystem.c src/^(\

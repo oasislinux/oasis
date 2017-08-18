@@ -1,11 +1,11 @@
 cflags\
-	-isystem '$builddir'/pkg/expat/include\
-	-isystem '$builddir'/pkg/libffi/include\
 	-I include\
 	-I '$dir' \
 	-I '$outdir'/include\
 	-I '$srcdir' \
-	-I '$srcdir'/src
+	-I '$srcdir'/src\
+	-I '$builddir'/pkg/expat/include\
+	-I '$builddir'/pkg/libffi/include
 
 build '$outdir'/include/wayland-version.h sed '$srcdir'/src/wayland-version.h.in ; exprs=(\
 	-e s,@WAYLAND_VERSION_MAJOR@,1,\

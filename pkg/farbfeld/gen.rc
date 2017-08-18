@@ -1,8 +1,8 @@
 cflags\
 	'-std=c99' -pedantic -Wall -Wextra\
 	-D _DEFAULT_SOURCE \
-	-isystem '$builddir'/pkg/libjpeg-turbo/include\
-	-isystem '$builddir'/pkg/libpng/include
+	-I '$builddir'/pkg/libjpeg-turbo/include\
+	-I '$builddir'/pkg/libpng/include
 
 cc util.c
 

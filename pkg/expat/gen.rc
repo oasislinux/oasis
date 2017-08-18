@@ -1,8 +1,8 @@
 cflags\
 	-D HAVE_EXPAT_CONFIG_H\
-	-isystem pkg/openbsd/include\
 	-I include\
-	-I '$dir'
+	-I '$dir' \
+	-I pkg/openbsd/include
 
 lib libexpat.a expat/lib/^(loadlibrary.c xmlparse.c xmltok.c xmlrole.c)\
 	'$builddir'/pkg/openbsd/libbsd.a.d

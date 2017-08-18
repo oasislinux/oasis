@@ -1,9 +1,9 @@
 cflags\
-	-isystem '$builddir'/pkg/netsurf/libdom/include\
-	-isystem pkg/netsurf/libdom/src/include\
-	-isystem pkg/netsurf/libwapcaplet/src/include\
 	-I '$srcdir'/include\
-	-I '$srcdir'/src
+	-I '$srcdir'/src\
+	-I pkg/netsurf/libdom/src/include\
+	-I pkg/netsurf/libwapcaplet/src/include\
+	-I '$builddir'/pkg/netsurf/libdom/include
 
 phony deps\
 	pkg/netsurf/libdom/headers\

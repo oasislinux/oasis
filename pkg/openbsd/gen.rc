@@ -1,7 +1,7 @@
 cflags=(\
 	-D '''DEF_WEAK(n)=''' \
-	-isystem '$builddir'/pkg/libressl/include\
 	-I '$dir'/include\
+	-I '$builddir'/pkg/libressl/include\
 	-idirafter '$srcdir'/include\
 	-idirafter '$srcdir'/sys\
 )
@@ -9,10 +9,10 @@ libs=()
 
 switch($config_tls) {
 case libressl ''
-	cflags=($cflags -D USE_OPENSSL -isystem '$builddir'/pkg/libressl/include)
+	cflags=($cflags -D USE_OPENSSL -I '$builddir'/pkg/libressl/include)
 	libs=($libs '$builddir'/pkg/libressl/libcrypto.a)
 case bearssl
-	cflags=($cflags -D USE_BEARSSL -isystem pkg/bearssl/src/inc)
+	cflags=($cflags -D USE_BEARSSL -I pkg/bearssl/src/inc)
 	libs=($libs '$builddir'/pkg/bearssl/libbearssl.a)
 }
 

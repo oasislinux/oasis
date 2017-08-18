@@ -1,9 +1,9 @@
 cflags\
 	-include '$dir'/config.h\
-	-isystem '$builddir'/pkg/libressl/include\
-	-isystem '$builddir'/pkg/libnl/include\
 	-I '$srcdir'/src/utils\
-	-I '$srcdir'/src
+	-I '$srcdir'/src\
+	-I '$builddir'/pkg/libressl/include\
+	-I '$builddir'/pkg/libnl/include
 
 phony deps pkg/^(libressl libnl)^/headers
 

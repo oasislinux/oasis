@@ -1,7 +1,7 @@
 cflags\
-	-isystem '$builddir'/pkg/ncurses/include\
 	-I include\
-	-I '$dir'
+	-I '$dir' \
+	-I '$builddir'/pkg/ncurses/include
 
 cc version.c
 

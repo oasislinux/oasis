@@ -20,34 +20,34 @@ subgen nsgenbind
 # netsurf
 cflags\
 	-include '$dir'/config.h\
-	-isystem '$builddir'/pkg/curl/include\
-	-isystem '$builddir'/pkg/libjpeg-turbo/include\
-	-isystem '$builddir'/pkg/libpng/include\
-	-isystem '$builddir'/pkg/libressl/include\
-	-isystem '$builddir'/pkg/pixman/include\
-	-isystem '$builddir'/pkg/wayland/include\
-	-isystem '$builddir'/pkg/wayland-protocols/include\
-	-isystem '$builddir'/pkg/zlib/include\
-	-isystem '$dir'/libcss/src/include\
-	-isystem '$dir'/libdom/src/include\
-	-isystem '$dir'/libhubbub/src/include\
-	-isystem '$dir'/libnsbmp/src/include\
-	-isystem '$dir'/libnsgif/src/include\
-	-isystem '$dir'/libnsutils/src/include\
-	-isystem '$dir'/libparserutils/src/include\
-	-isystem '$dir'/libsvgtiny/src/include\
-	-isystem '$dir'/libwapcaplet/src/include\
-	-isystem pkg/freetype/src/include\
-	-isystem pkg/libxkbcommon/src\
-	-isystem pkg/openbsd/include\
-	-isystem pkg/utf8proc/src\
 	-I '$dir' \
 	-I '$srcdir' \
 	-I '$srcdir'/include\
 	-I '$srcdir'/frontends\
 	-I '$srcdir'/content/handlers\
 	-I '$outdir' \
-	-I '$outdir'/libdom/include
+	-I '$outdir'/libdom/include\
+	-I '$builddir'/pkg/curl/include\
+	-I '$builddir'/pkg/libjpeg-turbo/include\
+	-I '$builddir'/pkg/libpng/include\
+	-I '$builddir'/pkg/libressl/include\
+	-I '$builddir'/pkg/pixman/include\
+	-I '$builddir'/pkg/wayland/include\
+	-I '$builddir'/pkg/wayland-protocols/include\
+	-I '$builddir'/pkg/zlib/include\
+	-I '$dir'/libcss/src/include\
+	-I '$dir'/libdom/src/include\
+	-I '$dir'/libhubbub/src/include\
+	-I '$dir'/libnsbmp/src/include\
+	-I '$dir'/libnsgif/src/include\
+	-I '$dir'/libnsutils/src/include\
+	-I '$dir'/libparserutils/src/include\
+	-I '$dir'/libsvgtiny/src/include\
+	-I '$dir'/libwapcaplet/src/include\
+	-I pkg/freetype/src/include\
+	-I pkg/libxkbcommon/src\
+	-I pkg/openbsd/include\
+	-I pkg/utf8proc/src
 
 gen_inputs=($gen_inputs '$dir'/nsgenbind.txt) ; checkstatus
 rule nsgenbind '$outdir/nsgenbind/nsgenbind -I $srcdir/content/handlers/javascript/WebIDL $in $outdir/duktape' ; with\

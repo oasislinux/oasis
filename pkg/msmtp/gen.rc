@@ -1,9 +1,9 @@
 cflags\
 	-D HAVE_CONFIG_H\
 	-D 'SYSCONFDIR=\"/etc\"' \
-	-isystem '$builddir'/pkg/libressl/include\
 	-I include\
 	-I '$dir' \
+	-I '$builddir'/pkg/libressl/include
 
 exe msmtp -d pkg/libressl/headers src/^(\
 	conf.c\

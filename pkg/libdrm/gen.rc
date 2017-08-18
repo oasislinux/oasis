@@ -13,7 +13,7 @@ lib libdrm.a\
 	xf86drmMode.c
 
 if(~ intel $config_video_drivers) {
-	cflags -D 'HAVE_INTEL=1' -isystem pkg/libpciaccess/src/include
+	cflags -D 'HAVE_INTEL=1' -I pkg/libpciaccess/src/include
 	lib libdrm_intel.a -d '$builddir'/pkg/libpciaccess/fetch.stamp intel/^(\
 		intel_bufmgr.c\
 		intel_bufmgr_fake.c\

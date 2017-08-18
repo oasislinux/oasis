@@ -1,10 +1,10 @@
 cflags\
-	-isystem pkg/netsurf/libhubbub/src/include\
-	-isystem pkg/netsurf/libparserutils/src/include\
-	-isystem pkg/netsurf/libwapcaplet/src/include\
-	-isystem '$builddir'/pkg/expat/include\
 	-I '$srcdir'/include\
-	-I '$srcdir'/src
+	-I '$srcdir'/src\
+	-I pkg/netsurf/libhubbub/src/include\
+	-I pkg/netsurf/libparserutils/src/include\
+	-I pkg/netsurf/libwapcaplet/src/include\
+	-I '$builddir'/pkg/expat/include
 
 hdrs=bindings/^(hubbub/^(errors.h parser.h) xml/^(xmlerror.h xmlparser.h))
 for(hdr in $hdrs)

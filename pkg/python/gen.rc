@@ -128,22 +128,22 @@ libs=()
 deps=()
 
 if(grep -q '^_ctypes' Setup) {
-	cflags=($cflags -isystem '$builddir'/pkg/libffi/include)
+	cflags=($cflags -I '$builddir'/pkg/libffi/include)
 	deps=($deps pkg/libffi/headers)
 	libs=($libs libffi/libffi.a)
 }
 if(grep -qE '^(_hashlib|_ssl)' Setup) {
-	cflags=($cflags -isystem '$builddir'/pkg/libressl/include)
+	cflags=($cflags -I '$builddir'/pkg/libressl/include)
 	deps=($deps pkg/libressl/headers)
 	libs=($libs (libressl/^(libssl.a libcrypto.a) openbsd/libbsd.a))
 }
 if(grep -q '^pyexpat' Setup) {
-	cflags=($cflags -isystem '$builddir'/pkg/expat/include)
+	cflags=($cflags -I '$builddir'/pkg/expat/include)
 	deps=($deps pkg/expat/headers)
 	libs=($libs expat/libexpat.a.d)
 }
 if(grep -q '^zlib' Setup) {
-	cflags=($cflags -isystem '$builddir'/pkg/zlib/include)
+	cflags=($cflags -I '$builddir'/pkg/zlib/include)
 	deps=($deps pkg/zlib/headers)
 	libs=($libs zlib/libz.a)
 }

@@ -1,10 +1,10 @@
 cflags\
-	-isystem pkg/netsurf/libdom/src/include\
-	-isystem pkg/netsurf/libparserutils/src/include\
-	-isystem pkg/netsurf/libwapcaplet/src/include\
 	-I '$outdir' \
 	-I '$srcdir'/src\
-	-I '$srcdir'/include
+	-I '$srcdir'/include\
+	-I pkg/netsurf/libdom/src/include\
+	-I pkg/netsurf/libparserutils/src/include\
+	-I pkg/netsurf/libwapcaplet/src/include
 
 build '$outdir'/entities.inc awk '$srcdir'/build/Entities '|' '$dir'/entities.awk ; with\
 	expr '-f $dir/entities.awk'

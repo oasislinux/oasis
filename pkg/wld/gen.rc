@@ -1,13 +1,13 @@
 cflags=(\
 	-D WITH_WAYLAND_SHM\
 	-D WITH_WAYLAND_DRM\
-	-isystem pkg/fontconfig/src\
-	-isystem pkg/freetype/src/include\
-	-isystem pkg/libdrm/src\
-	-isystem pkg/libdrm/src/include/drm\
-	-isystem '$builddir'/pkg/pixman/include\
-	-isystem '$builddir'/pkg/wayland/include\
 	-I '$outdir' \
+	-I pkg/fontconfig/src\
+	-I pkg/freetype/src/include\
+	-I pkg/libdrm/src\
+	-I pkg/libdrm/src/include/drm\
+	-I '$builddir'/pkg/pixman/include\
+	-I '$builddir'/pkg/wayland/include\
 )
 
 hdrs=(drm.h pixman.h wayland.h wld.h)

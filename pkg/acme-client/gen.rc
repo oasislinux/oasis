@@ -1,7 +1,7 @@
 cflags\
 	-D _GNU_SOURCE\
-	-isystem pkg/openbsd/include\
-	-isystem '$builddir'/pkg/libressl/include
+	-I pkg/openbsd/include\
+	-I '$builddir'/pkg/libressl/include
 
 exe acme-client -d pkg/libressl/headers\
 	acctproc.c\

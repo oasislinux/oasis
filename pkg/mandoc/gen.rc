@@ -1,8 +1,8 @@
 cflags\
-	-isystem pkg/openbsd/include\
-	-isystem '$builddir'/pkg/zlib/include\
 	-I include\
-	-I '$dir'
+	-I '$dir' \
+	-I pkg/openbsd/include\
+	-I '$builddir'/pkg/zlib/include
 
 lib libmandoc.a -d pkg/zlib/headers\
 	man.c\

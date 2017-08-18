@@ -1,9 +1,9 @@
 cflags\
 	'-std=c11' -Wall\
-	-isystem pkg/libevdev/src\
-	-isystem pkg/mtdev/src/include\
 	-I include\
-	-I '$dir'
+	-I '$dir' \
+	-I pkg/libevdev/src\
+	-I pkg/mtdev/src/include
 
 phony deps '$builddir'/pkg/^(libevdev mtdev)^/fetch.stamp
 

@@ -1,7 +1,7 @@
 cflags\
 	-include '$dir'/config.h\
-	-isystem pkg/bzip2/src\
-	-I '$srcdir'
+	-I '$srcdir' \
+	-I pkg/bzip2/src
 
 exe unzip -d '$builddir'/pkg/bzip2/fetch.stamp\
         unzip.c crc32.c crypt.c envargs.c explode.c\

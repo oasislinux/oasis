@@ -1,9 +1,9 @@
 cflags\
 	-D HAVE_CONFIG_H\
-	-isystem '$builddir'/pkg/zlib/include\
 	-I include\
 	-I '$dir' \
-	-I '$outdir'/include
+	-I '$outdir'/include\
+	-I '$builddir'/pkg/zlib/include
 
 build '$outdir'/pnglibconf.tf4 awk '$srcdir'/^(pngconf.h scripts/pnglibconf.dfa pngusr.dfa) ; with\
 	expr '-f $srcdir/scripts/options.awk out=/dev/stdout version=search'
