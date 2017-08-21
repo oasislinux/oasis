@@ -1,0 +1,7 @@
+flag e +
+
+var=$1
+shift
+if($* >[2]/dev/null)
+	echo '#define '$var' 1'
+status=()

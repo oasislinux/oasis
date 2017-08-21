@@ -20,6 +20,7 @@ include 'rules.ninja'
 
 toolchain 'target'
 
+subgen 'probe'
 subgen 'pkg'
 subgen 'src'
 

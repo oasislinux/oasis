@@ -39,6 +39,9 @@ rule mc
 rule muse
   command = muse $museflags -o $out $in
 
+rule probe
+  command = rc ./scripts/probe.rc $var $cc $cflags $ldflags -o /dev/null -x c $in >$out.tmp && mv $out.tmp $out
+
 # misc tools
 rule touch
   command = touch $out
