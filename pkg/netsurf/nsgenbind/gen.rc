@@ -1,3 +1,4 @@
+toolchain host
 cflags -I '$srcdir'/src
 
 for(src in nsgenbind-^(lexer parser)^.c webidl-^(lexer parser)^.c)
