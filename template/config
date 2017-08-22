@@ -1,5 +1,5 @@
 [core]
-	sharedRepository = 0600
+	sharedRepository = 0664
 	sparseCheckout = true
 [oasis]
 	root = .
