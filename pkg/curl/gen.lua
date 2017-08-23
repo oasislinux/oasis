@@ -1,6 +1,7 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I include',
+	'-D BUILDING_LIBCURL',
+	'-D CURL_STATICLIB',
 	'-I $dir',
 	'-I $outdir/include/curl',
 	'-I $outdir/include',
