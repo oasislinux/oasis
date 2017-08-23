@@ -10,7 +10,6 @@ core=(\
 	libressl\
 	loksh\
 	mandoc\
-	musl\
 	openbsd\
 	openntpd\
 	openssh\
