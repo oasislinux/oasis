@@ -59,7 +59,7 @@ rule gzip
   command = gzip -c -9 -n <$in >$out.tmp && mv $out.tmp $out
 
 rule yacc
-  command = cd $outdir && $yacc $yaccflags $$OLDPWD/$in
+  command = cd $outdir && yacc $yaccflags $$OLDPWD/$in
 
 rule sed
   command = sed $expr $in >$out.tmp && mv $out.tmp $out

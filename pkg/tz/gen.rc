@@ -2,7 +2,7 @@ cflags -I '$dir'
 
 exe zic zic.c
 
-rule zic '$zic -d $outdir/zoneinfo $in'
+rule zic 'zic -d $outdir/zoneinfo $in'
 file bin/zic '$outdir'/zic 755
 
 tzdata=(\

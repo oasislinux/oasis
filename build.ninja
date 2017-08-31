@@ -10,12 +10,6 @@ host_cflags = -pipe
 host_cxxflags = $host_cflags
 host_ldflags =
 
-lex = lex
-perl = perl
-python = python
-yacc = yacc
-zic = zic
-
 repo = $builddir/root.git
 repo_flags = --bare
 repo_tag = tree
