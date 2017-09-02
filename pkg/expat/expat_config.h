@@ -10,12 +10,14 @@
 #define HAVE_SYSCALL_GETRANDOM 1
 #define HAVE_SYS_PARAM_H 1
 #define LT_OBJDIR ".libs/"
+#define PACKAGE "expat"
 #define PACKAGE_BUGREPORT "expat-bugs@libexpat.org"
 #define PACKAGE_NAME "expat"
-#define PACKAGE_STRING "expat 2.2.3"
+#define PACKAGE_STRING "expat 2.2.4"
 #define PACKAGE_TARNAME "expat"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.2.3"
+#define PACKAGE_VERSION "2.2.4"
+#define VERSION "2.2.4"
 /* #undef WORDS_BIGENDIAN */
 #define XML_CONTEXT_BYTES 1024
 #define XML_DEV_URANDOM 1
