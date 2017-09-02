@@ -1,4 +1,4 @@
-version=1.43.4
+version=1.43.6
 cflags\
 	-D HAVE_CONFIG_H\
 	-I include\
