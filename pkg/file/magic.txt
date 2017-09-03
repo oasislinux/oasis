@@ -25,6 +25,7 @@ audio
 basis
 ber
 bflt
+bhl
 bioinformatics
 blackberry
 blcr
@@ -89,6 +90,7 @@ fsav
 fusecompress
 games
 gcc
+gconv
 geo
 geos
 gimp

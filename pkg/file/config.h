@@ -38,10 +38,10 @@
 #define PACKAGE "file"
 #define PACKAGE_BUGREPORT "christos@astron.com"
 #define PACKAGE_NAME "file"
-#define PACKAGE_STRING "file 5.31"
+#define PACKAGE_STRING "file 5.32"
 #define PACKAGE_TARNAME "file"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "5.31"
+#define PACKAGE_VERSION "5.32"
 /* #undef TM_IN_SYS_TIME */
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
@@ -58,7 +58,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.31"
+#define VERSION "5.32"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
