@@ -63,6 +63,7 @@ up from the following:
 * [iproute2](http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2)
 * [kbd](http://kbd-project.org/)
 * [libressl](http://www.libressl.org/)
+* [lua](https://www.lua.org/)
 * [mandoc](http://mandoc.bsd.lv/)
 * [samurai](https://github.com/michaelforney/samurai) (ninja-compatible build tool)
 * [openntpd](http://www.openntpd.org/)

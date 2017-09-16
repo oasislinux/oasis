@@ -9,6 +9,7 @@ core=(\
 	kbd\
 	libressl\
 	loksh\
+	lua\
 	mandoc\
 	openbsd\
 	openntpd\
