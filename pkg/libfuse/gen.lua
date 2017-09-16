@@ -1,6 +1,5 @@
 cflags{
-	'-D FUSE_USE_VERSION=31',
-	'-D fuse_new_31=fuse_new',
+	'-D FUSE_USE_VERSION=32',
 	'-I include',
 	'-I $dir',
 	'-I $srcdir/include',

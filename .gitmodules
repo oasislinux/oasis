@@ -96,7 +96,6 @@
 [submodule "pkg/libfuse/src"]
 	path = pkg/libfuse/src
 	url = https://github.com/libfuse/libfuse
-	ignore = all
 [submodule "pkg/libinput/src"]
 	path = pkg/libinput/src
 	url = https://github.com/michaelforney/libinput

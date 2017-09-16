@@ -3,6 +3,7 @@
 #define FUSERMOUNT_DIR "/bin"
 #define IGNORE_MTAB
 
+#undef HAVE_ICONV
 #define HAVE_PIPE2
 #define HAVE_SETXATTR
 #define HAVE_SPLICE
