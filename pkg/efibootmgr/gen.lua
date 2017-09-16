@@ -3,6 +3,7 @@ cflags{
 	[[-D 'DEFAULT_LOADER="/linux"']],
 	'-I $srcdir/src/include',
 	'-I $builddir/pkg/efivar/include',
+	'-I $builddir/pkg/efivar/include/efivar',
 }
 
 exe('efibootmgr', [[

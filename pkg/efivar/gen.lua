@@ -7,7 +7,7 @@ cflags{
 	'-D _GNU_SOURCE',
 	'-include $dir/compat.h',
 	'-I $outdir/include',
-	'-I $srcdir/src/include/efivar',
+	'-I $srcdir/src/include',
 }
 
 sub('tools.ninja', function()
@@ -15,7 +15,7 @@ sub('tools.ninja', function()
 	cflags{
 		'-std=c99',
 		'-D EFIVAR_BUILD_ENVIRONMENT',
-		'-I $srcdir/src/include/efivar',
+		'-I $srcdir/src/include',
 	}
 	build('cc', '$outdir/host-guid.c.o', '$srcdir/src/guid.c')
 	exe('makeguids', {'src/makeguids.c', 'host-guid.c.o'}, nil, {ldlibs='-ldl'})
@@ -26,20 +26,20 @@ build('makeguids', {
 	'$outdir/guids.bin',
 	'$outdir/names.bin',
 	'$outdir/guid-symbols.c',
-	'$outdir/include/efivar-guids.h',
+	'$outdir/include/efivar/efivar-guids.h',
 }, {'$srcdir/src/guids.txt', '|', '$outdir/makeguids'})
 
 pkg.hdrs = {
-	copy('$outdir/include', '$srcdir/src/include/efivar', {
+	copy('$outdir/include/efivar', '$srcdir/src/include/efivar', {
 		'efiboot.h',
 		'efiboot-creator.h',
 		'efiboot-loadopt.h',
 		'efivar.h',
 		'efivar-dp.h',
 	}),
-	'$outdir/include/efivar-guids.h',
+	'$outdir/include/efivar/efivar-guids.h',
 }
-pkg.deps = {'$outdir/include/efivar-guids.h'}
+pkg.deps = {'$outdir/include/efivar/efivar-guids.h'}
 
 lib('libefiboot.a', 'src/(crc32.c creator.c disk.c gpt.c linux.c loadopt.c)')
 lib('libefivar.a', [[
