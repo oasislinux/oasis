@@ -1,4 +1,4 @@
-From 7490064f9224ff72e75df314d843a464d2d045b8 Mon Sep 17 00:00:00 2001
+From 8df10cc1adebc9c3551a043eeb20ccc0efd59227 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 21:08:15 -0700
 Subject: [PATCH] Add generated man page
@@ -7,16 +7,16 @@ This requires python and rst2man to generate.
 
 $ rst2man.py --strip-elements-with-class=contents DOCS/man/mpv.rst DOCS/man/mpv.1
 ---
- DOCS/man/mpv.1 | 15103 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 15103 insertions(+)
+ DOCS/man/mpv.1 | 15201 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 15201 insertions(+)
  create mode 100644 DOCS/man/mpv.1
 
 diff --git a/DOCS/man/mpv.1 b/DOCS/man/mpv.1
 new file mode 100644
-index 0000000000..120af562b8
+index 0000000000..e698e6bdd4
 --- /dev/null
 +++ b/DOCS/man/mpv.1
-@@ -0,0 +1,15103 @@
+@@ -0,0 +1,15201 @@
 +.\" Man page generated from reStructuredText.
 +.
 +.TH MPV 1 "" "" "multimedia"
@@ -601,7 +601,7 @@ index 0000000000..120af562b8
 +_
 +.TE
 +.sp
-+Although some operations allow specifiying multiple \fB,\fP\-separated items, using
++Although some operations allow specifying multiple \fB,\fP\-separated items, using
 +this is strongly discouraged and deprecated, except for \fB\-set\fP\&.
 +.sp
 +Without suffix, the action taken is normally \fB\-set\fP\&.
@@ -956,6 +956,11 @@ index 0000000000..120af562b8
 +Play a Blu\-ray disc. Currently, this does not accept ISO files. Instead,
 +you must mount the ISO file as filesystem, and point \fB\-\-bluray\-device\fP
 +to the mounted directory directly.
++.sp
++\fBtitle\fP can be: \fBlongest\fP or \fBfirst\fP (selects the default
++playlist); \fBmpls/<number>\fP (selects <number>.mpls playlist);
++\fB<number>\fP (select playlist with the same index). You can list
++the available playlists with \fB\-\-msg\-level=bd=v\fP\&.
 +.UNINDENT
 +.UNINDENT
 +.sp
@@ -1232,6 +1237,18 @@ index 0000000000..120af562b8
 +Specify the edition (set of chapters) to use, where 0 is the first. If set
 +to \fBauto\fP (the default), mpv will choose the first edition declared as a
 +default, or if there is no default, the first edition defined.
++.TP
++.B \fB\-\-track\-auto\-selection=<yes|no>\fP
++Enable the default track auto\-selection (default: yes). Enabling this will
++make the player select streams according to \fB\-\-aid\fP, \fB\-\-alang\fP, and
++others. If it is disabled, no tracks are selected. In addition, the player
++will not exit if no tracks are selected, and wait instead (this wait mode
++is similar to pausing, but the pause option is not set).
++.sp
++This is useful with \fB\-\-lavfi\-complex\fP: you can start playback in this
++mode, and then set select tracks at runtime by setting the filter graph.
++Note that if \fB\-\-lavfi\-complex\fP is set before playback is started, the
++referenced tracks are always selected.
 +.UNINDENT
 +.SS Playback Control
 +.INDENT 0.0
@@ -1474,11 +1491,7 @@ index 0000000000..120af562b8
 +time trying to loop a file that doesn\(aqt exist. But it might be useful for
 +playing webradios under very bad network conditions.
 +.TP
-+.B \fB\-\-loop\fP
-+Currently a deprecated alias to \fB\-\-loop\-playlist\fP\&. After a deprecation
-+period, it will be undeprecated, but changed to alias \fB\-\-loop\-file\fP\&.
-+.TP
-+.B \fB\-\-loop\-file=<N|inf|no>\fP
++.B \fB\-\-loop\-file=<N|inf|no>\fP, \fB\-\-loop=<N|inf|no>\fP
 +Loop a single file N times. \fBinf\fP means forever, \fBno\fP means normal
 +playback. For compatibility, \fB\-\-loop\-file\fP and \fB\-\-loop\-file=yes\fP are
 +also accepted, and are the same as \fB\-\-loop\-file=inf\fP\&.
@@ -1487,6 +1500,8 @@ index 0000000000..120af562b8
 +just the file itself. If the playlist contains only a single file, the
 +difference between the two option is that this option performs a seek on
 +loop, instead of reloading the file.
++.sp
++\fB\-\-loop\fP is an alias for this option.
 +.TP
 +.B \fB\-\-ab\-loop\-a=<time>\fP, \fB\-\-ab\-loop\-b=<time>\fP
 +Set loop points. If playback passes the \fBb\fP timestamp, it will seek to
@@ -1986,7 +2001,8 @@ index 0000000000..120af562b8
 +The \fB\&...\-copy\fP modes (e.g. \fBdxva2\-copy\fP) allow you to use hardware
 +decoding with any VO, backend or filter. Because these copy the decoded
 +video back to system RAM, they\(aqre likely less efficient than the direct
-+modes (like e.g. \fBdxva2\fP).
++modes (like e.g. \fBdxva2\fP), and probably not more efficient than software
++decoding except for some codecs (e.g. HEVC).
 +.sp
 +\fBNOTE:\fP
 +.INDENT 7.0
@@ -2000,15 +2016,19 @@ index 0000000000..120af562b8
 +.INDENT 3.5
 +.IP "Quality reduction with hardware decoding"
 +.sp
-+Normally, hardware decoding does not reduce video quality (at least for
-+the codecs h264 and HEVC). However, due to restrictions in video output
-+APIs, there can be some loss, or blatantly incorrect results.
++In theory, hardware decoding does not reduce video quality (at least
++for the codecs h264 and HEVC). However, due to restrictions in video
++output APIs, as well as bugs in the actual hardware decoders, there can
++be some loss, or even blatantly incorrect results.
 +.sp
 +In some cases, RGB conversion is forced, which means the RGB conversion
 +is performed by the hardware decoding API, instead of the OpenGL code
-+used by \fB\-\-vo=opengl\fP\&. This means certain obscure colorspaces may
-+not display correctly, not certain filtering (such as debanding)
-+cannot be applied in an ideal way.
++used by \fB\-\-vo=opengl\fP\&. This means certain colorspaces may not display
++correctly, and certain filtering (such as debanding) cannot be applied
++in an ideal way. This will also usually force the use of low quality
++chroma scalers instead of the one specified by \fB\-\-cscale\fP\&. In other
++cases, hardware decoding can also reduce the bit depth of the decoded
++image, which can introduce banding or precision loss for 10\-bit files.
 +.sp
 +\fBvdpau\fP is usually safe. If deinterlacing enabled (or the \fBvdpaupp\fP
 +video filter is active in general), it forces RGB conversion. The latter
@@ -2017,14 +2037,15 @@ index 0000000000..120af562b8
 +filter retrieves image data without RGB conversion and is safe (but
 +precludes use of vdpau postprocessing).
 +.sp
-+\fBvaapi\fP is safe if the \fBvaapi\-egl\fP backend is indicated in the logs.
-+If \fBvaapi\-glx\fP is indicated, and the video colorspace is either BT.601
-+or BT.709, a forced but correct RGB conversion is performed. Otherwise,
-+the result will be incorrect.
++\fBvaapi\fP is safe if the \fBvaapi\-egl\fP backend is indicated in the
++logs. If \fBvaapi\-glx\fP is indicated, and the video colorspace is either
++BT.601 or BT.709, a forced, low\-quality but correct RGB conversion is
++performed. Otherwise, the result will be totally incorrect.
 +.sp
 +\fBd3d11va\fP is usually safe (if used with ANGLE builds that support
 +\fBEGL_KHR_stream path\fP \- otherwise, it converts to RGB), except that
-+10 bit input (HEVC main 10 profiles) will be rounded down to 8 bits.
++10 bit input (HEVC main 10 profiles) will be rounded down to 8 bits,
++which results in reduced quality.
 +.sp
 +\fBdxva2\fP is not safe. It appears to always use BT.601 for forced RGB
 +conversion, but actual behavior depends on the GPU drivers. Some drivers
@@ -2036,17 +2057,30 @@ index 0000000000..120af562b8
 +\fBrpi\fP always uses the hardware overlay renderer, even with
 +\fB\-\-vo=opengl\fP\&.
 +.sp
++\fBcuda\fP should be safe, but it has been reported to corrupt the
++timestamps causing glitched, flashing frames on some files. It can also
++sometimes cause massive framedrops for unknown reasons. Caution is
++advised.
++.sp
 +\fBcrystalhd\fP is not safe. It always converts to 4:2:2 YUV, which
 +may be lossy, depending on how chroma sub\-sampling is done during
 +conversion. It also discards the top left pixel of each frame for
 +some reason.
 +.sp
 +All other methods, in particular the copy\-back methods (like
-+\fBdxva2\-copy\fP etc.) are either fully safe, or not worse than software
-+decoding.
++\fBdxva2\-copy\fP etc.) should hopefully be safe, although they can still
++cause random decoding issues. At the very least, they shouldn\(aqt affect
++the colors of the image.
 +.sp
-+In particular, \fBauto\-copy\fP will only select safe modes
-+(although potentially slower than other methods).
++In particular, \fBauto\-copy\fP will only select "safe" modes
++(although potentially slower than other methods), but there\(aqs still no
++guarantee the chosen hardware decoder will actually work correctly.
++.sp
++In general, it\(aqs very strongly advised to avoid hardware decoding
++unless \fBabsolutely\fP necessary, i.e. if your CPU is insufficient to
++decode the file in questions. If you run into any weird decoding issues,
++frame glitches or discoloration, and you have \fB\-\-hwdec\fP turned on,
++the first thing you should try is disabling it.
 +.UNINDENT
 +.UNINDENT
 +.TP
@@ -2129,15 +2163,10 @@ index 0000000000..120af562b8
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-video\-aspect\-method=<hybrid|bitstream|container>\fP
++.B \fB\-\-video\-aspect\-method=<bitstream|container>\fP
 +This sets the default video aspect determination method (if the aspect is
 +_not_ overridden by the user with \fB\-\-video\-aspect\fP or others).
 +.INDENT 7.0
-+.TP
-+.B hybrid
-+Prefer the container aspect ratio. If the bitstream aspect
-+switches mid\-stream, switch to preferring the bitstream aspect.
-+This was the default in older mpv and mplayer2. Deprecated.
 +.TP
 +.B container
 +Strictly prefer the container aspect ratio. This is apparently
@@ -2244,8 +2273,8 @@ index 0000000000..120af562b8
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-deinterlace=<yes|no|auto>\fP
-+Enable or disable interlacing (default: auto, which usually means no).
++.B \fB\-\-deinterlace=<yes|no>\fP
++Enable or disable interlacing (default: no).
 +Interlaced video shows ugly comb\-like artifacts, which are visible on
 +fast movement. Enabling this typically inserts the yadif video filter in
 +order to deinterlace the video, or lets the video output apply deinterlacing
@@ -2254,32 +2283,11 @@ index 0000000000..120af562b8
 +This behaves exactly like the \fBdeinterlace\fP input property (usually
 +mapped to \fBd\fP).
 +.sp
-+\fBauto\fP is a technicality. Strictly speaking, the default for this option
-+is deinterlacing disabled, but the \fBauto\fP case is needed if \fByadif\fP was
-+added to the filter chain manually with \fB\-\-vf\fP\&. Then the core shouldn\(aqt
-+disable deinterlacing just because the \fB\-\-deinterlace\fP was not set.
-+.TP
-+.B \fB\-\-field\-dominance=<auto|top|bottom>\fP
-+Set first field for interlaced content.
-+.INDENT 7.0
-+.TP
-+.B auto
-+(default) If the decoder does not export the appropriate
-+information, it falls back on \fBtop\fP (top field first).
-+.TP
-+.B top
-+top field first
-+.TP
-+.B bottom
-+bottom field first
-+.UNINDENT
-+.sp
-+\fBNOTE:\fP
-+.INDENT 7.0
-+.INDENT 3.5
-+Setting either \fBtop\fP or \fBbottom\fP will flag all frames as interlaced.
-+.UNINDENT
-+.UNINDENT
++Keep in mind that this \fBwill\fP conflict with manually inserted
++deinterlacing filters, unless you take care. (Since mpv 0.27.0, even the
++hardware deinterlace filters will conflict. Also since that version,
++\fB\-\-deinterlace=auto\fP was removed, which used to mean that the default
++interlacing option of possibly inserted video filters was used.)
 +.TP
 +.B \fB\-\-frames=<number>\fP
 +Play/convert only first \fB<number>\fP video frames, then quit.
@@ -2356,6 +2364,29 @@ index 0000000000..120af562b8
 +Fallback to software decoding if the hardware\-accelerated decoder fails
 +(default: 3). If this is a number, then fallback will be triggered if
 +N frames fail to decode in a row. 1 is equivalent to \fByes\fP\&.
++.TP
++.B \fB\-\-vd\-lavc\-dr=<yes|no>\fP
++Enable direct rendering (default: no). If this is set to \fByes\fP, the
++video will be decoded directly to GPU video memory (or staging buffers).
++This can speed up video upload, and may help with large resolutions or
++slow hardware. This works only with the following VOs:
++.INDENT 7.0
++.INDENT 3.5
++.INDENT 0.0
++.IP \(bu 2
++\fBopengl\fP: requires at least OpenGL 4.4.
++.UNINDENT
++.UNINDENT
++.UNINDENT
++.sp
++(In particular, this can\(aqt be made work with \fBopengl\-cb\fP\&.)
++.sp
++Using video filters of any kind that write to the image data (or output
++newly allocated frames) will silently disable the DR code path.
++.sp
++There are some corner cases that will result in undefined behavior (crashes
++and other strange behavior) if this option is enabled. These are pending
++towards being fixed properly at a later point.
 +.TP
 +.B \fB\-\-vd\-lavc\-bitexact\fP
 +Only use bit\-exact algorithms in all decoding steps (for codec testing).
@@ -2845,21 +2876,20 @@ index 0000000000..120af562b8
 +.TP
 +.B \fB\-\-audio\-file\-auto=<no|exact|fuzzy|all>\fP, \fB\-\-no\-audio\-file\-auto\fP
 +Load additional audio files matching the video filename. The parameter
-+specifies how external audio files are matched. \fBexact\fP is enabled by
-+default.
++specifies how external audio files are matched.
 +.INDENT 7.0
 +.TP
 +.B no
-+Don\(aqt automatically load external audio files.
++Don\(aqt automatically load external audio files (default).
 +.TP
 +.B exact
-+Load the media filename with audio file extension (default).
++Load the media filename with audio file extension.
 +.TP
 +.B fuzzy
 +Load all audio files containing media filename.
 +.TP
 +.B all
-+Load all audio files in the current and \fB\-\-audio\-file\-path\fP
++Load all audio files in the current and \fB\-\-audio\-file\-paths\fP
 +directories.
 +.UNINDENT
 +.TP
@@ -3296,7 +3326,7 @@ index 0000000000..120af562b8
 +Load all subs containing media filename.
 +.TP
 +.B all
-+Load all subs in the current and \fB\-\-sub\-file\-path\fP directories.
++Load all subs in the current and \fB\-\-sub\-file\-paths\fP directories.
 +.UNINDENT
 +.TP
 +.B \fB\-\-sub\-codepage=<codepage>\fP
@@ -4089,6 +4119,10 @@ index 0000000000..120af562b8
 +as having the same size as on none\-HiDPI resolutions. This is the default OS X
 +behavior.
 +.TP
++.B \fB\-\-native\-fs\fP, \fB\-\-no\-native\-fs\fP
++(OS X only)
++Uses the native fullscreen mechanism of the OS (default: yes).
++.TP
 +.B \fB\-\-monitorpixelaspect=<ratio>\fP
 +Set the aspect of a single pixel of your monitor or TV screen (default:
 +1). A value of 1 means square pixels (correct for (almost?) all LCDs). See
@@ -4628,7 +4662,7 @@ index 0000000000..120af562b8
 +Support depends on the VO in use.
 +.TP
 +.B \fB\-\-input\-media\-keys=<yes|no>\fP
-+(OS X only)
++(OS X and Windows only)
 +Enable/disable media keys support. Enabled by default (except for libmpv).
 +.TP
 +.B \fB\-\-input\-right\-alt\-gr\fP, \fB\-\-no\-input\-right\-alt\-gr\fP
@@ -5923,7 +5957,8 @@ index 0000000000..120af562b8
 +.TP
 +.B \fB\-\-linear\-scaling\fP
 +Scale in linear light. It should only be used with a
-+\fB\-\-opengl\-fbo\-format\fP that has at least 16 bit precision.
++\fB\-\-opengl\-fbo\-format\fP that has at least 16 bit precision. This option
++has no effect on HDR content.
 +.TP
 +.B \fB\-\-correct\-downscaling\fP
 +When using convolution based filters, extend the filter size when
@@ -5951,7 +5986,8 @@ index 0000000000..120af562b8
 +the \fB\-\-tscale\fP setting.
 +.sp
 +Note that this relies on vsync to work, see \fB\-\-opengl\-swapinterval\fP for
-+more information.
++more information. It should also only be used with an \fB\-\-opengl\-fbo\-format\fP
++that has at least 16 bit precision.
 +.TP
 +.B \fB\-\-interpolation\-threshold=<0..1,\-1>\fP
 +Threshold below which frame ratio interpolation gets disabled (default:
@@ -6070,25 +6106,64 @@ index 0000000000..120af562b8
 +.UNINDENT
 +.UNINDENT
 +.sp
-+Each block of metadata, along with the non\-metadata lines after it, defines
-+a single pass. Each pass can set the following metadata:
++Each section of metadata, along with the non\-metadata lines after it,
++defines a single block. There are currently two types of blocks, HOOKs and
++TEXTUREs.
++.sp
++A \fBTEXTURE\fP block can set the following options:
 +.INDENT 7.0
 +.TP
-+.B DESC <title>
-+User\-friendly description of the pass. This is the name used when
-+representing this shader in the list of passes for property
-+\fIvo\-passes\fP\&.
++.B TEXTURE <name> (required)
++The name of this texture. Hooks can then bind the texture under this
++name using BIND. This must be the first option of the texture block.
++.TP
++.B SIZE <width> [<height>] [<depth>] (required)
++The dimensions of the texture. The height and depth are optional. The
++type of texture (1D, 2D or 3D) depends on the number of components
++specified.
++.TP
++.B FORMAT <name> (required)
++The texture format for the samples. Supported texture formats are listed
++in debug logging when the \fBopengl\fP VO is initialized (look for
++\fBTexture formats:\fP). Usually, this follows OpenGL naming conventions.
++For example, \fBrgb16\fP provides 3 channels with normalized 16 bit
++components. One oddity are float formats: for example, \fBrgba16f\fP has
++16 bit internal precision, but the texture data is provided as 32 bit
++floats, and the driver converts the data on texture upload.
++.sp
++Although format names follow a common naming convention, not all of them
++are available on all hardware, drivers, GL versions, and so on.
++.TP
++.B FILTER <LINEAR|NEAREST>
++The min/magnification filter used when sampling from this texture.
++.TP
++.B BORDER <CLAMP|REPEAT|MIRROR>
++The border wrapping mode used when sampling from this texture.
++.UNINDENT
++.sp
++Following the metadata is a string of bytes in hexadecimal notation that
++define the raw texture data, corresponding to the format specified by
++\fIFORMAT\fP, on a single line with no extra whitespace.
++.sp
++A \fBHOOK\fP block can set the following options:
++.INDENT 7.0
 +.TP
 +.B HOOK <name> (required)
 +The texture which to hook into. May occur multiple times within a
 +metadata block, up to a predetermined limit. See below for a list of
 +hookable textures.
 +.TP
++.B DESC <title>
++User\-friendly description of the pass. This is the name used when
++representing this shader in the list of passes for property
++\fIvo\-passes\fP\&.
++.TP
 +.B BIND <name>
-+Loads a texture and makes it available to the pass, and sets up macros
-+to enable accessing it. See below for a list of set macros. By default,
-+no textures are bound. The special name HOOKED can be used to refer to
-+the texture that triggered this pass.
++Loads a texture (either coming from mpv or from a \fBTEXTURE\fP block)
++and makes it available to the pass. When binding textures from mpv,
++this will also set up macros to facilitate accessing it properly. See
++below for a list. By default, no textures are bound. The special name
++HOOKED can be used to refer to the texture that triggered this pass.
 +.TP
 +.B SAVE <name>
 +Gives the name of the texture to save the result of this pass into. By
@@ -6112,20 +6187,41 @@ index 0000000000..120af562b8
 +hook point can still cause that hook point to be saved, which has some
 +minor overhead)
 +.TP
-+.B OFFSET ox oy
++.B OFFSET <ox> <oy>
 +Indicates a pixel shift (offset) introduced by this pass. These pixel
 +offsets will be accumulated and corrected during the next scaling pass
 +(\fBcscale\fP or \fBscale\fP). The default values are 0 0 which correspond
 +to no shift. Note that offsets are ignored when not overwriting the
 +hooked texture.
 +.TP
-+.B COMPONENTS n
++.B COMPONENTS <n>
 +Specifies how many components of this pass\(aqs output are relevant and
 +should be stored in the texture, up to 4 (rgba). By default, this value
 +is equal to the number of components in HOOKED.
++.TP
++.B COMPUTE <bw> <bh> [<tw> <th>]
++Specifies that this shader should be treated as a compute shader, with
++the block size bw and bh. The compute shader will be dispatched with
++however many blocks are necessary to completely tile over the output.
++Within each block, there will bw tw*th threads, forming a single work
++group. In other words: tw and th specify the work group size, which can
++be different from the block size. So for example, a compute shader with
++bw, bh = 32 and tw, th = 8 running on a 500x500 texture would dispatch
++16x16 blocks (rounded up), each with 8x8 threads.
++.sp
++Compute shaders in mpv are treated a bit different from fragment
++shaders. Instead of defining a \fBvec4 hook\fP that produces an output
++sample, you directly define \fBvoid hook\fP which writes to a fixed
++writeonly image unit named \fBout_image\fP (this is bound by mpv) using
++\fIimageStore\fP\&. To help translate texture coordinates in the absence of
++vertices, mpv provides a special function \fBNAME_map(id)\fP to map from
++the texel space of the output image to the texture coordinates for all
++bound textures. In particular, \fBNAME_pos\fP is equivalent to
++\fBNAME_map(gl_GlobalInvocationID)\fP, although using this only really
++makes sense if (tw,th) == (bw,bh).
 +.UNINDENT
 +.sp
-+Each bound texture (via \fBBIND\fP) will make available the following
++Each bound mpv texture (via \fBBIND\fP) will make available the following
 +definitions to that shader pass, where NAME is the name of the bound
 +texture:
 +.INDENT 7.0
@@ -6622,9 +6718,11 @@ index 0000000000..120af562b8
 +.UNINDENT
 +.UNINDENT
 +.TP
-+.B \fB\-\-hdr\-tone\-mapping=<value>\fP
-+Specifies the algorithm used for tone\-mapping HDR images onto the target
-+display. Valid values are:
++.B \fB\-\-tone\-mapping=<value>\fP
++Specifies the algorithm used for tone\-mapping images onto the target
++display. This is relevant for both HDR\->SDR conversion as well as gamut
++reduction (e.g. playing back BT.2020 content on a standard gamut display).
++Valid values are:
 +.INDENT 7.0
 +.TP
 +.B clip
@@ -6647,10 +6745,10 @@ index 0000000000..120af562b8
 +.TP
 +.B hable
 +Similar to \fBreinhard\fP but preserves both dark and bright details
-+better (slightly sigmoidal), at the cost of slightly darkening
-+everything. Developed by John Hable for use in video games. Use this
-+when you care about detail preservation more than color/brightness
-+accuracy. This is roughly equivalent to
++better (slightly sigmoidal), at the cost of slightly darkening /
++desaturating everything. Developed by John Hable for use in video
++games. Use this when you care about detail preservation more than
++color/brightness accuracy. This is roughly equivalent to
 +\fB\-\-hdr\-tone\-mapping=reinhard \-\-tone\-mapping\-param=0.24\fP\&.
 +.TP
 +.B gamma
@@ -6689,6 +6787,14 @@ index 0000000000..120af562b8
 +Specifies the scale factor to use while stretching. Defaults to 1.0.
 +.UNINDENT
 +.TP
++.B \fB\-\-hdr\-compute\-peak\fP
++Compute the HDR peak per\-frame of relying on tagged metadata. These values
++are averaged over local regions as well as over several frames to prevent
++the value from jittering around too much. This option basically gives you
++dynamic, per\-scene tone mapping. Requires compute shaders, which is a
++fairly recent OpenGL feature, and will probably also perform horribly on
++some drivers, so enable at your own risk.
++.TP
 +.B \fB\-\-tone\-mapping\-desaturate=<value>\fP
 +Apply desaturation for highlights that exceed this level of brightness. The
 +higher the parameter, the more color information will be preserved. This
@@ -6698,6 +6804,24 @@ index 0000000000..120af562b8
 +.sp
 +The default of 2.0 is somewhat conservative and will mostly just apply to
 +skies or directly sunlit surfaces. A setting of 0.0 disables this option.
++.TP
++.B \fB\-\-gamut\-warning\fP
++If enabled, mpv will mark all clipped/out\-of\-gamut pixels that exceed a
++given threshold (currently hard\-coded to 101%). The affected pixels will be
++inverted to make them stand out. Note: This option applies after the
++effects of all of mpv\(aqs color space transformation / tone mapping options,
++so it\(aqs a good idea to combine this with \fB\-\-tone\-mapping=clip\fP and use
++\fB\-\-target\-gamut\fP to set the gamut to simulate. For example,
++\fB\-\-target\-gamut=bt.709\fP would make mpv highlight all pixels that exceed the
++gamut of a standard gamut (sRGB) display. This option also does not work
++well with ICC profiles, since the 3DLUTs are always generated against the
++source color space and have chromatically\-accurate clipping built in.
++.TP
++.B \fB\-\-use\-embedded\-icc\-profile\fP
++Load the embedded ICC profile contained in media files such as PNG images.
++(Default: yes). Note that this option only works when also using a display
++ICC profile (\fB\-\-icc\-profile\fP or \fB\-\-icc\-profile\-auto\fP), and also
++requires LittleCMS 2 support.
 +.TP
 +.B \fB\-\-icc\-profile=<file>\fP
 +Load an ICC profile and use it to transform video RGB to screen output.
@@ -7103,11 +7227,14 @@ index 0000000000..120af562b8
 +video or audio outputs are not possible, but you can use filters to merge
 +them into one.
 +.sp
-+The complex filter cannot be changed yet during playback. It\(aqs also not
-+possible to change the tracks connected to the filter at runtime. Other
-+tracks, as long as they\(aqre not connected to the filter, and the
++It\(aqs not possible to change the tracks connected to the filter at runtime,
++unless you explicitly change the \fBlavfi\-complex\fP property and set new
++track assignments. When the graph is changed, the track selection is changed
++according to the used labels as well.
++.sp
++Other tracks, as long as they\(aqre not connected to the filter, and the
 +corresponding output is not connected to the filter, can still be freely
-+changed.
++changed with the normal methods.
 +.sp
 +Note that the normal filter chains (\fB\-\-af\fP, \fB\-\-vf\fP) are applied between
 +the complex graphs (e.g. \fBao\fP label) and the actual output.
@@ -7401,7 +7528,8 @@ index 0000000000..120af562b8
 +.UNINDENT
 +.TP
 +.B \fBrsound\fP
-+Audio output to an RSound daemon
++Audio output to an RSound daemon. Use \fB\-\-audio\-device=rsound/<hostname>\fP
++to set the host name (with \fB<hostname>\fP replaced, without the \fB< >\fP).
 +.sp
 +\fBNOTE:\fP
 +.INDENT 7.0
@@ -7875,7 +8003,7 @@ index 0000000000..120af562b8
 +Don\(aqt allow deinterlacing (default for newer libva).
 +.TP
 +.B first\-field
-+Show only first field (going by \fB\-\-field\-dominance\fP).
++Show only first field.
 +.TP
 +.B bob
 +bob deinterlacing (default for older libva).
@@ -9262,6 +9390,26 @@ index 0000000000..120af562b8
 +Set the display aspect ratio of the video frame. This is a float,
 +but values such as \fB[16:9]\fP can be passed too (\fB[...]\fP for quoting
 +to prevent the option parser from interpreting the \fB:\fP character).
++.TP
++.B \fB<spherical\-type>\fP
++Type of the spherical projection:
++.INDENT 7.0
++.TP
++.B auto
++As indicated by the file (default)
++.TP
++.B none
++Normal video
++.TP
++.B equirect
++Equirectangular
++.TP
++.B unknown
++Unknown projection
++.UNINDENT
++.TP
++.B \fB<spherical\-yaw>\fP, \fB<spherical\-pitch>\fP, \fB<spherical\-roll>\fP
++Reference angle in degree, if spherical video is used.
 +.UNINDENT
 +.TP
 +.B \fBnoformat[=fmt]\fP
@@ -9343,41 +9491,6 @@ index 0000000000..120af562b8
 +.UNINDENT
 +.UNINDENT
 +.UNINDENT
-+.UNINDENT
-+.TP
-+.B \fBeq[=gamma:contrast:brightness:saturation:rg:gg:bg:weight]\fP
-+Software equalizer that uses lookup tables (slow), allowing gamma correction
-+in addition to simple brightness and contrast adjustment. The parameters are
-+given as floating point values.
-+.INDENT 7.0
-+.TP
-+.B \fB<0.1\-10>\fP
-+initial gamma value (default: 1.0)
-+.TP
-+.B \fB<\-2\-2>\fP
-+initial contrast, where negative values result in a negative image
-+(default: 1.0)
-+.TP
-+.B \fB<\-1\-1>\fP
-+initial brightness (default: 0.0)
-+.TP
-+.B \fB<0\-3>\fP
-+initial saturation (default: 1.0)
-+.TP
-+.B \fB<0.1\-10>\fP
-+gamma value for the red component (default: 1.0)
-+.TP
-+.B \fB<0.1\-10>\fP
-+gamma value for the green component (default: 1.0)
-+.TP
-+.B \fB<0.1\-10>\fP
-+gamma value for the blue component (default: 1.0)
-+.TP
-+.B \fB<0\-1>\fP
-+The weight parameter can be used to reduce the effect of a high gamma
-+value on bright image areas, e.g. keep them from getting overamplified
-+and just plain white. A value of 0.0 turns the gamma correction all
-+the way down while 1.0 leaves it at its full strength (default: 1.0).
 +.UNINDENT
 +.TP
 +.B \fBpullup[=jl:jr:jt:jb:sb:mp]\fP
@@ -9749,7 +9862,7 @@ index 0000000000..120af562b8
 +Don\(aqt perform deinterlacing.
 +.TP
 +.B first\-field
-+Show only first field (going by \fB\-\-field\-dominance\fP).
++Show only first field.
 +.TP
 +.B bob
 +bob deinterlacing (default).
@@ -9810,7 +9923,6 @@ index 0000000000..120af562b8
 +.TP
 +.B \fBdeint\-mode=<first\-field|bob|temporal|temporal\-spatial>\fP
 +Select deinterlacing mode (default: temporal).
-+All modes respect \fB\-\-field\-dominance\fP\&.
 +.sp
 +Note that there\(aqs currently a mechanism that allows the \fBvdpau\fP VO to
 +change the \fBdeint\-mode\fP of auto\-inserted \fBvdpaupp\fP filters. To avoid
@@ -10469,10 +10581,6 @@ index 0000000000..120af562b8
 +For embedded subtitles (like with Matroska), this works only with subtitle
 +events that have already been displayed, or are within a short prefetch
 +range.
-+.TP
-+.B \fBosd [<level>]\fP
-+Toggle OSD level. If \fB<level>\fP is specified, set the OSD mode
-+(see \fB\-\-osd\-level\fP for valid values).
 +.TP
 +.B \fBprint\-text "<string>"\fP
 +Print text to stdout. The string can contain properties (see
@@ -12463,21 +12571,11 @@ index 0000000000..120af562b8
 +.sp
 +Option changes at runtime are affected by this as well.
 +.TP
-+.B \fBdeinterlace\fP
-+While video is active, this behaves differently from the option. It will
-+never return the \fBauto\fP value (but the state as observed by the video
-+chain). If you set \fBauto\fP, the property will set this as the option value,
-+and will return the actual video chain state as observed instead of auto.
-+.TP
 +.B \fBvideo\-aspect\fP
 +While video is active, always returns the effective aspect ratio. Setting
 +a special value (like \fBno\fP, values \fB<= 0\fP) will make the property
 +set this as option, and return whatever actual aspect was derived from the
 +option setting.
-+.TP
-+.B \fBbrightness\fP (and other color options)
-+If \fB\-\-vo=xv\fP is used, these properties may return the adapter\(aqs current
-+values instead of the option values.
 +.TP
 +.B \fBdisplay\-fps\fP
 +If a VO is created, this will return either the actual display FPS, or
@@ -15121,5 +15219,5 @@ index 0000000000..120af562b8
 +.\" Generated by docutils manpage writer.
 +.
 -- 
-2.13.3
+2.14.1
 
