@@ -1,8 +1,0 @@
-cflags\
-	'-std=c99' \
-	-I pkg/lua/src/src
-
-lib liblpeg.a -d '$builddir'/pkg/lua/fetch.stamp\
-	lpvm.c lpcap.c lptree.c lpcode.c lpprint.c
-
-fetch curl

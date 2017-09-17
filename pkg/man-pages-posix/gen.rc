@@ -1,4 +1,0 @@
-manpages=`{grep -v '^#' manpages.txt} ; checkstatus
-man $manpages
-
-fetch curl

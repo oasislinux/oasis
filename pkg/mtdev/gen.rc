@@ -1,5 +1,0 @@
-cflags -I '$srcdir'/include
-
-lib libmtdev.a src/^(caps.c core.c iobuf.c match.c match_four.c)
-
-fetch git

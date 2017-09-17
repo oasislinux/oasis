@@ -1,5 +1,5 @@
 /config.ninja
-/config.rc
+/config.lua
 /out
 local.ninja
 local.perms

@@ -8,6 +8,7 @@ addons:
     packages:
     - 9base
     - libwayland-dev
+    - lua5.2
     - nasm
     - pax
 install:
@@ -17,7 +18,7 @@ script:
 - git submodule update --init pkg/samurai/src
 - make -C pkg/samurai/src
 - echo 'fn fs { true }; config_tls=libressl; config_video_drivers=(intel nouveau)' > config.rc
-- rc ./setup.rc
+- lua setup.lua
 - ./pkg/samurai/src/samu out/pkg/openbsd/pax out/pkg/mc/bin/6m out/pkg/mc/bin/muse out/pkg/file/file
 - mkdir /tmp/bin
 - cp out/pkg/openbsd/pax out/pkg/mc/bin/6m out/pkg/mc/bin/muse out/pkg/file/file /tmp/bin

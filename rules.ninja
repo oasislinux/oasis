@@ -1,5 +1,5 @@
 rule gen
-  command = rc ./setup.rc $dir
+  command = lua setup.lua $dir
   generator = 1
 
 # toolchain

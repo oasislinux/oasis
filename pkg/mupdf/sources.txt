@@ -1,4 +1,4 @@
-# 2,<cd src/source && ls fitz/*.c pdf/*.c xps/*.c svg/*.c cbz/*.c gprf/*.c helpers/mu-threads/*.c
+# 2,<cd src/source && ls fitz/*.c pdf/*.c xps/*.c svg/*.c cbz/*.c gprf/*.c helpers/mu-threads/*.c | grep -v fitz/harfbuzz.c
 cbz/mucbz.c
 cbz/muimg.c
 cbz/mutiff.c
@@ -47,7 +47,6 @@ fitz/geometry.c
 fitz/getopt.c
 fitz/glyph.c
 fitz/halftone.c
-fitz/harfbuzz.c
 fitz/hash.c
 fitz/image.c
 fitz/jmemcust.c

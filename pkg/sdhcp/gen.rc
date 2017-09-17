@@ -1,9 +1,0 @@
-cflags\
-	-Wall -Wextra -pedantic '-std=c99' \
-	-D _BSD_SOURCE
-
-exe sdhcp sdhcp.c util/eprintf.c
-file bin/sdhcp '$outdir'/sdhcp 755
-man 1 sdhcp.1
-
-fetch git

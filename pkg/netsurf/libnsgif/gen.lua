@@ -1,0 +1,2 @@
+lib('libnsgif.a', {'src/libnsgif.c'})
+fetch 'git'
