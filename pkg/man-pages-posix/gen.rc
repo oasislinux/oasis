@@ -1,7 +1,4 @@
-rule manpages 'rc ./$dir/manpages.rc $repo $out $srcdir $outdir' ; with\
-	deps gcc\
-	depfile '$out.d'
-build '$outdir'/manpages.index manpages '|' '$dir'/manpages.rc config.rc '||' '$outdir'/fetch.stamp
-index_inputs=($index_inputs '$outdir'/manpages.index)
+manpages=`{grep -v '^#' manpages.txt} ; checkstatus
+man $manpages
 
 fetch curl
