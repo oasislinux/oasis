@@ -1,4 +1,4 @@
-# 2,<cd src && find youtube_dl -type f -name '*.py' | sort
+# 2,<cd src && find youtube_dl -type f -name '*.py' | LC_COLLATE=C sort
 youtube_dl/YoutubeDL.py
 youtube_dl/__init__.py
 youtube_dl/__main__.py
@@ -30,6 +30,7 @@ youtube_dl/extractor/adultswim.py
 youtube_dl/extractor/aenetworks.py
 youtube_dl/extractor/afreecatv.py
 youtube_dl/extractor/airmozilla.py
+youtube_dl/extractor/aliexpress.py
 youtube_dl/extractor/aljazeera.py
 youtube_dl/extractor/allocine.py
 youtube_dl/extractor/alphaporno.py
@@ -110,6 +111,7 @@ youtube_dl/extractor/chirbit.py
 youtube_dl/extractor/cinchcast.py
 youtube_dl/extractor/cjsw.py
 youtube_dl/extractor/cliphunter.py
+youtube_dl/extractor/clippit.py
 youtube_dl/extractor/cliprs.py
 youtube_dl/extractor/clipsyndicate.py
 youtube_dl/extractor/closertotruth.py
@@ -336,6 +338,7 @@ youtube_dl/extractor/mailru.py
 youtube_dl/extractor/makerschannel.py
 youtube_dl/extractor/makertv.py
 youtube_dl/extractor/mangomolo.py
+youtube_dl/extractor/manyvids.py
 youtube_dl/extractor/matchtv.py
 youtube_dl/extractor/mdr.py
 youtube_dl/extractor/medialaan.py
@@ -370,7 +373,6 @@ youtube_dl/extractor/motorsport.py
 youtube_dl/extractor/movieclips.py
 youtube_dl/extractor/moviezine.py
 youtube_dl/extractor/movingimage.py
-youtube_dl/extractor/mpora.py
 youtube_dl/extractor/msn.py
 youtube_dl/extractor/mtv.py
 youtube_dl/extractor/muenchentv.py
@@ -485,6 +487,7 @@ youtube_dl/extractor/rai.py
 youtube_dl/extractor/rbmaradio.py
 youtube_dl/extractor/rds.py
 youtube_dl/extractor/redbulltv.py
+youtube_dl/extractor/reddit.py
 youtube_dl/extractor/redtube.py
 youtube_dl/extractor/regiotv.py
 youtube_dl/extractor/rentv.py
@@ -579,7 +582,6 @@ youtube_dl/extractor/tdslifeway.py
 youtube_dl/extractor/teachertube.py
 youtube_dl/extractor/teachingchannel.py
 youtube_dl/extractor/teamcoco.py
-youtube_dl/extractor/teamfourstar.py
 youtube_dl/extractor/techtalks.py
 youtube_dl/extractor/ted.py
 youtube_dl/extractor/tele13.py
@@ -696,6 +698,7 @@ youtube_dl/extractor/vodlocker.py
 youtube_dl/extractor/vodpl.py
 youtube_dl/extractor/vodplatform.py
 youtube_dl/extractor/voicerepublic.py
+youtube_dl/extractor/voot.py
 youtube_dl/extractor/voxmedia.py
 youtube_dl/extractor/vporn.py
 youtube_dl/extractor/vrak.py
