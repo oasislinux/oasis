@@ -1,4 +1,4 @@
-From 088c5b6b0fa85da8fdb8490f8a587631967488ad Mon Sep 17 00:00:00 2001
+From 85a40a85e9847621bd808833997517e35ee42e26 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 17:42:29 -0700
 Subject: [PATCH] Use standard C functions
@@ -8,7 +8,7 @@ Subject: [PATCH] Use standard C functions
  1 file changed, 55 insertions(+), 36 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index 4a01e4b..3f03640 100644
+index 9cb3965..2087f71 100644
 --- a/sshfs.c
 +++ b/sshfs.c
 @@ -654,25 +654,25 @@ static inline void buf_add_path(struct buffer *buf, const char *path)
@@ -68,7 +68,7 @@ index 4a01e4b..3f03640 100644
  }
  
  static void chunk_put(struct read_chunk *chunk)
-@@ -1862,8 +1862,10 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+@@ -1858,8 +1858,10 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
                               struct request **reqp)
  {
  	int err;
@@ -80,7 +80,7 @@ index 4a01e4b..3f03640 100644
  	req->want_reply = want_reply;
  	req->end_func = end_func;
  	req->data = data;
-@@ -2579,8 +2581,10 @@ static int sshfs_open_common(const char *path, mode_t mode,
+@@ -2557,8 +2559,10 @@ static int sshfs_open_common(const char *path, mode_t mode,
  
  	if (fi->flags & O_APPEND)
  		pflags |= SSH_FXF_APPEND;
@@ -93,7 +93,7 @@ index 4a01e4b..3f03640 100644
  	list_init(&sf->write_reqs);
  	pthread_cond_init(&sf->write_finished, NULL);
  	/* Assume random read after open */
-@@ -2624,7 +2628,7 @@ static int sshfs_open_common(const char *path, mode_t mode,
+@@ -2602,7 +2606,7 @@ static int sshfs_open_common(const char *path, mode_t mode,
  	} else {
  		if (sshfs.dir_cache)
  			cache_invalidate(path);
@@ -102,7 +102,7 @@ index 4a01e4b..3f03640 100644
  	}
  	buf_free(&buf);
  	return err;
-@@ -2691,7 +2695,7 @@ static void sshfs_file_put(struct sshfs_file *sf)
+@@ -2669,7 +2673,7 @@ static void sshfs_file_put(struct sshfs_file *sf)
  {
  	sf->refs--;
  	if (!sf->refs)
@@ -111,7 +111,7 @@ index 4a01e4b..3f03640 100644
  }
  
  static void sshfs_file_get(struct sshfs_file *sf)
-@@ -2761,9 +2765,11 @@ static void sshfs_read_begin(struct request *req)
+@@ -2739,9 +2743,11 @@ static void sshfs_read_begin(struct request *req)
  static struct read_chunk *sshfs_send_read(struct sshfs_file *sf, size_t size,
  					  off_t offset)
  {
@@ -124,7 +124,7 @@ index 4a01e4b..3f03640 100644
  	pthread_cond_init(&chunk->sio.finished, NULL);
  	list_init(&chunk->reqs);
  	chunk->size = size;
-@@ -2777,7 +2783,9 @@ static struct read_chunk *sshfs_send_read(struct sshfs_file *sf, size_t size,
+@@ -2755,7 +2761,9 @@ static struct read_chunk *sshfs_send_read(struct sshfs_file *sf, size_t size,
  		struct read_req *rreq;
  		size_t bsize = size < sshfs.max_read ? size : sshfs.max_read;
  
@@ -135,7 +135,7 @@ index 4a01e4b..3f03640 100644
  		rreq->sio = &chunk->sio;
  		rreq->size = bsize;
  		buf_init(&rreq->data, 0);
-@@ -2848,7 +2856,7 @@ static int wait_chunk(struct read_chunk *chunk, char *buf, size_t size)
+@@ -2826,7 +2834,7 @@ static int wait_chunk(struct read_chunk *chunk, char *buf, size_t size)
  			size -= rreq->res;
  			list_del(&rreq->list);
  			buf_free(&rreq->data);
@@ -144,7 +144,7 @@ index 4a01e4b..3f03640 100644
  		}
  	}
  
-@@ -3468,9 +3476,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
+@@ -3444,9 +3452,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
  	switch (key) {
  	case FUSE_OPT_KEY_OPT:
  		if (is_ssh_opt(arg)) {
@@ -157,7 +157,7 @@ index 4a01e4b..3f03640 100644
  			return 0;
  		}
  		/* Pass through */
-@@ -3495,9 +3504,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
+@@ -3471,9 +3480,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
  
  
  	case KEY_PORT:
@@ -170,7 +170,7 @@ index 4a01e4b..3f03640 100644
  		return 0;
  
  	case KEY_COMPRESS:
-@@ -3505,9 +3515,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
+@@ -3481,9 +3491,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
  		return 0;
  
  	case KEY_CONFIGFILE:
@@ -183,7 +183,7 @@ index 4a01e4b..3f03640 100644
  		return 0;
  
  	default:
-@@ -3663,17 +3674,19 @@ static char *find_base_path(void)
+@@ -3639,17 +3650,19 @@ static char *find_base_path(void)
  
  static char *fsname_escape_commas(char *fsnameold)
  {
@@ -205,7 +205,7 @@ index 4a01e4b..3f03640 100644
  
  	return fsname;
  }
-@@ -4008,15 +4021,20 @@ int main(int argc, char *argv[])
+@@ -3982,15 +3995,20 @@ int main(int argc, char *argv[])
  	else
  		sshfs.max_outstanding_len = ~0;
  
@@ -230,7 +230,7 @@ index 4a01e4b..3f03640 100644
  	ssh_add_arg(sshfs.host);
  	if (sshfs.sftp_server)
  		sftp_server = sshfs.sftp_server;
-@@ -4043,10 +4061,11 @@ int main(int argc, char *argv[])
+@@ -4017,10 +4035,11 @@ int main(int argc, char *argv[])
  		sshfs.max_write = 65536;
  
          fsname = fsname_escape_commas(fsname);

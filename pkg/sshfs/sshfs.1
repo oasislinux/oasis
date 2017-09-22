@@ -1,0 +1,314 @@
+.\" Man page generated from reStructuredText.
+.
+.TH SSHFS 1 "" "" "User Commands"
+.SH NAME
+SSHFS \- filesystem client based on SSH
+.
+.nr rst2man-indent-level 0
+.
+.de1 rstReportMargin
+\\$1 \\n[an-margin]
+level \\n[rst2man-indent-level]
+level margin: \\n[rst2man-indent\\n[rst2man-indent-level]]
+-
+\\n[rst2man-indent0]
+\\n[rst2man-indent1]
+\\n[rst2man-indent2]
+..
+.de1 INDENT
+.\" .rstReportMargin pre:
+. RS \\$1
+. nr rst2man-indent\\n[rst2man-indent-level] \\n[an-margin]
+. nr rst2man-indent-level +1
+.\" .rstReportMargin post:
+..
+.de UNINDENT
+. RE
+.\" indent \\n[an-margin]
+.\" old: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.nr rst2man-indent-level -1
+.\" new: \\n[rst2man-indent\\n[rst2man-indent-level]]
+.in \\n[rst2man-indent\\n[rst2man-indent-level]]u
+..
+.SH SYNOPSIS
+.sp
+To mount a filesystem:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+sshfs [user@]host:[dir] mountpoint [options]
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+If \fIhost\fP is a numeric IPv6 address, it needs to be enclosed in square
+brackets.
+.sp
+To unmount it:
+.INDENT 0.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+fusermount3 \-u mountpoint   # Linux
+umount mountpoint           # OS X, FreeBSD
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.SH DESCRIPTION
+.sp
+SSHFS allows you to mount a remote filesystem using SSH (more
+precisely, the SFTP subsystem). Most SSH servers support and enable
+this SFTP access by default, so SSHFS is very simple to use \- there\(aqs
+nothing to do on the server\-side.
+.sp
+SSHFS uses FUSE (Filesystem in Userspace) and should work on any
+operating system that provides a FUSE implementation. Currently,
+this includes Linux, FreeBSD and Mac OS X.
+.sp
+It is recommended to run SSHFS as regular user (not as root).  For
+this to work the mountpoint must be owned by the user.  If username is
+omitted SSHFS will use the local username. If the directory is
+omitted, SSHFS will mount the (remote) home directory.  If you need to
+enter a password sshfs will ask for it (actually it just runs ssh
+which ask for the password if needed).
+.SH OPTIONS
+.INDENT 0.0
+.TP
+.B \-o opt,[opt...]
+mount options, see below for details. A a variety of SSH options can
+be given here as well, see the manual pages for \fIsftp(1)\fP and
+\fIssh_config(5)\fP\&.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-h\fP,\fB  \-\-help
+print help and exit.
+.TP
+.B \-V\fP,\fB  \-\-version
+print version information and exit.
+.TP
+.B \-d\fP,\fB  \-\-debug
+print debugging information.
+.TP
+.BI \-p \ PORT
+equivalent to \(aq\-o port=PORT\(aq
+.TP
+.B \-f
+do not daemonize, stay in foreground.
+.TP
+.B \-s
+Single threaded operation.
+.TP
+.B \-C
+equivalent to \(aq\-o compression=yes\(aq
+.TP
+.BI \-F \ ssh_configfile
+specifies alternative ssh configuration file
+.TP
+.B \-1
+equivalent to \(aq\-o ssh_protocol=1\(aq
+.TP
+.BI \-o \ reconnect
+automatically reconnect to server if connection is
+interrupted. Attempts to access files that were opened before the
+reconnection will give errors and need to be re\-opened.
+.TP
+.BI \-o \ delay_connect
+Don\(aqt immediately connect to server, wait until mountpoint is first
+accessed.
+.TP
+.BI \-o \ sshfs_sync
+synchronous writes. This will slow things down, but may be useful
+in some situations.
+.TP
+.BI \-o \ no_readahead
+Only read exactly the data that was requested, instead of
+speculatively reading more to anticipate the next read request.
+.TP
+.BI \-o \ sync_readdir
+synchronous readdir. This will slow things down, but may be useful
+in some situations.
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-o workaround=LIST
+Enable the specified workaround. See the \fICaveats\fP section below
+for some additional information. Possible values are:
+.INDENT 7.0
+.TP
+.B rename
+Emulate overwriting an existing file by deleting and
+renaming.
+.TP
+.B truncate
+Work around servers that don\(aqt support truncate by
+coping the whole file, truncating it locally, and sending it
+back.
+.TP
+.B fstat
+Work around broken servers that don\(aqt support \fIfstat()\fP by
+using \fIstat\fP instead.
+.TP
+.B buflimit
+Work around OpenSSH "buffer fillup" bug.
+.UNINDENT
+.TP
+.B \-o idmap=TYPE
+How to map remote UID/GIDs to local values. Possible values are:
+.INDENT 7.0
+.TP
+.B none
+no translation of the ID space (default).
+.TP
+.B user
+map the UID/GID of the remote user to UID/GID of the
+mounting user.
+.TP
+.B file
+translate UIDs/GIDs based upon the contents of \fI\-\-uidfile\fP
+and \fI\-\-gidfile\fP\&.
+.UNINDENT
+.TP
+.B \-o uidfile=FILE
+file containing \fBusername:uid\fP mappings for \fI\-o idmap=file\fP
+.TP
+.B \-o gidfile=FILE
+file containing \fBgroupname:gid\fP mappings for \fI\-o idmap=file\fP
+.TP
+.B \-o nomap=TYPE
+with idmap=file, how to handle missing mappings:
+.INDENT 7.0
+.TP
+.B ignore
+don\(aqt do any re\-mapping
+.TP
+.B error
+return an error (default)
+.UNINDENT
+.TP
+.B \-o ssh_command=CMD
+execute CMD instead of \(aqssh\(aq
+.TP
+.B \-o ssh_protocol=N
+ssh protocol to use (default: 2)
+.TP
+.B \-o sftp_server=SERV
+path to sftp server or subsystem (default: sftp)
+.TP
+.B \-o directport=PORT
+directly connect to PORT bypassing ssh
+.UNINDENT
+.INDENT 0.0
+.TP
+.BI \-o \ slave
+communicate over stdin and stdout bypassing network
+.TP
+.BI \-o \ disable_hardlink
+With this option set, attempts to call \fIlink(2)\fP will fail with
+error code ENOSYS.
+.TP
+.BI \-o \ transform_symlinks
+transform absolute symlinks on remote side to relative
+symlinks. This means that if e.g. on the server side
+\fB/foo/bar/com\fP is a symlink to \fB/foo/blub\fP, SSHFS will
+transform the link target to \fB\&../blub\fP on the client side.
+.TP
+.BI \-o \ follow_symlinks
+follow symlinks on the server, i.e. present them as regular
+files on the client. If a symlink is dangling (i.e, the target does
+not exist) the behavior depends on the remote server \- the entry
+may appear as a symlink on the client, or it may appear as a
+regular file that cannot be accessed.
+.TP
+.BI \-o \ no_check_root
+don\(aqt check for existence of \(aqdir\(aq on server
+.TP
+.BI \-o \ password_stdin
+read password from stdin (only for pam_mount!)
+.UNINDENT
+.INDENT 0.0
+.TP
+.B \-o dir_cache=BOOL
+Enables (\fIyes\fP) or disables (\fIno\fP) the SSHFS directory cache.  The
+directory cache holds the names of directory entries. Enabling it
+allows \fIreaddir(3)\fP system calls to be processed without network
+access.
+.TP
+.B \-o dcache_max_size=N
+sets the maximum size of the directory cache.
+.TP
+.B \-o dcache_timeout=N
+sets timeout for directory cache in seconds.
+.TP
+.B \-o dcache_{stat,link,dir}_timeout=N
+sets separate timeout for {attributes, symlinks, names} in  the
+directory cache.
+.TP
+.B \-o dcache_clean_interval=N
+sets the interval for automatic cleaning of the directory cache.
+.TP
+.B \-o dcache_min_clean_interval=N
+sets the interval for forced cleaning of the directory cache
+when full.
+.UNINDENT
+.sp
+In addition, SSHFS accepts several options common to all FUSE file
+systems. These are described in the \fImount.fuse\fP manpage (look
+for "general", "libfuse specific", and "high\-level API" options).
+.SH CAVEATS / WORKAROUNDS
+.SS Hardlinks
+.sp
+If the SSH server supports the \fIhardlinks\fP extension, SSHFS will allow
+you to create hardlinks. However, hardlinks will always appear as
+individual files when seen through an SSHFS mount, i.e. they will
+appear to have different inodes and an \fIst_nlink\fP value of 1.
+.SS Rename
+.sp
+Some SSH servers do not support atomically overwriting the destination
+when renaming a file. In this case you will get an error when you
+attempt to rename a file and the destination already exists. A
+workaround is to first remove the destination file, and then do the
+rename. SSHFS can do this automatically if you call it with \fI\-o
+workaround=rename\fP\&. However, in this case it is still possible that
+someone (or something) recreates the destination file after SSHFS has
+removed it, but before SSHFS had the time to rename the old file. In
+this case, the rename will still fail.
+.SS SSHFS hangs
+.sp
+In some cases, attempts to access the SSHFS mountpoint may freeze if
+no filesystem activity has occured for some time. This is typically
+caused by the SSH connection being dropped because of inactivity
+without SSHFS being informed about that. As a workaround, you can try
+to mount with \fB\-o ServerAliveInterval=15\fP\&. This will force the SSH
+connection to stay alive even if you have no activity.
+.SH MOUNTING FROM /ETC/FSTAB
+.sp
+To mount an SSHFS filesystem from \fB/etc/fstab\fP, simply use \fBsshfs\(ga
+as the file system type. (For backwards compatibility, you may also
+use \(ga\(gafuse.sshfs\fP).
+.SH SEE ALSO
+.sp
+The \fImount.fuse(8)\fP manpage.
+.SH GETTING HELP
+.sp
+If you need help, please ask on the <\fI\%fuse\-sshfs@lists.sourceforge.net\fP>
+mailing list (subscribe at
+\fI\%https://lists.sourceforge.net/lists/listinfo/fuse\-sshfs\fP).
+.sp
+Please report any bugs on the GitHub issue tracker at
+\fI\%https://github.com/libfuse/libfuse/issues\fP\&.
+.SH AUTHORS
+.sp
+SSHFS is currently maintained by Nikolaus Rath <\fI\%Nikolaus@rath.org\fP>,
+and was created by Miklos Szeredi <\fI\%miklos@szeredi.hu\fP>.
+.sp
+This man page was originally written by Bartosz Fenski
+<\fI\%fenio@debian.org\fP> for the Debian GNU/Linux distribution (but it may
+be used by others).
+.\" Generated by docutils manpage writer.
+.

@@ -1,4 +1,4 @@
-From bc0f086e2d95b79c6061ea8894c57a5b5350bd4d Mon Sep 17 00:00:00 2001
+From 62e87ccce46212f06297e92b7dbe56427a80b864 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 17:25:36 -0700
 Subject: [PATCH] Use a compact array and free list for requests
@@ -8,7 +8,7 @@ Subject: [PATCH] Use a compact array and free list for requests
  1 file changed, 80 insertions(+), 45 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index a76ae8a..7078618 100644
+index 50ec384..ac0b889 100644
 --- a/sshfs.c
 +++ b/sshfs.c
 @@ -171,6 +171,17 @@ struct request {
@@ -29,7 +29,7 @@ index a76ae8a..7078618 100644
  struct sshfs_io {
  	int num_reqs;
  	pthread_cond_t finished;
-@@ -250,7 +261,7 @@ struct sshfs {
+@@ -249,7 +260,7 @@ struct sshfs {
  	int slave;
  	char *host;
  	char *base_path;
@@ -220,7 +220,7 @@ index a76ae8a..7078618 100644
  		fprintf(stderr, "bad reply ID\n");
  		goto out;
  	}
-@@ -1821,7 +1861,6 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+@@ -1817,7 +1857,6 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
                               struct request **reqp)
  {
  	int err;
@@ -228,7 +228,7 @@ index a76ae8a..7078618 100644
  	struct request *req = g_new0(struct request, 1);
  
  	req->want_reply = want_reply;
-@@ -1832,8 +1871,6 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+@@ -1828,8 +1867,6 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
  	pthread_mutex_lock(&sshfs.lock);
  	if (begin_func)
  		begin_func(req);
@@ -237,7 +237,7 @@ index a76ae8a..7078618 100644
  	err = start_processing_thread();
  	if (err) {
  		pthread_mutex_unlock(&sshfs.lock);
-@@ -1844,21 +1881,24 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+@@ -1840,21 +1877,24 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
  	while (sshfs.outstanding_len > sshfs.max_outstanding_len)
  		pthread_cond_wait(&sshfs.outstanding_cond, &sshfs.lock);
  
@@ -266,7 +266,7 @@ index a76ae8a..7078618 100644
  		pthread_mutex_unlock(&sshfs.lock);
  
  		if (!rmed && !want_reply) {
-@@ -2031,7 +2071,7 @@ static int sftp_readdir_send(struct request **req, struct buffer *handle)
+@@ -2027,7 +2067,7 @@ static int sftp_readdir_send(struct request **req, struct buffer *handle)
  
  static int sshfs_req_pending(struct request *req)
  {
@@ -275,7 +275,7 @@ index a76ae8a..7078618 100644
  		return 1;
  	else
  		return 0;
-@@ -3308,11 +3348,6 @@ static int processing_init(void)
+@@ -3286,11 +3326,6 @@ static int processing_init(void)
  	pthread_mutex_init(&sshfs.lock, NULL);
  	pthread_mutex_init(&sshfs.lock_write, NULL);
  	pthread_cond_init(&sshfs.outstanding_cond, NULL);
