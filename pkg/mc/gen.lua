@@ -67,7 +67,7 @@ set('mcflags', {
 })
 
 include '$dir/myr.ninja'
-for lib in iterpaths('bio crypto date escfmt fileutil inifile json regex std sys testr thread') do
+for lib in iterpaths('bio crypto date escfmt fileutil http inifile json regex std sys testr thread') do
 	file('lib/myr/lib'..lib..'.use', '644', '$outdir/lib/'..lib..'/lib'..lib..'.use')
 	file('lib/myr/lib'..lib..'.a', '644', '$outdir/lib/'..lib..'/lib'..lib..'.a')
 end
