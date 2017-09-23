@@ -167,10 +167,10 @@
 #define HAVE___PROGNAME 1
 /* #undef HAVE___SECURE_GETENV */
 #define LIBBLKID_DATE "02-Jun-2017"
-#define LIBBLKID_VERSION "2.30.1"
-#define LIBFDISK_VERSION "2.30.1"
-#define LIBMOUNT_VERSION "2.30.1"
-#define LIBSMARTCOLS_VERSION "2.30.1"
+#define LIBBLKID_VERSION "2.30.2"
+#define LIBFDISK_VERSION "2.30.2"
+#define LIBMOUNT_VERSION "2.30.2"
+#define LIBSMARTCOLS_VERSION "2.30.2"
 /* #undef LOGIN_CHOWN_VCS */
 /* #undef LOGIN_STAT_MAIL */
 #define LT_OBJDIR ".libs/"
@@ -179,10 +179,10 @@
 #define PACKAGE "util-linux"
 #define PACKAGE_BUGREPORT "kzak@redhat.com"
 #define PACKAGE_NAME "util-linux"
-#define PACKAGE_STRING "util-linux 2.30"
+#define PACKAGE_STRING "util-linux 2.30.2"
 #define PACKAGE_TARNAME "util-linux"
 #define PACKAGE_URL "http://www.kernel.org/pub/linux/utils/util-linux/"
-#define PACKAGE_VERSION "2.30"
+#define PACKAGE_VERSION "2.30.2"
 #define PG_BELL 1
 #define SWAPON_HAS_TWO_ARGS 1
 /* #undef SYS_fallocate */
@@ -216,7 +216,7 @@
 #endif
 #define USE_TTY_GROUP 1
 /* #undef USE_USRDIR_PATHS_ONLY */
-#define VERSION "2.30"
+#define VERSION "2.30.2"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
