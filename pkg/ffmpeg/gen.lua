@@ -14,6 +14,7 @@ cflags{
 
 set('nasmflags', {
 	'-i $srcdir/',
+	'-i $srcdir/libavcodec/'..arch..'/',
 	'-i $srcdir/libavutil/'..arch..'/',
 	'-f elf64',
 	'-P $outdir/config.asm',
