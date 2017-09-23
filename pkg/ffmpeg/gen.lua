@@ -22,6 +22,9 @@ set('nasmflags', {
 build('awk', '$outdir/config.asm', '$dir/options.h', {
 	expr=[['{print "%define " substr($$0, length("#define ") + 1)}']],
 })
+build('awk', '$outdir/config.texi', '$dir/options.h', {
+	expr=[['$$3 == "1" {gsub("_", "-", $$2); print "@set", tolower($$2), "yes"}']],
+})
 build('awk', '$outdir/internal/libavcodec/bsf_list.c', {'$dir/options.h', '|', '$dir/bitstream_filters.awk'}, {
 	expr='-f $dir/bitstream_filters.awk',
 })
@@ -338,5 +341,10 @@ file('bin/ffprobe', '755', '$outdir/ffprobe')
 
 exe('ffmpeg', {'ffmpeg.c', 'ffmpeg_opt.c', 'ffmpeg_filter.c', 'cmdutils.c.o', libs})
 file('bin/ffmpeg', '755', '$outdir/ffmpeg')
+
+rule('texi2mdoc', 'texi2mdoc -I $outdir $in >$out.tmp && mv $out.tmp $out')
+build('texi2mdoc', '$outdir/ffprobe.1', {'$srcdir/doc/ffprobe.texi', '|', '$outdir/config.texi'})
+build('texi2mdoc', '$outdir/ffmpeg.1', {'$srcdir/doc/ffmpeg.texi', '|', '$outdir/config.texi'})
+man{'$outdir/ffprobe.1', '$outdir/ffmpeg.1'}
 
 fetch 'git'
