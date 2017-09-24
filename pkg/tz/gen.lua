@@ -19,11 +19,12 @@ local tzdata = {
 	'systemv',
 	'factory',
 }
-build('awk', '$outdir/tzdata.index', {
+rule('tzdata', 'lua $dir/tzdata.lua $repo $outdir/zoneinfo $in >$out.tmp && mv $out.tmp $out')
+build('tzdata', '$outdir/tzdata.index', {
 	expand{'$srcdir/', tzdata},
-	'|', 'scripts/hash.rc', '$dir/tzdata.awk',
+	'|', '$dir/tzdata.lua', 'scripts/hash.rc',
 	'||', '$builddir/root.stamp',
-}, {expr='-f $dir/tzdata.awk out=$outdir/zoneinfo repo=$repo'})
+})
 table.insert(pkg.inputs.index, '$outdir/tzdata.index')
 
 fetch 'git'
