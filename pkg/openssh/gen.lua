@@ -1,7 +1,6 @@
 cflags{
 	'-D _XOPEN_SOURCE=600',
 	'-D _DEFAULT_SOURCE',
-	'-I include',
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/openbsd-compat',
@@ -31,17 +30,17 @@ lib('libopenbsd-compat.a', [[openbsd-compat/(
 	base64.c basename.c bcrypt_pbkdf.c bindresvport.c blowfish.c daemon.c
 	dirname.c fmt_scaled.c getcwd.c getgrouplist.c getopt_long.c
 	getrrsetbyname.c glob.c inet_aton.c inet_ntoa.c inet_ntop.c mktemp.c
-	pwcache.c readpassphrase.c reallocarray.c realpath.c rresvport.c
-	setenv.c setproctitle.c sha1.c sha2.c rmd160.c md5.c sigact.c
-	strcasestr.c strlcat.c strlcpy.c strmode.c strnlen.c strptime.c
-	strsep.c strtonum.c strtoll.c strtoul.c strtoull.c timingsafe_bcmp.c
-	vis.c explicit_bzero.c
+	pwcache.c readpassphrase.c reallocarray.c realpath.c recallocarray.c
+	rresvport.c setenv.c setproctitle.c sha1.c sha2.c rmd160.c md5.c
+	sigact.c strcasestr.c strlcat.c strlcpy.c strmode.c strnlen.c strptime.c
+	strsep.c strtonum.c strtoll.c strtoul.c strtoull.c timingsafe_bcmp.c vis.c
+	explicit_bzero.c freezero.c
 
-	arc4random.c bsd-asprintf.c bsd-closefrom.c bsd-cray.c
-	bsd-cygwin_util.c bsd-getpeereid.c getrrsetbyname-ldns.c bsd-misc.c
-	bsd-nextstep.c bsd-openpty.c bsd-poll.c bsd-setres_id.c bsd-snprintf.c
-	bsd-statvfs.c bsd-waitpid.c fake-rfc2553.c openssl-compat.c xcrypt.c
-	kludge-fd_set.c
+	arc4random.c bsd-asprintf.c bsd-closefrom.c bsd-cray.c bsd-cygwin_util.c
+	bsd-getpeereid.c getrrsetbyname-ldns.c bsd-err.c bsd-getpagesize.c
+	bsd-misc.c bsd-nextstep.c bsd-openpty.c bsd-poll.c bsd-malloc.c
+	bsd-setres_id.c bsd-snprintf.c bsd-statvfs.c bsd-waitpid.c
+	fake-rfc2553.c openssl-compat.c xcrypt.c kludge-fd_set.c
 
 	port-aix.c port-irix.c port-linux.c port-solaris.c port-uw.c
 )]])
@@ -61,10 +60,10 @@ lib('libssh.a', [[
 
 	authfd.c authfile.c bufaux.c bufbn.c bufec.c buffer.c
 	canohost.c channels.c cipher.c cipher-aes.c cipher-aesctr.c
-	cipher-bf1.c cipher-ctr.c cipher-3des1.c cleanup.c
-	compat.c crc32.c deattack.c fatal.c hostfile.c
-	log.c match.c md-sha256.c moduli.c nchan.c packet.c opacket.c
-	readpass.c rsa.c ttymodes.c xmalloc.c addrmatch.c
+	cipher-ctr.c cleanup.c
+	compat.c crc32.c fatal.c hostfile.c
+	log.c match.c moduli.c nchan.c packet.c opacket.c
+	readpass.c ttymodes.c xmalloc.c addrmatch.c
 	atomicio.c key.c dispatch.c mac.c uidswap.c uuencode.c misc.c utf8.c
 	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-rsa.c dh.c
 	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c.o
@@ -75,14 +74,14 @@ lib('libssh.a', [[
 	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c
 	kexdhc.c kexgexc.c kexecdhc.c kexc25519c.c
 	kexdhs.c kexgexs.c kexecdhs.c kexc25519s.c
-	platform-pledge.c platform-tracing.c
+	platform-pledge.c platform-tracing.c platform-misc.c
 	openbsd-compat/port-tun.c libopenbsd-compat.a
 	$builddir/pkg/(libressl/libcrypto.a.d zlib/libz.a)
 ]])
 
 exe('ssh', [[
 	ssh.c readconf.c clientloop.c sshtty.c
-	sshconnect.c sshconnect1.c sshconnect2.c mux.c
+	sshconnect.c sshconnect2.c mux.c
 	libssh.a.d
 ]])
 file('bin/ssh', '755', '$outdir/ssh')

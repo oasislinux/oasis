@@ -1,11 +1,9 @@
-#include <config-posix.h>
-
-#define ASKPASS_PROGRAM "/bin/ssh-askpass"
+#define ASKPASS_PROGRAM "/libexec/ssh-askpass"
 #define LOGIN_PROGRAM "/bin/login"
 #define _PATH_BTMP "/var/log/btmp"
 #define _PATH_PASSWD_PROG "/bin/passwd"
 #define _PATH_SFTP_SERVER "/libexec/sftp-server"
-#define _PATH_SSH_ASKPASS_DEFAULT "/bin/ssh-askpass"
+#define _PATH_SSH_ASKPASS_DEFAULT "/libexec/ssh-askpass"
 #define _PATH_SSH_KEY_SIGN "/libexec/ssh-keysign"
 #define _PATH_SSH_PIDDIR "/run"
 #define _PATH_SSH_PKCS11_HELPER "/libexec/ssh-pkcs11-helper"
@@ -79,8 +77,9 @@
 #define HAVE_ATTRIBUTE__NONNULL__ 1
 /* #undef HAVE_ATTRIBUTE__SENTINEL__ */
 /* #undef HAVE_AUG_GET_MACHINE */
-/* #undef HAVE_B64_NTOP */
-/* #undef HAVE_B64_PTON */
+#define HAVE_B64_NTOP 1
+#define HAVE_B64_PTON 1
+#define HAVE_BASENAME 1
 #define HAVE_BCOPY 1
 /* #undef HAVE_BCRYPT_PBKDF */
 /* #undef HAVE_BINDRESVPORT_SA */
@@ -94,10 +93,15 @@
 /* #undef HAVE_BSD_LIBUTIL_H */
 /* #undef HAVE_BSM_AUDIT_H */
 /* #undef HAVE_BSTRING_H */
+/* #undef HAVE_CALLOC */
 /* #undef HAVE_CAP_RIGHTS_LIMIT */
+#define HAVE_CLOCK 1
+#define HAVE_CLOCK_GETTIME 1
+#define HAVE_CLOCK_T 1
 /* #undef HAVE_CLOSEFROM */
 #define HAVE_CONST_GAI_STRERROR_PROTO 1
 #define HAVE_CONTROL_IN_MSGHDR 1
+#define HAVE_CRYPT 1
 /* #undef HAVE_CRYPTO_SHA2_H */
 #define HAVE_CRYPT_H 1
 /* #undef HAVE_CYGWIN */
@@ -124,10 +128,15 @@
 #define HAVE_DES_CRYPT 1
 /* #undef HAVE_DEV_PTMX */
 /* #undef HAVE_DEV_PTS_AND_PTC */
+#define HAVE_DIRENT_H 1
+#define HAVE_DIRFD 1
+#define HAVE_DIRNAME 1
 #define HAVE_DSA_GENERATE_PARAMETERS_EX 1
 #define HAVE_ELF_H 1
+#define HAVE_ENDGRENT 1
 #define HAVE_ENDIAN_H 1
 #define HAVE_ENDUTENT 1
+#define HAVE_ENDUTXENT 1
 #define HAVE_ERR 1
 #define HAVE_ERRX 1
 #define HAVE_ERR_H 1
@@ -142,34 +151,57 @@
 #define HAVE_EVP_SHA256 1
 #define HAVE_EXIT_IN_UTMP 1
 #define HAVE_EXPLICIT_BZERO 1
+#define HAVE_FCHMOD 1
+#define HAVE_FCHOWN 1
 /* #undef HAVE_FCNTL_CLOSEM */
+#define HAVE_FCNTL_H 1
 #define HAVE_FD_MASK 1
 #define HAVE_FEATURES_H 1
 /* #undef HAVE_FLOATINGPOINT_H */
 /* #undef HAVE_FMT_SCALED */
+#define HAVE_FREEADDRINFO 1
+/* #undef HAVE_FREEZERO */
+#define HAVE_FSBLKCNT_T 1
+#define HAVE_FSFILCNT_T 1
 #define HAVE_FSTATFS 1
+#define HAVE_FSTATVFS 1
 #define HAVE_FUTIMES 1
+#define HAVE_GAI_STRERROR 1
+#define HAVE_GETADDRINFO 1
 /* #undef HAVE_GETAUDIT */
 /* #undef HAVE_GETAUDIT_ADDR */
+#define HAVE_GETCWD 1
 #define HAVE_GETGROUPLIST 1
 /* #undef HAVE_GETGRSET */
 /* #undef HAVE_GETLASTLOGXBYNAME */
 /* #undef HAVE_GETLUID */
+#define HAVE_GETNAMEINFO 1
+#define HAVE_GETOPT 1
 #define HAVE_GETOPT_H 1
 #define HAVE_GETOPT_OPTRESET 1
 #define HAVE_GETPAGESIZE 1
 /* #undef HAVE_GETPEEREID */
 /* #undef HAVE_GETPEERUCRED */
+#define HAVE_GETPGID 1
+#define HAVE_GETPGRP 1
 /* #undef HAVE_GETPWANAM */
+#define HAVE_GETRLIMIT 1
 /* #undef HAVE_GETRRSETBYNAME */
+/* #undef HAVE_GETRUSAGE */
 /* #undef HAVE_GETSEUSERBYNAME */
+#define HAVE_GETTIMEOFDAY 1
 /* #undef HAVE_GETTTYENT */
 #define HAVE_GETUTENT 1
 #define HAVE_GETUTID 1
 #define HAVE_GETUTLINE 1
+#define HAVE_GETUTXENT 1
+#define HAVE_GETUTXID 1
+#define HAVE_GETUTXLINE 1
 /* #undef HAVE_GETUTXUSER */
 /* #undef HAVE_GET_DEFAULT_CONTEXT_WITH_LEVEL */
-/* #undef HAVE_GROUP_FROM_GID */
+#define HAVE_GLOB 1
+#define HAVE_GLOB_H 1
+#define HAVE_GROUP_FROM_GID 1
 /* #undef HAVE_GSSAPI_GENERIC_H */
 /* #undef HAVE_GSSAPI_GSSAPI_GENERIC_H */
 /* #undef HAVE_GSSAPI_GSSAPI_H */
@@ -185,20 +217,27 @@
 #define HAVE_ID_IN_UTMP 1
 #define HAVE_ID_IN_UTMPX 1
 #define HAVE_INET_ATON 1
+#define HAVE_INET_NTOA 1
+#define HAVE_INET_NTOP 1
 /* #undef HAVE_INNETGR */
 #define HAVE_INT64_T 1
+#define HAVE_INTMAX_T 1
+#define HAVE_INTTYPES_H 1
 #define HAVE_INTXX_T 1
 #define HAVE_IN_ADDR_T 1
 #define HAVE_IN_PORT_T 1
+#define HAVE_ISBLANK 1
 /* #undef HAVE_KRB5_CC_NEW_UNIQUE */
 /* #undef HAVE_KRB5_FREE_ERROR_MESSAGE */
 /* #undef HAVE_KRB5_GET_ERROR_MESSAGE */
+#define HAVE_LANGINFO_H 1
 #define HAVE_LASTLOG_H 1
 /* #undef HAVE_LDNS */
 /* #undef HAVE_LIBAUDIT_H */
 /* #undef HAVE_LIBBSM */
 /* #undef HAVE_LIBCRYPT */
 /* #undef HAVE_LIBDL */
+#define HAVE_LIBGEN_H 1
 /* #undef HAVE_LIBIAF */
 /* #undef HAVE_LIBNETWORK */
 /* #undef HAVE_LIBPAM */
@@ -206,11 +245,13 @@
 /* #undef HAVE_LIBUTIL_H */
 /* #undef HAVE_LIBXNET */
 #define HAVE_LIBZ 1
+#define HAVE_LIMITS_H 1
 #define HAVE_LINUX_AUDIT_H 1
 #define HAVE_LINUX_FILTER_H 1
 #define HAVE_LINUX_IF_TUN_H 1
 #define HAVE_LINUX_SECCOMP_H 1
 #define HAVE_LLABS 1
+#define HAVE_LOCALE_H 1
 /* #undef HAVE_LOGIN */
 /* #undef HAVE_LOGIN_CAP_H */
 /* #undef HAVE_LOGIN_GETCAPBOOL */
@@ -220,15 +261,24 @@
 #define HAVE_LONG_DOUBLE 1
 #define HAVE_LONG_LONG 1
 /* #undef HAVE_MAILLOCK_H */
+#define HAVE_MALLOC 1
+#define HAVE_MBLEN 1
+#define HAVE_MBTOWC 1
 /* #undef HAVE_MD5_CRYPT */
 /* #undef HAVE_MD5_PASSWORDS */
+#define HAVE_MEMMOVE 1
 #define HAVE_MEMORY_H 1
 /* #undef HAVE_MEMSET_S */
+#define HAVE_MKDTEMP 1
+#define HAVE_MODE_T 1
+#define HAVE_NANOSLEEP 1
 /* #undef HAVE_NDIR_H */
+#define HAVE_NETDB_H 1
 /* #undef HAVE_NETGROUP_H */
 /* #undef HAVE_NET_IF_TUN_H */
 /* #undef HAVE_NEXT */
 /* #undef HAVE_NGETADDRINFO */
+#define HAVE_NL_LANGINFO 1
 /* #undef HAVE_NSLEEP */
 /* #undef HAVE_OGETADDRINFO */
 /* #undef HAVE_OLD_PAM */
@@ -241,7 +291,10 @@
 /* #undef HAVE_PAM_PUTENV */
 #define HAVE_PATHS_H 1
 #define HAVE_PID_IN_UTMP 1
+#define HAVE_PID_T 1
 #define HAVE_PLEDGE 1
+#define HAVE_POLL 1
+#define HAVE_POLL_H 1
 #define HAVE_PRCTL 1
 /* #undef HAVE_PRIV_BASICSET */
 /* #undef HAVE_PRIV_H */
@@ -249,9 +302,14 @@
 /* #undef HAVE_PSTAT */
 #define HAVE_PTY_H 1
 #define HAVE_PUTUTLINE 1
+#define HAVE_PUTUTXLINE 1
 /* #undef HAVE_READPASSPHRASE */
 /* #undef HAVE_READPASSPHRASE_H */
-/* #undef HAVE_REALLOCARRAY */
+#define HAVE_REALLOC 1
+#define HAVE_REALLOCARRAY 1
+#define HAVE_REALPATH 1
+#define HAVE_RECALLOCARRAY 1
+#define HAVE_RECVMSG 1
 #define HAVE_RLIMIT_NPROC /**/
 /* #undef HAVE_RPC_TYPES_H */
 /* #undef HAVE_RRESVPORT_AF */
@@ -259,11 +317,16 @@
 #define HAVE_RSA_GET_DEFAULT_METHOD 1
 /* #undef HAVE_SANDBOX_H */
 /* #undef HAVE_SANDBOX_INIT */
+#define HAVE_SA_FAMILY_T 1
 /* #undef HAVE_SCAN_SCALED */
 /* #undef HAVE_SECUREWARE */
 /* #undef HAVE_SECURITY_PAM_APPL_H */
+#define HAVE_SENDMSG 1
 /* #undef HAVE_SETAUTHDB */
 /* #undef HAVE_SETDTABLESIZE */
+#define HAVE_SETEGID 1
+#define HAVE_SETENV 1
+#define HAVE_SETEUID 1
 /* #undef HAVE_SETGROUPENT */
 #define HAVE_SETGROUPS 1
 #define HAVE_SETLINEBUF 1
@@ -274,41 +337,78 @@
 /* #undef HAVE_SETPFLAGS */
 /* #undef HAVE_SETPPRIV */
 /* #undef HAVE_SETPROCTITLE */
+#define HAVE_SETREGID 1
 #define HAVE_SETRESGID 1
 #define HAVE_SETRESUID 1
+#define HAVE_SETREUID 1
+#define HAVE_SETRLIMIT 1
+#define HAVE_SETSID 1
 #define HAVE_SETUTENT 1
 /* #undef HAVE_SETUTXDB */
+#define HAVE_SETUTXENT 1
+#define HAVE_SETVBUF 1
 /* #undef HAVE_SET_ID */
 #define HAVE_SHA256_UPDATE 1
 /* #undef HAVE_SHA2_H */
 #define HAVE_SHADOW_H 1
+#define HAVE_SIGACTION 1
 /* #undef HAVE_SIGVEC */
+#define HAVE_SIG_ATOMIC_T 1
+#define HAVE_SIZE_T 1
+#define HAVE_SNPRINTF 1
+#define HAVE_SOCKETPAIR 1
 #define HAVE_SO_PEERCRED 1
+#define HAVE_SSIZE_T 1
 #define HAVE_SS_FAMILY_IN_SS 1
 #define HAVE_STATFS 1
+#define HAVE_STATVFS 1
+#define HAVE_STDDEF_H 1
+#define HAVE_STDINT_H 1
+#define HAVE_STDLIB_H 1
 #define HAVE_STRCASESTR 1
+#define HAVE_STRDUP 1
+#define HAVE_STRERROR 1
+#define HAVE_STRFTIME 1
 #define HAVE_STRICT_MKSTEMP 1
+#define HAVE_STRINGS_H 1
+#define HAVE_STRING_H 1
 #define HAVE_STRLCAT 1
 #define HAVE_STRLCPY 1
 #define HAVE_STRMODE 1
+#define HAVE_STRNLEN 1
 /* #undef HAVE_STRNVIS */
+#define HAVE_STRPTIME 1
 #define HAVE_STRSEP 1
+#define HAVE_STRSIGNAL 1
+#define HAVE_STRTOLL 1
 #define HAVE_STRTONUM 1
+#define HAVE_STRTOUL 1
+#define HAVE_STRTOULL 1
+#define HAVE_STRUCT_ADDRINFO 1
+#define HAVE_STRUCT_IN6_ADDR 1
 /* #undef HAVE_STRUCT_PASSWD_PW_CHANGE */
 /* #undef HAVE_STRUCT_PASSWD_PW_CLASS */
 /* #undef HAVE_STRUCT_PASSWD_PW_EXPIRE */
 #define HAVE_STRUCT_PASSWD_PW_GECOS 1
+#define HAVE_STRUCT_SOCKADDR_IN6 1
 #define HAVE_STRUCT_SOCKADDR_IN6_SIN6_SCOPE_ID 1
+#define HAVE_STRUCT_SOCKADDR_STORAGE 1
 #define HAVE_STRUCT_STAT_ST_BLKSIZE 1
+#define HAVE_STRUCT_STAT_ST_MTIM 1
+#define HAVE_STRUCT_STAT_ST_MTIME 1
+#define HAVE_STRUCT_TIMESPEC 1
+#define HAVE_STRUCT_TIMEVAL 1
 /* #undef HAVE_SWAP32 */
+#define HAVE_SYSCONF 1
 /* #undef HAVE_SYSLEN_IN_UTMPX */
 /* #undef HAVE_SYS_AUDIT_H */
 /* #undef HAVE_SYS_BITYPES_H */
 /* #undef HAVE_SYS_BSDTTY_H */
-/* #undef HAVE_SYS_CAPABILITY_H */
+/* #undef HAVE_SYS_CAPSICUM_H */
 /* #undef HAVE_SYS_CDEFS_H */
 #define HAVE_SYS_DIR_H 1
 /* #undef HAVE_SYS_ERRLIST */
+#define HAVE_SYS_MMAN_H 1
 #define HAVE_SYS_MOUNT_H 1
 /* #undef HAVE_SYS_NDIR_H */
 /* #undef HAVE_SYS_NERR */
@@ -317,40 +417,62 @@
 /* #undef HAVE_SYS_PSTAT_H */
 /* #undef HAVE_SYS_PTMS_H */
 #define HAVE_SYS_PTRACE_H 1
+#define HAVE_SYS_SELECT_H 1
+#define HAVE_SYS_STATVFS_H 1
+#define HAVE_SYS_STAT_H 1
 /* #undef HAVE_SYS_STREAM_H */
 #define HAVE_SYS_STROPTS_H 1
 /* #undef HAVE_SYS_STRTIO_H */
 /* #undef HAVE_SYS_SYSLOG_H */
 #define HAVE_SYS_SYSMACROS_H 1
 /* #undef HAVE_SYS_TIMERS_H */
+#define HAVE_SYS_TIME_H 1
+#define HAVE_SYS_TYPES_H 1
+#define HAVE_SYS_UN_H 1
+#define HAVE_TCGETPGRP 1
+#define HAVE_TCSENDBREAK 1
+#define HAVE_TIME 1
+#define HAVE_TIME_H 1
 /* #undef HAVE_TIME_IN_UTMP */
 /* #undef HAVE_TIME_IN_UTMPX */
 /* #undef HAVE_TIMINGSAFE_BCMP */
 /* #undef HAVE_TMPDIR_H */
+#define HAVE_TRUNCATE 1
 /* #undef HAVE_TTYENT_H */
 #define HAVE_TV_IN_UTMP 1
 #define HAVE_TV_IN_UTMPX 1
 #define HAVE_TYPE_IN_UTMP 1
 #define HAVE_TYPE_IN_UTMPX 1
 /* #undef HAVE_UCRED_H */
+#define HAVE_UINTMAX_T 1
 #define HAVE_UINTXX_T 1
+#define HAVE_UNISTD_H 1
+#define HAVE_UNSETENV 1
 #define HAVE_UNSIGNED_LONG_LONG 1
 #define HAVE_UPDWTMP 1
 #define HAVE_UPDWTMPX 1
 /* #undef HAVE_USERSEC_H */
-/* #undef HAVE_USER_FROM_UID */
+#define HAVE_USER_FROM_UID 1
 #define HAVE_USLEEP 1
 /* #undef HAVE_UTIL_H */
+#define HAVE_UTIMES 1
+#define HAVE_UTIME_H 1
 #define HAVE_UTMPNAME 1
 #define HAVE_UTMPXNAME 1
+#define HAVE_UTMPX_H 1
 #define HAVE_UTMP_H 1
 #define HAVE_U_CHAR 1
 #define HAVE_U_INT 1
 #define HAVE_U_INT64_T 1
 #define HAVE_U_INTXX_T 1
 #define HAVE_VASPRINTF 1
+#define HAVE_VA_COPY 1
 /* #undef HAVE_VIS_H */
+#define HAVE_VSNPRINTF 1
+#define HAVE_WAITPID 1
 #define HAVE_WARN 1
+#define HAVE_WCHAR_H 1
+#define HAVE_WCWIDTH 1
 /* #undef HAVE__GETLONG */
 /* #undef HAVE__GETPTY */
 /* #undef HAVE__GETSHORT */
@@ -436,6 +558,7 @@
 /* #undef SSH_TUN_NO_L2 */
 /* #undef SSH_TUN_OPENBSD */
 #define SSH_TUN_PREPEND_AF 1
+#define STDC_HEADERS 1
 /* #undef SUPERUSER_PATH */
 /* #undef SYSLOG_R_SAFE_IN_SIGHAND */
 /* #undef UNIXWARE_LONG_PASSWORDS */
@@ -459,7 +582,6 @@
 /* #undef WITH_IRIX_PROJECT */
 #define WITH_OPENSSL 1
 /* #undef WITH_SELINUX */
-/* #undef WITH_SSH1 */
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
@@ -476,7 +598,10 @@
 /* #undef _FILE_OFFSET_BITS */
 /* #undef _LARGE_FILES */
 /* #undef __res_state */
+/* #undef calloc */
 #ifndef __cplusplus
 /* #undef inline */
 #endif
+/* #undef malloc */
+/* #undef realloc */
 /* #undef socklen_t */
