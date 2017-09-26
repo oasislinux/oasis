@@ -111,7 +111,7 @@
 	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
-	url = https://git.code.sf.net/p/libpng/code
+	url = https://github.com/glennrp/libpng
 [submodule "pkg/libusb/src"]
 	path = pkg/libusb/src
 	url = https://github.com/libusb/libusb
