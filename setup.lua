@@ -3,6 +3,9 @@
 if not os.execute('test -f config.lua') then
 	os.execute('cp config.def.lua config.lua')
 end
+if not os.execute('test -f config.ninja') then
+	os.execute('cp config.def.ninja config.ninja')
+end
 
 dofile 'ninja.lua'
 config = dofile 'config.lua'
