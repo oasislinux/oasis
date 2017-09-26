@@ -3,12 +3,12 @@
 #define __dead _Noreturn
 #define PACKAGE_NAME "OpenNTPD"
 #define PACKAGE_TARNAME "openntpd"
-#define PACKAGE_VERSION "6.2p1"
-#define PACKAGE_STRING "OpenNTPD 6.2p1"
+#define PACKAGE_VERSION "6.2p2"
+#define PACKAGE_STRING "OpenNTPD 6.2p2"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_URL ""
 #define PACKAGE "openntpd"
-#define VERSION "6.2p1"
+#define VERSION "6.2p2"
 #define HAVE_MEMORY_H 1
 #define LT_OBJDIR ".libs/"
 #define SPT_TYPE SPT_REUSEARGV
