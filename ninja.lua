@@ -343,7 +343,7 @@ function yacc(name, gram)
 		gram = '$srcdir/'..gram
 	end
 	build('yacc', expand{'$outdir/', name, {'.tab.c', '.tab.h'}}, gram, {
-		yaccflags='-d -b '..name,
+		yaccflags='-d -b $outdir/'..name,
 	})
 end
 
