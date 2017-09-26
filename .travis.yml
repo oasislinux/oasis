@@ -17,7 +17,7 @@ install:
 script:
 - git submodule update --init pkg/samurai/src
 - make -C pkg/samurai/src
-- echo 'fn fs { true }; config_tls=libressl; config_video_drivers=(intel nouveau)' > config.rc
+- echo 'return { fs={exclude={}}, tls="libressl", video_drivers={intel=true, nouveau=true} }' > config.lua
 - lua setup.lua
 - ./pkg/samurai/src/samu out/pkg/openbsd/pax out/pkg/mc/bin/6m out/pkg/mc/bin/muse out/pkg/file/file out/pkg/texi2mdoc/texi2mdoc
 - mkdir /tmp/bin
