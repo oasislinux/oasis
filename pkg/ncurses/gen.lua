@@ -92,7 +92,7 @@ build('awk', '$outdir/names.c', {'$srcdir/include/Caps', '|', '$srcdir/ncurses/t
 rule('mktermsort', 'sh $srcdir/progs/MKtermsort.sh awk $in >$out.tmp && mv $out.tmp $out')
 build('mktermsort', '$outdir/termsort.c', {'$srcdir/include/Caps', '|', '$srcdir/progs/MKtermsort.sh'})
 
-build('awk', '$outdir/unctrl.c', '/dev/null | $srcdir/ncurses/base/MKunctrl.awk', {
+build('awk', '$outdir/unctrl.c', {'/dev/null', '|', '$srcdir/ncurses/base/MKunctrl.awk'}, {
 	expr='-f $srcdir/ncurses/base/MKunctrl.awk bigstrings=1',
 })
 
