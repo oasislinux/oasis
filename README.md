@@ -49,7 +49,7 @@ up from the following:
 
 * [musl](http://musl-libc.org/) (libc)
 * [suckless](http://core.suckless.org/)
-	- sbase, ubase, sinit, sdhcp, scron
+	- sbase, ubase, sinit, sdhcp
 * [openbsd](http://openbsd.org/)
 	- pax, yacc, fmt, diff, patch, doas
 * [plan9port](http://swtch.com/plan9port/)
