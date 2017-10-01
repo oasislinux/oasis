@@ -1,4 +1,5 @@
 cflags{
+	'-I $dir',
 	'-I $srcdir/include',
 	'-I $srcdir/src',
 	'-I pkg/netsurf/libdom/src/include',
@@ -12,9 +13,8 @@ pkg.deps = {
 	'$builddir/pkg/netsurf/libwapcaplet/fetch.stamp',
 }
 
-build('cc', '$outdir/src/src_colors.c.o', {'$dir/src_colors.c', '||', '$outdir/fetch.stamp', '$dir/deps'})
 lib('libsvgtiny.a', [[
-	src/(src_colors.c.o svgtiny.c svgtiny_gradient.c svgtiny_list.c)
+	src/(svgtiny.c svgtiny_gradient.c svgtiny_list.c)
 	$builddir/pkg/netsurf/libdom/libdom.a.d
 ]])
 
