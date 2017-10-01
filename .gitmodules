@@ -112,6 +112,10 @@
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng
+[submodule "pkg/libsignal-protocol-c/src"]
+	path = pkg/libsignal-protocol-c/src
+	url = https://github.com/WhisperSystems/libsignal-protocol-c
+	ignore = all
 [submodule "pkg/libusb/src"]
 	path = pkg/libusb/src
 	url = https://github.com/libusb/libusb
