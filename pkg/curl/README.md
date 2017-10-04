@@ -16,12 +16,13 @@ Generated with
 There are a number of non-standard definitions, but they don't seem to be
 architecture-specific except for
 
+- `SIZEOF_CURL_OFF_T`
 - `SIZEOF_INT`
 - `SIZEOF_LONG`
 - `SIZEOF_LONG_LONG`
 - `SIZEOF_OFF_T`
 - `SIZEOF_SHORT`
+- `SIZEOF_SIZE_T`
 - `SIZEOF_TIME_T`
-- `SIZEOF_VOIDP`
 
 Perhaps all or most of these can eliminated using standard C99 features.

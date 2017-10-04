@@ -47,6 +47,7 @@ lib('libcurl.a', [[
 		http_ntlm.c curl_ntlm_wb.c curl_ntlm_core.c curl_sasl.c rand.c
 		curl_multibyte.c hostcheck.c conncache.c pipeline.c dotdot.c
 		x509asn1.c http2.c smb.c curl_endian.c curl_des.c system_win32.c
+		mime.c
 		vauth/(
 			vauth.c cleartext.c cram.c
 			digest.c digest_sspi.c krb5_gssapi.c
@@ -97,7 +98,6 @@ exe('curl', [[
 		tool_libinfo.c
 		tool_main.c
 		tool_metalink.c
-		tool_mfiles.c
 		tool_msgs.c
 		tool_operate.c
 		tool_operhlp.c

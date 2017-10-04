@@ -1,6 +1,7 @@
 /* #undef CURL_CA_BUNDLE */
 #define CURL_CA_FALLBACK 1
 /* #undef CURL_CA_PATH */
+/* #undef CURL_DEFAULT_SSL_BACKEND */
 /* #undef CURL_DISABLE_COOKIES */
 /* #undef CURL_DISABLE_CRYPTO_AUTH */
 /* #undef CURL_DISABLE_DICT */
@@ -22,6 +23,7 @@
 /* #undef CURL_DISABLE_TLS_SRP */
 /* #undef CURL_DISABLE_VERBOSE_STRINGS */
 #define CURL_EXTERN_SYMBOL __attribute__ ((__visibility__ ("default")))
+/* #undef CURL_WITH_MULTI_SSL */
 /* #undef EGD_SOCKET */
 #define ENABLE_IPV6 1
 #define GETHOSTNAME_TYPE_ARG2 size_t
@@ -40,6 +42,7 @@
 #define HAVE_BASENAME 1
 #define HAVE_BOOL_T 1
 /* #undef HAVE_BORINGSSL */
+/* #undef HAVE_BUILTIN_AVAILABLE */
 #define HAVE_CLOCK_GETTIME_MONOTONIC 1
 /* #undef HAVE_CLOSESOCKET */
 /* #undef HAVE_CLOSESOCKET_CAMEL */
@@ -285,6 +288,7 @@
 #define SEND_TYPE_ARG3 size_t
 #define SEND_TYPE_ARG4 int
 #define SEND_TYPE_RETV ssize_t
+#define SIZEOF_CURL_OFF_T 8
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 8
 /* #undef SIZEOF_LONG_LONG */
@@ -292,7 +296,6 @@
 #define SIZEOF_SHORT 2
 #define SIZEOF_SIZE_T 8
 #define SIZEOF_TIME_T 8
-#define SIZEOF_VOIDP 8
 #define STDC_HEADERS 1
 #define STRERROR_R_TYPE_ARG3 size_t
 #define TIME_WITH_SYS_TIME 1
