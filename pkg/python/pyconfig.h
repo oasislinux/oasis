@@ -187,6 +187,7 @@
 /* #undef HAVE_SYS_RANDOM_H */
 #define HAVE_SYS_SENDFILE_H 1
 #define HAVE_SYS_SYSCALL_H 1
+#define HAVE_SYS_SYSMACROS_H 1
 /* #undef HAVE_SYS_SYS_DOMAIN_H */
 /* #undef HAVE_SYS_TERMIO_H */
 #define HAVE_SYS_XATTR_H 1

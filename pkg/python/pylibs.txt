@@ -1,4 +1,4 @@
-# 2,<cd src/Lib && find * '(' -name test -o -name tests -o -name idle_test ')' '!' -prune -o -name '*.py' | sort
+# 2,<cd src/Lib && find * '(' -name test -o -name tests -o -name idle_test ')' '!' -prune -o -name '*.py' | LC_COLLATE=C sort
 __future__.py
 __phello__.foo.py
 _bootlocale.py
@@ -389,6 +389,7 @@ idlelib/tree.py
 idlelib/undo.py
 idlelib/windows.py
 idlelib/zoomheight.py
+idlelib/zzdummy.py
 imaplib.py
 imghdr.py
 imp.py

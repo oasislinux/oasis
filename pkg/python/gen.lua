@@ -55,7 +55,7 @@ build('makesetup', '$outdir/config.c', {
 })
 
 cc('Modules/getbuildinfo.c', nil, {
-	cflags=[[$cflags -D 'DATE="Dec 22 2016"' -D 'TIME="18:38:47"']]
+	cflags=[[$cflags -D 'DATE="Oct 3 2017"' -D 'TIME="01:52:02"']]
 })
 cc('Modules/getpath.c', nil, {
 	cflags={
