@@ -2,6 +2,7 @@ cflags{
 	'-std=c11', '-Wall',
 	'-I include',
 	'-I $dir',
+	'-I $srcdir/include',
 	'-I pkg/libevdev/src',
 	'-I pkg/mtdev/src/include',
 }
