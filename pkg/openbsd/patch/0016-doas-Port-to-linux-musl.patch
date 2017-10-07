@@ -1,4 +1,4 @@
-From 545c416a156628d6e5682184af2be5caaaa3262e Mon Sep 17 00:00:00 2001
+From e7cec3119e6eff94fd02c9c773c3cf5d19db23de Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -22,15 +22,15 @@ Replace calls to errc with err after setting errno.
 Call openlog at start to set syslog identity.
 ---
  usr.bin/doas/doas.1    |   9 ----
- usr.bin/doas/doas.c    |  98 ++++++++++++++++++++-----------------
+ usr.bin/doas/doas.c    |  98 ++++++++++++++++++++----------------
  usr.bin/doas/doas.h    |   4 ++
  usr.bin/doas/parse.y   |   1 +
- usr.bin/doas/persist.c | 128 +++++++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 188 insertions(+), 52 deletions(-)
+ usr.bin/doas/persist.c | 133 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 193 insertions(+), 52 deletions(-)
  create mode 100644 usr.bin/doas/persist.c
 
 diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
-index d39c4aab2..3097991bc 100644
+index d39c4aab2d5..3097991bc68 100644
 --- a/usr.bin/doas/doas.1
 +++ b/usr.bin/doas/doas.1
 @@ -22,7 +22,6 @@
@@ -57,7 +57,7 @@ index d39c4aab2..3097991bc 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index 328834cc4..4cab9d272 100644
+index 328834cc461..4cab9d272a3 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -21,7 +21,6 @@
@@ -263,7 +263,7 @@ index 328834cc4..4cab9d272 100644
  
  	envp = prepenv(rule);
 diff --git a/usr.bin/doas/doas.h b/usr.bin/doas/doas.h
-index ba54c3f71..0c1f5fa4e 100644
+index ba54c3f71df..0c1f5fa4e2b 100644
 --- a/usr.bin/doas/doas.h
 +++ b/usr.bin/doas/doas.h
 @@ -31,6 +31,10 @@ extern int parse_errors;
@@ -278,7 +278,7 @@ index ba54c3f71..0c1f5fa4e 100644
  #define DENY	2
  
 diff --git a/usr.bin/doas/parse.y b/usr.bin/doas/parse.y
-index fde406bcf..474415859 100644
+index fde406bcf5a..4744158594a 100644
 --- a/usr.bin/doas/parse.y
 +++ b/usr.bin/doas/parse.y
 @@ -19,6 +19,7 @@
@@ -291,10 +291,10 @@ index fde406bcf..474415859 100644
  #include <stdio.h>
 diff --git a/usr.bin/doas/persist.c b/usr.bin/doas/persist.c
 new file mode 100644
-index 000000000..dd9cc0411
+index 00000000000..0fc68cf9854
 --- /dev/null
 +++ b/usr.bin/doas/persist.c
-@@ -0,0 +1,128 @@
+@@ -0,0 +1,133 @@
 +#include <errno.h>
 +#include <fcntl.h>
 +#include <limits.h>
@@ -349,10 +349,12 @@ index 000000000..dd9cc0411
 +persistpath(char *buf, size_t len)
 +{
 +	dev_t tty;
++	int n;
 +
 +	if (ttyid(&tty) < 0)
 +		return -1;
-+	if (snprintf(buf, len, PERSIST_DIR "/%d-%d", getuid(), tty) >= len)
++	n = snprintf(buf, len, PERSIST_DIR "/%d-%d", getuid(), tty);
++	if (n < 0 || n >= (int)len)
 +		return -1;
 +	return 0;
 +}
@@ -379,7 +381,10 @@ index 000000000..dd9cc0411
 +	if (fd == -1) {
 +		char tmp[256];
 +		struct timespec ts[2] = { { .tv_nsec = UTIME_OMIT }, { 0 } };
-+		if (snprintf(tmp, sizeof(tmp), PERSIST_DIR "/.tmp-%d", getpid()) >= sizeof(tmp))
++		int n;
++
++		n = snprintf(tmp, sizeof(tmp), PERSIST_DIR "/.tmp-%d", getpid());
++		if (n < 0 || n >= (int)sizeof(tmp))
 +			return -1;
 +		fd = open(tmp, O_RDONLY | O_CREAT | O_EXCL, 0);
 +		if (fd == -1)
@@ -424,5 +429,5 @@ index 000000000..dd9cc0411
 +	return 0;
 +}
 -- 
-2.12.2
+2.14.2
 

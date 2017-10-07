@@ -142,9 +142,10 @@ gitspecial(struct special *sp, const char *rev)
 	char *argv[] = {"git", "show", object, 0};
 	FILE *f;
 	pid_t pid;
-	int st;
+	int st, n;
 
-	if (snprintf(object, sizeof(object), "%s:%s", rev, PERMS_FILE) >= (int)sizeof(object))
+	n = snprintf(object, sizeof(object), "%s:%s", rev, PERMS_FILE);
+	if (n < 0 || n >= (int)sizeof(object))
 		die("revision is too large: %s", rev);
 	f = spawn(argv, &pid);
 	readspecial(sp, f);
