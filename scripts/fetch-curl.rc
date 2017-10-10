@@ -1,7 +1,7 @@
 flag e +
 
 if(~ $#* 0) {
-	echo 'usage: fetch-curl.rc dir pattern...' >[1=2]
+	echo 'usage: fetch-curl.rc dir [paxflags...]' >[1=2]
 	exit 2
 }
 
@@ -26,15 +26,15 @@ for(archive in `{awk '{print $2}' sha256}) {
 	case *
 		tool=()
 	}
-	pats=()
+	flags=()
 	while(! ~ $1 '' ';') {
-		pats=($pats $1)
+		flags=($flags $1)
 		shift
 	}
-	if(~ $#pats 0)
-		pats='*/*'
+	if(~ $#flags 0)
+		flags=(-s '/^\.\|[^\/]*/src/' '*/*')
 	shift
-	if(! ~ $#tool 0) $tool $archive | pax -r -s '/^\.\|[^\/]*/src/' $pats
+	if(! ~ $#tool 0) $tool $archive | pax -r $flags
 }
 
 if([ -d patch ]) {
