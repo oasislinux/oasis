@@ -1,4 +1,4 @@
-From e7cec3119e6eff94fd02c9c773c3cf5d19db23de Mon Sep 17 00:00:00 2001
+From c86749aeb88fa67ab84efce23c1a69691ae87dae Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -22,11 +22,11 @@ Replace calls to errc with err after setting errno.
 Call openlog at start to set syslog identity.
 ---
  usr.bin/doas/doas.1    |   9 ----
- usr.bin/doas/doas.c    |  98 ++++++++++++++++++++----------------
+ usr.bin/doas/doas.c    |  95 +++++++++++++++++++----------------
  usr.bin/doas/doas.h    |   4 ++
  usr.bin/doas/parse.y   |   1 +
  usr.bin/doas/persist.c | 133 +++++++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 193 insertions(+), 52 deletions(-)
+ 5 files changed, 191 insertions(+), 51 deletions(-)
  create mode 100644 usr.bin/doas/persist.c
 
 diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
@@ -57,7 +57,7 @@ index d39c4aab2d5..3097991bc68 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index 328834cc461..4cab9d272a3 100644
+index 9ec4257dffd..4fb934321cf 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -21,7 +21,6 @@
@@ -139,7 +139,7 @@ index 328834cc461..4cab9d272a3 100644
  	if (!challenge) {
  		char host[HOST_NAME_MAX + 1];
  		if (gethostname(host, sizeof(host)))
-@@ -221,20 +242,18 @@ authuser(char *myname, char *login_style, int persist)
+@@ -221,20 +242,17 @@ authuser(char *myname, char *login_style, int persist)
  	response = readpassphrase(challenge, rbuf, sizeof(rbuf),
  	    RPP_REQUIRE_TTY);
  	if (response == NULL && errno == ENOTTY) {
@@ -151,11 +151,9 @@ index 328834cc461..4cab9d272a3 100644
 -	if (!auth_userresponse(as, response, 0)) {
 -		syslog(LOG_AUTHPRIV | LOG_NOTICE,
 -		    "failed auth for %s", myname);
--		errc(1, EPERM, NULL);
 +	if (!verifypasswd(myname, response)) {
 +		syslog(LOG_NOTICE, "failed auth for %s", myname);
-+		errno = EPERM;
-+		err(1, NULL);
+ 		errx(1, "Authorization failed");
  	}
  	explicit_bzero(rbuf, sizeof(rbuf));
  good:
@@ -166,7 +164,7 @@ index 328834cc461..4cab9d272a3 100644
  		close(fd);
  	}
  }
-@@ -242,14 +261,13 @@ good:
+@@ -242,14 +260,13 @@ good:
  int
  main(int argc, char **argv)
  {
@@ -181,9 +179,9 @@ index 328834cc461..4cab9d272a3 100644
 -	char myname[_PW_NAME_LEN + 1];
 +	char myname[LOGIN_NAME_MAX + 1];
  	struct passwd *pw;
- 	struct rule *rule;
+ 	const struct rule *rule;
  	uid_t uid;
-@@ -261,28 +279,20 @@ main(int argc, char **argv)
+@@ -261,28 +278,20 @@ main(int argc, char **argv)
  	int nflag = 0;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
@@ -215,7 +213,7 @@ index 328834cc461..4cab9d272a3 100644
  		case 'u':
  			if (parseuid(optarg, &target) != 0)
  				errx(1, "unknown user");
-@@ -352,16 +362,16 @@ main(int argc, char **argv)
+@@ -352,16 +361,16 @@ main(int argc, char **argv)
  	cmd = argv[0];
  	if (!permit(uid, groups, ngroups, &rule, target, cmd,
  	    (const char **)argv + 1)) {
@@ -236,7 +234,7 @@ index 328834cc461..4cab9d272a3 100644
  	}
  
  	if (pledge("stdio rpath getpw exec id", NULL) == -1)
-@@ -371,10 +381,12 @@ main(int argc, char **argv)
+@@ -371,10 +380,12 @@ main(int argc, char **argv)
  	if (!pw)
  		errx(1, "no passwd entry for target");
  
@@ -253,7 +251,7 @@ index 328834cc461..4cab9d272a3 100644
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
-@@ -387,7 +399,7 @@ main(int argc, char **argv)
+@@ -387,7 +398,7 @@ main(int argc, char **argv)
  	if (pledge("stdio exec", NULL) == -1)
  		err(1, "pledge");
  
@@ -263,12 +261,12 @@ index 328834cc461..4cab9d272a3 100644
  
  	envp = prepenv(rule);
 diff --git a/usr.bin/doas/doas.h b/usr.bin/doas/doas.h
-index ba54c3f71df..0c1f5fa4e2b 100644
+index cbeb3399419..b1a4c819954 100644
 --- a/usr.bin/doas/doas.h
 +++ b/usr.bin/doas/doas.h
 @@ -31,6 +31,10 @@ extern int parse_errors;
  
- char **prepenv(struct rule *);
+ char **prepenv(const struct rule *);
  
 +int openpersist(int *valid);
 +int setpersist(int fd);

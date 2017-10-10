@@ -160,7 +160,7 @@
 /* #undef HAVE_FLOATINGPOINT_H */
 /* #undef HAVE_FMT_SCALED */
 #define HAVE_FREEADDRINFO 1
-/* #undef HAVE_FREEZERO */
+#define HAVE_FREEZERO 1
 #define HAVE_FSBLKCNT_T 1
 #define HAVE_FSFILCNT_T 1
 #define HAVE_FSTATFS 1

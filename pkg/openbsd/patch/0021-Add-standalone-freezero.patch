@@ -1,0 +1,51 @@
+From 98a3b77cfa775c87010159d49f5b17d84fe1aa7b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 10 Oct 2017 03:07:56 -0700
+Subject: [PATCH] Add standalone freezero
+
+---
+ lib/libc/stdlib/freezero.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100644 lib/libc/stdlib/freezero.c
+
+diff --git a/lib/libc/stdlib/freezero.c b/lib/libc/stdlib/freezero.c
+new file mode 100644
+index 00000000000..31face3828b
+--- /dev/null
++++ b/lib/libc/stdlib/freezero.c
+@@ -0,0 +1,32 @@
++/*
++ * Copyright (c) 2008, 2010, 2011, 2016 Otto Moerbeek <otto@drijf.net>
++ * Copyright (c) 2012 Matthew Dempsky <matthew@openbsd.org>
++ * Copyright (c) 2008 Damien Miller <djm@openbsd.org>
++ * Copyright (c) 2000 Poul-Henning Kamp <phk@FreeBSD.org>
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#include <string.h>
++#include <stdlib.h>
++
++void
++freezero(void *ptr, size_t sz)
++{
++	/* This is legal. */
++	if (ptr == NULL)
++		return;
++
++	explicit_bzero(ptr, sz);
++	free(ptr);
++}
+-- 
+2.14.2
+

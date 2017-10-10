@@ -272,8 +272,6 @@ lib('libcrypto.a', [[crypto/(
 	des/(des_enc.c fcrypt_b.c)
 	rc4/(rc4_enc.c rc4_skey.c)
 	whrlpool/wp_block.c
-
-	compat/freezero.c
 ) $builddir/pkg/openbsd/libbsd.a]])
 file('lib/libcrypto.a', '644', '$outdir/libcrypto.a')
 

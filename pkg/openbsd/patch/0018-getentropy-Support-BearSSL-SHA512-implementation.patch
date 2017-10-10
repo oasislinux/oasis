@@ -1,4 +1,4 @@
-From 2b0e36df23d26fe09ce3f21cff2ed6a4600aeb54 Mon Sep 17 00:00:00 2001
+From 37f2f6274588cad438c6fd6c7b37bd5e5ce3ae20 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 27 May 2017 18:49:33 -0700
 Subject: [PATCH] getentropy: Support BearSSL SHA512 implementation
@@ -8,7 +8,7 @@ Subject: [PATCH] getentropy: Support BearSSL SHA512 implementation
  1 file changed, 32 insertions(+), 1 deletion(-)
 
 diff --git a/lib/libcrypto/arc4random/getentropy_linux.c b/lib/libcrypto/arc4random/getentropy_linux.c
-index ac97658efe3..0a684ebd29f 100644
+index a845239eb3e..6a7fe863abb 100644
 --- a/lib/libcrypto/arc4random/getentropy_linux.c
 +++ b/lib/libcrypto/arc4random/getentropy_linux.c
 @@ -47,7 +47,13 @@
@@ -41,7 +41,7 @@ index ac97658efe3..0a684ebd29f 100644
  
  int	getentropy(void *buf, size_t len);
  
-@@ -327,16 +339,28 @@ static const int cl[] = {
+@@ -330,16 +342,28 @@ static const int cl[] = {
  static int
  getentropy_phdr(struct dl_phdr_info *info, size_t size, void *data)
  {
@@ -70,7 +70,7 @@ index ac97658efe3..0a684ebd29f 100644
  	int save_errno = errno, e, pgs = getpagesize(), faster = 0, repeat;
  	static int cnt;
  	struct timespec ts;
-@@ -344,7 +368,6 @@ getentropy_fallback(void *buf, size_t len)
+@@ -347,7 +371,6 @@ getentropy_fallback(void *buf, size_t len)
  	struct rusage ru;
  	sigset_t sigset;
  	struct stat st;
@@ -78,7 +78,7 @@ index ac97658efe3..0a684ebd29f 100644
  	static pid_t lastpid;
  	pid_t pid;
  	size_t i, ii, m;
-@@ -361,7 +384,11 @@ getentropy_fallback(void *buf, size_t len)
+@@ -364,7 +387,11 @@ getentropy_fallback(void *buf, size_t len)
  	}
  	for (i = 0; i < len; ) {
  		int j;
@@ -90,7 +90,7 @@ index ac97658efe3..0a684ebd29f 100644
  		for (j = 0; j < repeat; j++) {
  			HX((e = gettimeofday(&tv, NULL)) == -1, tv);
  			if (e != -1) {
-@@ -532,7 +559,11 @@ getentropy_fallback(void *buf, size_t len)
+@@ -535,7 +562,11 @@ getentropy_fallback(void *buf, size_t len)
  #endif
  #endif
  
@@ -103,5 +103,5 @@ index ac97658efe3..0a684ebd29f 100644
  		i += min(sizeof(results), len - i);
  	}
 -- 
-2.13.0
+2.14.2
 

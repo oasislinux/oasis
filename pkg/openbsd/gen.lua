@@ -32,7 +32,7 @@ lib('libbsd.a', {paths[[
 		crypt/(arc4random.c.o arc4random_uniform.c)
 		gen/(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c vis.c warnc.c vwarnc.c)
 		net/base64.c
-		stdlib/(reallocarray.c recallocarray.c strtonum.c)
+		stdlib/(freezero.c reallocarray.c recallocarray.c strtonum.c)
 		string/(explicit_bzero.c strmode.c timingsafe_memcmp.c)
 	)
 	lib/libcrypto/arc4random/getentropy_linux.c
@@ -88,12 +88,12 @@ file('bin/yacc', '755', '$outdir/yacc')
 man{'usr.bin/yacc/yacc.1'}
 
 fetch('curl', paths[[
-	-s '/^/src\//' './(
+	-s '/^/src\//' '(
 		bin/pax
 		include
 		lib/(libc/(crypt gen net stdlib string) libcrypto/arc4random)
 		usr.bin/(diff doas fmt nc patch yacc)
 	)/*'
 	';'
-	-s '/^/src\//' './sys/sys/*'
+	-s '/^/src\//' 'sys/sys/*'
 ]])

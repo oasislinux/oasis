@@ -1,4 +1,4 @@
-From 7c9b2a037c0c19b608f8a595bd1fe04d9651ebcf Mon Sep 17 00:00:00 2001
+From 67f9a56d25334db296561d0269b4cec6a7e24cf7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 16 Jun 2017 20:32:42 -0700
 Subject: [PATCH] nc: Port to linux
@@ -8,12 +8,12 @@ Subject: [PATCH] nc: Port to linux
  1 file changed, 31 insertions(+), 14 deletions(-)
 
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index e222e1e7311..cc94bdba196 100644
+index ce55972a7c2..24d1c463f51 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
-@@ -73,6 +73,31 @@
- #define TLS_CCERT	(1 << 4)
+@@ -75,6 +75,31 @@
  #define TLS_MUSTSTAPLE	(1 << 5)
+ #define TLS_COMPAT	(1 << 6)
  
 +#ifndef IPTOS_DSCP_CS0
 +# define IPTOS_DSCP_CS0 0x00
@@ -43,7 +43,7 @@ index e222e1e7311..cc94bdba196 100644
  /* Command Line Options */
  int	dflag;					/* detached, no stdin */
  int	Fflag;					/* fdpass sock to stdout */
-@@ -95,7 +120,6 @@ int	Iflag;					/* TCP receive buffer size */
+@@ -97,7 +122,6 @@ int	Iflag;					/* TCP receive buffer size */
  int	Oflag;					/* TCP send buffer size */
  int	Sflag;					/* TCP MD5 signature option */
  int	Tflag = -1;				/* IP Type of Service */
@@ -51,7 +51,7 @@ index e222e1e7311..cc94bdba196 100644
  
  int	usetls;					/* use TLS */
  char    *Cflag;					/* Public cert file */
-@@ -259,12 +283,6 @@ main(int argc, char *argv[])
+@@ -266,12 +290,6 @@ main(int argc, char *argv[])
  		case 'u':
  			uflag = 1;
  			break;
@@ -64,7 +64,7 @@ index e222e1e7311..cc94bdba196 100644
  		case 'v':
  			vflag = 1;
  			break;
-@@ -326,10 +344,6 @@ main(int argc, char *argv[])
+@@ -344,10 +362,6 @@ main(int argc, char *argv[])
  	argc -= optind;
  	argv += optind;
  
@@ -75,7 +75,7 @@ index e222e1e7311..cc94bdba196 100644
  	if (family == AF_UNIX) {
  		if (pledge("stdio rpath wpath cpath tmppath unix", NULL) == -1)
  			err(1, "pledge");
-@@ -880,8 +894,12 @@ remote_connect(const char *host, const char *port, struct addrinfo hints)
+@@ -907,8 +921,12 @@ remote_connect(const char *host, const char *port, struct addrinfo hints)
  		if (sflag || pflag) {
  			struct addrinfo ahints, *ares;
  
@@ -89,23 +89,23 @@ index e222e1e7311..cc94bdba196 100644
  			memset(&ahints, 0, sizeof(struct addrinfo));
  			ahints.ai_family = res->ai_family;
  			ahints.ai_socktype = uflag ? SOCK_DGRAM : SOCK_STREAM;
-@@ -1673,7 +1691,6 @@ help(void)
+@@ -1721,7 +1739,6 @@ help(void)
  	\t-t		Answer TELNET negotiation\n\
  	\t-U		Use UNIX domain socket\n\
  	\t-u		UDP mode\n\
 -	\t-V rtable	Specify alternate routing table\n\
  	\t-v		Verbose\n\
+ 	\t-W recvlimit	Terminate after receiving a number of packets\n\
  	\t-w timeout	Timeout for connects and final net reads\n\
- 	\t-X proto	Proxy protocol: \"4\", \"5\" (SOCKS) or \"connect\"\n\
-@@ -1692,7 +1709,7 @@ usage(int ret)
+@@ -1742,7 +1759,7 @@ usage(int ret)
  	    "\t  [-i interval] [-K keyfile] [-M ttl] [-m minttl] [-O length]\n"
  	    "\t  [-o staplefile] [-P proxy_username] [-p source_port] "
  	    "[-R CAfile]\n"
--	    "\t  [-s source] [-T keyword] [-V rtable] [-w timeout] "
-+	    "\t  [-s source] [-T keyword] [-w timeout] "
- 	    "[-X proxy_protocol]\n"
- 	    "\t  [-x proxy_address[:port]] [destination] [port]\n");
- 	if (ret)
+-	    "\t  [-s source] [-T keyword] [-V rtable] [-W recvlimit] "
++	    "\t  [-s source] [-T keyword] [-W recvlimit] "
+ 	    "[-w timeout]\n"
+ 	    "\t  [-X proxy_protocol] [-x proxy_address[:port]] "
+ 	    "[-Z peercertfile]\n"
 -- 
-2.13.1
+2.14.2
 
