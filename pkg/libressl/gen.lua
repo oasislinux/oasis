@@ -1,5 +1,5 @@
 cflags{
-	'-Wno-attributes',
+	'-Wundef', '-Wno-attributes',
 	'-D LIBRESSL_INTERNAL',
 	'-D OPENSSL_NO_HW_PADLOCK',
 	'-D OPENSSL_NO_ASM',
@@ -204,6 +204,7 @@ lib('libcrypto.a', [[crypto/(
 		gostr341001_ameth.c gostr341001_key.c gostr341001_params.c
 		gostr341001_pmeth.c gostr341194.c streebog.c
 	)
+	hkdf/hkdf.c
 	hmac/(hmac.c hm_ameth.c hm_pmeth.c)
 	idea/(i_cbc.c i_cfb64.c i_ofb64.c i_ecb.c i_skey.c)
 	lhash/(lhash.c lh_stats.c)
@@ -234,7 +235,7 @@ lib('libcrypto.a', [[crypto/(
 	ripemd/(rmd_dgst.c rmd_one.c)
 	rsa/(
 		rsa_eay.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c
-		rsa_pk1.c rsa_ssl.c rsa_none.c rsa_oaep.c rsa_chk.c
+		rsa_pk1.c rsa_none.c rsa_oaep.c rsa_chk.c
 		rsa_pss.c rsa_x931.c rsa_asn1.c rsa_depr.c rsa_ameth.c rsa_prn.c
 		rsa_pmeth.c rsa_crpt.c
 	)
@@ -271,6 +272,8 @@ lib('libcrypto.a', [[crypto/(
 	des/(des_enc.c fcrypt_b.c)
 	rc4/(rc4_enc.c rc4_skey.c)
 	whrlpool/wp_block.c
+
+	compat/freezero.c
 ) $builddir/pkg/openbsd/libbsd.a]])
 file('lib/libcrypto.a', '644', '$outdir/libcrypto.a')
 
@@ -283,8 +286,8 @@ lib('libssl.a', [[ssl/(
 	ssl_lib.c ssl_cert.c ssl_sess.c
 	ssl_ciph.c ssl_stat.c ssl_rsa.c
 	ssl_asn1.c ssl_txt.c ssl_algs.c
-	bio_ssl.c ssl_err.c t1_reneg.c
-	ssl_packet.c ssl_versions.c pqueue.c
+	bio_ssl.c ssl_err.c
+	ssl_packet.c ssl_tlsext.c ssl_versions.c pqueue.c
 
 	s3_cbc.c
 	bs_ber.c bs_cbb.c bs_cbs.c
