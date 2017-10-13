@@ -1,24 +1,36 @@
-#include <config-posix.h>
-
 /* #undef CRAY_STACKSEG_END */
 /* #undef C_ALLOCA */
 #define HAVE_ALLOCA 1
 #define HAVE_ALLOCA_H 1
 /* #undef HAVE_AMDGPU */
 /* #undef HAVE_CAIRO */
+#define HAVE_CLOCK_GETTIME 1
 /* #undef HAVE_CUNIT */
+#define HAVE_DLFCN_H 1
 /* #undef HAVE_ETNAVIV */
 /* #undef HAVE_EXYNOS */
 /* #undef HAVE_FREEDRENO */
 /* #undef HAVE_FREEDRENO_KGSL */
 /* #undef HAVE_INSTALL_TESTS */
+/* #undef HAVE_INTEL */
+#define HAVE_INTTYPES_H 1
 #define HAVE_LIBDRM_ATOMIC_PRIMITIVES 1
 /* #undef HAVE_LIB_ATOMIC_OPS */
 #define HAVE_MEMORY_H 1
+/* #undef HAVE_NOUVEAU */
 /* #undef HAVE_OMAP */
+#define HAVE_OPEN_MEMSTREAM 1
 /* #undef HAVE_RADEON */
+#define HAVE_STDINT_H 1
+#define HAVE_STDLIB_H 1
+#define HAVE_STRINGS_H 1
+#define HAVE_STRING_H 1
+#define HAVE_SYS_SELECT_H 1
+#define HAVE_SYS_STAT_H 1
 /* #undef HAVE_SYS_SYSCTL_H */
+#define HAVE_SYS_TYPES_H 1
 /* #undef HAVE_TEGRA */
+#define HAVE_UNISTD_H 1
 /* #undef HAVE_VALGRIND */
 /* #undef HAVE_VC4 */
 #define HAVE_VISIBILITY 1
@@ -29,11 +41,12 @@
 #define PACKAGE "libdrm"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=DRI"
 #define PACKAGE_NAME "libdrm"
-#define PACKAGE_STRING "libdrm 2.4.83"
+#define PACKAGE_STRING "libdrm 2.4.84"
 #define PACKAGE_TARNAME "libdrm"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.4.83"
+#define PACKAGE_VERSION "2.4.84"
 /* #undef STACK_DIRECTION */
+#define STDC_HEADERS 1
 /* #undef UDEV */
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
@@ -50,7 +63,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.4.83"
+#define VERSION "2.4.84"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
