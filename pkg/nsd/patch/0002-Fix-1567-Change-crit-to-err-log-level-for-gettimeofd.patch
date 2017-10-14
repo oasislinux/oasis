@@ -1,0 +1,39 @@
+From 685eeb1ab71422ce4151dbd803674b33115a1fb3 Mon Sep 17 00:00:00 2001
+From: wouter <wouter@a26ef69c-88ff-0310-839f-98b793d9c207>
+Date: Wed, 11 Oct 2017 06:44:50 +0000
+Subject: [PATCH] - Fix #1567: Change crit to err log level for gettimeofday
+ failure.
+
+git-svn-id: https://www.nlnetlabs.nl/svn/nsd/trunk@4786 a26ef69c-88ff-0310-839f-98b793d9c207
+---
+ doc/ChangeLog | 3 +++
+ netio.c       | 2 +-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/doc/ChangeLog b/doc/ChangeLog
+index 6e52fff4..f58c71ac 100644
+--- a/doc/ChangeLog
++++ b/doc/ChangeLog
+@@ -1,3 +1,6 @@
++11 October 2016: Wouter
++	- Fix #1567: Change crit to err log level for gettimeofday failure.
++
+ 29 August 2016: Wouter
+ 	- Fix writev compile warning on FreeBSD.
+ 
+diff --git a/netio.c b/netio.c
+index 6c4b395b..58fd2e18 100644
+--- a/netio.c
++++ b/netio.c
+@@ -94,7 +94,7 @@ netio_current_time(netio_type *netio)
+ 	if (!netio->have_current_time) {
+ 		struct timeval current_timeval;
+ 		if (gettimeofday(&current_timeval, NULL) == -1) {
+-			log_msg(LOG_CRIT, "gettimeofday: %s, aborting.", strerror(errno));
++			log_msg(LOG_ERR, "gettimeofday: %s, aborting.", strerror(errno));
+ 			abort();
+ 		}
+ 		timeval_to_timespec(&netio->cached_current_time, &current_timeval);
+-- 
+2.14.2
+

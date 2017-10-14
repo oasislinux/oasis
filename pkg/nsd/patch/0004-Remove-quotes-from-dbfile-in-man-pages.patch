@@ -1,0 +1,57 @@
+From 82f72d52236a5642f95b52fb1ed10b16b756eb82 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 14 Oct 2017 01:00:22 -0700
+Subject: [PATCH] Remove quotes from @dbfile@ in man pages
+
+---
+ nsd.8.in      | 4 ++--
+ nsd.conf.5.in | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/nsd.8.in b/nsd.8.in
+index 5e488958..babaa06a 100644
+--- a/nsd.8.in
++++ b/nsd.8.in
+@@ -115,7 +115,7 @@ Do not fork, stay in the foreground.
+ Use the specified
+ .I database
+ instead of the default of
+-.IR '@dbfile@' .
++.IR @dbfile@ .
+ If a 
+ .B zonesdir: 
+ is specified in the config file this path can be relative to that 
+@@ -224,7 +224,7 @@ SIGUSR1
+ Dump BIND8\-style statistics into the log. Ignored otherwise.
+ .SH "FILES"
+ .TP
+-"@dbfile@"
++@dbfile@
+ default
+ .B NSD
+ database
+diff --git a/nsd.conf.5.in b/nsd.conf.5.in
+index b9ac956b..4f7c9867 100644
+--- a/nsd.conf.5.in
++++ b/nsd.conf.5.in
+@@ -197,7 +197,7 @@ If yes, NSD listens to IPv6 connections.  Default yes.
+ .TP
+ .B database:\fR <filename>
+ By default 
+-.I '@dbfile@'
++.I @dbfile@
+ is used. The specified file is used to store the compiled 
+ zone information. Same as commandline option 
+ .BR \-f.
+@@ -858,7 +858,7 @@ also function as a resolver or cache. The configuration options that
+ BIND9 has for the resolver or caching thus have no equivalents for NSD.
+ .SH "FILES"
+ .TP
+-"@dbfile@"
++@dbfile@
+ default
+ .B NSD
+ database
+-- 
+2.14.2
+

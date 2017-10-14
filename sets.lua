@@ -58,6 +58,7 @@ return {
 		'ii',
 		'msmtp',
 		'nginx',
+		'nsd',
 		'sshfs',
 		'transmission',
 	},

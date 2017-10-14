@@ -14,6 +14,7 @@ a solution for many common tasks:
 * Document viewer (mupdf)
 * Media player (mpv)
 * HTTP server (nginx)
+* DNS server (nsd)
 * BitTorrent client (transmission)
 
 The entire system can be compiled in minutes, and uses up up only a couple
