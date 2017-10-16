@@ -23,8 +23,11 @@ END {
 	bsf("mpeg4_unpack_bframes")
 	bsf("mov2textsub")
 	bsf("noise")
+	bsf("null")
 	bsf("remove_extradata")
 	bsf("text2movsub")
+	bsf("vp9_raw_reorder")
 	bsf("vp9_superframe")
+	bsf("vp9_superframe_split")
 	print "NULL};"
 }

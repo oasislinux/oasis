@@ -36,8 +36,8 @@ build('awk', '$outdir/include/libavutil/avconfig.h', {'$dir/options.h', '|', '$d
 	expr='-f $dir/avconfig.awk',
 })
 
-rule('ffversion', 'sh $srcdir/version.sh $srcdir $out')
-build('ffversion', '$outdir/include/libavutil/ffversion.h', {'|', '$srcdir/version.sh'})
+rule('ffversion', 'sh $srcdir/ffbuild/version.sh $srcdir $out')
+build('ffversion', '$outdir/include/libavutil/ffversion.h', {'|', '$srcdir/ffbuild/version.sh'})
 
 -- TODO: Copy the rest of the headers.
 pkg.hdrs = {
@@ -108,8 +108,10 @@ lib('libavcodec.a', {
 		'bsf.c',
 		'codec_desc.c',
 		'd3d11va.c',
+		'decode.c',
 		'dirac.c',
 		'dv_profile.c',
+		'encode.c',
 		'imgconvert.c',
 		'jni.c',
 		'mathtables.c',
@@ -251,6 +253,7 @@ lib('libavutil.a', {
 		'samplefmt.c',
 		'sha.c',
 		'sha512.c',
+		'slicethread.c',
 		'spherical.c',
 		'stereo3d.c',
 		'threadmessage.c',
@@ -335,12 +338,12 @@ local libs = {
 	'libswscale.a.d',
 }
 
-cc('cmdutils.c', {'$dir/deps'})
+cc('fftools/cmdutils.c', {'$dir/deps'})
 
-exe('ffprobe', {'ffprobe.c', 'cmdutils.c.o', libs})
+exe('ffprobe', {paths[[fftools/(ffprobe.c cmdutils.c.o)]], libs})
 file('bin/ffprobe', '755', '$outdir/ffprobe')
 
-exe('ffmpeg', {'ffmpeg.c', 'ffmpeg_opt.c', 'ffmpeg_filter.c', 'cmdutils.c.o', libs})
+exe('ffmpeg', {paths[[fftools/(ffmpeg.c ffmpeg_opt.c ffmpeg_filter.c ffmpeg_hw.c cmdutils.c.o)]], libs})
 file('bin/ffmpeg', '755', '$outdir/ffmpeg')
 
 rule('texi2mdoc', 'texi2mdoc -I $outdir $in >$out.tmp && mv $out.tmp $out')

@@ -1,16 +1,16 @@
-From 32670e637b460f04d48067174f52ba2f1beb2a45 Mon Sep 17 00:00:00 2001
+From 333db73f3ce45055c77bf951153c8fddb3de5e42 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 2 Jul 2016 11:58:07 -0700
 Subject: [PATCH] version.sh: Replace all slashes
 
 ---
- version.sh | 2 +-
+ ffbuild/version.sh | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/version.sh b/version.sh
-index edc4dd3..331aa38 100755
---- a/version.sh
-+++ b/version.sh
+diff --git a/ffbuild/version.sh b/ffbuild/version.sh
+index edc4dd33c5..331aa385c3 100755
+--- a/ffbuild/version.sh
++++ b/ffbuild/version.sh
 @@ -49,7 +49,7 @@ NEW_REVISION="#define FFMPEG_VERSION \"$version\""
  OLD_REVISION=$(cat "$2" 2> /dev/null | head -4 | tail -1)
  
@@ -21,5 +21,5 @@ index edc4dd3..331aa38 100755
  # Update version header only on revision changes to avoid spurious rebuilds
  if test "$NEW_REVISION" != "$OLD_REVISION"; then
 -- 
-2.9.0
+2.14.2
 

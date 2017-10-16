@@ -16,7 +16,7 @@ define printsrcs
 	@echo $(1) $(foreach dir,$(DIRS),\
 		$(OBJS-$(1)/$(dir):%.o=$(dir)/%.c)\
 		$(MMX-OBJS-$(1)/$(dir):%.o=$(dir)/%.c)\
-		$(YASM-OBJS-$(1)/$(dir):%.o=$(dir)/%.asm)\
+		$(X86ASM-OBJS-$(1)/$(dir):%.o=$(dir)/%.asm)\
 	)
 
 endef
