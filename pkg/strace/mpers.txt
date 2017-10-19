@@ -3,8 +3,9 @@ block.c
 btrfs.c
 dirent.c
 evdev.c
-fetch_seccomp_fprog.c
+fetch_bpf_fprog.c
 fetch_struct_flock.c
+fetch_struct_keyctl_kdf_params.c
 fetch_struct_mmsghdr.c
 fetch_struct_msghdr.c
 fetch_struct_stat.c
@@ -15,6 +16,7 @@ ipc_msgctl.c
 ipc_shmctl.c
 loop.c
 mtd.c
+print_group_req.c
 print_mq_attr.c
 print_msgbuf.c
 print_sg_req_info.c
