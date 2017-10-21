@@ -1,17 +1,23 @@
-local cmd = 'rc ./scripts/hash.rc %s %s share/zoneinfo/%s %s'
+local function execute(cmd)
+	if not os.execute(cmd) then
+		error('command failed: '..cmd)
+	end
+end
 
-repo = arg[1]
-outdir = arg[2]
+local hash = 'rc ./scripts/hash.rc %s %s share/zoneinfo/%s %s'
+local repo = arg[1]
+local outdir = arg[2]
 for i = 3, #arg do
+	execute(string.format('zic -d %s %s', outdir, arg[i]))
 	for line in io.lines(arg[i]) do
 		local target, name = line:match('^Link%s+(%g+)%s+(%g+)')
 		if target then
 			target = name:gsub('[^/]+', '..'):sub(1, -3)..target
-			os.execute(cmd:format(repo, 120000, name, target))
+			execute(hash:format(repo, 120000, name, target))
 		else
 			name = line:match('^Zone%s+(%g+)')
 			if name then
-				os.execute(cmd:format(repo, 100644, name, outdir..'/'..name))
+				execute(hash:format(repo, 100644, name, outdir..'/'..name))
 			end
 		end
 	end
