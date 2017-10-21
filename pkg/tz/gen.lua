@@ -12,9 +12,7 @@ local tzdata = {
 	'europe',
 	'northamerica',
 	'southamerica',
-	'pacificnew',
 	'etcetera',
-	'backward',
 	'systemv',
 	'factory',
 }
