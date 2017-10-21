@@ -16,8 +16,4 @@ repo_tag = tree
 repo_branch = master
 
 include config.ninja
-include rules.ninja
 include local.ninja
-
-build build.ninja: phony ninja
-  generator = 1

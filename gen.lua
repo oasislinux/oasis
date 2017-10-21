@@ -1,3 +1,5 @@
+include 'rules.ninja'
+
 toolchain 'target'
 
 subgen 'pkg'
@@ -9,6 +11,7 @@ build('gitinit', '$builddir/root.stamp')
 build('gittree', '$builddir/root.tree', {'$outdir/root.index', '|', 'scripts/tree.rc', '||', '$builddir/root.stamp'})
 build('gitarchive', '$builddir/root.tar', {'|', '$builddir/root.tree'})
 build('gitcommit', '$builddir/root.commit', {'|', '$builddir/root.tree'})
-build('phony', 'commit', {'$builddir/root.commit'})
+build('phony', 'commit', '$builddir/root.commit')
+build('phony', 'build.ninja', 'ninja', {generator='1'})
 
 io.write('default $builddir/root.tree\n')
