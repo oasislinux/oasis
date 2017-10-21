@@ -1,8 +1,6 @@
 cflags{'-I $dir'}
 
 exe('zic', {'zic.c'})
-
-rule('zic', 'zic -d $outdir/zoneinfo $in')
 file('bin/zic', '755', '$outdir/zic')
 
 local tzdata = {
