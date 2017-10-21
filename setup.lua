@@ -3,9 +3,6 @@
 if not os.execute('test -f config.lua') then
 	os.execute('cp config.def.lua config.lua')
 end
-if not os.execute('test -f config.ninja') then
-	os.execute('cp config.def.ninja config.ninja')
-end
 
 dofile 'ninja.lua'
 config = dofile 'config.lua'
@@ -51,8 +48,10 @@ function gen(dir)
 	}
 	io.output(dir..'/local.ninja.tmp')
 	set('dir', dir)
-	set('outdir', '$builddir/$dir')
-	set('srcdir', '$dir/src')
+	if dir ~= '.' then
+		set('outdir', '$builddir/$dir')
+		set('srcdir', '$dir/src')
+	end
 	dofile(dir..'/gen.lua')
 
 	build('gen', '$dir/local.ninja', {'|', pkg.inputs.gen})

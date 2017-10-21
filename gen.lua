@@ -1,3 +1,21 @@
+set('builddir', config.builddir or 'out')
+set('outdir', '$builddir')
+
+set('target_toolchain', config.target_toolchain or 'x86_64-linux-musl')
+set('target_cflags', config.target_cflags or '-O2 -pipe')
+set('target_cxxflags', config.target_cxxflags or '$target_cflags')
+set('target_ldflags', config.target_ldflags or '-s -static')
+
+set('host_toolchain', config.host_toolchain or 'default')
+set('host_cflags', config.host_cflags or '-pipe')
+set('host_cxxflags', config.host_cxxflags or '$host_cflags')
+set('host_ldflags', config.host_ldflags or '')
+
+set('repo', config.repo or '$builddir/root.git')
+set('repo_flags', config.repo_flags or '--bare')
+set('repo_tag', config.repo_tag or 'tree')
+set('repo_branch', config.repo_branch or 'master')
+
 include 'rules.ninja'
 
 toolchain 'target'
