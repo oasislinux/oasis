@@ -2,6 +2,7 @@ cflags{'-I $dir'}
 
 exe('zic', {'zic.c'})
 file('bin/zic', '755', '$outdir/zic')
+man{'zic.8'}
 
 local tzdata = {
 	'africa',
