@@ -1,6 +1,5 @@
 cflags{
 	[[-D 'DATADIR="/share/kbd"']],
-	'-I include',
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/src',
