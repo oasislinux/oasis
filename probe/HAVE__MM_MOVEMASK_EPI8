@@ -1,0 +1,6 @@
+#include <immintrin.h>
+static __m128i x;
+int main(void) {
+	_mm_movemask_epi8(x);
+	return 0;
+}

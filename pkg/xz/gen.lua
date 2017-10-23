@@ -1,6 +1,6 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I $dir',
+	'-I $outdir',
 	'-I $srcdir/src/common',
 	'-I $srcdir/src/liblzma/api',
 	'-I $srcdir/src/liblzma/check',
@@ -11,6 +11,13 @@ cflags{
 	'-I $srcdir/src/liblzma/rangecoder',
 	'-I $srcdir/src/liblzma/simple',
 }
+
+build('cat', '$outdir/config.h', {
+	'$dir/config.h',
+	'$builddir/probe/HAVE_IMMINTRIN_H',
+	'$builddir/probe/HAVE__MM_MOVEMASK_EPI8',
+})
+pkg.deps = {'$outdir/config.h'}
 
 lib('liblzma.a', [[src/(
 	common/(

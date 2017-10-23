@@ -47,7 +47,7 @@
 #define HAVE_GETOPT_LONG 1
 /* #undef HAVE_GETTEXT */
 #define HAVE_ICONV 1
-#define HAVE_IMMINTRIN_H 1
+/* probe HAVE_IMMINTRIN_H */
 #define HAVE_INTTYPES_H 1
 #define HAVE_LIMITS_H 1
 #define HAVE_MBRTOWC 1
@@ -93,7 +93,7 @@
 #define HAVE_WCWIDTH 1
 #define HAVE__BOOL 1
 /* #undef HAVE__FUTIME */
-#define HAVE__MM_MOVEMASK_EPI8 1
+/* probe HAVE__MM_MOVEMASK_EPI8 */
 #define LT_OBJDIR ".libs/"
 #define MYTHREAD_POSIX 1
 /* #undef MYTHREAD_VISTA */
