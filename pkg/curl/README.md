@@ -10,7 +10,7 @@ Generated with
 		--with-ca-fallback \
 		--without-ca-bundle \
 		CPPFLAGS='-I/src/oasis/out/pkg/libressl/include -I/src/oasis/out/pkg/zlib/include' \
-		LDFLAGS='-L/src/oasis/out/pkg/libressl -L/src/oasis/out/pkg/zlib/lib' \
+		LDFLAGS='-L/src/oasis/out/pkg/libressl -L/src/oasis/out/pkg/zlib' \
 		LIBS=/src/oasis/out/pkg/openbsd/libbsd.a
 
 There are a number of non-standard definitions, but they don't seem to be
