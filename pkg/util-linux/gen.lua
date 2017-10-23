@@ -1,4 +1,4 @@
-set('version', '2.30.2')
+set('version', '2.31.0')
 cflags{
 	'-include $dir/config.h',
 	'-I include',
@@ -40,6 +40,7 @@ lib('libcommon.a', [[
 		md5.c
 		pager.c
 		path.c
+		pwdutils.c
 		randutils.c
 		setproctitle.c
 		strutils.c
@@ -47,6 +48,7 @@ lib('libcommon.a', [[
 		ttyutils.c
 		exec_shell.c
 		strv.c
+		sha1.c
 
 		linux_version.c
 		loopdev.c
@@ -112,6 +114,7 @@ lib('libuuid.a', [[
 		unpack.c
 		unparse.c
 		uuid_time.c
+		predefined.c
 	)
 ]])
 
