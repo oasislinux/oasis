@@ -10,7 +10,6 @@ cflags{
 	'-I $srcdir/src/liblzma/lzma',
 	'-I $srcdir/src/liblzma/rangecoder',
 	'-I $srcdir/src/liblzma/simple',
-	'-I include',
 }
 
 lib('liblzma.a', [[src/(
