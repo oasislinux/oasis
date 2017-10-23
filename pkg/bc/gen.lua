@@ -1,6 +1,5 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I include',
 	'-I $dir',
 	'-I $srcdir/h',
 }
