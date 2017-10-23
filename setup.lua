@@ -46,6 +46,10 @@ function gen(dir)
 		},
 		perms={},
 	}
+	local outdir = config.builddir..'/'..dir
+	if not os.execute('mkdir -p '..outdir) then
+		error('failed to create '..outdir)
+	end
 	io.output(dir..'/local.ninja.tmp')
 	set('dir', dir)
 	if dir ~= '.' then
@@ -76,10 +80,10 @@ function gen(dir)
 		table.sort(pkg.perms, function(s1, s2)
 			return s1:sub(8) < s2:sub(8)
 		end)
-		local f = io.open(dir..'/local.perms', 'w')
+		local f = io.open(outdir..'/local.perms', 'w')
 		table.insert(pkg.perms, '')
 		f:write(table.concat(pkg.perms, '\n'))
-		table.insert(pkg.inputs.perms, '$dir/local.perms')
+		table.insert(pkg.inputs.perms, '$outdir/local.perms')
 		f:close()
 	end
 	if next(pkg.inputs.perms) then
