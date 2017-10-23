@@ -55,10 +55,10 @@ waylandproto('protocol/wayland-drm.xml',
 )
 
 pkg.deps = {
-	'$builddir/pkg/fontconfig/fetch.stamp',
-	'$builddir/pkg/freetype/fetch.stamp',
-	'$builddir/pkg/libdrm/fetch.stamp',
 	'$outdir/protocol/wayland-drm-client-protocol.h',
+	'pkg/fontconfig/fetch',
+	'pkg/freetype/fetch',
+	'pkg/libdrm/fetch',
 	'pkg/pixman/headers',
 	'pkg/wayland/headers',
 }

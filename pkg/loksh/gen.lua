@@ -4,7 +4,7 @@ cflags{
 	'-idirafter pkg/openbsd/src/sys',
 }
 
-cc('emacs.c', {'$builddir/pkg/openbsd/fetch.stamp'})
+cc('emacs.c', {'pkg/openbsd/fetch'})
 exe('ksh', {
 	'alloc.c',
 	'c_ksh.c',

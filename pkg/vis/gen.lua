@@ -24,8 +24,8 @@ build('copy', '$outdir/config.h', '$srcdir/config.def.h')
 
 pkg.deps = {
 	'$outdir/config.h',
-	'$builddir/pkg/libtermkey/fetch.stamp',
-	'$builddir/pkg/lua/fetch.stamp',
+	'pkg/libtermkey/fetch',
+	'pkg/lua/fetch',
 	'pkg/ncurses/headers',
 }
 

@@ -10,8 +10,8 @@ cflags{
 }
 
 pkg.deps = {
-	'$builddir/pkg/fontconfig/fetch.stamp',
-	'$builddir/pkg/libxkbcommon/fetch.stamp',
+	'pkg/fontconfig/fetch',
+	'pkg/libxkbcommon/fetch',
 	'pkg/pixman/headers',
 	'pkg/wayland/headers',
 	'pkg/wayland-protocols/headers',

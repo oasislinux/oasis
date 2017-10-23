@@ -8,8 +8,8 @@ cflags{
 }
 
 pkg.deps = {
-	'$builddir/pkg/libevdev/fetch.stamp',
-	'$builddir/pkg/mtdev/fetch.stamp',
+	'pkg/libevdev/fetch',
+	'pkg/mtdev/fetch',
 }
 
 lib('libinput.a', [[

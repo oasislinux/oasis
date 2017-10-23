@@ -13,9 +13,9 @@ build('awk', '$outdir/entities.inc', {'$srcdir/build/Entities', '|', '$dir/entit
 
 pkg.deps = {
 	'$outdir/entities.inc',
-	'$builddir/pkg/netsurf/libdom/fetch.stamp',
-	'$builddir/pkg/netsurf/libparserutils/fetch.stamp',
-	'$builddir/pkg/netsurf/libwapcaplet/fetch.stamp',
+	'pkg/netsurf/libdom/fetch',
+	'pkg/netsurf/libparserutils/fetch',
+	'pkg/netsurf/libwapcaplet/fetch',
 }
 
 lib('libhubbub.a', [[src/(

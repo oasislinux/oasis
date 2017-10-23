@@ -15,9 +15,9 @@ pkg.hdrs = copy('$outdir/include/dom', '$srcdir', {
 })
 pkg.deps = {
 	'pkg/expat/headers',
-	'$builddir/pkg/netsurf/libhubbub/fetch.stamp',
-	'$builddir/pkg/netsurf/libparserutils/fetch.stamp',
-	'$builddir/pkg/netsurf/libwapcaplet/fetch.stamp',
+	'pkg/netsurf/libhubbub/fetch',
+	'pkg/netsurf/libparserutils/fetch',
+	'pkg/netsurf/libwapcaplet/fetch',
 }
 
 lib('libdom.a', [[

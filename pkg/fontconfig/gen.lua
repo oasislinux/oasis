@@ -8,7 +8,10 @@ cflags{
 	'-I $builddir/pkg/expat/include',
 }
 
-pkg.deps = {'pkg/expat/headers', '$builddir/pkg/freetype/fetch.stamp'}
+pkg.deps = {
+	'pkg/expat/headers',
+	'pkg/freetype/fetch',
+}
 
 rule('makealias', '$srcdir/src/makealias $srcdir/src $out $in')
 local function makealias(name, srcs)

@@ -357,9 +357,9 @@ function waylandproto(proto, client, server, code)
 end
 
 function fetch(method, args)
-	build('fetch'..method, '$outdir/fetch.stamp', {'|', '$dir/rev'}, {args=args})
+	build('fetch'..method, '$dir/fetch', {'|', '$dir/rev'}, {args=args})
 	if next(pkg.inputs.fetch) then
-		build('phony', table.keys(pkg.inputs.fetch), '$outdir/fetch.stamp')
+		build('phony', table.keys(pkg.inputs.fetch), '$dir/fetch')
 	end
 end
 

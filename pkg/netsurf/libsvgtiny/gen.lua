@@ -8,9 +8,9 @@ cflags{
 }
 
 pkg.deps = {
+	'pkg/netsurf/libdom/fetch',
 	'pkg/netsurf/libdom/headers',
-	'$builddir/pkg/netsurf/libdom/fetch.stamp',
-	'$builddir/pkg/netsurf/libwapcaplet/fetch.stamp',
+	'pkg/netsurf/libwapcaplet/fetch',
 }
 
 lib('libsvgtiny.a', [[

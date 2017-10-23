@@ -16,8 +16,8 @@ build('awk', '$outdir/prop_parsers.c', {
 }, {expr='-f $dir/prop_parsers.awk gen_prop_parser=$outdir/gen_prop_parser'})
 
 pkg.deps = {
-	'$builddir/pkg/netsurf/libparserutils/fetch.stamp',
-	'$builddir/pkg/netsurf/libwapcaplet/fetch.stamp',
+	'pkg/netsurf/libparserutils/fetch',
+	'pkg/netsurf/libwapcaplet/fetch',
 }
 
 lib('libcss.a', [[src/(

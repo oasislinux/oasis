@@ -15,7 +15,7 @@ pkg.hdrs = {
 }
 pkg.deps = {
 	'$dir/headers',
-	'$builddir/pkg/openbsd/fetch.stamp',
+	'pkg/openbsd/fetch',
 }
 
 lib('libevent.a', {

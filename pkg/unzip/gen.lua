@@ -10,7 +10,7 @@ exe('unzip', [[
 	process.c ttyio.c ubz2err.c unreduce.c unshrink.c zipinfo.c
 	unix/unix.c
 	$builddir/pkg/bzip2/libbz2.a
-]], {'$builddir/pkg/bzip2/fetch.stamp'})
+]], {'pkg/bzip2/fetch'})
 file('bin/unzip', '755', '$outdir/unzip')
 man{'man/unzip.1'}
 

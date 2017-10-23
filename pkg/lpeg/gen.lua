@@ -9,6 +9,6 @@ lib('liblpeg.a', {
 	'lptree.c',
 	'lpcode.c',
 	'lpprint.c',
-}, {'$builddir/pkg/lua/fetch.stamp'})
+}, {'pkg/lua/fetch'})
 
 fetch 'curl'

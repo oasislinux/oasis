@@ -27,7 +27,7 @@ sub('libminiupnp.ninja', function()
 			upnpcommands.c
 			upnpreplyparse.c
 		)
-	]], {'$outdir/miniupnp/miniupnpcstrings.h', '$builddir/pkg/openbsd/fetch.stamp'})
+	]], {'$outdir/miniupnp/miniupnpcstrings.h', 'pkg/openbsd/fetch'})
 end)
 sub('libutp.ninja', function()
 	set('cc', '$cxx')
@@ -65,8 +65,8 @@ pkg.deps = {
 	'pkg/curl/headers',
 	'pkg/libevent/headers',
 	'pkg/libressl/headers',
+	'pkg/openbsd/fetch',
 	'pkg/zlib/headers',
-	'$builddir/pkg/openbsd/fetch.stamp',
 }
 
 lib('libtransmission.a', [[

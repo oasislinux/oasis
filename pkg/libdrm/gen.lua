@@ -15,7 +15,7 @@ lib('libdrm.a', {
 
 if config.video_drivers and config.video_drivers['intel'] then
 	cflags{'-D HAVE_INTEL=1', '-I pkg/libpciaccess/src/include'}
-	pkg.deps = {'$builddir/pkg/libpciaccess/fetch.stamp'}
+	pkg.deps = {'pkg/libpciaccess/fetch'}
 	lib('libdrm_intel.a', [[
 		intel/(
 			intel_bufmgr.c

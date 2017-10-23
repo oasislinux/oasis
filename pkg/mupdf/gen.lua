@@ -39,12 +39,12 @@ for _, font in ipairs(fonts) do
 end
 
 pkg.deps = {
+	'$outdir/mupdf/pdf/name-table.h',
 	'pkg/curl/headers',
+	'pkg/freetype/fetch',
+	'pkg/jbig2dec/fetch',
 	'pkg/libjpeg-turbo/headers',
 	'pkg/zlib/headers',
-	'$builddir/pkg/freetype/fetch.stamp',
-	'$builddir/pkg/jbig2dec/fetch.stamp',
-	'$outdir/mupdf/pdf/name-table.h',
 }
 
 lib('libmupdf.a', {
@@ -71,7 +71,7 @@ cc('platform/x11/curl_stream.c', {'pkg/curl/headers'}, {
 })
 cc('platform/x11/wl_main.c', {
 	'$dir/deps',
-	'$builddir/pkg/libxkbcommon/fetch.stamp',
+	'pkg/libxkbcommon/fetch',
 	'pkg/pixman/headers',
 	'pkg/wayland/headers',
 	'pkg/wayland-protocols/headers',

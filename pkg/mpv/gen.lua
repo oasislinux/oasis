@@ -82,7 +82,7 @@ if options['HAVE_DRM'] then
 		'-I pkg/libdrm/src/include/drm',
 	}
 	table.insert(libs, 'libdrm/libdrm.a')
-	table.insert(pkg.deps, '$builddir/pkg/libdrm/fetch.stamp')
+	table.insert(pkg.deps, 'pkg/libdrm/fetch')
 end
 if options['HAVE_LIBASS'] then
 	cflags{'-I $builddir/pkg/libass/include'}
@@ -92,7 +92,7 @@ end
 if options['HAVE_LUA'] then
 	cflags{'-I pkg/lua/src/src'}
 	table.insert(libs, 'lua/liblua.a')
-	table.insert(pkg.deps, '$builddir/pkg/lua/fetch.stamp')
+	table.insert(pkg.deps, 'pkg/lua/fetch')
 end
 if options['HAVE_WAYLAND'] then
 	cflags{
@@ -106,7 +106,7 @@ if options['HAVE_WAYLAND'] then
 	})
 	table.insert(pkg.deps, {
 		'pkg/wayland/headers',
-		'$builddir/pkg/libxkbcommon/fetch.stamp',
+		'pkg/libxkbcommon/fetch',
 	})
 end
 

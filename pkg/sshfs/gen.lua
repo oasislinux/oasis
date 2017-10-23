@@ -6,7 +6,7 @@ cflags{
 
 exe('sshfs', {
 	'sshfs.c', 'nocache.c', '$builddir/pkg/libfuse/libfuse.a',
-}, {'$builddir/pkg/libfuse/fetch.stamp'})
+}, {'pkg/libfuse/fetch'})
 file('bin/sshfs', '755', '$outdir/sshfs')
 man{'$dir/sshfs.1'}
 

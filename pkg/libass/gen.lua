@@ -15,7 +15,7 @@ set('nasmflags', {
 
 pkg.hdrs = copy('$outdir/include/ass', '$srcdir/libass', {'ass.h', 'ass_types.h'})
 pkg.deps = {
-	'$builddir/pkg/freetype/fetch.stamp',
+	'pkg/freetype/fetch',
 	'pkg/fribidi/headers',
 }
 

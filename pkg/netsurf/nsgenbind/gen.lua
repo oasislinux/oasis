@@ -8,7 +8,7 @@ local generated = {
 	'webidl-parser.c',
 }
 for _, src in ipairs(generated) do
-	build('cc', '$outdir/src/'..src..'.o', {'$dir/'..src, '||', '$outdir/fetch.stamp'})
+	build('cc', '$outdir/src/'..src..'.o', {'$dir/'..src, '||', '$dir/fetch'})
 end
 
 exe('nsgenbind', [[src/(

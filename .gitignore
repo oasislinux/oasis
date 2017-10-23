@@ -1,6 +1,7 @@
 /config.ninja
 /config.lua
 /out
+fetch
 local.ninja
 local.perms
 .*.swp
