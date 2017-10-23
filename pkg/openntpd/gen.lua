@@ -1,7 +1,6 @@
 cflags{
 	'-D _GNU_SOURCE',
 	'-include $dir/config.h',
-	'-I include',
 	'-I $srcdir/src',
 	'-I $srcdir/include',
 	'-I pkg/openbsd/include',
