@@ -1,6 +1,8 @@
+local arch = config.target_toolchain:match('[^-]*')
 cflags{
 	'-D _XOPEN_SOURCE=600',
 	'-D _DEFAULT_SOURCE',
+	'-D SECCOMP_AUDIT_ARCH=AUDIT_ARCH_'..arch:upper(),
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/openbsd-compat',

@@ -1,7 +1,7 @@
-#define ASKPASS_PROGRAM "/libexec/ssh-askpass"
-#define LOGIN_PROGRAM "/bin/login"
+#define SSHDIR "/etc/ssh"
 #define _PATH_BTMP "/var/log/btmp"
 #define _PATH_PASSWD_PROG "/bin/passwd"
+#define _PATH_PRIVSEP_CHROOT_DIR "/var/empty"
 #define _PATH_SFTP_SERVER "/libexec/sftp-server"
 #define _PATH_SSH_ASKPASS_DEFAULT "/libexec/ssh-askpass"
 #define _PATH_SSH_KEY_SIGN "/libexec/ssh-keysign"
@@ -536,7 +536,6 @@
 /* #undef SANDBOX_SKIP_RLIMIT_NOFILE */
 /* #undef SANDBOX_SOLARIS */
 /* #undef SANDBOX_SYSTRACE */
-#define SECCOMP_AUDIT_ARCH AUDIT_ARCH_X86_64
 /* #undef SETEUID_BREAKS_SETUID */
 /* #undef SIZEOF_INT */
 /* #undef SIZEOF_LONG_INT */
