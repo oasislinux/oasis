@@ -20,7 +20,6 @@ return {
 		'plan9port',
 		'samurai',
 		'sbase',
-		'scron',
 		'sdhcp',
 		'sinit',
 		'skeleton',
