@@ -17,7 +17,7 @@ lib('libinput.a', [[
 		libinput.c
 		libinput-util.c
 		evdev.c
-		evdev-lid.c
+		evdev-fallback.c
 		evdev-middle-button.c
 		evdev-mt-touchpad.c
 		evdev-mt-touchpad-tap.c
