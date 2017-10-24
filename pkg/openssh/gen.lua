@@ -1,4 +1,4 @@
-local arch = config.target_toolchain:match('[^-]*')
+local arch = config.target.toolchain:match('[^-]*')
 cflags{
 	'-D _XOPEN_SOURCE=600',
 	'-D _DEFAULT_SOURCE',

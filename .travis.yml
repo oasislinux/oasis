@@ -17,7 +17,16 @@ install:
 script:
 - git submodule update --init pkg/samurai/src
 - make -C pkg/samurai/src
-- echo 'return { fs={exclude={}}, tls="libressl", video_drivers={intel=true, nouveau=true} }' > config.lua
+- |
+  echo 'return {
+  	builddir="out",
+  	fs={exclude={}},
+  	target={toolchain="x86_64-linux-musl", cflags="-O2 -pipe", cxxflags="$target_cflags", ldflags="-s -static"},
+  	host={toolchain="default", cflags="-pipe", cxxflags="$host_cflags", ldflags=""},
+  	repo={path="$builddir/root.git", flags="--bare", tag="tree", branch="master"},
+  	tls="libressl",
+  	video_drivers={intel=true, nouveau=true}
+  }' > config.lua
 - lua setup.lua
 - ./pkg/samurai/src/samu out/pkg/openbsd/pax out/pkg/mc/bin/6m out/pkg/mc/bin/muse out/pkg/file/file out/pkg/texi2mdoc/texi2mdoc
 - mkdir /tmp/bin

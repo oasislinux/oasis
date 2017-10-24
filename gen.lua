@@ -1,20 +1,20 @@
-set('builddir', config.builddir or 'out')
+set('builddir', config.builddir)
 set('outdir', '$builddir')
 
-set('target_toolchain', config.target_toolchain or 'x86_64-linux-musl')
-set('target_cflags', config.target_cflags or '-O2 -pipe')
-set('target_cxxflags', config.target_cxxflags or '$target_cflags')
-set('target_ldflags', config.target_ldflags or '-s -static')
+set('target_toolchain', config.target.toolchain)
+set('target_cflags', config.target.cflags)
+set('target_cxxflags', config.target.cxxflags)
+set('target_ldflags', config.target.ldflags)
 
-set('host_toolchain', config.host_toolchain or 'default')
-set('host_cflags', config.host_cflags or '-pipe')
-set('host_cxxflags', config.host_cxxflags or '$host_cflags')
-set('host_ldflags', config.host_ldflags or '')
+set('host_toolchain', config.host.toolchain)
+set('host_cflags', config.host.cflags)
+set('host_cxxflags', config.host.cxxflags)
+set('host_ldflags', config.host.ldflags)
 
-set('repo', config.repo or '$builddir/root.git')
-set('repo_flags', config.repo_flags or '--bare')
-set('repo_tag', config.repo_tag or 'tree')
-set('repo_branch', config.repo_branch or 'master')
+set('repo', config.repo.path)
+set('repo_flags', config.repo.flags)
+set('repo_tag', config.repo.tag)
+set('repo_branch', config.repo.branch)
 
 include 'rules.ninja'
 
