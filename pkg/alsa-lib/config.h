@@ -22,7 +22,7 @@
 #define HAVE_DLFCN_H 1
 #define HAVE_ENDIAN_H 1
 #define HAVE_INTTYPES_H 1
-#define HAVE_LIBDL 1
+/* #undef HAVE_LIBDL */
 #define HAVE_LIBPTHREAD 1
 /* #undef HAVE_LIBRESMGR */
 #define HAVE_LIBRT 1

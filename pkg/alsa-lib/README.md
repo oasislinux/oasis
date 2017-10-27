@@ -6,4 +6,5 @@ Generated with
 	./configure \
 		--prefix= \
 		--disable-hwdep \
-		--disable-rawmidi
+		--disable-rawmidi \
+		--without-libdl
