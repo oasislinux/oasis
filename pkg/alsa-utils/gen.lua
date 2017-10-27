@@ -1,5 +1,4 @@
 cflags{
-	'-I include',
 	'-I $dir',
 	'-I $srcdir/include',
 	'-I $builddir/pkg/alsa-lib/include',
