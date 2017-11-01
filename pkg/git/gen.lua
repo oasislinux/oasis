@@ -108,7 +108,9 @@ lib('libgit.a', [[
 	notes-utils.c
 	notes.c
 	object.c
+	oidmap.c
 	oidset.c
+	packfile.c
 	pack-bitmap-write.c
 	pack-bitmap.c
 	pack-check.c
@@ -136,6 +138,7 @@ lib('libgit.a', [[
 	refs.c
 	refs/files-backend.c
 	refs/iterator.c
+	refs/packed-backend.c
 	refs/ref-cache.c
 	remote.c
 	replace_object.c
@@ -192,6 +195,7 @@ lib('libgit.a', [[
 	xdiff-interface.c
 	zlib.c
 
+	sha1dc_git.c
 	sha1dc/sha1.c
 	sha1dc/ubc_check.c
 
