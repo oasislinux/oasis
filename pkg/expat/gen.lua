@@ -1,6 +1,5 @@
 cflags{
 	'-D HAVE_EXPAT_CONFIG_H',
-	'-I include',
 	'-I $dir',
 	'-I pkg/openbsd/include',
 }
