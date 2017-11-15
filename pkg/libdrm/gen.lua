@@ -40,4 +40,27 @@ if config.video_drivers and config.video_drivers['nouveau'] then
 	]])
 end
 
+if config.video_drivers and config.video_drivers['amdgpu'] then
+	cflags{
+		'-D HAVE_AMDGPU=1',
+		[[-D 'AMDGPU_ASIC_ID_TABLE="/share/libdrm/amdgpu.ids"']],
+		-- grep -Eci '^[0-9a-f]{4},.*[0-9a-f]+,' src/data/amdgpu.ids
+		'-D AMDGPU_ASIC_ID_TABLE_NUM_ENTRIES=154',
+	}
+	lib('libdrm_amdgpu.a', [[
+		amdgpu/(
+			amdgpu_asic_id.c
+			amdgpu_bo.c
+			amdgpu_cs.c
+			amdgpu_device.c
+			amdgpu_gpu_info.c
+			amdgpu_vamgr.c
+			amdgpu_vm.c
+			util_hash.c
+			util_hash_table.c
+		)
+	]])
+	file('share/libdrm/amdgpu.ids', '644', '$srcdir/data/amdgpu.ids')
+end
+
 fetch 'git'
