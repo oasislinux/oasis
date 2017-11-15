@@ -4,6 +4,7 @@ cflags{
 	'-D _GNU_SOURCE',
 	'-D HAVE_SETNS',
 	'-I $srcdir/include',
+	'-I $srcdir/include/uapi',
 	'-I $srcdir/misc',
 }
 
@@ -11,7 +12,7 @@ lib('libnetlink.a', [[lib/(
 	libgenl.c ll_map.c libnetlink.c
 
 	utils.c rt_names.c ll_types.c ll_proto.c ll_addr.c
-	inet_proto.c namespace.c json_writer.c
+	inet_proto.c namespace.c json_writer.c json_print.c
 	names.c color.c bpf.c exec.c fs.c
 	(dnet ipx mpls)_ntop.c (dnet ipx mpls)_pton.c
 )]])

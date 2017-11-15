@@ -1,54 +1,57 @@
-From 135e89e0498b5249efb857a143133c497024254c Mon Sep 17 00:00:00 2001
+From 0eb925e0e6b584ad4183cf90180a184b9602bf26 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 25 Apr 2015 17:37:46 +0000
 Subject: [PATCH] Fix includes for musl libc
 
 ---
- bridge/fdb.c               | 1 -
- bridge/link.c              | 2 +-
- bridge/mdb.c               | 1 -
- bridge/vlan.c              | 1 -
- include/linux/if_bridge.h  | 4 ++--
- include/linux/if_tunnel.h  | 4 ++--
- include/linux/ip6_tunnel.h | 2 --
- include/linux/l2tp.h       | 2 --
- include/linux/seg6.h       | 1 -
- include/linux/xfrm.h       | 1 -
- ip/ip6tunnel.c             | 3 +--
- ip/ipaddress.c             | 4 ++--
- ip/ipl2tp.c                | 2 --
- ip/ipmaddr.c               | 4 +---
- ip/ipmroute.c              | 3 ---
- ip/iprule.c                | 2 +-
- ip/ipseg6.c                | 1 -
- ip/iptoken.c               | 2 +-
- ip/iptuntap.c              | 2 +-
- ip/link_gre.c              | 1 -
- ip/link_iptnl.c            | 1 -
- ip/tcp_metrics.c           | 1 -
- ip/tunnel.c                | 1 -
- ip/xfrm.h                  | 1 -
- lib/ll_addr.c              | 3 +--
- lib/ll_proto.c             | 3 +--
- lib/ll_types.c             | 3 +--
- lib/utils.c                | 2 +-
- misc/ss.c                  | 1 -
- 29 files changed, 16 insertions(+), 43 deletions(-)
+ bridge/fdb.c                    | 3 +--
+ bridge/link.c                   | 2 +-
+ bridge/mdb.c                    | 1 -
+ bridge/monitor.c                | 1 -
+ bridge/vlan.c                   | 1 -
+ include/uapi/linux/if_bridge.h  | 4 ++--
+ include/uapi/linux/if_tunnel.h  | 4 ++--
+ include/uapi/linux/ip6_tunnel.h | 2 --
+ include/uapi/linux/l2tp.h       | 2 --
+ include/uapi/linux/seg6.h       | 1 -
+ include/uapi/linux/xfrm.h       | 1 -
+ ip/ip6tunnel.c                  | 3 +--
+ ip/ipaddress.c                  | 4 ++--
+ ip/ipl2tp.c                     | 2 --
+ ip/ipmaddr.c                    | 4 +---
+ ip/ipmroute.c                   | 3 ---
+ ip/iprule.c                     | 2 +-
+ ip/ipseg6.c                     | 1 -
+ ip/iptoken.c                    | 2 +-
+ ip/iptuntap.c                   | 2 +-
+ ip/link_gre.c                   | 1 -
+ ip/link_iptnl.c                 | 1 -
+ ip/tcp_metrics.c                | 1 -
+ ip/tunnel.c                     | 1 -
+ ip/xfrm.h                       | 1 -
+ lib/ll_addr.c                   | 3 +--
+ lib/ll_proto.c                  | 3 +--
+ lib/ll_types.c                  | 3 +--
+ lib/utils.c                     | 3 ++-
+ misc/ss.c                       | 1 -
+ 30 files changed, 18 insertions(+), 45 deletions(-)
 
 diff --git a/bridge/fdb.c b/bridge/fdb.c
-index e5cebf9b..0710af8b 100644
+index c2f654c4..35c315bf 100644
 --- a/bridge/fdb.c
 +++ b/bridge/fdb.c
-@@ -17,7 +17,6 @@
+@@ -16,8 +16,7 @@
+ #include <sys/time.h>
  #include <net/if.h>
  #include <netinet/in.h>
- #include <linux/if_bridge.h>
+-#include <linux/if_bridge.h>
 -#include <linux/if_ether.h>
++#include <netinet/if_ether.h>
  #include <linux/neighbour.h>
  #include <string.h>
  #include <limits.h>
 diff --git a/bridge/link.c b/bridge/link.c
-index 93472ad3..ec2f67f2 100644
+index 9e4206f5..e8e39031 100644
 --- a/bridge/link.c
 +++ b/bridge/link.c
 @@ -6,7 +6,7 @@
@@ -61,7 +64,7 @@ index 93472ad3..ec2f67f2 100644
  #include <string.h>
  #include <stdbool.h>
 diff --git a/bridge/mdb.c b/bridge/mdb.c
-index e60ff3ef..540f6736 100644
+index 748091b8..15d91436 100644
 --- a/bridge/mdb.c
 +++ b/bridge/mdb.c
 @@ -10,7 +10,6 @@
@@ -71,9 +74,21 @@ index e60ff3ef..540f6736 100644
 -#include <linux/if_ether.h>
  #include <string.h>
  #include <arpa/inet.h>
+ #include <json_writer.h>
+diff --git a/bridge/monitor.c b/bridge/monitor.c
+index d294269e..abcc4e30 100644
+--- a/bridge/monitor.c
++++ b/bridge/monitor.c
+@@ -18,7 +18,6 @@
+ #include <sys/time.h>
+ #include <net/if.h>
+ #include <netinet/in.h>
+-#include <linux/if_bridge.h>
+ #include <linux/neighbour.h>
+ #include <string.h>
  
 diff --git a/bridge/vlan.c b/bridge/vlan.c
-index ebcdacee..12c642f4 100644
+index ccd14bf4..7d1bd7ab 100644
 --- a/bridge/vlan.c
 +++ b/bridge/vlan.c
 @@ -6,7 +6,6 @@
@@ -84,11 +99,11 @@ index ebcdacee..12c642f4 100644
  #include <json_writer.h>
  #include <string.h>
  
-diff --git a/include/linux/if_bridge.h b/include/linux/if_bridge.h
-index 156f4434..de3b34ba 100644
---- a/include/linux/if_bridge.h
-+++ b/include/linux/if_bridge.h
-@@ -13,9 +13,9 @@
+diff --git a/include/uapi/linux/if_bridge.h b/include/uapi/linux/if_bridge.h
+index bdfecf94..52b5a470 100644
+--- a/include/uapi/linux/if_bridge.h
++++ b/include/uapi/linux/if_bridge.h
+@@ -14,9 +14,9 @@
  #ifndef _LINUX_IF_BRIDGE_H
  #define _LINUX_IF_BRIDGE_H
  
@@ -100,11 +115,11 @@ index 156f4434..de3b34ba 100644
  
  #define SYSFS_BRIDGE_ATTR	"bridge"
  #define SYSFS_BRIDGE_FDB	"brforward"
-diff --git a/include/linux/if_tunnel.h b/include/linux/if_tunnel.h
-index 7375335a..b92e0504 100644
---- a/include/linux/if_tunnel.h
-+++ b/include/linux/if_tunnel.h
-@@ -1,10 +1,10 @@
+diff --git a/include/uapi/linux/if_tunnel.h b/include/uapi/linux/if_tunnel.h
+index 9db14bd8..0b9b2a93 100644
+--- a/include/uapi/linux/if_tunnel.h
++++ b/include/uapi/linux/if_tunnel.h
+@@ -2,10 +2,10 @@
  #ifndef _IF_TUNNEL_H_
  #define _IF_TUNNEL_H_
  
@@ -117,11 +132,11 @@ index 7375335a..b92e0504 100644
  #include <asm/byteorder.h>
  
  
-diff --git a/include/linux/ip6_tunnel.h b/include/linux/ip6_tunnel.h
-index 425926c4..48af63c9 100644
---- a/include/linux/ip6_tunnel.h
-+++ b/include/linux/ip6_tunnel.h
-@@ -2,8 +2,6 @@
+diff --git a/include/uapi/linux/ip6_tunnel.h b/include/uapi/linux/ip6_tunnel.h
+index 51f29308..1e6755fe 100644
+--- a/include/uapi/linux/ip6_tunnel.h
++++ b/include/uapi/linux/ip6_tunnel.h
+@@ -3,8 +3,6 @@
  #define _IP6_TUNNEL_H
  
  #include <linux/types.h>
@@ -130,11 +145,11 @@ index 425926c4..48af63c9 100644
  
  #define IPV6_TLV_TNL_ENCAP_LIMIT 4
  #define IPV6_DEFAULT_TNL_ENCAP_LIMIT 4
-diff --git a/include/linux/l2tp.h b/include/linux/l2tp.h
-index 8a80007b..c1c85461 100644
---- a/include/linux/l2tp.h
-+++ b/include/linux/l2tp.h
-@@ -9,8 +9,6 @@
+diff --git a/include/uapi/linux/l2tp.h b/include/uapi/linux/l2tp.h
+index 472e9924..e589bdeb 100644
+--- a/include/uapi/linux/l2tp.h
++++ b/include/uapi/linux/l2tp.h
+@@ -10,8 +10,6 @@
  
  #include <linux/types.h>
  #include <linux/socket.h>
@@ -143,11 +158,11 @@ index 8a80007b..c1c85461 100644
  
  #define IPPROTO_L2TP		115
  
-diff --git a/include/linux/seg6.h b/include/linux/seg6.h
-index 07152792..7278806f 100644
---- a/include/linux/seg6.h
-+++ b/include/linux/seg6.h
-@@ -15,7 +15,6 @@
+diff --git a/include/uapi/linux/seg6.h b/include/uapi/linux/seg6.h
+index 3f7be853..68d917b7 100644
+--- a/include/uapi/linux/seg6.h
++++ b/include/uapi/linux/seg6.h
+@@ -16,7 +16,6 @@
  #define _LINUX_SEG6_H
  
  #include <linux/types.h>
@@ -155,11 +170,11 @@ index 07152792..7278806f 100644
  
  /*
   * SRH
-diff --git a/include/linux/xfrm.h b/include/linux/xfrm.h
-index 3af99e02..2e922959 100644
---- a/include/linux/xfrm.h
-+++ b/include/linux/xfrm.h
-@@ -1,7 +1,6 @@
+diff --git a/include/uapi/linux/xfrm.h b/include/uapi/linux/xfrm.h
+index 93fb1920..cefbb84b 100644
+--- a/include/uapi/linux/xfrm.h
++++ b/include/uapi/linux/xfrm.h
+@@ -2,7 +2,6 @@
  #ifndef _LINUX_XFRM_H
  #define _LINUX_XFRM_H
  
@@ -168,7 +183,7 @@ index 3af99e02..2e922959 100644
  
  /* All of the structures in this file may not change size as they are
 diff --git a/ip/ip6tunnel.c b/ip/ip6tunnel.c
-index b4a7def1..99c338bc 100644
+index bc44bef7..1adedbb7 100644
 --- a/ip/ip6tunnel.c
 +++ b/ip/ip6tunnel.c
 @@ -27,9 +27,8 @@
@@ -183,7 +198,7 @@ index b4a7def1..99c338bc 100644
  #include <linux/ip6_tunnel.h>
  
 diff --git a/ip/ipaddress.c b/ip/ipaddress.c
-index dbdd839c..bb9557b7 100644
+index 9e9a7e0a..024e21d3 100644
 --- a/ip/ipaddress.c
 +++ b/ip/ipaddress.c
 @@ -24,9 +24,9 @@
@@ -199,7 +214,7 @@ index dbdd839c..bb9557b7 100644
  #include <linux/net_namespace.h>
  
 diff --git a/ip/ipl2tp.c b/ip/ipl2tp.c
-index 88664c90..1334320d 100644
+index 1e37b175..352402ff 100644
 --- a/ip/ipl2tp.c
 +++ b/ip/ipl2tp.c
 @@ -19,8 +19,6 @@
@@ -212,7 +227,7 @@ index 88664c90..1334320d 100644
  
  #include <linux/genetlink.h>
 diff --git a/ip/ipmaddr.c b/ip/ipmaddr.c
-index 85a69e77..0c2b01a5 100644
+index 46b86a3a..01bd32ef 100644
 --- a/ip/ipmaddr.c
 +++ b/ip/ipmaddr.c
 @@ -20,10 +20,8 @@
@@ -242,7 +257,7 @@ index b51c23cc..2f2a5a9a 100644
  
  #include <rt_names.h>
 diff --git a/ip/iprule.c b/ip/iprule.c
-index 8313138d..2ef0d8d9 100644
+index 36c57fa7..01dacdd7 100644
 --- a/ip/iprule.c
 +++ b/ip/iprule.c
 @@ -20,7 +20,7 @@
@@ -280,7 +295,7 @@ index 1869f764..daf2dc66 100644
  #include "rt_names.h"
  #include "utils.h"
 diff --git a/ip/iptuntap.c b/ip/iptuntap.c
-index 451f7f0e..e79d2ca5 100644
+index b46e452f..4a7bfcc8 100644
 --- a/ip/iptuntap.c
 +++ b/ip/iptuntap.c
 @@ -18,7 +18,7 @@
@@ -293,7 +308,7 @@ index 451f7f0e..e79d2ca5 100644
  #include <pwd.h>
  #include <grp.h>
 diff --git a/ip/link_gre.c b/ip/link_gre.c
-index c2ec5f26..acff5ad3 100644
+index 9ea2970c..9bd62f16 100644
 --- a/ip/link_gre.c
 +++ b/ip/link_gre.c
 @@ -16,7 +16,6 @@
@@ -305,7 +320,7 @@ index c2ec5f26..acff5ad3 100644
  #include "rt_names.h"
  #include "utils.h"
 diff --git a/ip/link_iptnl.c b/ip/link_iptnl.c
-index d24e7376..2a3ebfd9 100644
+index 6a725e91..5b21e414 100644
 --- a/ip/link_iptnl.c
 +++ b/ip/link_iptnl.c
 @@ -16,7 +16,6 @@
@@ -341,7 +356,7 @@ index d359eb95..c95632ce 100644
  #include <linux/if_tunnel.h>
  
 diff --git a/ip/xfrm.h b/ip/xfrm.h
-index 54d80ce5..1fc0082b 100644
+index 71be574d..d05db299 100644
 --- a/ip/xfrm.h
 +++ b/ip/xfrm.h
 @@ -26,7 +26,6 @@
@@ -398,20 +413,21 @@ index 8f294515..8edbbb7b 100644
  
  #include "rt_names.h"
 diff --git a/lib/utils.c b/lib/utils.c
-index 330ab073..d2939c54 100644
+index c102add7..b288c9f7 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
-@@ -25,7 +25,7 @@
+@@ -26,7 +26,8 @@
  #include <asm/types.h>
  #include <linux/pkt_sched.h>
  #include <linux/param.h>
 -#include <linux/if_arp.h>
++#include <net/if.h>
 +#include <net/if_arp.h>
  #include <linux/mpls.h>
  #include <time.h>
  #include <sys/time.h>
 diff --git a/misc/ss.c b/misc/ss.c
-index dd8dfaa4..7938d1ae 100644
+index 45a0c330..113ae8a3 100644
 --- a/misc/ss.c
 +++ b/misc/ss.c
 @@ -39,7 +39,6 @@
@@ -423,5 +439,5 @@ index dd8dfaa4..7938d1ae 100644
  #include <linux/packet_diag.h>
  #include <linux/netlink_diag.h>
 -- 
-2.14.1
+2.15.0
 
