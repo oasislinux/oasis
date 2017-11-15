@@ -38,14 +38,14 @@
 #define PACKAGE "alsa-utils"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "alsa-utils"
-#define PACKAGE_STRING "alsa-utils 1.1.4"
+#define PACKAGE_STRING "alsa-utils 1.1.5"
 #define PACKAGE_TARNAME "alsa-utils"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.1.4"
+#define PACKAGE_VERSION "1.1.5"
 #define SOUNDSDIR "/share/sounds/alsa"
 #define STDC_HEADERS 1
 #define TIME_WITH_SYS_TIME 1
-#define VERSION "1.1.4"
+#define VERSION "1.1.5"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
