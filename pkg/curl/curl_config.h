@@ -42,6 +42,8 @@
 #define HAVE_BASENAME 1
 #define HAVE_BOOL_T 1
 /* #undef HAVE_BORINGSSL */
+/* #undef HAVE_BROTLI */
+/* #undef HAVE_BROTLI_DECODE_H */
 /* #undef HAVE_BUILTIN_AVAILABLE */
 #define HAVE_CLOCK_GETTIME_MONOTONIC 1
 /* #undef HAVE_CLOSESOCKET */
@@ -128,6 +130,7 @@
 #define HAVE_LDAP_SSL 1
 /* #undef HAVE_LDAP_SSL_H */
 /* #undef HAVE_LDAP_URL_PARSE */
+/* #undef HAVE_LIBBROTLIDEC */
 #define HAVE_LIBGEN_H 1
 /* #undef HAVE_LIBIDN2 */
 #define HAVE_LIBRESSL 1
@@ -137,10 +140,12 @@
 #define HAVE_LIBSSL 1
 #define HAVE_LIBZ 1
 #define HAVE_LIMITS_H 1
+#define HAVE_LINUX_TCP_H 1
 #define HAVE_LL 1
 #define HAVE_LOCALE_H 1
 #define HAVE_LOCALTIME_R 1
 #define HAVE_LONGLONG 1
+/* #undef HAVE_MACH_ABSOLUTE_TIME */
 #define HAVE_MALLOC_H 1
 #define HAVE_MEMORY_H 1
 /* #undef HAVE_MEMRCHR */
