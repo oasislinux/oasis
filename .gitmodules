@@ -209,7 +209,7 @@
 	url = https://github.com/michaelforney/sbase
 [submodule "pkg/scc/src"]
 	path = pkg/scc/src
-	url = git://bitreich.org/scc
+	url = git://git.2f30.org/scc
 	ignore = all
 [submodule "pkg/sdhcp/src"]
 	path = pkg/sdhcp/src
