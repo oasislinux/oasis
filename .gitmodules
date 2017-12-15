@@ -122,7 +122,6 @@
 [submodule "pkg/loksh/src"]
 	path = pkg/loksh/src
 	url = https://github.com/dimkr/loksh
-	ignore = all
 [submodule "pkg/make/src"]
 	path = pkg/make/src
 	url = git://git.sv.gnu.org/make.git

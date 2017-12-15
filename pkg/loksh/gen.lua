@@ -1,10 +1,11 @@
 cflags{
 	'-D _GNU_SOURCE',
-	'-I include',
-	'-idirafter pkg/openbsd/src/sys',
+	'-D EMACS',
+	'-D VI',
+	'-I pkg/openbsd/include',
+	'-idirafter $srcdir',  -- for vis.h
 }
 
-cc('emacs.c', {'pkg/openbsd/fetch'})
 exe('ksh', {
 	'alloc.c',
 	'c_ksh.c',
@@ -12,7 +13,7 @@ exe('ksh', {
 	'c_test.c',
 	'c_ulimit.c',
 	'edit.c',
-	'emacs.c.o',
+	'emacs.c',
 	'eval.c',
 	'exec.c',
 	'expr.c',
@@ -33,6 +34,7 @@ exe('ksh', {
 	'var.c',
 	'version.c',
 	'vi.c',
+	'$builddir/pkg/openbsd/libbsd.a',
 })
 file('bin/ksh', '755', '$outdir/ksh')
 sym('bin/sh', 'ksh')

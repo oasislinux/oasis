@@ -30,7 +30,7 @@ cc('$outdir/lib/libc/crypt/arc4random.c', {
 lib('libbsd.a', {paths[[
 	lib/libc/(
 		crypt/(arc4random.c.o arc4random_uniform.c)
-		gen/(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c vis.c warnc.c vwarnc.c)
+		gen/(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c unvis.c vis.c warnc.c vwarnc.c)
 		net/base64.c
 		stdlib/(freezero.c reallocarray.c recallocarray.c strtonum.c)
 		string/(explicit_bzero.c strmode.c timingsafe_memcmp.c)
