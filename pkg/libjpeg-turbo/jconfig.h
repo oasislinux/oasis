@@ -1,6 +1,6 @@
-#define JPEG_LIB_VERSION  80	/* Version 6b */
-#define LIBJPEG_TURBO_VERSION 0
-#define LIBJPEG_TURBO_VERSION_NUMBER 0
+#define JPEG_LIB_VERSION 80
+#define LIBJPEG_TURBO_VERSION 1.5.3
+#define LIBJPEG_TURBO_VERSION_NUMBER 1005003
 #define C_ARITH_CODING_SUPPORTED 1
 #define D_ARITH_CODING_SUPPORTED 1
 #define BITS_IN_JSAMPLE  8      /* use 8 or 12 */
@@ -12,6 +12,11 @@
 /* #undef INCOMPLETE_TYPES_BROKEN */
 /* #undef MEM_SRCDST_SUPPORTED */
 /* #undef NEED_BSD_STRINGS */
-/* #undef NEED_SYS_TYPES_H */
+#define NEED_SYS_TYPES_H 1
 /* #undef RIGHT_SHIFT_IS_UNSIGNED */
 /* #undef WITH_SIMD */
+#ifndef __CHAR_UNSIGNED__
+/* # undef __CHAR_UNSIGNED__ */
+#endif
+/* #undef const */
+/* #undef size_t */
