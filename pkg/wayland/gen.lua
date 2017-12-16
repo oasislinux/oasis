@@ -17,10 +17,6 @@ build('sed', '$outdir/include/wayland-version.h', '$srcdir/src/wayland-version.h
 	},
 })
 
-cc('src/wayland-util.c')
-cc('src/wayland-os.c')
-cc('src/connection.c', {'pkg/libffi/headers'})
-
 waylandproto('protocol/wayland.xml',
 	'include/wayland-client-protocol.h',
 	'include/wayland-server-protocol.h',
@@ -45,7 +41,12 @@ pkg.deps = {
 	'$dir/headers',
 	'$outdir/include/wayland-version.h',
 	'pkg/expat/headers',
+	'pkg/libffi/headers',
 }
+
+cc('src/wayland-util.c')
+cc('src/wayland-os.c')
+cc('src/connection.c')
 
 exe('wayland-scanner', {'src/scanner.c', 'src/wayland-util.c.o', '$builddir/pkg/expat/libexpat.a.d'})
 file('bin/wayland-scanner', '755', '$outdir/wayland-scanner')
