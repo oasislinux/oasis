@@ -1,4 +1,4 @@
-From 82f72d52236a5642f95b52fb1ed10b16b756eb82 Mon Sep 17 00:00:00 2001
+From 34b5c8009dc61b80a4c270bf630deae45bb156fe Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 14 Oct 2017 01:00:22 -0700
 Subject: [PATCH] Remove quotes from @dbfile@ in man pages
@@ -53,5 +53,5 @@ index b9ac956b..4f7c9867 100644
  .B NSD
  database
 -- 
-2.14.2
+2.15.1
 
