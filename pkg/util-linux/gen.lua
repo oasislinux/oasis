@@ -1,4 +1,4 @@
-set('version', '2.31.0')
+set('version', '2.31.1')
 cflags{
 	'-include $dir/config.h',
 	'-I include',
