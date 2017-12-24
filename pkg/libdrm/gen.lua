@@ -44,8 +44,6 @@ if config.video_drivers and config.video_drivers['amdgpu'] then
 	cflags{
 		'-D HAVE_AMDGPU=1',
 		[[-D 'AMDGPU_ASIC_ID_TABLE="/share/libdrm/amdgpu.ids"']],
-		-- grep -Eci '^[0-9a-f]{4},.*[0-9a-f]+,' src/data/amdgpu.ids
-		'-D AMDGPU_ASIC_ID_TABLE_NUM_ENTRIES=154',
 	}
 	lib('libdrm_amdgpu.a', [[
 		amdgpu/(
