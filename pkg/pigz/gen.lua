@@ -1,5 +1,5 @@
 cflags{
-	'-Wall', '-Wextra',
+	'-Wall', '-Wextra', '-Wno-clobbered',
 	'-I $builddir/pkg/zlib/include',
 }
 
