@@ -118,6 +118,6 @@ exe('mpv', {
 	expand{'$builddir/pkg/', libs},
 })
 file('bin/mpv', '755', '$outdir/mpv')
-man{'DOCS/man/mpv.1'}
+man{'$dir/mpv.1'}
 
 fetch 'git'
