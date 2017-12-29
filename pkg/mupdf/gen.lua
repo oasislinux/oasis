@@ -10,6 +10,7 @@ cflags{
 	'-D FZ_ENABLE_JPX=0',
 	'-D NOTO_SMALL',
 	'-D NOCJK',
+	'-D NO_ICC',
 	'-D SHARE_JPEG',
 	'-I $srcdir/include',
 	'-I $outdir',
@@ -32,7 +33,7 @@ build('namedump', {'$outdir/mupdf/pdf/name-table.h', '$outdir/pdf-name-table.h'}
 	'$srcdir/resources/pdf/names.txt', '|', '$outdir/namedump',
 })
 
-rule('hexdump', '$outdir/hexdump -p $srcdir/ $out.tmp $in && mv $out.tmp $out')
+rule('hexdump', '$outdir/hexdump -s -p $srcdir/ $out.tmp $in && mv $out.tmp $out')
 local fonts = lines('fonts.txt')
 for _, font in ipairs(fonts) do
 	build('hexdump', '$outdir/'..font..'.c', {'$srcdir/resources/fonts/'..font, '|', '$outdir/hexdump'})
@@ -58,9 +59,9 @@ lib('libmupdf.a', {
 
 exe('bin/mutool', [[
 	source/tools/(
-		mutool.c muconvert.c mudraw.c murun.c
+		mutool.c muconvert.c mudraw.c murun.c mutrace.c
 		pdfclean.c pdfcreate.c pdfextract.c pdfinfo.c pdfmerge.c pdfpages.c
-		pdfportfolio.c pdfposter.c pdfshow.c
+		pdfportfolio.c pdfposter.c pdfshow.c pdfsign.c
 	)
 	libmupdf.a.d
 ]])
