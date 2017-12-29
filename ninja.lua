@@ -363,9 +363,15 @@ end
 function waylandproto(proto, client, server, code)
 	proto = '$srcdir/'..proto
 	code = '$outdir/'..code
-	build('waylandproto', '$outdir/'..client, proto, {type='client-header'})
-	build('waylandproto', '$outdir/'..server, proto, {type='server-header'})
-	build('waylandproto', code, proto, {type='code'})
+	if client then
+		build('waylandproto', '$outdir/'..client, proto, {type='client-header'})
+	end
+	if server then
+		build('waylandproto', '$outdir/'..server, proto, {type='server-header'})
+	end
+	if code then
+		build('waylandproto', code, proto, {type='code'})
+	end
 	cc(code, {'pkg/wayland/headers'})
 end
 

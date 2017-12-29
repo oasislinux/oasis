@@ -33,8 +33,17 @@ pkg.deps = {
 	'pkg/zlib/headers',
 }
 
+build('copy', '$outdir/video/out/wayland/xdg-shell-v6.h', '$builddir/pkg/wayland-protocols/include/xdg-shell-unstable-v6-client-protocol.h')
+build('copy', '$outdir/video/out/wayland/idle-inhibit-v1.h', '$builddir/pkg/wayland-protocols/include/idle-inhibit-unstable-v1-client-protocol.h')
+waylandproto('video/out/wayland/server-decoration.xml', 'video/out/wayland/srv-decor.h', nil, 'video/out/wayland/srv-decor.c')
+table.insert(pkg.deps, {
+	'$outdir/video/out/wayland/idle-inhibit-v1.h',
+	'$outdir/video/out/wayland/xdg-shell-v6.h',
+	'$outdir/video/out/wayland/srv-decor.h',
+})
+
 rule('file2string', '$outdir/file2string $in >$out.tmp && mv $out.tmp $out')
-function file2string(out, inp)
+local function file2string(out, inp)
 	build('file2string', '$outdir/'..out, {'$srcdir/'..inp, '|', '$outdir/file2string'})
 	table.insert(pkg.deps, '$outdir/'..out)
 end
@@ -42,7 +51,7 @@ end
 file2string('input/input_conf.h', 'etc/input.conf')
 file2string('player/builtin_conf.inc', 'etc/builtin.conf')
 file2string('sub/osd_font.h', 'sub/osd_font.otf')
-for _, f in ipairs{'assdraw', 'defaults', 'options', 'osc', 'ytdl_hook'} do
+for _, f in ipairs{'defaults', 'assdraw', 'options', 'osc', 'ytdl_hook', 'stats'} do
 	file2string('player/lua/'..f..'.inc', 'player/lua/'..f..'.lua')
 end
 
@@ -53,19 +62,63 @@ for line in iterlines('config.h', 1) do
 		options[var] = true
 	end
 end
+table.insert(pkg.inputs.gen, '$dir/config.h')
+
+-- source inclusion parser
+local eval
+do
+	local ops = {
+		{tok='||', fn=function(a, b) return a or b end, binary=true},
+		{tok='&&', fn=function(a, b) return a and b end, binary=true},
+		{tok='!', fn=function(a) return not a end},
+	}
+	local function check(x)
+		if not x then
+			error('invalid expression')
+		end
+	end
+	local function helper(s, i, j)
+		local result, var, val
+		if s:sub(i, i) == '(' then
+			i = s:find('[^%s]', i + 1)
+			check(i)
+			result, i = parse(s, i, 1)
+			check(i and s:sub(i, i) == ')')
+			return result, s:find('[^%s]', i + 1)
+		end
+		if j > #ops then
+			local k = select(2, s:find('^[%w_.-]+', i))
+			check(k)
+			var = s:sub(i, k):upper():gsub('-', '_')
+			i = s:find('[^%s]', k + 1)
+			return options['HAVE_'..var] or false, i
+		end
+		local op = ops[j]
+		if op.binary then
+			result, i = helper(s, i, j + 1)
+		end
+		if i and s:sub(i, i + #op.tok - 1) == op.tok then
+			i = s:find('[^%s]', i + #op.tok)
+			check(i)
+			val, i = helper(s, i, j)
+			result = op.fn(val, result)
+		elseif not op.binary then
+			result, i = helper(s, i, j + 1)
+		end
+		return result, i
+	end
+	eval = function(s, i)
+		result, i = helper(s, i, 1)
+		check(not i)
+		return result
+	end
+end
+
 local sources = {}
 for line in iterlines('sources.txt', 1) do
 	local i = line:find(' ', 1, true)
 	local add = true
-	if i then
-		local var = line:sub(i + 1):upper():gsub('-', '_')
-		local neg = var:sub(1, 1) == '!'
-		if neg then
-			var = var:sub(2)
-		end
-		add = options['HAVE_'..var] or false ~= neg
-	end
-	if add then
+	if not i or eval(line, i + 1) then
 		sources[line:sub(1, i and i - 1)] = true
 	end
 end
