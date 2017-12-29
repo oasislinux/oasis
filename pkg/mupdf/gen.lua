@@ -8,6 +8,7 @@ cflags{
 	'-D FZ_ENABLE_EPUB=0',
 	-- JPX requires openjpeg
 	'-D FZ_ENABLE_JPX=0',
+	'-D HAVE_PTHREAD',
 	'-D NOTO_SMALL',
 	'-D NOCJK',
 	'-D NO_ICC',
