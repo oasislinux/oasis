@@ -71,7 +71,7 @@ function expand(t)
 end
 
 -- yields expanded paths from the given path specification string
-function pathsgen(s, i)
+local function pathsgen(s, i)
 	local results = {}
 	local first = not i
 	while true do
@@ -130,7 +130,7 @@ function paths(s)
 end
 
 -- yields non-empty non-comment lines in a file
-function linesgen(file)
+local function linesgen(file)
 	table.insert(pkg.inputs.gen, '$dir/'..file)
 	for line in io.lines(pkg.dir..'/'..file) do
 		if #line > 0 and not line:hasprefix('#') then
