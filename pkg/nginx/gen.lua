@@ -50,7 +50,7 @@ end
 build('awk', '$outdir/ngx_modules.c', {'$dir/modules.txt', '|', '$dir/modules.awk', '$dir/sources.txt'}, {
 	expr='-f $dir/modules.awk -v sources=$dir/sources.txt'
 })
-cc('$outdir/ngx_modules.c', {'$dir/fetch'})
+cc('$outdir/ngx_modules.c')
 
 local sources = paths[[src/(
 	core/(
