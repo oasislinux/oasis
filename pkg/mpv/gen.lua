@@ -46,14 +46,14 @@ for _, f in ipairs{'assdraw', 'defaults', 'options', 'osc', 'ytdl_hook'} do
 end
 
 local options = {}
-for line in io.lines(pkg.dir..'/config.h') do
+for line in iterlines('config.h', 1) do
 	local var, val = line:match('^#define ([^ ]+) ([^ ]+)')
 	if var and val == '1' then
 		options[var] = true
 	end
 end
 local sources = {}
-for line in io.lines(pkg.dir..'/sources.txt') do
+for line in iterlines('sources.txt', 1) do
 	local i = line:find(' ', 1, true)
 	local add = true
 	if i then
@@ -69,7 +69,6 @@ for line in io.lines(pkg.dir..'/sources.txt') do
 	end
 end
 sources = table.keys(sources)
-table.insert(pkg.inputs.gen, {'$dir/config.h', '$dir/sources.txt'})
 
 if options['HAVE_ALSA'] then
 	cflags{'-I $builddir/pkg/alsa-lib/include'}

@@ -131,20 +131,24 @@ end
 
 -- yields non-empty non-comment lines in a file
 local function linesgen(file)
-	table.insert(pkg.inputs.gen, '$dir/'..file)
-	for line in io.lines(pkg.dir..'/'..file) do
+	for line in io.lines(file) do
 		if #line > 0 and not line:hasprefix('#') then
 			coroutine.yield(line)
 		end
 	end
 end
 
-function iterlines(file)
+function iterlines(file, raw)
+	table.insert(pkg.inputs.gen, '$dir/'..file)
+	file = string.format('%s/%s', pkg.dir, file)
+	if raw then
+		return io.lines(file)
+	end
 	return coroutine.wrap(linesgen), file
 end
 
-function lines(file)
-	return collect(iterlines(file))
+function lines(file, raw)
+	return collect(iterlines(file, raw))
 end
 
 --

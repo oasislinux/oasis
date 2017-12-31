@@ -52,7 +52,7 @@ pkg.deps = {
 }
 
 local options = {}
-for line in io.lines(pkg.dir..'/options.h') do
+for line in iterlines('options.h', 1) do
 	local cfg, val = line:match('^#define ([^ ]+) ([^ ]+)')
 	if cfg then
 		options[cfg] = val == '1'
@@ -67,7 +67,7 @@ local sources = {
 	libswresample={},
 	libswscale={},
 }
-for line in io.lines(pkg.dir..'/sources.txt') do
+for line in iterlines('sources.txt', 1) do
 	local i = line:find(' ', 1, true)
 	local cfg = line:sub(1, i and i - 1)
 	if options[cfg] then
@@ -89,10 +89,6 @@ end
 for lib, srcs in pairs(sources) do
 	sources[lib] = table.keys(srcs)
 end
-table.insert(pkg.inputs.gen, {
-	'$dir/sources.txt',
-	'$dir/options.h',
-})
 
 cc('libavcodec/bitstream_filters.c', {'$outdir/internal/libavcodec/bsf_list.c'})
 lib('libavcodec.a', {

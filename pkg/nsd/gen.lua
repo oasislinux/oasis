@@ -28,8 +28,7 @@ local cfg = {
 	chrootdir='',
 	ratelimit_default='on',
 }
-table.insert(pkg.inputs.gen, '$dir/config.h')
-for line in io.lines(pkg.dir..'/config.h') do
+for line in iterlines('config.h', 1) do
 	local var, val = line:match('^#define (%g+) "(%g+)"$')
 	if var then
 		cfg[var:lower()] = val

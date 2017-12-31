@@ -8,10 +8,8 @@ local libs = {}
 pkg.deps = {}
 
 local modules = {}
-for line in io.lines(pkg.dir..'/modules.txt') do
-	if #line > 0 then
-		modules[line] = true
-	end
+for line in iterlines('modules.txt') do
+	modules[line] = true
 end
 
 if modules['openssl'] then
@@ -28,7 +26,7 @@ if modules['regex'] then
 	table.insert(pkg.deps, 'pkg/pcre/headers')
 end
 local zlib = modules['http_gzip_filter'] or modules['http_gunzip_filter']
-for line in io.lines(pkg.dir..'/ngx_auto_config.h') do
+for line in iterlines('ngx_auto_config.h', 1) do
 	if line == 'NGX_ZLIB 1' then
 		zlib = true
 		break
@@ -130,15 +128,13 @@ local sources = paths[[src/(
 		ngx_linux_sendfile_chain.c
 	)
 )]]
-for line in io.lines(pkg.dir..'/sources.txt') do
-	if #line > 0 and not line:hasprefix('#') then
-		local i = line:find(' ', 1, true)
-		if modules[line:sub(1, i and i - 1)] then
-			while i do
-				local j = line:find(' ', i + 1, true)
-				table.insert(sources, 'src/'..line:sub(i + 1, j and j - 1))
-				i = j
-			end
+for line in iterlines('sources.txt') do
+	local i = line:find(' ', 1, true)
+	if modules[line:sub(1, i and i - 1)] then
+		while i do
+			local j = line:find(' ', i + 1, true)
+			table.insert(sources, 'src/'..line:sub(i + 1, j and j - 1))
+			i = j
 		end
 	end
 end
@@ -158,4 +154,3 @@ build('sed', '$outdir/nginx.8', '$srcdir/docs/man/nginx.8', {
 man{'$outdir/nginx.8'}
 
 fetch 'git'
-table.insert(pkg.inputs.gen, {'$dir/sources.txt', '$dir/modules.txt', '$dir/ngx_auto_config.h'})

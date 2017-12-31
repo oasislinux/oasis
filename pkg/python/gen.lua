@@ -9,8 +9,8 @@ cflags{
 
 local sources = {}
 local modules = {}
-for line in io.lines(pkg.dir..'/Setup') do
-	if #line > 0 and not line:find('^[*#]') then
+for line in iterlines('Setup') do
+	if not line:hasprefix('*') then
 		local i = line:find(' ', 1, true)
 		modules[line:sub(1, i and i - 1)] = true
 		while i do
@@ -70,7 +70,7 @@ cc('Modules/getpath.c', nil, {
 
 local platform = 'linux'
 local abiflags = ''
-for line in io.lines(pkg.dir..'/pyconfig.h') do
+for line in iterlines('pyconfig.h', 1) do
 	if line == '#define WITH_PYMALLOC 1' then
 		abiflags = abiflags..'m'
 	elseif line == '#define Py_DEBUG 1' then
@@ -211,5 +211,4 @@ file('lib/python3.6/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$
 file('lib/python3.6/Makefile', '644', '$dir/lib/Makefile')
 dir('lib/python3.6/lib-dynload', '755')
 
-table.insert(pkg.inputs.gen, {'$dir/Setup', '$dir/pyconfig.h'})
 fetch 'curl'
