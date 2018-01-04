@@ -1,0 +1,45 @@
+From c17c8259b1923f3158d37e39622a9e1d64d99023 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 3 Jan 2018 19:22:18 -0800
+Subject: [PATCH] Remove sys/cdefs.h include and usage
+
+---
+ lib/fixedsizehash.h | 1 -
+ libelf/elf.h        | 4 ----
+ 2 files changed, 5 deletions(-)
+
+diff --git a/lib/fixedsizehash.h b/lib/fixedsizehash.h
+index dac2a5f5..43016fc3 100644
+--- a/lib/fixedsizehash.h
++++ b/lib/fixedsizehash.h
+@@ -30,7 +30,6 @@
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <sys/cdefs.h>
+ 
+ #include <system.h>
+ 
+diff --git a/libelf/elf.h b/libelf/elf.h
+index fa35203d..42c664cb 100644
+--- a/libelf/elf.h
++++ b/libelf/elf.h
+@@ -21,8 +21,6 @@
+ 
+ #include <features.h>
+ 
+-__BEGIN_DECLS
+-
+ /* Standard ELF types.  */
+ 
+ #include <stdint.h>
+@@ -3683,6 +3681,4 @@ enum
+ #define R_BPF_NONE		0	/* No reloc */
+ #define R_BPF_MAP_FD		1	/* Map fd to pointer */
+ 
+-__END_DECLS
+-
+ #endif	/* elf.h */
+-- 
+2.15.1
+
