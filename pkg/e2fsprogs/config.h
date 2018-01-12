@@ -173,6 +173,7 @@
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_UN_H 1
 #define HAVE_SYS_WAIT_H 1
+#define HAVE_SYS_XATTR_H 1
 #define HAVE_TERMIOS_H 1
 /* #undef HAVE_TERMIO_H */
 #define HAVE_TSEARCH 1
