@@ -61,7 +61,7 @@
 	url = git://git.sv.nongnu.org/freetype/freetype2.git
 [submodule "pkg/fribidi/src"]
 	path = pkg/fribidi/src
-	url = https://anongit.freedesktop.org/git/fribidi/fribidi.git
+	url = https://github.com/fribidi/fribidi
 [submodule "pkg/git/src"]
 	path = pkg/git/src
 	url = https://github.com/git/git
