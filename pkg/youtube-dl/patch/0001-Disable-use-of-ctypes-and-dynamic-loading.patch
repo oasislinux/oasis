@@ -1,14 +1,59 @@
-From 2073548aa7dc28a77cf7db96fe084b860f30f78c Mon Sep 17 00:00:00 2001
+From f6849b11787c3518fccc4e52ea07b539fdfe3631 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
- youtube_dl/utils.py | 180 ++++------------------------------------------------
- 1 file changed, 11 insertions(+), 169 deletions(-)
+ youtube_dl/compat.py |  19 ------
+ youtube_dl/utils.py  | 181 ++++-----------------------------------------------
+ 2 files changed, 11 insertions(+), 189 deletions(-)
 
+diff --git a/youtube_dl/compat.py b/youtube_dl/compat.py
+index 41ca9adf1..cff252b5f 100644
+--- a/youtube_dl/compat.py
++++ b/youtube_dl/compat.py
+@@ -3,7 +3,6 @@ from __future__ import unicode_literals
+ 
+ import binascii
+ import collections
+-import ctypes
+ import email
+ import getpass
+ import io
+@@ -2908,23 +2907,6 @@ except ImportError:  # not 2.6+ or is 3.x
+     except ImportError:
+         compat_zip = zip
+ 
+-if platform.python_implementation() == 'PyPy' and sys.pypy_version_info < (5, 4, 0):
+-    # PyPy2 prior to version 5.4.0 expects byte strings as Windows function
+-    # names, see the original PyPy issue [1] and the youtube-dl one [2].
+-    # 1. https://bitbucket.org/pypy/pypy/issues/2360/windows-ctypescdll-typeerror-function-name
+-    # 2. https://github.com/rg3/youtube-dl/pull/4392
+-    def compat_ctypes_WINFUNCTYPE(*args, **kwargs):
+-        real = ctypes.WINFUNCTYPE(*args, **kwargs)
+-
+-        def resf(tpl, *args, **kwargs):
+-            funcname, dll = tpl
+-            return real((str(funcname), dll), *args, **kwargs)
+-
+-        return resf
+-else:
+-    def compat_ctypes_WINFUNCTYPE(*args, **kwargs):
+-        return ctypes.WINFUNCTYPE(*args, **kwargs)
+-
+ 
+ __all__ = [
+     'compat_HTMLParseError',
+@@ -2934,7 +2916,6 @@ __all__ = [
+     'compat_chr',
+     'compat_cookiejar',
+     'compat_cookies',
+-    'compat_ctypes_WINFUNCTYPE',
+     'compat_etree_fromstring',
+     'compat_etree_register_namespace',
+     'compat_expanduser',
 diff --git a/youtube_dl/utils.py b/youtube_dl/utils.py
-index 39860e9d1..baea0c329 100644
+index 386897a85..98d848b06 100644
 --- a/youtube_dl/utils.py
 +++ b/youtube_dl/utils.py
 @@ -8,7 +8,6 @@ import binascii
@@ -19,7 +64,15 @@ index 39860e9d1..baea0c329 100644
  import datetime
  import email.utils
  import email.header
-@@ -1304,90 +1303,11 @@ def platform_name():
+@@ -39,7 +38,6 @@ from .compat import (
+     compat_HTMLParser,
+     compat_basestring,
+     compat_chr,
+-    compat_ctypes_WINFUNCTYPE,
+     compat_etree_fromstring,
+     compat_expanduser,
+     compat_html_entities,
+@@ -1307,90 +1305,11 @@ def platform_name():
      return res
  
  
@@ -47,24 +100,24 @@ index 39860e9d1..baea0c329 100644
 -    if fileno not in WIN_OUTPUT_IDS:
 -        return False
 -
--    GetStdHandle = ctypes.WINFUNCTYPE(
+-    GetStdHandle = compat_ctypes_WINFUNCTYPE(
 -        ctypes.wintypes.HANDLE, ctypes.wintypes.DWORD)(
--        (b'GetStdHandle', ctypes.windll.kernel32))
+-        ('GetStdHandle', ctypes.windll.kernel32))
 -    h = GetStdHandle(WIN_OUTPUT_IDS[fileno])
 -
--    WriteConsoleW = ctypes.WINFUNCTYPE(
+-    WriteConsoleW = compat_ctypes_WINFUNCTYPE(
 -        ctypes.wintypes.BOOL, ctypes.wintypes.HANDLE, ctypes.wintypes.LPWSTR,
 -        ctypes.wintypes.DWORD, ctypes.POINTER(ctypes.wintypes.DWORD),
--        ctypes.wintypes.LPVOID)((b'WriteConsoleW', ctypes.windll.kernel32))
+-        ctypes.wintypes.LPVOID)(('WriteConsoleW', ctypes.windll.kernel32))
 -    written = ctypes.wintypes.DWORD(0)
 -
--    GetFileType = ctypes.WINFUNCTYPE(ctypes.wintypes.DWORD, ctypes.wintypes.DWORD)((b'GetFileType', ctypes.windll.kernel32))
+-    GetFileType = compat_ctypes_WINFUNCTYPE(ctypes.wintypes.DWORD, ctypes.wintypes.DWORD)(('GetFileType', ctypes.windll.kernel32))
 -    FILE_TYPE_CHAR = 0x0002
 -    FILE_TYPE_REMOTE = 0x8000
--    GetConsoleMode = ctypes.WINFUNCTYPE(
+-    GetConsoleMode = compat_ctypes_WINFUNCTYPE(
 -        ctypes.wintypes.BOOL, ctypes.wintypes.HANDLE,
 -        ctypes.POINTER(ctypes.wintypes.DWORD))(
--        (b'GetConsoleMode', ctypes.windll.kernel32))
+-        ('GetConsoleMode', ctypes.windll.kernel32))
 -    INVALID_HANDLE_VALUE = ctypes.wintypes.DWORD(-1).value
 -
 -    def not_a_console(handle):
@@ -110,7 +163,7 @@ index 39860e9d1..baea0c329 100644
      if ('b' in getattr(out, 'mode', '') or
              sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
          byt = s.encode(encoding or preferredencoding(), 'ignore')
-@@ -1417,78 +1337,22 @@ def intlist_to_bytes(xs):
+@@ -1420,78 +1339,22 @@ def intlist_to_bytes(xs):
  
  
  # Cross-platform file locking
@@ -199,7 +252,7 @@ index 39860e9d1..baea0c329 100644
  
  
  class locked_file(object):
-@@ -1704,29 +1568,7 @@ def fix_xml_ampersands(xml_str):
+@@ -1707,29 +1570,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
@@ -231,5 +284,5 @@ index 39860e9d1..baea0c329 100644
  
  def remove_start(s, start):
 -- 
-2.13.2
+2.15.1
 
