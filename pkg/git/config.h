@@ -12,6 +12,13 @@
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
 #define GIT_VERSION "2.16.0"
+#define HAVE_ALLOCA_H
+#define HAVE_PATHS_H
+#define HAVE_DEV_TTY
+#define HAVE_CLOCK_GETTIME
+#define HAVE_CLOCK_MONOTONIC
+#define HAVE_GETDELIM
+#define NO_GETTEXT
 #define NO_OPENSSL
 #define NO_SYS_POLL_H
 #define PAGER_ENV "LESS=FRX LV=-c"
