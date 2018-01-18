@@ -3,16 +3,18 @@
 #define DEFAULT_PAGER ""
 #define ETC_GITATTRIBUTES "/etc/gitattributes"
 #define ETC_GITCONFIG "/etc/gitconfig"
+#define GIT_BUILT_FROM_COMMIT "2512f15446149235156528dafbe75930c712b29e"
 #define GIT_EXEC_PATH "libexec/git-core"
+#define GIT_HOST_CPU "unknown"
 #define GIT_HTML_PATH "share/doc/git-doc"
 #define GIT_INFO_PATH "share/info"
 #define GIT_LOCALE_PATH "/share/locale"
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
-#define GIT_VERSION "2.15.1"
-#define PAGER_ENV "LESS=FRX LV=-c"
-#define NO_SYS_POLL_H
+#define GIT_VERSION "2.16.0"
 #define NO_OPENSSL
+#define NO_SYS_POLL_H
+#define PAGER_ENV "LESS=FRX LV=-c"
 #define USE_CURL_FOR_IMAP_SEND
 
 #define SHA1_DC

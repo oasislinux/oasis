@@ -39,6 +39,7 @@ lib('libgit.a', [[
 	bulk-checkin.c
 	bundle.c
 	cache-tree.c
+	checkout.c
 	color.c
 	column.c
 	combine-diff.c
@@ -78,6 +79,7 @@ lib('libgit.a', [[
 	exec_cmd.c.o
 	fetch-pack.c
 	fsck.c
+	fsmonitor.c
 	gettext.c
 	gpg-interface.c
 	graph.c
@@ -91,6 +93,8 @@ lib('libgit.a', [[
 	line-log.c
 	line-range.c
 	list-objects.c
+	list-objects-filter.c
+	list-objects-filter-options.c
 	ll-merge.c
 	lockfile.c
 	log-tree.c
@@ -130,6 +134,7 @@ lib('libgit.a', [[
 	prio-queue.c
 	progress.c
 	prompt.c
+	protocol.c
 	quote.c
 	reachable.c
 	read-cache.c
