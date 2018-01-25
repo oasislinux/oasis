@@ -135,11 +135,12 @@
 /* #undef HAVE_LIBIDN2 */
 #define HAVE_LIBRESSL 1
 /* #undef HAVE_LIBRTMP_RTMP_H */
+/* #undef HAVE_LIBSSH */
 /* #undef HAVE_LIBSSH2 */
 /* #undef HAVE_LIBSSH2_H */
+/* #undef HAVE_LIBSSH_LIBSSH_H */
 #define HAVE_LIBSSL 1
 #define HAVE_LIBZ 1
-#define HAVE_LIMITS_H 1
 #define HAVE_LINUX_TCP_H 1
 #define HAVE_LL 1
 #define HAVE_LOCALE_H 1
@@ -151,6 +152,7 @@
 /* #undef HAVE_MEMRCHR */
 #define HAVE_MSG_NOSIGNAL 1
 #define HAVE_NETDB_H 1
+/* #undef HAVE_NETINET_IN6_H */
 #define HAVE_NETINET_IN_H 1
 #define HAVE_NETINET_TCP_H 1
 #define HAVE_NET_IF_H 1
@@ -311,6 +313,7 @@
 /* #undef USE_GNUTLS_NETTLE */
 /* #undef USE_LIBPSL */
 /* #undef USE_LIBRTMP */
+/* #undef USE_LIBSSH */
 /* #undef USE_LIBSSH2 */
 /* #undef USE_MANUAL */
 /* #undef USE_MBEDTLS */

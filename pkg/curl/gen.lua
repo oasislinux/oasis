@@ -39,7 +39,7 @@ lib('libcurl.a', [[
 		http_digest.c md4.c md5.c http_negotiate.c inet_pton.c strtoofft.c
 		strerror.c amigaos.c hostasyn.c hostip4.c hostip6.c hostsyn.c
 		inet_ntop.c parsedate.c select.c tftp.c splay.c strdup.c socks.c
-		ssh.c curl_addrinfo.c socks_gssapi.c socks_sspi.c
+		ssh.c ssh-libssh.c curl_addrinfo.c socks_gssapi.c socks_sspi.c
 		curl_sspi.c slist.c nonblock.c curl_memrchr.c imap.c pop3.c smtp.c
 		pingpong.c rtsp.c curl_threads.c warnless.c hmac.c curl_rtmp.c
 		openldap.c curl_gethostname.c gopher.c idn_win32.c
@@ -47,7 +47,7 @@ lib('libcurl.a', [[
 		http_ntlm.c curl_ntlm_wb.c curl_ntlm_core.c curl_sasl.c rand.c
 		curl_multibyte.c hostcheck.c conncache.c pipeline.c dotdot.c
 		x509asn1.c http2.c smb.c curl_endian.c curl_des.c system_win32.c
-		mime.c sha256.c setopt.c
+		mime.c sha256.c setopt.c curl_path.c
 		vauth/(
 			vauth.c cleartext.c cram.c
 			digest.c digest_sspi.c krb5_gssapi.c
