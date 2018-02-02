@@ -101,6 +101,7 @@ ncurses/widechar/lib_wunctrl.c
 ncurses/base/legacy_coding.c
 ncurses/base/lib_dft_fgbg.c
 ncurses/tinfo/lib_print.c
+ncurses/base/new_pair.c
 ncurses/base/resizeterm.c
 ncurses/tinfo/use_screen.c
 ncurses/base/use_window.c

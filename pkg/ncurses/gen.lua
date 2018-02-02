@@ -1,6 +1,5 @@
 set('common_cflags', {
 	'-D NDEBUG',
-	'-I include',
 	'-I $dir',
 	'-I $outdir',
 	'-I $outdir/include',
@@ -38,7 +37,7 @@ build('mkkeydefs', '$outdir/include/curses.h', {'$srcdir/include/Caps', '|',
 rule('mkhashsize', 'sh $srcdir/include/MKhashsize.sh $in >$out.tmp && mv $out.tmp $out')
 build('mkhashsize', '$outdir/hashsize.h', {'$srcdir/include/Caps', '|', '$srcdir/include/MKhashsize.sh'})
 
-rule('mkkeyslist', 'sh $srcdir/ncurses/tinfo/MKkeys_list.sh $in | sort >$out.tmp && mv $out.tmp $out')
+rule('mkkeyslist', 'sh $srcdir/ncurses/tinfo/MKkeys_list.sh $in | LC_ALL=C sort >$out.tmp && mv $out.tmp $out')
 build('mkkeyslist', '$outdir/keys.list', {'$srcdir/include/Caps', '|', '$srcdir/ncurses/tinfo/MKkeys_list.sh'})
 
 rule('mkkeys', '$outdir/make_keys $in >$out.tmp && mv $out.tmp $out')
@@ -116,8 +115,10 @@ pkg.deps = {
 lib('libncurses.a', lines('sources.txt'))
 file('lib/libncurses.a', '644', '$outdir/libncurses.a')
 
+cc('progs/transform.c')
+
 exe('tic', [[
-	progs/(tic.c dump_entry.c tparm_type.c transform.c)
+	progs/(tic.c dump_entry.c tparm_type.c transform.c.o)
 	ncurses/(
 		tinfo/(
 			alloc_entry.c
@@ -134,7 +135,10 @@ exe('tic', [[
 ]])
 file('bin/tic', '755', '$outdir/tic')
 
-exe('tset', {'progs/tset.c', 'progs/transform.c.o', 'libncurses.a'})
+exe('tset', [[
+	progs/(tset.c reset_cmd.c transform.c.o tty_settings.c)
+	libncurses.a
+]])
 file('bin/tset', '755', '$outdir/tset')
 sym('bin/reset', 'tset')
 
