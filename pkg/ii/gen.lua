@@ -1,4 +1,4 @@
-set('version', '1.7-13-g704ab92')
+set('version', '1.8')
 cflags{
 	'-Wall',
 	[[-D 'VERSION="$version"']],
