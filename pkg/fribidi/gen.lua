@@ -1,6 +1,5 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I include',
 	'-I $dir',
 	'-I $outdir',
 	'-I $outdir/include',
@@ -10,7 +9,7 @@ cflags{
 sub('tools.ninja', function()
 	cc('gen.tab/packtab.c')
 	exe('gen-unicode-version', {'gen.tab/gen-unicode-version.c'})
-	for _, t in ipairs{'bidi-type', 'joining-type', 'arabic-shaping', 'mirroring'} do
+	for _, t in ipairs{'bidi-type', 'joining-type', 'arabic-shaping', 'mirroring', 'brackets', 'brackets-type'} do
 		exe('gen-'..t..'-tab', expand{'gen.tab/', {
 			'gen-'..t..'-tab.c',
 			'packtab.c.o',
@@ -33,6 +32,8 @@ gentool('bidi-type-tab', 'bidi-type.tab.i', {'UnicodeData.txt'}, '$compression')
 gentool('joining-type-tab', 'joining-type.tab.i', {'UnicodeData.txt', 'ArabicShaping.txt'}, '$compression')
 gentool('arabic-shaping-tab', 'arabic-shaping.tab.i', {'UnicodeData.txt'}, '$compression')
 gentool('mirroring-tab', 'mirroring.tab.i', {'BidiMirroring.txt'}, '$compression')
+gentool('brackets-tab', 'brackets.tab.i', {'BidiBrackets.txt', 'UnicodeData.txt'}, '$compression')
+gentool('brackets-type-tab', 'brackets-type.tab.i', {'BidiBrackets.txt'}, '$compression')
 
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/lib', {
@@ -50,6 +51,7 @@ pkg.hdrs = {
 		'fribidi-joining-types.h',
 		'fribidi-joining-types-list.h',
 		'fribidi-mirroring.h',
+		'fribidi-brackets.h',
 		'fribidi-shape.h',
 		'fribidi-types.h',
 		'fribidi-unicode.h',
@@ -62,6 +64,8 @@ pkg.deps = {
 	'$outdir/joining-type.tab.i',
 	'$outdir/arabic-shaping.tab.i',
 	'$outdir/mirroring.tab.i',
+	'$outdir/brackets.tab.i',
+	'$outdir/brackets-type.tab.i',
 	'$dir/headers',
 }
 
@@ -74,8 +78,8 @@ lib('libfribidi.a', [[
 		fribidi-deprecated.c
 		fribidi-joining.c
 		fribidi-joining-types.c
-		fribidi-mem.c
 		fribidi-mirroring.c
+		fribidi-brackets.c
 		fribidi-run.c
 		fribidi-shape.c
 	)
