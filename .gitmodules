@@ -20,9 +20,6 @@
 [submodule "pkg/blind/src"]
 	path = pkg/blind/src
 	url = git://git.suckless.org/blind
-[submodule "pkg/discount/src"]
-	path = pkg/discount/src
-	url = https://github.com/Orc/discount
 [submodule "pkg/dmenu/src"]
 	path = pkg/dmenu/src
 	url = git://git.suckless.org/dmenu
