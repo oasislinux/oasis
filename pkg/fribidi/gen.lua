@@ -7,6 +7,15 @@ cflags{
 }
 
 sub('tools.ninja', function()
+	toolchain 'host'
+	cflags{
+		-- technically, this should use a separate host config, but most
+		-- of the stuff in config.h seems pretty standard
+		'-D HAVE_CONFIG_H',
+		'-I $dir',
+		'-I $outdir/include',
+		'-I $srcdir/lib',
+	}
 	cc('gen.tab/packtab.c')
 	exe('gen-unicode-version', {'gen.tab/gen-unicode-version.c'})
 	for _, t in ipairs{'bidi-type', 'joining-type', 'arabic-shaping', 'mirroring', 'brackets', 'brackets-type'} do
