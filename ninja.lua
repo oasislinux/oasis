@@ -238,6 +238,10 @@ function cflags(flags)
 	set('cflags', '$cflags '..table.concat(flags, ' '))
 end
 
+function nasmflags(flags)
+	set('nasmflags', '$nasmflags '..table.concat(flags, ' '))
+end
+
 function compile(rule, src, deps, args)
 	local obj = src..'.o'
 	if not src:hasprefix('$') then

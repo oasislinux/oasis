@@ -1,5 +1,4 @@
 local arch = 'x86'
-
 cflags{
 	'-Wno-deprecated-declarations',
 	'-Wno-discarded-qualifiers',
@@ -11,14 +10,17 @@ cflags{
 	'-I $builddir/pkg/alsa-lib/include',
 	'-I $builddir/pkg/libressl/include',
 }
-
-set('nasmflags', {
+nasmflags{
 	'-i $srcdir/',
 	'-i $srcdir/libavcodec/'..arch..'/',
 	'-i $srcdir/libavutil/'..arch..'/',
 	'-f elf64',
 	'-P $outdir/config.asm',
-})
+}
+if config.target.pie then
+	cflags{'-D PIC'}
+	nasmflags{'-D PIC'}
+end
 
 build('awk', '$outdir/config.asm', '$dir/options.h', {
 	expr=[['{print "%define " substr($$0, length("#define ") + 1)}']],

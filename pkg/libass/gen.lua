@@ -3,15 +3,17 @@ cflags{
 	'-I pkg/freetype/src/include',
 	'-I $builddir/pkg/fribidi/include',
 }
-
-set('nasmflags', {
+nasmflags{
 	'-D ARCH_X86_64=1',
 	'-D HAVE_ALIGNED_STACK=1',
 	'-D HAVE_CPUNOP=0',
 	'-D private_prefix=ass',
 	'-i $srcdir/libass/',
 	'-f elf64',
-})
+}
+if config.target.pie then
+	nasmflags{'-D PIC'}
+end
 
 pkg.hdrs = copy('$outdir/include/ass', '$srcdir/libass', {'ass.h', 'ass_types.h'})
 pkg.deps = {
