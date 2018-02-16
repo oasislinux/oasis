@@ -87,13 +87,4 @@ exe('yacc', [[usr.bin/yacc/(
 file('bin/yacc', '755', '$outdir/yacc')
 man{'usr.bin/yacc/yacc.1'}
 
-fetch('curl', paths[[
-	-s '/^/src\//' '(
-		bin/pax
-		include
-		lib/(libc/(crypt gen net stdlib string) libcrypto/arc4random)
-		usr.bin/(diff doas fmt nc patch yacc)
-	)/*'
-	';'
-	-s '/^/src\//' 'sys/sys/*'
-]])
+fetch 'local'

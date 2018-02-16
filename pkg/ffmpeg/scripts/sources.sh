@@ -1,7 +1,6 @@
-#!/bin/rc
+#!/bin/sh
 
-flag e +
-flag x +
+set -ex
 
 ../src/configure >/dev/null
 awk '{print $2}' config.asm >vars.txt

@@ -360,8 +360,14 @@ function waylandproto(proto, client, server, code)
 	cc(code, {'pkg/wayland/headers'})
 end
 
-function fetch(method, args)
-	build('fetch'..method, '$dir/fetch', {'|', '$dir/rev'}, {args=args})
+function fetch(method)
+	local script
+	if method == 'local' then
+		script = '$dir/fetch.sh'
+	else
+		script = 'scripts/fetch-'..method..'.sh'
+	end
+	build('fetch'..method, '$dir/fetch', {'|', '$dir/rev', script})
 	if next(pkg.inputs.fetch) then
 		build('phony', table.keys(pkg.inputs.fetch), '$dir/fetch')
 	end
@@ -404,7 +410,7 @@ function file(path, mode, src)
 	local out = '$builddir/root.hash/'..path
 	mode = tonumber(mode, 8)
 	local perm = string.format('10%04o %s', mode, path)
-	build('githash', out, {src, '|', 'scripts/hash.rc', '||', '$builddir/root.stamp'}, {
+	build('githash', out, {src, '|', 'scripts/hash.sh', '||', '$builddir/root.stamp'}, {
 		args=perm,
 	})
 	table.insert(pkg.inputs.index, out)
@@ -426,7 +432,7 @@ function sym(path, target)
 		return
 	end
 	local out = '$builddir/root.hash/'..path
-	build('githash', out, {'|', 'scripts/hash.rc', '||', '$builddir/root.stamp'}, {
+	build('githash', out, {'|', 'scripts/hash.sh', '||', '$builddir/root.stamp'}, {
 		args=string.format('120000 %s %s', path, target),
 	})
 	table.insert(pkg.inputs.index, out)

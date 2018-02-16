@@ -40,7 +40,7 @@ rule muse
   command = muse $museflags -o $out $in
 
 rule probe
-  command = rc ./scripts/probe.rc $var $cc $cflags $ldflags -o /dev/null -x c $in >$out.tmp && mv $out.tmp $out
+  command = sh ./scripts/probe.sh $var $cc $cflags $ldflags -o /dev/null -x c $in >$out.tmp && mv $out.tmp $out
 
 # misc tools
 rule touch
@@ -80,14 +80,14 @@ rule waylandproto
   command = wayland-scanner $type <$in >$out.tmp && mv $out.tmp $out
 
 rule githash
-  command = rc ./scripts/hash.rc $repo $args $in >$out.tmp && mv $out.tmp $out
+  command = sh ./scripts/hash.sh $repo $args $in >$out.tmp && mv $out.tmp $out
 
 rule gittree
-  command = rc ./scripts/tree.rc $repo $repo_tag $in $out
+  command = sh ./scripts/tree.sh $repo $repo_tag $in $out
   restat = 1
 
 rule gitcommit
-  command = rc ./scripts/commit.rc $repo $repo_branch $repo_tag $out
+  command = sh ./scripts/commit.sh $repo $repo_branch $repo_tag $out
 
 rule gitarchive
   command = git -C $repo archive -o $$PWD/$out $repo_tag
@@ -96,19 +96,19 @@ rule gitinit
   command = git init $repo_flags $repo && touch $out
 
 rule fetchcurl
-  command = rc ./scripts/fetch-curl.rc $dir $args && touch $out
+  command = sh ./scripts/fetch-curl.sh $dir && touch $out
   restat = 1
   generator = 1
   pool = console
 
 rule fetchgit
-  command = rc ./scripts/fetch-git.rc $dir $args && touch $out
+  command = sh ./scripts/fetch-git.sh $dir && touch $out
   restat = 1
   generator = 1
   pool = console
 
 rule fetchlocal
-  command = rc ./$dir/fetch.rc $dir $args && touch $out
+  command = sh ./$dir/fetch.sh $dir && touch $out
   restat = 1
   generator = 1
   pool = console

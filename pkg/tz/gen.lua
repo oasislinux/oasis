@@ -19,7 +19,7 @@ local tzdata = {
 rule('tzdata', 'lua $dir/tzdata.lua $repo $outdir/zoneinfo $in >$out.tmp && mv $out.tmp $out')
 build('tzdata', '$outdir/tzdata.index', {
 	expand{'$srcdir/', tzdata},
-	'|', '$dir/tzdata.lua', 'scripts/hash.rc',
+	'|', '$dir/tzdata.lua', 'scripts/hash.sh',
 	'||', '$builddir/root.stamp',
 })
 table.insert(pkg.inputs.index, '$outdir/tzdata.index')

@@ -4,7 +4,7 @@ local function execute(cmd)
 	end
 end
 
-local hash = 'rc ./scripts/hash.rc %s %s share/zoneinfo/%s %s'
+local hash = 'sh ./scripts/hash.sh %s %s share/zoneinfo/%s %s'
 local repo = arg[1]
 local outdir = arg[2]
 for i = 3, #arg do
