@@ -79,8 +79,10 @@ build('awk', '$outdir/sen.h', {syscalls, '|', '$dir/sen.awk'}, {
 })
 
 local libsrcs = {
+	'fetch_indirect_syscall_args.c',
 	'fstatfs.c',
 	'fstatfs64.c',
+	'getpagesize.c',
 	'ipc.c',
 	'sigreturn.c',
 	'socketcall.c',
@@ -161,6 +163,7 @@ local srcs = {
 	'kcmp.c',
 	'kexec.c',
 	'keyctl.c',
+	'kvm.c',
 	'ldt.c',
 	'link.c',
 	'listen.c',
@@ -225,6 +228,7 @@ local srcs = {
 	'reboot.c',
 	'renameat.c',
 	'resource.c',
+	'riscv.c',
 	'rt_sigframe.c',
 	'rt_sigreturn.c',
 	'rtc.c',
@@ -241,6 +245,7 @@ local srcs = {
 	'rtnl_rule.c',
 	'rtnl_tc.c',
 	'rtnl_tc_action.c',
+	's390.c',
 	'sched.c',
 	'scsi.c',
 	'seccomp.c',
