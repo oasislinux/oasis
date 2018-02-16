@@ -15,9 +15,10 @@ return {
 	-- target toolchain and flags
 	target={
 		toolchain='x86_64-linux-musl',
-		cflags='-O2 -pipe',
+		cflags='-O2 -pipe -fpie',
 		cxxflags='$target_cflags',
-		ldflags='-s -static',
+		ldflags='-s -static -pie',
+		pie=true
 	},
 
 	-- host toolchain and flags
