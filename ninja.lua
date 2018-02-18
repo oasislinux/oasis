@@ -151,6 +151,11 @@ function lines(file, raw)
 	return collect(iterlines(file, raw))
 end
 
+function load(file)
+	table.insert(pkg.inputs.gen, '$dir/'..file)
+	return dofile(string.format('%s/%s', pkg.dir, file))
+end
+
 --
 -- base constructs
 --

@@ -112,25 +112,24 @@ pkg.deps = {
 	'$outdir/termsort.c',
 }
 
-lib('libncurses.a', lines('sources.txt'))
+srcs = load('sources.lua')
+
+lib('libncurses.a', {
+	srcs.base,
+	srcs.widechar,
+	srcs.termlib,
+	srcs.ext_funcs,
+	srcs.ext_tinfo,
+})
 file('lib/libncurses.a', '644', '$outdir/libncurses.a')
+
+lib('libtic.a', srcs.ticlib)
 
 cc('progs/transform.c')
 
 exe('tic', [[
 	progs/(tic.c dump_entry.c tparm_type.c transform.c.o)
-	ncurses/(
-		tinfo/(
-			alloc_entry.c
-			captoinfo.c
-			comp_expand.c
-			comp_parse.c
-			comp_scan.c
-			parse_entry.c
-			write_entry.c
-		)
-		trace/lib_trace.c
-	)
+	libtic.a
 	libncurses.a
 ]])
 file('bin/tic', '755', '$outdir/tic')
