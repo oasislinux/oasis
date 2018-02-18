@@ -299,7 +299,6 @@ youtube_dl/extractor/jpopsukitv.py
 youtube_dl/extractor/jwplatform.py
 youtube_dl/extractor/kakao.py
 youtube_dl/extractor/kaltura.py
-youtube_dl/extractor/kamcord.py
 youtube_dl/extractor/kanalplay.py
 youtube_dl/extractor/kankan.py
 youtube_dl/extractor/karaoketv.py
@@ -502,7 +501,6 @@ youtube_dl/extractor/reuters.py
 youtube_dl/extractor/reverbnation.py
 youtube_dl/extractor/revision3.py
 youtube_dl/extractor/rice.py
-youtube_dl/extractor/ringtv.py
 youtube_dl/extractor/rmcdecouverte.py
 youtube_dl/extractor/ro220.py
 youtube_dl/extractor/rockstargames.py
@@ -518,6 +516,7 @@ youtube_dl/extractor/rtp.py
 youtube_dl/extractor/rts.py
 youtube_dl/extractor/rtve.py
 youtube_dl/extractor/rtvnh.py
+youtube_dl/extractor/rtvs.py
 youtube_dl/extractor/rudo.py
 youtube_dl/extractor/ruhd.py
 youtube_dl/extractor/ruleporn.py
@@ -539,6 +538,7 @@ youtube_dl/extractor/servingsys.py
 youtube_dl/extractor/servus.py
 youtube_dl/extractor/sevenplus.py
 youtube_dl/extractor/sexu.py
+youtube_dl/extractor/seznamzpravy.py
 youtube_dl/extractor/shahid.py
 youtube_dl/extractor/shared.py
 youtube_dl/extractor/showroomlive.py
@@ -565,6 +565,7 @@ youtube_dl/extractor/spike.py
 youtube_dl/extractor/sport5.py
 youtube_dl/extractor/sportbox.py
 youtube_dl/extractor/sportdeutschland.py
+youtube_dl/extractor/springboardplatform.py
 youtube_dl/extractor/sprout.py
 youtube_dl/extractor/srgssr.py
 youtube_dl/extractor/srmediathek.py
@@ -606,7 +607,6 @@ youtube_dl/extractor/tfo.py
 youtube_dl/extractor/theintercept.py
 youtube_dl/extractor/theplatform.py
 youtube_dl/extractor/thescene.py
-youtube_dl/extractor/thesixtyone.py
 youtube_dl/extractor/thestar.py
 youtube_dl/extractor/thesun.py
 youtube_dl/extractor/theweatherchannel.py

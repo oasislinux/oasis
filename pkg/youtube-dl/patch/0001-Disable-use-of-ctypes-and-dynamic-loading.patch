@@ -1,28 +1,28 @@
-From f6849b11787c3518fccc4e52ea07b539fdfe3631 Mon Sep 17 00:00:00 2001
+From 0a8212b77ced57b0427d1a57f47d111dc886e398 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
- youtube_dl/compat.py |  19 ------
+ youtube_dl/compat.py |  20 ------
  youtube_dl/utils.py  | 181 ++++-----------------------------------------------
- 2 files changed, 11 insertions(+), 189 deletions(-)
+ 2 files changed, 11 insertions(+), 190 deletions(-)
 
 diff --git a/youtube_dl/compat.py b/youtube_dl/compat.py
-index 41ca9adf1..cff252b5f 100644
+index 4a611f183..d801f41ab 100644
 --- a/youtube_dl/compat.py
 +++ b/youtube_dl/compat.py
-@@ -3,7 +3,6 @@ from __future__ import unicode_literals
- 
+@@ -4,7 +4,6 @@ from __future__ import unicode_literals
+ import base64
  import binascii
  import collections
 -import ctypes
  import email
  import getpass
  import io
-@@ -2908,23 +2907,6 @@ except ImportError:  # not 2.6+ or is 3.x
-     except ImportError:
-         compat_zip = zip
+@@ -2934,24 +2933,6 @@ else:
+     compat_b64decode = base64.b64decode
+ 
  
 -if platform.python_implementation() == 'PyPy' and sys.pypy_version_info < (5, 4, 0):
 -    # PyPy2 prior to version 5.4.0 expects byte strings as Windows function
@@ -41,10 +41,11 @@ index 41ca9adf1..cff252b5f 100644
 -    def compat_ctypes_WINFUNCTYPE(*args, **kwargs):
 -        return ctypes.WINFUNCTYPE(*args, **kwargs)
 -
- 
+-
  __all__ = [
      'compat_HTMLParseError',
-@@ -2934,7 +2916,6 @@ __all__ = [
+     'compat_HTMLParser',
+@@ -2962,7 +2943,6 @@ __all__ = [
      'compat_chr',
      'compat_cookiejar',
      'compat_cookies',
@@ -53,7 +54,7 @@ index 41ca9adf1..cff252b5f 100644
      'compat_etree_register_namespace',
      'compat_expanduser',
 diff --git a/youtube_dl/utils.py b/youtube_dl/utils.py
-index 386897a85..98d848b06 100644
+index ef44b99a5..5bad517c7 100644
 --- a/youtube_dl/utils.py
 +++ b/youtube_dl/utils.py
 @@ -8,7 +8,6 @@ import binascii
@@ -284,5 +285,5 @@ index 386897a85..98d848b06 100644
  
  def remove_start(s, start):
 -- 
-2.15.1
+2.16.2
 
