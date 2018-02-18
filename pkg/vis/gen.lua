@@ -11,6 +11,7 @@ cflags{
 	'-D HAVE_MEMRCHR=1',
 	'-D _POSIX_C_SOURCE=200809L',
 	'-D _XOPEN_SOURCE=700',
+	[[-D 'MAX_COLOR_PAIRS=MIN(COLOR_PAIRS, SHRT_MAX)']],
 	[[-D 'VERSION="$version"']],
 	[[-D 'VIS_PATH="/share/vis"']],
 	'-D NDEBUG',
