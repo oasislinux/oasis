@@ -125,17 +125,33 @@ file('lib/libncurses.a', '644', '$outdir/libncurses.a')
 
 lib('libtic.a', srcs.ticlib)
 
+cc('progs/reset_cmd.c')
+cc('progs/tparm_type.c')
 cc('progs/transform.c')
+cc('progs/tty_settings.c')
+
+exe('infocmp', [[
+	progs/(infocmp.c dump_entry.c.o)
+	libtic.a
+	libncurses.a
+]])
+file('bin/infocmp', '755', '$outdir/infocmp')
 
 exe('tic', [[
-	progs/(tic.c dump_entry.c tparm_type.c transform.c.o)
+	progs/(tic.c dump_entry.c tparm_type.c.o transform.c.o)
 	libtic.a
 	libncurses.a
 ]])
 file('bin/tic', '755', '$outdir/tic')
 
+exe('tput', [[
+	progs/(tput.c clear_cmd.c reset_cmd.c.o tparm_type.c.o transform.c.o tty_settings.c.o)
+	libncurses.a
+]])
+file('bin/tput', '755', '$outdir/tput')
+
 exe('tset', [[
-	progs/(tset.c reset_cmd.c transform.c.o tty_settings.c)
+	progs/(tset.c reset_cmd.c.o transform.c.o tty_settings.c.o)
 	libncurses.a
 ]])
 file('bin/tset', '755', '$outdir/tset')

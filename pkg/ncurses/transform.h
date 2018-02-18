@@ -4,6 +4,7 @@
 extern bool same_program(const char *, const char *);
 #define PROG_CAPTOINFO "captoinfo"
 #define PROG_INFOTOCAP "infotocap"
+#define PROG_CLEAR "clear"
 #define PROG_RESET "reset"
 #define PROG_INIT "init"
 #endif /* __TRANSFORM_H */
