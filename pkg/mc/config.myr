@@ -1,6 +1,6 @@
 pkg config =
 	const Sys = "Linux"
-	const Linkcmd = ["ld", "-o"]
+	const Linkcmd = ["ld"]
 	const Dlflags : byte[:][0] = []
 	const Manpath = "share/man/man"
 	const Instroot = "/"
