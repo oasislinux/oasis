@@ -88,6 +88,7 @@ lexers/php.lua
 lexers/pico8.lua
 lexers/pike.lua
 lexers/pkgbuild.lua
+lexers/pony.lua
 lexers/powershell.lua
 lexers/prolog.lua
 lexers/props.lua
@@ -128,6 +129,7 @@ lexers/verilog.lua
 lexers/vhdl.lua
 lexers/wsf.lua
 lexers/xml.lua
+lexers/xs.lua
 lexers/xtend.lua
 lexers/yaml.lua
 plugins/complete-filename.lua
