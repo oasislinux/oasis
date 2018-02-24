@@ -39,7 +39,6 @@ function gen(dir)
 				'ninja.lua',
 				'config.lua',
 				'sets.lua',
-				'$dir/gen.lua',
 			},
 			ninja={'$dir/local.ninja'},
 			fetch={},
@@ -56,7 +55,7 @@ function gen(dir)
 		set('outdir', '$builddir/$dir')
 		set('srcdir', '$dir/src')
 	end
-	dofile(dir..'/gen.lua')
+	load('gen.lua')
 
 	build('gen', '$dir/local.ninja', {'|', pkg.inputs.gen})
 	phony('ninja', pkg.inputs.ninja)
