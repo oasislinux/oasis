@@ -26,8 +26,6 @@ lib('liblzma.a', [[src/(
 	)
 	liblzma/(
 		check/(
-			crc32_tablegen.c
-			crc64_tablegen.c
 			check.c
 			crc32_table.c
 			crc32_fast.c
