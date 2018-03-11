@@ -1,5 +1,13 @@
+local function havedriver(name)
+	local enabled = config.video_drivers[name]
+	return '-D HAVE_'..name:upper()..'='..(enabled and '1' or '0')
+end
+
 cflags{
 	'-D HAVE_CONFIG_H',
+	havedriver('intel'),
+	havedriver('nouveau'),
+	havedriver('amdgpu'),
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/include/drm',
@@ -14,7 +22,7 @@ lib('libdrm.a', {
 })
 
 if config.video_drivers and config.video_drivers['intel'] then
-	cflags{'-D HAVE_INTEL=1', '-I pkg/libpciaccess/src/include'}
+	cflags{'-I pkg/libpciaccess/src/include'}
 	pkg.deps = {'pkg/libpciaccess/fetch'}
 	lib('libdrm_intel.a', [[
 		intel/(
@@ -29,7 +37,6 @@ if config.video_drivers and config.video_drivers['intel'] then
 end
 
 if config.video_drivers and config.video_drivers['nouveau'] then
-	cflags{'-D HAVE_NOUVEAU=1'}
 	lib('libdrm_nouveau.a', [[
 		nouveau/(
 			nouveau.c
@@ -41,10 +48,7 @@ if config.video_drivers and config.video_drivers['nouveau'] then
 end
 
 if config.video_drivers and config.video_drivers['amdgpu'] then
-	cflags{
-		'-D HAVE_AMDGPU=1',
-		[[-D 'AMDGPU_ASIC_ID_TABLE="/share/libdrm/amdgpu.ids"']],
-	}
+	cflags{[[-D 'AMDGPU_ASIC_ID_TABLE="/share/libdrm/amdgpu.ids"']]}
 	lib('libdrm_amdgpu.a', [[
 		amdgpu/(
 			amdgpu_asic_id.c
