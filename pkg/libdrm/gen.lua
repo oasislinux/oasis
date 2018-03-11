@@ -1,5 +1,5 @@
 local function havedriver(name)
-	local enabled = config.video_drivers[name]
+	local enabled = config.video_drivers and config.video_drivers[name]
 	return '-D HAVE_'..name:upper()..'='..(enabled and '1' or '0')
 end
 
