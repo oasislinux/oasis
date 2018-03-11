@@ -1,4 +1,4 @@
-set('version', '1.43.6')
+set('version', '1.44.0')
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-I include',
@@ -11,8 +11,8 @@ cflags{
 
 set('subst', {
 	'-e s,@E2FSPROGS_VERSION@,$version,',
-	'-e s,@E2FSPROGS_MONTH@,June,',
-	'-e s,@E2FSPROGS_YEAR@,2016,',
+	'-e s,@E2FSPROGS_MONTH@,March,',
+	'-e s,@E2FSPROGS_YEAR@,2018,',
 	'-e s,@JDEV@,,',
 })
 
@@ -152,6 +152,7 @@ lib('libext2fs.a', [[$outdir/ext2_err.c lib/ext2fs/(
 	symlink.c
 	undo_io.c
 	unix_io.c
+	sparse_io.c
 	unlink.c
 	valid_blk.c
 	version.c
