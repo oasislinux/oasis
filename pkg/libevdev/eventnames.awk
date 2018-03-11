@@ -7,6 +7,8 @@ BEGIN {
 	blacklist["BTN_DIGI"] = 1
 	blacklist["BTN_WHEEL"] = 1
 	blacklist["BTN_TRIGGER_HAPPY"] = 1
+	blacklist["SW_MAX"] = 1
+	blacklist["REP_MAX"] = 1
 
 	prefixes[++numprefixes] = "EV"
 	prefixes[++numprefixes] = "REL"
