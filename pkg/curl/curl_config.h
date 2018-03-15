@@ -169,6 +169,7 @@
 #define HAVE_OPENSSL_X509_H 1
 /* #undef HAVE_PEM_H */
 #define HAVE_PIPE 1
+/* #undef HAVE_PK11_CREATEMANAGEDGENERICOBJECT */
 #define HAVE_POLL 1
 #define HAVE_POLL_FINE 1
 #define HAVE_POLL_H 1
@@ -240,6 +241,7 @@
 #define HAVE_TERMIOS_H 1
 /* #undef HAVE_TERMIO_H */
 #define HAVE_TIME_H 1
+/* #undef HAVE_TIME_T_UNSIGNED */
 #define HAVE_UNISTD_H 1
 #define HAVE_UTIME 1
 #define HAVE_UTIMES 1
