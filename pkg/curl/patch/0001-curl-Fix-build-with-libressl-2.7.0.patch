@@ -1,0 +1,93 @@
+From 911e4722ca97605c9449ef07c274a0d7054fc238 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 23 Mar 2018 00:03:37 -0700
+Subject: [PATCH] curl: Fix build with libressl-2.7.0
+
+---
+ lib/vtls/openssl.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
+diff --git a/lib/vtls/openssl.c b/lib/vtls/openssl.c
+index 2a6b3cfac..285308914 100644
+--- a/lib/vtls/openssl.c
++++ b/lib/vtls/openssl.c
+@@ -104,7 +104,8 @@
+ #endif
+ 
+ #if (OPENSSL_VERSION_NUMBER >= 0x10100000L) && /* OpenSSL 1.1.0+ */ \
+-  !defined(LIBRESSL_VERSION_NUMBER)
++  (!defined(LIBRESSL_VERSION_NUMBER) || \
++   LIBRESSL_VERSION_NUMBER >= 0x2070000fL) /* LibreSSL 2.7.0+ */
+ #define SSLEAY_VERSION_NUMBER OPENSSL_VERSION_NUMBER
+ #define HAVE_X509_GET0_EXTENSIONS 1 /* added in 1.1.0 -pre1 */
+ #define HAVE_OPAQUE_EVP_PKEY 1 /* since 1.1.0 -pre3 */
+@@ -127,8 +128,9 @@ static unsigned long OpenSSL_version_num(void)
+ #endif
+ #endif
+ 
+-#if (OPENSSL_VERSION_NUMBER >= 0x1000200fL) && /* 1.0.2 or later */ \
+-  !defined(LIBRESSL_VERSION_NUMBER)
++#if (OPENSSL_VERSION_NUMBER >= 0x1000200fL) && /* OpenSSL 1.0.2 or later */ \
++  (!defined(LIBRESSL_VERSION_NUMBER) || \
++   LIBRESSL_VERSION_NUMBER >= 0x2070000fL) /* LibreSSL 2.7.0 or later */
+ #define HAVE_X509_GET0_SIGNATURE 1
+ #endif
+ 
+@@ -147,7 +149,7 @@ static unsigned long OpenSSL_version_num(void)
+  * Whether SSL_CTX_set_keylog_callback is available.
+  * OpenSSL: supported since 1.1.1 https://github.com/openssl/openssl/pull/2287
+  * BoringSSL: supported since d28f59c27bac (committed 2015-11-19)
+- * LibreSSL: unsupported in at least 2.5.1 (explicitly check for it since it
++ * LibreSSL: unsupported in at least 2.7.0 (explicitly check for it since it
+  *           lies and pretends to be OpenSSL 2.0.0).
+  */
+ #if (OPENSSL_VERSION_NUMBER >= 0x10101000L && \
+@@ -259,7 +261,8 @@ static void tap_ssl_key(const SSL *ssl, ssl_tap_state_t *state)
+   if(!session || !keylog_file_fp)
+     return;
+ 
+-#if OPENSSL_VERSION_NUMBER >= 0x10100000L && !defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER >= 0x10100000L && \
++  (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
+   /* ssl->s3 is not checked in openssl 1.1.0-pre6, but let's assume that
+    * we have a valid SSL context if we have a non-NULL session. */
+   SSL_get_client_random(ssl, client_random, SSL3_RANDOM_SIZE);
+@@ -930,7 +933,7 @@ static int Curl_ossl_init(void)
+                          CONF_MFLAGS_IGNORE_MISSING_FILE);
+ 
+ #if (OPENSSL_VERSION_NUMBER >= 0x10100000L) && \
+-    !defined(LIBRESSL_VERSION_NUMBER)
++    (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
+   /* OpenSSL 1.1.0+ takes care of initialization itself */
+ #else
+   /* Lets get nice error messages */
+@@ -971,7 +974,7 @@ static int Curl_ossl_init(void)
+ static void Curl_ossl_cleanup(void)
+ {
+ #if (OPENSSL_VERSION_NUMBER >= 0x10100000L) && \
+-    !defined(LIBRESSL_VERSION_NUMBER)
++    (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
+   /* OpenSSL 1.1 deprecates all these cleanup functions and
+      turns them into no-ops in OpenSSL 1.0 compatibility mode */
+ #else
+@@ -2083,7 +2086,7 @@ static CURLcode ossl_connect_step1(struct connectdata *conn, int sockindex)
+   case CURL_SSLVERSION_TLSv1_3:
+     /* it will be handled later with the context options */
+ #if (OPENSSL_VERSION_NUMBER >= 0x10100000L) && \
+-    !defined(LIBRESSL_VERSION_NUMBER)
++    (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
+     req_method = TLS_client_method();
+ #else
+     req_method = SSLv23_client_method();
+@@ -2799,7 +2802,7 @@ static CURLcode get_cert_chain(struct connectdata *conn,
+       ASN1_STRING *a = ASN1_STRING_new();
+       if(a) {
+         X509_get0_signature(&psig, &palg, x);
+-        X509_signature_print(mem, palg, a);
++        X509_signature_print(mem, (X509_ALGOR *)palg, a);
+         ASN1_STRING_free(a);
+ 
+         if(palg) {
+-- 
+2.16.3
+
