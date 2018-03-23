@@ -1,4 +1,4 @@
-From 3cfa61174c54ae5c1d93438e02f7e6a863674dae Mon Sep 17 00:00:00 2001
+From 26bff1cfa10096e5ec6afce42ad75feb1fb3dc61 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 2 Feb 2018 23:24:39 -0800
 Subject: [PATCH] Add support for libressl
@@ -8,7 +8,7 @@ Subject: [PATCH] Add support for libressl
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/libtransmission/crypto-utils-openssl.c b/libtransmission/crypto-utils-openssl.c
-index 16a37b205..39cc06cbf 100644
+index 16a37b205..0dde37d4f 100644
 --- a/libtransmission/crypto-utils-openssl.c
 +++ b/libtransmission/crypto-utils-openssl.c
 @@ -230,7 +230,7 @@ tr_rc4_process (tr_rc4_ctx_t   handle,
@@ -16,10 +16,10 @@ index 16a37b205..39cc06cbf 100644
  ***/
  
 -#if OPENSSL_VERSION_NUMBER < 0x10100000
-+#if OPENSSL_VERSION_NUMBER < 0x10100000 || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x10100000 || defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000fL
  static inline int
  DH_set0_pqg (DH     * dh,
               BIGNUM * p,
 -- 
-2.16.1
+2.16.3
 
