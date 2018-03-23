@@ -1,4 +1,4 @@
-From cb1b1947c5e0526973c080ac7f70710363a37a44 Mon Sep 17 00:00:00 2001
+From a558cf34cab8bcb2162f40014cb469105a3abc59 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 28 Oct 2016 00:33:53 -0700
 Subject: [PATCH] Fix build with LibreSSL
@@ -9,7 +9,7 @@ Signed-off-by: Michael Forney <mforney@mforney.org>
  1 file changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/libavformat/tls_openssl.c b/libavformat/tls_openssl.c
-index 38af8a21c0..059954479a 100644
+index 38af8a21c0..473d3cb7ff 100644
 --- a/libavformat/tls_openssl.c
 +++ b/libavformat/tls_openssl.c
 @@ -43,7 +43,7 @@ typedef struct TLSContext {
@@ -17,7 +17,7 @@ index 38af8a21c0..059954479a 100644
      SSL_CTX *ctx;
      SSL *ssl;
 -#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
-+#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
      BIO_METHOD* url_bio_method;
  #endif
  } TLSContext;
@@ -26,7 +26,7 @@ index 38af8a21c0..059954479a 100644
  static int url_bio_create(BIO *b)
  {
 -#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
-+#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
      BIO_set_init(b, 1);
      BIO_set_data(b, NULL);
      BIO_set_flags(b, 0);
@@ -35,7 +35,7 @@ index 38af8a21c0..059954479a 100644
  }
  
 -#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
-+#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
  #define GET_BIO_DATA(x) BIO_get_data(x)
  #else
  #define GET_BIO_DATA(x) (x)->ptr
@@ -44,7 +44,7 @@ index 38af8a21c0..059954479a 100644
  }
  
 -#if OPENSSL_VERSION_NUMBER < 0x1010000fL
-+#if OPENSSL_VERSION_NUMBER < 0x1010000fL || defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER < 0x1010000fL || defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x2070000fL
  static BIO_METHOD url_bio_method = {
      .type = BIO_TYPE_SOURCE_SINK,
      .name = "urlprotocol bio",
@@ -53,7 +53,7 @@ index 38af8a21c0..059954479a 100644
      if (c->tls_shared.tcp)
          ffurl_close(c->tls_shared.tcp);
 -#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
-+#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
      if (c->url_bio_method)
          BIO_meth_free(c->url_bio_method);
  #endif
@@ -62,10 +62,10 @@ index 38af8a21c0..059954479a 100644
          goto fail;
      }
 -#if OPENSSL_VERSION_NUMBER >= 0x1010000fL
-+#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && !defined(LIBRESSL_VERSION_NUMBER)
++#if OPENSSL_VERSION_NUMBER >= 0x1010000fL && (!defined(LIBRESSL_VERSION_NUMBER) || LIBRESSL_VERSION_NUMBER >= 0x2070000fL)
      p->url_bio_method = BIO_meth_new(BIO_TYPE_SOURCE_SINK, "urlprotocol bio");
      BIO_meth_set_write(p->url_bio_method, url_bio_bwrite);
      BIO_meth_set_read(p->url_bio_method, url_bio_bread);
 -- 
-2.13.1
+2.16.3
 
