@@ -9,16 +9,18 @@ cflags{
 sub('tools.ninja', function()
 	toolchain 'host'
 	cflags{
-		-- technically, this should use a separate host config, but most
-		-- of the stuff in config.h seems pretty standard
-		'-D HAVE_CONFIG_H',
-		'-I $dir',
+		'-D HAVE_STRINGIZE',
+		'-D DONT_HAVE_FRIBIDI_CONFIG_H',
+		'-D HAVE_STDLIB_H',
+		'-D HAVE_STRING_H',
+		'-D HAVE_STRINGS_H',
+		'-D STDC_HEADERS',
 		'-I $outdir/include',
 		'-I $srcdir/lib',
 	}
 	cc('gen.tab/packtab.c')
 	exe('gen-unicode-version', {'gen.tab/gen-unicode-version.c'})
-	for _, t in ipairs{'bidi-type', 'joining-type', 'arabic-shaping', 'mirroring', 'brackets', 'brackets-type'} do
+	for _, t in ipairs{'arabic-shaping', 'bidi-type', 'joining-type', 'mirroring', 'brackets', 'brackets-type'} do
 		exe('gen-'..t..'-tab', expand{'gen.tab/', {
 			'gen-'..t..'-tab.c',
 			'packtab.c.o',
@@ -37,22 +39,23 @@ local function gentool(tool, out, srcs, args)
 end
 
 gentool('unicode-version', 'include/fribidi-unicode-version.h', {'BidiMirroring.txt'})
+gentool('arabic-shaping-tab', 'arabic-shaping.tab.i', {'UnicodeData.txt'}, '$compression')
 gentool('bidi-type-tab', 'bidi-type.tab.i', {'UnicodeData.txt'}, '$compression')
 gentool('joining-type-tab', 'joining-type.tab.i', {'UnicodeData.txt', 'ArabicShaping.txt'}, '$compression')
-gentool('arabic-shaping-tab', 'arabic-shaping.tab.i', {'UnicodeData.txt'}, '$compression')
 gentool('mirroring-tab', 'mirroring.tab.i', {'BidiMirroring.txt'}, '$compression')
 gentool('brackets-tab', 'brackets.tab.i', {'BidiBrackets.txt', 'UnicodeData.txt'}, '$compression')
 gentool('brackets-type-tab', 'brackets-type.tab.i', {'BidiBrackets.txt'}, '$compression')
 
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/lib', {
-		'fribidi.h',
 		'fribidi-arabic.h',
 		'fribidi-begindecls.h',
 		'fribidi-bidi.h',
 		'fribidi-bidi-types.h',
 		'fribidi-bidi-types-list.h',
 		'fribidi-common.h',
+		'fribidi-char-sets.h',
+		'fribidi-char-sets-list.h',
 		'fribidi-deprecated.h',
 		'fribidi-enddecls.h',
 		'fribidi-flags.h',
@@ -64,6 +67,7 @@ pkg.hdrs = {
 		'fribidi-shape.h',
 		'fribidi-types.h',
 		'fribidi-unicode.h',
+		'fribidi.h',
 	}),
 	copy('$outdir/include', '$dir', {'fribidi-config.h'}),
 	'$outdir/include/fribidi-unicode-version.h',
@@ -85,6 +89,13 @@ lib('libfribidi.a', [[
 		fribidi-bidi.c
 		fribidi-bidi-types.c
 		fribidi-deprecated.c
+		fribidi-char-sets.c
+		fribidi-char-sets-cap-rtl.c
+		fribidi-char-sets-cp1255.c
+		fribidi-char-sets-cp1256.c
+		fribidi-char-sets-iso8859-6.c
+		fribidi-char-sets-iso8859-8.c
+		fribidi-char-sets-utf8.c
 		fribidi-joining.c
 		fribidi-joining-types.c
 		fribidi-mirroring.c

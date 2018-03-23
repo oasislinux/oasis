@@ -1,8 +1,6 @@
 # fribidi
 
 ## config.h
-
 Generated with
 
-	./configure \
-		--disable-charsets
+	meson --buildtype release -Ddeprecated=false -Ddocs=false ..
