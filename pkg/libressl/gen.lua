@@ -97,7 +97,7 @@ pkg.hdrs = {
 lib('libcrypto.a', [[crypto/(
 	cryptlib.c malloc-wrapper.c mem_dbg.c cversion.c ex_data.c cpt_err.c
 	o_time.c o_str.c o_init.c
-	mem_clr.c
+	mem_clr.c crypto_init.c
 	aes/(
 		aes_misc.c aes_ecb.c aes_cfb.c aes_ofb.c
 		aes_ctr.c aes_ige.c aes_wrap.c
@@ -121,7 +121,7 @@ lib('libcrypto.a', [[crypto/(
 	)
 	bf/(bf_skey.c bf_ecb.c bf_cfb64.c bf_ofb64.c)
 	bio/(
-		bio_lib.c bio_cb.c bio_err.c
+		bio_lib.c bio_cb.c bio_err.c bio_meth.c
 		bss_mem.c bss_null.c bss_fd.c
 		bss_file.c bss_sock.c bss_conn.c
 		bf_null.c bf_buff.c b_print.c b_dump.c
@@ -160,6 +160,7 @@ lib('libcrypto.a', [[crypto/(
 	dsa/(
 		dsa_gen.c dsa_key.c dsa_lib.c dsa_asn1.c dsa_vrf.c dsa_sign.c
 		dsa_err.c dsa_ossl.c dsa_depr.c dsa_ameth.c dsa_pmeth.c dsa_prn.c
+		dsa_meth.c
 	)
 	dso/(
 		dso_dlfcn.c dso_err.c dso_lib.c dso_null.c
@@ -237,7 +238,7 @@ lib('libcrypto.a', [[crypto/(
 		rsa_eay.c rsa_gen.c rsa_lib.c rsa_sign.c rsa_saos.c rsa_err.c
 		rsa_pk1.c rsa_none.c rsa_oaep.c rsa_chk.c
 		rsa_pss.c rsa_x931.c rsa_asn1.c rsa_depr.c rsa_ameth.c rsa_prn.c
-		rsa_pmeth.c rsa_crpt.c
+		rsa_pmeth.c rsa_crpt.c rsa_meth.c
 	)
 	sha/(sha1dgst.c sha1_one.c sha256.c sha512.c)
 	stack/stack.c
@@ -285,7 +286,7 @@ lib('libssl.a', [[ssl/(
 	ssl_ciph.c ssl_stat.c ssl_rsa.c
 	ssl_asn1.c ssl_txt.c ssl_algs.c
 	bio_ssl.c ssl_err.c
-	ssl_packet.c ssl_tlsext.c ssl_versions.c pqueue.c
+	ssl_packet.c ssl_tlsext.c ssl_versions.c pqueue.c ssl_init.c
 
 	s3_cbc.c
 	bs_ber.c bs_cbb.c bs_cbs.c
@@ -294,8 +295,8 @@ file('lib/libssl.a', '644', '$outdir/libssl.a')
 
 -- src/libtls/Makefile.am
 lib('libtls.a', [[tls/(
-	tls.c tls_bio_cb.c tls_client.c tls_config.c tls_conninfo.c tls_peer.c
-	tls_server.c tls_util.c tls_ocsp.c tls_verify.c
+	tls.c tls_bio_cb.c tls_client.c tls_config.c tls_conninfo.c
+	tls_keypair.c tls_peer.c tls_server.c tls_util.c tls_ocsp.c tls_verify.c
 ) libssl.a.d libcrypto.a.d]])
 file('lib/libtls.a', '644', '$outdir/libtls.a')
 
