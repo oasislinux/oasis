@@ -1,4 +1,4 @@
-set('version', '2.31.1')
+set('version', '2.32.0')
 cflags{
 	'-include $dir/config.h',
 	'-I include',
@@ -30,6 +30,7 @@ lib('libcommon.a', [[
 		blkdev.c
 		canonicalize.c
 		crc32.c
+		crc32c.c
 		env.c
 		idcache.c
 		fileutils.c
@@ -49,6 +50,7 @@ lib('libcommon.a', [[
 		exec_shell.c
 		strv.c
 		sha1.c
+		signames.c
 
 		linux_version.c
 		loopdev.c

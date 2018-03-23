@@ -23,6 +23,7 @@
 #define HAVE_DIRFD 1
 /* #undef HAVE_DIR_DD_FD */
 #define HAVE_DLFCN_H 1
+#define HAVE_EACCESS 1
 #define HAVE_ENDIAN_H 1
 #define HAVE_ENVIRON_DECL 1
 #define HAVE_ERR 1
@@ -54,7 +55,9 @@
 #define HAVE_IOPL 1
 /* #undef HAVE_ISNAN */
 #define HAVE_JRAND48 1
+/* #undef HAVE_LANGINFO_ALTMON */
 #define HAVE_LANGINFO_H 1
+/* #undef HAVE_LANGINFO_NL_ABALTMON */
 #define HAVE_LASTLOG_H 1
 #define HAVE_LCHOWN 1
 /* #undef HAVE_LIBAUDIT */
@@ -82,8 +85,10 @@
 /* #undef HAVE_LINUX_COMPILER_H */
 #define HAVE_LINUX_FALLOC_H 1
 #define HAVE_LINUX_FD_H 1
+#define HAVE_LINUX_FS_H 1
 /* #undef HAVE_LINUX_GSMMUX_H */
 #define HAVE_LINUX_MAJOR_H 1
+#define HAVE_LINUX_NET_NAMESPACE_H 1
 #define HAVE_LINUX_RAW_H 1
 #define HAVE_LINUX_SECUREBITS_H 1
 #define HAVE_LINUX_TIOCL_H 1
@@ -159,6 +164,8 @@
 #define HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC 1
 #define HAVE_STRUCT_TERMIOS_C_LINE 1
 #define HAVE_STRUCT_TM_TM_ZONE 1
+#define HAVE_SWAPOFF 1
+#define HAVE_SWAPON 1
 #define HAVE_SYSCONF 1
 #define HAVE_SYSINFO 1
 /* #undef HAVE_SYS_DISKLABEL_H */
@@ -211,11 +218,11 @@
 #define HAVE___FPENDING 1
 #define HAVE___PROGNAME 1
 /* #undef HAVE___SECURE_GETENV */
-#define LIBBLKID_DATE "19-Dec-2017"
-#define LIBBLKID_VERSION "2.31.1"
-#define LIBFDISK_VERSION "2.31.1"
-#define LIBMOUNT_VERSION "2.31.1"
-#define LIBSMARTCOLS_VERSION "2.31.1"
+#define LIBBLKID_DATE "21-Mar-2018"
+#define LIBBLKID_VERSION "2.32.0"
+#define LIBFDISK_VERSION "2.32.0"
+#define LIBMOUNT_VERSION "2.32.0"
+#define LIBSMARTCOLS_VERSION "2.32.0"
 /* #undef LOGIN_CHOWN_VCS */
 /* #undef LOGIN_STAT_MAIL */
 #define LT_OBJDIR ".libs/"
@@ -225,13 +232,12 @@
 #define PACKAGE "util-linux"
 #define PACKAGE_BUGREPORT "kzak@redhat.com"
 #define PACKAGE_NAME "util-linux"
-#define PACKAGE_STRING "util-linux 2.31.1"
+#define PACKAGE_STRING "util-linux 2.32"
 #define PACKAGE_TARNAME "util-linux"
 #define PACKAGE_URL "http://www.kernel.org/pub/linux/utils/util-linux/"
-#define PACKAGE_VERSION "2.31.1"
+#define PACKAGE_VERSION "2.32"
 #define PG_BELL 1
 #define STDC_HEADERS 1
-#define SWAPON_HAS_TWO_ARGS 1
 /* #undef SYS_fallocate */
 /* #undef SYS_ioprio_get */
 /* #undef SYS_ioprio_set */
@@ -240,6 +246,8 @@
 /* #undef SYS_sched_getaffinity */
 /* #undef SYS_sched_setattr */
 /* #undef SYS_setns */
+/* #undef SYS_swapoff */
+/* #undef SYS_swapon */
 /* #undef SYS_unshare */
 /* #undef TM_IN_SYS_TIME */
 #define USE_COLORS_BY_DEFAULT 1
@@ -263,7 +271,7 @@
 #endif
 #define USE_TTY_GROUP 1
 /* #undef USE_USRDIR_PATHS_ONLY */
-#define VERSION "2.31.1"
+#define VERSION "2.32"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
