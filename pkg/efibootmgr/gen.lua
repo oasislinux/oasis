@@ -1,5 +1,5 @@
 cflags{
-	[[-D 'EFIBOOTMGR_VERSION="14"']],
+	[[-D 'EFIBOOTMGR_VERSION="16"']],
 	[[-D 'DEFAULT_LOADER="/linux"']],
 	'-I $srcdir/src/include',
 	'-I $builddir/pkg/efivar/include',
