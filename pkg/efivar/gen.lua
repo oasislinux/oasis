@@ -14,6 +14,7 @@ sub('tools.ninja', function()
 	toolchain 'host'
 	cflags{
 		'-std=c99',
+		'-D _GNU_SOURCE',
 		'-D EFIVAR_BUILD_ENVIRONMENT',
 		'-I $srcdir/src/include',
 	}
