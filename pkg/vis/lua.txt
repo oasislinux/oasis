@@ -16,6 +16,7 @@ lexers/bibtex.lua
 lexers/boo.lua
 lexers/caml.lua
 lexers/chuck.lua
+lexers/clojure.lua
 lexers/cmake.lua
 lexers/coffeescript.lua
 lexers/container.lua
@@ -98,6 +99,7 @@ lexers/pure.lua
 lexers/python.lua
 lexers/rails.lua
 lexers/rc.lua
+lexers/reason.lua
 lexers/rebol.lua
 lexers/rest.lua
 lexers/rexx.lua
@@ -141,6 +143,7 @@ plugins/textobject-lexer.lua
 themes/dark-16.lua
 themes/light-16.lua
 themes/solarized.lua
+themes/zenburn.lua
 vis-std.lua
 vis.lua
 visrc.lua
