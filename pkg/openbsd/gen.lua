@@ -1,7 +1,6 @@
 cflags{
 	[[-D 'DEF_WEAK(n)=']],
 	'-I $dir/include',
-	'-I $builddir/pkg/libressl/include',
 	'-idirafter $srcdir/include',
 	'-idirafter $srcdir/sys',
 	'-idirafter $srcdir/lib/libutil',
