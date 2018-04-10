@@ -21,7 +21,6 @@
 /* #undef BROKEN_GETGROUPS */
 /* #undef BROKEN_GLOB */
 /* #undef BROKEN_INET_NTOA */
-/* #undef BROKEN_LIBIAF */
 /* #undef BROKEN_ONE_BYTE_DIRENT_D_NAME */
 /* #undef BROKEN_READV_COMPARISON */
 /* #undef BROKEN_READ_COMPARISON */
@@ -34,6 +33,8 @@
 /* #undef BROKEN_SETVBUF */
 /* #undef BROKEN_SHADOW_EXPIRE */
 /* #undef BROKEN_SNPRINTF */
+/* #undef BROKEN_STRNDUP */
+/* #undef BROKEN_STRNLEN */
 /* #undef BROKEN_STRNVIS */
 /* #undef BROKEN_TCGETATTR_ICANON */
 /* #undef BROKEN_UPDWTMPX */
@@ -53,6 +54,7 @@
 #define DISABLE_WTMP 1
 #define DISABLE_WTMPX 1
 #define ENABLE_PKCS11 1
+/* #undef FFLUSH_NULL_BUG */
 /* #undef FILESYSTEM_NO_BACKSLASH */
 /* #undef FSID_HAS_VAL */
 /* #undef FSID_HAS___VAL */
@@ -93,7 +95,8 @@
 /* #undef HAVE_BSD_LIBUTIL_H */
 /* #undef HAVE_BSM_AUDIT_H */
 /* #undef HAVE_BSTRING_H */
-/* #undef HAVE_CALLOC */
+#define HAVE_BZERO 1
+#define HAVE_CALLOC 1
 /* #undef HAVE_CAP_RIGHTS_LIMIT */
 #define HAVE_CLOCK 1
 #define HAVE_CLOCK_GETTIME 1
@@ -108,6 +111,7 @@
 #define HAVE_DAEMON 1
 #define HAVE_DECL_AI_NUMERICSERV 1
 /* #undef HAVE_DECL_AUTHENTICATE */
+#define HAVE_DECL_BZERO 1
 #define HAVE_DECL_GLOB_NOMATCH 1
 /* #undef HAVE_DECL_GSS_C_NT_HOSTBASED_SERVICE */
 #define HAVE_DECL_HOWMANY 1
@@ -120,6 +124,7 @@
 #define HAVE_DECL_OFFSETOF 1
 #define HAVE_DECL_O_NONBLOCK 1
 /* #undef HAVE_DECL_PASSWDEXPIRED */
+#define HAVE_DECL_READV 1
 /* #undef HAVE_DECL_SETAUTHDB */
 #define HAVE_DECL_SHUT_RD 1
 #define HAVE_DECL_WRITEV 1
@@ -158,6 +163,7 @@
 #define HAVE_FD_MASK 1
 #define HAVE_FEATURES_H 1
 /* #undef HAVE_FLOATINGPOINT_H */
+#define HAVE_FLOCK 1
 /* #undef HAVE_FMT_SCALED */
 #define HAVE_FREEADDRINFO 1
 #define HAVE_FREEZERO 1
@@ -187,8 +193,8 @@
 /* #undef HAVE_GETPWANAM */
 #define HAVE_GETRLIMIT 1
 /* #undef HAVE_GETRRSETBYNAME */
-/* #undef HAVE_GETRUSAGE */
 /* #undef HAVE_GETSEUSERBYNAME */
+#define HAVE_GETSID 1
 #define HAVE_GETTIMEOFDAY 1
 /* #undef HAVE_GETTTYENT */
 #define HAVE_GETUTENT 1
@@ -216,6 +222,7 @@
 /* #undef HAVE_IA_H */
 #define HAVE_ID_IN_UTMP 1
 #define HAVE_ID_IN_UTMPX 1
+#define HAVE_IFADDRS_H 1
 #define HAVE_INET_ATON 1
 #define HAVE_INET_NTOA 1
 #define HAVE_INET_NTOP 1
@@ -276,6 +283,7 @@
 #define HAVE_NETDB_H 1
 /* #undef HAVE_NETGROUP_H */
 /* #undef HAVE_NET_IF_TUN_H */
+#define HAVE_NET_ROUTE_H 1
 /* #undef HAVE_NEXT */
 /* #undef HAVE_NGETADDRINFO */
 #define HAVE_NL_LANGINFO 1
@@ -303,6 +311,7 @@
 #define HAVE_PTY_H 1
 #define HAVE_PUTUTLINE 1
 #define HAVE_PUTUTXLINE 1
+#define HAVE_RAISE 1
 /* #undef HAVE_READPASSPHRASE */
 /* #undef HAVE_READPASSPHRASE_H */
 #define HAVE_REALLOC 1
@@ -327,6 +336,10 @@
 #define HAVE_SETEGID 1
 #define HAVE_SETENV 1
 #define HAVE_SETEUID 1
+/* #undef SIZEOF_INT */
+/* #undef SIZEOF_LONG_INT */
+/* #undef SIZEOF_LONG_LONG_INT */
+/* #undef SIZEOF_SHORT_INT */
 /* #undef HAVE_SETGROUPENT */
 #define HAVE_SETGROUPS 1
 #define HAVE_SETLINEBUF 1
@@ -375,6 +388,7 @@
 #define HAVE_STRLCAT 1
 #define HAVE_STRLCPY 1
 #define HAVE_STRMODE 1
+#define HAVE_STRNDUP 1
 #define HAVE_STRNLEN 1
 /* #undef HAVE_STRNVIS */
 #define HAVE_STRPTIME 1
@@ -393,6 +407,7 @@
 #define HAVE_STRUCT_SOCKADDR_IN6 1
 #define HAVE_STRUCT_SOCKADDR_IN6_SIN6_SCOPE_ID 1
 #define HAVE_STRUCT_SOCKADDR_STORAGE 1
+#define HAVE_STRUCT_STATFS_F_FLAGS 1
 #define HAVE_STRUCT_STAT_ST_BLKSIZE 1
 #define HAVE_STRUCT_STAT_ST_MTIM 1
 #define HAVE_STRUCT_STAT_ST_MTIME 1
@@ -408,6 +423,8 @@
 /* #undef HAVE_SYS_CDEFS_H */
 #define HAVE_SYS_DIR_H 1
 /* #undef HAVE_SYS_ERRLIST */
+#define HAVE_SYS_FILE_H 1
+/* #undef HAVE_SYS_LABEL_H */
 #define HAVE_SYS_MMAN_H 1
 #define HAVE_SYS_MOUNT_H 1
 /* #undef HAVE_SYS_NDIR_H */
@@ -423,12 +440,14 @@
 /* #undef HAVE_SYS_STREAM_H */
 #define HAVE_SYS_STROPTS_H 1
 /* #undef HAVE_SYS_STRTIO_H */
+/* #undef HAVE_SYS_SYSCTL_H */
 /* #undef HAVE_SYS_SYSLOG_H */
 #define HAVE_SYS_SYSMACROS_H 1
 /* #undef HAVE_SYS_TIMERS_H */
 #define HAVE_SYS_TIME_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_UN_H 1
+#define HAVE_SYS_VFS_H 1
 #define HAVE_TCGETPGRP 1
 #define HAVE_TCSENDBREAK 1
 #define HAVE_TIME 1
@@ -500,8 +519,8 @@
 /* #undef LOGIN_NEEDS_UTMPX */
 /* #undef MAIL_DIRECTORY */
 /* #undef NEED_SETPGRP */
+/* #undef NO_ATTRIBUTE_ON_PROTOTYPE_ARGS */
 /* #undef NO_ATTRIBUTE_ON_RETURN_TYPE */
-/* #undef NO_SSH_LASTLOG */
 /* #undef NO_UID_RESTORATION_TEST */
 /* #undef NO_X11_UNIX_SOCKETS */
 /* #undef OPENSSL_EVP_DIGESTUPDATE_VOID */
@@ -537,10 +556,6 @@
 /* #undef SANDBOX_SOLARIS */
 /* #undef SANDBOX_SYSTRACE */
 /* #undef SETEUID_BREAKS_SETUID */
-/* #undef SIZEOF_INT */
-/* #undef SIZEOF_LONG_INT */
-/* #undef SIZEOF_LONG_LONG_INT */
-/* #undef SIZEOF_SHORT_INT */
 /* #undef SKEY */
 /* #undef SKEYCHALLENGE_4ARG */
 #define SNPRINTF_CONST const
@@ -560,6 +575,7 @@
 #define STDC_HEADERS 1
 /* #undef SUPERUSER_PATH */
 /* #undef SYSLOG_R_SAFE_IN_SIGHAND */
+/* #undef SYS_RDOMAIN_LINUX */
 /* #undef UNIXWARE_LONG_PASSWORDS */
 #define USER_PATH "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 /* #undef USE_AFS */

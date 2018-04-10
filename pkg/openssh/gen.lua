@@ -16,35 +16,23 @@ pkg.deps = {
 	'pkg/zlib/headers',
 }
 
-build('cc', '$outdir/umac128.c.o', {'$srcdir/umac.c', '||', '$dir/deps'}, {
-	cflags={
-		'$cflags',
-		'-D UMAC_OUTPUT_LEN=16',
-		'-D umac_new=umac128_new',
-		'-D umac_update=umac128_update',
-		'-D umac_final=umac128_final',
-		'-D umac_delete=umac128_delete',
-		'-D umac_ctx=umac128_ctx',
-	},
-})
-
 lib('libopenbsd-compat.a', [[openbsd-compat/(
 	base64.c basename.c bcrypt_pbkdf.c bindresvport.c blowfish.c daemon.c
-	dirname.c fmt_scaled.c getcwd.c getgrouplist.c getopt_long.c
-	getrrsetbyname.c glob.c inet_aton.c inet_ntoa.c inet_ntop.c mktemp.c
-	pwcache.c readpassphrase.c reallocarray.c realpath.c recallocarray.c
-	rresvport.c setenv.c setproctitle.c sha1.c sha2.c rmd160.c md5.c
-	sigact.c strcasestr.c strlcat.c strlcpy.c strmode.c strnlen.c strptime.c
-	strsep.c strtonum.c strtoll.c strtoul.c strtoull.c timingsafe_bcmp.c vis.c
-	explicit_bzero.c freezero.c
+	dirname.c explicit_bzero.c fmt_scaled.c freezero.c getcwd.c
+	getgrouplist.c getopt_long.c getrrsetbyname.c glob.c inet_aton.c
+	inet_ntoa.c inet_ntop.c md5.c mktemp.c pwcache.c readpassphrase.c
+	reallocarray.c realpath.c recallocarray.c rmd160.c rresvport.c setenv.c
+	setproctitle.c sha1.c sha2.c sigact.c strcasestr.c strlcat.c strlcpy.c
+	strmode.c strndup.c strnlen.c strptime.c strsep.c strtoll.c strtonum.c
+	strtoull.c strtoul.c timingsafe_bcmp.c vis.c
 
-	arc4random.c bsd-asprintf.c bsd-closefrom.c bsd-cray.c bsd-cygwin_util.c
-	bsd-getpeereid.c getrrsetbyname-ldns.c bsd-err.c bsd-getpagesize.c
-	bsd-misc.c bsd-nextstep.c bsd-openpty.c bsd-poll.c bsd-malloc.c
-	bsd-setres_id.c bsd-snprintf.c bsd-statvfs.c bsd-waitpid.c
-	fake-rfc2553.c openssl-compat.c xcrypt.c kludge-fd_set.c
+	arc4random.c bsd-asprintf.c bsd-closefrom.c bsd-cygwin_util.c bsd-err.c
+	bsd-flock.c bsd-getpagesize.c bsd-getpeereid.c bsd-malloc.c bsd-misc.c
+	bsd-nextstep.c bsd-openpty.c bsd-poll.c bsd-setres_id.c bsd-signal.c
+	bsd-snprintf.c bsd-statvfs.c bsd-waitpid.c fake-rfc2553.c
+	getrrsetbyname-ldns.c kludge-fd_set.c openssl-compat.c xcrypt.c
 
-	port-aix.c port-irix.c port-linux.c port-solaris.c port-uw.c
+	port-aix.c port-irix.c port-linux.c port-solaris.c port-net.c port-uw.c
 )]])
 
 -- port-tun.c from openbsd-compat depends on sshbuf-getput-basic.c and ssherr.c
@@ -60,6 +48,14 @@ lib('libssh.a', [[
 	krl.c
 	bitmap.c
 
+	ssh-xmss.c
+	sshkey-xmss.c
+	xmss_commons.c
+	xmss_fast.c
+	xmss_hash.c
+	xmss_hash_address.c
+	xmss_wots.c
+
 	authfd.c authfile.c bufaux.c bufbn.c bufec.c buffer.c
 	canohost.c channels.c cipher.c cipher-aes.c cipher-aesctr.c
 	cipher-ctr.c cleanup.c
@@ -68,16 +64,16 @@ lib('libssh.a', [[
 	readpass.c ttymodes.c xmalloc.c addrmatch.c
 	atomicio.c key.c dispatch.c mac.c uidswap.c uuencode.c misc.c utf8.c
 	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-rsa.c dh.c
-	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c.o
+	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c
 	ssh-pkcs11.c smult_curve25519_ref.c
 	poly1305.c chacha.c cipher-chachapoly.c
 	ssh-ed25519.c digest-openssl.c digest-libc.c hmac.c
-	sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c blocks.c
+	sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c
 	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c
 	kexdhc.c kexgexc.c kexecdhc.c kexc25519c.c
 	kexdhs.c kexgexs.c kexecdhs.c kexc25519s.c
 	platform-pledge.c platform-tracing.c platform-misc.c
-	openbsd-compat/port-tun.c libopenbsd-compat.a
+	libopenbsd-compat.a
 	$builddir/pkg/(libressl/libcrypto.a.d zlib/libz.a)
 ]])
 
