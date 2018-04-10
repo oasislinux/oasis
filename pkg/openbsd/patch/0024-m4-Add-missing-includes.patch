@@ -1,0 +1,37 @@
+From 2213572d0ef5646c205f5d30e67ba7ad1ac0129e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 10 Apr 2018 16:24:12 -0700
+Subject: [PATCH] m4: Add missing includes
+
+---
+ usr.bin/m4/look.c | 1 +
+ usr.bin/m4/main.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/usr.bin/m4/look.c b/usr.bin/m4/look.c
+index ac504570a9f..5feb0413cd6 100644
+--- a/usr.bin/m4/look.c
++++ b/usr.bin/m4/look.c
+@@ -38,6 +38,7 @@
+  * by: oz
+  */
+ 
++#include <sys/cdefs.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdint.h>
+diff --git a/usr.bin/m4/main.c b/usr.bin/m4/main.c
+index f1b8fa5a55b..4e664c0a50b 100644
+--- a/usr.bin/m4/main.c
++++ b/usr.bin/m4/main.c
+@@ -39,6 +39,7 @@
+  * by: oz
+  */
+ 
++#include <sys/cdefs.h>
+ #include <assert.h>
+ #include <signal.h>
+ #include <err.h>
+-- 
+2.17.0
+

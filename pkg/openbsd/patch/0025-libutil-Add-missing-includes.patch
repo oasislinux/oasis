@@ -1,0 +1,24 @@
+From 72cfeec702c7b76cce88be4c411ce40a8abb628c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 10 Apr 2018 16:23:22 -0700
+Subject: [PATCH] libutil: Add missing includes
+
+---
+ lib/libutil/ohash.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/libutil/ohash.c b/lib/libutil/ohash.c
+index 74ca4fafd9c..9537c60eac4 100644
+--- a/lib/libutil/ohash.c
++++ b/lib/libutil/ohash.c
+@@ -15,6 +15,7 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
++#include <sys/cdefs.h>
+ #include <stddef.h>
+ #include <stdint.h>
+ #include <stdlib.h>
+-- 
+2.17.0
+

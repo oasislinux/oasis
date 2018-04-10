@@ -4,6 +4,7 @@ cflags{
 	'-I $builddir/pkg/libressl/include',
 	'-idirafter $srcdir/include',
 	'-idirafter $srcdir/sys',
+	'-idirafter $srcdir/lib/libutil',
 }
 local libs
 
@@ -36,6 +37,7 @@ lib('libbsd.a', {paths[[
 		string/(explicit_bzero.c strmode.c timingsafe_memcmp.c)
 	)
 	lib/libcrypto/arc4random/getentropy_linux.c
+	lib/libutil/ohash.c
 ]], libs}, {'pkg/libressl/headers'})
 
 -- diff
@@ -54,6 +56,17 @@ man{'usr.bin/doas/doas.1', 'usr.bin/doas/doas.conf.5'}
 -- fmt
 file('bin/fmt', '755', exe('fmt', {'usr.bin/fmt/fmt.c'}))
 man{'usr.bin/fmt/fmt.1'}
+
+-- m4
+yacc('usr.bin/m4/parser', 'usr.bin/m4/parser.y')
+cc('usr.bin/m4/tokenizer.c', nil, {cflags='$cflags -I $outdir/usr.bin/m4'})
+exe('m4', [[
+	usr.bin/m4/(eval.c expr.c look.c main.c misc.c gnum4.c trace.c tokenizer.c.o)
+	$outdir/usr.bin/m4/parser.tab.c
+	libbsd.a
+]])
+file('bin/m4', '755', '$outdir/m4')
+man{'usr.bin/m4/m4.1'}
 
 -- nc
 exe('nc', [[
