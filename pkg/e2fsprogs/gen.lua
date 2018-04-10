@@ -1,4 +1,4 @@
-set('version', '1.44.0')
+set('version', '1.44.1')
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-I include',
