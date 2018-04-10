@@ -77,6 +77,7 @@ lib('libgit.a', [[
 	ewah/ewah_io.c
 	ewah/ewah_rlw.c
 	exec_cmd.c.o
+	fetch-object.c
 	fetch-pack.c
 	fsck.c
 	fsmonitor.c
@@ -105,7 +106,6 @@ lib('libgit.a', [[
 	merge-recursive.c
 	merge.c
 	mergesort.c
-	mru.c
 	name-hash.c
 	notes-cache.c
 	notes-merge.c
