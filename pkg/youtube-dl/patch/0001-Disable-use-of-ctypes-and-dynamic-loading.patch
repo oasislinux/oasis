@@ -1,11 +1,11 @@
-From 0a8212b77ced57b0427d1a57f47d111dc886e398 Mon Sep 17 00:00:00 2001
+From e644758a4801baa454ed122541ed43c01660e7c1 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
- youtube_dl/compat.py |  20 ------
- youtube_dl/utils.py  | 181 ++++-----------------------------------------------
+ youtube_dl/compat.py |  20 -----
+ youtube_dl/utils.py  | 181 +++----------------------------------------
  2 files changed, 11 insertions(+), 190 deletions(-)
 
 diff --git a/youtube_dl/compat.py b/youtube_dl/compat.py
@@ -54,7 +54,7 @@ index 4a611f183..d801f41ab 100644
      'compat_etree_register_namespace',
      'compat_expanduser',
 diff --git a/youtube_dl/utils.py b/youtube_dl/utils.py
-index ef44b99a5..5bad517c7 100644
+index 027d12785..9f2fbadd1 100644
 --- a/youtube_dl/utils.py
 +++ b/youtube_dl/utils.py
 @@ -8,7 +8,6 @@ import binascii
@@ -73,7 +73,7 @@ index ef44b99a5..5bad517c7 100644
      compat_etree_fromstring,
      compat_expanduser,
      compat_html_entities,
-@@ -1307,90 +1305,11 @@ def platform_name():
+@@ -1324,90 +1322,11 @@ def platform_name():
      return res
  
  
@@ -164,7 +164,7 @@ index ef44b99a5..5bad517c7 100644
      if ('b' in getattr(out, 'mode', '') or
              sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
          byt = s.encode(encoding or preferredencoding(), 'ignore')
-@@ -1420,78 +1339,22 @@ def intlist_to_bytes(xs):
+@@ -1437,78 +1356,22 @@ def intlist_to_bytes(xs):
  
  
  # Cross-platform file locking
@@ -253,7 +253,7 @@ index ef44b99a5..5bad517c7 100644
  
  
  class locked_file(object):
-@@ -1707,29 +1570,7 @@ def fix_xml_ampersands(xml_str):
+@@ -1746,29 +1609,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
@@ -285,5 +285,5 @@ index ef44b99a5..5bad517c7 100644
  
  def remove_start(s, start):
 -- 
-2.16.2
+2.17.0
 

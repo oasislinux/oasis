@@ -260,6 +260,7 @@ youtube_dl/extractor/hellporno.py
 youtube_dl/extractor/helsinki.py
 youtube_dl/extractor/hentaistigma.py
 youtube_dl/extractor/hgtv.py
+youtube_dl/extractor/hidive.py
 youtube_dl/extractor/historicfilms.py
 youtube_dl/extractor/hitbox.py
 youtube_dl/extractor/hitrecord.py
@@ -323,10 +324,12 @@ youtube_dl/extractor/lecture2go.py
 youtube_dl/extractor/leeco.py
 youtube_dl/extractor/lego.py
 youtube_dl/extractor/lemonde.py
+youtube_dl/extractor/lenta.py
 youtube_dl/extractor/libraryofcongress.py
 youtube_dl/extractor/libsyn.py
 youtube_dl/extractor/lifenews.py
 youtube_dl/extractor/limelight.py
+youtube_dl/extractor/line.py
 youtube_dl/extractor/litv.py
 youtube_dl/extractor/liveleak.py
 youtube_dl/extractor/livestream.py
@@ -489,6 +492,7 @@ youtube_dl/extractor/radiode.py
 youtube_dl/extractor/radiofrance.py
 youtube_dl/extractor/radiojavan.py
 youtube_dl/extractor/rai.py
+youtube_dl/extractor/raywenderlich.py
 youtube_dl/extractor/rbmaradio.py
 youtube_dl/extractor/rds.py
 youtube_dl/extractor/redbulltv.py
@@ -601,6 +605,7 @@ youtube_dl/extractor/telemb.py
 youtube_dl/extractor/telequebec.py
 youtube_dl/extractor/teletask.py
 youtube_dl/extractor/telewebion.py
+youtube_dl/extractor/tennistv.py
 youtube_dl/extractor/testurl.py
 youtube_dl/extractor/tf1.py
 youtube_dl/extractor/tfo.py
@@ -682,7 +687,6 @@ youtube_dl/extractor/vevo.py
 youtube_dl/extractor/vgtv.py
 youtube_dl/extractor/vh1.py
 youtube_dl/extractor/vice.py
-youtube_dl/extractor/viceland.py
 youtube_dl/extractor/vidbit.py
 youtube_dl/extractor/viddler.py
 youtube_dl/extractor/videa.py
@@ -693,6 +697,7 @@ youtube_dl/extractor/videomore.py
 youtube_dl/extractor/videopremium.py
 youtube_dl/extractor/videopress.py
 youtube_dl/extractor/vidio.py
+youtube_dl/extractor/vidlii.py
 youtube_dl/extractor/vidme.py
 youtube_dl/extractor/vidzi.py
 youtube_dl/extractor/vier.py
@@ -753,6 +758,7 @@ youtube_dl/extractor/xxxymovies.py
 youtube_dl/extractor/yahoo.py
 youtube_dl/extractor/yandexdisk.py
 youtube_dl/extractor/yandexmusic.py
+youtube_dl/extractor/yapfiles.py
 youtube_dl/extractor/yesjapan.py
 youtube_dl/extractor/yinyuetai.py
 youtube_dl/extractor/ynet.py
