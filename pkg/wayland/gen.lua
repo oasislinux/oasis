@@ -1,5 +1,4 @@
 cflags{
-	'-I include',
 	'-I $dir',
 	'-I $outdir/include',
 	'-I $srcdir',
@@ -11,9 +10,9 @@ cflags{
 build('sed', '$outdir/include/wayland-version.h', '$srcdir/src/wayland-version.h.in', {
 	expr={
 		'-e s,@WAYLAND_VERSION_MAJOR@,1,',
-		'-e s,@WAYLAND_VERSION_MINOR@,11,',
+		'-e s,@WAYLAND_VERSION_MINOR@,15,',
 		'-e s,@WAYLAND_VERSION_MICRO@,0,',
-		'-e s,@WAYLAND_VERSION@,1.11.0,',
+		'-e s,@WAYLAND_VERSION@,1.15.0,',
 	},
 })
 
@@ -27,8 +26,6 @@ pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/src', {
 		'wayland-client-core.h',
 		'wayland-client.h',
-		'wayland-egl-core.h',
-		'wayland-egl.h',
 		'wayland-server-core.h',
 		'wayland-server.h',
 		'wayland-util.h',
