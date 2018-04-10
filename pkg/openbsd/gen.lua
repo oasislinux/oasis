@@ -45,10 +45,10 @@ file('bin/diff', '755', '$outdir/diff')
 man{'usr.bin/diff/diff.1'}
 
 -- doas
-yacc('parse', 'usr.bin/doas/parse.y')
-cc('$outdir/parse.tab.c', nil, {cflags='$cflags -I $srcdir/usr.bin/doas'})
+yacc('usr.bin/doas/parse', 'usr.bin/doas/parse.y')
+cc('$outdir/usr.bin/doas/parse.tab.c', nil, {cflags='$cflags -I $srcdir/usr.bin/doas'})
 cc('usr.bin/doas/doas.c', nil, {cflags='$cflags -D _GNU_SOURCE'})
-exe('doas', 'usr.bin/doas/(doas.c.o env.c persist.c) parse.tab.c.o libbsd.a')
+exe('doas', 'usr.bin/doas/(doas.c.o env.c parse.tab.c.o persist.c) libbsd.a')
 file('bin/doas', '6755', '$outdir/doas')
 man{'usr.bin/doas/doas.1', 'usr.bin/doas/doas.conf.5'}
 
