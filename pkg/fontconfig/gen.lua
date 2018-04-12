@@ -1,16 +1,17 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I include',
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir',
 	'-I pkg/freetype/src/include',
 	'-I $builddir/pkg/expat/include',
+	'-I $builddir/pkg/util-linux/include',
 }
 
 pkg.deps = {
 	'pkg/expat/headers',
 	'pkg/freetype/fetch',
+	'pkg/util-linux/headers',
 }
 
 rule('makealias', '$srcdir/src/makealias $srcdir/src $out $in')
@@ -30,7 +31,6 @@ makealias('fcftalias', 'fontconfig/fcfreetype.h')
 lib('libfontconfig.a', [[
 	src/(
 		fcatomic.c
-		fcblanks.c
 		fccache.c
 		fccfg.c
 		fccharset.c
@@ -41,6 +41,8 @@ lib('libfontconfig.a', [[
 		fcformat.c
 		fcfreetype.c
 		fcfs.c
+		fcptrlist.c
+		fchash.c
 		fcinit.c
 		fclang.c
 		fclist.c
@@ -60,6 +62,7 @@ lib('libfontconfig.a', [[
 	$builddir/pkg/(
 		expat/libexpat.a.d
 		freetype/libfreetype.a.d
+		util-linux/libuuid.a.d
 	)
 ]])
 
