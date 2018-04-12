@@ -1,7 +1,6 @@
 set('version', '1.44.1')
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I include',
 	'-I $dir',
 	'-I $outdir/include',
 	'-I $outdir/internal',
