@@ -7,6 +7,7 @@ cflags{
 	'-I $outdir/internal',
 	'-I $outdir/internal/support',
 	'-I $srcdir/lib',
+	'-I $builddir/pkg/util-linux/include',
 }
 
 set('subst', {
@@ -48,7 +49,6 @@ et('$srcdir/lib/support/prof_err.et', 'prof_err.c', 'internal/support/prof_err.h
 
 build('copy', '$outdir/include/blkid/blkid.h', '$srcdir/lib/blkid/blkid.h.in')
 build('copy', '$outdir/include/ext2fs/ext2_types.h', '$dir/ext2_types.h')
-build('copy', '$outdir/include/uuid/uuid.h', '$srcdir/lib/uuid/uuid.h.in')
 build('copy', '$outdir/internal/blkid/blkid_types.h', '$dir/blkid_types.h')
 
 sub('tools.ninja', function()
@@ -62,13 +62,13 @@ pkg.hdrs = {
 	'$outdir/include/blkid/blkid.h',
 	'$outdir/include/ext2fs/ext2_err.h',
 	'$outdir/include/ext2fs/ext2_types.h',
-	'$outdir/include/uuid/uuid.h',
 }
 pkg.deps = {
 	'$dir/headers',
 	'$outdir/internal/blkid/blkid_types.h',
 	'$outdir/internal/support/prof_err.h',
 	'$outdir/internal/crc32c_table.h',
+	'pkg/util-linux/headers',
 }
 
 lib('libcomm_err.a', [[lib/et/(error_message.c et_name.c init_et.c com_err.c com_right.c)]])
@@ -172,18 +172,6 @@ lib('libsupport.a', [[$outdir/prof_err.c lib/support/(
 	quotaio_tree.c
 	dict.c
 )]])
-lib('libuuid.a', [[lib/uuid/(
-	clear.c
-	compare.c
-	copy.c
-	gen_uuid.c
-	isnull.c
-	pack.c
-	parse.c
-	unpack.c
-	unparse.c
-	uuid_time.c
-)]])
 
 exe('bin/e2fsck', [[
 	e2fsck/(
@@ -194,7 +182,8 @@ exe('bin/e2fsck', [[
 		logfile.c sigcatcher.c readahead.c
 		extents.c
 	)
-	libsupport.a libext2fs.a libe2p.a libblkid.a libuuid.a libcomm_err.a
+	libsupport.a libext2fs.a libe2p.a libblkid.a libcomm_err.a
+	$builddir/pkg/util-linux/libuuid.a.d
 ]])
 file('bin/e2fsck', '755', '$outdir/bin/e2fsck')
 substman{'e2fsck/e2fsck.8.in', 'e2fsck/e2fsck.conf.5.in'}
@@ -219,7 +208,8 @@ exe('bin/mke2fs', [[
 		create_inode.c
 	)
 	$outdir/default_profile.c
-	libsupport.a libext2fs.a libe2p.a libblkid.a libuuid.a libcomm_err.a
+	libsupport.a libext2fs.a libe2p.a libblkid.a libcomm_err.a
+	$builddir/pkg/util-linux/libuuid.a.d
 ]])
 file('bin/mke2fs', '755', '$outdir/bin/mke2fs')
 substman{'misc/mke2fs.8.in'}

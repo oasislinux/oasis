@@ -20,6 +20,7 @@ build('sed', '$outdir/libfdisk.h', '$srcdir/libfdisk/src/libfdisk.h.in', {
 	},
 })
 
+pkg.hdrs = copy('$outdir/include/uuid', '$srcdir/libuuid/src', {'uuid.h'})
 pkg.deps = {
 	'$outdir/libsmartcols.h',
 	'$outdir/libfdisk.h',
@@ -118,6 +119,7 @@ lib('libuuid.a', [[
 		uuid_time.c
 		predefined.c
 	)
+	libcommon.a
 ]])
 
 exe('fdisk', [[
