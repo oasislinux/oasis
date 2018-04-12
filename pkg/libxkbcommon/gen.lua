@@ -1,6 +1,5 @@
 cflags{
 	'-include $dir/config.h',
-	'-I include',
 	'-I $srcdir',
 	'-I $srcdir/src',
 }
