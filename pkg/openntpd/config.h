@@ -1,12 +1,12 @@
 #define __dead _Noreturn
 #define PACKAGE_NAME "OpenNTPD"
 #define PACKAGE_TARNAME "openntpd"
-#define PACKAGE_VERSION "6.2p2"
-#define PACKAGE_STRING "OpenNTPD 6.2p2"
+#define PACKAGE_VERSION "6.2p3"
+#define PACKAGE_STRING "OpenNTPD 6.2p3"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_URL ""
 #define PACKAGE "openntpd"
-#define VERSION "6.2p2"
+#define VERSION "6.2p3"
 #define STDC_HEADERS 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_STAT_H 1
