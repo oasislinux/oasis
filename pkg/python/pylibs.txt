@@ -333,6 +333,7 @@ http/cookies.py
 http/server.py
 idlelib/__init__.py
 idlelib/__main__.py
+idlelib/_pyclbr.py
 idlelib/autocomplete.py
 idlelib/autocomplete_w.py
 idlelib/autoexpand.py
@@ -382,7 +383,6 @@ idlelib/searchbase.py
 idlelib/searchengine.py
 idlelib/stackviewer.py
 idlelib/statusbar.py
-idlelib/tabbedpages.py
 idlelib/textview.py
 idlelib/tooltip.py
 idlelib/tree.py

@@ -2,7 +2,6 @@ cflags{
 	'-fwrapv',
 	'-D NDEBUG',
 	'-D Py_BUILD_CORE',
-	'-I include',
 	'-I $dir',
 	'-I $srcdir/Include',
 }
@@ -55,7 +54,7 @@ build('makesetup', '$outdir/config.c', {
 })
 
 cc('Modules/getbuildinfo.c', nil, {
-	cflags=[[$cflags -D 'DATE="Oct 3 2017"' -D 'TIME="01:52:02"']]
+	cflags=[[$cflags -D 'DATE="Mar 28 2018"' -D 'TIME="05:19:59"']]
 })
 cc('Modules/getpath.c', nil, {
 	cflags={

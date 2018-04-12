@@ -1,4 +1,4 @@
-From ce8a3ec6f269d0d44ecf83669b5567ca9c934bc4 Mon Sep 17 00:00:00 2001
+From b7f437785aa3616066e5c5845e466f49b50db263 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 22 Mar 2018 23:42:12 -0700
 Subject: [PATCH] Fix build with libressl-2.7.0
@@ -8,10 +8,10 @@ Subject: [PATCH] Fix build with libressl-2.7.0
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/Modules/_ssl.c b/Modules/_ssl.c
-index df8c6a7d96..0e18cd887f 100644
+index c54e43c2b4..93e15c91d0 100644
 --- a/Modules/_ssl.c
 +++ b/Modules/_ssl.c
-@@ -99,7 +99,7 @@ struct py_ssl_library_code {
+@@ -104,7 +104,7 @@ struct py_ssl_library_code {
  /* Include generated data (error codes) */
  #include "_ssl_data.h"
  
@@ -21,5 +21,5 @@ index df8c6a7d96..0e18cd887f 100644
  #endif
  
 -- 
-2.16.3
+2.17.0
 
