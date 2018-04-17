@@ -1,7 +1,6 @@
 cflags{
 	'-Wno-deprecated-declarations',
 	'-D HAVE_CONFIG_H',
-	'-I include',
 	'-I $dir',
 	'-I $srcdir/include',
 }

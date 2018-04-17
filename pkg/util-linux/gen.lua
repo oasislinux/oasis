@@ -1,7 +1,6 @@
 set('version', '2.32.0')
 cflags{
 	'-include $dir/config.h',
-	'-I include',
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir/include',

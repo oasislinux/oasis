@@ -1,6 +1,5 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I include',
 	'-I $dir',
 	-- it is important that the arch-specific directory is searched first
 	'-I $srcdir/linux/x86_64',

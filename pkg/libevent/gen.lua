@@ -2,7 +2,6 @@ cflags{
 	'-I $dir',
 	'-I $outdir/include',
 	'-I $srcdir/include',
-	'-I include',
 	'-idirafter pkg/openbsd/src/sys',
 }
 
