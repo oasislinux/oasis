@@ -11,6 +11,7 @@ http_upstream
 http_static
 http_autoindex
 http_index
+http_try_files
 http_auth_basic
 http_access
 http_rewrite

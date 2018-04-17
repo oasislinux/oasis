@@ -20,13 +20,15 @@ http_core http/ngx_http_core_module.c
 http_log http/modules/ngx_http_log_module.c
 http_upstream http/ngx_http_upstream.c http/ngx_http_upstream_round_robin.c
 
-http_v2 http/v2/ngx_http_v2.c http/v2/ngx_http_v2_table.c http/v2/ngx_http_v2_huff_decode.c http/v2/ngx_http_v2/huff_encode.c http/v2/ngx_http_v2_module.c
+http_v2 http/v2/ngx_http_v2.c http/v2/ngx_http_v2_table.c http/v2/ngx_http_v2_encode.c http/v2/ngx_http_v2_huff_decode.c http/v2/ngx_http_v2/huff_encode.c http/v2/ngx_http_v2_module.c
 http_static http/modules/ngx_http_static_module.c
 http_gzip_static http/modules/ngx_http_gzip_static_module.c
 http_dav http/modules/ngx_http_dav_module.c
 http_autoindex http/modules/ngx_http_autoindex_module.c
 http_index http/modules/ngx_http_index_module.c
 http_random_index http/modules/ngx_http_random_index_module.c
+http_mirror http/modules/ngx_http_mirror_module.c
+http_try_files http/modules/ngx_http_try_files_module.c
 http_auth_request http/modules/ngx_http_auth_request_module.c
 http_auth_basic http/modules/ngx_http_auth_basic_module.c
 http_access http/modules/ngx_http_access_module.c
@@ -45,6 +47,7 @@ http_proxy http/modules/ngx_http_proxy_module.c
 http_fastcgi http/modules/ngx_http_fastcgi_module.c
 http_uwsgi http/modules/ngx_http_uwsgi_module.c
 http_scgi http/modules/ngx_http_sgi_module.c
+http_grpc http/modules/ngx_http_grpc_module.c
 http_perl http/modules/perl/ngx_http_perl_module.c
 http_memcached http/modules/ngx_http_memcached_module.c
 http_empty_gif http/modules/ngx_http_empty_gif_module.c
