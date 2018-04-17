@@ -23,6 +23,7 @@ asterix
 att3b
 audio
 basis
+beetle
 ber
 bflt
 bhl
@@ -61,6 +62,7 @@ cubemap
 cups
 dact
 database
+dbpf
 der
 diamond
 diff
@@ -147,6 +149,7 @@ mathcad
 mathematica
 matroska
 mcrypt
+measure
 mercurial
 metastore
 meteorological
@@ -214,6 +217,7 @@ qt
 revision
 riff
 rinex
+rpi
 rpm
 rtf
 ruby
@@ -250,6 +254,7 @@ tex
 tgif
 ti-8x
 timezone
+tplink
 troff
 tuxedo
 typeset
@@ -285,4 +290,5 @@ xwindows
 yara
 zfs
 zilog
+zip
 zyxel

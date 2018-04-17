@@ -1,10 +1,9 @@
-local version = '5.32'
+local version = '5.33'
 cflags{
 	'-Wall',
 	'-D HAVE_CONFIG_H',
 	[[-D 'MAGIC="/share/file/magic"']],
 	'-D _GNU_SOURCE',
-	'-I include',
 	'-I $dir',
 	'-I $outdir/include',
 	'-I $builddir/pkg/zlib/include',
@@ -27,27 +26,15 @@ pkg.hdrs = {'$outdir/include/magic.h'}
 pkg.deps = {'$dir/headers', 'pkg/zlib/headers'}
 
 lib('libmagic.a', [[src/(
-	magic.c
-	apprentice.c
-	softmagic.c
-	ascmagic.c
-	encoding.c
-	compress.c
-	is_tar.c
-	readelf.c
-	print.c
-	fsmagic.c
-	funcs.c
-	apptype.c
-	der.c
-	cdf.c
-	cdf_time.c
-	readcdf.c
+	buffer.c magic.c apprentice.c softmagic.c ascmagic.c
+	encoding.c compress.c is_tar.c readelf.c print.c fsmagic.c
+	funcs.c apptype.c der.c
+	cdf.c cdf_time.c readcdf.c
 
 	fmtcheck.c
 )]])
 
-exe('file', {'src/file.c', 'libmagic.a', '$builddir/pkg/zlib/libz.a'})
+exe('file', {'src/file.c', 'src/seccomp.c', 'libmagic.a', '$builddir/pkg/zlib/libz.a'})
 file('bin/file', '755', '$outdir/file')
 man{'$outdir/file.1'}
 
