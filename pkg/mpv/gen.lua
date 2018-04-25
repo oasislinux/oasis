@@ -8,6 +8,7 @@ sub('tools.ninja', function()
 end)
 
 cflags{
+	'-Wno-deprecated-declarations',
 	'-D _GNU_SOURCE',
 	'-I $dir',
 	'-I $outdir',

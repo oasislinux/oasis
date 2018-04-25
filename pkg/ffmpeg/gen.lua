@@ -22,25 +22,6 @@ if config.target.pie then
 	nasmflags{'-D PIC'}
 end
 
-build('awk', '$outdir/config.asm', '$dir/options.h', {
-	expr=[['{print "%define " substr($$0, length("#define ") + 1)}']],
-})
-build('awk', '$outdir/config.texi', '$dir/options.h', {
-	expr=[['$$3 == "1" {gsub("_", "-", $$2); print "@set", tolower($$2), "yes"}']],
-})
-build('awk', '$outdir/internal/libavcodec/bsf_list.c', {'$dir/options.h', '|', '$dir/bitstream_filters.awk'}, {
-	expr='-f $dir/bitstream_filters.awk',
-})
-build('awk', '$outdir/internal/libavformat/protocol_list.c', {'$dir/options.h', '|', '$dir/protocols.awk'}, {
-	expr='-f $dir/protocols.awk',
-})
-build('awk', '$outdir/include/libavutil/avconfig.h', {'$dir/options.h', '|', '$dir/protocols.awk'}, {
-	expr='-f $dir/avconfig.awk',
-})
-
-rule('ffversion', 'sh $srcdir/ffbuild/version.sh $srcdir $out')
-build('ffversion', '$outdir/include/libavutil/ffversion.h', {'|', '$srcdir/ffbuild/version.sh'})
-
 -- TODO: Copy the rest of the headers.
 pkg.hdrs = {
 	'$outdir/include/libavutil/avconfig.h',
@@ -52,6 +33,34 @@ pkg.deps = {
 	'pkg/libressl/headers',
 	'pkg/alsa-lib/headers',
 }
+
+build('awk', '$outdir/config.asm', '$dir/options.h', {
+	expr=[['{print "%define " substr($$0, length("#define ") + 1)}']],
+})
+build('awk', '$outdir/config.texi', '$dir/options.h', {
+	expr=[['$$3 == "1" {gsub("_", "-", $$2); print "@set", tolower($$2), "yes"}']],
+})
+build('awk', '$outdir/include/libavutil/avconfig.h', {'$dir/options.h', '|', '$dir/avconfig.awk'}, {
+	expr='-f $dir/avconfig.awk',
+})
+
+rule('genlist', 'lua $dir/list.lua $dir/options.h $type $var <$in >$out.tmp && mv $out.tmp $out')
+local function genlist(out, src, type, var)
+	build('genlist', out, {src, '|', '$dir/list.lua', '$dir/options.h'}, {type=type, var=var})
+	table.insert(pkg.deps, out)
+end
+genlist('$outdir/internal/libavfilter/filter_list.c', '$srcdir/libavfilter/allfilters.c', 'AVFilter', 'filter_list')
+genlist('$outdir/internal/libavcodec/codec_list.c', '$srcdir/libavcodec/allcodecs.c', 'AVCodec', 'codec_list')
+genlist('$outdir/internal/libavcodec/parser_list.c', '$srcdir/libavcodec/parser.c', 'AVCodecParser', 'parser_list')
+genlist('$outdir/internal/libavcodec/bsf_list.c', '$srcdir/libavcodec/bitstream_filters.c', 'AVBitStreamFilter', 'bitstream_filters')
+genlist('$outdir/internal/libavformat/demuxer_list.c', '$srcdir/libavformat/allformats.c', 'AVInputFormat', 'demuxer_list')
+genlist('$outdir/internal/libavformat/muxer_list.c', '$srcdir/libavformat/allformats.c', 'AVOutputFormat', 'muxer_list')
+genlist('$outdir/internal/libavdevice/indev_list.c', '$srcdir/libavdevice/alldevices.c', 'AVInputFormat', 'indev_list')
+genlist('$outdir/internal/libavdevice/outdev_list.c', '$srcdir/libavdevice/alldevices.c', 'AVOutputFormat', 'outdev_list')
+genlist('$outdir/internal/libavformat/protocol_list.c', '$srcdir/libavformat/protocols.c', 'URLProtocol', 'url_protocols')
+
+rule('ffversion', 'sh $srcdir/ffbuild/version.sh $srcdir $out')
+build('ffversion', '$outdir/include/libavutil/ffversion.h', {'|', '$srcdir/ffbuild/version.sh'})
 
 local options = {}
 for line in iterlines('options.h', 1) do
@@ -92,17 +101,17 @@ for lib, srcs in pairs(sources) do
 	sources[lib] = table.keys(srcs)
 end
 
-cc('libavcodec/bitstream_filters.c', {'$outdir/internal/libavcodec/bsf_list.c'})
 lib('libavcodec.a', {
 	expand{'libavcodec/', {
+		'ac3_parser.c',
+		'adts_parser.c',
 		'allcodecs.c',
-		'audioconvert.c',
 		'avdct.c',
 		'avpacket.c',
 		'avpicture.c',
 		'bitstream.c',
 		'bitstream_filter.c',
-		'bitstream_filters.c.o',
+		'bitstream_filters.c',
 		'bsf.c',
 		'codec_desc.c',
 		'd3d11va.c',
@@ -121,8 +130,6 @@ lib('libavcodec.a', {
 		'profiles.c',
 		'qsv_api.c',
 		'raw.c',
-		'resample.c',
-		'resample2.c',
 		'utils.c',
 		'vorbis_parser.c',
 		'xiph.c',
@@ -159,7 +166,6 @@ lib('libavfilter.a', {
 		'framequeue.c',
 		'graphdump.c',
 		'graphparser.c',
-		'opencl_allkernels.c',
 		'transform.c',
 		'video.c',
 	}},
@@ -216,6 +222,7 @@ lib('libavutil.a', {
 		'dict.c',
 		'display.c',
 		'downmix_info.c',
+		'encryption_info.c',
 		'error.c',
 		'eval.c',
 		'fifo.c',
@@ -321,6 +328,7 @@ lib('libswscale.a', {
 		'x86/input.asm',
 		'x86/output.asm',
 		'x86/scale.asm',
+		'x86/rgb_2_rgb.asm',
 	}},
 	sources.libswscale,
 	'libavutil.a',

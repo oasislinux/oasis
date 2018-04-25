@@ -1,0 +1,29 @@
+From 99d770f3a43ce44659d6dd81caf93040721cc628 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 22 Apr 2018 23:46:33 -0700
+Subject: [PATCH] configure: Use awk to implement unique()
+
+Otherwise, if printf is not a builtin it runs very very slowly.
+---
+ configure | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/configure b/configure
+index dee507cb6a..9b7ddfee24 100755
+--- a/configure
++++ b/configure
+@@ -838,10 +838,7 @@ prepend(){
+ 
+ unique(){
+     var=$1
+-    uniq_list=""
+-    for tok in $(eval echo \$$var); do
+-        uniq_list="$(filter_out $tok $uniq_list) $tok"
+-    done
++    uniq_list=$(eval "printf '%s\n' \$$var" | awk '!($0 in seen) { seen[$0] = 1; printf "%s ", $0 }')
+     eval "$var=\"${uniq_list}\""
+ }
+ 
+-- 
+2.17.0
+

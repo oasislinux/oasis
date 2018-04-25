@@ -15,6 +15,7 @@ ARCHS :=\
 define printsrcs
 	@echo $(1) $(foreach dir,$(DIRS),\
 		$(OBJS-$(1)/$(dir):%.o=$(dir)/%.c)\
+		$(TLS-OBJS-$(1)/$(dir):%.o=$(dir)/%.c)\
 		$(MMX-OBJS-$(1)/$(dir):%.o=$(dir)/%.c)\
 		$(X86ASM-OBJS-$(1)/$(dir):%.o=$(dir)/%.asm)\
 	)

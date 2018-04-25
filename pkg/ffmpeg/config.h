@@ -1,11 +1,11 @@
 #ifndef FFMPEG_CONFIG_H
 #define FFMPEG_CONFIG_H
-#define FFMPEG_CONFIGURATION "--disable-doc --disable-programs --prefix=/"
+#define FFMPEG_CONFIGURATION ""
 #define FFMPEG_LICENSE "LGPL version 2.1 or later"
-#define CONFIG_THIS_YEAR 2017
+#define CONFIG_THIS_YEAR 2018
 #define FFMPEG_DATADIR "/share/ffmpeg"
 #define AVCONV_DATADIR "/share/ffmpeg"
-#define CC_IDENT "gcc 6.3.0 (GCC)"
+#define CC_IDENT "gcc 7.3.0 (GCC)"
 #define av_restrict restrict
 #define EXTERN_PREFIX ""
 #define EXTERN_ASM
