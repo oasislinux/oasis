@@ -9,7 +9,7 @@
 /* #undef ENABLE_NLS */
 #define FC_ADD_FONTS "yes"
 /* #undef FC_ARCHITECTURE */
-#define FC_DEFAULT_FONTS "/usr/share/fonts"
+#define FC_DEFAULT_FONTS "/share/fonts"
 #define FC_GPERF_SIZE_T size_t
 #define FLEXIBLE_ARRAY_MEMBER /**/
 #define GETTEXT_PACKAGE "fontconfig"
