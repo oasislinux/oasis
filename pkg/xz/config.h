@@ -102,10 +102,10 @@
 #define PACKAGE "xz"
 #define PACKAGE_BUGREPORT "lasse.collin@tukaani.org"
 #define PACKAGE_NAME "XZ Utils"
-#define PACKAGE_STRING "XZ Utils 5.2.3"
+#define PACKAGE_STRING "XZ Utils 5.2.4"
 #define PACKAGE_TARNAME "xz"
-#define PACKAGE_URL "http://tukaani.org/xz/"
-#define PACKAGE_VERSION "5.2.3"
+#define PACKAGE_URL "https://tukaani.org/xz/"
+#define PACKAGE_VERSION "5.2.4"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define SIZEOF_SIZE_T 8
 #define STDC_HEADERS 1
@@ -137,7 +137,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.2.3"
+#define VERSION "5.2.4"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
