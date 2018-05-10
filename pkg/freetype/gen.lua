@@ -17,9 +17,9 @@ lib('libfreetype.a', [[
 	src/(
 		base/(
 			ftdebug.c ftinit.c ftbase.c
-			ftbbox.c ftbdf.c ftbitmap.c ftcid.c ftfntfmt.c ftfstype.c
-			ftgasp.c ftglyph.c ftgxval.c ftlcdfil.c ftmm.c ftotval.c
-			ftpatent.c ftpfr.c ftstroke.c ftsynth.c fttype1.c ftwinfnt.c
+			ftbbox.c ftbdf.c ftbitmap.c ftcid.c ftfstype.c ftgasp.c
+			ftglyph.c ftgxval.c ftmm.c ftotval.c ftpatent.c ftpfr.c
+			ftstroke.c ftsynth.c fttype1.c ftwinfnt.c
 		)
 		truetype/truetype.c
 		type1/type1.c
