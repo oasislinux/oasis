@@ -58,7 +58,7 @@ man{'usr.bin/fmt/fmt.1'}
 
 -- m4
 yacc('usr.bin/m4/parser', 'usr.bin/m4/parser.y')
-cc('usr.bin/m4/tokenizer.c', nil, {cflags='$cflags -I $outdir/usr.bin/m4'})
+cc('usr.bin/m4/tokenizer.c', {'$outdir/usr.bin/m4/parser.tab.h'}, {cflags='$cflags -I $outdir/usr.bin/m4'})
 exe('m4', [[
 	usr.bin/m4/(eval.c expr.c look.c main.c misc.c gnum4.c trace.c tokenizer.c.o)
 	$outdir/usr.bin/m4/parser.tab.c
