@@ -8,13 +8,13 @@ cflags{
 }
 
 rule('cmdlist', 'wd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$wd/$in >$$wd/$out.tmp && mv $$wd/$out.tmp $$wd/$out')
-build('cmdlist', '$outdir/common-cmds.h', {
+build('cmdlist', '$outdir/command-list.h', {
 	'$srcdir/command-list.txt', '|', expand{'$srcdir/Documentation/', lines('commands.txt')},
 })
 
-pkg.deps = {'$outdir/common-cmds.h', 'pkg/curl/headers', 'pkg/zlib/headers'}
+pkg.deps = {'$outdir/command-list.h', 'pkg/curl/headers', 'pkg/zlib/headers'}
 
-cc('exec_cmd.c', nil, {cflags=[[$cflags '-DPREFIX=""']]})
+cc('exec-cmd.c', nil, {cflags=[[$cflags '-DFALLBACK_RUNTIME_PREFIX=""']]})
 cc('common-main.c')
 cc('http.c')
 cc('compat/regex/regex.c', nil, {cflags='$cflags -DGAWK -DNO_MBSUPPORT'})
@@ -39,11 +39,13 @@ lib('libgit.a', [[
 	bulk-checkin.c
 	bundle.c
 	cache-tree.c
+	chdir-notify.c
 	checkout.c
 	color.c
 	column.c
 	combine-diff.c
 	commit.c
+	commit-graph.c
 	compat/obstack.c
 	compat/regex/regex.c.o
 	compat/terminal.c
@@ -76,7 +78,7 @@ lib('libgit.a', [[
 	ewah/ewah_bitmap.c
 	ewah/ewah_io.c
 	ewah/ewah_rlw.c
-	exec_cmd.c.o
+	exec-cmd.c.o
 	fetch-object.c
 	fetch-pack.c
 	fsck.c
@@ -99,9 +101,11 @@ lib('libgit.a', [[
 	ll-merge.c
 	lockfile.c
 	log-tree.c
+	ls-refs.c
 	mailinfo.c
 	mailmap.c
 	match-trees.c
+	mem-pool.c
 	merge-blobs.c
 	merge-recursive.c
 	merge.c
@@ -145,8 +149,9 @@ lib('libgit.a', [[
 	refs/iterator.c
 	refs/packed-backend.c
 	refs/ref-cache.c
+	refspec.c
 	remote.c
-	replace_object.c
+	replace-object.c
 	repository.c
 	rerere.c
 	resolve-undo.c
@@ -154,12 +159,13 @@ lib('libgit.a', [[
 	run-command.c
 	send-pack.c
 	sequencer.c
+	serve.c
 	server-info.c
 	setup.c
 	sha1-array.c
 	sha1-lookup.c
-	sha1_file.c
-	sha1_name.c
+	sha1-file.c
+	sha1-name.c
 	shallow.c
 	sideband.c
 	sigchain.c
@@ -182,6 +188,7 @@ lib('libgit.a', [[
 	tree-walk.c
 	tree.c
 	unpack-trees.c
+	upload-pack.c
 	url.c
 	urlmatch.c
 	usage.c
@@ -194,7 +201,7 @@ lib('libgit.a', [[
 	wildmatch.c
 	worktree.c
 	wrapper.c
-	write_or_die.c
+	write-or-die.c
 	ws.c
 	wt-status.c
 	xdiff-interface.c
@@ -243,6 +250,7 @@ local builtins = {
 	'column',
 	'commit-tree',
 	'commit',
+	'commit-graph',
 	'config',
 	'count-objects',
 	'credential',
@@ -308,6 +316,7 @@ local builtins = {
 	'revert',
 	'rm',
 	'send-pack',
+	'serve',
 	'shortlog',
 	'show-branch',
 	'show-ref',
@@ -321,6 +330,7 @@ local builtins = {
 	'update-ref',
 	'update-server-info',
 	'upload-archive',
+	'upload-pack',
 	'var',
 	'verify-commit',
 	'verify-pack',
@@ -361,7 +371,6 @@ x('imap-send', {'imap-send.c', 'http.c.o', '$builddir/pkg/curl/libcurl.a.d'})
 x('sh-i18n--envsubst')
 x('shell')
 x('show-index')
-x('upload-pack')
 -- git-remote-testsvn is intentionally omitted.
 
 x('remote-http', {'remote-curl.c', 'http.c.o', 'http-walker.c', '$builddir/pkg/curl/libcurl.a.d'})

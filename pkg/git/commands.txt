@@ -23,6 +23,7 @@ git-citool.txt
 git-clean.txt
 git-clone.txt
 git-column.txt
+git-commit-graph.txt
 git-commit-tree.txt
 git-commit.txt
 git-config.txt
