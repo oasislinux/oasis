@@ -99,7 +99,7 @@ local data = [[
 		se si sk sn
 		sy th
 		terminate tg
-		tj tm tr tw tz
+		tj tm tr trans tw tz
 		ua us uz vn
 		za
 		altwin capslock compose ctrl empty eurosign rupeesign group inet
