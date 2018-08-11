@@ -62,6 +62,7 @@ cubemap
 cups
 dact
 database
+dataone
 dbpf
 der
 diamond
