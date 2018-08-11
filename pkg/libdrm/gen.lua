@@ -4,7 +4,7 @@ local function havedriver(name)
 end
 
 cflags{
-	'-D HAVE_CONFIG_H',
+	'-include $dir/config.h',
 	havedriver('intel'),
 	havedriver('nouveau'),
 	havedriver('amdgpu'),
