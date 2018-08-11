@@ -1,4 +1,4 @@
-set('version', '1.44.1')
+set('version', '1.44.3')
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $dir',
@@ -11,7 +11,7 @@ cflags{
 
 set('subst', {
 	'-e s,@E2FSPROGS_VERSION@,$version,',
-	'-e s,@E2FSPROGS_MONTH@,March,',
+	'-e s,@E2FSPROGS_MONTH@,July,',
 	'-e s,@E2FSPROGS_YEAR@,2018,',
 	'-e s,@JDEV@,,',
 })
@@ -120,6 +120,7 @@ lib('libext2fs.a', [[$outdir/ext2_err.c lib/ext2fs/(
 	get_pathname.c
 	getsize.c
 	getsectsize.c
+	hashmap.c
 	i_block.c
 	icount.c
 	ind_block.c

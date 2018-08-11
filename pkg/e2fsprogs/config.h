@@ -43,9 +43,11 @@
 #define HAVE_FALLOCATE 1
 #define HAVE_FALLOCATE64 1
 #define HAVE_FCHOWN 1
+#define HAVE_FCNTL 1
 #define HAVE_FDATASYNC 1
 #define HAVE_FEATURES_H 1
 #define HAVE_FSTAT64 1
+#define HAVE_FSYNC 1
 #define HAVE_FTRUNCATE64 1
 /* #undef HAVE_FUSE_H */
 #define HAVE_FUTIMES 1
@@ -55,6 +57,7 @@
 #define HAVE_GETEGID 1
 #define HAVE_GETEUID 1
 #define HAVE_GETGID 1
+#define HAVE_GETHOSTNAME 1
 /* #undef HAVE_GETMNTINFO */
 #define HAVE_GETOPT_H 1
 #define HAVE_GETPAGESIZE 1
@@ -78,6 +81,7 @@
 /* #undef HAVE_LINUX_FSMAP_H */
 #define HAVE_LINUX_LOOP_H 1
 #define HAVE_LINUX_MAJOR_H 1
+#define HAVE_LINUX_TYPES_H 1
 #define HAVE_LLISTXATTR 1
 /* #undef HAVE_LLSEEK */
 /* #undef HAVE_LLSEEK_PROTOTYPE */
@@ -150,7 +154,6 @@
 #define HAVE_STRUCT_STAT_ST_ATIM 1
 #define HAVE_SYMLINK 1
 #define HAVE_SYNC_FILE_RANGE 1
-#define HAVE_FSYNC 1
 #define HAVE_SYSCONF 1
 /* #undef HAVE_SYS_ACL_H */
 /* #undef HAVE_SYS_DISKLABEL_H */
