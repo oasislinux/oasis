@@ -1,6 +1,5 @@
 cflags{
 	'-D _GNU_SOURCE',
-	'-I include',
 	'-I $dir',
 	'-I $builddir/pkg/pcre/include',
 	'-I $builddir/pkg/zlib/include',
