@@ -1,4 +1,4 @@
-From 667513a99baf69acafa25e0bd79de75fa474e0ce Mon Sep 17 00:00:00 2001
+From aec56553d10e8a141f57cc3c9e94c539f9206a27 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 25 Apr 2015 17:37:46 +0000
 Subject: [PATCH] Fix includes for musl libc
@@ -16,11 +16,12 @@ Subject: [PATCH] Fix includes for musl libc
  ip/iplink_hsr.c                 | 2 +-
  ip/ipmaddr.c                    | 2 +-
  ip/ipmroute.c                   | 2 +-
+ ip/iptuntap.c                   | 1 -
  ip/tunnel.c                     | 2 +-
- 13 files changed, 14 insertions(+), 13 deletions(-)
+ 14 files changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/bridge/fdb.c b/bridge/fdb.c
-index 8b133f9c..8a075770 100644
+index 4dbc894c..a558b26d 100644
 --- a/bridge/fdb.c
 +++ b/bridge/fdb.c
 @@ -18,7 +18,6 @@
@@ -32,7 +33,7 @@ index 8b133f9c..8a075770 100644
  #include <string.h>
  #include <limits.h>
 diff --git a/bridge/mdb.c b/bridge/mdb.c
-index 62dc8a0c..b141d906 100644
+index f38dc67c..66c51cca 100644
 --- a/bridge/mdb.c
 +++ b/bridge/mdb.c
 @@ -11,7 +11,6 @@
@@ -42,9 +43,9 @@ index 62dc8a0c..b141d906 100644
 -#include <linux/if_ether.h>
  #include <string.h>
  #include <arpa/inet.h>
- #include <json_writer.h>
+ 
 diff --git a/bridge/vlan.c b/bridge/vlan.c
-index f42d7e6b..5bf9ab92 100644
+index 19a36b80..30bfb55a 100644
 --- a/bridge/vlan.c
 +++ b/bridge/vlan.c
 @@ -7,7 +7,6 @@
@@ -52,9 +53,9 @@ index f42d7e6b..5bf9ab92 100644
  #include <netinet/in.h>
  #include <linux/if_bridge.h>
 -#include <linux/if_ether.h>
- #include <json_writer.h>
  #include <string.h>
  
+ #include "json_print.h"
 diff --git a/include/uapi/linux/if_bridge.h b/include/uapi/linux/if_bridge.h
 index bdfecf94..db1da884 100644
 --- a/include/uapi/linux/if_bridge.h
@@ -71,7 +72,7 @@ index bdfecf94..db1da884 100644
  
  #define SYSFS_BRIDGE_ATTR	"bridge"
 diff --git a/include/uapi/linux/if_tunnel.h b/include/uapi/linux/if_tunnel.h
-index 38cdf906..e9250d86 100644
+index ecdc7666..6047915a 100644
 --- a/include/uapi/linux/if_tunnel.h
 +++ b/include/uapi/linux/if_tunnel.h
 @@ -2,8 +2,9 @@
@@ -115,7 +116,7 @@ index 86d961c9..cbe835e4 100644
  #include <linux/if_packet.h>
  #include <linux/if_link.h>
 diff --git a/ip/ip6tunnel.c b/ip/ip6tunnel.c
-index 783e28a6..4e2fb9ad 100644
+index 999408ed..35492503 100644
 --- a/ip/ip6tunnel.c
 +++ b/ip/ip6tunnel.c
 @@ -27,8 +27,8 @@
@@ -129,7 +130,7 @@ index 783e28a6..4e2fb9ad 100644
  #include <linux/if_tunnel.h>
  #include <linux/ip6_tunnel.h>
 diff --git a/ip/ipl2tp.c b/ip/ipl2tp.c
-index 7c5ed313..0e3cce8b 100644
+index 05e96387..e61bff9a 100644
 --- a/ip/ipl2tp.c
 +++ b/ip/ipl2tp.c
 @@ -19,7 +19,7 @@
@@ -155,7 +156,7 @@ index c673ccf7..b2cde9e1 100644
  #include "rt_names.h"
  #include "utils.h"
 diff --git a/ip/ipmaddr.c b/ip/ipmaddr.c
-index d7bf1f99..796b15f2 100644
+index a4849902..270b26fb 100644
 --- a/ip/ipmaddr.c
 +++ b/ip/ipmaddr.c
 @@ -19,9 +19,9 @@
@@ -170,7 +171,7 @@ index d7bf1f99..796b15f2 100644
  #include <linux/sockios.h>
  
 diff --git a/ip/ipmroute.c b/ip/ipmroute.c
-index 0450ea99..d6053159 100644
+index cdb4d898..0077c176 100644
 --- a/ip/ipmroute.c
 +++ b/ip/ipmroute.c
 @@ -20,9 +20,9 @@
@@ -184,8 +185,20 @@ index 0450ea99..d6053159 100644
  #include <linux/if_arp.h>
  #include <linux/sockios.h>
  
+diff --git a/ip/iptuntap.c b/ip/iptuntap.c
+index 58996e6c..c2cc8c19 100644
+--- a/ip/iptuntap.c
++++ b/ip/iptuntap.c
+@@ -18,7 +18,6 @@
+ #include <sys/socket.h>
+ #include <arpa/inet.h>
+ #include <sys/ioctl.h>
+-#include <linux/if.h>
+ #include <linux/if_tun.h>
+ #include <linux/if_arp.h>
+ #include <pwd.h>
 diff --git a/ip/tunnel.c b/ip/tunnel.c
-index 46c91024..e36ea036 100644
+index 79de7f24..3736f100 100644
 --- a/ip/tunnel.c
 +++ b/ip/tunnel.c
 @@ -30,7 +30,7 @@
@@ -196,7 +209,7 @@ index 46c91024..e36ea036 100644
 +#include <net/if.h>
  #include <linux/ip.h>
  #include <linux/if_tunnel.h>
- 
+ #include <linux/if_arp.h>
 -- 
-2.16.1
+2.18.0
 
