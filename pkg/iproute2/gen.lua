@@ -29,7 +29,7 @@ exe('bin/ip', [[ip/(
 	link_iptnl.c link_gre6.c iplink_bond.c iplink_bond_slave.c iplink_hsr.c
 	iplink_bridge.c iplink_bridge_slave.c ipfou.c iplink_ipvlan.c
 	iplink_geneve.c iplink_vrf.c iproute_lwtunnel.c ipmacsec.c ipila.c
-	ipvrf.c iplink_xstats.c ipseg6.c iplink_netdevsim.c
+	ipvrf.c iplink_xstats.c ipseg6.c iplink_netdevsim.c iplink_rmnet.c
 ) libnetlink.a]])
 file('bin/ip', '755', '$outdir/bin/ip')
 

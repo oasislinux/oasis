@@ -1,4 +1,4 @@
-From aec56553d10e8a141f57cc3c9e94c539f9206a27 Mon Sep 17 00:00:00 2001
+From ac1e00512cb1de424918be08c3d8c7f6d2fd8832 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 25 Apr 2015 17:37:46 +0000
 Subject: [PATCH] Fix includes for musl libc
