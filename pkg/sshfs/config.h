@@ -1,2 +1,2 @@
 #define IDMAP_DEFAULT "none"
-#define PACKAGE_VERSION "3.3.0"
+#define PACKAGE_VERSION "3.4.0"
