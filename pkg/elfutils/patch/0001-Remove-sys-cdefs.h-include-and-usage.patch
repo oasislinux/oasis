@@ -1,4 +1,4 @@
-From c17c8259b1923f3158d37e39622a9e1d64d99023 Mon Sep 17 00:00:00 2001
+From 380ddf6615e166c0d8b0ba3889783947c39d5bef Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jan 2018 19:22:18 -0800
 Subject: [PATCH] Remove sys/cdefs.h include and usage
@@ -21,7 +21,7 @@ index dac2a5f5..43016fc3 100644
  #include <system.h>
  
 diff --git a/libelf/elf.h b/libelf/elf.h
-index fa35203d..42c664cb 100644
+index 75043bcb..23b9a789 100644
 --- a/libelf/elf.h
 +++ b/libelf/elf.h
 @@ -21,8 +21,6 @@
@@ -33,13 +33,13 @@ index fa35203d..42c664cb 100644
  /* Standard ELF types.  */
  
  #include <stdint.h>
-@@ -3683,6 +3681,4 @@ enum
- #define R_BPF_NONE		0	/* No reloc */
- #define R_BPF_MAP_FD		1	/* Map fd to pointer */
+@@ -3915,6 +3913,4 @@ enum
+ #define R_METAG_TLS_LE_HI16	60
+ #define R_METAG_TLS_LE_LO16	61
  
 -__END_DECLS
 -
  #endif	/* elf.h */
 -- 
-2.15.1
+2.18.0
 
