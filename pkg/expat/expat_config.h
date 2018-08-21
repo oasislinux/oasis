@@ -24,12 +24,12 @@
 #define PACKAGE "expat"
 #define PACKAGE_BUGREPORT "expat-bugs@libexpat.org"
 #define PACKAGE_NAME "expat"
-#define PACKAGE_STRING "expat 2.2.5"
+#define PACKAGE_STRING "expat 2.2.6"
 #define PACKAGE_TARNAME "expat"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.2.5"
+#define PACKAGE_VERSION "2.2.6"
 #define STDC_HEADERS 1
-#define VERSION "2.2.5"
+#define VERSION "2.2.6"
 /* #undef WORDS_BIGENDIAN */
 #define XML_CONTEXT_BYTES 1024
 #define XML_DEV_URANDOM 1
