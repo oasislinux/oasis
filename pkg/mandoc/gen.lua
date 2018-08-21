@@ -1,5 +1,4 @@
 cflags{
-	'-I include',
 	'-I $dir',
 	'-I pkg/openbsd/include',
 	'-I $builddir/pkg/zlib/include',
