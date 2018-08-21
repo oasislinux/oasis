@@ -2,7 +2,7 @@
 block.c
 btrfs.c
 dirent.c
-evdev.c
+evdev_mpers.c
 fetch_bpf_fprog.c
 fetch_struct_flock.c
 fetch_struct_keyctl_kdf_params.c
@@ -11,11 +11,14 @@ fetch_struct_msghdr.c
 fetch_struct_stat.c
 fetch_struct_stat64.c
 fetch_struct_statfs.c
+fetch_struct_xfs_quotastat.c
 hdio.c
 ipc_msgctl.c
 ipc_shmctl.c
 loop.c
 mtd.c
+perf_ioctl.c
+print_aio_sigset.c
 print_group_req.c
 print_mq_attr.c
 print_msgbuf.c
