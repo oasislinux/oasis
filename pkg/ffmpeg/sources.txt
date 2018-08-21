@@ -1745,7 +1745,7 @@ CONFIG_OCV_FILTER libavfilter/vf_libopencv.c
 CONFIG_OSCILLOSCOPE_FILTER libavfilter/vf_datascope.c
 CONFIG_OVERLAY_FILTER libavfilter/vf_overlay.c libavfilter/framesync.c
 CONFIG_OVERLAY_OPENCL_FILTER libavfilter/vf_overlay_opencl.c libavfilter/opencl.c libavfilter/opencl/overlay.c libavfilter/framesync.c
-CONFIG_OVERLAY_QSV_FILTER libavfilter/vf_overlay_qsv.c
+CONFIG_OVERLAY_QSV_FILTER libavfilter/vf_overlay_qsv.c libavfilter/framesync.c
 CONFIG_OWDENOISE_FILTER libavfilter/vf_owdenoise.c
 CONFIG_PAD_FILTER libavfilter/vf_pad.c
 CONFIG_PALETTEGEN_FILTER libavfilter/vf_palettegen.c
