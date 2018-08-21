@@ -1,4 +1,4 @@
-From c86749aeb88fa67ab84efce23c1a69691ae87dae Mon Sep 17 00:00:00 2001
+From a7af02ecbf949ff0327320994d5dcfda0c0e5f82 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -21,16 +21,16 @@ Replace calls to errc with err after setting errno.
 
 Call openlog at start to set syslog identity.
 ---
- usr.bin/doas/doas.1    |   9 ----
- usr.bin/doas/doas.c    |  95 +++++++++++++++++++----------------
+ usr.bin/doas/doas.1    |   9 ---
+ usr.bin/doas/doas.c    |  96 ++++++++++++++++-------------
  usr.bin/doas/doas.h    |   4 ++
  usr.bin/doas/parse.y   |   1 +
- usr.bin/doas/persist.c | 133 +++++++++++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 191 insertions(+), 51 deletions(-)
+ usr.bin/doas/persist.c | 133 +++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 191 insertions(+), 52 deletions(-)
  create mode 100644 usr.bin/doas/persist.c
 
 diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
-index d39c4aab2d5..3097991bc68 100644
+index d39c4aab2..3097991bc 100644
 --- a/usr.bin/doas/doas.1
 +++ b/usr.bin/doas/doas.1
 @@ -22,7 +22,6 @@
@@ -57,18 +57,19 @@ index d39c4aab2d5..3097991bc68 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index 9ec4257dffd..4fb934321cf 100644
+index 9ec4257df..ecce4b7f1 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
-@@ -21,7 +21,6 @@
+@@ -20,8 +20,6 @@
+ #include <sys/ioctl.h>
  
  #include <limits.h>
- #include <login_cap.h>
+-#include <login_cap.h>
 -#include <bsd_auth.h>
  #include <readpassphrase.h>
  #include <string.h>
  #include <stdio.h>
-@@ -33,13 +32,22 @@
+@@ -33,13 +31,22 @@
  #include <syslog.h>
  #include <errno.h>
  #include <fcntl.h>
@@ -92,7 +93,7 @@ index 9ec4257dffd..4fb934321cf 100644
  	    " command [args]\n");
  	exit(1);
  }
-@@ -193,23 +201,36 @@ checkconfig(const char *confpath, int argc, char **argv,
+@@ -193,23 +200,36 @@ checkconfig(const char *confpath, int argc, char **argv,
  	}
  }
  
@@ -139,7 +140,7 @@ index 9ec4257dffd..4fb934321cf 100644
  	if (!challenge) {
  		char host[HOST_NAME_MAX + 1];
  		if (gethostname(host, sizeof(host)))
-@@ -221,20 +242,17 @@ authuser(char *myname, char *login_style, int persist)
+@@ -221,20 +241,17 @@ authuser(char *myname, char *login_style, int persist)
  	response = readpassphrase(challenge, rbuf, sizeof(rbuf),
  	    RPP_REQUIRE_TTY);
  	if (response == NULL && errno == ENOTTY) {
@@ -164,7 +165,7 @@ index 9ec4257dffd..4fb934321cf 100644
  		close(fd);
  	}
  }
-@@ -242,14 +260,13 @@ good:
+@@ -242,14 +259,13 @@ good:
  int
  main(int argc, char **argv)
  {
@@ -181,7 +182,7 @@ index 9ec4257dffd..4fb934321cf 100644
  	struct passwd *pw;
  	const struct rule *rule;
  	uid_t uid;
-@@ -261,28 +278,20 @@ main(int argc, char **argv)
+@@ -261,28 +277,20 @@ main(int argc, char **argv)
  	int nflag = 0;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
@@ -213,7 +214,7 @@ index 9ec4257dffd..4fb934321cf 100644
  		case 'u':
  			if (parseuid(optarg, &target) != 0)
  				errx(1, "unknown user");
-@@ -352,16 +361,16 @@ main(int argc, char **argv)
+@@ -352,16 +360,16 @@ main(int argc, char **argv)
  	cmd = argv[0];
  	if (!permit(uid, groups, ngroups, &rule, target, cmd,
  	    (const char **)argv + 1)) {
@@ -234,7 +235,7 @@ index 9ec4257dffd..4fb934321cf 100644
  	}
  
  	if (pledge("stdio rpath getpw exec id", NULL) == -1)
-@@ -371,10 +380,12 @@ main(int argc, char **argv)
+@@ -371,10 +379,12 @@ main(int argc, char **argv)
  	if (!pw)
  		errx(1, "no passwd entry for target");
  
@@ -251,7 +252,7 @@ index 9ec4257dffd..4fb934321cf 100644
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
-@@ -387,7 +398,7 @@ main(int argc, char **argv)
+@@ -387,7 +397,7 @@ main(int argc, char **argv)
  	if (pledge("stdio exec", NULL) == -1)
  		err(1, "pledge");
  
@@ -261,7 +262,7 @@ index 9ec4257dffd..4fb934321cf 100644
  
  	envp = prepenv(rule);
 diff --git a/usr.bin/doas/doas.h b/usr.bin/doas/doas.h
-index cbeb3399419..b1a4c819954 100644
+index cbeb33994..b1a4c8199 100644
 --- a/usr.bin/doas/doas.h
 +++ b/usr.bin/doas/doas.h
 @@ -31,6 +31,10 @@ extern int parse_errors;
@@ -276,7 +277,7 @@ index cbeb3399419..b1a4c819954 100644
  #define DENY	2
  
 diff --git a/usr.bin/doas/parse.y b/usr.bin/doas/parse.y
-index fde406bcf5a..4744158594a 100644
+index fde406bcf..474415859 100644
 --- a/usr.bin/doas/parse.y
 +++ b/usr.bin/doas/parse.y
 @@ -19,6 +19,7 @@
@@ -289,7 +290,7 @@ index fde406bcf5a..4744158594a 100644
  #include <stdio.h>
 diff --git a/usr.bin/doas/persist.c b/usr.bin/doas/persist.c
 new file mode 100644
-index 00000000000..0fc68cf9854
+index 000000000..41fa74745
 --- /dev/null
 +++ b/usr.bin/doas/persist.c
 @@ -0,0 +1,133 @@
@@ -351,7 +352,7 @@ index 00000000000..0fc68cf9854
 +
 +	if (ttyid(&tty) < 0)
 +		return -1;
-+	n = snprintf(buf, len, PERSIST_DIR "/%d-%d", getuid(), tty);
++	n = snprintf(buf, len, PERSIST_DIR "/%ju-%ju", (uintmax_t)getuid(), (uintmax_t)tty);
 +	if (n < 0 || n >= (int)len)
 +		return -1;
 +	return 0;
@@ -427,5 +428,5 @@ index 00000000000..0fc68cf9854
 +	return 0;
 +}
 -- 
-2.14.2
+2.18.0
 
