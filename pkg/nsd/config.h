@@ -6,6 +6,7 @@
 #define DBFILE "/var/db/nsd/nsd.db"
 #define EDNS_MAX_MESSAGE_LEN 4096
 #define FACILITY LOG_DAEMON
+#define HAVE_ACCEPT4 1
 #define HAVE_ALARM 1
 /* #undef HAVE_ARC4RANDOM */
 /* #undef HAVE_ARC4RANDOM_UNIFORM */
@@ -102,6 +103,7 @@
 #define HAVE_STRNCASECMP 1
 #define HAVE_STRPTIME 1
 #define HAVE_STRTOL 1
+/* #undef HAVE_STRUCT_SOCKADDR_UN_SUN_LEN */
 /* #undef HAVE_STRUCT_STAT_ST_MTIMENSEC */
 #define HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC 1
 #define HAVE_STRUCT_TIMESPEC 1
@@ -113,6 +115,7 @@
 #define HAVE_SYS_SOCKET_H 1
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TYPES_H 1
+#define HAVE_SYS_UN_H 1
 #define HAVE_SYS_WAIT_H 1
 /* #undef HAVE_TCPD_H */
 #define HAVE_TIME_H 1
@@ -128,6 +131,7 @@
 #define INET6 /**/
 /* #undef LEX_DEFINES_YY_CURRENT_BUFFER */
 #define MAXSYSLOGMSGLEN 512
+/* #undef MEMCLEAN */
 /* #undef MEMCMP_IS_BROKEN */
 #define MINIMAL_RESPONSES /**/
 /* #undef MKDIR_HAS_ONE_ARG */
@@ -139,10 +143,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.1.20"
+#define PACKAGE_STRING "NSD 4.1.24"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.1.20"
+#define PACKAGE_VERSION "4.1.24"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */

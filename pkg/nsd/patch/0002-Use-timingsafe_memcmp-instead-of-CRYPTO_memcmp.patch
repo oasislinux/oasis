@@ -1,0 +1,26 @@
+From 6d764efd8875a0f11a65b08677a1900182b0019e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 21 Aug 2018 15:52:34 -0700
+Subject: [PATCH 2/2] Use timingsafe_memcmp instead of CRYPTO_memcmp
+
+We do not build with OpenSSL support, so CRYPTO_memcmp is unavailable.
+---
+ tsig.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tsig.c b/tsig.c
+index b0e40116..ce073ec7 100644
+--- a/tsig.c
++++ b/tsig.c
+@@ -475,7 +475,7 @@ tsig_verify(tsig_record_type *tsig)
+ 				    &tsig->prior_mac_size);
+ 
+ 	if (tsig->mac_size != tsig->prior_mac_size
+-	    || CRYPTO_memcmp(tsig->mac_data,
++	    || timingsafe_memcmp(tsig->mac_data,
+ 		      tsig->prior_mac_data,
+ 		      tsig->mac_size) != 0)
+ 	{
+-- 
+2.18.0
+
