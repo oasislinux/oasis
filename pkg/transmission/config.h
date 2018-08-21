@@ -3,12 +3,12 @@
 
 #define PACKAGE_NAME "transmission"
 #define PACKAGE_TARNAME "transmission"
-#define PACKAGE_VERSION "2.93"
-#define PACKAGE_STRING "transmission 2.93"
+#define PACKAGE_VERSION "2.94"
+#define PACKAGE_STRING "transmission 2.94"
 #define PACKAGE_BUGREPORT "https://github.com/transmission/transmission"
 #define PACKAGE_URL ""
 #define PACKAGE "transmission"
-#define VERSION "2.93"
+#define VERSION "2.94"
 #define STDC_HEADERS 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_STAT_H 1
