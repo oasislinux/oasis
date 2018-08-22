@@ -1,4 +1,4 @@
-set('version', '1.44.3')
+set('version', '1.44.4')
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $dir',
@@ -11,7 +11,7 @@ cflags{
 
 set('subst', {
 	'-e s,@E2FSPROGS_VERSION@,$version,',
-	'-e s,@E2FSPROGS_MONTH@,July,',
+	'-e s,@E2FSPROGS_MONTH@,Aug,',
 	'-e s,@E2FSPROGS_YEAR@,2018,',
 	'-e s,@JDEV@,,',
 })
