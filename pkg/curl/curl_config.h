@@ -1,3 +1,4 @@
+/* #undef CURLDEBUG */
 /* #undef CURL_CA_BUNDLE */
 #define CURL_CA_FALLBACK 1
 /* #undef CURL_CA_PATH */
@@ -23,15 +24,12 @@
 /* #undef CURL_DISABLE_TLS_SRP */
 /* #undef CURL_DISABLE_VERBOSE_STRINGS */
 #define CURL_EXTERN_SYMBOL __attribute__ ((__visibility__ ("default")))
+#define CURL_SA_FAMILY_T sa_family_t
 /* #undef CURL_WITH_MULTI_SSL */
+/* #undef DEBUGBUILD */
 /* #undef EGD_SOCKET */
 #define ENABLE_IPV6 1
 #define GETHOSTNAME_TYPE_ARG2 size_t
-#define GETNAMEINFO_QUAL_ARG1 const
-#define GETNAMEINFO_TYPE_ARG1 struct sockaddr *
-#define GETNAMEINFO_TYPE_ARG2 socklen_t
-#define GETNAMEINFO_TYPE_ARG46 socklen_t
-#define GETNAMEINFO_TYPE_ARG7 int
 #define GETSERVBYPORT_R_ARGS 6
 #define GETSERVBYPORT_R_BUFSIZE 4096
 #define HAVE_ALARM 1
@@ -54,15 +52,17 @@
 /* #undef HAVE_CYASSL_ERROR_SSL_H */
 /* #undef HAVE_CYASSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_CYASSL_OPTIONS_H */
+#define HAVE_DECL_GETPWUID_R 1
+/* #undef HAVE_DECL_GETPWUID_R_MISSING */
 #define HAVE_DLFCN_H 1
 #define HAVE_ENGINE_CLEANUP 1
-#define HAVE_ENGINE_LOAD_BUILTIN_ENGINES 1
 #define HAVE_ERRNO_H 1
 /* #undef HAVE_ERR_H */
 #define HAVE_FCNTL 1
 #define HAVE_FCNTL_H 1
 #define HAVE_FCNTL_O_NONBLOCK 1
 #define HAVE_FDOPEN 1
+#define HAVE_FNMATCH 1
 #define HAVE_FREEADDRINFO 1
 #define HAVE_FREEIFADDRS 1
 #define HAVE_FSETXATTR 1
@@ -85,7 +85,6 @@
 #define HAVE_GETHOSTBYNAME_R_6 1
 #define HAVE_GETHOSTNAME 1
 #define HAVE_GETIFADDRS 1
-#define HAVE_GETNAMEINFO 1
 /* #undef HAVE_GETPASS_R */
 #define HAVE_GETPPID 1
 #define HAVE_GETPWUID 1
@@ -157,10 +156,8 @@
 #define HAVE_NETINET_TCP_H 1
 #define HAVE_NET_IF_H 1
 /* #undef HAVE_NGHTTP2_NGHTTP2_H */
-/* #undef HAVE_NI_WITHSCOPEID */
 /* #undef HAVE_OLD_GSSMIT */
 #define HAVE_OPENSSL_CRYPTO_H 1
-#define HAVE_OPENSSL_ENGINE_H 1
 #define HAVE_OPENSSL_ERR_H 1
 #define HAVE_OPENSSL_PEM_H 1
 #define HAVE_OPENSSL_RSA_H 1
@@ -257,7 +254,7 @@
 /* #undef HAVE_WOLFSSL_CTX_USESUPPORTEDCURVE */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_WOLFSSL_USEALPN */
-#define HAVE_WRITABLE_ARGV 1
+/* #undef HAVE_WRITABLE_ARGV */
 #define HAVE_WRITEV 1
 /* #undef HAVE_WS2TCPIP_H */
 /* #undef HAVE_X509_H */
