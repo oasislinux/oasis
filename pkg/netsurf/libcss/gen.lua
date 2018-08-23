@@ -42,6 +42,8 @@ lib('libcss.a', [[src/(
 			cue.c
 			cursor.c
 			elevation.c
+			flex.c
+			flex_flow.c
 			font.c
 			font_family.c
 			font_weight.c
@@ -65,6 +67,9 @@ lib('libcss.a', [[src/(
 		arena.c computed.c dispatch.c hash.c select.c font_face.c
 		properties/(
 			helpers.c
+			align_content.c
+			align_items.c
+			align_self.c
 			azimuth.c
 			background_attachment.c
 			background_color.c
@@ -112,6 +117,11 @@ lib('libcss.a', [[src/(
 			display.c
 			elevation.c
 			empty_cells.c
+			flex_basis.c
+			flex_direction.c
+			flex_grow.c
+			flex_shrink.c
+			flex_wrap.c
 			float.c
 			font_family.c
 			font_size.c
@@ -119,6 +129,7 @@ lib('libcss.a', [[src/(
 			font_variant.c
 			font_weight.c
 			height.c
+			justify_content.c
 			left.c
 			letter_spacing.c
 			line_height.c
@@ -134,6 +145,7 @@ lib('libcss.a', [[src/(
 			min_height.c
 			min_width.c
 			opacity.c
+			order.c
 			orphans.c
 			outline_color.c
 			outline_style.c
