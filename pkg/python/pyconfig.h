@@ -65,6 +65,7 @@
 #define HAVE_DECL_RTLD_GLOBAL 1
 #define HAVE_DECL_RTLD_LAZY 1
 #define HAVE_DECL_RTLD_LOCAL 1
+#define HAVE_DECL_RTLD_MEMBER 0
 #define HAVE_DECL_RTLD_NODELETE 1
 #define HAVE_DECL_RTLD_NOLOAD 1
 #define HAVE_DECL_RTLD_NOW 1
@@ -191,6 +192,7 @@
 #define HAVE_LINUX_NETLINK_H 1
 #define HAVE_LINUX_RANDOM_H 1
 #define HAVE_LINUX_TIPC_H 1
+#define HAVE_LINUX_VM_SOCKETS_H 1
 #define HAVE_LOCKF 1
 #define HAVE_LOG1P 1
 #define HAVE_LOG2 1
@@ -199,7 +201,6 @@
 #define HAVE_LUTIMES 1
 #define HAVE_MAKEDEV 1
 #define HAVE_MBRTOWC 1
-#define HAVE_MEMMOVE 1
 #define HAVE_MEMORY_H 1
 #define HAVE_MEMRCHR 1
 #define HAVE_MKDIRAT 1
@@ -225,12 +226,15 @@
 #define HAVE_POLL_H 1
 #define HAVE_POSIX_FADVISE 1
 #define HAVE_POSIX_FALLOCATE 1
+#define HAVE_POSIX_SPAWN 1
 #define HAVE_PREAD 1
+#define HAVE_PREADV 1
+/* #undef HAVE_PREADV2 */
 #define HAVE_PRLIMIT 1
 /* #undef HAVE_PROCESS_H */
 #define HAVE_PROTOTYPES 1
-#define HAVE_PTHREAD_ATFORK 1
 /* #undef HAVE_PTHREAD_DESTRUCTOR */
+#define HAVE_PTHREAD_GETCPUCLOCKID 1
 #define HAVE_PTHREAD_H 1
 /* #undef HAVE_PTHREAD_INIT */
 #define HAVE_PTHREAD_KILL 1
@@ -238,13 +242,14 @@
 #define HAVE_PTY_H 1
 #define HAVE_PUTENV 1
 #define HAVE_PWRITE 1
+#define HAVE_PWRITEV 1
+/* #undef HAVE_PWRITEV2 */
 #define HAVE_READLINK 1
 #define HAVE_READLINKAT 1
 #define HAVE_READV 1
 #define HAVE_REALPATH 1
 #define HAVE_RENAMEAT 1
 /* #undef HAVE_RL_APPEND_HISTORY */
-/* #undef HAVE_RL_CALLBACK */
 /* #undef HAVE_RL_CATCH_SIGNAL */
 /* #undef HAVE_RL_COMPLETION_APPEND_CHARACTER */
 /* #undef HAVE_RL_COMPLETION_DISPLAY_MATCHES_HOOK */
@@ -259,7 +264,6 @@
 #define HAVE_SCHED_SETAFFINITY 1
 #define HAVE_SCHED_SETPARAM 1
 #define HAVE_SCHED_SETSCHEDULER 1
-#define HAVE_SELECT 1
 #define HAVE_SEM_GETVALUE 1
 #define HAVE_SEM_OPEN 1
 #define HAVE_SEM_TIMEDWAIT 1
@@ -285,6 +289,7 @@
 #define HAVE_SHADOW_H 1
 #define HAVE_SIGACTION 1
 #define HAVE_SIGALTSTACK 1
+#define HAVE_SIGINFO_T_SI_BAND 1
 #define HAVE_SIGINTERRUPT 1
 #define HAVE_SIGNAL_H 1
 #define HAVE_SIGPENDING 1
@@ -386,6 +391,11 @@
 #define HAVE_UTIMENSAT 1
 #define HAVE_UTIMES 1
 #define HAVE_UTIME_H 1
+/* #undef HAVE_UUID_CREATE */
+/* #undef HAVE_UUID_ENC_BE */
+/* #undef HAVE_UUID_GENERATE_TIME_SAFE */
+/* #undef HAVE_UUID_H */
+/* #undef HAVE_UUID_UUID_H */
 #define HAVE_WAIT3 1
 #define HAVE_WAIT4 1
 #define HAVE_WAITID 1
@@ -397,6 +407,7 @@
 #define HAVE_WMEMCMP 1
 #define HAVE_WORKING_TZSET 1
 #define HAVE_WRITEV 1
+#define HAVE_X509_VERIFY_PARAM_SET1_HOST 1
 #define HAVE_ZLIB_COPY 1
 /* #undef HAVE__GETPTY */
 /* #undef LOG1P_DROPS_ZERO_SIGN */
@@ -410,9 +421,14 @@
 /* #undef PACKAGE_URL */
 /* #undef PACKAGE_VERSION */
 /* #undef POSIX_SEMAPHORES_NOT_ENABLED */
+#define PTHREAD_KEY_T_IS_COMPATIBLE_WITH_INT 1
 #define PTHREAD_SYSTEM_SCHED_SUPPORTED 1
 /* #undef PYLONG_BITS_IN_DIGIT */
+#define PY_COERCE_C_LOCALE 1
 #define PY_FORMAT_SIZE_T "z"
+#define PY_SSL_DEFAULT_CIPHERS 1
+/* #undef PY_SSL_DEFAULT_CIPHER_STRING */
+#define PY_WARN_ON_C_LOCALE 1
 /* #undef Py_DEBUG */
 /* #undef Py_ENABLE_SHARED */
 /* #undef Py_HASH_ALGORITHM */
@@ -428,6 +444,7 @@
 #define SIZEOF_LONG_LONG 8
 #define SIZEOF_OFF_T 8
 #define SIZEOF_PID_T 4
+#define SIZEOF_PTHREAD_KEY_T 4
 #define SIZEOF_PTHREAD_T 8
 #define SIZEOF_SHORT 2
 #define SIZEOF_SIZE_T 8
@@ -443,7 +460,6 @@
 #define TIME_WITH_SYS_TIME 1
 /* #undef TM_IN_SYS_TIME */
 /* #undef USE_COMPUTED_GOTOS */
-#define USE_INLINE 1
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
@@ -459,7 +475,6 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-/* #undef WANT_SIGFPE_HANDLER */
 /* #undef WINDOW_HAS_FLAGS */
 #define WITH_DOC_STRINGS 1
 /* #undef WITH_DTRACE */
@@ -467,7 +482,6 @@
 /* #undef WITH_LIBINTL */
 /* #undef WITH_NEXT_FRAMEWORK */
 /* #undef WITH_PYMALLOC */
-#define WITH_THREAD 1
 /* #undef WITH_VALGRIND */
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
@@ -480,7 +494,6 @@
 #endif
 /* #undef X87_DOUBLE_ROUNDING */
 /* #undef _BSD_SOURCE */
-#define _BSD_TYPES 1
 #define _DARWIN_C_SOURCE 1
 #define _FILE_OFFSET_BITS 64
 #define _GNU_SOURCE 1
@@ -493,6 +506,7 @@
 #define _POSIX_C_SOURCE 200809L
 /* #undef _POSIX_SOURCE */
 /* #undef _POSIX_THREADS */
+#define _PYTHONFRAMEWORK ""
 #define _REENTRANT 1
 #define _XOPEN_SOURCE 700
 #define _XOPEN_SOURCE_EXTENDED 1
@@ -503,9 +517,6 @@
 /* #undef clock_t */
 /* #undef const */
 /* #undef gid_t */
-#ifndef __cplusplus
-/* #undef inline */
-#endif
 /* #undef mode_t */
 /* #undef off_t */
 /* #undef pid_t */
@@ -513,7 +524,6 @@
 /* #undef size_t */
 /* #undef socklen_t */
 /* #undef uid_t */
-/* #undef volatile */
 #if defined(__USLC__) && defined(__SCO_VERSION__)
 #define STRICT_SYSV_CURSES /* Don't use ncurses extensions */
 #endif

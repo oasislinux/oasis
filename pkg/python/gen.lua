@@ -1,28 +1,13 @@
 cflags{
 	'-fwrapv',
 	'-D NDEBUG',
-	'-D Py_BUILD_CORE',
 	'-I $dir',
 	'-I $srcdir/Include',
 }
 
-local sources = {}
-local modules = {}
-for line in iterlines('Setup') do
-	if not line:hasprefix('*') then
-		local i = line:find(' ', 1, true)
-		modules[line:sub(1, i and i - 1)] = true
-		while i do
-			local j = line:find(' ', i + 1, true)
-			sources[line:sub(i + 1, j and j - 1)] = true
-			i = j
-		end
-	end
-end
-sources = table.keys(sources)
-
 pkg.deps = {}
 local libs = {}
+local modules = load 'modules.lua'
 
 if modules['_ctypes'] then
 	cflags{'-I $builddir/pkg/libffi/include'}
@@ -43,15 +28,38 @@ if modules['pyexpat'] then
 	table.insert(libs, 'expat/libexpat.a.d')
 end
 if modules['zlib'] then
-	cflags{' -I $builddir/pkg/zlib/include'}
+	cflags{'-I $builddir/pkg/zlib/include'}
 	table.insert(pkg.deps, 'pkg/zlib/headers')
 	table.insert(libs, 'zlib/libz.a')
 end
 
-rule('makesetup', 'cd $outdir && $$OLDPWD/$srcdir/Modules/makesetup -s $$OLDPWD/$srcdir -m - $$OLDPWD/$in')
-build('makesetup', '$outdir/config.c', {
-	'$dir/Setup', '|', '$srcdir/Modules/makesetup', '$srcdir/Modules/config.c.in'
-})
+local sources = {}
+sub('modules.ninja', function()
+	-- snapshot $cflags in the subninja environment
+	cflags{}
+
+	for _, mod in pairs(modules) do
+		if mod.core then
+			for _, src in ipairs(mod) do
+				sources[src] = true
+			end
+		else
+			for _, src in ipairs(mod) do
+				local obj = src..'.o'
+				if not sources[obj] then
+					cc('Modules/'..src)
+					sources[obj] = true
+				end
+			end
+		end
+	end
+end)
+sources = table.keys(sources)
+
+cflags{'-D Py_BUILD_CORE'}
+
+rule('makesetup', 'lua $dir/makesetup.lua $dir/modules.lua <$in >$out.tmp && mv $out.tmp $out')
+build('makesetup', '$outdir/config.c', {'$srcdir/Modules/config.c.in', '|', '$dir/makesetup.lua', '$dir/modules.lua'})
 
 cc('Modules/getbuildinfo.c', nil, {
 	cflags=[[$cflags -D 'DATE="Mar 28 2018"' -D 'TIME="05:19:59"']]
@@ -62,7 +70,7 @@ cc('Modules/getpath.c', nil, {
 		[[-D 'PYTHONPATH=":plat-linux"']],
 		[[-D 'PREFIX="/"']],
 		[[-D 'EXEC_PREFIX="/"']],
-		[[-D 'VERSION="3.6"']],
+		[[-D 'VERSION="3.7"']],
 		[[-D 'VPATH=""']],
 	},
 })
@@ -98,6 +106,7 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		bytes_methods.c
 		bytearrayobject.c
 		bytesobject.c
+		call.c
 		cellobject.c
 		classobject.c
 		codeobject.c
@@ -150,6 +159,8 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		Python-ast.c
 		asdl.c
 		ast.c
+		ast_opt.c
+		ast_unparse.c
 		bltinmodule.c
 		ceval.c
 		compile.c
@@ -168,8 +179,9 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		importdl.c
 		marshal.c
 		modsupport.c
-		mystrtoul.c
 		mysnprintf.c
+		mystrtoul.c
+		pathconfig.c
 		peephole.c
 		pyarena.c
 		pyctype.c
@@ -178,12 +190,15 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		pylifecycle.c
 		pymath.c
 		pystate.c
+		context.c
+		hamt.c
 		pythonrun.c
 		pytime.c
-		random.c
+		bootstrap_hash.c
 		structmember.c
 		symtable.c
 		sysmodule.c.o
+		thread.c
 		traceback.c
 		getopt.c
 		pystrcmp.c
@@ -193,7 +208,6 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		formatter_unicode.c
 		fileutils.c
 		dynload_stub.c
-		thread.c
 		frozen.c
 	)
 	$outdir/config.c
@@ -204,10 +218,10 @@ file('bin/python3', '755', '$outdir/python')
 sym('bin/python', 'python3')
 
 for f in iterlines('pylibs.txt') do
-	file('lib/python3.6/'..f, '644', '$srcdir/Lib/'..f)
+	file('lib/python3.7/'..f, '644', '$srcdir/Lib/'..f)
 end
-file('lib/python3.6/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$dir/lib/_sysconfigdata.py')
-file('lib/python3.6/Makefile', '644', '$dir/lib/Makefile')
-dir('lib/python3.6/lib-dynload', '755')
+file('lib/python3.7/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$dir/lib/_sysconfigdata.py')
+file('lib/python3.7/Makefile', '644', '$dir/lib/Makefile')
+dir('lib/python3.7/lib-dynload', '755')
 
 fetch 'curl'
