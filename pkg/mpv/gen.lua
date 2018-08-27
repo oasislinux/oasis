@@ -33,12 +33,12 @@ pkg.deps = {
 	'pkg/zlib/headers',
 }
 
-build('copy', '$outdir/video/out/wayland/xdg-shell-v6.h', '$builddir/pkg/wayland-protocols/include/xdg-shell-unstable-v6-client-protocol.h')
+build('copy', '$outdir/video/out/wayland/xdg-shell.h', '$builddir/pkg/wayland-protocols/include/xdg-shell-client-protocol.h')
 build('copy', '$outdir/video/out/wayland/idle-inhibit-v1.h', '$builddir/pkg/wayland-protocols/include/idle-inhibit-unstable-v1-client-protocol.h')
 waylandproto('video/out/wayland/server-decoration.xml', 'video/out/wayland/srv-decor.h', nil, 'video/out/wayland/srv-decor.c')
 table.insert(pkg.deps, {
 	'$outdir/video/out/wayland/idle-inhibit-v1.h',
-	'$outdir/video/out/wayland/xdg-shell-v6.h',
+	'$outdir/video/out/wayland/xdg-shell.h',
 	'$outdir/video/out/wayland/srv-decor.h',
 })
 
@@ -164,6 +164,11 @@ if options['HAVE_WAYLAND'] then
 end
 
 exe('mpv', {
+	'input/ipc-unix.c',
+	'osdep/main-fn-unix.c',
+	'osdep/subprocess-posix.c',
+	'osdep/terminal-unix.c',
+	'osdep/timer-linux.c',
 	'ta/ta.c',
 	'ta/ta_talloc.c',
 	'ta/ta_utils.c',

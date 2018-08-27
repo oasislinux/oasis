@@ -76,7 +76,6 @@
 #define HAVE_VAPOURSYNTH_CORE 0
 #define HAVE_LIBARCHIVE 0
 #define HAVE_SDL2 0
-#define HAVE_SDL1 0
 #define HAVE_OSS_AUDIO 0
 #define HAVE_RSOUND 0
 #define HAVE_SNDIO 0
@@ -141,6 +140,7 @@
 #define HAVE_D3D_HWACCEL 0
 #define HAVE_D3D9_HWACCEL 0
 #define HAVE_GL_DXINTEROP_D3D9 0
+#define HAVE_FFNVCODEC 0
 #define HAVE_CUDA_HWACCEL 0
 #define HAVE_TV 0
 #define HAVE_SYS_VIDEOIO_H 0
@@ -152,6 +152,7 @@
 #define HAVE_WIN32_EXECUTABLE 0
 #define HAVE_APPLE_REMOTE 0
 #define HAVE_MACOS_TOUCHBAR 0
+#define HAVE_MACOS_COCOA_CB 0
 #define CONFIGURATION "(missing)"
 #define MPV_CONFDIR "/etc/mpv"
 #define HAVE_GPL 1
