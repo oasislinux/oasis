@@ -1,3 +1,3 @@
-#define LIBINPUT_VERSION "1.10.4"
+#define LIBINPUT_VERSION "1.11.3"
 #define HAVE_LIBWACOM 0
 #define _GNU_SOURCE 1

@@ -28,6 +28,13 @@ lib('libinput.a', [[
 		evdev-tablet-pad.c
 		evdev-tablet-pad-leds.c
 		filter.c
+		filter-flat.c
+		filter-low-dpi.c
+		filter-mouse.c
+		filter-touchpad.c
+		filter-touchpad-x230.c
+		filter-tablet.c
+		filter-trackpoint.c
 		netlink-seat.c
 		path-seat.c
 		timer.c
