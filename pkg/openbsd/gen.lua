@@ -38,6 +38,7 @@ lib('libbsd.a', {paths[[
 	lib/libcrypto/arc4random/getentropy_linux.c
 	lib/libutil/ohash.c
 ]], libs}, {'pkg/libressl/headers'})
+file('lib/libbsd.a', '644', '$outdir/libbsd.a')
 
 -- diff
 exe('diff', 'usr.bin/diff/(diff.c diffdir.c diffreg.c xmalloc.c) libbsd.a')
