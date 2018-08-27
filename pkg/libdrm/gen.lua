@@ -58,8 +58,7 @@ if config.video_drivers and config.video_drivers['amdgpu'] then
 			amdgpu_gpu_info.c
 			amdgpu_vamgr.c
 			amdgpu_vm.c
-			util_hash.c
-			util_hash_table.c
+			handle_table.c
 		)
 	]])
 	file('share/libdrm/amdgpu.ids', '644', '$srcdir/data/amdgpu.ids')
