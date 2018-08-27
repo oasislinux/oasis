@@ -56,13 +56,13 @@ lib('libssh.a', [[
 	xmss_hash_address.c
 	xmss_wots.c
 
-	authfd.c authfile.c bufaux.c bufbn.c bufec.c buffer.c
+	authfd.c authfile.c
 	canohost.c channels.c cipher.c cipher-aes.c cipher-aesctr.c
 	cipher-ctr.c cleanup.c
 	compat.c crc32.c fatal.c hostfile.c
 	log.c match.c moduli.c nchan.c packet.c opacket.c
 	readpass.c ttymodes.c xmalloc.c addrmatch.c
-	atomicio.c key.c dispatch.c mac.c uidswap.c uuencode.c misc.c utf8.c
+	atomicio.c dispatch.c mac.c uuencode.c misc.c utf8.c
 	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-rsa.c dh.c
 	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c
 	ssh-pkcs11.c smult_curve25519_ref.c
@@ -93,7 +93,7 @@ exe('sshd', [[
 	sshpty.c sshlogin.c servconf.c serverloop.c
 	auth.c auth2.c auth-options.c session.c
 	auth2-chall.c groupaccess.c
-	auth-skey.c auth-bsdauth.c auth2-hostbased.c auth2-kbdint.c
+	auth-bsdauth.c auth2-hostbased.c auth2-kbdint.c
 	auth2-none.c auth2-passwd.c auth2-pubkey.c
 	monitor.c monitor_wrap.c auth-krb5.c
 	auth2-gss.c gss-serv.c gss-serv-krb5.c
@@ -101,7 +101,7 @@ exe('sshd', [[
 	sftp-server.c.o sftp-common.c.o
 	sandbox-null.c sandbox-rlimit.c sandbox-systrace.c sandbox-darwin.c
 	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c
-	sandbox-solaris.c
+	sandbox-solaris.c uidswap.c
 	libssh.a.d
 ]])
 file('bin/sshd', '755', '$outdir/sshd')

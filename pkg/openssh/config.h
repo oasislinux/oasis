@@ -180,6 +180,7 @@
 #define HAVE_GETGROUPLIST 1
 /* #undef HAVE_GETGRSET */
 /* #undef HAVE_GETLASTLOGXBYNAME */
+#define HAVE_GETLINE 1
 /* #undef HAVE_GETLUID */
 #define HAVE_GETNAMEINFO 1
 #define HAVE_GETOPT 1
@@ -191,6 +192,7 @@
 #define HAVE_GETPGID 1
 #define HAVE_GETPGRP 1
 /* #undef HAVE_GETPWANAM */
+/* #undef HAVE_GETRANDOM */
 #define HAVE_GETRLIMIT 1
 /* #undef HAVE_GETRRSETBYNAME */
 /* #undef HAVE_GETSEUSERBYNAME */
@@ -434,6 +436,7 @@
 /* #undef HAVE_SYS_PSTAT_H */
 /* #undef HAVE_SYS_PTMS_H */
 #define HAVE_SYS_PTRACE_H 1
+/* #undef HAVE_SYS_RANDOM_H */
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_STATVFS_H 1
 #define HAVE_SYS_STAT_H 1
@@ -556,8 +559,6 @@
 /* #undef SANDBOX_SOLARIS */
 /* #undef SANDBOX_SYSTRACE */
 /* #undef SETEUID_BREAKS_SETUID */
-/* #undef SKEY */
-/* #undef SKEYCHALLENGE_4ARG */
 #define SNPRINTF_CONST const
 #define SPT_TYPE SPT_REUSEARGV
 /* #undef SSHD_ACQUIRES_CTTY */
