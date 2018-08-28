@@ -1,4 +1,4 @@
-From 401f9dd441bb9bbf99d66f64e95cdc4a469bd3a6 Mon Sep 17 00:00:00 2001
+From 70be0635bf09e67202181de17b0ed4e6bafcd9b8 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 12 Jun 2017 02:42:32 -0700
 Subject: [PATCH] Make stroke_width a float
@@ -23,10 +23,10 @@ index 85f146f..6acf42e 100644
  
  struct svgtiny_diagram {
 diff --git a/src/svgtiny.c b/src/svgtiny.c
-index 69cbcf7..cf7cfda 100644
+index 8831b92..838e149 100644
 --- a/src/svgtiny.c
 +++ b/src/svgtiny.c
-@@ -1697,8 +1697,7 @@ struct svgtiny_shape *svgtiny_add_shape(struct svgtiny_parse_state *state)
+@@ -1698,8 +1698,7 @@ struct svgtiny_shape *svgtiny_add_shape(struct svgtiny_parse_state *state)
  	shape->text = 0;
  	shape->fill = state->fill;
  	shape->stroke = state->stroke;
@@ -50,5 +50,5 @@ index 6bf5d64..c0ef754 100644
  	/* gradients */
  	struct svgtiny_parse_state_gradient fill_grad;
 -- 
-2.14.2
+2.18.0
 
