@@ -62,12 +62,31 @@ set('mcflags', {
 	'-I $outdir/lib/sys',
 	'-I $outdir/lib/std',
 	'-I $outdir/lib/bio',
+	'-I $outdir/lib/iter',
 	'-I $outdir/lib/regex',
 	'-I $outdir/lib/thread',
 })
 
 include '$dir/myr.ninja'
-for lib in iterpaths('bio crypto date escfmt fileutil http inifile json regex std sys testr thread') do
+local libs = {
+	'bio',
+	'crypto',
+	'date',
+	'escfmt',
+	'fileutil',
+	'flate',
+	'http',
+	'inifile',
+	'iter',
+	'json',
+	'math',
+	'regex',
+	'std',
+	'sys',
+	'testr',
+	'thread',
+}
+for _, lib in ipairs(libs) do
 	file('lib/myr/lib'..lib..'.use', '644', '$outdir/lib/'..lib..'/lib'..lib..'.use')
 	file('lib/myr/lib'..lib..'.a', '644', '$outdir/lib/'..lib..'/lib'..lib..'.a')
 end
