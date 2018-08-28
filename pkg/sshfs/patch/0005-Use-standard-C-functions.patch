@@ -1,4 +1,4 @@
-From b0de64fc18f9e26491cfc5a69358741d90fc744f Mon Sep 17 00:00:00 2001
+From 4c05a5809a7c3bcda3c8a932c54b7e5f8afa1619 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 17:42:29 -0700
 Subject: [PATCH] Use standard C functions
@@ -8,7 +8,7 @@ Subject: [PATCH] Use standard C functions
  1 file changed, 55 insertions(+), 36 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index a9dde7c..2c3a4db 100644
+index d33a7c9..d8f2461 100644
 --- a/sshfs.c
 +++ b/sshfs.c
 @@ -666,25 +666,25 @@ static inline void buf_add_path(struct buffer *buf, const char *path)
@@ -157,7 +157,7 @@ index a9dde7c..2c3a4db 100644
  			return 0;
  		}
  		/* Pass through */
-@@ -3499,9 +3508,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
+@@ -3531,9 +3540,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
  
  
  	case KEY_PORT:
@@ -170,7 +170,7 @@ index a9dde7c..2c3a4db 100644
  		return 0;
  
  	case KEY_COMPRESS:
-@@ -3509,9 +3519,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
+@@ -3541,9 +3551,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
  		return 0;
  
  	case KEY_CONFIGFILE:
@@ -183,7 +183,7 @@ index a9dde7c..2c3a4db 100644
  		return 0;
  
  	default:
-@@ -3667,17 +3678,19 @@ static char *find_base_path(void)
+@@ -3699,17 +3710,19 @@ static char *find_base_path(void)
  
  static char *fsname_escape_commas(char *fsnameold)
  {
@@ -205,7 +205,7 @@ index a9dde7c..2c3a4db 100644
  
  	return fsname;
  }
-@@ -4012,15 +4025,20 @@ int main(int argc, char *argv[])
+@@ -4046,15 +4059,20 @@ int main(int argc, char *argv[])
  	else
  		sshfs.max_outstanding_len = ~0;
  
@@ -230,7 +230,7 @@ index a9dde7c..2c3a4db 100644
  	ssh_add_arg(sshfs.host);
  	if (sshfs.sftp_server)
  		sftp_server = sshfs.sftp_server;
-@@ -4047,10 +4065,11 @@ int main(int argc, char *argv[])
+@@ -4081,10 +4099,11 @@ int main(int argc, char *argv[])
  		sshfs.max_write = 65536;
  
          fsname = fsname_escape_commas(fsname);
