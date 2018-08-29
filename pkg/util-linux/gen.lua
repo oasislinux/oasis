@@ -100,6 +100,8 @@ lib('libsmartcols.a', [[
 		version.c
 		init.c
 	)
+	libtcolors.a
+	libcommon.a
 ]])
 
 lib('libtcolors.a', 'lib/(colors.c color-names.c)')
@@ -123,9 +125,16 @@ lib('libuuid.a', [[
 
 exe('fdisk', [[
 	disk-utils/(fdisk.c fdisk-menu.c fdisk-list.c)
-	libfdisk.a.d libsmartcols.a libtcolors.a
+	libfdisk.a.d libsmartcols.a.d
 ]])
 file('bin/fdisk', '755', '$outdir/fdisk')
 man{'disk-utils/fdisk.8'}
+
+exe('losetup', [[
+	sys-utils/losetup.c
+	libsmartcols.a.d libcommon.a
+]])
+file('bin/losetup', '755', '$outdir/losetup')
+man{'sys-utils/losetup.8'}
 
 fetch 'git'
