@@ -62,7 +62,7 @@ rule('makesetup', 'lua $dir/makesetup.lua $dir/modules.lua <$in >$out.tmp && mv 
 build('makesetup', '$outdir/config.c', {'$srcdir/Modules/config.c.in', '|', '$dir/makesetup.lua', '$dir/modules.lua'})
 
 cc('Modules/getbuildinfo.c', nil, {
-	cflags=[[$cflags -D 'DATE="Mar 28 2018"' -D 'TIME="05:19:59"']]
+	cflags=[[$cflags -D 'DATE="Jun 26 2018"' -D 'TIME="23:11:05"']]
 })
 cc('Modules/getpath.c', nil, {
 	cflags={
