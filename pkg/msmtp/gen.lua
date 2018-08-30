@@ -1,7 +1,6 @@
 cflags{
 	'-D HAVE_CONFIG_H',
 	[[-D 'SYSCONFDIR="/etc"']],
-	'-I include',
 	'-I $dir',
 	'-I $builddir/pkg/libressl/include',
 }
