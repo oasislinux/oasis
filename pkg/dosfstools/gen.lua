@@ -1,7 +1,6 @@
 set('version', '4.1')
 cflags{
 	'-include $dir/config.h',
-	'-I include',
 	'-I $dir',
 	'-I $srcdir/src/blkdev',
 }
