@@ -1,9 +1,7 @@
-#include <config-posix.h>
-
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 /* #undef CRAY_STACKSEG_END */
 /* #undef C_ALLOCA */
-#define EH_FRAME_FLAGS "aw"
+#define EH_FRAME_FLAGS "a"
 /* #undef FFI_DEBUG */
 /* #undef FFI_EXEC_TRAMPOLINE_TABLE */
 /* #undef FFI_MMAP_EXEC_EMUTRAMP_PAX */
@@ -19,16 +17,29 @@
 #define HAVE_AS_STRING_PSEUDO_OP 1
 #define HAVE_AS_X86_64_UNWIND_SECTION_TYPE 1
 #define HAVE_AS_X86_PCREL 1
+#define HAVE_DLFCN_H 1
 #define HAVE_HIDDEN_VISIBILITY_ATTRIBUTE 1
+#define HAVE_INTTYPES_H 1
 #define HAVE_LONG_DOUBLE 1
 /* #undef HAVE_LONG_DOUBLE_VARIANT */
+#define HAVE_MEMCPY 1
 #define HAVE_MEMORY_H 1
 #define HAVE_MKOSTEMP 1
+#define HAVE_MMAP 1
 #define HAVE_MMAP_ANON 1
 #define HAVE_MMAP_DEV_ZERO 1
 #define HAVE_MMAP_FILE 1
-/* #undef HAVE_RO_EH_FRAME */
+#define HAVE_RO_EH_FRAME 1
+#define HAVE_STDINT_H 1
+#define HAVE_STDLIB_H 1
+#define HAVE_STRINGS_H 1
+#define HAVE_STRING_H 1
+#define HAVE_SYS_MMAN_H 1
+#define HAVE_SYS_STAT_H 1
+#define HAVE_SYS_TYPES_H 1
+#define HAVE_UNISTD_H 1
 #define LT_OBJDIR ".libs/"
+/* #undef NO_MINUS_C_MINUS_O */
 #define PACKAGE "libffi"
 #define PACKAGE_BUGREPORT "http://github.com/atgreen/libffi/issues"
 #define PACKAGE_NAME "libffi"
@@ -40,6 +51,7 @@
 #define SIZEOF_LONG_DOUBLE 16
 #define SIZEOF_SIZE_T 8
 /* #undef STACK_DIRECTION */
+#define STDC_HEADERS 1
 /* #undef SYMBOL_UNDERSCORE */
 /* #undef USING_PURIFY */
 #define VERSION "3.2.1"

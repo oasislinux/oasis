@@ -1,5 +1,4 @@
 cflags{
-	'-I include',
 	'-I $dir',
 	'-I $outdir/include',
 	'-I $srcdir/include',
