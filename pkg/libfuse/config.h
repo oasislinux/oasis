@@ -1,4 +1,5 @@
 #define FUSERMOUNT_DIR "/bin"
+#define FUSE_CONF "/etc/fuse.conf"
 #define IGNORE_MTAB
 
 #define HAVE_FDATASYNC
@@ -15,4 +16,4 @@
 #undef HAVE_STRUCT_STAT_ST_ATIMESPEC
 #define HAVE_UTIMENSAT
 #define HAVE_VMSPLICE
-#define PACKAGE_VERSION "3.2.5"
+#define PACKAGE_VERSION "3.2.6"
