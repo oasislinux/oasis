@@ -1,4 +1,4 @@
-From a92fb00546be6f4c4421c9746f1f15a0ae1ae776 Mon Sep 17 00:00:00 2001
+From 034e472403bcf0fbe90a0d4d9fa6535d3f473d78 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 13 May 2016 23:01:44 -0700
 Subject: [PATCH] Use _Static_assert instead of checking for size of long long
@@ -9,11 +9,11 @@ Subject: [PATCH] Use _Static_assert instead of checking for size of long long
  2 files changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 74597e6..2f794bb 100644
+index 53bed10..d83bd44 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -49,7 +49,6 @@ AC_CHECK_HEADERS([sysexits.h netdb.h arpa/inet.h sys/socket.h sys/wait.h])
- AC_CHECK_FUNCS([fmemopen fseeko fseeko64 getpass getservbyname link mkstemp signal strndup syslog vasprintf])
+@@ -50,7 +50,6 @@ AC_CHECK_HEADERS([sysexits.h netdb.h arpa/inet.h sys/socket.h sys/wait.h netinet
+ AC_CHECK_FUNCS([fmemopen fseeko fseeko64 getpass link signal strndup syslog])
  AC_SEARCH_LIBS([nanosleep], [rt posix4])
  AC_SEARCH_LIBS([socket], [socket])
 -AC_CHECK_SIZEOF([long long])
@@ -21,7 +21,7 @@ index 74597e6..2f794bb 100644
  dnl pkg-config (required to detect libraries)
  PKG_PROG_PKG_CONFIG([])
 diff --git a/src/conf.c b/src/conf.c
-index fb20ae1..fd8e55c 100644
+index c39451f..f75759a 100644
 --- a/src/conf.c
 +++ b/src/conf.c
 @@ -36,9 +36,7 @@

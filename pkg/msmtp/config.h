@@ -8,7 +8,6 @@
 #define HAVE_FSEEKO64 1
 /* #undef HAVE_GAI_IDN */
 #define HAVE_GETPASS 1
-#define HAVE_GETSERVBYNAME 1
 /* #undef HAVE_GETTEXT */
 /* #undef HAVE_ICONV */
 #define HAVE_INTTYPES_H 1
@@ -20,8 +19,8 @@
 #define HAVE_LINK 1
 /* #undef HAVE_MACOSXKEYRING */
 #define HAVE_MEMORY_H 1
-#define HAVE_MKSTEMP 1
 #define HAVE_NETDB_H 1
+#define HAVE_NETINET_IN_H 1
 #define HAVE_SIGNAL 1
 #define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
@@ -36,14 +35,13 @@
 #define HAVE_SYS_WAIT_H 1
 #define HAVE_TLS 1
 #define HAVE_UNISTD_H 1
-#define HAVE_VASPRINTF 1
 #define PACKAGE "msmtp"
 #define PACKAGE_BUGREPORT "marlam@marlam.de"
 #define PACKAGE_NAME "msmtp"
-#define PACKAGE_STRING "msmtp 1.6.8"
+#define PACKAGE_STRING "msmtp 1.8.0"
 #define PACKAGE_TARNAME "msmtp"
 #define PACKAGE_URL "https://marlam.de/msmtp"
-#define PACKAGE_VERSION "1.6.8"
+#define PACKAGE_VERSION "1.8.0"
 #define PLATFORM "x86_64-pc-linux-gnu"
 #define STDC_HEADERS 1
 #ifndef _ALL_SOURCE
@@ -61,7 +59,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.6.8"
+#define VERSION "1.8.0"
 #if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
 #define W32_NATIVE 1
 #endif
