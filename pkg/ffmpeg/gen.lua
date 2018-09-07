@@ -9,6 +9,7 @@ cflags{
 	'-I $srcdir',
 	'-I $builddir/pkg/alsa-lib/include',
 	'-I $builddir/pkg/libressl/include',
+	'-I $builddir/pkg/zlib/include',
 }
 nasmflags{
 	'-i $srcdir/',
@@ -30,8 +31,9 @@ pkg.hdrs = {
 pkg.deps = {
 	'$outdir/config.asm',
 	'$dir/headers',
-	'pkg/libressl/headers',
 	'pkg/alsa-lib/headers',
+	'pkg/libressl/headers',
+	'pkg/zlib/headers',
 }
 
 build('awk', '$outdir/config.asm', '$dir/options.h', {
@@ -199,6 +201,7 @@ lib('libavformat.a', {
 	'libavcodec.a.d',
 	'libavutil.a',
 	'$builddir/pkg/libressl/libssl.a.d',
+	'$builddir/pkg/zlib/libz.a',
 })
 
 lib('libavutil.a', {
