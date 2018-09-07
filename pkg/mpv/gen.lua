@@ -36,11 +36,6 @@ pkg.deps = {
 build('copy', '$outdir/video/out/wayland/xdg-shell.h', '$builddir/pkg/wayland-protocols/include/xdg-shell-client-protocol.h')
 build('copy', '$outdir/video/out/wayland/idle-inhibit-v1.h', '$builddir/pkg/wayland-protocols/include/idle-inhibit-unstable-v1-client-protocol.h')
 waylandproto('video/out/wayland/server-decoration.xml', 'video/out/wayland/srv-decor.h', nil, 'video/out/wayland/srv-decor.c')
-table.insert(pkg.deps, {
-	'$outdir/video/out/wayland/idle-inhibit-v1.h',
-	'$outdir/video/out/wayland/xdg-shell.h',
-	'$outdir/video/out/wayland/srv-decor.h',
-})
 
 rule('file2string', '$outdir/file2string $in >$out.tmp && mv $out.tmp $out')
 local function file2string(out, inp)
@@ -158,6 +153,9 @@ if options['HAVE_WAYLAND'] then
 		'libxkbcommon/libxkbcommon.a',
 	})
 	table.insert(pkg.deps, {
+		'$outdir/video/out/wayland/idle-inhibit-v1.h',
+		'$outdir/video/out/wayland/xdg-shell.h',
+		'$outdir/video/out/wayland/srv-decor.h',
 		'pkg/wayland/headers',
 		'pkg/libxkbcommon/fetch',
 	})
