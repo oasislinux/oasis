@@ -1,7 +1,7 @@
-From 6d764efd8875a0f11a65b08677a1900182b0019e Mon Sep 17 00:00:00 2001
+From 47aa5ef27e6fb596fe844369328238bbc656e16c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 21 Aug 2018 15:52:34 -0700
-Subject: [PATCH 2/2] Use timingsafe_memcmp instead of CRYPTO_memcmp
+Subject: [PATCH] Use timingsafe_memcmp instead of CRYPTO_memcmp
 
 We do not build with OpenSSL support, so CRYPTO_memcmp is unavailable.
 ---

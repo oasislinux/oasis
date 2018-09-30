@@ -1,3 +1,4 @@
+#define ATTR_NORETURN __attribute__((__noreturn__))
 #define BIND8_STATS /**/
 /* #undef CHROOTDIR */
 #define CONFIGDIR "/etc/nsd"
@@ -12,6 +13,7 @@
 /* #undef HAVE_ARC4RANDOM_UNIFORM */
 #define HAVE_ARPA_INET_H 1
 #define HAVE_ATTR_FORMAT 1
+#define HAVE_ATTR_NORETURN 1
 #define HAVE_ATTR_UNUSED 1
 /* #undef HAVE_B64_NTOP */
 /* #undef HAVE_B64_PTON */
@@ -143,10 +145,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.1.24"
+#define PACKAGE_STRING "NSD 4.1.25"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.1.24"
+#define PACKAGE_VERSION "4.1.25"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
