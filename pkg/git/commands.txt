@@ -1,4 +1,4 @@
-# 2,<cd src/Documentation && printf '%s\n' git-*.txt
+# 2,<cd src/Documentation && printf '%s\n' git*.txt *config.txt
 git-add.txt
 git-am.txt
 git-annotate.txt
@@ -97,6 +97,7 @@ git-prune.txt
 git-pull.txt
 git-push.txt
 git-quiltimport.txt
+git-range-diff.txt
 git-read-tree.txt
 git-rebase.txt
 git-receive-pack.txt
@@ -149,3 +150,32 @@ git-web--browse.txt
 git-whatchanged.txt
 git-worktree.txt
 git-write-tree.txt
+git.txt
+gitattributes.txt
+gitcli.txt
+gitcore-tutorial.txt
+gitcredentials.txt
+gitcvs-migration.txt
+gitdiffcore.txt
+giteveryday.txt
+gitglossary.txt
+githooks.txt
+gitignore.txt
+gitk.txt
+gitmodules.txt
+gitnamespaces.txt
+gitremote-helpers.txt
+gitrepository-layout.txt
+gitrevisions.txt
+gitsubmodules.txt
+gittutorial-2.txt
+gittutorial.txt
+gitweb.conf.txt
+gitweb.txt
+gitworkflows.txt
+config.txt
+diff-config.txt
+fmt-merge-msg-config.txt
+git-config.txt
+merge-config.txt
+rebase-config.txt

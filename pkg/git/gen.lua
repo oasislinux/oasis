@@ -79,6 +79,7 @@ lib('libgit.a', [[
 	ewah/ewah_io.c
 	ewah/ewah_rlw.c
 	exec-cmd.c.o
+	fetch-negotiator.c
 	fetch-object.c
 	fetch-pack.c
 	fsck.c
@@ -88,9 +89,11 @@ lib('libgit.a', [[
 	graph.c
 	grep.c
 	hashmap.c
+	linear-assignment.c
 	help.c
 	hex.c
 	ident.c
+	json-writer.c
 	kwset.c
 	levenshtein.c
 	line-log.c
@@ -111,6 +114,8 @@ lib('libgit.a', [[
 	merge.c
 	mergesort.c
 	name-hash.c
+	negotiator/default.c
+	negotiator/skipping.c
 	notes-cache.c
 	notes-merge.c
 	notes-utils.c
@@ -140,6 +145,7 @@ lib('libgit.a', [[
 	prompt.c
 	protocol.c
 	quote.c
+	range-diff.c
 	reachable.c
 	read-cache.c
 	ref-filter.c
@@ -300,6 +306,7 @@ local builtins = {
 	'prune',
 	'pull',
 	'push',
+	'range-diff',
 	'read-tree',
 	'rebase--helper',
 	'receive-pack',
@@ -319,6 +326,7 @@ local builtins = {
 	'serve',
 	'shortlog',
 	'show-branch',
+	'show-index',
 	'show-ref',
 	'stripspace',
 	'submodule--helper',
@@ -370,7 +378,6 @@ x('http-backend')
 x('imap-send', {'imap-send.c', 'http.c.o', '$builddir/pkg/curl/libcurl.a.d'})
 x('sh-i18n--envsubst')
 x('shell')
-x('show-index')
 -- git-remote-testsvn is intentionally omitted.
 
 x('remote-http', {'remote-curl.c', 'http.c.o', 'http-walker.c', '$builddir/pkg/curl/libcurl.a.d'})
@@ -405,6 +412,7 @@ x('mergetool--lib', '644')
 x('parse-remote', '644')
 x('rebase--am', '644')
 x('rebase--interactive', '644')
+x('rebase--preserve-merges', '644')
 x('rebase--merge', '644')
 x('sh-setup', '644')
 x('sh-i18n', '644')
