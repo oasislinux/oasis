@@ -36,6 +36,7 @@ function x(cmd, section, mode)
 	end
 end
 
+x('blkdiscard', 8)
 x('chvt', 1)
 x('clear', 1)
 x('ctrlaltdel', 8)
