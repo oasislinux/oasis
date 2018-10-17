@@ -295,12 +295,12 @@
 #define SEND_TYPE_RETV ssize_t
 #define SIZEOF_CURL_OFF_T 8
 #define SIZEOF_INT 4
-#define SIZEOF_LONG 8
+/* probe SIZEOF_LONG */
 /* #undef SIZEOF_LONG_LONG */
 #define SIZEOF_OFF_T 8
 #define SIZEOF_SHORT 2
-#define SIZEOF_SIZE_T 8
-#define SIZEOF_TIME_T 8
+/* probe SIZEOF_SIZE_T */
+/* probe SIZEOF_TIME_T */
 #define STDC_HEADERS 1
 #define STRERROR_R_TYPE_ARG3 size_t
 #define TIME_WITH_SYS_TIME 1

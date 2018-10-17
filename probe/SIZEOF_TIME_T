@@ -1,0 +1,2 @@
+#include <sys/types.h>
+_Static_assert(SIZEOF_TIME_T == sizeof(time_t), "incorrect size");

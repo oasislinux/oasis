@@ -1,0 +1,2 @@
+#include <stddef.h>
+_Static_assert(SIZEOF_SIZE_T == sizeof(size_t), "incorrect size");

@@ -1,0 +1,1 @@
+_Static_assert(SIZEOF_LONG == sizeof(long), "incorrect size");

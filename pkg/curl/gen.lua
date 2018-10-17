@@ -2,7 +2,7 @@ cflags{
 	'-D HAVE_CONFIG_H',
 	'-D BUILDING_LIBCURL',
 	'-D CURL_STATICLIB',
-	'-I $dir',
+	'-I $outdir',
 	'-I $outdir/include/curl',
 	'-I $outdir/include',
 	'-I $srcdir/lib',
@@ -10,6 +10,13 @@ cflags{
 	'-I $builddir/pkg/libressl/include',
 	'-I $builddir/pkg/zlib/include',
 }
+
+build('cat', '$outdir/curl_config.h', {
+	'$dir/curl_config.h',
+	'$builddir/probe/SIZEOF_LONG',
+	'$builddir/probe/SIZEOF_SIZE_T',
+	'$builddir/probe/SIZEOF_TIME_T',
+})
 
 pkg.hdrs = copy('$outdir/include/curl', '$srcdir/include/curl', {
 		'curl.h',
@@ -22,6 +29,7 @@ pkg.hdrs = copy('$outdir/include/curl', '$srcdir/include/curl', {
 		'system.h',
 })
 pkg.deps = {
+	'$outdir/curl_config.h',
 	'$dir/headers',
 	'pkg/libressl/headers',
 	'pkg/zlib/headers',
