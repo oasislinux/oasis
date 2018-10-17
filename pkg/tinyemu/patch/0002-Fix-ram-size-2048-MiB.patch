@@ -1,0 +1,39 @@
+From 2554a4ba54ce78fd3c568bb74bdaa626935dc152 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 17 Oct 2018 16:49:06 -0700
+Subject: [PATCH] Fix ram size >= 2048 MiB
+
+---
+ machine.c | 2 +-
+ temu.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/machine.c b/machine.c
+index eab92b4..bc8edac 100644
+--- a/machine.c
++++ b/machine.c
+@@ -260,7 +260,7 @@ static int virt_machine_parse_config(VirtMachineParams *p,
+     tag_name = "memory_size";
+     if (vm_get_int(cfg, tag_name, &val) < 0)
+         goto tag_fail;
+-    p->ram_size = val << 20;
++    p->ram_size = (uint64_t)val << 20;
+     
+     tag_name = "bios";
+     if (vm_get_str_opt(cfg, tag_name, &str) < 0)
+diff --git a/temu.c b/temu.c
+index e8886ff..a5eba31 100644
+--- a/temu.c
++++ b/temu.c
+@@ -719,7 +719,7 @@ int main(int argc, char **argv)
+     /* override some config parameters */
+ 
+     if (ram_size > 0) {
+-        p->ram_size = ram_size << 20;
++        p->ram_size = (uint64_t)ram_size << 20;
+     }
+     if (accel_enable != -1)
+         p->accel_enable = accel_enable;
+-- 
+2.19.0
+
