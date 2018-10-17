@@ -269,4 +269,5 @@
 /* #undef ptrdiff_t */
 /* #undef size_t */
 /* #undef uintmax_t */
-#include <dirpaths.h>
+#define LOCALEDIR "/share/locale"
+#define ROOT_SYSCONFDIR "/etc"

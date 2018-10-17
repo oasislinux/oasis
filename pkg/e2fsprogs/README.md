@@ -9,4 +9,4 @@ Generated with
 		--disable-testio-debug \
 		--disable-uuidd
 
-Some irrelevant gnulib lines were filtered out.
+Some irrelevant gnulib lines were filtered out. `dirpaths.h` was inlined.
