@@ -1,13 +1,19 @@
 set('version', '1.44.4')
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I $dir',
+	'-I $outdir',
 	'-I $outdir/include',
 	'-I $outdir/internal',
 	'-I $outdir/internal/support',
 	'-I $srcdir/lib',
 	'-I $builddir/pkg/util-linux/include',
 }
+
+build('cat', '$outdir/config.h', {
+	'$dir/config.h',
+	'$builddir/probe/SIZEOF_LONG',
+	'$builddir/probe/SIZEOF_TIME_T',
+})
 
 set('subst', {
 	'-e s,@E2FSPROGS_VERSION@,$version,',
@@ -63,6 +69,7 @@ pkg.hdrs = {
 	'$outdir/include/ext2fs/ext2_types.h',
 }
 pkg.deps = {
+	'$outdir/config.h',
 	'$dir/headers',
 	'$outdir/internal/blkid/blkid_types.h',
 	'$outdir/internal/support/prof_err.h',

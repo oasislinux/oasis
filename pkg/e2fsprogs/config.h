@@ -215,11 +215,11 @@
 /* #undef PRI_MACROS_BROKEN */
 /* #undef PTHREAD_IN_USE_DETECTION_HARD */
 #define SIZEOF_INT 4
-#define SIZEOF_LONG 8
+/* probe SIZEOF_LONG */
 #define SIZEOF_LONG_LONG 8
 #define SIZEOF_OFF_T 8
 #define SIZEOF_SHORT 2
-#define SIZEOF_TIME_T 8
+/* probe SIZEOF_TIME_T */
 #ifndef SIZE_MAX
 /* # undef SIZE_MAX */
 #endif
