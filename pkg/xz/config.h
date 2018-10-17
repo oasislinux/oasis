@@ -107,7 +107,7 @@
 #define PACKAGE_URL "https://tukaani.org/xz/"
 #define PACKAGE_VERSION "5.2.4"
 /* #undef PTHREAD_CREATE_JOINABLE */
-#define SIZEOF_SIZE_T 8
+/* probe SIZEOF_SIZE_T */
 #define STDC_HEADERS 1
 /* #undef TUKLIB_CPUCORES_CPUSET */
 /* #undef TUKLIB_CPUCORES_PSTAT_GETDYNAMIC */
