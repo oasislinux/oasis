@@ -552,8 +552,6 @@
 /* #undef SANDBOX_DARWIN */
 /* #undef SANDBOX_NULL */
 /* #undef SANDBOX_PLEDGE */
-/* #undef SANDBOX_RLIMIT */
-#define SANDBOX_SECCOMP_FILTER 1
 /* #undef SANDBOX_SKIP_RLIMIT_FSIZE */
 /* #undef SANDBOX_SKIP_RLIMIT_NOFILE */
 /* #undef SANDBOX_SOLARIS */

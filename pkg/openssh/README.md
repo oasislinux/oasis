@@ -6,7 +6,7 @@ Generated with
 	./configure \
 		--disable-wtmp \
 		--without-pie \
-		CPPFLAGS='-I/src/oasis/out/pkg/zlib' \
+		CPPFLAGS='-I/src/oasis/out/pkg/zlib/include' \
 		LDFLAGS='-L/src/oasis/out/pkg/libressl -L/src/oasis/out/pkg/openbsd -L/src/oasis/out/pkg/zlib' \
 		LIBS='-lbsd -lcrypto'
 
