@@ -42,6 +42,9 @@ rule muse
 rule probe
   command = sh ./scripts/probe.sh $var $cc $cflags $ldflags -o /dev/null -x c $in >$out.tmp && mv $out.tmp $out
 
+rule probesize
+  command = sh ./scripts/probe-size.sh $var $cc $cflags -c -o /dev/null -x c $in >$out.tmp && mv $out.tmp $out
+
 # misc tools
 rule touch
   command = touch $out
