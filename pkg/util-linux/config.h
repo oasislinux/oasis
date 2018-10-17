@@ -51,8 +51,6 @@
 #define HAVE_INOTIFY_INIT 1
 #define HAVE_INOTIFY_INIT1 1
 #define HAVE_INTTYPES_H 1
-#define HAVE_IOPERM 1
-#define HAVE_IOPL 1
 /* #undef HAVE_ISNAN */
 #define HAVE_JRAND48 1
 /* #undef HAVE_LANGINFO_ALTMON */
