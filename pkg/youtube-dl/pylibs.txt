@@ -610,6 +610,7 @@ youtube_dl/extractor/teamcoco.py
 youtube_dl/extractor/techtalks.py
 youtube_dl/extractor/ted.py
 youtube_dl/extractor/tele13.py
+youtube_dl/extractor/tele5.py
 youtube_dl/extractor/telebruxelles.py
 youtube_dl/extractor/telecinco.py
 youtube_dl/extractor/telegraaf.py
