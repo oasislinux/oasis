@@ -167,7 +167,7 @@ exe('netsurf', {sources, paths[[
 		wayland/(libwayland-client.a.d libwayland-cursor.a)
 		zlib/libz.a
 
-		wayland-protocols/xdg-shell-unstable-v5-protocol.c.o
+		wayland-protocols/xdg-shell-protocol.c.o
 	)
 ]]})
 file('bin/netsurf', '755', '$outdir/netsurf')

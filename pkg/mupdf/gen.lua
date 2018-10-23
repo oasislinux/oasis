@@ -92,7 +92,7 @@ exe('bin/mupdf', [[
 		jbig2dec/libjbig2dec.a
 		libxkbcommon/libxkbcommon.a
 		pixman/libpixman.a
-		wayland-protocols/xdg-shell-unstable-v5-protocol.c.o
+		wayland-protocols/xdg-shell-protocol.c.o
 		wayland/libwayland-client.a.d
 		wayland/libwayland-cursor.a
 	)

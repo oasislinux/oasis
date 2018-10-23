@@ -83,16 +83,14 @@ lib('libswc.a', [[
 		view.c
 		wayland_buffer.c
 		window.c
-		xdg_popup.c
 		xdg_shell.c
-		xdg_surface.c
 	)
 	launch/protocol.c.o
 	swc-protocol.c.o
 	$builddir/(
 		pkg/libinput/libinput.a.d
 		pkg/libxkbcommon/libxkbcommon.a
-		pkg/wayland-protocols/xdg-shell-unstable-v5-protocol.c.o
+		pkg/wayland-protocols/xdg-shell-protocol.c.o
 		pkg/wayland/libwayland-server.a.d
 		pkg/wld/libwld.a.d
 	)

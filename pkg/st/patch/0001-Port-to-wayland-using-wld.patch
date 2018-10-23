@@ -1,14 +1,14 @@
-From a527c58b00e37544a7937996de57570721b1c823 Mon Sep 17 00:00:00 2001
+From 7eee2181082fb4ff4a8026be959931f56bbad11c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 30 Oct 2016 23:54:56 -0700
 Subject: [PATCH] Port to wayland using wld
 
 ---
  Makefile     |   12 +-
- config.def.h |  500 +++++++------
+ config.def.h |  500 ++++++-----
  config.mk    |   12 +-
- st.c         | 2346 +++++++++++++++++++++++++++++-----------------------------
- 4 files changed, 1447 insertions(+), 1423 deletions(-)
+ st.c         | 2361 +++++++++++++++++++++++++-------------------------
+ 4 files changed, 1459 insertions(+), 1426 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index fb026c4..053d3e0 100644
@@ -645,7 +645,7 @@ index c84c5ee..7da06f1 100644
  # flags
  CPPFLAGS = -DVERSION=\"${VERSION}\" -D_XOPEN_SOURCE=600
 diff --git a/st.c b/st.c
-index fbcd9e0..d3bcfd8 100644
+index fbcd9e0..4feb1f9 100644
 --- a/st.c
 +++ b/st.c
 @@ -3,6 +3,8 @@
@@ -685,7 +685,7 @@ index fbcd9e0..d3bcfd8 100644
  #include <wchar.h>
  
  #include "arg.h"
-+#include "xdg-shell-unstable-v5-client-protocol.h"
++#include "xdg-shell-client-protocol.h"
  
  char *argv0;
  
@@ -760,7 +760,7 @@ index fbcd9e0..d3bcfd8 100644
  	TCursor c;    /* cursor */
  	int top;      /* top    scroll limit */
  	int bot;      /* bottom scroll limit */
-@@ -255,29 +256,53 @@ typedef struct {
+@@ -255,29 +256,54 @@ typedef struct {
  	int *tabs;
  } Term;
  
@@ -799,8 +799,9 @@ index fbcd9e0..d3bcfd8 100644
 +	struct wl_data_offer *seloffer;
 +	struct wl_surface *surface;
 +	struct wl_buffer *buffer;
-+	struct xdg_shell *shell;
++	struct xdg_wm_base *wm;
 +	struct xdg_surface *xdgsurface;
++	struct xdg_toplevel *toplevel;
 +	XKB xkb;
 +	bool configured;
 +	int px, py; /* pointer x and y */
@@ -830,7 +831,7 @@ index fbcd9e0..d3bcfd8 100644
  
  typedef struct {
  	uint b;
-@@ -286,7 +311,14 @@ typedef struct {
+@@ -286,7 +312,14 @@ typedef struct {
  } MouseShortcut;
  
  typedef struct {
@@ -846,7 +847,7 @@ index fbcd9e0..d3bcfd8 100644
  	uint mask;
  	char *s;
  	/* three valued logic variables: 0 indifferent, 1 on, -1 off */
-@@ -310,11 +342,10 @@ typedef struct {
+@@ -310,11 +343,10 @@ typedef struct {
  		int x, y;
  	} nb, ne, ob, oe;
  
@@ -861,7 +862,7 @@ index fbcd9e0..d3bcfd8 100644
  } Selection;
  
  typedef union {
-@@ -326,19 +357,25 @@ typedef union {
+@@ -326,19 +358,25 @@ typedef union {
  
  typedef struct {
  	uint mod;
@@ -893,7 +894,7 @@ index fbcd9e0..d3bcfd8 100644
  static void printsel(const Arg *);
  static void printscreen(const Arg *) ;
  static void iso14755(const Arg *);
-@@ -358,16 +395,15 @@ typedef struct {
+@@ -358,16 +396,15 @@ typedef struct {
  	int badweight;
  	short lbearing;
  	short rbearing;
@@ -912,7 +913,7 @@ index fbcd9e0..d3bcfd8 100644
  } DC;
  
  static void die(const char *, ...);
-@@ -378,6 +414,7 @@ static void execsh(void);
+@@ -378,6 +415,7 @@ static void execsh(void);
  static void stty(void);
  static void sigchld(int);
  static void run(void);
@@ -920,7 +921,7 @@ index fbcd9e0..d3bcfd8 100644
  
  static void csidump(void);
  static void csihandle(void);
-@@ -433,56 +470,79 @@ static void ttysend(char *, size_t);
+@@ -433,56 +471,80 @@ static void ttysend(char *, size_t);
  static void ttywrite(const char *, size_t);
  static void tstrsequence(uchar);
  
@@ -1007,10 +1008,11 @@ index fbcd9e0..d3bcfd8 100644
 +		uint32_t, uint32_t);
 +static void ptraxis(void *, struct wl_pointer *, uint32_t, uint32_t,
 +		wl_fixed_t);
-+static void xdgshellping(void *, struct xdg_shell *, uint32_t);
-+static void xdgsurfconfigure(void *, struct xdg_surface *,
-+		int32_t, int32_t, struct wl_array *, uint32_t);
-+static void xdgsurfclose(void *, struct xdg_surface *);
++static void wmping(void *, struct xdg_wm_base *, uint32_t);
++static void xdgsurfconfigure(void *, struct xdg_surface *, uint32_t);
++static void toplevelconfigure(void *, struct xdg_toplevel *,
++		int32_t, int32_t, struct wl_array *);
++static void toplevelclose(void *, struct xdg_toplevel *);
 +static void datadevoffer(void *, struct wl_data_device *,
 +		struct wl_data_offer *);
 +static void datadeventer(void *, struct wl_data_device *, uint32_t,
@@ -1041,7 +1043,7 @@ index fbcd9e0..d3bcfd8 100644
  
  static size_t utf8decode(char *, Rune *, size_t);
  static Rune utf8decodebyte(char, size_t *);
-@@ -498,41 +558,36 @@ static char *xstrdup(char *);
+@@ -498,41 +560,37 @@ static char *xstrdup(char *);
  
  static void usage(void);
  
@@ -1077,9 +1079,10 @@ index fbcd9e0..d3bcfd8 100644
 +	{ kbdkeymap, kbdenter, kbdleave, kbdkey, kbdmodifiers, kbdrepeatinfo };
 +static struct wl_pointer_listener ptrlistener =
 +	{ ptrenter, ptrleave, ptrmotion, ptrbutton, ptraxis };
-+static struct xdg_shell_listener xdgshelllistener = { xdgshellping };
-+static struct xdg_surface_listener xdgsurflistener =
-+	{ xdgsurfconfigure, xdgsurfclose };
++static struct xdg_wm_base_listener wmlistener = { wmping };
++static struct xdg_surface_listener xdgsurflistener = { xdgsurfconfigure };
++static struct xdg_toplevel_listener toplevellistener =
++	{ toplevelconfigure, toplevelclose };
 +static struct wl_data_device_listener datadevlistener =
 +	{ datadevoffer, datadeventer, datadevleave, datadevmotion, datadevdrop,
 +	  datadevselection };
@@ -1104,7 +1107,7 @@ index fbcd9e0..d3bcfd8 100644
  static int iofd = 1;
  static char **opt_cmd  = NULL;
  static char *opt_class = NULL;
-@@ -543,6 +598,7 @@ static char *opt_line  = NULL;
+@@ -543,6 +601,7 @@ static char *opt_line  = NULL;
  static char *opt_name  = NULL;
  static char *opt_title = NULL;
  static int oldbutton   = 3; /* button event on startup: 3 = release */
@@ -1112,7 +1115,7 @@ index fbcd9e0..d3bcfd8 100644
  
  static char *usedfont = NULL;
  static double usedfontsize = 0;
-@@ -562,7 +618,7 @@ enum {
+@@ -562,7 +621,7 @@ enum {
  };
  
  typedef struct {
@@ -1121,7 +1124,7 @@ index fbcd9e0..d3bcfd8 100644
  	int flags;
  	Rune unicodep;
  } Fontcache;
-@@ -707,23 +763,20 @@ utf8validate(Rune *u, size_t i)
+@@ -707,23 +766,20 @@ utf8validate(Rune *u, size_t i)
  void
  selinit(void)
  {
@@ -1149,7 +1152,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	return LIMIT(x, 0, term.col-1);
  }
-@@ -732,7 +785,7 @@ int
+@@ -732,7 +788,7 @@ int
  y2row(int y)
  {
  	y -= borderpx;
@@ -1158,7 +1161,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	return LIMIT(y, 0, term.row-1);
  }
-@@ -868,15 +921,15 @@ selsnap(int *x, int *y, int direction)
+@@ -868,15 +924,15 @@ selsnap(int *x, int *y, int direction)
  }
  
  void
@@ -1178,7 +1181,7 @@ index fbcd9e0..d3bcfd8 100644
  	selnormalize();
  
  	sel.type = SEL_REGULAR;
-@@ -889,59 +942,20 @@ getbuttoninfo(XEvent *e)
+@@ -889,59 +945,20 @@ getbuttoninfo(XEvent *e)
  }
  
  void
@@ -1244,7 +1247,7 @@ index fbcd9e0..d3bcfd8 100644
  	} else if (x < 223 && y < 223) {
  		len = snprintf(buf, sizeof(buf), "\033[M%c%c%c",
  				32+button, 32+x+1, 32+y+1);
-@@ -953,53 +967,59 @@ mousereport(XEvent *e)
+@@ -953,53 +970,59 @@ mousereport(XEvent *e)
  }
  
  void
@@ -1342,7 +1345,7 @@ index fbcd9e0..d3bcfd8 100644
  }
  
  char *
-@@ -1057,148 +1077,67 @@ getsel(void)
+@@ -1057,148 +1080,67 @@ getsel(void)
  }
  
  void
@@ -1535,7 +1538,7 @@ index fbcd9e0..d3bcfd8 100644
  {
  	if (sel.ob.x == -1)
  		return;
-@@ -1208,117 +1147,19 @@ selclear(XEvent *e)
+@@ -1208,117 +1150,19 @@ selclear(XEvent *e)
  }
  
  void
@@ -1661,7 +1664,7 @@ index fbcd9e0..d3bcfd8 100644
  }
  
  void
-@@ -1337,7 +1178,6 @@ execsh(void)
+@@ -1337,7 +1181,6 @@ execsh(void)
  {
  	char **args, *sh, *prog;
  	const struct passwd *pw;
@@ -1669,7 +1672,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	errno = 0;
  	if ((pw = getpwuid(getuid())) == NULL) {
-@@ -1358,8 +1198,6 @@ execsh(void)
+@@ -1358,8 +1201,6 @@ execsh(void)
  		prog = sh;
  	args = (opt_cmd) ? opt_cmd : (char *[]) {prog, NULL};
  
@@ -1678,7 +1681,7 @@ index fbcd9e0..d3bcfd8 100644
  	unsetenv("COLUMNS");
  	unsetenv("LINES");
  	unsetenv("TERMCAP");
-@@ -1368,7 +1206,6 @@ execsh(void)
+@@ -1368,7 +1209,6 @@ execsh(void)
  	setenv("SHELL", sh, 1);
  	setenv("HOME", pw->pw_dir, 1);
  	setenv("TERM", termname, 1);
@@ -1686,7 +1689,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	signal(SIGCHLD, SIG_DFL);
  	signal(SIGHUP, SIG_DFL);
-@@ -1513,6 +1350,7 @@ ttyread(void)
+@@ -1513,6 +1353,7 @@ ttyread(void)
  	if (buflen > 0)
  		memmove(buf, ptr, buflen);
  
@@ -1694,7 +1697,7 @@ index fbcd9e0..d3bcfd8 100644
  	return ret;
  }
  
-@@ -1606,8 +1444,8 @@ ttyresize(void)
+@@ -1606,8 +1447,8 @@ ttyresize(void)
  
  	w.ws_row = term.row;
  	w.ws_col = term.col;
@@ -1705,7 +1708,7 @@ index fbcd9e0..d3bcfd8 100644
  	if (ioctl(cmdfd, TIOCSWINSZ, &w) < 0)
  		fprintf(stderr, "Couldn't set window size: %s\n", strerror(errno));
  }
-@@ -1637,6 +1475,8 @@ tsetdirt(int top, int bot)
+@@ -1637,6 +1478,8 @@ tsetdirt(int top, int bot)
  
  	for (i = top; i <= bot; i++)
  		term.dirty[i] = 1;
@@ -1714,7 +1717,7 @@ index fbcd9e0..d3bcfd8 100644
  }
  
  void
-@@ -1771,7 +1611,7 @@ selscroll(int orig, int n)
+@@ -1771,7 +1614,7 @@ selscroll(int orig, int n)
  
  	if (BETWEEN(sel.ob.y, orig, term.bot) || BETWEEN(sel.oe.y, orig, term.bot)) {
  		if ((sel.ob.y += n) > term.bot || (sel.oe.y += n) < term.top) {
@@ -1723,7 +1726,7 @@ index fbcd9e0..d3bcfd8 100644
  			return;
  		}
  		if (sel.type == SEL_RECTANGULAR) {
-@@ -1917,7 +1757,7 @@ tclearregion(int x1, int y1, int x2, int y2)
+@@ -1917,7 +1760,7 @@ tclearregion(int x1, int y1, int x2, int y2)
  		for (x = x1; x <= x2; x++) {
  			gp = &term.line[y][x];
  			if (selected(x, y))
@@ -1732,7 +1735,7 @@ index fbcd9e0..d3bcfd8 100644
  			gp->fg = term.c.attr.fg;
  			gp->bg = term.c.attr.bg;
  			gp->mode = 0;
-@@ -2180,22 +2020,18 @@ tsetmode(int priv, int set, int *args, int narg)
+@@ -2180,22 +2023,18 @@ tsetmode(int priv, int set, int *args, int narg)
  				MODBIT(term.mode, !set, MODE_HIDE);
  				break;
  			case 9:    /* X10 mouse compatibility mode */
@@ -1755,7 +1758,7 @@ index fbcd9e0..d3bcfd8 100644
  				MODBIT(term.mode, 0, MODE_MOUSE);
  				MODBIT(term.mode, set, MODE_MOUSEMANY);
  				break;
-@@ -2368,7 +2204,7 @@ csihandle(void)
+@@ -2368,7 +2207,7 @@ csihandle(void)
  		tputtab(csiescseq.arg[0]);
  		break;
  	case 'J': /* ED -- Clear screen */
@@ -1764,7 +1767,7 @@ index fbcd9e0..d3bcfd8 100644
  		switch (csiescseq.arg[0]) {
  		case 0: /* below */
  			tclearregion(term.c.x, term.c.y, term.col-1, term.c.y);
-@@ -2475,7 +2311,7 @@ csihandle(void)
+@@ -2475,7 +2314,7 @@ csihandle(void)
  			if (!BETWEEN(csiescseq.arg[0], 0, 6)) {
  				goto unknown;
  			}
@@ -1773,7 +1776,7 @@ index fbcd9e0..d3bcfd8 100644
  			break;
  		default:
  			goto unknown;
-@@ -2531,7 +2367,7 @@ strhandle(void)
+@@ -2531,7 +2370,7 @@ strhandle(void)
  		case 1:
  		case 2:
  			if (narg > 1)
@@ -1782,7 +1785,7 @@ index fbcd9e0..d3bcfd8 100644
  			return;
  		case 4: /* color set */
  			if (narg < 3)
-@@ -2540,7 +2376,7 @@ strhandle(void)
+@@ -2540,7 +2379,7 @@ strhandle(void)
  			/* FALLTHROUGH */
  		case 104: /* color reset, here p = NULL */
  			j = (narg > 1) ? atoi(strescseq.args[1]) : -1;
@@ -1791,7 +1794,7 @@ index fbcd9e0..d3bcfd8 100644
  				fprintf(stderr, "erresc: invalid color %s\n", p);
  			} else {
  				/*
-@@ -2553,7 +2389,7 @@ strhandle(void)
+@@ -2553,7 +2392,7 @@ strhandle(void)
  		}
  		break;
  	case 'k': /* old title set compatibility */
@@ -1800,7 +1803,7 @@ index fbcd9e0..d3bcfd8 100644
  		return;
  	case 'P': /* DCS -- Device Control String */
  		term.mode |= ESC_DCS;
-@@ -2642,13 +2478,11 @@ tprinter(char *s, size_t len)
+@@ -2642,13 +2481,11 @@ tprinter(char *s, size_t len)
  void
  iso14755(const Arg *arg)
  {
@@ -1815,7 +1818,7 @@ index fbcd9e0..d3bcfd8 100644
  		return;
  
  	us = fgets(codepoint, sizeof(codepoint), p);
-@@ -2747,6 +2581,7 @@ techo(Rune u)
+@@ -2747,6 +2584,7 @@ techo(Rune u)
  		}
  	}
  	tputc(u);
@@ -1823,7 +1826,7 @@ index fbcd9e0..d3bcfd8 100644
  }
  
  void
-@@ -2833,10 +2668,12 @@ tcontrolcode(uchar ascii)
+@@ -2833,10 +2671,12 @@ tcontrolcode(uchar ascii)
  			/* backwards compatibility to xterm */
  			strhandle();
  		} else {
@@ -1840,7 +1843,7 @@ index fbcd9e0..d3bcfd8 100644
  		}
  		break;
  	case '\033': /* ESC */
-@@ -2968,8 +2805,8 @@ eschandle(uchar ascii)
+@@ -2968,8 +2808,8 @@ eschandle(uchar ascii)
  		break;
  	case 'c': /* RIS -- Reset to inital state */
  		treset();
@@ -1851,7 +1854,7 @@ index fbcd9e0..d3bcfd8 100644
  		break;
  	case '=': /* DECPAM -- Application keypad */
  		term.mode |= MODE_APPKEYPAD;
-@@ -3026,7 +2863,7 @@ tputc(Rune u)
+@@ -3026,7 +2866,7 @@ tputc(Rune u)
  	 */
  	if (term.esc & ESC_STR) {
  		if (u == '\a' || u == 030 || u == 032 || u == 033 ||
@@ -1860,7 +1863,7 @@ index fbcd9e0..d3bcfd8 100644
  			term.esc &= ~(ESC_START|ESC_STR|ESC_DCS);
  			if (IS_SET(MODE_SIXEL)) {
  				/* TODO: render sixel */;
-@@ -3109,7 +2946,7 @@ check_control_code:
+@@ -3109,7 +2949,7 @@ check_control_code:
  		return;
  	}
  	if (sel.ob.x != -1 && BETWEEN(term.c.y, sel.ob.y, sel.oe.y))
@@ -1869,7 +1872,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	gp = &term.line[term.c.y][term.c.x];
  	if (IS_SET(MODE_WRAP) && (term.c.state & CURSOR_WRAPNEXT)) {
-@@ -3176,9 +3013,6 @@ tresize(int col, int row)
+@@ -3176,9 +3016,6 @@ tresize(int col, int row)
  		free(term.alt[i]);
  	}
  
@@ -1879,7 +1882,7 @@ index fbcd9e0..d3bcfd8 100644
  	/* resize to new height */
  	term.line = xrealloc(term.line, row * sizeof(Line));
  	term.alt  = xrealloc(term.alt,  row * sizeof(Line));
-@@ -3228,155 +3062,107 @@ tresize(int col, int row)
+@@ -3228,155 +3065,107 @@ tresize(int col, int row)
  }
  
  void
@@ -2078,7 +2081,7 @@ index fbcd9e0..d3bcfd8 100644
  	int wantattr, haveattr;
  
  	/*
-@@ -3389,7 +3175,7 @@ xloadfont(Font *f, FcPattern *pattern)
+@@ -3389,7 +3178,7 @@ xloadfont(Font *f, FcPattern *pattern)
  		return 1;
  
  	FcConfigSubstitute(NULL, configured, FcMatchPattern);
@@ -2087,7 +2090,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	match = FcFontMatch(NULL, configured, &result);
  	if (!match) {
-@@ -3397,37 +3183,36 @@ xloadfont(Font *f, FcPattern *pattern)
+@@ -3397,37 +3186,36 @@ xloadfont(Font *f, FcPattern *pattern)
  		return 1;
  	}
  
@@ -2136,7 +2139,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	f->set = NULL;
  	f->pattern = configured;
-@@ -3435,23 +3220,24 @@ xloadfont(Font *f, FcPattern *pattern)
+@@ -3435,23 +3223,24 @@ xloadfont(Font *f, FcPattern *pattern)
  	f->ascent = f->match->ascent;
  	f->descent = f->match->descent;
  	f->lbearing = 0;
@@ -2165,7 +2168,7 @@ index fbcd9e0..d3bcfd8 100644
  	} else {
  		pattern = FcNameParse((FcChar8 *)fontstr);
  	}
-@@ -3482,11 +3268,14 @@ xloadfonts(char *fontstr, double fontsize)
+@@ -3482,11 +3271,14 @@ xloadfonts(char *fontstr, double fontsize)
  		defaultfontsize = usedfontsize;
  	}
  
@@ -2182,7 +2185,7 @@ index fbcd9e0..d3bcfd8 100644
  		                   FC_PIXEL_SIZE, 0, &fontval);
  		usedfontsize = fontval;
  		if (fontsize == 0)
-@@ -3494,279 +3283,331 @@ xloadfonts(char *fontstr, double fontsize)
+@@ -3494,282 +3286,338 @@ xloadfonts(char *fontstr, double fontsize)
  	}
  
  	/* Setting character width and height. */
@@ -2314,6 +2317,8 @@ index fbcd9e0..d3bcfd8 100644
 +		die("Display has no seat\n");
 +	if (!wl.datadevmanager)
 +		die("Display has no data device manager\n");
++	if (!wl.wm)
++		die("Display has no window manager\n");
 +
 +	wl.keyboard = wl_seat_get_keyboard(wl.seat);
 +	wl_keyboard_add_listener(wl.keyboard, &kbdlistener, NULL);
@@ -2423,9 +2428,11 @@ index fbcd9e0..d3bcfd8 100644
 -	xw.netwmpid = XInternAtom(xw.dpy, "_NET_WM_PID", False);
 -	XChangeProperty(xw.dpy, xw.win, xw.netwmpid, XA_CARDINAL, 32,
 -			PropModeReplace, (uchar *)&thispid, 1);
-+	wl.xdgsurface = xdg_shell_get_xdg_surface(wl.shell, wl.surface);
++	wl.xdgsurface = xdg_wm_base_get_xdg_surface(wl.wm, wl.surface);
 +	xdg_surface_add_listener(wl.xdgsurface, &xdgsurflistener, NULL);
-+	xdg_surface_set_app_id(wl.xdgsurface, opt_class ? opt_class : termname);
++	wl.toplevel = xdg_surface_get_toplevel(wl.xdgsurface);
++	xdg_toplevel_add_listener(wl.toplevel, &toplevellistener, NULL);
++	xdg_toplevel_set_app_id(wl.toplevel, opt_class ? opt_class : termname);
  
 -	xresettitle();
 -	XMapWindow(xw.dpy, xw.win);
@@ -2603,6 +2610,9 @@ index fbcd9e0..d3bcfd8 100644
 +	}
  
 -			FcCharSetAddChar(fccharset, rune);
+-			FcPatternAddCharSet(fcpattern, FC_CHARSET,
+-					fccharset);
+-			FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
 +	if (base.mode & ATTR_BLINK && term.mode & MODE_BLINK)
 +		fg = bg;
 +
@@ -2697,10 +2707,13 @@ index fbcd9e0..d3bcfd8 100644
 +			fccharset = FcCharSetCreate();
 +
 +			FcCharSetAddChar(fccharset, unicodep);
- 			FcPatternAddCharSet(fcpattern, FC_CHARSET,
- 					fccharset);
- 			FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
-@@ -3783,186 +3624,58 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
++			FcPatternAddCharSet(fcpattern, FC_CHARSET,
++					fccharset);
++			FcPatternAddBool(fcpattern, FC_SCALABLE, 1);
+ 
+ 			FcConfigSubstitute(0, fcpattern,
+ 					FcMatchPattern);
+@@ -3783,186 +3631,58 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
  			 */
  			if (frclen >= LEN(frc)) {
  				frclen = LEN(frc) - 1;
@@ -2746,10 +2759,7 @@ index fbcd9e0..d3bcfd8 100644
 -	Color *fg, *bg, *temp, revfg, revbg, truefg, truebg;
 -	XRenderColor colfg, colbg;
 -	XRectangle r;
-+		wld_draw_text(wld.renderer, frc[i].font, fg,
-+				xp, winy + frc[i].font->ascent,
-+				u8c, u8cblen, NULL);
- 
+-
 -	/* Fallback on color display for attributes not supported by the font */
 -	if (base.mode & ATTR_ITALIC && base.mode & ATTR_BOLD) {
 -		if (dc.ibfont.badslant || dc.ibfont.badweight)
@@ -2757,9 +2767,8 @@ index fbcd9e0..d3bcfd8 100644
 -	} else if ((base.mode & ATTR_ITALIC && dc.ifont.badslant) ||
 -	    (base.mode & ATTR_BOLD && dc.bfont.badweight)) {
 -		base.fg = defaultattr;
-+		xp += wl.cw * wcwidth(unicodep);
- 	}
- 
+-	}
+-
 -	if (IS_TRUECOL(base.fg)) {
 -		colfg.alpha = 0xffff;
 -		colfg.red = TRUERED(base.fg);
@@ -2831,7 +2840,10 @@ index fbcd9e0..d3bcfd8 100644
 -
 -	if (base.mode & ATTR_INVISIBLE)
 -		fg = bg;
--
++		wld_draw_text(wld.renderer, frc[i].font, fg,
++				xp, winy + frc[i].font->ascent,
++				u8c, u8cblen, NULL);
+ 
 -	/* Intelligent cleaning up of the borders. */
 -	if (x == 0) {
 -		xclear(0, (y == 0)? 0 : winy, borderpx,
@@ -2840,12 +2852,13 @@ index fbcd9e0..d3bcfd8 100644
 -	if (x + charlen >= term.col) {
 -		xclear(winx + width, (y == 0)? 0 : winy, xw.w,
 -			((y >= term.row-1)? xw.h : (winy + xw.ch)));
--	}
++		xp += wl.cw * wcwidth(unicodep);
+ 	}
 -	if (y == 0)
 -		xclear(winx, 0, winx + width, borderpx);
 -	if (y == term.row-1)
 -		xclear(winx, winy + xw.ch, winx + width, xw.h);
--
+ 
 -	/* Clean up the region we want to draw to. */
 -	XftDrawRect(xw.draw, bg, winx, winy, width, xw.ch);
 -
@@ -2904,7 +2917,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	LIMIT(oldx, 0, term.col-1);
  	LIMIT(oldy, 0, term.row-1);
-@@ -3979,7 +3692,11 @@ xdrawcursor(void)
+@@ -3979,7 +3699,11 @@ xdrawcursor(void)
  	og = term.line[oldy][oldx];
  	if (ena_sel && selected(oldx, oldy))
  		og.mode ^= ATTR_REVERSE;
@@ -2917,7 +2930,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	g.u = term.line[term.c.y][term.c.x].u;
  
-@@ -4010,198 +3727,152 @@ xdrawcursor(void)
+@@ -4010,198 +3734,152 @@ xdrawcursor(void)
  		return;
  
  	/* draw the new one */
@@ -3009,7 +3022,7 @@ index fbcd9e0..d3bcfd8 100644
 -	XSetWMName(xw.dpy, xw.win, &prop);
 -	XSetTextProperty(xw.dpy, xw.win, &prop, xw.netwmname);
 -	XFree(prop.value);
-+	xdg_surface_set_title(wl.xdgsurface, title);
++	xdg_toplevel_set_title(wl.toplevel, title);
  }
  
  void
@@ -3133,19 +3146,19 @@ index fbcd9e0..d3bcfd8 100644
 -	XVisibilityEvent *e = &ev->xvisibility;
 -
 -	MODBIT(xw.state, e->state != VisibilityFullyObscured, WIN_VISIBLE);
+-}
+-
+-void
+-unmap(XEvent *ev)
+-{
+-	xw.state &= ~WIN_VISIBLE;
 +	wldrawcursor();
  }
  
  void
--unmap(XEvent *ev)
+-xsetpointermotion(int set)
 +wlseturgency(int add)
  {
--	xw.state &= ~WIN_VISIBLE;
--}
--
--void
--xsetpointermotion(int set)
--{
 -	MODBIT(xw.attrs.event_mask, set, PointerMotionMask);
 -	XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
 -}
@@ -3191,7 +3204,7 @@ index fbcd9e0..d3bcfd8 100644
  }
  
  void
-@@ -4211,7 +3882,7 @@ numlock(const Arg *dummy)
+@@ -4211,7 +3889,7 @@ numlock(const Arg *dummy)
  }
  
  char*
@@ -3200,7 +3213,7 @@ index fbcd9e0..d3bcfd8 100644
  {
  	Key *kp;
  	int i;
-@@ -4251,38 +3922,179 @@ kmap(KeySym k, uint state)
+@@ -4251,38 +3929,176 @@ kmap(KeySym k, uint state)
  }
  
  void
@@ -3228,12 +3241,9 @@ index fbcd9e0..d3bcfd8 100644
 +	if (strcmp(interface, "wl_compositor") == 0) {
 +		wl.cmp = wl_registry_bind(registry, name,
 +				&wl_compositor_interface, 3);
-+	} else if (strcmp(interface, "xdg_shell") == 0) {
-+		wl.shell = wl_registry_bind(registry, name,
-+				&xdg_shell_interface, 1);
-+		xdg_shell_add_listener(wl.shell, &xdgshelllistener, NULL);
-+		xdg_shell_use_unstable_version(wl.shell,
-+				XDG_SHELL_VERSION_CURRENT);
++	} else if (strcmp(interface, "xdg_wm_base") == 0) {
++		wl.wm = wl_registry_bind(registry, name, &xdg_wm_base_interface, 1);
++		xdg_wm_base_add_listener(wl.wm, &wmlistener, NULL);
 +	} else if (strcmp(interface, "wl_shm") == 0) {
 +		wl.shm = wl_registry_bind(registry, name, &wl_shm_interface, 1);
 +	} else if (strcmp(interface, "wl_seat") == 0) {
@@ -3255,10 +3265,7 @@ index fbcd9e0..d3bcfd8 100644
 +
 +void
 +surfenter(void *data, struct wl_surface *surface, struct wl_output *output)
- {
--	XKeyEvent *e = &ev->xkey;
--	KeySym ksym;
--	char buf[32], *customkey;
++{
 +	wl.vis++;
 +	if (!(wl.state & WIN_VISIBLE))
 +		wl.state |= WIN_VISIBLE;
@@ -3342,7 +3349,10 @@ index fbcd9e0..d3bcfd8 100644
 +void
 +kbdkey(void *data, struct wl_keyboard *keyboard, uint32_t serial, uint32_t time,
 +       uint32_t key, uint32_t state)
-+{
+ {
+-	XKeyEvent *e = &ev->xkey;
+-	KeySym ksym;
+-	char buf[32], *customkey;
 +	xkb_keysym_t ksym;
 +	char buf[32], *str;
  	int len;
@@ -3391,7 +3401,7 @@ index fbcd9e0..d3bcfd8 100644
  		if (IS_SET(MODE_8BIT)) {
  			if (*buf < 0177) {
  				c = *buf | 0x80;
-@@ -4294,101 +4106,327 @@ kpress(XEvent *ev)
+@@ -4294,101 +4110,332 @@ kpress(XEvent *ev)
  			len = 2;
  		}
  	}
@@ -3416,8 +3426,8 @@ index fbcd9e0..d3bcfd8 100644
 +	repeat.started = false;
 +	clock_gettime(CLOCK_MONOTONIC, &repeat.last);
 +	ttysend(str, len);
-+}
-+
+ }
+ 
 +void
 +kbdmodifiers(void *data, struct wl_keyboard *keyboard, uint32_t serial,
 +             uint32_t dep, uint32_t lat, uint32_t lck, uint32_t group)
@@ -3437,20 +3447,12 @@ index fbcd9e0..d3bcfd8 100644
 +		wl.xkb.mods |= MOD_MASK_SHIFT;
 +	if (mod_mask & (1 << wl.xkb.logo))
 +		wl.xkb.mods |= MOD_MASK_LOGO;
- }
- 
-+void
-+kbdrepeatinfo(void *data, struct wl_keyboard *keyboard, int32_t rate,
-+              int32_t delay)
-+{
-+	keyrepeatdelay = delay;
-+	keyrepeatinterval = 1000 / rate;
 +}
  
  void
 -cmessage(XEvent *e)
-+ptrenter(void *data, struct wl_pointer *pointer, uint32_t serial,
-+         struct wl_surface *surface, wl_fixed_t x, wl_fixed_t y)
++kbdrepeatinfo(void *data, struct wl_keyboard *keyboard, int32_t rate,
++              int32_t delay)
  {
 -	/*
 -	 * See xembed specs
@@ -3462,6 +3464,14 @@ index fbcd9e0..d3bcfd8 100644
 -			xseturgency(0);
 -		} else if (e->xclient.data.l[1] == XEMBED_FOCUS_OUT) {
 -			xw.state &= ~WIN_FOCUSED;
++	keyrepeatdelay = delay;
++	keyrepeatinterval = 1000 / rate;
++}
++
++void
++ptrenter(void *data, struct wl_pointer *pointer, uint32_t serial,
++         struct wl_surface *surface, wl_fixed_t x, wl_fixed_t y)
++{
 +	struct wl_cursor_image *img = cursor.cursor->images[0];
 +	struct wl_buffer *buffer;
 +
@@ -3608,18 +3618,23 @@ index fbcd9e0..d3bcfd8 100644
 -	tresize(col, row);
 -	xresize(col, row);
 +void
-+xdgshellping(void *data, struct xdg_shell *shell, uint32_t serial)
++wmping(void *data, struct xdg_wm_base *wm, uint32_t serial)
 +{
-+	xdg_shell_pong(shell, serial);
++	xdg_wm_base_pong(wm, serial);
  }
  
  void
 -resize(XEvent *e)
-+xdgsurfconfigure(void *data, struct xdg_surface *surf, int32_t w, int32_t h,
-+                 struct wl_array *states, uint32_t serial)
++xdgsurfconfigure(void *data, struct xdg_surface *surf, uint32_t serial)
  {
 -	if (e->xconfigure.width == xw.w && e->xconfigure.height == xw.h)
 +	xdg_surface_ack_configure(surf, serial);
++}
++
++void
++toplevelconfigure(void *data, struct xdg_toplevel *toplevel, int32_t w, int32_t h,
++                  struct wl_array *states)
++{
 +	if (w == wl.w && h == wl.h)
  		return;
 +	cresize(w, h);
@@ -3632,7 +3647,7 @@ index fbcd9e0..d3bcfd8 100644
 -	cresize(e->xconfigure.width, e->xconfigure.height);
 -	ttyresize();
 +void
-+xdgsurfclose(void *data, struct xdg_surface *surf)
++toplevelclose(void *data, struct xdg_toplevel *toplevel)
 +{
 +	/* Send SIGHUP to shell */
 +	kill(pid, SIGHUP);
@@ -3773,7 +3788,7 @@ index fbcd9e0..d3bcfd8 100644
  		if (FD_ISSET(cmdfd, &rfd)) {
  			ttyread();
  			if (blinktimeout) {
-@@ -4398,60 +4436,54 @@ run(void)
+@@ -4398,60 +4445,54 @@ run(void)
  			}
  		}
  
@@ -3874,7 +3889,7 @@ index fbcd9e0..d3bcfd8 100644
  	}
  }
  
-@@ -4471,9 +4503,7 @@ usage(void)
+@@ -4471,9 +4512,7 @@ usage(void)
  int
  main(int argc, char *argv[])
  {
@@ -3885,7 +3900,7 @@ index fbcd9e0..d3bcfd8 100644
  
  	ARGBEGIN {
  	case 'a':
-@@ -4489,13 +4519,6 @@ main(int argc, char *argv[])
+@@ -4489,13 +4528,6 @@ main(int argc, char *argv[])
  	case 'f':
  		opt_font = EARGF(usage());
  		break;
@@ -3899,7 +3914,7 @@ index fbcd9e0..d3bcfd8 100644
  	case 'o':
  		opt_io = EARGF(usage());
  		break;
-@@ -4527,9 +4550,8 @@ run:
+@@ -4527,9 +4559,8 @@ run:
  			opt_title = basename(xstrdup(argv[0]));
  	}
  	setlocale(LC_CTYPE, "");
@@ -3911,5 +3926,5 @@ index fbcd9e0..d3bcfd8 100644
  	run();
  
 -- 
-2.11.0
+2.19.1
 

@@ -360,7 +360,7 @@ function yacc(name, gram)
 	})
 end
 
-function waylandproto(proto, client, server, code)
+function waylandproto(proto, client, server, code, args)
 	proto = '$srcdir/'..proto
 	code = '$outdir/'..code
 	if client then
@@ -371,8 +371,8 @@ function waylandproto(proto, client, server, code)
 	end
 	if code then
 		build('waylandproto', code, proto, {type='code'})
+		cc(code, {'pkg/wayland/headers'}, args)
 	end
-	cc(code, {'pkg/wayland/headers'})
 end
 
 function fetch(method)

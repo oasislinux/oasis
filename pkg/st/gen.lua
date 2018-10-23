@@ -22,7 +22,7 @@ exe('st', [[st.c $builddir/pkg/(
 	libxkbcommon/libxkbcommon.a
 	wayland/libwayland-client.a.d
 	wayland/libwayland-cursor.a.d
-	wayland-protocols/xdg-shell-unstable-v5-protocol.c.o
+	wayland-protocols/xdg-shell-protocol.c.o
 	wld/libwld.a.d
 )]])
 file('bin/st', '755', '$outdir/st')
