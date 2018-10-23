@@ -1,0 +1,347 @@
+From 296701ea2648b6e019e3b48765a188293e6fb6b1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 27 Aug 2018 13:06:38 -0700
+Subject: [PATCH] Reintroduce vo_wayland
+
+vo_wayland was removed during the wayland rewrite done in 0.28. However,
+it is still useful for systems that do not have OpenGL.
+
+The new wayland_common code makes vo_wayland much simpler, and
+eliminates many of the issues the previous vo_wayland had.
+---
+ video/out/vo.c         |   4 +
+ video/out/vo_wayland.c | 287 +++++++++++++++++++++++++++++++++++++++++
+ wscript_build.py       |   1 +
+ 3 files changed, 292 insertions(+)
+ create mode 100644 video/out/vo_wayland.c
+
+diff --git a/video/out/vo.c b/video/out/vo.c
+index 9ecfd76a1f..aeebcc2e02 100644
+--- a/video/out/vo.c
++++ b/video/out/vo.c
+@@ -60,6 +60,7 @@ extern const struct vo_driver video_out_drm;
+ extern const struct vo_driver video_out_direct3d;
+ extern const struct vo_driver video_out_sdl;
+ extern const struct vo_driver video_out_vaapi;
++extern const struct vo_driver video_out_wayland;
+ extern const struct vo_driver video_out_rpi;
+ extern const struct vo_driver video_out_tct;
+ 
+@@ -79,6 +80,9 @@ const struct vo_driver *const video_out_drivers[] =
+ #if HAVE_DIRECT3D
+     &video_out_direct3d,
+ #endif
++#if HAVE_WAYLAND
++    &video_out_wayland,
++#endif
+ #if HAVE_XV
+     &video_out_xv,
+ #endif
+diff --git a/video/out/vo_wayland.c b/video/out/vo_wayland.c
+new file mode 100644
+index 0000000000..7de7f97fb3
+--- /dev/null
++++ b/video/out/vo_wayland.c
+@@ -0,0 +1,287 @@
++/*
++ * This file is part of mpv video player.
++ *
++ * mpv is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU Lesser General Public
++ * License as published by the Free Software Foundation; either
++ * version 2.1 of the License, or (at your option) any later version.
++ *
++ * mpv is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with mpv.  If not, see <http://www.gnu.org/licenses/>.
++ */
++
++#include <fcntl.h>
++#include <sys/mman.h>
++#include <unistd.h>
++
++#include <libswscale/swscale.h>
++
++#include "sub/osd.h"
++#include "video/fmt-conversion.h"
++#include "video/mp_image.h"
++#include "video/sws_utils.h"
++#include "vo.h"
++#include "wayland_common.h"
++
++struct buffer {
++    struct vo *vo;
++    size_t size;
++    struct wl_shm_pool *pool;
++    struct wl_buffer *buffer;
++    struct mp_image mpi;
++    struct buffer *next;
++};
++
++struct priv {
++    struct mp_sws_context *sws;
++    struct buffer *free_buffers;
++    struct mp_rect src;
++    struct mp_rect dst;
++    struct mp_osd_res osd;
++};
++
++static void buffer_handle_release(void *data, struct wl_buffer *wl_buffer)
++{
++    struct buffer *buf = data;
++    struct vo *vo = buf->vo;
++    struct priv *p = vo->priv;
++
++    if (buf->mpi.w == vo->dwidth && buf->mpi.h == vo->dheight) {
++        buf->next = p->free_buffers;
++        p->free_buffers = buf;
++    } else {
++        talloc_free(buf);
++    }
++}
++
++static const struct wl_buffer_listener buffer_listener = {
++    buffer_handle_release,
++};
++
++static void buffer_destroy(void *p)
++{
++    struct buffer *buf = p;
++    wl_buffer_destroy(buf->buffer);
++    wl_shm_pool_destroy(buf->pool);
++    munmap(buf->mpi.planes[0], buf->size);
++}
++
++static struct buffer *buffer_create(struct vo *vo, int width, int height)
++{
++    struct priv *p = vo->priv;
++    struct vo_wayland_state *wl = vo->wl;
++    char template[] = "/tmp/mpv-XXXXXX";
++    int fd;
++    int stride;
++    size_t size;
++    uint8_t *data;
++    struct buffer *buf;
++
++    fd = mkostemp(template, O_CLOEXEC);
++    if (fd < 0)
++        goto error0;
++    unlink(template);
++    stride = MP_ALIGN_UP(width * 4, 16);
++    size = height * stride;
++    if (posix_fallocate(fd, 0, size) < 0)
++        goto error1;
++    data = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++    if (data == MAP_FAILED)
++        goto error1;
++    buf = talloc_zero(NULL, struct buffer);
++    if (!buf)
++        goto error2;
++    buf->vo = vo;
++    buf->size = size;
++    mp_image_set_params(&buf->mpi, &p->sws->dst);
++    buf->mpi.w = width;
++    buf->mpi.h = height;
++    buf->mpi.planes[0] = data;
++    buf->mpi.stride[0] = stride;
++    buf->pool = wl_shm_create_pool(wl->shm, fd, size);
++    if (!buf->pool)
++        goto error3;
++    buf->buffer = wl_shm_pool_create_buffer(buf->pool, 0, width, height,
++                                            stride, WL_SHM_FORMAT_XRGB8888);
++    if (!buf->buffer)
++        goto error4;
++    wl_buffer_add_listener(buf->buffer, &buffer_listener, buf);
++    close(fd);
++    talloc_set_destructor(buf, buffer_destroy);
++
++    return buf;
++
++error4:
++    wl_shm_pool_destroy(buf->pool);
++error3:
++    talloc_free(buf);
++error2:
++    munmap(data, size);
++error1:
++    close(fd);
++error0:
++    return NULL;
++}
++
++static int preinit(struct vo *vo)
++{
++    struct priv *p = vo->priv;
++
++    if (!vo_wayland_init(vo))
++        return -1;
++    p->sws = mp_sws_alloc(vo);
++
++    return 0;
++}
++
++static int query_format(struct vo *vo, int format)
++{
++    return sws_isSupportedInput(imgfmt2pixfmt(format));
++}
++
++static int reconfig(struct vo *vo, struct mp_image_params *params)
++{
++    struct priv *p = vo->priv;
++
++    if (!vo_wayland_reconfig(vo))
++        return -1;
++    mp_sws_set_from_cmdline(p->sws, vo->global);
++    p->sws->src = *params;
++
++    return 0;
++}
++
++static int resize(struct vo *vo)
++{
++    struct priv *p = vo->priv;
++    struct vo_wayland_state *wl = vo->wl;
++    const int32_t width = wl->scaling * mp_rect_w(wl->geometry);
++    const int32_t height = wl->scaling * mp_rect_h(wl->geometry);
++    struct buffer *buf;
++
++    vo->want_redraw = true;
++    vo->dwidth = width;
++    vo->dheight = height;
++    vo_get_src_dst_rects(vo, &p->src, &p->dst, &p->osd);
++    p->sws->dst = (struct mp_image_params) {
++        .imgfmt = IMGFMT_BGR0,
++        .w = width,
++        .h = height,
++        .p_w = 1,
++        .p_h = 1,
++    };
++    mp_image_params_guess_csp(&p->sws->dst);
++    while (p->free_buffers) {
++        buf = p->free_buffers;
++        p->free_buffers = buf->next;
++        talloc_free(buf);
++    }
++    return mp_sws_reinit(p->sws);
++}
++
++static int control(struct vo *vo, uint32_t request, void *data)
++{
++    int events = 0;
++    int ret = vo_wayland_control(vo, &events, request, data);
++
++    if (events & VO_EVENT_RESIZE)
++        ret = resize(vo);
++    vo_event(vo, events);
++    return ret;
++}
++
++static void draw_image(struct vo *vo, struct mp_image *src)
++{
++    struct priv *p = vo->priv;
++    struct vo_wayland_state *wl = vo->wl;
++    struct buffer *buf;
++
++    buf = p->free_buffers;
++    if (buf) {
++        p->free_buffers = buf->next;
++    } else {
++        buf = buffer_create(vo, vo->dwidth, vo->dheight);
++        if (!buf) {
++            wl_surface_attach(wl->surface, NULL, 0, 0);
++            return;
++        }
++    }
++    if (src) {
++        struct mp_image dst = buf->mpi;
++        struct mp_rect src_rc;
++        struct mp_rect dst_rc;
++        src_rc.x0 = MP_ALIGN_DOWN(p->src.x0, MPMAX(src->fmt.align_x, 4));
++        src_rc.y0 = MP_ALIGN_DOWN(p->src.y0, MPMAX(src->fmt.align_y, 4));
++        src_rc.x1 = p->src.x1 - (p->src.x0 - src_rc.x0);
++        src_rc.y1 = p->src.y1 - (p->src.y0 - src_rc.y0);
++        dst_rc.x0 = MP_ALIGN_DOWN(p->dst.x0, MPMAX(dst.fmt.align_x, 4));
++        dst_rc.y0 = MP_ALIGN_DOWN(p->dst.y0, MPMAX(dst.fmt.align_y, 4));
++        dst_rc.x1 = p->dst.x1 - (p->dst.x0 - dst_rc.x0);
++        dst_rc.y1 = p->dst.y1 - (p->dst.y0 - dst_rc.y0);
++        mp_image_crop_rc(src, src_rc);
++        mp_image_crop_rc(&dst, dst_rc);
++        mp_sws_scale(p->sws, &dst, src);
++        if (dst_rc.y0 > 0)
++            mp_image_clear(&buf->mpi, 0, 0, buf->mpi.w, dst_rc.y0);
++        if (buf->mpi.h > dst_rc.y1)
++            mp_image_clear(&buf->mpi, 0, dst_rc.y1, buf->mpi.w, buf->mpi.h);
++        if (dst_rc.x0 > 0)
++            mp_image_clear(&buf->mpi, 0, dst_rc.y0, dst_rc.x0, dst_rc.y1);
++        if (buf->mpi.w > dst_rc.x1)
++            mp_image_clear(&buf->mpi, dst_rc.x1, dst_rc.y0, buf->mpi.w, dst_rc.y1);
++        osd_draw_on_image(vo->osd, p->osd, src->pts, 0, &buf->mpi);
++    } else {
++        mp_image_clear(&buf->mpi, 0, 0, buf->mpi.w, buf->mpi.h);
++        osd_draw_on_image(vo->osd, p->osd, 0, 0, &buf->mpi);
++    }
++    talloc_free(src);
++    wl_surface_attach(wl->surface, buf->buffer, 0, 0);
++}
++
++static void flip_page(struct vo *vo)
++{
++    struct vo_wayland_state *wl = vo->wl;
++
++    wl_surface_damage(wl->surface, 0, 0, mp_rect_w(wl->geometry),
++                      mp_rect_h(wl->geometry));
++    wl_surface_commit(wl->surface);
++}
++
++static void uninit(struct vo *vo)
++{
++    struct priv *p = vo->priv;
++    struct buffer *buf;
++
++    while (p->free_buffers) {
++        buf = p->free_buffers;
++        p->free_buffers = buf->next;
++        talloc_free(buf);
++    }
++    vo_wayland_uninit(vo);
++}
++
++#define OPT_BASE_STRUCT struct priv
++static const m_option_t options[] = {
++    {0}
++};
++
++const struct vo_driver video_out_wayland = {
++    .description = "Wayland SHM video output",
++    .name = "wayland",
++    .preinit = preinit,
++    .query_format = query_format,
++    .reconfig = reconfig,
++    .control = control,
++    .draw_image = draw_image,
++    .flip_page = flip_page,
++    .wakeup = vo_wayland_wakeup,
++    .wait_events = vo_wayland_wait_events,
++    .uninit = uninit,
++    .priv_size = sizeof(struct priv),
++    .options = options,
++};
+diff --git a/wscript_build.py b/wscript_build.py
+index 4d974fd9c3..ce333687f2 100644
+--- a/wscript_build.py
++++ b/wscript_build.py
+@@ -485,6 +485,7 @@ def build(ctx):
+         ( "video/out/vo_tct.c" ),
+         ( "video/out/vo_vaapi.c",                "vaapi-x11 && gpl" ),
+         ( "video/out/vo_vdpau.c",                "vdpau" ),
++        ( "video/out/vo_wayland.c",              "wayland" ),
+         ( "video/out/vo_x11.c" ,                 "x11" ),
+         ( "video/out/vo_xv.c",                   "xv" ),
+         ( "video/out/vulkan/context.c",          "vulkan" ),
+-- 
+2.19.1
+
