@@ -12,6 +12,7 @@
 #define TINY_FONT_MONOSPACE_BOLD "source-code-pro/SourceCodePro-Bold.otf"
 #define TINY_FONT_CURSIVE TINY_FONT_SANS_SERIF
 #define TINY_FONT_FANTASY TINY_FONT_SANS_SERIF
+#define TINY_DPI 96
 
 #define DUK_OPT_HAVE_CUSTOM_H 1
 
