@@ -1,6 +1,7 @@
 cflags{
 	'-D _GNU_SOURCE',
 	'-D EMACS',
+	'-D SMALL',
 	'-D VI',
 	'-I pkg/openbsd/include',
 	'-idirafter $srcdir',  -- for vis.h
