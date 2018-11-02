@@ -26,7 +26,6 @@
 /* #undef HAVE_LIBSECCOMP */
 #define HAVE_LIBZ 1
 #define HAVE_LIMITS_H 1
-#define HAVE_LOCALE_H 1
 #define HAVE_LOCALTIME_R 1
 #define HAVE_MBRTOWC 1
 #define HAVE_MBSTATE_T 1
@@ -37,7 +36,6 @@
 #define HAVE_NEWLOCALE 1
 #define HAVE_PREAD 1
 #define HAVE_SETLOCALE 1
-#define HAVE_SIGNAL_H 1
 #define HAVE_SIG_T 1
 #define HAVE_STDDEF_H 1
 #define HAVE_STDINT_H 1
@@ -74,6 +72,7 @@
 #define HAVE_VASPRINTF 1
 #define HAVE_VFORK 1
 /* #undef HAVE_VFORK_H */
+#define HAVE_VISIBILITY 1
 #define HAVE_WCHAR_H 1
 #define HAVE_WCTYPE_H 1
 #define HAVE_WCWIDTH 1
@@ -84,14 +83,13 @@
 #define LT_OBJDIR ".libs/"
 /* #undef MAJOR_IN_MKDEV */
 /* #undef MAJOR_IN_SYSMACROS */
-/* #undef NO_MINUS_C_MINUS_O */
 #define PACKAGE "file"
 #define PACKAGE_BUGREPORT "christos@astron.com"
 #define PACKAGE_NAME "file"
-#define PACKAGE_STRING "file 5.34"
+#define PACKAGE_STRING "file 5.35"
 #define PACKAGE_TARNAME "file"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "5.34"
+#define PACKAGE_VERSION "5.35"
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
 #ifndef _ALL_SOURCE
@@ -109,7 +107,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.34"
+#define VERSION "5.35"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

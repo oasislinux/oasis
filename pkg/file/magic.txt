@@ -28,6 +28,7 @@ ber
 bflt
 bhl
 bioinformatics
+biosig
 blackberry
 blcr
 blender
@@ -97,6 +98,7 @@ gconv
 geo
 geos
 gimp
+glibc
 gnome
 gnu
 gnumeric
@@ -106,6 +108,7 @@ grace
 graphviz
 gringotts
 guile
+hardware
 hitachi-sh
 hp
 human68k
@@ -127,6 +130,7 @@ karma
 kde
 keepass
 kerberos
+kicad
 kml
 lecter
 lex

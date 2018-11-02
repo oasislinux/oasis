@@ -1,4 +1,4 @@
-local version = '5.34'
+local version = '5.35'
 cflags{
 	'-Wall',
 	'-D HAVE_CONFIG_H',
@@ -27,7 +27,7 @@ pkg.deps = {'$dir/headers', 'pkg/zlib/headers'}
 
 lib('libmagic.a', [[src/(
 	buffer.c magic.c apprentice.c softmagic.c ascmagic.c
-	encoding.c compress.c is_tar.c readelf.c print.c fsmagic.c
+	encoding.c compress.c is_json.c is_tar.c readelf.c print.c fsmagic.c
 	funcs.c apptype.c der.c
 	cdf.c cdf_time.c readcdf.c
 
