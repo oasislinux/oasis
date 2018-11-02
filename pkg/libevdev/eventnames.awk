@@ -1,14 +1,14 @@
 BEGIN {
-	blacklist["EV_VERSION"] = 1
-	blacklist["BTN_MISC"] = 1
-	blacklist["BTN_MOUSE"] = 1
-	blacklist["BTN_JOYSTICK"] = 1
-	blacklist["BTN_GAMEPAD"] = 1
-	blacklist["BTN_DIGI"] = 1
-	blacklist["BTN_WHEEL"] = 1
-	blacklist["BTN_TRIGGER_HAPPY"] = 1
-	blacklist["SW_MAX"] = 1
-	blacklist["REP_MAX"] = 1
+	duplicates["EV_VERSION"] = 1
+	duplicates["BTN_MISC"] = 1
+	duplicates["BTN_MOUSE"] = 1
+	duplicates["BTN_JOYSTICK"] = 1
+	duplicates["BTN_GAMEPAD"] = 1
+	duplicates["BTN_DIGI"] = 1
+	duplicates["BTN_WHEEL"] = 1
+	duplicates["BTN_TRIGGER_HAPPY"] = 1
+	duplicates["SW_MAX"] = 1
+	duplicates["REP_MAX"] = 1
 
 	prefixes[++numprefixes] = "EV"
 	prefixes[++numprefixes] = "REL"
@@ -23,35 +23,41 @@ BEGIN {
 	prefixes[++numprefixes] = "SYN"
 	prefixes[++numprefixes] = "REP"
 	prefixes[++numprefixes] = "INPUT_PROP"
+	prefixes[++numprefixes] = "MT_TOOL"
 
-	names[++numnames] = "abs"
-	names[++numnames] = "btn"
-	names[++numnames] = "ff"
-	names[++numnames] = "key"
-	names[++numnames] = "led"
-	names[++numnames] = "msc"
-	names[++numnames] = "rel"
-	names[++numnames] = "rep"
-	names[++numnames] = "snd"
-	names[++numnames] = "sw"
-	names[++numnames] = "syn"
+	code_prefixes[++numcode_prefixes] = "ABS"
+	code_prefixes[++numcode_prefixes] = "BTN"
+	code_prefixes[++numcode_prefixes] = "FF"
+	code_prefixes[++numcode_prefixes] = "KEY"
+	code_prefixes[++numcode_prefixes] = "LED"
+	code_prefixes[++numcode_prefixes] = "MSC"
+	code_prefixes[++numcode_prefixes] = "REL"
+	code_prefixes[++numcode_prefixes] = "REP"
+	code_prefixes[++numcode_prefixes] = "SND"
+	code_prefixes[++numcode_prefixes] = "SW"
+	code_prefixes[++numcode_prefixes] = "SYN"
 
 	addbtns["BTN_A"] = 1
 	addbtns["BTN_B"] = 1
 	addbtns["BTN_X"] = 1
 	addbtns["BTN_Y"] = 1
+
+	skip["BTN"] = 1
+	skip["EV"] = 1
+	skip["INPUT_PROP"] = 1
+	skip["MT_TOOL"] = 1
 }
 
 function print_bits(prefix) {
-	printf "static const char * const %s_map[%s_MAX + 1] = {\n", prefix, toupper(prefix)
+	printf "static const char * const %s_map[%s_MAX + 1] = {\n", tolower(prefix), prefix
 	for (j = 1; j <= numbits[prefix]; ++j) {
-		split(bits[prefix, j], item, SUBSEP)
-		printf "	[%s] = \"%s\",\n", item[1], item[1]
+		name = bits[prefix, j]
+		printf "	[%s] = \"%s\",\n", name, name
 	}
-	if (prefix == "key") {
-		for (j = 1; j <= numbits["btn"]; ++j) {
-			split(bits["btn", j], item, SUBSEP)
-			printf "	[%s] = \"%s\",\n", item[1], item[1]
+	if (prefix == "KEY") {
+		for (j = 1; j <= numbits["BTN"]; ++j) {
+			name = bits["BTN", j]
+			printf "	[%s] = \"%s\",\n", name, name
 		}
 	}
 	print "};"
@@ -62,7 +68,7 @@ function print_map() {
 	print "static const char * const * const event_type_map[EV_MAX + 1] = {"
 	for (i = 1; i <= numprefixes; ++i) {
 		prefix = prefixes[i]
-		if (prefix == "BTN" || prefix == "EV" || prefix == "INPUT_PROP")
+		if (prefix in skip)
 			continue
 		printf "	[EV_%s] = %s_map,\n", prefix, tolower(prefix)
 	}
@@ -80,7 +86,7 @@ function print_map() {
 	print "	[0 ... EV_MAX] = -1,"
 	for (i = 1; i <= numprefixes; ++i) {
 		prefix = prefixes[i]
-		if (prefix == "BTN" || prefix == "EV" || prefix == "INPUT_PROP")
+		if (prefix in skip)
 			continue
 		printf "	[EV_%s] = %s_MAX,\n", prefix, prefix
 	}
@@ -93,16 +99,21 @@ function print_map() {
 	print ""
 }
 
+function print_lookup_entry(name, sort) {
+	printf "	{ .name = \"%s\", .value = %s },\n", name, name | sort
+}
+
 function print_lookup(prefix) {
 	sort = "sort -t '\"' -k 2"
-	for (j = 1; j <= numbits[prefix]; ++j) {
-		split(bits[prefix, j], item, SUBSEP)
-		printf "	{ .name = \"%s\", .value = %s },\n", item[1], item[1] | sort
-	}
-	if (prefix == "btn") {
+	for (j = 1; j <= numbits[prefix]; ++j)
+		print_lookup_entry(bits[prefix, j], sort)
+	if (prefix == "BTN") {
 		for (name in addbtns)
-			printf "	{ .name = \"%s\", .value = %s },\n", name, name | sort
+			print_lookup_entry(name, sort)
 	}
+	maxname = prefix "_MAX"
+	if (maxname in duplicates)
+		print_lookup_entry(maxname, sort)
 	close(sort)
 }
 
@@ -112,18 +123,22 @@ function print_lookup_table() {
 	print "	unsigned int value;"
 	print "};"
 	print ""
+	print "static const struct name_entry tool_type_names[] = {"
+	print_lookup("MT_TOOL")
+	print "};"
+	print ""
 	print "static const struct name_entry ev_names[] = {"
-	print_lookup("ev")
+	print_lookup("EV")
 	print "};"
 	print ""
 
 	print "static const struct name_entry code_names[] = {"
-	for (i = 1; i <= numnames; ++i)
-		print_lookup(names[i])
+	for (i = 1; i <= numcode_prefixes; ++i)
+		print_lookup(code_prefixes[i])
 	print "};"
 	print ""
 	print "static const struct name_entry prop_names[] = {"
-	print_lookup("input_prop")
+	print_lookup("INPUT_PROP")
 	print "};"
 	print ""
 }
@@ -139,7 +154,7 @@ function print_mapping_table() {
 		prefix = prefixes[i]
 		if (prefix == "BTN")
 			continue
-		print_bits(tolower(prefix))
+		print_bits(prefix)
 	}
 
 	print_map()
@@ -149,18 +164,18 @@ function print_mapping_table() {
 }
 
 /^#define/ {
-	if (blacklist[$2])
-		next
 	for (i = 1; i <= numprefixes; ++i) {
 		prefix = prefixes[i]
 		if ($3 !~ /^[0-9a-fx]+$/ || substr($2, 1, length(prefix) + 1) != prefix "_")
 			continue
+		if ($2 in duplicates)
+			next
 		idx = indexes[prefix, $3]
 		if (!idx) {
-			idx = ++numbits[tolower(prefix)]
+			idx = ++numbits[prefix]
 			indexes[prefix, $3] = idx
 		}
-		bits[tolower(prefix), idx] = $2 SUBSEP $3
+		bits[prefix, idx] = $2
 	}
 }
 
