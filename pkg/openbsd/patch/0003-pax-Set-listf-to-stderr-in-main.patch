@@ -1,4 +1,4 @@
-From 3c6a27e7ab65ee24222db9513f2a352774644944 Mon Sep 17 00:00:00 2001
+From e2ca2e2a530e61e8af65dca829aa1fcad5c59a7d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Apr 2016 00:13:51 -0700
 Subject: [PATCH] pax: Set listf to stderr in main
@@ -8,10 +8,10 @@ Subject: [PATCH] pax: Set listf to stderr in main
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/bin/pax/pax.c b/bin/pax/pax.c
-index ca46ba50a..8be03f408 100644
+index f6b3634369a..3d50e051075 100644
 --- a/bin/pax/pax.c
 +++ b/bin/pax/pax.c
-@@ -91,7 +91,7 @@ char	*dirptr;		/* destination dir in a copy */
+@@ -93,7 +93,7 @@ char	*dirptr;		/* destination dir in a copy */
  char	*argv0;			/* root of argv[0] */
  enum op_mode op_mode;		/* what program are we acting as? */
  sigset_t s_mask;		/* signal mask for cleanup critical sect */
@@ -20,7 +20,7 @@ index ca46ba50a..8be03f408 100644
  int	listfd = STDERR_FILENO;	/* fd matching listf, for sighandler output */
  char	*tempfile;		/* tempfile to use for mkstemp(3) */
  char	*tempbase;		/* basename of tempfile to use for mkstemp(3) */
-@@ -222,6 +222,8 @@ main(int argc, char **argv)
+@@ -224,6 +224,8 @@ main(int argc, char **argv)
  	char *tmpdir;
  	size_t tdlen;
  
@@ -30,5 +30,5 @@ index ca46ba50a..8be03f408 100644
  	 * Keep a reference to cwd, so we can always come back home.
  	 */
 -- 
-2.12.2
+2.19.0
 

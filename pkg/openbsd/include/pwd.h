@@ -1,3 +1,4 @@
 #include_next <pwd.h>
 #define setpassent(n) setpwent()
-char *user_from_uid(uid_t, int);
+const char *user_from_uid(uid_t, int);
+int uid_from_user(const char *, uid_t *);

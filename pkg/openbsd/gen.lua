@@ -83,7 +83,7 @@ man{'usr.bin/patch/patch.1'}
 
 -- pax
 exe('pax', [[bin/pax/(
-	ar_io.c ar_subs.c buf_subs.c cache.c cpio.c file_subs.c ftree.c
+	ar_io.c ar_subs.c buf_subs.c cpio.c file_subs.c ftree.c
 	gen_subs.c getoldopt.c options.c pat_rep.c pax.c sel_subs.c tables.c
 	tar.c tty_subs.c
 ) libbsd.a]])

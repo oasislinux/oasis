@@ -1,4 +1,4 @@
-From 5c2d730713faaf09febc887e5d6e51e4f65e9c9d Mon Sep 17 00:00:00 2001
+From 0d05008cdf8188f66789de23e581d46608ad036b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 16 Jun 2017 20:32:42 -0700
 Subject: [PATCH] nc: Port to linux
@@ -8,7 +8,7 @@ Subject: [PATCH] nc: Port to linux
  1 file changed, 31 insertions(+), 14 deletions(-)
 
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index fcc38897c..632ba4b1f 100644
+index 3798dc760f1..6cbf346ed10 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
 @@ -73,6 +73,31 @@
@@ -72,10 +72,10 @@ index fcc38897c..632ba4b1f 100644
 -		if (setrtable(rtableid) == -1)
 -			err(1, "setrtable");
 -
- 	if (family == AF_UNIX) {
- 		if (pledge("stdio rpath wpath cpath tmppath unix", NULL) == -1)
- 			err(1, "pledge");
-@@ -901,8 +915,12 @@ remote_connect(const char *host, const char *port, struct addrinfo hints)
+ 	/* Cruft to make sure options are clean, and used properly. */
+ 	if (argv[0] && !argv[1] && family == AF_UNIX) {
+ 		host = argv[0];
+@@ -923,8 +937,12 @@ remote_connect(const char *host, const char *port, struct addrinfo hints)
  		if (sflag || pflag) {
  			struct addrinfo ahints, *ares;
  
@@ -89,7 +89,7 @@ index fcc38897c..632ba4b1f 100644
  			memset(&ahints, 0, sizeof(struct addrinfo));
  			ahints.ai_family = res->ai_family;
  			ahints.ai_socktype = uflag ? SOCK_DGRAM : SOCK_STREAM;
-@@ -1732,7 +1750,6 @@ help(void)
+@@ -1754,7 +1772,6 @@ help(void)
  	\t-t		Answer TELNET negotiation\n\
  	\t-U		Use UNIX domain socket\n\
  	\t-u		UDP mode\n\
@@ -97,7 +97,7 @@ index fcc38897c..632ba4b1f 100644
  	\t-v		Verbose\n\
  	\t-W recvlimit	Terminate after receiving a number of packets\n\
  	\t-w timeout	Timeout for connects and final net reads\n\
-@@ -1753,7 +1770,7 @@ usage(int ret)
+@@ -1775,7 +1792,7 @@ usage(int ret)
  	    "\t  [-i interval] [-K keyfile] [-M ttl] [-m minttl] [-O length]\n"
  	    "\t  [-o staplefile] [-P proxy_username] [-p source_port] "
  	    "[-R CAfile]\n"
@@ -107,5 +107,5 @@ index fcc38897c..632ba4b1f 100644
  	    "\t  [-X proxy_protocol] [-x proxy_address[:port]] "
  	    "[-Z peercertfile]\n"
 -- 
-2.16.2
+2.19.0
 

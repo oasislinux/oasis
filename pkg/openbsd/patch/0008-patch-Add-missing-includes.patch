@@ -1,27 +1,14 @@
-From d0261effc519faf5a2d0f5a6835a0242f8f90d02 Mon Sep 17 00:00:00 2001
+From 299d570c708b33349131b8ca925c3e9bb733db84 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 4 Jun 2016 18:40:24 -0700
 Subject: [PATCH] patch: Add missing includes
 
 ---
- usr.bin/patch/inp.c   | 1 +
  usr.bin/patch/patch.c | 1 +
- 2 files changed, 2 insertions(+)
+ 1 file changed, 1 insertion(+)
 
-diff --git a/usr.bin/patch/inp.c b/usr.bin/patch/inp.c
-index 45f89d29d..5b30f4435 100644
---- a/usr.bin/patch/inp.c
-+++ b/usr.bin/patch/inp.c
-@@ -32,6 +32,7 @@
- #include <sys/mman.h>
- 
- #include <ctype.h>
-+#include <fcntl.h>
- #include <libgen.h>
- #include <stddef.h>
- #include <stdint.h>
 diff --git a/usr.bin/patch/patch.c b/usr.bin/patch/patch.c
-index 8f8f8cd4e..8087a2194 100644
+index 0cb924db733..17b3aa4e23a 100644
 --- a/usr.bin/patch/patch.c
 +++ b/usr.bin/patch/patch.c
 @@ -26,6 +26,7 @@
@@ -33,5 +20,5 @@ index 8f8f8cd4e..8087a2194 100644
  #include <sys/stat.h>
  #include <unistd.h>
 -- 
-2.12.2
+2.19.0
 
