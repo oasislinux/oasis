@@ -5,9 +5,13 @@ cflags{
 	'-D CONFIG_SLIRP',
 	[[-D 'CONFIG_VERSION="2018-09-23"']],
 	'-I $builddir/pkg/curl/include',
+	'-I $builddir/pkg/libressl/include',
 }
 
-pkg.deps = {'pkg/curl/headers'}
+pkg.deps = {
+	'pkg/curl/headers',
+	'pkg/libressl/headers',
+}
 
 build('cc', '$outdir/riscv_cpu32.o', '$srcdir/riscv_cpu.c', {cflags='$cflags -DMAX_XLEN=32'})
 build('cc', '$outdir/riscv_cpu64.o', '$srcdir/riscv_cpu.c', {cflags='$cflags -DMAX_XLEN=64'})
@@ -24,6 +28,7 @@ exe('temu', [[
 	riscv_machine.c softfp.c riscv_cpu32.o riscv_cpu64.o
 	x86_cpu.c x86_machine.c ide.c ps2.c vmmouse.c pckbd.c vga.c
 	$builddir/pkg/curl/libcurl.a.d
+	$builddir/pkg/libressl/libcrypto.a.d
 ]])
 file('bin/temu', '755', '$outdir/temu')
 
