@@ -116,9 +116,6 @@
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng
-[submodule "pkg/libusb/src"]
-	path = pkg/libusb/src
-	url = https://github.com/libusb/libusb
 [submodule "pkg/loksh/src"]
 	path = pkg/loksh/src
 	url = https://github.com/dimkr/loksh
