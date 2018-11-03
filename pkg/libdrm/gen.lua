@@ -31,6 +31,7 @@ if config.video_drivers and config.video_drivers['intel'] then
 			intel_bufmgr_gem.c
 			intel_decode.c
 			mm.c
+			intel_chipset.c
 		)
 		$builddir/pkg/libpciaccess/libpciaccess.a
 	]])
