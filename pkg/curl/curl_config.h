@@ -14,6 +14,7 @@
 #define CURL_DISABLE_LDAP 1
 #define CURL_DISABLE_LDAPS 1
 /* #undef CURL_DISABLE_LIBCURL_OPTION */
+/* #undef CURL_DISABLE_OPENSSL_AUTO_LOAD_CONFIG */
 #define CURL_DISABLE_POP3 1
 /* #undef CURL_DISABLE_PROXY */
 /* #undef CURL_DISABLE_RTSP */
@@ -316,6 +317,7 @@
 /* #undef USE_LIBSSH2 */
 /* #undef USE_MANUAL */
 /* #undef USE_MBEDTLS */
+/* #undef USE_MESALINK */
 /* #undef USE_METALINK */
 /* #undef USE_NGHTTP2 */
 /* #undef USE_NSS */

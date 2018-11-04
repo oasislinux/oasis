@@ -19,14 +19,15 @@ build('cat', '$outdir/curl_config.h', {
 })
 
 pkg.hdrs = copy('$outdir/include/curl', '$srcdir/include/curl', {
-		'curl.h',
-		'curlver.h',
-		'easy.h',
-		'mprintf.h',
-		'stdcheaders.h',
-		'multi.h',
-		'typecheck-gcc.h',
-		'system.h',
+	'curl.h',
+	'curlver.h',
+	'easy.h',
+	'mprintf.h',
+	'stdcheaders.h',
+	'multi.h',
+	'typecheck-gcc.h',
+	'system.h',
+	'urlapi.h',
 })
 pkg.deps = {
 	'$outdir/curl_config.h',
@@ -56,6 +57,7 @@ lib('libcurl.a', [[
 		curl_multibyte.c hostcheck.c conncache.c pipeline.c dotdot.c
 		x509asn1.c http2.c smb.c curl_endian.c curl_des.c system_win32.c
 		mime.c sha256.c setopt.c curl_path.c curl_ctype.c curl_range.c psl.c
+		doh.c urlapi.c
 		vauth/(
 			vauth.c cleartext.c cram.c
 			digest.c digest_sspi.c krb5_gssapi.c
@@ -66,7 +68,7 @@ lib('libcurl.a', [[
 			openssl.c gtls.c vtls.c nss.c
 			polarssl.c polarssl_threadlock.c axtls.c
 			cyassl.c schannel.c schannel_verify.c
-			darwinssl.c gskit.c mbedtls.c
+			darwinssl.c gskit.c mbedtls.c mesalink.c
 		)
 	)
 	$builddir/pkg/(
