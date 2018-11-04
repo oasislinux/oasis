@@ -58,6 +58,8 @@
 /* #undef HAVE_SOLARIS_ATOMIC_OPS */
 #define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
+#define HAVE_STRERROR 1
+#define HAVE_STRERROR_R 1
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
 #define HAVE_STRUCT_DIRENT_D_TYPE 1
@@ -84,12 +86,12 @@
 /* #undef HAVE__MKTEMP_S */
 #define LT_OBJDIR ".libs/"
 #define PACKAGE "fontconfig"
-#define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=fontconfig"
+#define PACKAGE_BUGREPORT "https://gitlab.freedesktop.org/fontconfig/fontconfig/issues/new"
 #define PACKAGE_NAME "fontconfig"
-#define PACKAGE_STRING "fontconfig 2.13.0"
+#define PACKAGE_STRING "fontconfig 2.13.1"
 #define PACKAGE_TARNAME "fontconfig"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.13.0"
+#define PACKAGE_VERSION "2.13.1"
 /* #undef PTHREAD_CREATE_JOINABLE */
 /* #undef SIZEOF_CHAR */
 /* #undef SIZEOF_INT */
@@ -114,7 +116,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.13.0"
+#define VERSION "2.13.1"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
