@@ -191,9 +191,6 @@
 [submodule "pkg/pixman/src"]
 	path = pkg/pixman/src
 	url = https://anongit.freedesktop.org/git/pixman.git
-[submodule "pkg/plan9fonts/src"]
-	path = pkg/plan9fonts/src
-	url = https://github.com/rtrn/plan9fonts
 [submodule "pkg/plan9port/src"]
 	path = pkg/plan9port/src
 	url = https://github.com/9fans/plan9port
