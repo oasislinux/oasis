@@ -339,6 +339,7 @@ youtube_dl/extractor/libsyn.py
 youtube_dl/extractor/lifenews.py
 youtube_dl/extractor/limelight.py
 youtube_dl/extractor/line.py
+youtube_dl/extractor/linkedin.py
 youtube_dl/extractor/litv.py
 youtube_dl/extractor/liveleak.py
 youtube_dl/extractor/livestream.py
@@ -654,7 +655,6 @@ youtube_dl/extractor/turner.py
 youtube_dl/extractor/tutv.py
 youtube_dl/extractor/tv2.py
 youtube_dl/extractor/tv2hu.py
-youtube_dl/extractor/tv3.py
 youtube_dl/extractor/tv4.py
 youtube_dl/extractor/tv5mondeplus.py
 youtube_dl/extractor/tva.py
@@ -673,6 +673,7 @@ youtube_dl/extractor/tweakers.py
 youtube_dl/extractor/twentyfourvideo.py
 youtube_dl/extractor/twentymin.py
 youtube_dl/extractor/twentythreevideo.py
+youtube_dl/extractor/twitcasting.py
 youtube_dl/extractor/twitch.py
 youtube_dl/extractor/twitter.py
 youtube_dl/extractor/udemy.py
