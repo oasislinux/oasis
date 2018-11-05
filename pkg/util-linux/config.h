@@ -30,7 +30,7 @@
 #define HAVE_ERRNO_H 1
 #define HAVE_ERRX 1
 #define HAVE_ERR_H 1
-/* #undef HAVE_EXPLICIT_BZERO */
+#define HAVE_EXPLICIT_BZERO 1
 /* #undef HAVE_FALLOCATE */
 #define HAVE_FCNTL_H 1
 #define HAVE_FSEEKO 1
@@ -42,7 +42,7 @@
 /* #undef HAVE_GETEXECNAME */
 /* #undef HAVE_GETMNTINFO */
 #define HAVE_GETOPT_H 1
-/* #undef HAVE_GETRANDOM */
+#define HAVE_GETRANDOM 1
 #define HAVE_GETRLIMIT 1
 /* #undef HAVE_GETSGNAM */
 /* #undef HAVE_GETTEXT */
@@ -77,14 +77,14 @@
 /* #undef HAVE_LIBUTIL_H */
 #define HAVE_LIBUUID 1
 #define HAVE_LINUX_BLKPG_H 1
-/* #undef HAVE_LINUX_BLKZONED_H */
+#define HAVE_LINUX_BLKZONED_H 1
 #define HAVE_LINUX_BTRFS_H 1
 #define HAVE_LINUX_CDROM_H 1
 /* #undef HAVE_LINUX_COMPILER_H */
 #define HAVE_LINUX_FALLOC_H 1
 #define HAVE_LINUX_FD_H 1
 #define HAVE_LINUX_FS_H 1
-/* #undef HAVE_LINUX_GSMMUX_H */
+#define HAVE_LINUX_GSMMUX_H 1
 #define HAVE_LINUX_MAJOR_H 1
 #define HAVE_LINUX_NET_NAMESPACE_H 1
 #define HAVE_LINUX_RAW_H 1
