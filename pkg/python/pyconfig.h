@@ -172,7 +172,7 @@
 #define HAVE_LANGINFO_H 1
 /* #undef HAVE_LARGEFILE_SUPPORT */
 /* #undef HAVE_LCHFLAGS */
-#define HAVE_LCHMOD 1
+/* #undef HAVE_LCHMOD */
 #define HAVE_LCHOWN 1
 #define HAVE_LGAMMA 1
 #define HAVE_LIBDL 1
@@ -428,7 +428,6 @@
 #define PY_FORMAT_SIZE_T "z"
 #define PY_SSL_DEFAULT_CIPHERS 1
 /* #undef PY_SSL_DEFAULT_CIPHER_STRING */
-#define PY_WARN_ON_C_LOCALE 1
 /* #undef Py_DEBUG */
 /* #undef Py_ENABLE_SHARED */
 /* #undef Py_HASH_ALGORITHM */
