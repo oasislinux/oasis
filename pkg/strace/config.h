@@ -16,7 +16,6 @@
 /* #undef HAVE_ASM_SIGCONTEXT_H */
 /* #undef HAVE_ASM_SYSMIPS_H */
 /* #undef HAVE_BE64TOH */
-#define HAVE_BLKGETSIZE64 1
 /* #undef HAVE_BLUETOOTH_BLUETOOTH_H */
 #define HAVE_DECL_BTRFS_COMPRESS_LZO 0
 #define HAVE_DECL_BTRFS_COMPRESS_NONE 0
@@ -503,10 +502,10 @@
 #define PACKAGE "strace"
 #define PACKAGE_BUGREPORT "strace-devel@lists.strace.io"
 #define PACKAGE_NAME "strace"
-#define PACKAGE_STRING "strace 4.24"
+#define PACKAGE_STRING "strace 4.25"
 #define PACKAGE_TARNAME "strace"
 #define PACKAGE_URL "https://strace.io"
-#define PACKAGE_VERSION "4.24"
+#define PACKAGE_VERSION "4.25"
 /* #undef POWERPC */
 /* #undef POWERPC64 */
 /* #undef RISCV */
@@ -542,7 +541,7 @@
 # define __EXTENSIONS__ 1
 #endif
 /* #undef USE_UNWINDER */
-#define VERSION "4.24"
+#define VERSION "4.25"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

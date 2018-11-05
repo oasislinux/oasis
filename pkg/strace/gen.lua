@@ -184,6 +184,7 @@ local srcs = {
 	'mq.c',
 	'msghdr.c',
 	'mtd.c',
+	'nbd_ioctl.c',
 	'net.c',
 	'netlink.c',
 	'netlink_crypto.c',
