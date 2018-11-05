@@ -34,7 +34,8 @@ lib('libopenbsd-compat.a', [[openbsd-compat/(
 	bsd-flock.c bsd-getpagesize.c bsd-getpeereid.c bsd-malloc.c bsd-misc.c
 	bsd-nextstep.c bsd-openpty.c bsd-poll.c bsd-setres_id.c bsd-signal.c
 	bsd-snprintf.c bsd-statvfs.c bsd-waitpid.c fake-rfc2553.c
-	getrrsetbyname-ldns.c kludge-fd_set.c openssl-compat.c xcrypt.c
+	getrrsetbyname-ldns.c kludge-fd_set.c openssl-compat.c
+	libressl-api-compat.c xcrypt.c
 
 	port-aix.c port-irix.c port-linux.c port-solaris.c port-net.c port-uw.c
 )]])

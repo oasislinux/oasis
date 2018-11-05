@@ -11,8 +11,9 @@ Generated with
 		LIBS='-lcrypto -lbsd -lcrypto-sha'
 
 Several changes were made:
-* `SECCOMP_AUDIT_ARCH` is removed and instead defined in `gen.lua` dependent on
-  the target toolchain architecture.
+* `SECCOMP_AUDIT_ARCH` and `SANDBOX_SECCOMP_FILTER` were removed
+  and instead defined in `gen.lua` dependent on the target toolchain
+  architecture.
 * `HAVE_READPASSPHRASE` and `HAVE_STRNVIS` are undefined because although we do
   build them into `libbsd.a`, we don't include the whole openbsd header
   directory.
