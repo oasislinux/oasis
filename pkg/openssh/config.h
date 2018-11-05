@@ -212,7 +212,7 @@
 #define HAVE_GETPGID 1
 #define HAVE_GETPGRP 1
 /* #undef HAVE_GETPWANAM */
-/* #undef HAVE_GETRANDOM */
+#define HAVE_GETRANDOM 1
 #define HAVE_GETRLIMIT 1
 /* #undef HAVE_GETRRSETBYNAME */
 /* #undef HAVE_GETSEUSERBYNAME */
@@ -465,7 +465,7 @@
 /* #undef HAVE_SYS_PSTAT_H */
 /* #undef HAVE_SYS_PTMS_H */
 #define HAVE_SYS_PTRACE_H 1
-/* #undef HAVE_SYS_RANDOM_H */
+#define HAVE_SYS_RANDOM_H 1
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_STATVFS_H 1
 #define HAVE_SYS_STAT_H 1
