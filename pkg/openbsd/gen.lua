@@ -9,7 +9,7 @@ local libs
 
 if not config.tls or config.tls == 'libressl' then
 	cflags{'-D USE_OPENSSL', '-I $builddir/pkg/libressl/include'}
-	libs = {'$builddir/pkg/libressl/libcrypto.a'}
+	libs = {'$builddir/pkg/libressl/libcrypto-sha.a'}
 elseif config.tls == 'bearssl' then
 	cflags{'-D USE_BEARSSL', '-I pkg/bearssl/src/inc'}
 	libs = {'$builddir/pkg/bearssl/libbearssl.a'}
@@ -33,7 +33,7 @@ lib('libbsd.a', {paths[[
 		gen/(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c unvis.c vis.c warnc.c vwarnc.c)
 		net/base64.c
 		stdlib/(freezero.c reallocarray.c recallocarray.c strtonum.c)
-		string/(explicit_bzero.c strmode.c timingsafe_memcmp.c)
+		string/(explicit_bzero.c strmode.c timingsafe_bcmp.c timingsafe_memcmp.c)
 	)
 	lib/libcrypto/arc4random/getentropy_linux.c
 	lib/libutil/ohash.c

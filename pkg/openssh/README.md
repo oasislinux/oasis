@@ -8,7 +8,7 @@ Generated with
 		--without-pie \
 		CPPFLAGS='-I/src/oasis/out/pkg/zlib/include' \
 		LDFLAGS='-L/src/oasis/out/pkg/libressl -L/src/oasis/out/pkg/openbsd -L/src/oasis/out/pkg/zlib' \
-		LIBS='-lbsd -lcrypto'
+		LIBS='-lcrypto -lbsd -lcrypto-sha'
 
 Several changes were made:
 * `SECCOMP_AUDIT_ARCH` is removed and instead defined in `gen.lua` dependent on

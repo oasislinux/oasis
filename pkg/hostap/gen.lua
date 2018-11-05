@@ -76,8 +76,7 @@ exe('bin/wpa_supplicant', [[
 	)
 	libcommon.a
 	$builddir/pkg/(
-		libressl/libcrypto.a
-		openbsd/libbsd.a
+		libressl/libcrypto.a.d
 		libnl/(libnl-3.a libnl-genl-3.a)
 	)
 ]])
