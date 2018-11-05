@@ -22,7 +22,7 @@ lib('libbsd.a', [[
 		gen/(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c unvis.c vis.c warnc.c vwarnc.c)
 		net/base64.c
 		stdlib/(freezero.c reallocarray.c recallocarray.c strtonum.c)
-		string/(explicit_bzero.c strmode.c timingsafe_bcmp.c timingsafe_memcmp.c)
+		string/(strmode.c timingsafe_bcmp.c timingsafe_memcmp.c)
 	)
 	lib/libutil/ohash.c
 ]])
