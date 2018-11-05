@@ -15,4 +15,4 @@ Generated with
 		UUID_CFLAGS=-I/src/oasis/out/pkg/util-linux/include \
 		UUID_LIBS=/src/oasis/out/pkg/util-linux/libuuid.a \
 		EXPAT_CFLAGS=-I/src/oasis/out/pkg/expat/include \
-		EXPAT_LIBS='/src/oasis/out/pkg/expat/libexpat.a /src/oasis/out/pkg/openbsd/libbsd.a /src/oasis/out/pkg/libressl/libcrypto-sha.a'
+		EXPAT_LIBS='/src/oasis/out/pkg/expat/libexpat.a /src/oasis/out/pkg/openbsd/libbsd.a'

@@ -94,7 +94,6 @@ pkg.hdrs = {
 }
 
 -- src/crypto/Makefile.am
-lib('libcrypto-sha.a', [[crypto/sha/(sha1dgst.c sha1_one.c sha256.c sha512.c)]])
 lib('libcrypto.a', [[crypto/(
 	cryptlib.c malloc-wrapper.c mem_dbg.c cversion.c ex_data.c cpt_err.c
 	o_time.c o_str.c o_init.c
@@ -241,6 +240,7 @@ lib('libcrypto.a', [[crypto/(
 		rsa_pss.c rsa_x931.c rsa_asn1.c rsa_depr.c rsa_ameth.c rsa_prn.c
 		rsa_pmeth.c rsa_crpt.c rsa_meth.c
 	)
+	sha/(sha1dgst.c sha1_one.c sha256.c sha512.c)
 	stack/stack.c
 	ts/(
 		ts_err.c ts_req_utils.c ts_req_print.c ts_rsp_utils.c ts_rsp_print.c
@@ -273,7 +273,7 @@ lib('libcrypto.a', [[crypto/(
 	des/(des_enc.c fcrypt_b.c)
 	rc4/(rc4_enc.c rc4_skey.c)
 	whrlpool/wp_block.c
-) libcrypto-sha.a $builddir/pkg/openbsd/libbsd.a.d]])
+) $builddir/pkg/openbsd/libbsd.a.d]])
 file('lib/libcrypto.a', '644', '$outdir/libcrypto.a')
 
 -- src/ssl/Makefile.am

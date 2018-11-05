@@ -5,17 +5,6 @@ cflags{
 	'-idirafter $srcdir/sys',
 	'-idirafter $srcdir/lib/libutil',
 }
-local libs
-
-if not config.tls or config.tls == 'libressl' then
-	cflags{'-D USE_OPENSSL', '-I $builddir/pkg/libressl/include'}
-	libs = {'$builddir/pkg/libressl/libcrypto-sha.a'}
-elseif config.tls == 'bearssl' then
-	cflags{'-D USE_BEARSSL', '-I pkg/bearssl/src/inc'}
-	libs = {'$builddir/pkg/bearssl/libbearssl.a'}
-else
-	error('unknown config.tls: '..config.tls)
-end
 
 -- Link arc4random.c to '$outdir' so that it doesn't include the local
 -- arc4random.h
@@ -27,7 +16,7 @@ cc('$outdir/lib/libc/crypt/arc4random.c', {
 	'$outdir/lib/libc/crypt/chacha_private.h',
 })
 
-lib('libbsd.a', {paths[[
+lib('libbsd.a', [[
 	lib/libc/(
 		crypt/(arc4random.c.o arc4random_uniform.c)
 		gen/(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c unvis.c vis.c warnc.c vwarnc.c)
@@ -35,9 +24,8 @@ lib('libbsd.a', {paths[[
 		stdlib/(freezero.c reallocarray.c recallocarray.c strtonum.c)
 		string/(explicit_bzero.c strmode.c timingsafe_bcmp.c timingsafe_memcmp.c)
 	)
-	lib/libcrypto/arc4random/getentropy_linux.c
 	lib/libutil/ohash.c
-]], libs}, {'pkg/libressl/headers'})
+]])
 file('lib/libbsd.a', '644', '$outdir/libbsd.a')
 
 -- diff
