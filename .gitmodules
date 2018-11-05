@@ -40,6 +40,7 @@
 [submodule "pkg/efivar/src"]
 	path = pkg/efivar/src
 	url = https://github.com/rhinstaller/efivar
+	ignore=all
 [submodule "pkg/elfutils/src"]
 	path = pkg/elfutils/src
 	url = git://sourceware.org/git/elfutils.git

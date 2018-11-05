@@ -19,11 +19,7 @@ sub('tools.ninja', function()
 		'-I $srcdir/src/include',
 	}
 	build('cc', '$outdir/host-guid.c.o', '$srcdir/src/guid.c')
-	exe('makeguids', {'src/makeguids.c', 'host-guid.c.o'}, nil, {
-		ldlibs='-ldl',
-		-- src/generics.h defines some static inline functions that refer to undefined symbols
-		ldflags='$ldflags -Wl,--unresolved-symbols=ignore-in-object-files',
-	})
+	exe('makeguids', {'src/makeguids.c', 'host-guid.c.o'}, nil, {ldlibs='-ldl'})
 end)
 
 rule('makeguids', '$outdir/makeguids $in $out')
