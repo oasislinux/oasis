@@ -53,7 +53,7 @@ local function genlist(out, src, type, var)
 end
 genlist('$outdir/internal/libavfilter/filter_list.c', '$srcdir/libavfilter/allfilters.c', 'AVFilter', 'filter_list')
 genlist('$outdir/internal/libavcodec/codec_list.c', '$srcdir/libavcodec/allcodecs.c', 'AVCodec', 'codec_list')
-genlist('$outdir/internal/libavcodec/parser_list.c', '$srcdir/libavcodec/parser.c', 'AVCodecParser', 'parser_list')
+genlist('$outdir/internal/libavcodec/parser_list.c', '$srcdir/libavcodec/parsers.c', 'AVCodecParser', 'parser_list')
 genlist('$outdir/internal/libavcodec/bsf_list.c', '$srcdir/libavcodec/bitstream_filters.c', 'AVBitStreamFilter', 'bitstream_filters')
 genlist('$outdir/internal/libavformat/demuxer_list.c', '$srcdir/libavformat/allformats.c', 'AVInputFormat', 'demuxer_list')
 genlist('$outdir/internal/libavformat/muxer_list.c', '$srcdir/libavformat/allformats.c', 'AVOutputFormat', 'muxer_list')
@@ -129,6 +129,7 @@ lib('libavcodec.a', {
 		'options.c',
 		'mjpegenc_huffman.c',
 		'parser.c',
+		'parsers.c',
 		'profiles.c',
 		'qsv_api.c',
 		'raw.c',
