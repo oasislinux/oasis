@@ -1,4 +1,4 @@
-set('version', '2.32.1')
+set('version', '2.33.0')
 cflags{
 	'-include $dir/config.h',
 	'-I $dir',
@@ -40,7 +40,6 @@ lib('libcommon.a', [[
 		mbsalign.c
 		md5.c
 		pager.c
-		path.c
 		pwdutils.c
 		randutils.c
 		setproctitle.c
@@ -55,6 +54,9 @@ lib('libcommon.a', [[
 		linux_version.c
 		loopdev.c
 
+		cpuset.c
+
+		path.c
 		procutils.c
 		sysfs.c
 	)

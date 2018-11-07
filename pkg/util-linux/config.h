@@ -12,6 +12,7 @@
 #define HAVE_BYTESWAP_H 1
 /* #undef HAVE_CFLOCALECOPYCURRENT */
 /* #undef HAVE_CFPREFERENCESCOPYAPPVALUE */
+#define HAVE_CLEARENV 1
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_CPU_SET_T 1
 #define HAVE_CRYPT_H 1
@@ -33,6 +34,7 @@
 #define HAVE_EXPLICIT_BZERO 1
 /* #undef HAVE_FALLOCATE */
 #define HAVE_FCNTL_H 1
+#define HAVE_FPURGE 1
 #define HAVE_FSEEKO 1
 #define HAVE_FSTATAT 1
 #define HAVE_FSYNC 1
@@ -51,6 +53,8 @@
 #define HAVE_INOTIFY_INIT 1
 #define HAVE_INOTIFY_INIT1 1
 #define HAVE_INTTYPES_H 1
+#define HAVE_IOPERM 1
+#define HAVE_IOPL 1
 /* #undef HAVE_ISNAN */
 #define HAVE_JRAND48 1
 /* #undef HAVE_LANGINFO_ALTMON */
@@ -214,13 +218,14 @@
 #define HAVE_WARNX 1
 #define HAVE_WIDECHAR 1
 #define HAVE___FPENDING 1
+#define HAVE___FPURGE 1
 #define HAVE___PROGNAME 1
 /* #undef HAVE___SECURE_GETENV */
-#define LIBBLKID_DATE "16-Jul-2018"
-#define LIBBLKID_VERSION "2.32.1"
-#define LIBFDISK_VERSION "2.32.1"
-#define LIBMOUNT_VERSION "2.32.1"
-#define LIBSMARTCOLS_VERSION "2.32.1"
+#define LIBBLKID_DATE "06-Nov-2018"
+#define LIBBLKID_VERSION "2.33.0"
+#define LIBFDISK_VERSION "2.33.0"
+#define LIBMOUNT_VERSION "2.33.0"
+#define LIBSMARTCOLS_VERSION "2.33.0"
 /* #undef LOGIN_CHOWN_VCS */
 /* #undef LOGIN_STAT_MAIL */
 #define LT_OBJDIR ".libs/"
@@ -230,10 +235,10 @@
 #define PACKAGE "util-linux"
 #define PACKAGE_BUGREPORT "kzak@redhat.com"
 #define PACKAGE_NAME "util-linux"
-#define PACKAGE_STRING "util-linux 2.32.1"
+#define PACKAGE_STRING "util-linux 2.33"
 #define PACKAGE_TARNAME "util-linux"
 #define PACKAGE_URL "http://www.kernel.org/pub/linux/utils/util-linux/"
-#define PACKAGE_VERSION "2.32.1"
+#define PACKAGE_VERSION "2.33"
 #define PG_BELL 1
 #define STDC_HEADERS 1
 /* #undef SYS_fallocate */
@@ -250,6 +255,7 @@
 /* #undef TM_IN_SYS_TIME */
 #define USE_COLORS_BY_DEFAULT 1
 /* #undef USE_LIBMOUNT_SUPPORT_MTAB */
+#define USE_LIBMOUNT_SUPPORT_NAMESPACES 1
 #define USE_PLYMOUTH_SUPPORT 1
 /* #undef USE_SULOGIN_EMERGENCY_MOUNT */
 #ifndef _ALL_SOURCE
@@ -269,7 +275,7 @@
 #endif
 #define USE_TTY_GROUP 1
 /* #undef USE_USRDIR_PATHS_ONLY */
-#define VERSION "2.32.1"
+#define VERSION "2.33"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
