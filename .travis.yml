@@ -20,7 +20,7 @@ script:
   echo 'return {
   	builddir="out",
   	fs={exclude={}},
-  	target={toolchain="x86_64-linux-musl", cflags="-O2 -pipe", cxxflags="$target_cflags", ldflags="-s -static"},
+  	target={toolchain="x86_64-linux-musl", cflags="-O2 -pipe", cxxflags="$target_cflags", ldflags="-s -static", pie=true},
   	host={toolchain="default", cflags="-pipe", cxxflags="$host_cflags", ldflags=""},
   	repo={path="$builddir/root.git", flags="--bare", tag="tree", branch="master"},
   	tls="libressl",
