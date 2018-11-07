@@ -56,14 +56,6 @@ exe('m4', [[
 file('bin/m4', '755', '$outdir/m4')
 man{'usr.bin/m4/m4.1'}
 
--- nc
-exe('nc', [[
-	usr.bin/nc/(netcat.c atomicio.c socks.c)
-	$builddir/pkg/libressl/libtls.a.d
-]], {'pkg/libressl/headers'})
-file('bin/nc', '755', '$outdir/nc')
-man{'usr.bin/nc/nc.1'}
-
 -- patch
 exe('patch', 'usr.bin/patch/(patch.c pch.c inp.c util.c backupfile.c mkpath.c ed.c) libbsd.a')
 file('bin/patch', '755', '$outdir/patch')
