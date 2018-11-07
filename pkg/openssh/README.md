@@ -14,9 +14,8 @@ Several changes were made:
 * `SECCOMP_AUDIT_ARCH` and `SANDBOX_SECCOMP_FILTER` were removed
   and instead defined in `gen.lua` dependent on the target toolchain
   architecture.
-* `HAVE_READPASSPHRASE` and `HAVE_STRNVIS` are undefined because although we do
-  build them into `libbsd.a`, we don't include the whole openbsd header
-  directory.
+* `HAVE_STRNVIS` was undefined because although we do build it into
+  `libbsd.a`, we don't include the whole openbsd header directory.
 * `HAVE_PLEDGE` is defined because we have a stub definition in
   `pkg/openbsd/include/unistd.h`.
 * `SIZEOF_*` are undefined because they are only used if C99 `int*_t` are not

@@ -9,10 +9,10 @@ cflags{
 	archflags[config.target.toolchain:match('[^-]*')] or '-D SANDBOX_RLIMIT=1',
 	'-I $dir',
 	'-I $srcdir',
-	'-I $srcdir/openbsd-compat',
 	'-I pkg/openbsd/include',
 	'-I $builddir/pkg/libressl/include',
 	'-I $builddir/pkg/zlib/include',
+	'-idirafter $srcdir/openbsd-compat',
 }
 
 pkg.deps = {
