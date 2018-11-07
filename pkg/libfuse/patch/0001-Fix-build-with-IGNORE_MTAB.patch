@@ -1,0 +1,32 @@
+From 0030a024f2dbc438a19e9410e95e02156d1c78db Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 7 Nov 2018 14:29:38 -0800
+Subject: [PATCH] Fix build with IGNORE_MTAB
+
+---
+ util/fusermount.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/util/fusermount.c b/util/fusermount.c
+index 8eb0fdc..2d02a65 100644
+--- a/util/fusermount.c
++++ b/util/fusermount.c
+@@ -208,6 +208,7 @@ static int may_unmount(const char *mnt, int quiet)
+ 
+ 	return 0;
+ }
++#endif /* IGNORE_MTAB */
+ 
+ /*
+  * Check whether the file specified in "fusermount3 -u" is really a
+@@ -395,6 +396,7 @@ static int chdir_to_parent(char *copy, const char **lastp)
+ 	return 0;
+ }
+ 
++#ifndef IGNORE_MTAB
+ /* Check whether the kernel supports UMOUNT_NOFOLLOW flag */
+ static int umount_nofollow_support(void)
+ {
+-- 
+2.19.1
+
