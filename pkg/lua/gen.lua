@@ -13,7 +13,8 @@ lib('liblua.a', [[src/(
 )]])
 
 exe('lua', {'src/lua.c', 'liblua.a'})
-file('bin/lua', '755', '$outdir/lua')
+file('bin/lua5.2', '755', '$outdir/lua')
+sym('bin/lua', 'lua5.2')
 man{'doc/lua.1'}
 
 fetch 'curl'
