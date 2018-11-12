@@ -46,7 +46,7 @@ build('awk', '$outdir/include/libavutil/avconfig.h', {'$dir/options.h', '|', '$d
 	expr='-f $dir/avconfig.awk',
 })
 
-rule('genlist', 'lua $dir/list.lua $dir/options.h $type $var <$in >$out.tmp && mv $out.tmp $out')
+rule('genlist', 'lua5.2 $dir/list.lua $dir/options.h $type $var <$in >$out.tmp && mv $out.tmp $out')
 local function genlist(out, src, type, var)
 	build('genlist', out, {src, '|', '$dir/list.lua', '$dir/options.h'}, {type=type, var=var})
 	table.insert(pkg.deps, out)

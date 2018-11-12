@@ -16,7 +16,7 @@ local tzdata = {
 	'systemv',
 	'factory',
 }
-rule('tzdata', 'lua $dir/tzdata.lua $repo $outdir/zoneinfo $in >$out.tmp && mv $out.tmp $out')
+rule('tzdata', 'lua5.2 $dir/tzdata.lua $repo $outdir/zoneinfo $in >$out.tmp && mv $out.tmp $out')
 build('tzdata', '$outdir/tzdata.index', {
 	expand{'$srcdir/', tzdata},
 	'|', '$dir/tzdata.lua', 'scripts/hash.sh',
