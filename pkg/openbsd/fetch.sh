@@ -14,7 +14,7 @@ if ! sha256sum -c sha256 2>/dev/null ; then
         sha256sum -c sha256
 fi
 
-zcat src.tar.gz | pax -r -s '/^/src\//' \
+zcat src.tar.gz | ${PAXREAD:-pax -r} -s ',^,src/,' \
 	'bin/pax/*' \
 	'include/*' \
 	'lib/libc/*' \
@@ -27,6 +27,6 @@ zcat src.tar.gz | pax -r -s '/^/src\//' \
 	'usr.bin/nc/*' \
 	'usr.bin/patch/*' \
 	'usr.bin/yacc/*'
-zcat sys.tar.gz | pax -r -s '/^/src\//' 'sys/sys/*'
+zcat sys.tar.gz | ${PAXREAD:-pax -r} -s ',^,src/,' 'sys/sys/*'
 
 git apply -v --whitespace=nowarn --directory "$dir/src" patch/*

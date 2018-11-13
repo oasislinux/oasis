@@ -31,7 +31,7 @@ while read -r checksum archive ; do
 		tool=
 	esac
 	if [ -n "$tool" ] ; then
-		"$tool" "$archive" | pax -r -s '/^\.\|[^\/]*/src/' '*/*'
+		"$tool" "$archive" | ${PAXREAD:-pax -r} -s ',^[^/]*,src,' '*/*'
 	fi
 done <sha256
 
