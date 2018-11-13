@@ -1,0 +1,179 @@
+From 5b40a091f4d31fa6d21a84536f5998135faf6dfa Mon Sep 17 00:00:00 2001
+From: schwarze <schwarze>
+Date: Tue, 13 Nov 2018 08:45:29 +0000
+Subject: [PATCH] Add the -d option to specify the .Dd date, and fall back to
+ the mtime before resorting to the current time. Patch from Michael Forney
+ <mforney at mforney dot org> with minimal tweaks by me.
+
+While here, fix the date format, "%F" is wrong for mdoc(7).
+Change it to "%B %e, %Y" which isn't perfect due to the
+spurious blank before single-digit day numbers, but closer.
+---
+ extern.h    |  1 +
+ main.c      | 35 ++++++++++++++++++++++++++---------
+ texi2mdoc.1 | 14 +++++++++++++-
+ util.c      |  1 -
+ 4 files changed, 40 insertions(+), 11 deletions(-)
+
+diff --git a/extern.h b/extern.h
+index f713e0b..643edde 100644
+--- a/extern.h
++++ b/extern.h
+@@ -365,6 +365,7 @@ struct	texi {
+ 	size_t		  dirsz; /* number of texi directories */
+ 	char		 *title; /* title of document */
+ 	char		 *subtitle; /* subtitle of document */
++	char		 *date; /* date of document */
+ 	int		  secoffs; /* see sectioner() */
+ 	char		**indexs; /* @defindex indices */
+ 	size_t		  indexsz; /* entries in indexs */
+diff --git a/main.c b/main.c
+index d343727..308fe5e 100644
+--- a/main.c
++++ b/main.c
+@@ -17,6 +17,9 @@
+ #if defined(__linux__) || defined(__MINT__)
+ # define _GNU_SOURCE /* memmem */
+ #endif
++
++#include <sys/stat.h>
++
+ #include <assert.h>
+ #include <ctype.h>
+ #include <getopt.h>
+@@ -1587,8 +1590,6 @@ static void
+ dotop(struct texi *p, enum texicmd cmd, size_t *pos)
+ {
+ 	const char	*cp;
+-	time_t		 t;
+-	char		 date[32];
+ 
+ 	if (--p->ign)
+ 		texierr(p, "@top command while ignoring");
+@@ -1598,13 +1599,11 @@ dotop(struct texi *p, enum texicmd cmd, size_t *pos)
+ 	 * We use the title set with @settitle for the `Nd' description
+ 	 * and the source document filename (the first one as invoked on
+ 	 * the command line) for the title.
+-	 * The date is set to the current date.
++	 * The date is set to the modification time of the input.
+ 	 */
+-	t = time(NULL);
+-	strftime(date, sizeof(date), "%F", localtime(&t));
+ 
+ 	teximacroopen(p, "Dd");
+-	texiputchars(p, date);
++	texiputchars(p, p->date);
+ 	teximacroclose(p);
+ 	teximacroopen(p, "Dt");
+ 	for (cp = p->title; '\0' != *cp; cp++)
+@@ -1864,9 +1863,12 @@ int
+ main(int argc, char *argv[])
+ {
+ 	struct texi	 texi;
+-	int		 c;
++	char		 date[32];
++	struct stat	 st;
+ 	char		*dirpath, *dir, *ccp;
+ 	const char	*progname, *Idir, *cp;
++	time_t		 t;
++	int		 c;
+ 
+ 	progname = strrchr(argv[0], '/');
+ 	if (progname == NULL)
+@@ -1878,8 +1880,11 @@ main(int argc, char *argv[])
+ 	texi.ign = 1;
+ 	Idir = NULL;
+ 
+-	while (-1 != (c = getopt(argc, argv, "I:"))) 
++	while (-1 != (c = getopt(argc, argv, "d:I:")))
+ 		switch (c) {
++		case ('d'):
++			texi.date = optarg;
++			break;
+ 		case ('I'):
+ 			Idir = optarg;
+ 			break;
+@@ -1905,16 +1910,28 @@ main(int argc, char *argv[])
+ 			*ccp = '\0';
+ 		texi.dirs = parsedirs(&texi, dir, Idir, &texi.dirsz);
+ 		free(dirpath);
++		if (NULL == texi.date) {
++			t = stat(argv[0], &st) == 0 ? st.st_mtime : time(NULL);
++			strftime(date, sizeof(date),
++			     "%B %e, %Y", localtime(&t));
++			texi.date = date;
++		}
+ 		parsefile(&texi, argv[0], 1);
+ 	} else {
+ 		texi.title = strdup("Unknown Manual");
+ 		texi.dirs = parsedirs(&texi, NULL, Idir, &texi.dirsz);
++		if (NULL == texi.date) {
++			t = time(NULL);
++			strftime(date, sizeof(date),
++			     "%B %e, %Y", localtime(&t));
++			texi.date = date;
++		}
+ 		parsestdin(&texi);
+ 	}
+ 
+ 	texiexit(&texi);
+ 	return(EXIT_FAILURE);
+ usage:
+-	fprintf(stderr, "usage: %s [-Idirs] [file]\n", progname);
++	fprintf(stderr, "usage: %s [-d date] [-I dirs] [file]\n", progname);
+ 	return(EXIT_FAILURE);
+ }
+diff --git a/texi2mdoc.1 b/texi2mdoc.1
+index 9f8169e..f479adc 100644
+--- a/texi2mdoc.1
++++ b/texi2mdoc.1
+@@ -14,7 +14,7 @@
+ .\" ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ .\" OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ .\"
+-.Dd $Mdocdate: February 25 2015 $
++.Dd $Mdocdate: November 13 2018 $
+ .Dt TEXI2MDOC 1
+ .Os
+ .Sh NAME
+@@ -22,6 +22,7 @@
+ .Nd convert texinfo documents to mdoc
+ .Sh SYNOPSIS
+ .Nm texi2mdoc
++.Op Fl d Ar date
+ .Op Fl I Ar dirs
+ .Op Ar file
+ .Sh DESCRIPTION
+@@ -39,6 +40,17 @@ By default,
+ reads from standard input.
+ Its arguments are as follows:
+ .Bl -tag -width Ds
++.It Fl d Ar date
++Set the output document date in the
++.Ic \&Dd
++macro to
++.Ar date ,
++to be specified in the format
++.Dq Ar Month Day , Year .
++If unspecified,
++.Nm
++uses the file modification date
++or the current date when reading from standard input.
+ .It Fl I Ar dirs
+ Colon-separated directories to search for
+ .Li @include
+diff --git a/util.c b/util.c
+index 944872f..c6de818 100644
+--- a/util.c
++++ b/util.c
+@@ -27,7 +27,6 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <time.h>
+ #include <unistd.h>
+ 
+ #include "extern.h"
+-- 
+2.19.1
+

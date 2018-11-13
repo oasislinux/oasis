@@ -356,7 +356,7 @@ file('bin/ffprobe', '755', '$outdir/ffprobe')
 exe('ffmpeg', {paths[[fftools/(ffmpeg.c ffmpeg_opt.c ffmpeg_filter.c ffmpeg_hw.c cmdutils.c.o)]], libs})
 file('bin/ffmpeg', '755', '$outdir/ffmpeg')
 
-rule('texi2mdoc', 'texi2mdoc -d 2018-11-06 -I $outdir $in >$out.tmp && mv $out.tmp $out')
+rule('texi2mdoc', [[texi2mdoc -d 'November 7, 2018' -I $outdir $in >$out.tmp && mv $out.tmp $out]])
 build('texi2mdoc', '$outdir/ffprobe.1', {'$srcdir/doc/ffprobe.texi', '|', '$outdir/config.texi'})
 build('texi2mdoc', '$outdir/ffmpeg.1', {'$srcdir/doc/ffmpeg.texi', '|', '$outdir/config.texi'})
 man{'$outdir/ffprobe.1', '$outdir/ffmpeg.1'}
