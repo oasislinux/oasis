@@ -45,7 +45,7 @@ pkg.deps = {'$outdir/include/efivar/efivar-guids.h'}
 lib('libefiboot.a', [[
 	src/(
 		crc32.c creator.c disk.c gpt.c loadopt.c path-helpers.c linux.c
-		linux-(ata i2o nvme pci pmem sas sata scsi virtblk).c
+		linux-(acpi acpi-root ata emmc i2o md nvme pci pci-root pmem sas sata scsi soc-root virtblk).c
 	)
 ]])
 lib('libefivar.a', [[
