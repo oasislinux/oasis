@@ -18,7 +18,6 @@ exe('bin/wpa_supplicant', [[
 		wpa_auth.c
 		wpa_auth_ie.c
 		pmksa_cache_auth.c
-		peerkey_auth.c
 	)
 	src/common/(
 		ctrl_iface_common.c
@@ -48,14 +47,13 @@ exe('bin/wpa_supplicant', [[
 	)
 	src/l2_packet/l2_packet_linux.c
 	src/rsn_supp/(
-		peerkey.c
 		pmksa_cache.c
 		preauth.c
 		tdls.c
 		wpa.c
 		wpa_ie.c
 	)
-	src/utils/(radiotap.c wpabuf.c)
+	src/utils/(bitfield.c radiotap.c wpabuf.c)
 	wpa_supplicant/(
 		blacklist.c
 		bss.c
@@ -68,6 +66,8 @@ exe('bin/wpa_supplicant', [[
 		ibss_rsn.c
 		main.c
 		notify.c
+		op_classes.c
+		rrm.c
 		scan.c
 		sme.c
 		wmm_ac.c
