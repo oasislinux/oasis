@@ -10,7 +10,7 @@ cflags{
 }
 
 lib('libnasm.a', [[
-	stdlib/(snprintf.c vsnprintf.c strlcpy.c strnlen.c)
+	stdlib/(snprintf.c vsnprintf.c strlcpy.c strnlen.c strrchrnul.c)
 	nasmlib/(
 		ver.c
 		crc64.c malloc.c
@@ -47,6 +47,7 @@ lib('libnasm.a', [[
 	macros/macros.c
 	output/(
 		outform.c outlib.c legacy.c
+		strtbl.c
 		nulldbg.c nullout.c
 		outbin.c outaout.c outcoff.c
 		outelf.c
