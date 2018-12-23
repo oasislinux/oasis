@@ -78,7 +78,7 @@
 #define HAVE_LIMITS_H 1
 #define HAVE_LINUX_FALLOC_H 1
 #define HAVE_LINUX_FD_H 1
-/* #undef HAVE_LINUX_FSMAP_H */
+#define HAVE_LINUX_FSMAP_H 1
 #define HAVE_LINUX_LOOP_H 1
 #define HAVE_LINUX_MAJOR_H 1
 #define HAVE_LINUX_TYPES_H 1
