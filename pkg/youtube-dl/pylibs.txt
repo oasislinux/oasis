@@ -116,6 +116,7 @@ youtube_dl/extractor/chaturbate.py
 youtube_dl/extractor/chilloutzone.py
 youtube_dl/extractor/chirbit.py
 youtube_dl/extractor/cinchcast.py
+youtube_dl/extractor/ciscolive.py
 youtube_dl/extractor/cjsw.py
 youtube_dl/extractor/cliphunter.py
 youtube_dl/extractor/clippit.py
@@ -330,6 +331,7 @@ youtube_dl/extractor/lci.py
 youtube_dl/extractor/lcp.py
 youtube_dl/extractor/learnr.py
 youtube_dl/extractor/lecture2go.py
+youtube_dl/extractor/lecturio.py
 youtube_dl/extractor/leeco.py
 youtube_dl/extractor/lego.py
 youtube_dl/extractor/lemonde.py
@@ -605,6 +607,7 @@ youtube_dl/extractor/tass.py
 youtube_dl/extractor/tastytrade.py
 youtube_dl/extractor/tbs.py
 youtube_dl/extractor/tdslifeway.py
+youtube_dl/extractor/teachable.py
 youtube_dl/extractor/teachertube.py
 youtube_dl/extractor/teachingchannel.py
 youtube_dl/extractor/teamcoco.py
@@ -633,6 +636,7 @@ youtube_dl/extractor/thisamericanlife.py
 youtube_dl/extractor/thisav.py
 youtube_dl/extractor/thisoldhouse.py
 youtube_dl/extractor/threeqsdn.py
+youtube_dl/extractor/tiktok.py
 youtube_dl/extractor/tinypic.py
 youtube_dl/extractor/tmz.py
 youtube_dl/extractor/tnaflix.py
@@ -685,7 +689,6 @@ youtube_dl/extractor/unistra.py
 youtube_dl/extractor/unity.py
 youtube_dl/extractor/uol.py
 youtube_dl/extractor/uplynk.py
-youtube_dl/extractor/upskill.py
 youtube_dl/extractor/urort.py
 youtube_dl/extractor/urplay.py
 youtube_dl/extractor/usanetwork.py
@@ -758,6 +761,7 @@ youtube_dl/extractor/wistia.py
 youtube_dl/extractor/worldstarhiphop.py
 youtube_dl/extractor/wrzuta.py
 youtube_dl/extractor/wsj.py
+youtube_dl/extractor/wwe.py
 youtube_dl/extractor/xbef.py
 youtube_dl/extractor/xboxclips.py
 youtube_dl/extractor/xfileshare.py
@@ -790,6 +794,7 @@ youtube_dl/extractor/zaq1.py
 youtube_dl/extractor/zattoo.py
 youtube_dl/extractor/zdf.py
 youtube_dl/extractor/zingmp3.py
+youtube_dl/extractor/zype.py
 youtube_dl/jsinterp.py
 youtube_dl/options.py
 youtube_dl/postprocessor/__init__.py
