@@ -1,4 +1,4 @@
-# 2,<xzcat git-manpages-2.19.2.tar.xz | pax -s '/\.\///' '*.[1-9]' | sort
+# 2,<xzcat git-manpages-2.20.1.tar.xz | pax -s '/\.\///' '*.[1-9]' | sort
 man1/git-add.1
 man1/git-am.1
 man1/git-annotate.1
@@ -82,6 +82,7 @@ man1/git-mergetool--lib.1
 man1/git-mergetool.1
 man1/git-mktag.1
 man1/git-mktree.1
+man1/git-multi-pack-index.1
 man1/git-mv.1
 man1/git-name-rev.1
 man1/git-notes.1

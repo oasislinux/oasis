@@ -46,6 +46,7 @@ lib('libgit.a', [[
 	combine-diff.c
 	commit.c
 	commit-graph.c
+	commit-reach.c
 	compat/obstack.c
 	compat/regex/regex.c.o
 	compat/terminal.c
@@ -60,6 +61,7 @@ lib('libgit.a', [[
 	ctype.c
 	date.c
 	decorate.c
+	delta-islands.c
 	diff-delta.c
 	diff-lib.c
 	diff-no-index.c
@@ -93,6 +95,7 @@ lib('libgit.a', [[
 	help.c
 	hex.c
 	ident.c
+	interdiff.c
 	json-writer.c
 	kwset.c
 	levenshtein.c
@@ -113,6 +116,7 @@ lib('libgit.a', [[
 	merge-recursive.c
 	merge.c
 	mergesort.c
+	midx.c
 	name-hash.c
 	negotiator/default.c
 	negotiator/skipping.c
@@ -148,6 +152,7 @@ lib('libgit.a', [[
 	range-diff.c
 	reachable.c
 	read-cache.c
+	rebase-interactive.c
 	ref-filter.c
 	reflog-walk.c
 	refs.c
@@ -185,6 +190,7 @@ lib('libgit.a', [[
 	symlinks.c
 	tag.c
 	tempfile.c
+	thread-utils.c
 	tmp-objdir.c
 	trace.c
 	trailer.c
@@ -217,7 +223,6 @@ lib('libgit.a', [[
 	sha1dc/sha1.c
 	sha1dc/ubc_check.c
 
-	thread-utils.c
 	libxdiff.a
 	$builddir/pkg/zlib/libz.a
 ]])
@@ -295,6 +300,7 @@ local builtins = {
 	'merge-tree',
 	'mktag',
 	'mktree',
+	'multi-pack-index',
 	'mv',
 	'name-rev',
 	'notes',
@@ -308,7 +314,8 @@ local builtins = {
 	'push',
 	'range-diff',
 	'read-tree',
-	'rebase--helper',
+	'rebase',
+	'rebase--interactive',
 	'receive-pack',
 	'reflog',
 	'remote',
@@ -400,7 +407,7 @@ x('merge-one-file', '755')
 x('merge-resolve', '755')
 x('mergetool', '755')
 x('quiltimport', '755')
-x('rebase', '755')
+x('legacy-rebase', '755')
 x('remote-testgit', '755')
 x('request-pull', '755')
 x('stash', '755')
@@ -411,7 +418,7 @@ x('web--browse', '755')
 x('mergetool--lib', '644')
 x('parse-remote', '644')
 x('rebase--am', '644')
-x('rebase--interactive', '644')
+x('rebase--common', '644')
 x('rebase--preserve-merges', '644')
 x('rebase--merge', '644')
 x('sh-setup', '644')

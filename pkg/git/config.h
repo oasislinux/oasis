@@ -3,7 +3,7 @@
 #define DEFAULT_PAGER ""
 #define ETC_GITATTRIBUTES "/etc/gitattributes"
 #define ETC_GITCONFIG "/etc/gitconfig"
-#define GIT_BUILT_FROM_COMMIT "2512f15446149235156528dafbe75930c712b29e"
+#define GIT_BUILT_FROM_COMMIT "0d0ac3826a3bbb9247e39e12623bbcfdd722f24c"
 #define GIT_EXEC_PATH "libexec/git-core"
 #define GIT_HOST_CPU "unknown"
 #define GIT_HTML_PATH "share/doc/git-doc"
@@ -11,7 +11,7 @@
 #define GIT_LOCALE_PATH "/share/locale"
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
-#define GIT_VERSION "2.19.2"
+#define GIT_VERSION "2.20.1"
 #define HAVE_ALLOCA_H
 #define HAVE_PATHS_H
 #define HAVE_DEV_TTY
