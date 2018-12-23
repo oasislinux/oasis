@@ -38,7 +38,7 @@
 #define PACKAGE "msmtp"
 #define PACKAGE_BUGREPORT "marlam@marlam.de"
 #define PACKAGE_NAME "msmtp"
-#define PACKAGE_STRING "msmtp 1.8.0"
+#define PACKAGE_STRING "msmtp 1.8.1"
 #define PACKAGE_TARNAME "msmtp"
 #define PACKAGE_URL "https://marlam.de/msmtp"
 #define PACKAGE_VERSION "1.8.0"
@@ -59,7 +59,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.8.0"
+#define VERSION "1.8.1"
 #if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
 #define W32_NATIVE 1
 #endif
