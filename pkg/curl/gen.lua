@@ -66,7 +66,7 @@ lib('libcurl.a', [[
 		)
 		vtls/(
 			openssl.c gtls.c vtls.c nss.c
-			polarssl.c polarssl_threadlock.c axtls.c
+			polarssl.c polarssl_threadlock.c
 			cyassl.c schannel.c schannel_verify.c
 			darwinssl.c gskit.c mbedtls.c mesalink.c
 		)

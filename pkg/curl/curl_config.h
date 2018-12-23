@@ -56,7 +56,6 @@
 #define HAVE_DECL_GETPWUID_R 1
 /* #undef HAVE_DECL_GETPWUID_R_MISSING */
 #define HAVE_DLFCN_H 1
-#define HAVE_ENGINE_CLEANUP 1
 #define HAVE_ERRNO_H 1
 /* #undef HAVE_ERR_H */
 #define HAVE_FCNTL 1
@@ -306,7 +305,6 @@
 #define STRERROR_R_TYPE_ARG3 size_t
 #define TIME_WITH_SYS_TIME 1
 /* #undef USE_ARES */
-/* #undef USE_AXTLS */
 /* #undef USE_CYASSL */
 /* #undef USE_DARWINSSL */
 /* #undef USE_GNUTLS */
