@@ -1,5 +1,5 @@
 #define nstiny
-#define NETSURF_HOMEPAGE "https://google.com"
+#define NETSURF_HOMEPAGE "https://duckduckgo.com/html"
 #define TINY_RESPATH "/share/netsurf:/share/fonts"
 
 #define TINY_FONT_SANS_SERIF "source-sans-pro/SourceSansPro-Regular.otf"

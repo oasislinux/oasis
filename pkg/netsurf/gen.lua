@@ -182,6 +182,7 @@ build('awk', '$outdir/Messages', {'$srcdir/resources/FatMessages', '|', '$dir/me
 })
 file('share/netsurf/Messages', '644', '$outdir/Messages')
 
+file('share/netsurf/SearchEngines', '644', '$srcdir/resources/SearchEngines')
 file('share/netsurf/adblock.css', '644', '$srcdir/resources/adblock.css')
 file('share/netsurf/credits.html', '644', '$srcdir/resources/en/credits.html')
 file('share/netsurf/default.css', '644', '$srcdir/resources/default.css')
