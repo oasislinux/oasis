@@ -5,6 +5,7 @@
 #define CONFIGFILE "/etc/nsd/nsd.conf"
 /* #undef DARWIN_BROKEN_SETREUID */
 #define DBFILE "/var/db/nsd/nsd.db"
+/* #undef DNSTAP_SOCKET_PATH */
 #define EDNS_MAX_MESSAGE_LEN 4096
 #define FACILITY LOG_DAEMON
 #define HAVE_ACCEPT4 1
@@ -145,10 +146,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.1.25"
+#define PACKAGE_STRING "NSD 4.1.26"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.1.25"
+#define PACKAGE_VERSION "4.1.26"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
@@ -167,6 +168,7 @@
 #define UDP_MAX_MESSAGE_LEN 512
 #define UDP_PORT "53"
 #define USER "nsd"
+/* #undef USE_DNSTAP */
 #define USE_MINI_EVENT 1
 /* #undef USE_MMAP_ALLOC */
 #define USE_RADIX_TREE /**/
