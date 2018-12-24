@@ -26,7 +26,7 @@ Updating your system is as simple as
 
 	git -C /src/oasis pull
 	samu -C /src/oasis commit
-	doas git -C / merge oasis
+	doas git -C / merge
 
 For more information, see the [wiki].
 
