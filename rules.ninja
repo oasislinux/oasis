@@ -7,6 +7,7 @@ rule cc
   command = $cc -MMD -MF $out.d $cflags -c -o $out $in
   depfile = $out.d
   deps = gcc
+  description = CC $out
 
 rule as
   command = $as $asflags -o $out $in
