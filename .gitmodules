@@ -205,10 +205,6 @@
 [submodule "pkg/sbase/src"]
 	path = pkg/sbase/src
 	url = https://github.com/michaelforney/sbase
-[submodule "pkg/scc/src"]
-	path = pkg/scc/src
-	url = git://git.2f30.org/scc
-	ignore = all
 [submodule "pkg/sdhcp/src"]
 	path = pkg/sdhcp/src
 	url = https://github.com/michaelforney/sdhcp

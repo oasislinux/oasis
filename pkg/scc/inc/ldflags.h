@@ -1,4 +1,0 @@
-char *ldflags[] = {
-	"-static",
-	NULL
-};
