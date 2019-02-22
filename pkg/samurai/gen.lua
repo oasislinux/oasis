@@ -8,7 +8,7 @@ exe('samu', {
 	'htab.c',
 	'log.c',
 	'parse.c',
-	'samurai.c',
+	'samu.c',
 	'scan.c',
 	'tool.c',
 	'tree.c',
