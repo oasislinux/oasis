@@ -1,0 +1,28 @@
+From 9a5f78919d8d37684d653a8ef1da47a8bfd556a9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 31 Jan 2019 18:00:24 -0800
+Subject: [PATCH] Increase maximum string length
+
+The C standard requires that implementations support internal identifiers
+at least 63 characters long, so QBE should allow for identifiers at
+least that long.
+---
+ all.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/all.h b/all.h
+index 24a1755..1364024 100644
+--- a/all.h
++++ b/all.h
+@@ -31,7 +31,7 @@ typedef struct Dat Dat;
+ typedef struct Target Target;
+ 
+ enum {
+-	NString = 32,
++	NString = 64,
+ 	NPred   = 63,
+ 	NIns    = 1 << 20,
+ 	NAlign  = 3,
+-- 
+2.20.1
+

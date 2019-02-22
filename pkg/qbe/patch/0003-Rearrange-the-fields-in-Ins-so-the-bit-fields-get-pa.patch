@@ -1,0 +1,104 @@
+From 6324d4f3607c3faf05c09f18fcef0b162b212e86 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 14 Feb 2019 13:23:28 -0800
+Subject: [PATCH] Rearrange the fields in Ins so the bit-fields get packed
+ together
+
+---
+ all.h        |  2 +-
+ amd64/sysv.c |  2 +-
+ arm64/abi.c  |  5 +----
+ load.c       |  2 +-
+ parse.c      | 12 ++++++------
+ 5 files changed, 10 insertions(+), 13 deletions(-)
+
+diff --git a/all.h b/all.h
+index 1364024..668bb77 100644
+--- a/all.h
++++ b/all.h
+@@ -197,9 +197,9 @@ struct Op {
+ 
+ struct Ins {
+ 	uint op:30;
++	uint cls:2;
+ 	Ref to;
+ 	Ref arg[2];
+-	uint cls:2;
+ };
+ 
+ struct Phi {
+diff --git a/amd64/sysv.c b/amd64/sysv.c
+index d70e70d..86c59bf 100644
+--- a/amd64/sysv.c
++++ b/amd64/sysv.c
+@@ -345,7 +345,7 @@ selcall(Fn *fn, Ins *i0, Ins *i1, RAlloc **rap)
+ 		ra = alloc(sizeof *ra);
+ 		/* specific to NAlign == 3 */
+ 		al = aret.align >= 2 ? aret.align - 2 : 0;
+-		ra->i = (Ins){Oalloc+al, r1, {getcon(aret.size, fn)}, Kl};
++		ra->i = (Ins){Oalloc+al, Kl, r1, {getcon(aret.size, fn)}};
+ 		ra->link = (*rap);
+ 		*rap = ra;
+ 	} else {
+diff --git a/arm64/abi.c b/arm64/abi.c
+index 1c97ef3..6eb40e3 100644
+--- a/arm64/abi.c
++++ b/arm64/abi.c
+@@ -313,10 +313,7 @@ stkblob(Ref r, Class *c, Fn *fn, Insl **ilp)
+ 	al = c->t->align - 2; /* NAlign == 3 */
+ 	if (al < 0)
+ 		al = 0;
+-	il->i = (Ins){
+-		Oalloc + al, r,
+-		{getcon(c->t->size, fn)}, Kl
+-	};
++	il->i = (Ins){Oalloc + al, Kl, r, {getcon(c->t->size, fn)}};
+ 	il->link = *ilp;
+ 	*ilp = il;
+ }
+diff --git a/load.c b/load.c
+index 504b2d8..6f5b6ab 100644
+--- a/load.c
++++ b/load.c
+@@ -77,7 +77,7 @@ iins(int cls, int op, Ref a0, Ref a1, Loc *l)
+ 	ist->num = inum++;
+ 	ist->bid = l->blk->id;
+ 	ist->off = l->off;
+-	ist->new.ins = (Ins){op, R, {a0, a1}, cls};
++	ist->new.ins = (Ins){op, cls, R, {a0, a1}};
+ 	return ist->new.ins.to = newtmp("ld", cls, curf);
+ }
+ 
+diff --git a/parse.c b/parse.c
+index 3c4200e..b0cdd8c 100644
+--- a/parse.c
++++ b/parse.c
+@@ -452,19 +452,19 @@ parserefl(int arg)
+ 			err("invalid function parameter");
+ 		if (k == 4)
+ 			if (arg)
+-				*curi = (Ins){Oargc, R, {TYPE(ty), r}, Kl};
++				*curi = (Ins){Oargc, Kl, R, {TYPE(ty), r}};
+ 			else
+-				*curi = (Ins){Oparc, r, {TYPE(ty)}, Kl};
++				*curi = (Ins){Oparc, Kl, r, {TYPE(ty)}};
+ 		else if (env)
+ 			if (arg)
+-				*curi = (Ins){Oarge, R, {r}, k};
++				*curi = (Ins){Oarge, k, R, {r}};
+ 			else
+-				*curi = (Ins){Opare, r, {R}, k};
++				*curi = (Ins){Opare, k, r, {R}};
+ 		else
+ 			if (arg)
+-				*curi = (Ins){Oarg, R, {r}, k};
++				*curi = (Ins){Oarg, k, R, {r}};
+ 			else
+-				*curi = (Ins){Opar, r, {R}, k};
++				*curi = (Ins){Opar, k, r, {R}};
+ 		curi++;
+ 		hasenv |= env;
+ 		if (peek() == Trparen)
+-- 
+2.20.1
+
