@@ -1,0 +1,34 @@
+From 2cc852e07038ee17d56ec6a54ae9b1c19b598289 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 21 Feb 2019 23:57:15 -0800
+Subject: [PATCH] Remove unused variable
+
+---
+ perp/perpd_svdef.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/perp/perpd_svdef.c b/perp/perpd_svdef.c
+index 82fb0a0..7b5e87f 100644
+--- a/perp/perpd_svdef.c
++++ b/perp/perpd_svdef.c
+@@ -186,7 +186,7 @@ void
+ perpd_svdef_checkfail(struct svdef *svdef)
+ {
+   struct subsv  *subsv;
+-  int            target, r = 0;
++  int            target;
+ 
+   /* insanity? */
+   if(!(svdef->bitflags & SVDEF_FLAG_ACTIVE))
+@@ -201,7 +201,7 @@ perpd_svdef_checkfail(struct svdef *svdef)
+   subsv = (svdef->bitflags & SVDEF_FLAG_HASLOG) ? &svdef->svpair[SUBSV_LOG] : NULL;
+   if((subsv != NULL) && (subsv->bitflags & SUBSV_FLAG_FAILING)){
+       target = (subsv->bitflags & SUBSV_FLAG_ISRESET) ? SVRUN_RESET : SVRUN_START;
+-      r = perpd_svdef_run(svdef, SUBSV_LOG, target);
++      perpd_svdef_run(svdef, SUBSV_LOG, target);
+   }
+ 
+   /* XXX, bail here if log is failing? */
+-- 
+2.20.1
+

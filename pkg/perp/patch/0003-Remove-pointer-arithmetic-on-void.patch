@@ -1,0 +1,194 @@
+From fa651ab426b8c6be7398799ebab26e87918cc5f1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 21 Feb 2019 23:28:17 -0800
+Subject: [PATCH] Remove pointer arithmetic on void *
+
+---
+ lasagna/cdb/cdb_dynread.c     |  2 +-
+ lasagna/dynbuf/dynbuf_pack.c  |  2 +-
+ lasagna/dynbuf/dynbuf_put.c   |  5 +++--
+ lasagna/hdb/hdb_dynread.c     |  2 +-
+ lasagna/ioq/ioq_put.c         | 10 +++++-----
+ lasagna/packet/packet_write.c |  5 +++--
+ perp/tinylog.c                |  4 ++--
+ runtools/runchoom.c           |  4 ++--
+ 8 files changed, 18 insertions(+), 16 deletions(-)
+
+diff --git a/lasagna/cdb/cdb_dynread.c b/lasagna/cdb/cdb_dynread.c
+index b7135c5..f5e7ab8 100644
+--- a/lasagna/cdb/cdb_dynread.c
++++ b/lasagna/cdb/cdb_dynread.c
+@@ -23,7 +23,7 @@ cdb_dynread(struct cdb *C, struct dynbuf *B, size_t len, uint32_t offset)
+   if(dynbuf_grow(B, len) == -1)
+       return -1;
+ 
+-  if(cdb_read(C, dynbuf_BUF(B) + dynbuf_LEN(B), len, offset) == -1)
++  if(cdb_read(C, (uchar_t *)dynbuf_BUF(B) + dynbuf_LEN(B), len, offset) == -1)
+       return -1;
+ 
+   dynbuf_LEN(B) += len;
+diff --git a/lasagna/dynbuf/dynbuf_pack.c b/lasagna/dynbuf/dynbuf_pack.c
+index 84727cb..4543a0a 100644
+--- a/lasagna/dynbuf/dynbuf_pack.c
++++ b/lasagna/dynbuf/dynbuf_pack.c
+@@ -46,7 +46,7 @@ dynbuf_pack(struct dynbuf *D, const char *fmt, ...)
+   }
+ 
+   /* with need satisfied, append directly into buf: */
+-  b = (D->buf + D->p);
++  b = (uchar_t *)D->buf + D->p;
+ 
+   va_start(args, fmt);
+   w = upak_vpack(b, fmt, args);
+diff --git a/lasagna/dynbuf/dynbuf_put.c b/lasagna/dynbuf/dynbuf_put.c
+index 6ff7bdb..46989c4 100644
+--- a/lasagna/dynbuf/dynbuf_put.c
++++ b/lasagna/dynbuf/dynbuf_put.c
+@@ -19,10 +19,11 @@ dynbuf_putbuf(struct dynbuf *d, const void *buf, size_t len)
+     if(dynbuf_grow(d, (len + 1)) != 0)
+         return -1;  /* error! */
+ 
+-    buf_copy((d->buf + d->p), buf, len);
++    b = d->buf;
++    buf_copy(b + d->p, buf, len);
+ 
+     d->p += len;
+-    b = d->buf; b[d->p] = 'Q'; /* "offensive programming" */
++    b[d->p] = 'Q'; /* "offensive programming" */
+ 
+     return 0; /* no error */
+ }
+diff --git a/lasagna/hdb/hdb_dynread.c b/lasagna/hdb/hdb_dynread.c
+index cd818bc..82d20d2 100644
+--- a/lasagna/hdb/hdb_dynread.c
++++ b/lasagna/hdb/hdb_dynread.c
+@@ -23,7 +23,7 @@ hdb_dynread(struct hdb *H, struct dynbuf *B, size_t len, uint32_t offset)
+   if(dynbuf_grow(B, len) == -1)
+       return -1;
+ 
+-  if(hdb_read(H, dynbuf_BUF(B) + dynbuf_LEN(B), len, offset) == -1)
++  if(hdb_read(H, (uchar_t *)dynbuf_BUF(B) + dynbuf_LEN(B), len, offset) == -1)
+       return -1;
+ 
+   dynbuf_LEN(B) += len;
+diff --git a/lasagna/ioq/ioq_put.c b/lasagna/ioq/ioq_put.c
+index 47f4897..20737a6 100644
+--- a/lasagna/ioq/ioq_put.c
++++ b/lasagna/ioq/ioq_put.c
+@@ -44,7 +44,7 @@
+ 
+ 
+ /* internal declarations: */
+-static int write_all(int fd, void *buf, size_t to_write, ssize_t (*op)());
++static int write_all(int fd, uchar_t *buf, size_t to_write, ssize_t (*op)());
+ 
+ 
+ /*
+@@ -63,13 +63,13 @@ static int write_all(int fd, void *buf, size_t to_write, ssize_t (*op)());
+ */      
+ static
+ int
+-write_all(int fd, void *buf, size_t to_write, ssize_t (*op)())
++write_all(int fd, uchar_t *buf, size_t to_write, ssize_t (*op)())
+ {
+   ssize_t  w = 0;
+ 
+   while(to_write){
+       do{
+-          w =  op(fd, buf, to_write);
++          w =  op(fd, (void *)buf, to_write);
+       }while((w == -1) && (errno == EINTR));
+ 
+       if(w == -1)  return -1;  /* error! */
+@@ -137,7 +137,7 @@ ioq_put(ioq_t *ioq, const uchar_t *data, size_t len)
+       while(len > ioq->n){
+           /* don't write more than len! */
+           if(len < n) n = len;
+-          if(write_all(ioq->fd, (void *)data, n, ioq->op) == -1){
++          if(write_all(ioq->fd, (uchar_t *)data, n, ioq->op) == -1){
+               /* write() error: */
+               return -1;
+           }
+@@ -178,7 +178,7 @@ ioq_putflush(ioq_t *ioq, const uchar_t *data, size_t len)
+   if(ioq_flush(ioq) == -1) return -1;
+ 
+   /* write() the rest */
+-  return write_all(ioq->fd, (void *)data, len, ioq->op);
++  return write_all(ioq->fd, (uchar_t *)data, len, ioq->op);
+ }
+ 
+ 
+diff --git a/lasagna/packet/packet_write.c b/lasagna/packet/packet_write.c
+index 66c5f8c..6af6a94 100644
+--- a/lasagna/packet/packet_write.c
++++ b/lasagna/packet/packet_write.c
+@@ -50,11 +50,12 @@ packet_write(int fd, const void *packet, size_t n)
+ {
+    ssize_t  w = 0;
+    size_t   to_write = n;
++   const char *b = packet;
+ 
+    while(to_write > 0){
+ 
+        do{
+-           w = write(fd, packet, to_write);
++           w = write(fd, b, to_write);
+        }while((w == -1) && (errno == EINTR));
+ 
+        if(w == -1)
+@@ -63,7 +64,7 @@ packet_write(int fd, const void *packet, size_t n)
+        if(w == 0)
+            continue;
+ 
+-       packet += w;
++       b += w;
+        to_write -= w;
+    }
+ 
+diff --git a/perp/tinylog.c b/perp/tinylog.c
+index 8df6283..a593a66 100644
+--- a/perp/tinylog.c
++++ b/perp/tinylog.c
+@@ -124,7 +124,7 @@ const char *gzip_path = NULL;
+ /*
+ ** declarations in scope:
+ */
+-static void  write_all(int fd, void *buf, size_t len);
++static void  write_all(int fd, char *buf, size_t len);
+ static void stamp8601_make(char *stamp_buf);
+ static void init_logdir(struct tinylog *tinylog);
+ static void init_current(struct tinylog *tinylog, int resume);
+@@ -182,7 +182,7 @@ ssize_t read_op(int fd, void *buf, size_t len)
+ */
+ static
+ void
+-write_all(int fd, void *buf, size_t len)
++write_all(int fd, char *buf, size_t len)
+ {
+   ssize_t w = 0;
+   tain_t  epause = tain_INIT(0, EPAUSE);
+diff --git a/runtools/runchoom.c b/runtools/runchoom.c
+index e318e2a..0682ad3 100644
+--- a/runtools/runchoom.c
++++ b/runtools/runchoom.c
+@@ -59,7 +59,7 @@ static char  setbuf[256];
+ static char  pidfmt[NFMT_SIZE];
+ 
+ /* functions in scope: */
+-static int write_all(int fd, void *buf, size_t to_write);
++static int write_all(int fd, char *buf, size_t to_write);
+ static void do_choom(void);
+ 
+ /* syserr_warn() macro: */
+@@ -77,7 +77,7 @@ static void do_choom(void);
+ 
+ static
+ int
+-write_all(int fd, void *buf, size_t to_write)
++write_all(int fd, char *buf, size_t to_write)
+ {
+   ssize_t  w = 0;
+ 
+-- 
+2.20.1
+
