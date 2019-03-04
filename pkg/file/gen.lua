@@ -1,4 +1,4 @@
-local version = '5.35'
+local version = '5.36'
 cflags{
 	'-Wall',
 	'-D HAVE_CONFIG_H',

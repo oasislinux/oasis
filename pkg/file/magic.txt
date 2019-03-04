@@ -49,6 +49,7 @@ citrus
 clarion
 claris
 clipper
+clojure
 coff
 commands
 communications
@@ -79,6 +80,7 @@ elf
 encore
 epoc
 erlang
+espressif
 esri
 etf
 fcs
