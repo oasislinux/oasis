@@ -11,7 +11,7 @@
 #define GIT_LOCALE_PATH "/share/locale"
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
-#define GIT_VERSION "2.20.1"
+#define GIT_VERSION "2.21.0"
 #define HAVE_ALLOCA_H
 #define HAVE_PATHS_H
 #define HAVE_DEV_TTY
@@ -29,3 +29,5 @@
 #define SHA1DC_INIT_SAFE_HASH_DEFAULT 0
 #define SHA1DC_CUSTOM_INCLUDE_SHA1_C "cache.h"
 #define SHA1DC_CUSTOM_INCLUDE_UBC_CHECK_C "git-compat-util.h"
+
+#define SHA256_BLK
