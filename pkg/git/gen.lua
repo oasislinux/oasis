@@ -425,30 +425,6 @@ x('rebase--preserve-merges', '644')
 x('sh-setup', '644')
 x('sh-i18n', '644')
 
-local function x(name)
-	build('sed', '$outdir/git-'..name, '$srcdir/git-'..name..'.perl', {
-		expr={
-			[[-e '1ause lib (split(/:/, $$ENV{GITPERLLIB} || "/share/perl5"));']],
-			'-e s,@@GIT_VERSION@@,2.19.1,g',
-		},
-	})
-	file('libexec/git-core/git-'..name, '755', '$outdir/git-'..name)
-end
-
--- src/Makefile:/^SCRIPT_PERL.\+=
-x('send-email')
-x('add--interactive')
-
-for name in iterlines('perllibs.txt') do
-	build('sed', '$outdir/perl/'..name, '$srcdir/perl/'..name, {
-		expr={
-			'-e s,@@LOCALEDIR@@,/share/locale,g',
-			'-e s,@@NO_PERL_CPAN_FALLBACKS@@,,g',
-		},
-	})
-	file('share/perl5/'..name, '644', '$outdir/perl/'..name)
-end
-
 for _, name in ipairs{'git-shell', 'git-upload-pack'} do
 	sym('bin/'..name, '../libexec/git-core/'..name)
 end
