@@ -1,8 +1,8 @@
-#define BUILD  "20181112"
+#define BUILD  "20190213"
 #undef inline
 #define INLINE  __inline__ __attribute__((always_inline))
 #define PACKAGE_NAME  "libjpeg-turbo"
-#define VERSION  "2.0.1"
+#define VERSION  "2.0.2"
 #define SIZEOF_SIZE_T  8
 #define HAVE_BUILTIN_CTZL
 /* #undef HAVE_INTRIN_H */
