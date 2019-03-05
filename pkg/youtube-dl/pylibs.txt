@@ -237,6 +237,7 @@ youtube_dl/extractor/funk.py
 youtube_dl/extractor/funnyordie.py
 youtube_dl/extractor/fusion.py
 youtube_dl/extractor/fxnetworks.py
+youtube_dl/extractor/gaia.py
 youtube_dl/extractor/gameinformer.py
 youtube_dl/extractor/gameone.py
 youtube_dl/extractor/gamespot.py
@@ -273,6 +274,7 @@ youtube_dl/extractor/hidive.py
 youtube_dl/extractor/historicfilms.py
 youtube_dl/extractor/hitbox.py
 youtube_dl/extractor/hitrecord.py
+youtube_dl/extractor/hketv.py
 youtube_dl/extractor/hornbunny.py
 youtube_dl/extractor/hotnewhiphop.py
 youtube_dl/extractor/hotstar.py
@@ -281,6 +283,7 @@ youtube_dl/extractor/howstuffworks.py
 youtube_dl/extractor/hrti.py
 youtube_dl/extractor/huajiao.py
 youtube_dl/extractor/huffpost.py
+youtube_dl/extractor/hungama.py
 youtube_dl/extractor/hypem.py
 youtube_dl/extractor/iconosquare.py
 youtube_dl/extractor/ign.py
@@ -342,6 +345,7 @@ youtube_dl/extractor/lifenews.py
 youtube_dl/extractor/limelight.py
 youtube_dl/extractor/line.py
 youtube_dl/extractor/linkedin.py
+youtube_dl/extractor/linuxacademy.py
 youtube_dl/extractor/litv.py
 youtube_dl/extractor/liveleak.py
 youtube_dl/extractor/livestream.py
@@ -354,6 +358,7 @@ youtube_dl/extractor/m6.py
 youtube_dl/extractor/macgamestore.py
 youtube_dl/extractor/mailru.py
 youtube_dl/extractor/makertv.py
+youtube_dl/extractor/malltv.py
 youtube_dl/extractor/mangomolo.py
 youtube_dl/extractor/manyvids.py
 youtube_dl/extractor/markiza.py
@@ -456,6 +461,7 @@ youtube_dl/extractor/ooyala.py
 youtube_dl/extractor/openload.py
 youtube_dl/extractor/ora.py
 youtube_dl/extractor/orf.py
+youtube_dl/extractor/outsidetv.py
 youtube_dl/extractor/packtpub.py
 youtube_dl/extractor/pandatv.py
 youtube_dl/extractor/pandoratv.py
@@ -475,6 +481,7 @@ youtube_dl/extractor/piksel.py
 youtube_dl/extractor/pinkbike.py
 youtube_dl/extractor/pladform.py
 youtube_dl/extractor/playfm.py
+youtube_dl/extractor/playplustv.py
 youtube_dl/extractor/plays.py
 youtube_dl/extractor/playtvak.py
 youtube_dl/extractor/playvid.py
@@ -647,6 +654,7 @@ youtube_dl/extractor/toutv.py
 youtube_dl/extractor/toypics.py
 youtube_dl/extractor/traileraddict.py
 youtube_dl/extractor/trilulilu.py
+youtube_dl/extractor/trunews.py
 youtube_dl/extractor/trutv.py
 youtube_dl/extractor/tube8.py
 youtube_dl/extractor/tubitv.py
@@ -736,7 +744,6 @@ youtube_dl/extractor/vodplatform.py
 youtube_dl/extractor/voicerepublic.py
 youtube_dl/extractor/voot.py
 youtube_dl/extractor/voxmedia.py
-youtube_dl/extractor/vporn.py
 youtube_dl/extractor/vrak.py
 youtube_dl/extractor/vrt.py
 youtube_dl/extractor/vrv.py
@@ -746,6 +753,7 @@ youtube_dl/extractor/vuclip.py
 youtube_dl/extractor/vvvvid.py
 youtube_dl/extractor/vyborymos.py
 youtube_dl/extractor/vzaar.py
+youtube_dl/extractor/wakanim.py
 youtube_dl/extractor/walla.py
 youtube_dl/extractor/washingtonpost.py
 youtube_dl/extractor/wat.py
