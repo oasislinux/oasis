@@ -33,23 +33,18 @@ END {
 	while (getline < font) {
 		if ($1 == "STARTCHAR") {
 			readchar()
-			break
+			continue
 		}
-		if ($1 == "CHARS")
+		if ($1 == "CHARS") {
 			$2 = unimap_len
-		else if ($1 == "FONT")
+		} else if ($1 == "FONT") {
 			sub(/-[^-]*-[^-]*$/, "-" charset, $2)
+		} else if ($1 == "ENDFONT") {
+			for (i = 0; i < unimap_len; ++i) {
+				encoding = unimap[i]
+				printchar(i >= 32 ? encoding : i, encoding)
+			}
+		}
 		print
 	}
-	while (getline < font) {
-		if ($1 == "STARTCHAR")
-			readchar()
-		else
-			tail = tail $0 "\n"
-	}
-	for (i = 0; i < unimap_len; ++i) {
-		encoding = unimap[i]
-		printchar(i >= 32 ? encoding : i, encoding)
-	}
-	printf "%s", tail
 }
