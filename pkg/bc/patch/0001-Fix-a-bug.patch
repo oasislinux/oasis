@@ -1,0 +1,25 @@
+From b8e4f427c41a66b272a04ef2506020e64504b443 Mon Sep 17 00:00:00 2001
+From: Gavin Howard <yzena.tech@gmail.com>
+Date: Wed, 20 Feb 2019 09:27:30 -0700
+Subject: [PATCH] Fix a bug
+
+---
+ src/read.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/read.c b/src/read.c
+index 43fa8e12..45237397 100644
+--- a/src/read.c
++++ b/src/read.c
+@@ -118,7 +118,7 @@ BcStatus bc_read_line(BcVec *vec, const char *prompt) {
+ 	if (bc_read_binary(vec->v, vec->len - 1))
+ 		return bc_vm_verr(BC_ERROR_VM_BIN_FILE, bc_program_stdin_name);
+ 
+-	return BC_STATUS_SUCCESS;
++	return s;
+ }
+ 
+ BcStatus bc_read_file(const char *path, char **buf) {
+-- 
+2.21.0
+
