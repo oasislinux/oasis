@@ -1,0 +1,26 @@
+From 2fcb277b0fa2993b00e0a85fe0e28697fe855dd1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 6 Mar 2019 20:31:11 -0800
+Subject: [PATCH] Consider vacall when determining if a local needs to be
+ loaded
+
+---
+ load.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/load.c b/load.c
+index 6f5b6ab..a21a488 100644
+--- a/load.c
++++ b/load.c
+@@ -231,7 +231,7 @@ def(Slice sl, bits msk, Blk *b, Ins *i, Loc *il)
+ 	while (i > b->ins) {
+ 		--i;
+ 		if (killsl(i->to, sl)
+-		|| (i->op == Ocall && escapes(sl.ref, curf)))
++		|| ((i->op == Ocall || i->op == Ovacall) && escapes(sl.ref, curf)))
+ 			goto Load;
+ 		ld = isload(i->op);
+ 		if (ld) {
+-- 
+2.21.0
+
