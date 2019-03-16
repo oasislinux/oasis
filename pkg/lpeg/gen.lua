@@ -1,5 +1,6 @@
 cflags{
 	'-std=c99',
+	'-D NDEBUG',
 	'-I pkg/lua/src/src',
 }
 
