@@ -33,6 +33,7 @@ return {
 		'less',
 		'libfuse',
 		'ncurses',
+		'python',
 		'the_silver_searcher',
 		'unzip',
 		'vis',
