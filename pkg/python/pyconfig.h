@@ -178,7 +178,7 @@
 #define HAVE_LIBDL 1
 /* #undef HAVE_LIBDLD */
 /* #undef HAVE_LIBIEEE */
-#define HAVE_LIBINTL_H 1
+/* #undef HAVE_LIBINTL_H */
 /* #undef HAVE_LIBREADLINE */
 /* #undef HAVE_LIBRESOLV */
 /* #undef HAVE_LIBSENDFILE */
