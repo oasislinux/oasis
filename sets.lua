@@ -48,6 +48,7 @@ return {
 		'man-pages-posix',
 	},
 	media={
+		'alsa-lib',
 		'alsa-utils',
 		'ffmpeg',
 		'mpv',
