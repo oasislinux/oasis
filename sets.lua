@@ -65,6 +65,7 @@ return {
 		'adobe-source-fonts',
 		'dmenu',
 		'netsurf',
+		'libinput',
 		'st',
 		'swc',
 		'terminus-font',
