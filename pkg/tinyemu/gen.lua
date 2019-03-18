@@ -3,7 +3,8 @@ cflags{
 	'-D CONFIG_FS_NET',
 	'-D CONFIG_RISCV_MAX_XLEN=64',
 	'-D CONFIG_SLIRP',
-	[[-D 'CONFIG_VERSION="2018-09-23"']],
+	'-D CONFIG_X86EMU',
+	[[-D 'CONFIG_VERSION="2019-02-10"']],
 	'-I $builddir/pkg/curl/include',
 	'-I $builddir/pkg/libressl/include',
 }
