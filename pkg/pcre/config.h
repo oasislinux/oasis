@@ -46,10 +46,10 @@
 #define PACKAGE "pcre"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "PCRE"
-#define PACKAGE_STRING "PCRE 8.42"
+#define PACKAGE_STRING "PCRE 8.43"
 #define PACKAGE_TARNAME "pcre"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "8.42"
+#define PACKAGE_VERSION "8.43"
 #define PARENS_NEST_LIMIT 250
 #define PCRECPP_EXP_DECL extern __attribute__ ((visibility ("default")))
 #define PCRECPP_EXP_DEFN __attribute__ ((visibility ("default")))
@@ -75,7 +75,7 @@
 #define SUPPORT_UCP /**/
 #define SUPPORT_UTF /**/
 /* #undef SUPPORT_VALGRIND */
-#define VERSION "8.42"
+#define VERSION "8.43"
 /* #undef const */
 /* #undef int64_t */
 /* #undef size_t */

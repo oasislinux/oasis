@@ -8,9 +8,9 @@ cflags{
 build('sed', '$outdir/include/pcre.h', '$srcdir/pcre.h.in', {
 	expr={
 		'-e s,@PCRE_MAJOR@,8,',
-		'-e s,@PCRE_MINOR@,42,',
+		'-e s,@PCRE_MINOR@,43,',
 		'-e s,@PCRE_PRERELEASE@,,',
-		'-e s,@PCRE_DATE@,2018-03-20,',
+		'-e s,@PCRE_DATE@,2019-02-23,',
 	},
 })
 pkg.hdrs = {'$outdir/include/pcre.h'}
