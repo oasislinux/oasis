@@ -199,7 +199,6 @@
 #define HAVE_LINUX_FALLOC_H 1
 #define HAVE_LINUX_FIB_RULES_H 1
 #define HAVE_LINUX_FIEMAP_H 1
-#define HAVE_LINUX_GENETLINK_H 1
 #define HAVE_LINUX_HIDDEV_H 1
 #define HAVE_LINUX_IF_ADDR_H 1
 #define HAVE_LINUX_IF_LINK_H 1
@@ -491,7 +490,7 @@
 /* #undef M32_SIZEOF_KERNEL_LONG_T */
 /* #undef M32_SIZEOF_LONG */
 /* #undef M68K */
-#define MANPAGE_DATE "2018-07-07"
+#define MANPAGE_DATE "2018-12-24"
 /* #undef METAG */
 /* #undef MICROBLAZE */
 /* #undef MIPS */
@@ -502,10 +501,10 @@
 #define PACKAGE "strace"
 #define PACKAGE_BUGREPORT "strace-devel@lists.strace.io"
 #define PACKAGE_NAME "strace"
-#define PACKAGE_STRING "strace 4.25"
+#define PACKAGE_STRING "strace 4.26"
 #define PACKAGE_TARNAME "strace"
 #define PACKAGE_URL "https://strace.io"
-#define PACKAGE_VERSION "4.25"
+#define PACKAGE_VERSION "4.26"
 /* #undef POWERPC */
 /* #undef POWERPC64 */
 /* #undef RISCV */
@@ -541,7 +540,7 @@
 # define __EXTENSIONS__ 1
 #endif
 /* #undef USE_UNWINDER */
-#define VERSION "4.25"
+#define VERSION "4.26"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
