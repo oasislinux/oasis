@@ -1,5 +1,4 @@
 cflags{
-	'-D FUSE_USE_VERSION=33',
 	'-I $dir',
 	'-I $srcdir/include',
 	'-I $srcdir/lib',
@@ -15,8 +14,8 @@ lib('libfuse.a', [[lib/(
 	fuse.c fuse_loop.c fuse_loop_mt.c
 	fuse_lowlevel.c fuse_opt.c
 	fuse_signals.c buffer.c cuse_lowlevel.c
-	helper.c modules/subdir.c
-	mount.c mount_util.c.o
+	helper.c modules/subdir.c mount_util.c.o
+	mount.c
 )]])
 
 fetch 'git'
