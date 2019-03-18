@@ -1,6 +1,7 @@
 #define MAN_CONF_FILE "/etc/man.conf"
 #define MANPATH_BASE "/share/man"
 #define MANPATH_DEFAULT "/share/man"
+#define OSENUM MANDOC_OS_OTHER
 #define UTF8_LOCALE "C.UTF-8"
 #define EFTYPE EINVAL
 #define HAVE_CMSG_XPG42 0
@@ -12,6 +13,7 @@
 #define HAVE_GETLINE 1
 #define HAVE_GETSUBOPT 1
 #define HAVE_ISBLANK 1
+#define HAVE_LESS_T 1
 #define HAVE_MKDTEMP 1
 #define HAVE_NTOHL 1
 #define HAVE_PLEDGE 0

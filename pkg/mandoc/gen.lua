@@ -9,6 +9,7 @@ lib('libmandoc.a', {
 	'man_macro.c',
 	'man_validate.c',
 
+	'arch.c',
 	'att.c',
 	'lib.c',
 	'mdoc.c',
@@ -29,6 +30,7 @@ lib('libmandoc.a', {
 	'chars.c',
 	'mandoc.c',
 	'mandoc_aux.c',
+	'mandoc_msg.c',
 	'mandoc_ohash.c',
 	'mandoc_xr.c',
 	'msec.c',
