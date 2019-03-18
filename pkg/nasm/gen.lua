@@ -13,7 +13,7 @@ lib('libnasm.a', [[
 	stdlib/(snprintf.c vsnprintf.c strlcpy.c strnlen.c strrchrnul.c)
 	nasmlib/(
 		ver.c
-		crc64.c malloc.c
+		crc64.c malloc.c errfile.c
 		md5c.c string.c
 		file.c mmap.c ilog2.c
 		realpath.c path.c
