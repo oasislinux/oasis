@@ -42,7 +42,6 @@ return {
 		'make',
 		'qbe',
 		'nasm',
-		'scc',
 		'strace',
 		'mc',
 		'man-pages-posix',
