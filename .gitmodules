@@ -67,6 +67,10 @@
 [submodule "pkg/fribidi/src"]
 	path = pkg/fribidi/src
 	url = https://github.com/fribidi/fribidi
+[submodule "pkg/fuse/src"]
+	path = pkg/fuse/src
+	url = https://github.com/libfuse/libfuse
+	ignore = all
 [submodule "pkg/git/src"]
 	path = pkg/git/src
 	url = https://github.com/git/git
@@ -100,10 +104,6 @@
 [submodule "pkg/libffi/src"]
 	path = pkg/libffi/src
 	url = https://github.com/libffi/libffi
-[submodule "pkg/libfuse/src"]
-	path = pkg/libfuse/src
-	url = https://github.com/libfuse/libfuse
-	ignore = all
 [submodule "pkg/libinput/src"]
 	path = pkg/libinput/src
 	url = https://github.com/michaelforney/libinput
