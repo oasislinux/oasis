@@ -382,7 +382,7 @@ function fetch(method)
 	else
 		script = 'scripts/fetch-'..method..'.sh'
 	end
-	build('fetch'..method, '$dir/fetch', {'|', '$dir/rev', script})
+	build('fetch'..method, '$dir/fetch', {'|', '$dir/ver', script})
 	if next(pkg.inputs.fetch) then
 		build('phony', table.keys(pkg.inputs.fetch), '$dir/fetch')
 	end
