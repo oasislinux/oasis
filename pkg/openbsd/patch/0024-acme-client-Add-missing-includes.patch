@@ -1,0 +1,25 @@
+From 7ea4349d2ed8afd672348a7d2f3534007e5dc442 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 18 Mar 2019 14:52:31 -0700
+Subject: [PATCH] acme-client: Add missing includes
+
+---
+ usr.sbin/acme-client/extern.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/usr.sbin/acme-client/extern.h b/usr.sbin/acme-client/extern.h
+index dda2edde4..d83ead634 100644
+--- a/usr.sbin/acme-client/extern.h
++++ b/usr.sbin/acme-client/extern.h
+@@ -17,6 +17,8 @@
+ #ifndef EXTERN_H
+ #define EXTERN_H
+ 
++#include <sys/cdefs.h>
++#include <sys/types.h>
+ #include "parse.h"
+ 
+ #define MAX_SERVERS_DNS 8
+-- 
+2.21.0
+
