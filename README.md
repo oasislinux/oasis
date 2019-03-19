@@ -57,7 +57,7 @@ up from the following:
 	- rc, sam
 * [awk](http://github.com/onetrueawk/awk/)
 * [bzip2](http://bzip.org/)
-* [bc](https://www.gnu.org/software/bc/)
+* [bc](https://github.com/gavinhoward/bc)
 * [curl](https://curl.haxx.se/)
 * [e2fsprogs](http://e2fsprogs.sourceforge.net/)
 * [git](https://git-scm.com/)
