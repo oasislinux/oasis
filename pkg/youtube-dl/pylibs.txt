@@ -38,9 +38,7 @@ youtube_dl/extractor/amcnetworks.py
 youtube_dl/extractor/americastestkitchen.py
 youtube_dl/extractor/amp.py
 youtube_dl/extractor/animeondemand.py
-youtube_dl/extractor/anitube.py
 youtube_dl/extractor/anvato.py
-youtube_dl/extractor/anysex.py
 youtube_dl/extractor/aol.py
 youtube_dl/extractor/apa.py
 youtube_dl/extractor/aparat.py
@@ -500,7 +498,6 @@ youtube_dl/extractor/pornotube.py
 youtube_dl/extractor/pornovoisines.py
 youtube_dl/extractor/pornoxo.py
 youtube_dl/extractor/presstv.py
-youtube_dl/extractor/primesharetv.py
 youtube_dl/extractor/promptfile.py
 youtube_dl/extractor/prosiebensat1.py
 youtube_dl/extractor/puhutv.py
@@ -545,7 +542,6 @@ youtube_dl/extractor/rtvnh.py
 youtube_dl/extractor/rtvs.py
 youtube_dl/extractor/rudo.py
 youtube_dl/extractor/ruhd.py
-youtube_dl/extractor/ruleporn.py
 youtube_dl/extractor/rutube.py
 youtube_dl/extractor/rutv.py
 youtube_dl/extractor/ruutu.py
@@ -718,7 +714,6 @@ youtube_dl/extractor/viddler.py
 youtube_dl/extractor/videa.py
 youtube_dl/extractor/videodetective.py
 youtube_dl/extractor/videofyme.py
-youtube_dl/extractor/videomega.py
 youtube_dl/extractor/videomore.py
 youtube_dl/extractor/videopremium.py
 youtube_dl/extractor/videopress.py
@@ -786,6 +781,7 @@ youtube_dl/extractor/xxxymovies.py
 youtube_dl/extractor/yahoo.py
 youtube_dl/extractor/yandexdisk.py
 youtube_dl/extractor/yandexmusic.py
+youtube_dl/extractor/yandexvideo.py
 youtube_dl/extractor/yapfiles.py
 youtube_dl/extractor/yesjapan.py
 youtube_dl/extractor/yinyuetai.py
