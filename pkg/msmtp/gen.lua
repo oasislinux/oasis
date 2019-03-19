@@ -18,6 +18,7 @@ exe('msmtp', [[
 		tools.c
 		xalloc.c
 		aliases.c
+		password.c
 
 		tls.c
 

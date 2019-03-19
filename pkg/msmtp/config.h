@@ -14,6 +14,7 @@
 /* #undef HAVE_LIBGNUTLS */
 /* #undef HAVE_LIBGSASL */
 /* #undef HAVE_LIBIDN */
+#define HAVE_LIBRESOLV 1
 /* #undef HAVE_LIBSECRET */
 #define HAVE_LIBSSL 1
 #define HAVE_LINK 1
@@ -38,10 +39,10 @@
 #define PACKAGE "msmtp"
 #define PACKAGE_BUGREPORT "marlam@marlam.de"
 #define PACKAGE_NAME "msmtp"
-#define PACKAGE_STRING "msmtp 1.8.1"
+#define PACKAGE_STRING "msmtp 1.8.3"
 #define PACKAGE_TARNAME "msmtp"
 #define PACKAGE_URL "https://marlam.de/msmtp"
-#define PACKAGE_VERSION "1.8.0"
+#define PACKAGE_VERSION "1.8.3"
 #define PLATFORM "x86_64-pc-linux-gnu"
 #define STDC_HEADERS 1
 #ifndef _ALL_SOURCE
@@ -59,7 +60,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.8.1"
+#define VERSION "1.8.3"
 #if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
 #define W32_NATIVE 1
 #endif
