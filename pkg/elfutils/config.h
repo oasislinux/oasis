@@ -19,14 +19,14 @@
 #define HAVE_UNISTD_H 1
 #define HAVE_VISIBILITY 1
 #define LIBEBL_SUBDIR "elfutils"
-#define MODVERSION "Build for elfutils 174 x86_64-unknown-linux-gnu"
+#define MODVERSION "Build for elfutils 176 x86_64-pc-linux-gnu"
 #define PACKAGE "elfutils"
 #define PACKAGE_BUGREPORT "https://sourceware.org/bugzilla"
 #define PACKAGE_NAME "elfutils"
-#define PACKAGE_STRING "elfutils 0.174"
+#define PACKAGE_STRING "elfutils 0.176"
 #define PACKAGE_TARNAME "elfutils"
 #define PACKAGE_URL "http://elfutils.org/"
-#define PACKAGE_VERSION "0.174"
+#define PACKAGE_VERSION "0.176"
 #define SIZEOF_LONG 8
 #define STDC_HEADERS 1
 /* #undef USE_BZLIB */
@@ -34,9 +34,11 @@
 /* #undef USE_LOCKS */
 /* #undef USE_LZMA */
 #define USE_ZLIB 1
-#define VERSION "0.174"
+#define VERSION "0.176"
 /* #undef YYTEXT_POINTER */
-#define _DARWIN_USE_64_BIT_INODE 1
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
+#endif
 /* #undef _FILE_OFFSET_BITS */
 /* #undef _LARGE_FILES */
 #include <eu-config.h>
