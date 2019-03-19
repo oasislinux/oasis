@@ -163,6 +163,7 @@
 #define HAVE_OPENSSL_RSA_H 1
 /* #undef HAVE_OPENSSL_SRP */
 #define HAVE_OPENSSL_SSL_H 1
+#define HAVE_OPENSSL_VERSION 1
 #define HAVE_OPENSSL_X509_H 1
 /* #undef HAVE_PEM_H */
 #define HAVE_PIPE 1
