@@ -66,11 +66,13 @@ build('cat', '$outdir/scno.h', {'$srcdir/scno.head', '$outdir/scno-syscallent.h'
 
 -- this seems to be enough syscall headers to build
 local syscalls = expand{'$srcdir/linux/', {
-	'subcall.h',
-	'arm/syscallent.h',
 	'32/syscallent.h',
 	'64/syscallent.h',
+	'arm/syscallent.h',
 	'i386/syscallent.h',
+	'sparc/syscallent.h',
+	'sparc64/syscallent.h',
+	'subcall.h',
 	'x86_64/syscallent.h',
 }}
 build('awk', '$outdir/sen.h', {syscalls, '|', '$dir/sen.awk'}, {
@@ -189,8 +191,8 @@ local srcs = {
 	'net.c',
 	'netlink.c',
 	'netlink_crypto.c',
-	'netlink_kobject_uevent.c',
 	'netlink_inet_diag.c',
+	'netlink_kobject_uevent.c',
 	'netlink_netfilter.c',
 	'netlink_netlink_diag.c',
 	'netlink_packet_diag.c',
