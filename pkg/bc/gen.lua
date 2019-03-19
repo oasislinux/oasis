@@ -1,6 +1,6 @@
 cflags{
 	'-D NDEBUG',
-	'-D VERSION=1.1.4',
+	'-D VERSION=1.2.0',
 	'-D _POSIX_C_SOURCE=200809L',
 	'-I $srcdir/include',
 	'-include $dir/config.h',
