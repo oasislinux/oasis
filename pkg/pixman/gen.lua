@@ -7,7 +7,7 @@ cflags{
 build('sed', '$outdir/include/pixman-version.h', '$srcdir/pixman/pixman-version.h.in', {
 	expr={
 		'-e s,@PIXMAN_VERSION_MAJOR@,0,',
-		'-e s,@PIXMAN_VERSION_MINOR@,34,',
+		'-e s,@PIXMAN_VERSION_MINOR@,38,',
 		'-e s,@PIXMAN_VERSION_MICRO@,0,',
 	},
 })
