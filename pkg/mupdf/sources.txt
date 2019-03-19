@@ -1,7 +1,6 @@
-# 2,<cd src/source && ls fitz/*.c pdf/*.c xps/*.c svg/*.c cbz/*.c gprf/*.c helpers/mu-threads/*.c | grep -v fitz/harfbuzz.c
+# 2,<cd src/source && ls fitz/*.c pdf/*.c xps/*.c svg/*.c cbz/*.c gprf/*.c | grep -v fitz/harfbuzz.c
 cbz/mucbz.c
 cbz/muimg.c
-cbz/mutiff.c
 fitz/archive.c
 fitz/bbox-device.c
 fitz/bidi-std.c
@@ -34,6 +33,7 @@ fitz/draw-path.c
 fitz/draw-rasterize.c
 fitz/draw-scale-simple.c
 fitz/draw-unpack.c
+fitz/encode-basic.c
 fitz/error.c
 fitz/filter-basic.c
 fitz/filter-dct.c
@@ -83,6 +83,7 @@ fitz/path.c
 fitz/pixmap.c
 fitz/pool.c
 fitz/printf.c
+fitz/random.c
 fitz/separation.c
 fitz/shade.c
 fitz/stext-device.c
@@ -112,15 +113,12 @@ fitz/xml.c
 fitz/zip.c
 gprf/gprf-doc.c
 gprf/gprf-skeleton.c
-helpers/mu-threads/mu-threads.c
-pdf/pdf-annot-edit.c
 pdf/pdf-annot.c
 pdf/pdf-appearance.c
 pdf/pdf-clean-file.c
 pdf/pdf-clean.c
 pdf/pdf-cmap-load.c
 pdf/pdf-cmap-parse.c
-pdf/pdf-cmap-table.c
 pdf/pdf-cmap.c
 pdf/pdf-colorspace.c
 pdf/pdf-crypt.c
@@ -137,6 +135,7 @@ pdf/pdf-interpret.c
 pdf/pdf-js.c
 pdf/pdf-layer.c
 pdf/pdf-lex.c
+pdf/pdf-link.c
 pdf/pdf-metrics.c
 pdf/pdf-nametree.c
 pdf/pdf-object.c
@@ -147,12 +146,12 @@ pdf/pdf-outline.c
 pdf/pdf-page.c
 pdf/pdf-parse.c
 pdf/pdf-pattern.c
-pdf/pdf-pkcs7.c
 pdf/pdf-portfolio.c
 pdf/pdf-repair.c
 pdf/pdf-resources.c
 pdf/pdf-run.c
 pdf/pdf-shade.c
+pdf/pdf-signature.c
 pdf/pdf-store.c
 pdf/pdf-stream.c
 pdf/pdf-type3.c
