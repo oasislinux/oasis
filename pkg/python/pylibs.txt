@@ -1,4 +1,4 @@
-# 2,<cd src/Lib && find * '(' -name test -o -name tests -o -name idle_test ')' '!' -prune -o -name '*.py' | LC_COLLATE=C sort
+# 2,<cd src/Lib && find * '(' -name test -o -name tests -o -name idle_test ')' '!' -prune -o -name '*.py' -o -name '*Grammar.txt' | LC_COLLATE=C sort
 __future__.py
 __phello__.foo.py
 _bootlocale.py
@@ -413,6 +413,8 @@ json/encoder.py
 json/scanner.py
 json/tool.py
 keyword.py
+lib2to3/Grammar.txt
+lib2to3/PatternGrammar.txt
 lib2to3/__init__.py
 lib2to3/__main__.py
 lib2to3/btm_matcher.py
