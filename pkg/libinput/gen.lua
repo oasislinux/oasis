@@ -52,6 +52,7 @@ local quirks = {
 	'10-generic-trackball.quirks',
 	'30-vendor-aiptek.quirks',
 	'30-vendor-alps.quirks',
+	'30-vendor-contour.quirks',
 	'30-vendor-cyapa.quirks',
 	'30-vendor-elantech.quirks',
 	'30-vendor-huion.quirks',
