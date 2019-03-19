@@ -1,18 +1,18 @@
-From f1c24212900247c1dc3c5359abce4fa66ec883c6 Mon Sep 17 00:00:00 2001
+From 56d8784ee48f0fcf26935fb0fb56bcec09b9559d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 27 Oct 2016 21:04:23 -0700
 Subject: [PATCH] Port to wayland using wld and swc panels
 
 ---
  Makefile  |  16 +-
- config.mk |  20 +--
- dmenu.c   | 541 +++++++++++++++++++++++++++++++++-----------------------------
- drw.c     | 123 +++++++-------
+ config.mk |  20 +-
+ dmenu.c   | 562 ++++++++++++++++++++++++++++--------------------------
+ drw.c     | 130 ++++++-------
  drw.h     |  26 ++-
- 5 files changed, 372 insertions(+), 354 deletions(-)
+ 5 files changed, 378 insertions(+), 376 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index a7cd04f..5747934 100644
+index a03a95c..4046899 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -3,7 +3,7 @@
@@ -21,39 +21,38 @@ index a7cd04f..5747934 100644
  
 -SRC = drw.c dmenu.c stest.c util.c
 +SRC = drw.c dmenu.c stest.c panel-protocol.c util.c
- OBJ = ${SRC:.c=.o}
+ OBJ = $(SRC:.c=.o)
  
  all: options dmenu stest
-@@ -22,11 +22,19 @@ config.h:
- 	@echo creating $@ from config.def.h
- 	@cp config.def.h $@
+@@ -20,10 +20,18 @@ options:
+ config.h:
+ 	cp config.def.h $@
  
--${OBJ}: arg.h config.h config.mk drw.h
+-$(OBJ): arg.h config.h config.mk drw.h
 +swc-protocol.c: $(SWCPROTO)
 +	@echo GEN $@
 +	@wayland-scanner code < $< > $@
  
 -dmenu: dmenu.o drw.o util.o
+-	$(CC) -o $@ dmenu.o drw.o util.o $(LDFLAGS)
 +swc-client-protocol.h: $(SWCPROTO)
 +	@echo GEN $@
 +	@wayland-scanner client-header < $< > $@
 +
-+${OBJ}: arg.h config.h config.mk drw.h swc-client-protocol.h
++$(OBJ): arg.h config.h config.mk drw.h swc-client-protocol.h
 +
 +dmenu: dmenu.o drw.o swc-protocol.o util.o
- 	@echo CC -o $@
--	@${CC} -o $@ dmenu.o drw.o util.o ${LDFLAGS}
-+	@${CC} -o $@ dmenu.o drw.o swc-protocol.o util.o ${LDFLAGS}
++	$(CC) -o $@ dmenu.o drw.o swc-protocol.o util.o $(LDFLAGS)
  
  stest: stest.o
- 	@echo CC -o $@
+ 	$(CC) -o $@ stest.o $(LDFLAGS)
 diff --git a/config.mk b/config.mk
-index 4d908a5..c6416ad 100644
+index 0929b4a..7e747ff 100644
 --- a/config.mk
 +++ b/config.mk
-@@ -5,25 +5,15 @@ VERSION = 4.6
+@@ -5,25 +5,15 @@ VERSION = 4.9
  PREFIX = /usr/local
- MANPREFIX = ${PREFIX}/share/man
+ MANPREFIX = $(PREFIX)/share/man
  
 -X11INC = /usr/X11R6/include
 -X11LIB = /usr/X11R6/lib
@@ -66,33 +65,33 @@ index 4d908a5..c6416ad 100644
 -FREETYPELIBS = -lfontconfig -lXft
 -FREETYPEINC = /usr/include/freetype2
 -# OpenBSD (uncomment)
--#FREETYPEINC = ${X11INC}/freetype2
+-#FREETYPEINC = $(X11INC)/freetype2
 +PIXMANINC = /usr/include/pixman-1
 +SWCPROTO = /usr/share/swc/swc.xml
  
  # includes and libs
--INCS = -I${X11INC} -I${FREETYPEINC}
--LIBS = -L${X11LIB} -lX11 ${XINERAMALIBS} ${FREETYPELIBS}
-+INCS = -I${PIXMANINC}
+-INCS = -I$(X11INC) -I$(FREETYPEINC)
+-LIBS = -L$(X11LIB) -lX11 $(XINERAMALIBS) $(FREETYPELIBS)
++INCS = -I$(PIXMANINC)
 +LIBS = -lwayland-client -lxkbcommon -lwld
  
  # flags
--CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_POSIX_C_SOURCE=200809L -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS}
-+CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_POSIX_C_SOURCE=200809L -DVERSION=\"${VERSION}\"
- CFLAGS   = -std=c99 -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
- LDFLAGS  = -s ${LIBS}
+-CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_POSIX_C_SOURCE=200809L -DVERSION=\"$(VERSION)\" $(XINERAMAFLAGS)
++CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_POSIX_C_SOURCE=200809L -DVERSION=\"$(VERSION)\"
+ CFLAGS   = -std=c99 -pedantic -Wall -Os $(INCS) $(CPPFLAGS)
+ LDFLAGS  = $(LIBS)
  
 diff --git a/dmenu.c b/dmenu.c
-index d605ab4..d9470b7 100644
+index 6b8f51b..c56025a 100644
 --- a/dmenu.c
 +++ b/dmenu.c
-@@ -5,18 +5,18 @@
+@@ -5,19 +5,18 @@
  #include <stdlib.h>
  #include <string.h>
  #include <strings.h>
 +#include <sys/mman.h>
  #include <time.h>
-+#include <unistd.h>
+ #include <unistd.h>
  
 -#include <X11/Xlib.h>
 -#include <X11/Xatom.h>
@@ -112,7 +111,7 @@ index d605ab4..d9470b7 100644
  
  /* macros */
  #define INTERSECT(x,y,w,h,r)  (MAX(0, MIN((x)+(w),(r).x_org+(r).width)  - MAX((x),(r).x_org)) \
-@@ -33,8 +33,16 @@ struct item {
+@@ -34,8 +33,16 @@ struct item {
  	int out;
  };
  
@@ -130,7 +129,7 @@ index d605ab4..d9470b7 100644
  static int bh, mw, mh;
  static int inputw = 0, promptw;
  static int lrpad; /* sum of left and right padding */
-@@ -42,12 +50,21 @@ static size_t cursor;
+@@ -43,12 +50,21 @@ static size_t cursor;
  static struct item *items = NULL;
  static struct item *matches, *matchend;
  static struct item *prev, *curr, *next, *sel;
@@ -158,7 +157,7 @@ index d605ab4..d9470b7 100644
  
  static Drw *drw;
  static Clr *scheme[SchemeLast];
-@@ -93,12 +110,10 @@ cleanup(void)
+@@ -94,12 +110,10 @@ cleanup(void)
  {
  	size_t i;
  
@@ -172,7 +171,7 @@ index d605ab4..d9470b7 100644
  }
  
  static char *
-@@ -132,6 +147,7 @@ drawmenu(void)
+@@ -133,6 +147,7 @@ drawmenu(void)
  	struct item *item;
  	int x = 0, y = 0, w;
  
@@ -180,7 +179,7 @@ index d605ab4..d9470b7 100644
  	drw_setscheme(drw, scheme[SchemeNorm]);
  	drw_rect(drw, 0, 0, mw, mh, 1, 1);
  
-@@ -171,42 +187,7 @@ drawmenu(void)
+@@ -172,42 +187,7 @@ drawmenu(void)
  			drw_text(drw, mw - w, 0, w, bh, lrpad / 2, ">", 0);
  		}
  	}
@@ -224,7 +223,7 @@ index d605ab4..d9470b7 100644
  }
  
  static void
-@@ -288,88 +269,92 @@ nextrune(int inc)
+@@ -305,111 +285,106 @@ movewordedge(int dir)
  }
  
  static void
@@ -234,7 +233,7 @@ index d605ab4..d9470b7 100644
  {
  	char buf[32];
  	int len;
--	KeySym ksym = NoSymbol;
+-	KeySym ksym;
 -	Status status;
 +	xkb_keysym_t ksym = XKB_KEY_NoSymbol;
 +	int ctrl = xkb_state_mod_index_is_active(xkb.state, xkb.ctrl, XKB_STATE_MODS_EFFECTIVE);
@@ -242,15 +241,22 @@ index d605ab4..d9470b7 100644
 +	int alt = xkb_state_mod_index_is_active(xkb.state, xkb.alt, XKB_STATE_MODS_EFFECTIVE);
  
 -	len = XmbLookupString(xic, ev, buf, sizeof buf, &ksym, &status);
--	if (status == XBufferOverflow)
+-	switch (status) {
+-	default: /* XLookupNone, XBufferOverflow */
 -		return;
--	if (ev->state & ControlMask)
+-	case XLookupChars:
+-		goto insert;
+-	case XLookupKeySym:
+-	case XLookupBoth:
+-		break;
+-	}
 +	if (state == WL_KEYBOARD_KEY_STATE_RELEASED)
 +		goto update_state;
-+
+ 
+-	if (ev->state & ControlMask) {
 +	ksym = xkb_state_key_get_one_sym(xkb.state, key + 8);
 +	len = xkb_keysym_to_utf8(ksym, buf, sizeof buf) - 1;
-+	if (ctrl)
++	if (ctrl) {
  		switch(ksym) {
 -		case XK_a: ksym = XK_Home;      break;
 -		case XK_b: ksym = XK_Left;      break;
@@ -308,6 +314,14 @@ index d605ab4..d9470b7 100644
 +		case XKB_KEY_Y:
 +			paste();
  			return;
+-		case XK_Left:
++		case XKB_KEY_Left:
+ 			movewordedge(-1);
+ 			goto draw;
+-		case XK_Right:
++		case XKB_KEY_Right:
+ 			movewordedge(+1);
+ 			goto draw;
 -		case XK_Return:
 -		case XK_KP_Enter:
 +		case XKB_KEY_Return:
@@ -320,9 +334,17 @@ index d605ab4..d9470b7 100644
  		default:
  			return;
  		}
--	else if (ev->state & Mod1Mask)
-+	else if (alt)
+-	} else if (ev->state & Mod1Mask) {
++	} else if (alt) {
  		switch(ksym) {
+-		case XK_b:
++		case XKB_KEY_b:
+ 			movewordedge(-1);
+ 			goto draw;
+-		case XK_f:
++		case XKB_KEY_f:
+ 			movewordedge(+1);
+ 			goto draw;
 -		case XK_g: ksym = XK_Home;  break;
 -		case XK_G: ksym = XK_End;   break;
 -		case XK_h: ksym = XK_Up;    break;
@@ -338,9 +360,12 @@ index d605ab4..d9470b7 100644
  		default:
  			return;
  		}
+ 	}
+-
 -	switch(ksym) {
 +	switch (ksym) {
  	default:
+ insert:
  		if (!iscntrl(*buf))
  			insert(buf, len);
  		break;
@@ -361,7 +386,7 @@ index d605ab4..d9470b7 100644
  		if (text[cursor] != '\0') {
  			cursor = strlen(text);
  			break;
-@@ -385,10 +370,10 @@ keypress(XKeyEvent *ev)
+@@ -425,10 +400,10 @@ insert:
  		}
  		sel = matchend;
  		break;
@@ -374,7 +399,7 @@ index d605ab4..d9470b7 100644
  		if (sel == matches) {
  			cursor = 0;
  			break;
-@@ -396,7 +381,7 @@ keypress(XKeyEvent *ev)
+@@ -436,7 +411,7 @@ insert:
  		sel = curr = matches;
  		calcoffsets();
  		break;
@@ -383,7 +408,7 @@ index d605ab4..d9470b7 100644
  		if (cursor > 0 && (!sel || !sel->left || lines > 0)) {
  			cursor = nextrune(-1);
  			break;
-@@ -404,35 +389,35 @@ keypress(XKeyEvent *ev)
+@@ -444,35 +419,35 @@ insert:
  		if (lines > 0)
  			return;
  		/* fallthrough */
@@ -428,7 +453,7 @@ index d605ab4..d9470b7 100644
  		if (text[cursor] != '\0') {
  			cursor = nextrune(+1);
  			break;
-@@ -440,13 +425,13 @@ keypress(XKeyEvent *ev)
+@@ -480,13 +455,13 @@ insert:
  		if (lines > 0)
  			return;
  		/* fallthrough */
@@ -444,9 +469,9 @@ index d605ab4..d9470b7 100644
  		if (!sel)
  			return;
  		strncpy(text, sel->text, sizeof text - 1);
-@@ -456,22 +441,28 @@ keypress(XKeyEvent *ev)
- 		break;
- 	}
+@@ -498,24 +473,28 @@ insert:
+ 
+ draw:
  	drawmenu();
 +
 +update_state:
@@ -463,11 +488,11 @@ index d605ab4..d9470b7 100644
 -	Atom da;
 -
 -	/* we have been given the current selection, now insert it into input */
--	XGetWindowProperty(dpy, win, utf8, 0, (sizeof text / 4) + 1, False,
--	                   utf8, &da, &di, &dl, &dl, (unsigned char **)&p);
--	insert(p, (q = strchr(p, '\n')) ? q - p : (ssize_t)strlen(p));
--	XFree(p);
--	drawmenu();
+-	if (XGetWindowProperty(dpy, win, utf8, 0, (sizeof text / 4) + 1, False,
+-	                   utf8, &da, &di, &dl, &dl, (unsigned char **)&p)
+-	    == Success && p) {
+-		insert(p, (q = strchr(p, '\n')) ? q - p : (ssize_t)strlen(p));
+-		XFree(p);
 +	int fds[2], len;
 +	char buf[BUFSIZ], *nl;
 +
@@ -480,11 +505,12 @@ index d605ab4..d9470b7 100644
 +			insert(buf, (nl = strchr(buf, '\n')) ? nl - buf : len);
 +		close(fds[0]);
 +		drawmenu();
-+	}
+ 	}
+-	drawmenu();
  }
  
  static void
-@@ -506,146 +497,203 @@ readstdin(void)
+@@ -550,148 +529,204 @@ readstdin(void)
  static void
  run(void)
  {
@@ -494,7 +520,7 @@ index d605ab4..d9470b7 100644
 +}
  
 -	while (!XNextEvent(dpy, &ev)) {
--		if (XFilterEvent(&ev, win))
+-		if (XFilterEvent(&ev, None))
 -			continue;
 -		switch(ev.type) {
 -		case Expose:
@@ -535,10 +561,10 @@ index d605ab4..d9470b7 100644
 +	else if (strcmp(interface, "swc_screen") == 0) {
 +		if (mon != -1 && mon-- == 0)
 +			screen = wl_registry_bind(r, name, &swc_screen_interface, 1);
- 	}
- }
- 
- static void
++	}
++}
++
++static void
 +regglobalremove(void *d, struct wl_registry *reg, uint32_t name)
 +{
 +}
@@ -574,7 +600,7 @@ index d605ab4..d9470b7 100644
 +	if (string == MAP_FAILED) {
 +		close(fd);
 +		return;
-+	}
+ 	}
 +
 +	xkb.keymap = xkb_keymap_new_from_string(xkb.context, string,
 +						XKB_KEYMAP_FORMAT_TEXT_V1, 0);
@@ -629,8 +655,8 @@ index d605ab4..d9470b7 100644
 +datadevmotion(void *d, struct wl_data_device *datadev, uint32_t time,
 +              wl_fixed_t x, wl_fixed_t y)
 +{
-+}
-+
+ }
+ 
 +static void
 +datadevdrop(void *d, struct wl_data_device *datadev)
 +{
@@ -656,20 +682,23 @@ index d605ab4..d9470b7 100644
 +
 +static const struct swc_panel_listener panellistener = { paneldocked };
 +
-+static void
+ static void
  setup(void)
  {
--	int x, y, i = 0;
+-	int x, y, i, j;
 -	unsigned int du;
 -	XSetWindowAttributes swa;
 -	XIM xim;
 -	Window w, dw, *dws;
 -	XWindowAttributes wa;
+-	XClassHint ch = {"dmenu", "dmenu"};
 -#ifdef XINERAMA
 -	XineramaScreenInfo *info;
 -	Window pw;
--	int a, j, di, n, area = 0;
+-	int a, di, n, area = 0;
 -#endif
++	int j;
++
 +	if (!compositor || !seat || !panelman)
 +		exit(1);
 +
@@ -679,11 +708,10 @@ index d605ab4..d9470b7 100644
 +	wl_data_device_add_listener(datadev, &datadevlistener, NULL);
 +
 +	xkb.context = xkb_context_new(0);
- 
++
  	/* init appearance */
- 	scheme[SchemeNorm] = drw_scm_create(drw, colors[SchemeNorm], 2);
- 	scheme[SchemeSel] = drw_scm_create(drw, colors[SchemeSel], 2);
- 	scheme[SchemeOut] = drw_scm_create(drw, colors[SchemeOut], 2);
+ 	for (j = 0; j < SchemeLast; j++)
+ 		scheme[j] = drw_scm_create(drw, colors[j], 2);
  
 -	clip = XInternAtom(dpy, "CLIPBOARD",   False);
 -	utf8 = XInternAtom(dpy, "UTF8_STRING", False);
@@ -694,6 +722,7 @@ index d605ab4..d9470b7 100644
  	lines = MAX(lines, 0);
  	mh = (lines + 1) * bh;
 -#ifdef XINERAMA
+-	i = 0;
 -	if (parentwin == root && (info = XineramaQueryScreens(dpy, &n))) {
 -		XGetInputFocus(dpy, &w, &di);
 -		if (mon >= 0 && mon < n)
@@ -755,6 +784,7 @@ index d605ab4..d9470b7 100644
 -	win = XCreateWindow(dpy, parentwin, x, y, mw, mh, 0,
 -	                    CopyFromParent, CopyFromParent, CopyFromParent,
 -	                    CWOverrideRedirect | CWBackPixel | CWEventMask, &swa);
+-	XSetClassHint(dpy, win, &ch);
 -
 -	/* open input methods */
 -	xim = XOpenIM(dpy, NULL, NULL, NULL);
@@ -762,6 +792,7 @@ index d605ab4..d9470b7 100644
 -	                XNClientWindow, win, XNFocusWindow, win, NULL);
 -
 -	XMapRaised(dpy, win);
+-	XSetInputFocus(dpy, win, RevertToParent, CurrentTime);
 -	if (embed) {
 -		XSelectInput(dpy, parentwin, FocusChangeMask);
 -		if (XQueryTree(dpy, parentwin, &dw, &w, &dws, &du) && dws) {
@@ -796,7 +827,7 @@ index d605ab4..d9470b7 100644
  
  	for (i = 1; i < argc; i++)
  		/* these options take no arguments */
-@@ -654,8 +702,6 @@ main(int argc, char *argv[])
+@@ -700,8 +735,6 @@ main(int argc, char *argv[])
  			exit(0);
  		} else if (!strcmp(argv[i], "-b")) /* appears at the bottom of the screen */
  			topbar = 0;
@@ -805,7 +836,7 @@ index d605ab4..d9470b7 100644
  		else if (!strcmp(argv[i], "-i")) { /* case-insensitive item matching */
  			fstrncmp = strncasecmp;
  			fstrstr = cistrstr;
-@@ -678,34 +724,23 @@ main(int argc, char *argv[])
+@@ -724,41 +757,28 @@ main(int argc, char *argv[])
  			colors[SchemeSel][ColBg] = argv[++i];
  		else if (!strcmp(argv[i], "-sf"))  /* selected foreground color */
  			colors[SchemeSel][ColFg] = argv[++i];
@@ -817,6 +848,8 @@ index d605ab4..d9470b7 100644
 -	if (!setlocale(LC_CTYPE, "") || !XSupportsLocale())
 +	if (!setlocale(LC_CTYPE, ""))
  		fputs("warning: no locale support\n", stderr);
+-	if (!XSetLocaleModifiers(""))
+-		fputs("warning: no locale modifiers support\n", stderr);
 -	if (!(dpy = XOpenDisplay(NULL)))
 +	if (!(dpy = wl_display_connect(NULL)))
  		die("cannot open display");
@@ -836,22 +869,26 @@ index d605ab4..d9470b7 100644
  	if (!drw_fontset_create(drw, fonts, LENGTH(fonts)))
  		die("no fonts could be loaded.");
 -	lrpad = drw->fonts->h;
--
--	if (fast) {
++	lrpad = drw->fonts->wld->height;
+ 
+ #ifdef __OpenBSD__
+ 	if (pledge("stdio rpath", NULL) == -1)
+ 		die("pledge");
+ #endif
+ 
+-	if (fast && !isatty(0)) {
 -		grabkeyboard();
 -		readstdin();
 -	} else {
 -		readstdin();
 -		grabkeyboard();
 -	}
-+	lrpad = drw->fonts->wld->height;
-+
 +	readstdin();
  	setup();
  	run();
  
 diff --git a/drw.c b/drw.c
-index c1582e7..b6e6d33 100644
+index 8fd1ca4..13cd06a 100644
 --- a/drw.c
 +++ b/drw.c
 @@ -2,8 +2,9 @@
@@ -919,20 +956,21 @@ index c1582e7..b6e6d33 100644
  	free(drw);
  }
  
-@@ -102,10 +96,10 @@ drw_free(Drw *drw)
+@@ -102,11 +96,10 @@ drw_free(Drw *drw)
   * drw_fontset_create instead.
   */
  static Fnt *
 -xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
-+wldfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
++wldfont_create(Drw *drw, const char *fontname, FcPattern *pattern)
  {
  	Fnt *font;
 -	XftFont *xfont = NULL;
+-	FcPattern *pattern = NULL;
 +	struct wld_font *wld = NULL;
- 	FcPattern *pattern = NULL;
  
  	if (fontname) {
-@@ -114,17 +108,17 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
+ 		/* Using the pattern found at font->xfont->pattern does not yield the
+@@ -114,17 +107,17 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
  		 * FcNameParse; using the latter results in the desired fallback
  		 * behaviour whereas the former just results in missing-character
  		 * rectangles being drawn, at least with some fonts. */
@@ -947,13 +985,22 @@ index c1582e7..b6e6d33 100644
 +			wld_font_close(wld);
  			return NULL;
  		}
- 	} else if (fontpattern) {
+-	} else if (fontpattern) {
 -		if (!(xfont = XftFontOpenPattern(drw->dpy, fontpattern))) {
-+		if (!(wld = wld_font_open_pattern(drw->fontctx, fontpattern))) {
++	} else if (pattern) {
++		if (!(wld = wld_font_open_pattern(drw->fontctx, pattern))) {
  			fprintf(stderr, "error, cannot load font from pattern.\n");
  			return NULL;
  		}
-@@ -133,22 +127,20 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
+@@ -140,28 +133,26 @@ xfont_create(Drw *drw, const char *fontname, FcPattern *fontpattern)
+ 	 * and lots more all over the internet.
+ 	 */
+ 	FcBool iscol;
+-	if(FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
+-		XftFontClose(drw->dpy, xfont);
++	if(FcPatternGetBool(pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
++		wld_font_close(font->wld);
+ 		return NULL;
  	}
  
  	font = ecalloc(1, sizeof(Fnt));
@@ -979,7 +1026,7 @@ index c1582e7..b6e6d33 100644
  	free(font);
  }
  
-@@ -162,7 +154,7 @@ drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount)
+@@ -175,7 +166,7 @@ drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount)
  		return NULL;
  
  	for (i = 1; i <= fontcount; i++) {
@@ -988,7 +1035,7 @@ index c1582e7..b6e6d33 100644
  			cur->next = ret;
  			ret = cur;
  		}
-@@ -175,7 +167,7 @@ drw_fontset_free(Fnt *font)
+@@ -188,7 +179,7 @@ drw_fontset_free(Fnt *font)
  {
  	if (font) {
  		drw_fontset_free(font->next);
@@ -997,7 +1044,7 @@ index c1582e7..b6e6d33 100644
  	}
  }
  
-@@ -184,10 +176,7 @@ drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
+@@ -197,10 +188,7 @@ drw_clr_create(Drw *drw, Clr *dest, const char *clrname)
  {
  	if (!drw || !dest || !clrname)
  		return;
@@ -1009,7 +1056,7 @@ index c1582e7..b6e6d33 100644
  		die("error, cannot allocate color '%s'", clrname);
  }
  
-@@ -200,7 +189,7 @@ drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
+@@ -213,7 +201,7 @@ drw_scm_create(Drw *drw, const char *clrnames[], size_t clrcount)
  	Clr *ret;
  
  	/* need at least two colors for a scheme */
@@ -1018,7 +1065,7 @@ index c1582e7..b6e6d33 100644
  		return NULL;
  
  	for (i = 0; i < clrcount; i++)
-@@ -227,11 +216,15 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
+@@ -240,11 +228,15 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
  {
  	if (!drw || !drw->scheme)
  		return;
@@ -1038,7 +1085,7 @@ index c1582e7..b6e6d33 100644
  }
  
  int
-@@ -240,7 +233,6 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+@@ -253,7 +245,6 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
  	char buf[1024];
  	int ty;
  	unsigned int ew;
@@ -1046,7 +1093,7 @@ index c1582e7..b6e6d33 100644
  	Fnt *usedfont, *curfont, *nextfont;
  	size_t i, len;
  	int utf8strlen, utf8charlen, render = x || y || w || h;
-@@ -249,7 +241,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+@@ -262,7 +253,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
  	FcCharSet *fccharset;
  	FcPattern *fcpattern;
  	FcPattern *match;
@@ -1055,7 +1102,7 @@ index c1582e7..b6e6d33 100644
  	int charexists = 0;
  
  	if (!drw || (render && !drw->scheme) || !text || !drw->fonts)
-@@ -258,11 +250,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+@@ -271,11 +262,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
  	if (!render) {
  		w = ~w;
  	} else {
@@ -1068,7 +1115,7 @@ index c1582e7..b6e6d33 100644
  		x += lpad;
  		w -= lpad;
  	}
-@@ -275,7 +263,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+@@ -288,7 +275,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
  		while (*text) {
  			utf8charlen = utf8decode(text, &utf8codepoint, UTF_SIZ);
  			for (curfont = drw->fonts; curfont; curfont = curfont->next) {
@@ -1077,7 +1124,7 @@ index c1582e7..b6e6d33 100644
  				if (charexists) {
  					if (curfont == usedfont) {
  						utf8strlen += utf8charlen;
-@@ -307,9 +295,9 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+@@ -320,9 +307,9 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
  						; /* NOP */
  
  				if (render) {
@@ -1090,7 +1137,7 @@ index c1582e7..b6e6d33 100644
  				}
  				x += ew;
  				w -= ew;
-@@ -330,7 +318,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+@@ -343,7 +330,7 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
  			FcCharSetAddChar(fccharset, utf8codepoint);
  
  			if (!drw->fonts->pattern) {
@@ -1099,7 +1146,7 @@ index c1582e7..b6e6d33 100644
  				die("the first font in the cache must be loaded from a font string.");
  			}
  
-@@ -340,38 +328,37 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
+@@ -354,38 +341,37 @@ drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lp
  
  			FcConfigSubstitute(NULL, fcpattern, FcMatchPattern);
  			FcDefaultSubstitute(fcpattern);
@@ -1146,7 +1193,7 @@ index c1582e7..b6e6d33 100644
  }
  
  unsigned int
-@@ -385,18 +372,19 @@ drw_fontset_getwidth(Drw *drw, const char *text)
+@@ -399,18 +385,19 @@ drw_fontset_getwidth(Drw *drw, const char *text)
  void
  drw_font_getexts(Fnt *font, const char *text, unsigned int len, unsigned int *w, unsigned int *h)
  {
@@ -1170,7 +1217,7 @@ index c1582e7..b6e6d33 100644
  Cur *
  drw_cur_create(Drw *drw, int shape)
  {
-@@ -419,3 +407,4 @@ drw_cur_free(Drw *drw, Cur *cursor)
+@@ -433,3 +420,4 @@ drw_cur_free(Drw *drw, Cur *cursor)
  	XFreeCursor(drw->dpy, cursor->cursor);
  	free(cursor);
  }
@@ -1231,5 +1278,5 @@ index 4c67419..1f1967e 100644
 -void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
 +void drw_map(Drw *drw, struct wl_surface *surface, int x, int y, unsigned int w, unsigned int h);
 -- 
-2.11.0
+2.21.0
 
