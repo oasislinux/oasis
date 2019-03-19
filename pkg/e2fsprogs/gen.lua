@@ -1,4 +1,4 @@
-set('version', '1.44.4')
+set('version', '1.45.0')
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $outdir',
@@ -17,8 +17,8 @@ build('cat', '$outdir/config.h', {
 
 set('subst', {
 	'-e s,@E2FSPROGS_VERSION@,$version,',
-	'-e s,@E2FSPROGS_MONTH@,Aug,',
-	'-e s,@E2FSPROGS_YEAR@,2018,',
+	'-e s,@E2FSPROGS_MONTH@,March,',
+	'-e s,@E2FSPROGS_YEAR@,2019,',
 	'-e s,@JDEV@,,',
 })
 
@@ -87,6 +87,7 @@ lib('libe2p.a', [[lib/e2p/(
 	getflags.c getversion.c hashstr.c iod.c ls.c ljs.c mntopts.c
 	parse_num.c pe.c pf.c ps.c setflags.c setversion.c uuid.c
 	ostype.c percent.c crypto_mode.c fgetproject.c fsetproject.c
+	encoding.c
 )]])
 lib('libext2fs.a', [[$outdir/ext2_err.c lib/ext2fs/(
 	alloc.c
@@ -166,6 +167,8 @@ lib('libext2fs.a', [[$outdir/ext2_err.c lib/ext2fs/(
 	rbtree.c
 
 	dupfs.c
+
+	nls_ascii.c nls_utf8-norm.c nls_utf8.c
 )]])
 lib('libsupport.a', [[$outdir/prof_err.c lib/support/(
 	cstring.c

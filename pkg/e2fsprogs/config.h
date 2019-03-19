@@ -98,6 +98,8 @@
 #define HAVE_MEMPCPY 1
 #define HAVE_MMAP 1
 #define HAVE_MNTENT_H 1
+#define HAVE_MOUNT_NODEV 1
+#define HAVE_MOUNT_NOSUID 1
 #define HAVE_MSYNC 1
 #define HAVE_MUNMAP 1
 #define HAVE_NANOSLEEP 1
