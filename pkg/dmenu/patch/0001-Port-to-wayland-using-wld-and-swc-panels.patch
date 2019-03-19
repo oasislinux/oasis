@@ -1,4 +1,4 @@
-From 56d8784ee48f0fcf26935fb0fb56bcec09b9559d Mon Sep 17 00:00:00 2001
+From 6a79779295462f8a828c7039ae00834f52179dec Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 27 Oct 2016 21:04:23 -0700
 Subject: [PATCH] Port to wayland using wld and swc panels
@@ -6,10 +6,10 @@ Subject: [PATCH] Port to wayland using wld and swc panels
 ---
  Makefile  |  16 +-
  config.mk |  20 +-
- dmenu.c   | 562 ++++++++++++++++++++++++++++--------------------------
+ dmenu.c   | 563 ++++++++++++++++++++++++++++--------------------------
  drw.c     | 130 ++++++-------
  drw.h     |  26 ++-
- 5 files changed, 378 insertions(+), 376 deletions(-)
+ 5 files changed, 378 insertions(+), 377 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index a03a95c..4046899 100644
@@ -82,7 +82,7 @@ index 0929b4a..7e747ff 100644
  LDFLAGS  = $(LIBS)
  
 diff --git a/dmenu.c b/dmenu.c
-index 6b8f51b..c56025a 100644
+index 6b8f51b..d1d60b2 100644
 --- a/dmenu.c
 +++ b/dmenu.c
 @@ -5,19 +5,18 @@
@@ -223,7 +223,7 @@ index 6b8f51b..c56025a 100644
  }
  
  static void
-@@ -305,111 +285,106 @@ movewordedge(int dir)
+@@ -305,111 +285,105 @@ movewordedge(int dir)
  }
  
  static void
@@ -255,7 +255,6 @@ index 6b8f51b..c56025a 100644
  
 -	if (ev->state & ControlMask) {
 +	ksym = xkb_state_key_get_one_sym(xkb.state, key + 8);
-+	len = xkb_keysym_to_utf8(ksym, buf, sizeof buf) - 1;
 +	if (ctrl) {
  		switch(ksym) {
 -		case XK_a: ksym = XK_Home;      break;
@@ -365,7 +364,8 @@ index 6b8f51b..c56025a 100644
 -	switch(ksym) {
 +	switch (ksym) {
  	default:
- insert:
+-insert:
++		len = xkb_state_key_get_utf8(xkb.state, key + 8, buf, sizeof(buf));
  		if (!iscntrl(*buf))
  			insert(buf, len);
  		break;
@@ -386,7 +386,7 @@ index 6b8f51b..c56025a 100644
  		if (text[cursor] != '\0') {
  			cursor = strlen(text);
  			break;
-@@ -425,10 +400,10 @@ insert:
+@@ -425,10 +399,10 @@ insert:
  		}
  		sel = matchend;
  		break;
@@ -399,7 +399,7 @@ index 6b8f51b..c56025a 100644
  		if (sel == matches) {
  			cursor = 0;
  			break;
-@@ -436,7 +411,7 @@ insert:
+@@ -436,7 +410,7 @@ insert:
  		sel = curr = matches;
  		calcoffsets();
  		break;
@@ -408,7 +408,7 @@ index 6b8f51b..c56025a 100644
  		if (cursor > 0 && (!sel || !sel->left || lines > 0)) {
  			cursor = nextrune(-1);
  			break;
-@@ -444,35 +419,35 @@ insert:
+@@ -444,35 +418,35 @@ insert:
  		if (lines > 0)
  			return;
  		/* fallthrough */
@@ -453,7 +453,7 @@ index 6b8f51b..c56025a 100644
  		if (text[cursor] != '\0') {
  			cursor = nextrune(+1);
  			break;
-@@ -480,13 +455,13 @@ insert:
+@@ -480,13 +454,13 @@ insert:
  		if (lines > 0)
  			return;
  		/* fallthrough */
@@ -469,7 +469,7 @@ index 6b8f51b..c56025a 100644
  		if (!sel)
  			return;
  		strncpy(text, sel->text, sizeof text - 1);
-@@ -498,24 +473,28 @@ insert:
+@@ -498,24 +472,28 @@ insert:
  
  draw:
  	drawmenu();
@@ -510,7 +510,7 @@ index 6b8f51b..c56025a 100644
  }
  
  static void
-@@ -550,148 +529,204 @@ readstdin(void)
+@@ -550,148 +528,204 @@ readstdin(void)
  static void
  run(void)
  {
@@ -827,7 +827,7 @@ index 6b8f51b..c56025a 100644
  
  	for (i = 1; i < argc; i++)
  		/* these options take no arguments */
-@@ -700,8 +735,6 @@ main(int argc, char *argv[])
+@@ -700,8 +734,6 @@ main(int argc, char *argv[])
  			exit(0);
  		} else if (!strcmp(argv[i], "-b")) /* appears at the bottom of the screen */
  			topbar = 0;
@@ -836,7 +836,7 @@ index 6b8f51b..c56025a 100644
  		else if (!strcmp(argv[i], "-i")) { /* case-insensitive item matching */
  			fstrncmp = strncasecmp;
  			fstrstr = cistrstr;
-@@ -724,41 +757,28 @@ main(int argc, char *argv[])
+@@ -724,41 +756,28 @@ main(int argc, char *argv[])
  			colors[SchemeSel][ColBg] = argv[++i];
  		else if (!strcmp(argv[i], "-sf"))  /* selected foreground color */
  			colors[SchemeSel][ColFg] = argv[++i];
