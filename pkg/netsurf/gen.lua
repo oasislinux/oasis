@@ -79,7 +79,10 @@ pkg.deps = {
 	'pkg/libpng/headers',
 	'pkg/libressl/headers',
 	'pkg/libxkbcommon/fetch',
+	'pkg/pixman/headers',
 	'pkg/utf8proc/fetch',
+	'pkg/wayland/headers',
+	'pkg/wayland-protocols/headers',
 	'pkg/zlib/headers',
 }
 
