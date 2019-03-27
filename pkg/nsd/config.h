@@ -57,6 +57,7 @@
 /* #undef HAVE_LIBCRYPTO */
 #define HAVE_LIMITS_H 1
 #define HAVE_LOCALTIME_R 1
+/* #undef HAVE_LOGIN_CAP_H */
 #define HAVE_MALLOC 1
 #define HAVE_MEMCPY 1
 #define HAVE_MEMMOVE 1
@@ -146,10 +147,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.1.26"
+#define PACKAGE_STRING "NSD 4.1.27"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.1.26"
+#define PACKAGE_VERSION "4.1.27"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
