@@ -18,9 +18,9 @@
 #define PACKAGE "wayland"
 #define PACKAGE_BUGREPORT "https://gitlab.freedesktop.org/wayland/wayland/issues/"
 #define PACKAGE_NAME "wayland"
-#define PACKAGE_STRING "wayland 1.16.0"
+#define PACKAGE_STRING "wayland 1.17.0"
 #define PACKAGE_TARNAME "wayland"
 #define PACKAGE_URL "https://wayland.freedesktop.org/"
-#define PACKAGE_VERSION "1.16.0"
+#define PACKAGE_VERSION "1.17.0"
 #define STDC_HEADERS 1
-#define VERSION "1.16.0"
+#define VERSION "1.17.0"
