@@ -174,6 +174,13 @@ mkdir_v(const char *path, mode_t mode)
 }
 
 static int
+rmdir_v(const char *path)
+{
+	printf("rmdir(\"%s\")\n", path);
+	return unlinkat(rootfd, path, AT_REMOVEDIR);
+}
+
+static int
 defperm(const char *name)
 {
 	struct stat st;
@@ -265,7 +272,7 @@ specialperms(void)
 	/* delete directories in reverse order */
 	while (i > 0) {
 		--i;
-		if (oldsp.perms[i].delete && rmdir(oldsp.perms[i].name) < 0) {
+		if (oldsp.perms[i].delete && rmdir_v(oldsp.perms[i].name) < 0) {
 			switch (errno) {
 			case ENOENT:
 			case ENOTEMPTY:
