@@ -30,9 +30,10 @@ temporarily visible because git checks out the files before this program is run.
 #define PERMS_FILE ".perms"
 
 struct perm {
-	mode_t mode;
 	char *name;
-	bool attempted;
+	mode_t mode;
+	bool attempted;  /* whether we attempted to set permissions for this file */
+	bool delete;     /* marked for directories that only appear in old .perms */
 };
 
 struct special {
@@ -124,11 +125,12 @@ readspecial(struct special *sp, FILE *f)
 		sp->perms = realloc(sp->perms, (sp->len + 1) * sizeof(*sp->perms));
 		if (!sp->perms)
 			die("realloc:");
-		sp->perms[sp->len].name = strdup(s);
+		sp->perms[sp->len] = (struct perm){
+			.name = strdup(s),
+			.mode = strtoul(mode, &s, 8),
+		};
 		if (!sp->perms[sp->len].name)
 			die("strdup:");
-		sp->perms[sp->len].mode = strtoul(mode, &s, 8);
-		sp->perms[sp->len].attempted = false;
 		if (*s)
 			die("invalid mode: %s", mode);
 		++sp->len;
@@ -231,7 +233,6 @@ static void
 specialperms(void)
 {
 	int i = 0, j = 0, n;
-	char *dirs[oldsp.len], **dir = dirs;
 
 	while (i < oldsp.len || j < newsp.len) {
 		if (i == oldsp.len)
@@ -249,7 +250,7 @@ specialperms(void)
 			continue;
 		}
 		if ((oldsp.perms[i].mode & S_IFMT) == S_IFDIR) {
-			*dir++ = oldsp.perms[i].name;
+			oldsp.perms[i].delete = true;
 		} else if (defperm(oldsp.perms[i].name) < 0) {
 			switch (errno) {
 			case ENOENT:
@@ -262,9 +263,9 @@ specialperms(void)
 		++i;
 	}
 	/* delete directories in reverse order */
-	while (dir > dirs) {
-		--dir;
-		if (rmdir(*dir) < 0) {
+	while (i > 0) {
+		--i;
+		if (oldsp.perms[i].delete && rmdir(oldsp.perms[i].name) < 0) {
 			switch (errno) {
 			case ENOENT:
 			case ENOTEMPTY:
