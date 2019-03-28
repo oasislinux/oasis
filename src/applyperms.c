@@ -185,7 +185,7 @@ defperm(const char *name)
 	}
 	switch (st.st_mode & S_IFMT) {
 	case S_IFREG:
-		mode = st.st_mode&S_IXUSR ? 0755 : 0644;
+		mode = st.st_mode & S_IXUSR ? 0755 : 0644;
 		break;
 	case S_IFDIR:
 		mode = 0755;
@@ -196,7 +196,7 @@ defperm(const char *name)
 		errno = EINVAL;
 		return -1;
 	}
-	if ((st.st_mode&~S_IFMT) == mode)
+	if ((st.st_mode & ~S_IFMT) == mode)
 		return 0;
 	return chmod_v(name, mode);
 }
@@ -212,9 +212,7 @@ specialperm(struct perm *p)
 	if (fstatat(rootfd, p->name, &st, AT_SYMLINK_NOFOLLOW) < 0) {
 		if (errno != ENOENT || !S_ISDIR(p->mode))
 			return -1;
-		if (mkdir_v(p->name, p->mode & ~S_IFMT) < 0)
-			return -1;
-		return 0;
+		return mkdir_v(p->name, p->mode & ~S_IFMT);
 	}
 	if (st.st_dev != rootdev) {
 		errno = EXDEV;
@@ -222,7 +220,7 @@ specialperm(struct perm *p)
 	}
 	if (st.st_mode == p->mode)
 		return 0;
-	if ((st.st_mode&S_IFMT) != (p->mode&S_IFMT)) {
+	if ((st.st_mode & S_IFMT) != (p->mode & S_IFMT)) {
 		errno = EINVAL;
 		return -1;
 	}
@@ -250,17 +248,15 @@ specialperms(void)
 				++i;
 			continue;
 		}
-		switch (oldsp.perms[i].mode&S_IFMT) {
-		case S_IFDIR:
+		if ((oldsp.perms[i].mode & S_IFMT) == S_IFDIR) {
 			*dir++ = oldsp.perms[i].name;
-			break;
-		default:
-			if (defperm(oldsp.perms[i].name) < 0) switch (errno) {
-				case ENOENT:
-				case EXDEV:
-					break;
-				default:
-					error("defperm:");
+		} else if (defperm(oldsp.perms[i].name) < 0) {
+			switch (errno) {
+			case ENOENT:
+			case EXDEV:
+				break;
+			default:
+				error("defperm:");
 			}
 		}
 		++i;
@@ -268,12 +264,14 @@ specialperms(void)
 	/* delete directories in reverse order */
 	while (dir > dirs) {
 		--dir;
-		if (rmdir(*dir) < 0) switch (errno) {
+		if (rmdir(*dir) < 0) {
+			switch (errno) {
 			case ENOENT:
 			case ENOTEMPTY:
 				break;
 			default:
 				error("rmdir:");
+			}
 		}
 	}
 }
