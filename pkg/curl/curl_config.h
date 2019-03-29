@@ -61,7 +61,6 @@
 #define HAVE_FCNTL 1
 #define HAVE_FCNTL_H 1
 #define HAVE_FCNTL_O_NONBLOCK 1
-#define HAVE_FDOPEN 1
 #define HAVE_FNMATCH 1
 #define HAVE_FREEADDRINFO 1
 #define HAVE_FREEIFADDRS 1
@@ -172,6 +171,7 @@
 #define HAVE_POLL_FINE 1
 #define HAVE_POLL_H 1
 #define HAVE_POSIX_STRERROR_R 1
+/* #undef HAVE_PROTO_BSDSOCKET_H */
 #define HAVE_PTHREAD_H 1
 #define HAVE_PWD_H 1
 /* #undef HAVE_RAND_EGD */
@@ -202,7 +202,6 @@
 /* #undef HAVE_SSL_H */
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
-#define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRCASECMP 1
 /* #undef HAVE_STRCMPI */
@@ -252,7 +251,6 @@
 /* #undef HAVE_WINSOCK2_H */
 /* #undef HAVE_WINSOCK_H */
 /* #undef HAVE_WOLFSSLV3_CLIENT_METHOD */
-/* #undef HAVE_WOLFSSL_CTX_USESUPPORTEDCURVE */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_WOLFSSL_USEALPN */
 /* #undef HAVE_WRITABLE_ARGV */
@@ -305,9 +303,10 @@
 #define STDC_HEADERS 1
 #define STRERROR_R_TYPE_ARG3 size_t
 #define TIME_WITH_SYS_TIME 1
+/* #undef USE_ALTSVC */
+/* #undef USE_AMISSL */
 /* #undef USE_ARES */
 /* #undef USE_CYASSL */
-/* #undef USE_DARWINSSL */
 /* #undef USE_GNUTLS */
 /* #undef USE_GNUTLS_NETTLE */
 /* #undef USE_LIBPSL */
@@ -324,6 +323,7 @@
 #define USE_OPENSSL 1
 /* #undef USE_POLARSSL */
 /* #undef USE_SCHANNEL */
+/* #undef USE_SECTRANSP */
 #define USE_THREADS_POSIX 1
 /* #undef USE_THREADS_WIN32 */
 /* #undef USE_TLS_SRP */
