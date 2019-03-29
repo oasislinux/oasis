@@ -14,7 +14,7 @@ lib('libnetlink.a', [[lib/(
 	utils.c rt_names.c ll_map.c ll_types.c ll_proto.c ll_addr.c
 	inet_proto.c namespace.c json_writer.c json_print.c
 	names.c color.c bpf.c exec.c fs.c
-	(dnet ipx mpls)_ntop.c (dnet ipx mpls)_pton.c
+	mpls_ntop.c mpls_pton.c
 )]])
 
 exe('bin/ip', [[ip/(
