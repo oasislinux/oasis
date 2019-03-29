@@ -44,6 +44,7 @@
 /* #undef HAVE_CONIO_H */
 #define HAVE_COPYSIGN 1
 #define HAVE_CRYPT_H 1
+#define HAVE_CRYPT_R 1
 #define HAVE_CTERMID 1
 /* #undef HAVE_CTERMID_R */
 /* #undef HAVE_CURSES_FILTER */
