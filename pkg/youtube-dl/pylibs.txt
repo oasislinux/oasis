@@ -614,6 +614,7 @@ youtube_dl/extractor/teachable.py
 youtube_dl/extractor/teachertube.py
 youtube_dl/extractor/teachingchannel.py
 youtube_dl/extractor/teamcoco.py
+youtube_dl/extractor/teamtreehouse.py
 youtube_dl/extractor/techtalks.py
 youtube_dl/extractor/ted.py
 youtube_dl/extractor/tele13.py
