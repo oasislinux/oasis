@@ -30,8 +30,8 @@ return {
 	},
 	extra={
 		'file',
+		'fuse',
 		'less',
-		'libfuse',
 		'ncurses',
 		'python',
 		'the_silver_searcher',
