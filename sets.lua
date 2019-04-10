@@ -43,7 +43,6 @@ return {
 		'qbe',
 		'nasm',
 		'strace',
-		'mc',
 		'man-pages-posix',
 	},
 	media={
