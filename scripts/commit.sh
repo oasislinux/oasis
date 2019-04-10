@@ -14,6 +14,7 @@ if commit=$(git -C "$repo" show-ref -s --verify "refs/heads/$branch" 2>/dev/null
 	fi
 else
 	set --
+	unset commit
 fi
 
 if [ -z "${commit+set}" ] ; then
