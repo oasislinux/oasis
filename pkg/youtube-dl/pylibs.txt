@@ -24,6 +24,7 @@ youtube_dl/extractor/academicearth.py
 youtube_dl/extractor/acast.py
 youtube_dl/extractor/addanime.py
 youtube_dl/extractor/adn.py
+youtube_dl/extractor/adobeconnect.py
 youtube_dl/extractor/adobepass.py
 youtube_dl/extractor/adobetv.py
 youtube_dl/extractor/adultswim.py
@@ -68,6 +69,7 @@ youtube_dl/extractor/beeg.py
 youtube_dl/extractor/behindkink.py
 youtube_dl/extractor/bellmedia.py
 youtube_dl/extractor/bet.py
+youtube_dl/extractor/bfi.py
 youtube_dl/extractor/bigflix.py
 youtube_dl/extractor/bild.py
 youtube_dl/extractor/bilibili.py
@@ -478,6 +480,7 @@ youtube_dl/extractor/picarto.py
 youtube_dl/extractor/piksel.py
 youtube_dl/extractor/pinkbike.py
 youtube_dl/extractor/pladform.py
+youtube_dl/extractor/platzi.py
 youtube_dl/extractor/playfm.py
 youtube_dl/extractor/playplustv.py
 youtube_dl/extractor/plays.py
