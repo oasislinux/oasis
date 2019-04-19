@@ -265,3 +265,6 @@
 [submodule "pkg/zlib/src"]
 	path = pkg/zlib/src
 	url = https://github.com/madler/zlib
+[submodule "pkg/zstd/src"]
+	path = pkg/zstd/src
+	url = https://github.com/facebook/zstd
