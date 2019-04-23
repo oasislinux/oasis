@@ -1,0 +1,31 @@
+From e3f3b5690d6eeed23745ac1d966d4b51f0b5e270 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 22 Apr 2019 20:28:01 -0700
+Subject: [PATCH] Fix prototype of cuse_fll_ioctl
+
+The type of cmd was changed to unsigned int.
+---
+ lib/cuse_lowlevel.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/lib/cuse_lowlevel.c b/lib/cuse_lowlevel.c
+index 56e6aa9..7c146ba 100644
+--- a/lib/cuse_lowlevel.c
++++ b/lib/cuse_lowlevel.c
+@@ -77,9 +77,10 @@ static void cuse_fll_fsync(fuse_req_t req, fuse_ino_t ino, int datasync,
+ 	req_clop(req)->fsync(req, datasync, fi);
+ }
+ 
+-static void cuse_fll_ioctl(fuse_req_t req, fuse_ino_t ino, int cmd, void *arg,
+-		       struct fuse_file_info *fi, unsigned int flags,
+-		       const void *in_buf, size_t in_bufsz, size_t out_bufsz)
++static void cuse_fll_ioctl(fuse_req_t req, fuse_ino_t ino, unsigned int cmd,
++			   void *arg, struct fuse_file_info *fi,
++			   unsigned int flags, const void *in_buf,
++			   size_t in_bufsz, size_t out_bufsz)
+ {
+ 	(void)ino;
+ 	req_clop(req)->ioctl(req, cmd, arg, fi, flags, in_buf, in_bufsz,
+-- 
+2.21.0
+
