@@ -444,6 +444,8 @@ youtube_dl/extractor/noz.py
 youtube_dl/extractor/npo.py
 youtube_dl/extractor/npr.py
 youtube_dl/extractor/nrk.py
+youtube_dl/extractor/nrl.py
+youtube_dl/extractor/ntvcojp.py
 youtube_dl/extractor/ntvde.py
 youtube_dl/extractor/ntvru.py
 youtube_dl/extractor/nuevo.py
@@ -603,6 +605,7 @@ youtube_dl/extractor/streamcloud.py
 youtube_dl/extractor/streamcz.py
 youtube_dl/extractor/streetvoice.py
 youtube_dl/extractor/stretchinternet.py
+youtube_dl/extractor/stv.py
 youtube_dl/extractor/sunporno.py
 youtube_dl/extractor/svt.py
 youtube_dl/extractor/swrmediathek.py
