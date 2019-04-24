@@ -12,6 +12,8 @@ cflags{
 	'-I $srcdir/crypto/bn',
 	'-I $srcdir/crypto/evp',
 	'-I $srcdir/crypto/modes',
+	'-I $srcdir/crypto/ecdsa',
+	'-I $srcdir/crypto/ec',
 	'-I pkg/openbsd/include',
 }
 
@@ -20,7 +22,6 @@ pkg.hdrs = {
 	copy('$outdir/include/openssl', '$srcdir/include/openssl', {
 		'aes.h',
 		'asn1.h',
-		'asn1_mac.h',
 		'asn1t.h',
 		'blowfish.h',
 		'bio.h',
@@ -68,6 +69,8 @@ pkg.hdrs = {
 		'ripemd.h',
 		'rsa.h',
 		'sha.h',
+		'sm3.h',
+		'sm4.h',
 		'safestack.h',
 		'stack.h',
 		'ts.h',
@@ -97,7 +100,7 @@ pkg.hdrs = {
 lib('libcrypto.a', [[crypto/(
 	cryptlib.c malloc-wrapper.c mem_dbg.c cversion.c ex_data.c cpt_err.c
 	o_time.c o_str.c o_init.c
-	mem_clr.c crypto_init.c
+	mem_clr.c crypto_init.c crypto_lock.c
 	aes/(
 		aes_misc.c aes_ecb.c aes_cfb.c aes_ofb.c
 		aes_ctr.c aes_ige.c aes_wrap.c
@@ -114,9 +117,8 @@ lib('libcrypto.a', [[crypto/(
 		tasn_prn.c ameth_lib.c
 		f_int.c f_string.c n_pkey.c
 		f_enum.c x_pkey.c a_bool.c x_exten.c bio_asn1.c bio_ndef.c asn_mime.c
-		asn1_gen.c asn1_par.c asn1_lib.c asn1_err.c a_bytes.c a_strnid.c
+		asn1_gen.c asn1_par.c asn1_lib.c asn1_err.c a_strnid.c
 		evp_asn1.c asn_pack.c p5_pbe.c p5_pbev2.c p8_pkey.c asn_moid.c
-		a_set.c
 		a_time_tm.c
 	)
 	bf/(bf_skey.c bf_ecb.c bf_cfb64.c bf_ofb64.c)
@@ -169,7 +171,7 @@ lib('libcrypto.a', [[crypto/(
 	ec/(
 		ec_lib.c ecp_smpl.c ecp_mont.c ecp_nist.c ec_cvt.c ec_mult.c
 		ec_err.c ec_curve.c ec_check.c ec_print.c ec_asn1.c ec_key.c
-		ec2_smpl.c ec2_mult.c ec_ameth.c ec_pmeth.c eck_prn.c
+		ec2_smpl.c ec2_mult.c ec_ameth.c ec_pmeth.c ec_kmeth.c eck_prn.c
 		ecp_oct.c ec2_oct.c ec_oct.c
 	)
 	ecdh/(ech_lib.c ech_key.c ech_err.c)
@@ -178,7 +180,7 @@ lib('libcrypto.a', [[crypto/(
 		eng_err.c eng_lib.c eng_list.c eng_init.c eng_ctrl.c
 		eng_table.c eng_pkey.c eng_fat.c eng_all.c
 		tb_rsa.c tb_dsa.c tb_ecdsa.c tb_dh.c tb_ecdh.c tb_rand.c tb_store.c
-		tb_cipher.c tb_digest.c tb_pkmeth.c tb_asnmth.c
+		tb_cipher.c tb_digest.c tb_pkmeth.c tb_asnmth.c tb_eckey.c
 		eng_openssl.c eng_cnf.c eng_dyn.c
 	)
 	err/(err.c err_all.c err_prn.c)
@@ -187,7 +189,7 @@ lib('libcrypto.a', [[crypto/(
 		e_des.c e_bf.c e_idea.c e_des3.c e_camellia.c
 		e_rc4.c e_aes.c names.c
 		e_xcbc_d.c e_rc2.c e_cast.c
-		m_null.c m_md4.c m_md5.c m_sha1.c m_wp.c
+		m_null.c m_md4.c m_md5.c m_sha1.c m_sm3.c m_wp.c
 		m_dss.c m_dss1.c m_ripemd.c m_ecdsa.c
 		p_open.c p_seal.c p_sign.c p_verify.c p_lib.c p_enc.c p_dec.c
 		bio_md.c bio_b64.c bio_enc.c evp_err.c e_null.c
@@ -197,6 +199,7 @@ lib('libcrypto.a', [[crypto/(
 		e_aes_cbc_hmac_sha1.c e_rc4_hmac_md5.c
 		e_chacha.c evp_aead.c e_chacha20poly1305.c
 		e_gost2814789.c m_gost2814789.c m_gostr341194.c m_streebog.c
+		e_sm4.c
 		m_md5_sha1.c
 	)
 	gost/(
@@ -241,6 +244,8 @@ lib('libcrypto.a', [[crypto/(
 		rsa_pmeth.c rsa_crpt.c rsa_meth.c
 	)
 	sha/(sha1dgst.c sha1_one.c sha256.c sha512.c)
+	sm3/sm3.c
+	sm4/sm4.c
 	stack/stack.c
 	ts/(
 		ts_err.c ts_req_utils.c ts_req_print.c ts_rsp_utils.c ts_rsp_print.c
@@ -278,18 +283,52 @@ file('lib/libcrypto.a', '644', '$outdir/libcrypto.a')
 
 -- src/ssl/Makefile.am
 lib('libssl.a', [[ssl/(
-	ssl_srvr.c ssl_clnt.c s3_lib.c ssl_pkt.c ssl_both.c
-	t1_meth.c t1_srvr.c t1_clnt.c t1_lib.c t1_enc.c t1_hash.c
-	d1_meth.c d1_srvr.c d1_clnt.c d1_lib.c d1_pkt.c
-	d1_both.c d1_enc.c d1_srtp.c
-	ssl_lib.c ssl_cert.c ssl_sess.c
-	ssl_ciph.c ssl_stat.c ssl_rsa.c
-	ssl_asn1.c ssl_txt.c ssl_algs.c
-	bio_ssl.c ssl_err.c
-	ssl_packet.c ssl_tlsext.c ssl_versions.c pqueue.c ssl_init.c
-
+	bio_ssl.c
+	bs_ber.c
+	bs_cbb.c
+	bs_cbs.c
+	d1_both.c
+	d1_clnt.c
+	d1_enc.c
+	d1_lib.c
+	d1_pkt.c
+	d1_srtp.c
+	d1_srvr.c
+	pqueue.c
 	s3_cbc.c
-	bs_ber.c bs_cbb.c bs_cbs.c
+	s3_lib.c
+	ssl_algs.c
+	ssl_asn1.c
+	ssl_both.c
+	ssl_cert.c
+	ssl_ciph.c
+	ssl_ciphers.c
+	ssl_clnt.c
+	ssl_err.c
+	ssl_init.c
+	ssl_lib.c
+	ssl_methods.c
+	ssl_packet.c
+	ssl_pkt.c
+	ssl_rsa.c
+	ssl_sess.c
+	ssl_sigalgs.c
+	ssl_srvr.c
+	ssl_stat.c
+	ssl_tlsext.c
+	ssl_transcript.c
+	ssl_txt.c
+	ssl_versions.c
+	t1_enc.c
+	t1_lib.c
+	tls13_buffer.c
+	tls13_client.c
+	tls13_handshake.c
+	tls13_handshake_msg.c
+	tls13_key_schedule.c
+	tls13_lib.c
+	tls13_record.c
+	tls13_record_layer.c
 ) libcrypto.a.d]])
 file('lib/libssl.a', '644', '$outdir/libssl.a')
 

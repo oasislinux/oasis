@@ -1,0 +1,31 @@
+From a16c45e3c7b271fb74a83d84e83189858b9b88bb Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 24 Apr 2019 00:07:34 -0700
+Subject: [PATCH] Use plain vsyslog for OPENSSL_showfatal
+
+The compat version just ignores the second argument anyway, and
+patching it out allows us to continue to ignore the compat functions.
+---
+ crypto/cryptlib.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/crypto/cryptlib.c b/crypto/cryptlib.c
+index 38d31e7ac..d6eface9b 100644
+--- a/crypto/cryptlib.c
++++ b/crypto/cryptlib.c
+@@ -345,11 +345,10 @@ OPENSSL_cpuid_setup(void)
+ static void
+ OPENSSL_showfatal(const char *fmta, ...)
+ {
+-	struct syslog_data sdata = SYSLOG_DATA_INIT;
+ 	va_list ap;
+ 
+ 	va_start(ap, fmta);
+-	vsyslog_r(LOG_INFO|LOG_LOCAL2, &sdata, fmta, ap);
++	vsyslog(LOG_INFO|LOG_LOCAL2, fmta, ap);
+ 	va_end(ap);
+ }
+ 
+-- 
+2.21.0
+
