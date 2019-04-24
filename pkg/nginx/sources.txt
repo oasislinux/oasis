@@ -59,6 +59,7 @@ http_mp4 http/modules/ngx_http_mp4_module.c
 http_upstream_hash http/modules/ngx_http_upstream_hash_module.c
 http_upstream_ip_hash http/modules/ngx_http_upstream_ip_hash_module.c
 http_upstream_least_conn http/modules/ngx_http_upstream_least_conn_module.c
+http_upstream_random http/modules/ngx_http_upstream_random_module.c
 http_upstream_keepalive http/modules/ngx_http_upstream_keepalive_module.c
 http_upstream_zone http/modules/ngx_http_upstream_zone_module.c
 http_stub_status http/modules/ngx_http_stub_status_module.c
@@ -117,6 +118,7 @@ stream_split_clients stream/ngx_stream_split_clients_module.c
 stream_return stream/ngx_stream_return_module.c
 stream_upstream_hash stream/ngx_stream_upstream_hash_module.c
 stream_upstream_least_conn stream/ngx_stream_upstream_least_conn_module.c
+stream_upstream_random_module stream/ngx_stream_upstream_random_module.c
 stream_upstream_zone stream/ngx_stream_upstream_zone_module.c
 stream_ssl_preread stream/ngx_stream_ssl_preread_module.c
 

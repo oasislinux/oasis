@@ -95,6 +95,7 @@ local sources = paths[[src/(
 		ngx_event_timer.c
 		ngx_event_posted.c
 		ngx_event_accept.c
+		ngx_event_udp.c
 		ngx_event_connect.c
 		ngx_event_pipe.c
 		modules/ngx_epoll_module.c
