@@ -37,6 +37,7 @@ return {
 		'the_silver_searcher',
 		'unzip',
 		'vis',
+		'zstd',
 	},
 	devel={
 		'make',
