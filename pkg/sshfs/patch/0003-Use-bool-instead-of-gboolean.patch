@@ -1,4 +1,4 @@
-From 5e41f6528f5793c37b988ca64f5dba42fe14e4da Mon Sep 17 00:00:00 2001
+From 6e76c7d8affb3911fcb2fb25052f20791476e179 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 17:28:40 -0700
 Subject: [PATCH] Use bool instead of gboolean
@@ -8,7 +8,7 @@ Subject: [PATCH] Use bool instead of gboolean
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index 5b328e3..a244e97 100644
+index d1280e8..e86bf96 100644
 --- a/sshfs.c
 +++ b/sshfs.c
 @@ -18,6 +18,7 @@
@@ -19,7 +19,7 @@ index 5b328e3..a244e97 100644
  #include <stdio.h>
  #include <stdlib.h>
  #include <unistd.h>
-@@ -1902,7 +1903,7 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+@@ -1893,7 +1894,7 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
  
  	err = -EIO;
  	if (sftp_send_iov(type, req->id, iov, count) == -1) {
@@ -29,5 +29,5 @@ index 5b328e3..a244e97 100644
  		pthread_mutex_lock(&sshfs.lock);
  		rmed = !!request_table_lookup(&sshfs.reqtab, req->id);
 -- 
-2.19.2
+2.21.0
 
