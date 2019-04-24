@@ -16,10 +16,10 @@
 #define PACKAGE "libpng"
 #define PACKAGE_BUGREPORT "png-mng-implement@lists.sourceforge.net"
 #define PACKAGE_NAME "libpng"
-#define PACKAGE_STRING "libpng 1.6.36"
+#define PACKAGE_STRING "libpng 1.6.37"
 #define PACKAGE_TARNAME "libpng"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.6.36"
+#define PACKAGE_VERSION "1.6.37"
 /* #undef PNG_ARM_NEON_API_SUPPORTED */
 /* #undef PNG_ARM_NEON_CHECK_SUPPORTED */
 /* #undef PNG_ARM_NEON_OPT */
@@ -32,7 +32,7 @@
 /* #undef PNG_POWERPC_VSX_OPT */
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
-#define VERSION "1.6.36"
+#define VERSION "1.6.37"
 /* #undef const */
 #define restrict __restrict
 #if defined __SUNPRO_CC && !defined __RESTRICT
