@@ -126,6 +126,9 @@ file('bin/ssh-keygen', '755', '$outdir/ssh-keygen')
 exe('sftp-server', {'sftp-common.c.o', 'sftp-server.c.o', 'sftp-server-main.c', 'libssh.a.d'})
 file('libexec/sftp-server', '755', '$outdir/sftp-server')
 
-man{'ssh.1', 'scp.1', 'ssh-add.1', 'ssh-agent.1', 'ssh-keygen.1', 'sshd.8', 'sftp-server.8'}
+exe('sftp', {'sftp.c', 'sftp-client.c', 'sftp-common.c.o', 'sftp-glob.c', 'libssh.a.d'})
+file('bin/sftp', '755', '$outdir/sftp')
+
+man{'ssh.1', 'scp.1', 'ssh-add.1', 'ssh-agent.1', 'ssh-keygen.1', 'sshd.8', 'sftp-server.8', 'sftp.1'}
 
 fetch 'git'
