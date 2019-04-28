@@ -134,7 +134,7 @@
 	ignore = all
 [submodule "pkg/msmtp/src"]
 	path = pkg/msmtp/src
-	url = https://git.marlam.de/git/msmtp.git
+	url = https://github.com/marlam/msmtp-mirror
 	ignore = all
 [submodule "pkg/mtdev/src"]
 	path = pkg/mtdev/src
