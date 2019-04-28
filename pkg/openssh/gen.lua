@@ -65,7 +65,7 @@ lib('libssh.a', [[
 	canohost.c channels.c cipher.c cipher-aes.c cipher-aesctr.c
 	cipher-ctr.c cleanup.c
 	compat.c crc32.c fatal.c hostfile.c
-	log.c match.c moduli.c nchan.c packet.c opacket.c
+	log.c match.c moduli.c nchan.c packet.c
 	readpass.c ttymodes.c xmalloc.c addrmatch.c
 	atomicio.c dispatch.c mac.c uuencode.c misc.c utf8.c
 	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-rsa.c dh.c
@@ -75,8 +75,8 @@ lib('libssh.a', [[
 	ssh-ed25519.c digest-openssl.c digest-libc.c hmac.c
 	sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c
 	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c
-	kexdhc.c kexgexc.c kexecdhc.c kexc25519c.c
-	kexdhs.c kexgexs.c kexecdhs.c kexc25519s.c
+	kexgexc.c kexgexs.c
+	sntrup4591761.c kexsntrup4591761x25519.c kexgen.c
 	platform-pledge.c platform-tracing.c platform-misc.c
 	libopenbsd-compat.a
 	$builddir/pkg/(libressl/libcrypto.a.d zlib/libz.a)

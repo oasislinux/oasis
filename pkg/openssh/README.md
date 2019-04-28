@@ -11,9 +11,9 @@ Generated with
 		LIBS='-lcrypto -lbsd'
 
 Several changes were made:
-* `SECCOMP_AUDIT_ARCH` and `SANDBOX_SECCOMP_FILTER` were removed
-  and instead defined in `gen.lua` dependent on the target toolchain
-  architecture.
+* `SECCOMP_AUDIT_ARCH`, `SANDBOX_SECCOMP_FILTER`, and `SANDBOX_RLIMIT`
+  were removed and instead defined in `gen.lua` dependent on the
+  target toolchain architecture.
 * `HAVE_STRNVIS` was undefined because although we do build it into
   `libbsd.a`, we don't include the whole openbsd header directory.
 * `HAVE_PLEDGE` is defined because we have a stub definition in
