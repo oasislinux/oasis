@@ -28,6 +28,6 @@ zcat src.tar.gz | ${PAXREAD:-pax -r} -s ',^,src/,' \
 	'usr.bin/patch/*' \
 	'usr.bin/yacc/*' \
 	'usr.sbin/acme-client/*'
-zcat sys.tar.gz | ${PAXREAD:-pax -r} -s ',^,src/,' 'sys/sys/*'
+zcat sys.tar.gz | ${PAXREAD:-pax -r} -s ',^[^/]*,src,' './sys/sys/*'
 
 git apply -v --whitespace=nowarn --directory "$dir/src" patch/*

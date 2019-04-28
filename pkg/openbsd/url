@@ -1,5 +1,5 @@
 remote-name
-url = "https://fastly.cdn.openbsd.org/pub/OpenBSD/6.4/src.tar.gz"
+url = "https://fastly.cdn.openbsd.org/pub/OpenBSD/6.5/src.tar.gz"
 
 remote-name
-url = "https://fastly.cdn.openbsd.org/pub/OpenBSD/6.4/sys.tar.gz"
+url = "https://fastly.cdn.openbsd.org/pub/OpenBSD/6.5/sys.tar.gz"

@@ -63,7 +63,7 @@ file('bin/doas', '6755', '$outdir/doas')
 man{'usr.bin/doas/doas.1', 'usr.bin/doas/doas.conf.5'}
 
 -- fmt
-file('bin/fmt', '755', exe('fmt', {'usr.bin/fmt/fmt.c'}))
+file('bin/fmt', '755', exe('fmt', {'usr.bin/fmt/fmt.c', 'libbsd.a'}))
 man{'usr.bin/fmt/fmt.1'}
 
 -- m4
