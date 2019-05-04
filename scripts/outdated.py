@@ -9,6 +9,7 @@ names = {
 	'awk': 'nawk',
 	'bc': 'bc-gh',
 	'hostap': 'wpa-supplicant',
+	'lpeg': 'lua:lpeg',
 	'lua': 'lua52',
 	'python': 'python3',
 	'st': 'st-term',
