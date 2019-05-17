@@ -1,0 +1,25 @@
+From 325cae726ecea5d332e8f4c68bc572069ff5e249 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 16 May 2019 15:21:26 -0700
+Subject: [PATCH] rega: Fix allocation of multiple temporaries to the same
+ register
+
+---
+ rega.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/rega.c b/rega.c
+index ba405e5..7547293 100644
+--- a/rega.c
++++ b/rega.c
+@@ -605,6 +605,7 @@ rega(Fn *fn)
+ 			if (x > 0 && !bshas(m->b, x)) {
+ 				pmadd(TMP(x), TMP(r), tmp[t].cls);
+ 				m->r[j] = x;
++				bsset(m->b, x);
+ 			}
+ 		}
+ 		curi = &insb[NIns];
+-- 
+2.21.0
+
