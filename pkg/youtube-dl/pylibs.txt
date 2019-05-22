@@ -116,6 +116,7 @@ youtube_dl/extractor/chaturbate.py
 youtube_dl/extractor/chilloutzone.py
 youtube_dl/extractor/chirbit.py
 youtube_dl/extractor/cinchcast.py
+youtube_dl/extractor/cinemax.py
 youtube_dl/extractor/ciscolive.py
 youtube_dl/extractor/cjsw.py
 youtube_dl/extractor/cliphunter.py
@@ -171,7 +172,6 @@ youtube_dl/extractor/dispeak.py
 youtube_dl/extractor/dotsub.py
 youtube_dl/extractor/douyutv.py
 youtube_dl/extractor/dplay.py
-youtube_dl/extractor/dramafever.py
 youtube_dl/extractor/drbonanza.py
 youtube_dl/extractor/dreisat.py
 youtube_dl/extractor/dropbox.py
@@ -571,9 +571,9 @@ youtube_dl/extractor/shared.py
 youtube_dl/extractor/showroomlive.py
 youtube_dl/extractor/sina.py
 youtube_dl/extractor/sixplay.py
+youtube_dl/extractor/sky.py
 youtube_dl/extractor/skylinewebcams.py
 youtube_dl/extractor/skynewsarabia.py
-youtube_dl/extractor/skysports.py
 youtube_dl/extractor/slideshare.py
 youtube_dl/extractor/slideslive.py
 youtube_dl/extractor/slutload.py
@@ -607,6 +607,7 @@ youtube_dl/extractor/streetvoice.py
 youtube_dl/extractor/stretchinternet.py
 youtube_dl/extractor/stv.py
 youtube_dl/extractor/sunporno.py
+youtube_dl/extractor/sverigesradio.py
 youtube_dl/extractor/svt.py
 youtube_dl/extractor/swrmediathek.py
 youtube_dl/extractor/syfy.py
@@ -769,7 +770,6 @@ youtube_dl/extractor/weiqitv.py
 youtube_dl/extractor/wimp.py
 youtube_dl/extractor/wistia.py
 youtube_dl/extractor/worldstarhiphop.py
-youtube_dl/extractor/wrzuta.py
 youtube_dl/extractor/wsj.py
 youtube_dl/extractor/wwe.py
 youtube_dl/extractor/xbef.py

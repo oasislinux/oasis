@@ -1,4 +1,4 @@
-From ef0127b80cf44dbf6bff8db0fbbbbe75cac62105 Mon Sep 17 00:00:00 2001
+From 6c8d22e1114e26ab363fae5e206d504ecda77030 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -9,7 +9,7 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  2 files changed, 11 insertions(+), 190 deletions(-)
 
 diff --git a/youtube_dl/compat.py b/youtube_dl/compat.py
-index 7992a23ca..ef681b0d3 100644
+index c75ab131b..5af6cdd36 100644
 --- a/youtube_dl/compat.py
 +++ b/youtube_dl/compat.py
 @@ -4,7 +4,6 @@ from __future__ import unicode_literals
@@ -54,7 +54,7 @@ index 7992a23ca..ef681b0d3 100644
      'compat_etree_fromstring',
      'compat_etree_register_namespace',
 diff --git a/youtube_dl/utils.py b/youtube_dl/utils.py
-index f2726a579..d4c086cd0 100644
+index 9be9b2e76..44dae10e4 100644
 --- a/youtube_dl/utils.py
 +++ b/youtube_dl/utils.py
 @@ -8,7 +8,6 @@ import binascii
@@ -124,8 +124,8 @@ index f2726a579..d4c086cd0 100644
 -    def not_a_console(handle):
 -        if handle == INVALID_HANDLE_VALUE or handle is None:
 -            return True
--        return ((GetFileType(handle) & ~FILE_TYPE_REMOTE) != FILE_TYPE_CHAR or
--                GetConsoleMode(handle, ctypes.byref(ctypes.wintypes.DWORD())) == 0)
+-        return ((GetFileType(handle) & ~FILE_TYPE_REMOTE) != FILE_TYPE_CHAR
+-                or GetConsoleMode(handle, ctypes.byref(ctypes.wintypes.DWORD())) == 0)
 -
 -    if not_a_console(h):
 -        return False
@@ -161,8 +161,8 @@ index f2726a579..d4c086cd0 100644
 -        if _windows_write_string(s, out):
 -            return
 -
-     if ('b' in getattr(out, 'mode', '') or
-             sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
+     if ('b' in getattr(out, 'mode', '')
+             or sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
          byt = s.encode(encoding or preferredencoding(), 'ignore')
 @@ -1519,78 +1438,22 @@ def intlist_to_bytes(xs):
  
