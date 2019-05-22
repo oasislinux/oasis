@@ -74,6 +74,7 @@ dolby
 dump
 dyadic
 ebml
+edid
 editors
 efi
 elf
@@ -186,6 +187,7 @@ netscape
 netware
 news
 nitpicker
+numpy
 oasis
 ocaml
 octave
@@ -226,6 +228,7 @@ riff
 rinex
 rpi
 rpm
+rpmsg
 rtf
 ruby
 sc
