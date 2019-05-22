@@ -24,7 +24,7 @@ exe('bin/ip', [[ip/(
 	ipxfrm.c xfrm_state.c xfrm_policy.c xfrm_monitor.c iplink_dummy.c
 	iplink_ifb.c iplink_nlmon.c iplink_team.c iplink_vcan.c iplink_vxcan.c
 	iplink_vlan.c link_veth.c link_gre.c iplink_can.c iplink_xdp.c
-	iplink_macvlan.c ipl2tp.c link_vti.c link_vti6.c
+	iplink_macvlan.c ipl2tp.c link_vti.c link_vti6.c link_xfrm.c
 	iplink_vxlan.c tcp_metrics.c iplink_ipoib.c ipnetconf.c link_ip6tnl.c
 	link_iptnl.c link_gre6.c iplink_bond.c iplink_bond_slave.c iplink_hsr.c
 	iplink_bridge.c iplink_bridge_slave.c ipfou.c iplink_ipvlan.c
