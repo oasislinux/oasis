@@ -101,7 +101,7 @@
 	url = https://github.com/libffi/libffi
 [submodule "pkg/libinput/src"]
 	path = pkg/libinput/src
-	url = https://github.com/michaelforney/libinput
+	url = https://github.com/oasislinux/libinput
 [submodule "pkg/libjpeg-turbo/src"]
 	path = pkg/libjpeg-turbo/src
 	url = https://github.com/libjpeg-turbo/libjpeg-turbo
