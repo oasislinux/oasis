@@ -62,8 +62,8 @@ local quirks = {
 	'30-vendor-microsoft.quirks',
 	'30-vendor-razer.quirks',
 	'30-vendor-synaptics.quirks',
-	'30-vendor-wacom.quirks',
 	'30-vendor-vmware.quirks',
+	'30-vendor-wacom.quirks',
 	'50-system-acer.quirks',
 	'50-system-apple.quirks',
 	'50-system-asus.quirks',
@@ -74,6 +74,7 @@ local quirks = {
 	'50-system-hp.quirks',
 	'50-system-lenovo.quirks',
 	'50-system-system76.quirks',
+	'50-system-toshiba.quirks',
 }
 for _, quirk in ipairs(quirks) do
 	file('share/libinput/'..quirk, '644', '$srcdir/quirks/'..quirk)
