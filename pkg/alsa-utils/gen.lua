@@ -1,4 +1,5 @@
 cflags{
+	'-D _GNU_SOURCE=',
 	'-I $dir',
 	'-I $srcdir/include',
 	'-I $builddir/pkg/alsa-lib/include',
