@@ -54,10 +54,10 @@ lib('libcurl.a', [[
 		openldap.c curl_gethostname.c gopher.c idn_win32.c
 		http_proxy.c non-ascii.c asyn-ares.c asyn-thread.c curl_gssapi.c
 		http_ntlm.c curl_ntlm_wb.c curl_ntlm_core.c curl_sasl.c rand.c
-		curl_multibyte.c hostcheck.c conncache.c pipeline.c dotdot.c
+		curl_multibyte.c hostcheck.c conncache.c dotdot.c
 		x509asn1.c http2.c smb.c curl_endian.c curl_des.c system_win32.c
 		mime.c sha256.c setopt.c curl_path.c curl_ctype.c curl_range.c psl.c
-		doh.c urlapi.c altsvc.c
+		doh.c urlapi.c curl_get_line.c altsvc.c
 		vauth/(
 			vauth.c cleartext.c cram.c
 			digest.c digest_sspi.c krb5_gssapi.c
