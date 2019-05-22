@@ -46,10 +46,10 @@
 #define PACKAGE "alsa-lib"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "alsa-lib"
-#define PACKAGE_STRING "alsa-lib 1.1.8"
+#define PACKAGE_STRING "alsa-lib 1.1.9"
 #define PACKAGE_TARNAME "alsa-lib"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.1.8"
+#define PACKAGE_VERSION "1.1.9"
 #define SND_MAX_CARDS 32
 #define STDC_HEADERS 1
 #define SUPPORT_ALOAD "1"
@@ -72,7 +72,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.1.8"
+#define VERSION "1.1.9"
 #define VERSIONED_SYMBOLS /**/
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
