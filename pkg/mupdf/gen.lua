@@ -6,6 +6,8 @@ cflags{
 	-- HTML and EPUB require harfbuzz
 	'-D FZ_ENABLE_HTML=0',
 	'-D FZ_ENABLE_EPUB=0',
+	-- ICS requires lcms2
+	'-D FZ_ENABLE_ICC=0',
 	-- JPX requires openjpeg
 	'-D FZ_ENABLE_JPX=0',
 	'-D HAVE_PTHREAD',
@@ -34,7 +36,6 @@ for _, font in ipairs(fonts) do
 end
 
 pkg.deps = {
-	'pkg/curl/headers',
 	'pkg/freetype/fetch',
 	'pkg/jbig2dec/fetch',
 	'pkg/libjpeg-turbo/headers',
@@ -61,7 +62,7 @@ exe('bin/mutool', [[
 	source/tools/(
 		mutool.c muconvert.c mudraw.c murun.c mutrace.c cmapdump.c
 		pdfclean.c pdfcreate.c pdfextract.c pdfinfo.c pdfmerge.c pdfpages.c
-		pdfportfolio.c pdfposter.c pdfshow.c pdfsign.c
+		pdfposter.c pdfshow.c pdfsign.c
 	)
 	libmupdf.a.d
 	libmupdf-pkcs7.a
@@ -69,9 +70,6 @@ exe('bin/mutool', [[
 ]])
 file('bin/mutool', '755', '$outdir/bin/mutool')
 
-cc('platform/x11/curl_stream.c', {'pkg/curl/headers'}, {
-	cflags='$cflags -I $builddir/pkg/curl/include',
-})
 cc('platform/x11/wl_main.c', {
 	'$dir/deps',
 	'pkg/libxkbcommon/fetch',
@@ -86,11 +84,10 @@ cc('platform/x11/wl_main.c', {
 	'-I pkg/libxkbcommon/src',
 }})
 exe('bin/mupdf', [[
-	platform/x11/(pdfapp.c curl_stream.c.o wl_main.c.o)
+	platform/x11/(pdfapp.c wl_main.c.o)
 	libmupdf.a.d
 	libmupdf-pkcs7.a
 	$builddir/pkg/(
-		curl/libcurl.a.d
 		jbig2dec/libjbig2dec.a
 		libxkbcommon/libxkbcommon.a
 		pixman/libpixman.a

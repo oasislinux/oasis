@@ -34,6 +34,7 @@ fitz/draw-rasterize.c
 fitz/draw-scale-simple.c
 fitz/draw-unpack.c
 fitz/encode-basic.c
+fitz/encodings.c
 fitz/error.c
 fitz/filter-basic.c
 fitz/filter-dct.c
@@ -58,6 +59,7 @@ fitz/link.c
 fitz/list-device.c
 fitz/load-bmp.c
 fitz/load-gif.c
+fitz/load-jbig2.c
 fitz/load-jpeg.c
 fitz/load-jpx.c
 fitz/load-jxr.c
@@ -77,7 +79,6 @@ fitz/output-ps.c
 fitz/output-psd.c
 fitz/output-pwg.c
 fitz/output-svg.c
-fitz/output-tga.c
 fitz/output.c
 fitz/path.c
 fitz/pixmap.c
@@ -91,7 +92,6 @@ fitz/stext-output.c
 fitz/stext-search.c
 fitz/store.c
 fitz/stream-open.c
-fitz/stream-prog.c
 fitz/stream-read.c
 fitz/string.c
 fitz/strtof.c
@@ -123,9 +123,8 @@ pdf/pdf-cmap.c
 pdf/pdf-colorspace.c
 pdf/pdf-crypt.c
 pdf/pdf-device.c
-pdf/pdf-encoding.c
 pdf/pdf-event.c
-pdf/pdf-field.c
+pdf/pdf-font-add.c
 pdf/pdf-font.c
 pdf/pdf-form.c
 pdf/pdf-function.c
@@ -146,7 +145,6 @@ pdf/pdf-outline.c
 pdf/pdf-page.c
 pdf/pdf-parse.c
 pdf/pdf-pattern.c
-pdf/pdf-portfolio.c
 pdf/pdf-repair.c
 pdf/pdf-resources.c
 pdf/pdf-run.c
@@ -156,6 +154,7 @@ pdf/pdf-store.c
 pdf/pdf-stream.c
 pdf/pdf-type3.c
 pdf/pdf-unicode.c
+pdf/pdf-util.c
 pdf/pdf-write.c
 pdf/pdf-xobject.c
 pdf/pdf-xref.c
