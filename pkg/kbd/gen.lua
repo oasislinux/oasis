@@ -7,7 +7,7 @@ cflags{
 	'-I $srcdir/src/libkeymap/keymap',
 }
 
-lib('libcommon.a', 'src/(getfd.c xmalloc.c kbd_error.c)')
+lib('libcommon.a', 'src/(getfd.c xmalloc.c kbd_error.c version.c)')
 lib('libfont.a', 'src/(kdfontop.c kdmapop.c loadunimap.c psffontop.c utf8.c)')
 lib('libkeymap.a', [[src/libkeymap/(
 	analyze.c

@@ -1,0 +1,62 @@
+From 474ee8777d5fd011ec61bd66d42c95c6d99499f9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 30 May 2019 21:37:42 -0700
+Subject: [PATCH] Avoid duplicate external definitions of progname
+
+---
+ src/Makefile.am | 5 +++--
+ src/version.c   | 5 +++++
+ src/version.h   | 2 +-
+ 3 files changed, 9 insertions(+), 3 deletions(-)
+ create mode 100644 src/version.c
+
+diff --git a/src/Makefile.am b/src/Makefile.am
+index d4e0583..1d80cf8 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -39,7 +39,8 @@ EXTRA_DIST = \
+ libcommon_a_SOURCES = \
+ 	getfd.c getfd.h \
+ 	xmalloc.c xmalloc.h \
+-	kbd_error.c kbd_error.h
++	kbd_error.c kbd_error.h \
++	version.c version.h
+ 
+ libfont_a_SOURCES   = \
+ 	psf.h psffontop.c psffontop.h \
+@@ -48,7 +49,7 @@ libfont_a_SOURCES   = \
+ 	loadunimap.c loadunimap.h \
+ 	kdfontop.c kdfontop.h
+ 
+-ALL_S   = nls.h paths.h version.h kbd.h
++ALL_S   = nls.h paths.h kbd.h
+ 
+ chvt_SOURCES            = $(ALL_S) chvt.c
+ clrunimap_SOURCES       = $(ALL_S) clrunimap.c
+diff --git a/src/version.c b/src/version.c
+new file mode 100644
+index 0000000..29b5161
+--- /dev/null
++++ b/src/version.c
+@@ -0,0 +1,5 @@
++#include "config.h"
++
++#include "version.h"
++
++char *progname;
+diff --git a/src/version.h b/src/version.h
+index 31d1435..4daf24c 100644
+--- a/src/version.h
++++ b/src/version.h
+@@ -5,7 +5,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ 
+-char *progname;
++extern char *progname;
+ 
+ static inline void
+ set_progname(char *name)
+-- 
+2.20.1
+
