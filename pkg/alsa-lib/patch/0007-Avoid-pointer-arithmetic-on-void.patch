@@ -1,0 +1,50 @@
+From e2b979b53e605b91b8e7612e4aae8e023402c86d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 4 Jun 2019 18:59:28 -0700
+Subject: [PATCH] Avoid pointer arithmetic on `void *`
+
+The pointer operand to the binary `+` operator must be to a complete
+object type.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ src/pcm/pcm_rate.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index 5dc8a927..fdcaa8de 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -300,10 +300,10 @@ static int snd_pcm_rate_hw_params(snd_pcm_t *pcm, snd_pcm_hw_params_t * params)
+ 	rate->sareas = rate->pareas + channels;
+ 	rate->sareas[0].addr = (char *)rate->pareas[0].addr + ((cwidth * channels * cinfo->period_size) / 8);
+ 	for (chn = 0; chn < channels; chn++) {
+-		rate->pareas[chn].addr = rate->pareas[0].addr + (cwidth * chn * cinfo->period_size) / 8;
++		rate->pareas[chn].addr = (char *)rate->pareas[0].addr + (cwidth * chn * cinfo->period_size) / 8;
+ 		rate->pareas[chn].first = 0;
+ 		rate->pareas[chn].step = cwidth;
+-		rate->sareas[chn].addr = rate->sareas[0].addr + (swidth * chn * sinfo->period_size) / 8;
++		rate->sareas[chn].addr = (char *)rate->sareas[0].addr + (swidth * chn * sinfo->period_size) / 8;
+ 		rate->sareas[chn].first = 0;
+ 		rate->sareas[chn].step = swidth;
+ 	}
+@@ -513,14 +513,14 @@ static void do_convert(const snd_pcm_channel_area_t *dst_areas,
+ 		const int16_t *src;
+ 		int16_t *dst;
+ 		if (! rate->src_buf)
+-			src = src_areas->addr + src_offset * 2 * channels;
++			src = (int16_t *)src_areas->addr + src_offset * channels;
+ 		else {
+ 			convert_to_s16(rate, rate->src_buf, src_areas, src_offset,
+ 				       src_frames, channels);
+ 			src = rate->src_buf;
+ 		}
+ 		if (! rate->dst_buf)
+-			dst = dst_areas->addr + dst_offset * 2 * channels;
++			dst = (int16_t *)dst_areas->addr + dst_offset * channels;
+ 		else
+ 			dst = rate->dst_buf;
+ 		rate->ops.convert_s16(rate->obj, dst, dst_frames, src, src_frames);
+-- 
+2.20.1
+

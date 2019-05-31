@@ -1,0 +1,85 @@
+From 43baecc2cc7e48aebd65170400b471b96ff9f99d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 31 May 2019 01:12:51 -0700
+Subject: [PATCH] List cases in range explicitly
+
+Case ranges are a GNU extension, and provide only a slight readability
+improvement.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ src/conf.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+
+diff --git a/src/conf.c b/src/conf.c
+index cda5518e..3892b576 100644
+--- a/src/conf.c
++++ b/src/conf.c
+@@ -888,7 +888,8 @@ static int get_quotedchar(input_t *input)
+ 		return '\r';
+ 	case 'f':
+ 		return '\f';
+-	case '0' ... '7':
++	case '0': case '1': case '2': case '3':
++	case '4': case '5': case '6': case '7':
+ 	{
+ 		int num = c - '0';
+ 		int i = 1;
+@@ -1479,7 +1480,8 @@ static void string_print(char *str, int id, snd_output_t *out)
+ 	}
+ 	if (!id) {
+ 		switch (*p) {
+-		case '0' ... '9':
++		case '0': case '1': case '2': case '3': case '4':
++		case '5': case '6': case '7': case '8': case '9':
+ 		case '-':
+ 			goto quoted;
+ 		}
+@@ -1488,8 +1490,6 @@ static void string_print(char *str, int id, snd_output_t *out)
+ 	switch (*p) {
+ 	case 0:
+ 		goto nonquoted;
+-	case 1 ... 31:
+-	case 127 ... 255:
+ 	case ' ':
+ 	case '=':
+ 	case ';':
+@@ -1501,6 +1501,8 @@ static void string_print(char *str, int id, snd_output_t *out)
+ 	case '"':
+ 		goto quoted;
+ 	default:
++		if (*p <= 31 || *p >= 127)
++			goto quoted;
+ 		p++;
+ 		goto loop;
+ 	}
+@@ -1542,12 +1544,11 @@ static void string_print(char *str, int id, snd_output_t *out)
+ 			snd_output_putc(out, '\\');
+ 			snd_output_putc(out, c);
+ 			break;
+-		case 32 ... '\'' - 1:
+-		case '\'' + 1 ... 126:
+-			snd_output_putc(out, c);
+-			break;
+ 		default:
+-			snd_output_printf(out, "\\%04o", c);
++			if (c >= 32 && c <= 126 && c != '\'')
++				snd_output_putc(out, c);
++			else
++				snd_output_printf(out, "\\%04o", c);
+ 			break;
+ 		}
+ 		p++;
+@@ -4683,7 +4684,8 @@ static int parse_char(const char **ptr)
+ 	case 'f':
+ 		c = '\f';
+ 		break;
+-	case '0' ... '7':
++	case '0': case '1': case '2': case '3':
++	case '4': case '5': case '6': case '7':
+ 	{
+ 		int num = c - '0';
+ 		int i = 1;
+-- 
+2.20.1
+
