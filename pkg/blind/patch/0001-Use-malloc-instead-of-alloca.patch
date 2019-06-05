@@ -1,0 +1,35 @@
+From 17e5acf6ce56870838bef5235fdb381d7e6d7327 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 1 Jun 2019 14:57:42 -0700
+Subject: [PATCH] Use malloc instead of alloca
+
+---
+ src/blind-split.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/src/blind-split.c b/src/blind-split.c
+index e92fced..201fb6e 100644
+--- a/src/blind-split.c
++++ b/src/blind-split.c
+@@ -2,7 +2,6 @@
+ #include "stream.h"
+ #include "util.h"
+ 
+-#include <alloca.h>
+ #include <fcntl.h>
+ #include <inttypes.h>
+ #include <limits.h>
+@@ -38,8 +37,8 @@ main(int argc, char *argv[])
+ 		eprintf("%s: video is too large\n", stream.file);
+ 
+ 	parts = (size_t)argc / 2;
+-	ends = alloca(parts * sizeof(*ends));
+-	to_end = alloca(parts);
++	ends = emalloc(parts * sizeof(*ends));
++	to_end = emalloc(parts);
+ 
+ 	for (i = 0; i < parts; i++) {
+ 		to_end[i] = 0;
+-- 
+2.20.1
+
