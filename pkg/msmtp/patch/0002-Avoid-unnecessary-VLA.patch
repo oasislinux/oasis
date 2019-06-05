@@ -1,0 +1,27 @@
+From 7bf99273fd40bdf3efd9aa40b473610d07faeeed Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 4 Jun 2019 14:15:55 -0700
+Subject: [PATCH] Avoid unnecessary VLA
+
+We know the size statically, and VLAs are an optional feature in C11.
+---
+ src/net.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/src/net.c b/src/net.c
+index a1666ab..314ff98 100644
+--- a/src/net.c
++++ b/src/net.c
+@@ -515,8 +515,7 @@ void net_set_io_timeout(int socket, int seconds)
+ int net_socks5_connect(int fd, const char *hostname, int port, char **errstr)
+ {
+     /* maximum size of a SOCKS5 message (send or receive) */
+-    const size_t required_buffer_size = 1 + 1 + 1 + 1 + 1 + 255 + 2;
+-    unsigned char buffer[required_buffer_size];
++    unsigned char buffer[1 + 1 + 1 + 1 + 1 + 255 + 2];
+     size_t hostname_len = strlen(hostname);
+     uint16_t nport = htons(port);
+     size_t len;
+-- 
+2.20.1
+
