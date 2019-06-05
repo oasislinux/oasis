@@ -41,6 +41,7 @@ local data = [[
 	rules/(
 		xfree98
 		xkb.dtd
+		xkb.its
 		README
 	)
 	symbols/(
