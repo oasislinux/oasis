@@ -1,0 +1,127 @@
+From 1ad3dc70e7961e7bf1d27a9572644a5153fc8e2d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 1 Jun 2019 15:11:48 -0700
+Subject: [PATCH] Use wl_container_of internally
+
+---
+ src/event-loop.c        | 4 ++--
+ src/wayland-client.c    | 7 +++----
+ src/wayland-private.h   | 4 ----
+ src/wayland-server.c    | 4 +++-
+ tests/client-test.c     | 2 +-
+ tests/display-test.c    | 2 +-
+ tests/event-loop-test.c | 2 +-
+ 7 files changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/src/event-loop.c b/src/event-loop.c
+index eb2dce6..e2be942 100644
+--- a/src/event-loop.c
++++ b/src/event-loop.c
+@@ -595,8 +595,8 @@ wl_event_loop_dispatch_idle(struct wl_event_loop *loop)
+ 	struct wl_event_source_idle *source;
+ 
+ 	while (!wl_list_empty(&loop->idle_list)) {
+-		source = container_of(loop->idle_list.next,
+-				      struct wl_event_source_idle, base.link);
++		source = wl_container_of(loop->idle_list.next,
++					 source, base.link);
+ 		source->func(source->base.data);
+ 		wl_event_source_remove(&source->base);
+ 	}
+diff --git a/src/wayland-client.c b/src/wayland-client.c
+index b0805f1..38756f1 100644
+--- a/src/wayland-client.c
++++ b/src/wayland-client.c
+@@ -298,8 +298,8 @@ wl_event_queue_release(struct wl_event_queue *queue)
+ 	struct wl_closure *closure;
+ 
+ 	while (!wl_list_empty(&queue->event_list)) {
+-		closure = container_of(queue->event_list.next,
+-				       struct wl_closure, link);
++		closure = wl_container_of(queue->event_list.next,
++					  closure, link);
+ 		wl_list_remove(&closure->link);
+ 		destroy_queued_closure(closure);
+ 	}
+@@ -1400,8 +1400,7 @@ dispatch_event(struct wl_display *display, struct wl_event_queue *queue)
+ 	int opcode;
+ 	bool proxy_destroyed;
+ 
+-	closure = container_of(queue->event_list.next,
+-			       struct wl_closure, link);
++	closure = wl_container_of(queue->event_list.next, closure, link);
+ 	wl_list_remove(&closure->link);
+ 	opcode = closure->opcode;
+ 
+diff --git a/src/wayland-private.h b/src/wayland-private.h
+index 29516ec..8a97fab 100644
+--- a/src/wayland-private.h
++++ b/src/wayland-private.h
+@@ -42,10 +42,6 @@
+ 
+ #define ARRAY_LENGTH(a) (sizeof (a) / sizeof (a)[0])
+ 
+-#define container_of(ptr, type, member) ({				\
+-	const __typeof__( ((type *)0)->member ) *__mptr = (ptr);	\
+-	(type *)( (char *)__mptr - offsetof(type,member) );})
+-
+ #define WL_MAP_SERVER_SIDE 0
+ #define WL_MAP_CLIENT_SIDE 1
+ #define WL_SERVER_ID_START 0xff000000
+diff --git a/src/wayland-server.c b/src/wayland-server.c
+index 19f6a76..5ca8bed 100644
+--- a/src/wayland-server.c
++++ b/src/wayland-server.c
+@@ -1899,7 +1899,9 @@ wl_client_get_link(struct wl_client *client)
+ WL_EXPORT struct wl_client *
+ wl_client_from_link(struct wl_list *link)
+ {
+-	return container_of(link, struct wl_client, link);
++	struct wl_client *client;
++
++	return wl_container_of(link, client, link);
+ }
+ 
+ /** Add a listener for the client's resource creation signal
+diff --git a/tests/client-test.c b/tests/client-test.c
+index 2e332f8..960cfa9 100644
+--- a/tests/client-test.c
++++ b/tests/client-test.c
+@@ -47,7 +47,7 @@ static void
+ client_destroy_notify(struct wl_listener *l, void *data)
+ {
+ 	struct client_destroy_listener *listener =
+-		container_of(l, struct client_destroy_listener, listener);
++		wl_container_of(l, listener, listener);
+ 
+ 	listener->done = 1;
+ }
+diff --git a/tests/display-test.c b/tests/display-test.c
+index 6d98cc7..74a24f1 100644
+--- a/tests/display-test.c
++++ b/tests/display-test.c
+@@ -60,7 +60,7 @@ display_destroy_notify(struct wl_listener *l, void *data)
+ {
+ 	struct display_destroy_listener *listener;
+ 
+-	listener = container_of(l, struct display_destroy_listener, listener);
++	listener = wl_container_of(l, listener, listener);
+ 	listener->done = 1;
+ }
+ 
+diff --git a/tests/event-loop-test.c b/tests/event-loop-test.c
+index 33566b4..9659815 100644
+--- a/tests/event-loop-test.c
++++ b/tests/event-loop-test.c
+@@ -339,7 +339,7 @@ static void
+ event_loop_destroy_notify(struct wl_listener *l, void *data)
+ {
+ 	struct event_loop_destroy_listener *listener =
+-		container_of(l, struct event_loop_destroy_listener, listener);
++		wl_container_of(l, listener, listener);
+ 
+ 	listener->done = 1;
+ }
+-- 
+2.20.1
+
