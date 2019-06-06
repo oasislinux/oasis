@@ -9,7 +9,6 @@ subgen 'libnsutils'
 subgen 'libparserutils'
 subgen 'libsvgtiny'
 subgen 'libwapcaplet'
-subgen 'nsgenbind'
 
 sub('tools.ninja', function()
 	toolchain 'host'
@@ -51,16 +50,6 @@ cflags{
 	'-I pkg/utf8proc/src',
 }
 
-rule('nsgenbind', '$outdir/nsgenbind/nsgenbind -I $srcdir/content/handlers/javascript/WebIDL $in $outdir/duktape', {
-	restat='1',
-})
-
-local nsgenbind = expand{'$outdir/duktape/', lines('nsgenbind.txt')}
-build('nsgenbind', nsgenbind, {
-	'$srcdir/content/handlers/javascript/duktape/netsurf.bnd',
-	'|', '$outdir/nsgenbind/nsgenbind', '$dir/fetch',
-})
-
 pkg.deps = {
 	'$dir/libcss/fetch',
 	'$dir/libdom/fetch',
@@ -72,7 +61,6 @@ pkg.deps = {
 	'$dir/libparserutils/fetch',
 	'$dir/libsvgtiny/fetch',
 	'$dir/libwapcaplet/fetch',
-	'$outdir/duktape/binding.c',
 	'pkg/curl/headers',
 	'pkg/freetype/fetch',
 	'pkg/libjpeg-turbo/headers',
@@ -86,13 +74,7 @@ pkg.deps = {
 	'pkg/zlib/headers',
 }
 
-local sources = {}
-for _, src in ipairs(nsgenbind) do
-	if src:hassuffix('.c') then
-		table.insert(sources, src)
-	end
-end
-exe('netsurf', {sources, paths[[
+exe('netsurf', [[
 	desktop/(
 		cookie_manager.c knockout.c hotlist.c mouse.c
 		plot_style.c print.c search.c searchweb.c scrollbar.c
@@ -111,7 +93,7 @@ exe('netsurf', {sources, paths[[
 		handlers/(
 			image/(image.c image_cache.c bmp.c gif.c ico.c jpeg.c png.c svg.c)
 			css/(css.c dump.c internal.c hints.c select.c utils.c)
-			javascript/(fetcher.c content.c duktape/(dukky.c duktape.c))
+			javascript/(fetcher.c none/none.c)
 			html/(
 				box.c box_construct.c box_normalise.c box_textarea.c
 				font.c form.c imagemap.c layout.c search.c table.c
@@ -172,7 +154,7 @@ exe('netsurf', {sources, paths[[
 
 		wayland-protocols/xdg-shell-protocol.c.o
 	)
-]]})
+]])
 file('bin/netsurf', '755', '$outdir/netsurf')
 
 build('sed', '$outdir/netsurf.1', '$srcdir/docs/netsurf-fb.1', {
