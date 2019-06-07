@@ -141,6 +141,7 @@
 [submodule "pkg/mtdev/src"]
 	path = pkg/mtdev/src
 	url = https://github.com/rydberg/mtdev
+	ignore = all
 [submodule "pkg/mupdf/src"]
 	path = pkg/mupdf/src
 	url = https://github.com/michaelforney/mupdf

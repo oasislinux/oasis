@@ -1,0 +1,55 @@
+From 43c6faf96712324bea4121157d292b84a86b0d45 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 7 Jun 2019 10:36:05 -0700
+Subject: [PATCH] Use a macro for `nlongs` so it can be used in constant
+ expression
+
+This way, it can be used to specify the `absbits` array size (in
+`mtdev_configure`) without making it a VLA.
+
+VLAs are an optional feature in C11, and in this case we can determine
+the array size statically.
+
+This also matches the macros used in libevdev and libinput.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ src/caps.c | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+diff --git a/src/caps.c b/src/caps.c
+index 2e6b0d4..b493425 100644
+--- a/src/caps.c
++++ b/src/caps.c
+@@ -32,16 +32,12 @@ static const int SN_COORD = 250;	/* coordinate signal-to-noise ratio */
+ static const int SN_WIDTH = 100;	/* width signal-to-noise ratio */
+ static const int SN_ORIENT = 10;	/* orientation signal-to-noise ratio */
+ 
+-static const int bits_per_long = 8 * sizeof(long);
+-
+-static inline int nlongs(int nbit)
+-{
+-	return (nbit + bits_per_long - 1) / bits_per_long;
+-}
++#define LONG_BITS (sizeof(long) * 8)
++#define NLONGS(x) (((x) + LONG_BITS - 1) / LONG_BITS)
+ 
+ static inline int getbit(const unsigned long *map, int key)
+ {
+-	return (map[key / bits_per_long] >> (key % bits_per_long)) & 0x01;
++	return (map[key / LONG_BITS] >> (key % LONG_BITS)) & 0x01;
+ }
+ 
+ static int getabs(struct input_absinfo *abs, int key, int fd)
+@@ -106,7 +102,7 @@ int mtdev_set_slots(struct mtdev *dev, int fd)
+ 
+ int mtdev_configure(struct mtdev *dev, int fd)
+ {
+-	unsigned long absbits[nlongs(ABS_MAX)];
++	unsigned long absbits[NLONGS(ABS_MAX)];
+ 	int rc, i;
+ 
+ 	SYSCALL(rc = ioctl(fd, EVIOCGBIT(EV_ABS, sizeof(absbits)), absbits));
+-- 
+2.20.1
+
