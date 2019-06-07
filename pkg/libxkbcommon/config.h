@@ -8,6 +8,5 @@
 #define HAVE_MMAP 1
 #define HAVE_POSIX_FALLOCATE 1
 #define HAVE___BUILTIN_EXPECT 1
-#define HAVE___BUILTIN_POPCOUNT 1
 #define XLOCALEDIR "/share/xlocale"
 #define _GNU_SOURCE 1
