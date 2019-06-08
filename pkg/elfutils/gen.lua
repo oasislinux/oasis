@@ -8,7 +8,6 @@ cflags{
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/libelf', {'libelf.h', 'gelf.h'})
-pkg.hdrs.install = true
 
 lib('libelf.a', [[libelf/(
         elf_version.c elf_hash.c elf_error.c elf_fill.c
@@ -62,6 +61,5 @@ lib('libelf.a', [[libelf/(
         elf32_getchdr.c elf64_getchdr.c gelf_getchdr.c
         elf_compress.c elf_compress_gnu.c
 )]])
-file('lib/libelf.a', '644', '$outdir/libelf.a')
 
 fetch 'git'

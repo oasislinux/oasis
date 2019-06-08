@@ -9,6 +9,7 @@ cflags{
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/libelf', {'libelf.h', 'gelf.h'}),
 	copy('$outdir/include', '$srcdir/common', {'elfdefinitions.h'}),
+	install=true,
 }
 
 rule('m4', 'm4 -D SRCDIR=$srcdir/libelf $in >$out.tmp && mv $out.tmp $out')
@@ -74,5 +75,6 @@ lib('libelf.a', [[
 	)
 	$outdir/(libelf_convert.c libelf_fsize.c libelf_msize.c)
 ]])
+file('lib/libelf.a', '644', '$outdir/libelf.a')
 
 fetch 'curl'
