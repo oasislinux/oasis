@@ -193,6 +193,19 @@ lib('libgit.a', [[
 	thread-utils.c
 	tmp-objdir.c
 	trace.c
+	trace2.c
+	trace2/(
+		tr2_cfg.c
+		tr2_cmd_name.c
+		tr2_dst.c
+		tr2_sid.c
+		tr2_sysenv.c
+		tr2_tbuf.c
+		tr2_tgt_event.c
+		tr2_tgt_normal.c
+		tr2_tgt_perf.c
+		tr2_tls.c
+	)
 	trailer.c
 	transport-helper.c
 	transport.c
@@ -317,7 +330,6 @@ local builtins = {
 	'range-diff',
 	'read-tree',
 	'rebase',
-	'rebase--interactive',
 	'receive-pack',
 	'reflog',
 	'remote',
@@ -332,11 +344,11 @@ local builtins = {
 	'revert',
 	'rm',
 	'send-pack',
-	'serve',
 	'shortlog',
 	'show-branch',
 	'show-index',
 	'show-ref',
+	'stash',
 	'stripspace',
 	'submodule--helper',
 	'symbolic-ref',
@@ -409,10 +421,8 @@ x('merge-one-file', '755')
 x('merge-resolve', '755')
 x('mergetool', '755')
 x('quiltimport', '755')
-x('legacy-rebase', '755')
-x('remote-testgit', '755')
+x('legacy-stash', '755')
 x('request-pull', '755')
-x('stash', '755')
 x('submodule', '755')
 x('web--browse', '755')
 

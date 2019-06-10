@@ -1,4 +1,4 @@
-# 2,<xzcat git-manpages-2.21.0.tar.xz | pax -s '/\.\///' '*.[1-9]' | sort
+# 2,<xzcat git-manpages-2.22.0.tar.xz | pax -s '/\.\///' '*.[1-9]' | sort
 man1/git-add.1
 man1/git-am.1
 man1/git-annotate.1
@@ -104,7 +104,6 @@ man1/git-receive-pack.1
 man1/git-reflog.1
 man1/git-remote-ext.1
 man1/git-remote-fd.1
-man1/git-remote-testgit.1
 man1/git-remote.1
 man1/git-repack.1
 man1/git-replace.1
@@ -151,7 +150,6 @@ man1/git-worktree.1
 man1/git-write-tree.1
 man1/git.1
 man1/gitk.1
-man1/gitremote-helpers.1
 man1/gitweb.1
 man5/gitattributes.5
 man5/githooks.5
@@ -167,6 +165,7 @@ man7/gitdiffcore.7
 man7/giteveryday.7
 man7/gitglossary.7
 man7/gitnamespaces.7
+man7/gitremote-helpers.7
 man7/gitrevisions.7
 man7/gitsubmodules.7
 man7/gittutorial-2.7
