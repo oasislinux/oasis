@@ -1,4 +1,4 @@
-set('version', '1.45.1')
+set('version', '1.45.2')
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $outdir',
