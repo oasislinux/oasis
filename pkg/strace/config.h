@@ -8,6 +8,7 @@
 /* #undef AVR32 */
 /* #undef BFIN */
 #define COPYRIGHT_YEAR "2019"
+/* #undef CSKY */
 #define ENABLE_ARM_OABI 0
 /* #undef ENABLE_STACKTRACE */
 #define HAVE_ACCEPT4 1
@@ -205,6 +206,7 @@
 #define HAVE_LINUX_IF_ADDR_H 1
 #define HAVE_LINUX_IF_LINK_H 1
 #define HAVE_LINUX_INPUT_H 1
+/* #undef HAVE_LINUX_IO_URING_H */
 #define HAVE_LINUX_IPC_H 1
 #define HAVE_LINUX_IP_VS_H 1
 #define HAVE_LINUX_KCMP_H 1
@@ -319,6 +321,8 @@
 #define HAVE_STRUCT_BPF_PROG_INFO_NR_MAP_IDS 1
 /* #undef HAVE_STRUCT_BPF_PROG_INFO_NR_PROG_TAGS */
 /* #undef HAVE_STRUCT_BPF_PROG_INFO_PROG_TAGS */
+/* #undef HAVE_STRUCT_BPF_PROG_INFO_RUN_CNT */
+/* #undef HAVE_STRUCT_BPF_PROG_INFO_RUN_TIME_NS */
 #define HAVE_STRUCT_BPF_PROG_INFO_TAG 1
 #define HAVE_STRUCT_BPF_PROG_INFO_TYPE 1
 #define HAVE_STRUCT_BPF_PROG_INFO_XLATED_PROG_INSNS 1
@@ -422,6 +426,8 @@
 /* #undef HAVE_STRUCT___KERNEL_FLOCK */
 /* #undef HAVE_STRUCT___KERNEL_FLOCK64 */
 /* #undef HAVE_STRUCT___KERNEL_F_OWNER_EX */
+/* #undef HAVE_STRUCT___KERNEL_SOCK_TIMEVAL */
+/* #undef HAVE_STRUCT___KERNEL_TIMESPEC */
 #define HAVE_STRUCT___OLD_KERNEL_STAT 1
 #define HAVE_SYNC_FILE_RANGE 1
 /* #undef HAVE_SYS_CONF_H */
@@ -547,10 +553,10 @@
 #define PACKAGE "strace"
 #define PACKAGE_BUGREPORT "strace-devel@lists.strace.io"
 #define PACKAGE_NAME "strace"
-#define PACKAGE_STRING "strace 5.0"
+#define PACKAGE_STRING "strace 5.1"
 #define PACKAGE_TARNAME "strace"
 #define PACKAGE_URL "https://strace.io"
-#define PACKAGE_VERSION "5.0"
+#define PACKAGE_VERSION "5.1"
 /* #undef POWERPC */
 /* #undef POWERPC64 */
 /* #undef RISCV */
@@ -586,7 +592,7 @@
 # define __EXTENSIONS__ 1
 #endif
 /* #undef USE_UNWINDER */
-#define VERSION "5.0"
+#define VERSION "5.1"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
