@@ -141,7 +141,6 @@ youtube_dl/extractor/corus.py
 youtube_dl/extractor/coub.py
 youtube_dl/extractor/cracked.py
 youtube_dl/extractor/crackle.py
-youtube_dl/extractor/criterion.py
 youtube_dl/extractor/crooksandliars.py
 youtube_dl/extractor/crunchyroll.py
 youtube_dl/extractor/cspan.py
@@ -438,7 +437,6 @@ youtube_dl/extractor/noovo.py
 youtube_dl/extractor/normalboots.py
 youtube_dl/extractor/nosvideo.py
 youtube_dl/extractor/nova.py
-youtube_dl/extractor/novamov.py
 youtube_dl/extractor/nowness.py
 youtube_dl/extractor/noz.py
 youtube_dl/extractor/npo.py
@@ -496,7 +494,6 @@ youtube_dl/extractor/polskieradio.py
 youtube_dl/extractor/popcorntv.py
 youtube_dl/extractor/porn91.py
 youtube_dl/extractor/porncom.py
-youtube_dl/extractor/pornflip.py
 youtube_dl/extractor/pornhd.py
 youtube_dl/extractor/pornhub.py
 youtube_dl/extractor/pornotube.py
