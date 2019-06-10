@@ -323,7 +323,6 @@
 /* #undef USE_NSS */
 /* #undef USE_OPENLDAP */
 #define USE_OPENSSL 1
-/* #undef USE_POLARSSL */
 /* #undef USE_SCHANNEL */
 /* #undef USE_SECTRANSP */
 #define USE_THREADS_POSIX 1
