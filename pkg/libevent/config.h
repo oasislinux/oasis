@@ -1,5 +1,3 @@
-/* don't use config-posix.h here, this file gets processed by make-event-config.sed */
-
 /* disabled to prevent building extra backends */
 /* #undef HAVE_POLL */
 /* #undef HAVE_SELECT */
@@ -9,6 +7,7 @@
 /* #undef DISABLE_THREAD_SUPPORT */
 #define HAVE_ACCEPT4 1
 /* #undef HAVE_ARC4RANDOM */
+/* #undef HAVE_ARC4RANDOM_ADDRANDOM */
 /* #undef HAVE_ARC4RANDOM_BUF */
 #define HAVE_ARPA_INET_H 1
 #define HAVE_CLOCK_GETTIME 1
@@ -22,7 +21,6 @@
 #define HAVE_EPOLL_CREATE1 1
 #define HAVE_EPOLL_CTL 1
 #define HAVE_ERRNO_H 1
-/* #undef HAVE_ERR_REMOVE_THREAD_STATE */
 #define HAVE_EVENTFD 1
 /* #undef HAVE_EVENT_PORTS */
 #define HAVE_FCNTL 1
@@ -57,6 +55,7 @@
 #define HAVE_NETINET_IN_H 1
 #define HAVE_NETINET_TCP_H 1
 /* #undef HAVE_OPENSSL */
+#define HAVE_OPENSSL_SSL_H 1
 #define HAVE_PIPE 1
 #define HAVE_PIPE2 1
 #define HAVE_POLL_H 1
@@ -87,13 +86,14 @@
 #define HAVE_STRUCT_IN6_ADDR 1
 #define HAVE_STRUCT_IN6_ADDR_S6_ADDR16 1
 #define HAVE_STRUCT_IN6_ADDR_S6_ADDR32 1
+#define HAVE_STRUCT_LINGER 1
 #define HAVE_STRUCT_SOCKADDR_IN6 1
 /* #undef HAVE_STRUCT_SOCKADDR_IN6_SIN6_LEN */
 /* #undef HAVE_STRUCT_SOCKADDR_IN_SIN_LEN */
 #define HAVE_STRUCT_SOCKADDR_STORAGE 1
 #define HAVE_STRUCT_SOCKADDR_STORAGE_SS_FAMILY 1
 /* #undef HAVE_STRUCT_SOCKADDR_STORAGE___SS_FAMILY */
-/* #undef HAVE_STRUCT_SO_LINGER */
+#define HAVE_STRUCT_SOCKADDR_UN 1
 /* #undef HAVE_SYSCTL */
 /* #undef HAVE_SYS_DEVPOLL_H */
 #define HAVE_SYS_EPOLL_H 1
@@ -113,6 +113,7 @@
 #define HAVE_SYS_TIME_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_UIO_H 1
+#define HAVE_SYS_UN_H 1
 #define HAVE_SYS_WAIT_H 1
 /* #undef HAVE_TAILQFOREACH */
 #define HAVE_TIMERADD 1
@@ -130,18 +131,19 @@
 #define HAVE_UNSETENV 1
 #define HAVE_USLEEP 1
 #define HAVE_VASPRINTF 1
-/* #undef HAVE_WAITPID_WITH_WNOWAIT */
 /* #undef HAVE_WORKING_KQUEUE */
 /* #undef HAVE_ZLIB_H */
+#define HAVE___FUNCTION__ 1
+#define HAVE___func__ 1
 #define LT_OBJDIR ".libs/"
-#define NUMERIC_VERSION 0x02010800
+#define NUMERIC_VERSION 0x02010a00
 #define PACKAGE "libevent"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "libevent"
-#define PACKAGE_STRING "libevent 2.1.8-stable"
+#define PACKAGE_STRING "libevent 2.1.10-stable"
 #define PACKAGE_TARNAME "libevent"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.1.8-stable"
+#define PACKAGE_VERSION "2.1.10-stable"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 8
@@ -150,6 +152,7 @@
 #define SIZEOF_PTHREAD_T 8
 #define SIZEOF_SHORT 2
 #define SIZEOF_SIZE_T 8
+#define SIZEOF_TIME_T 8
 #define SIZEOF_VOID_P 8
 #define STDC_HEADERS 1
 #define TIME_WITH_SYS_TIME 1
@@ -168,7 +171,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.1.8-stable"
+#define VERSION "2.1.10-stable"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
@@ -177,7 +180,6 @@
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */
-/* #undef __func__ */
 /* #undef const */
 #ifndef __cplusplus
 /* #undef inline */
