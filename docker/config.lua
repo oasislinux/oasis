@@ -3,7 +3,7 @@ return {
 	builddir='out',
 	fs={
 		{
-			sets.core, sets.extra, sets.desktop, sets.media,
+			sets.core, sets.extra, sets.desktop, sets.devel, sets.media,
 			exclude={'^include/', '^lib/.*%.a$'},
 		},
 	},
