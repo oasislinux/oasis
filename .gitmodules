@@ -20,6 +20,10 @@
 	path = pkg/blind/src
 	url = git://git.suckless.org/blind
 	ignore = all
+[submodule "pkg/bzip2/src"]
+	path = pkg/bzip2/src
+	url = https://gitlab.com/federicomenaquintero/bzip2.git
+	ignore = all
 [submodule "pkg/cmark/src"]
 	path = pkg/cmark/src
 	url = https://github.com/commonmark/cmark
