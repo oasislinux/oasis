@@ -10,4 +10,5 @@ return {
 	target={toolchain='default', cflags='-O2 -pipe -U _FORTIFY_SOURCE', cxxflags='', ldflags='-s -static', pie=true},
 	host={toolchain='default', cflags='-O2 -pipe', cxxflags='', ldflags='-s'},
 	repo={path='$builddir/root.git', flags='--bare', tag='tree', branch='oasis'},
+	video_drivers={intel=true, nouveau=true},
 }
