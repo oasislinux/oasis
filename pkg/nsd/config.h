@@ -10,8 +10,8 @@
 #define FACILITY LOG_DAEMON
 #define HAVE_ACCEPT4 1
 #define HAVE_ALARM 1
-/* #undef HAVE_ARC4RANDOM */
-/* #undef HAVE_ARC4RANDOM_UNIFORM */
+#define HAVE_ARC4RANDOM 1
+#define HAVE_ARC4RANDOM_UNIFORM 1
 #define HAVE_ARPA_INET_H 1
 #define HAVE_ATTR_FORMAT 1
 #define HAVE_ATTR_NORETURN 1
@@ -23,6 +23,8 @@
 #define HAVE_CHROOT 1
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_CTIME_R_PROTO 1
+/* #undef HAVE_DECL_SSL_CTX_SET_ECDH_AUTO */
+/* #undef HAVE_DECL_SSL_CTX_SET_TMP_ECDH */
 #define HAVE_DUP2 1
 #define HAVE_ENDIAN_H 1
 #define HAVE_ENDPWENT 1
@@ -71,6 +73,7 @@
 /* #undef HAVE_OPENSSL_ERR_H */
 /* #undef HAVE_OPENSSL_INIT_CRYPTO */
 /* #undef HAVE_OPENSSL_INIT_SSL */
+/* #undef HAVE_OPENSSL_OCSP_H */
 /* #undef HAVE_OPENSSL_RAND_H */
 /* #undef HAVE_OPENSSL_SSL_H */
 #define HAVE_PPOLL 1
@@ -91,6 +94,7 @@
 #define HAVE_SNPRINTF 1
 #define HAVE_SOCKET 1
 /* #undef HAVE_SSL */
+/* #undef HAVE_SSL_CTX_SET_SECURITY_LEVEL */
 #define HAVE_STDARG_H 1
 #define HAVE_STDDEF_H 1
 #define HAVE_STDINT_H 1
@@ -147,10 +151,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.1.27"
+#define PACKAGE_STRING "NSD 4.2.0"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.1.27"
+#define PACKAGE_VERSION "4.2.0"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
@@ -166,6 +170,7 @@
 #define TCP_MAX_MESSAGE_LEN 65535
 #define TCP_PORT "53"
 #define TCP_TIMEOUT 120
+#define TLS_PORT "853"
 #define UDP_MAX_MESSAGE_LEN 512
 #define UDP_PORT "53"
 #define USER "nsd"
@@ -188,6 +193,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
+/* #undef USE_TCP_FASTOPEN */
 /* #undef USE_ZONE_STATS */
 #define VERSION PACKAGE_STRING
 #define XFRDFILE "/var/db/nsd/xfrd.state"
@@ -242,6 +248,9 @@
 #  endif
 #  ifndef _BSD_SOURCE
 #    define _BSD_SOURCE 1
+#  endif
+#  ifndef _OPENBSD_SOURCE
+#    define _OPENBSD_SOURCE 1
 #  endif
 #  ifndef _DEFAULT_SOURCE
 #    define _DEFAULT_SOURCE 1
