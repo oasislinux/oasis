@@ -72,8 +72,10 @@
 #define HAVE_MEMORY_H 1
 #define HAVE_OSPEED 1
 /* #undef HAVE_PCRE */
+/* #undef HAVE_PCRE2 */
 #define HAVE_POPEN 1
 #define HAVE_POSIX_REGCOMP 1
+#define HAVE_REALPATH 1
 /* #undef HAVE_REGCMP */
 /* #undef HAVE_REGEXEC2 */
 /* #undef HAVE_RE_COMP */
