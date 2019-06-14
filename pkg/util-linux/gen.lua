@@ -1,4 +1,4 @@
-set('version', '2.33.2')
+set('version', '2.34.0')
 cflags{
 	'-include $dir/config.h',
 	'-I $dir',
@@ -98,8 +98,14 @@ lib('libsmartcols.a', [[
 		column.c
 		line.c
 		table.c
-		table_print.c
+		print.c
+		fput.c
+		print-api.c
 		version.c
+		buffer.c
+		calculate.c
+		grouping.c
+		walk.c
 		init.c
 	)
 	libtcolors.a

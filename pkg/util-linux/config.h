@@ -119,6 +119,7 @@
 #define HAVE_OPENAT 1
 #define HAVE_OPEN_MEMSTREAM 1
 #define HAVE_PATHS_H 1
+/* #undef HAVE_PCRE */
 #define HAVE_PERSONALITY 1
 #define HAVE_POSIX_FADVISE 1
 /* #undef HAVE_POSIX_FALLOCATE */
@@ -141,6 +142,7 @@
 /* #undef HAVE_SECURITY_OPENPAM_H */
 /* #undef HAVE_SECURITY_PAM_APPL_H */
 /* #undef HAVE_SECURITY_PAM_MISC_H */
+/* #undef HAVE_SETITIMER */
 #define HAVE_SETNS 1
 /* #undef HAVE_SETPROGNAME */
 #define HAVE_SETRESGID 1
@@ -221,11 +223,11 @@
 #define HAVE___FPURGE 1
 #define HAVE___PROGNAME 1
 /* #undef HAVE___SECURE_GETENV */
-#define LIBBLKID_DATE "09-Apr-2019"
-#define LIBBLKID_VERSION "2.33.2"
-#define LIBFDISK_VERSION "2.33.2"
-#define LIBMOUNT_VERSION "2.33.2"
-#define LIBSMARTCOLS_VERSION "2.33.2"
+#define LIBBLKID_DATE "14-Jun-2019"
+#define LIBBLKID_VERSION "2.34.0"
+#define LIBFDISK_VERSION "2.34.0"
+#define LIBMOUNT_VERSION "2.34.0"
+#define LIBSMARTCOLS_VERSION "2.34.0"
 /* #undef LOGIN_CHOWN_VCS */
 /* #undef LOGIN_STAT_MAIL */
 #define LT_OBJDIR ".libs/"
@@ -235,10 +237,10 @@
 #define PACKAGE "util-linux"
 #define PACKAGE_BUGREPORT "kzak@redhat.com"
 #define PACKAGE_NAME "util-linux"
-#define PACKAGE_STRING "util-linux 2.33.2"
+#define PACKAGE_STRING "util-linux 2.34"
 #define PACKAGE_TARNAME "util-linux"
 #define PACKAGE_URL "http://www.kernel.org/pub/linux/utils/util-linux/"
-#define PACKAGE_VERSION "2.33.2"
+#define PACKAGE_VERSION "2.34"
 #define PG_BELL 1
 #define STDC_HEADERS 1
 /* #undef SYS_fallocate */
@@ -275,7 +277,7 @@
 #endif
 #define USE_TTY_GROUP 1
 /* #undef USE_USRDIR_PATHS_ONLY */
-#define VERSION "2.33.2"
+#define VERSION "2.34"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
