@@ -26,6 +26,7 @@ zcat src.tar.gz | ${PAXREAD:-pax -r} -s ',^,src/,' \
 	'usr.bin/m4/*' \
 	'usr.bin/nc/*' \
 	'usr.bin/patch/*' \
+	'usr.bin/rsync/*' \
 	'usr.bin/yacc/*' \
 	'usr.sbin/acme-client/*'
 zcat sys.tar.gz | ${PAXREAD:-pax -r} -s ',^[^/]*,src,' './sys/sys/*'

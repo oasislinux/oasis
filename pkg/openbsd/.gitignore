@@ -1,4 +1,5 @@
 /acme-client.ninja
+/rsync.ninja
 /src
 /src.tar.gz
 /sys.tar.gz
