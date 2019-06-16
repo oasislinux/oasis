@@ -1,0 +1,25 @@
+From f731106313a5edc37b5cbef93da6be855f24c238 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 15 Jun 2019 18:16:56 -0700
+Subject: [PATCH] Use `long long` with C99 compilers
+
+---
+ unzpriv.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/unzpriv.h b/unzpriv.h
+index dc9eff5..8f18b87 100644
+--- a/unzpriv.h
++++ b/unzpriv.h
+@@ -1904,7 +1904,7 @@
+ 
+ #ifdef ZIP64_SUPPORT
+ # ifndef Z_UINT8_DEFINED
+-#   if (defined(__GNUC__) || defined(__hpux) || defined(__SUNPRO_C))
++#   if (defined(__GNUC__) || defined(__hpux) || defined(__SUNPRO_C) || __STDC_VERSION__ > 199901L)
+   typedef unsigned long long    z_uint8;
+ #   else
+   typedef unsigned __int64      z_uint8;
+-- 
+2.20.1
+
