@@ -1,0 +1,143 @@
+From b6dcbe554a0c174360bb1e01a95a43a867dcc9cb Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 12 Mar 2019 19:12:31 -0700
+Subject: [PATCH] Avoid pointer arithmetic on `void *`
+
+---
+ include/libnetlink.h |  4 ++--
+ ip/ipfou.c           |  2 +-
+ ip/ipila.c           |  2 +-
+ ip/ipseg6.c          |  2 +-
+ lib/libnetlink.c     | 12 ++++++------
+ lib/utils.c          |  2 +-
+ 6 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/include/libnetlink.h b/include/libnetlink.h
+index 503b3ec1..867a1a23 100644
+--- a/include/libnetlink.h
++++ b/include/libnetlink.h
+@@ -162,7 +162,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
+ int rta_nest_end(struct rtattr *rta, struct rtattr *nest);
+ 
+ #define RTA_TAIL(rta) \
+-		((struct rtattr *) (((void *) (rta)) + \
++		((struct rtattr *) (((char *) (rta)) + \
+ 				    RTA_ALIGN((rta)->rta_len)))
+ 
+ #define parse_rtattr_nested(tb, max, rta) \
+@@ -225,7 +225,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
+ 		   void *jarg);
+ 
+ #define NLMSG_TAIL(nmsg) \
+-	((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
++	((struct rtattr *) (((char *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
+ 
+ #ifndef IFA_RTA
+ #define IFA_RTA(r) \
+diff --git a/ip/ipfou.c b/ip/ipfou.c
+index 346522dd..da5c23fb 100644
+--- a/ip/ipfou.c
++++ b/ip/ipfou.c
+@@ -151,7 +151,7 @@ static int print_fou_mapping(struct nlmsghdr *n, void *arg)
+ 		return -1;
+ 
+ 	ghdr = NLMSG_DATA(n);
+-	parse_rtattr(tb, FOU_ATTR_MAX, (void *) ghdr + GENL_HDRLEN, len);
++	parse_rtattr(tb, FOU_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN), len);
+ 
+ 	open_json_object(NULL);
+ 	if (tb[FOU_ATTR_PORT])
+diff --git a/ip/ipila.c b/ip/ipila.c
+index 11fbb5fa..563ce9cb 100644
+--- a/ip/ipila.c
++++ b/ip/ipila.c
+@@ -95,7 +95,7 @@ static int print_ila_mapping(struct nlmsghdr *n, void *arg)
+ 		return -1;
+ 
+ 	ghdr = NLMSG_DATA(n);
+-	parse_rtattr(tb, ILA_ATTR_MAX, (void *) ghdr + GENL_HDRLEN, len);
++	parse_rtattr(tb, ILA_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN), len);
+ 
+ 	open_json_object(NULL);
+ 	print_ila_locid("locator_match", ILA_ATTR_LOCATOR_MATCH, tb);
+diff --git a/ip/ipseg6.c b/ip/ipseg6.c
+index 33076e72..72ee01bf 100644
+--- a/ip/ipseg6.c
++++ b/ip/ipseg6.c
+@@ -114,7 +114,7 @@ static int process_msg(struct nlmsghdr *n, void *arg)
+ 
+ 	ghdr = NLMSG_DATA(n);
+ 
+-	parse_rtattr(attrs, SEG6_ATTR_MAX, (void *)ghdr + GENL_HDRLEN, len);
++	parse_rtattr(attrs, SEG6_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN), len);
+ 
+ 	open_json_object(NULL);
+ 	switch (ghdr->cmd) {
+diff --git a/lib/libnetlink.c b/lib/libnetlink.c
+index 0d48a3d4..ef0793dc 100644
+--- a/lib/libnetlink.c
++++ b/lib/libnetlink.c
+@@ -1238,7 +1238,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
+ 	}
+ 
+ 	memcpy(NLMSG_TAIL(n), data, len);
+-	memset((void *) NLMSG_TAIL(n) + len, 0, NLMSG_ALIGN(len) - len);
++	memset((char *) NLMSG_TAIL(n) + len, 0, NLMSG_ALIGN(len) - len);
+ 	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len);
+ 	return 0;
+ }
+@@ -1253,7 +1253,7 @@ struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type)
+ 
+ int addattr_nest_end(struct nlmsghdr *n, struct rtattr *nest)
+ {
+-	nest->rta_len = (void *)NLMSG_TAIL(n) - (void *)nest;
++	nest->rta_len = (char *)NLMSG_TAIL(n) - (char *)nest;
+ 	return n->nlmsg_len;
+ }
+ 
+@@ -1269,9 +1269,9 @@ struct rtattr *addattr_nest_compat(struct nlmsghdr *n, int maxlen, int type,
+ 
+ int addattr_nest_compat_end(struct nlmsghdr *n, struct rtattr *start)
+ {
+-	struct rtattr *nest = (void *)start + NLMSG_ALIGN(start->rta_len);
++	struct rtattr *nest = (struct rtattr *)((char *)start + NLMSG_ALIGN(start->rta_len));
+ 
+-	start->rta_len = (void *)NLMSG_TAIL(n) - (void *)start;
++	start->rta_len = (char *)NLMSG_TAIL(n) - (char *)start;
+ 	addattr_nest_end(n, nest);
+ 	return n->nlmsg_len;
+ }
+@@ -1342,7 +1342,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type)
+ 
+ int rta_nest_end(struct rtattr *rta, struct rtattr *nest)
+ {
+-	nest->rta_len = (void *)RTA_TAIL(rta) - (void *)nest;
++	nest->rta_len = (char *)RTA_TAIL(rta) - (char *)nest;
+ 
+ 	return rta->rta_len;
+ }
+@@ -1391,7 +1391,7 @@ int __parse_rtattr_nested_compat(struct rtattr *tb[], int max,
+ 	if (RTA_PAYLOAD(rta) < len)
+ 		return -1;
+ 	if (RTA_PAYLOAD(rta) >= RTA_ALIGN(len) + sizeof(struct rtattr)) {
+-		rta = RTA_DATA(rta) + RTA_ALIGN(len);
++		rta = (struct rtattr *)((char *)RTA_DATA(rta) + RTA_ALIGN(len));
+ 		return parse_rtattr_nested(tb, max, rta);
+ 	}
+ 	memset(tb, 0, sizeof(struct rtattr *) * (max + 1));
+diff --git a/lib/utils.c b/lib/utils.c
+index a81c0700..70cefb93 100644
+--- a/lib/utils.c
++++ b/lib/utils.c
+@@ -1561,7 +1561,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
+ 
+ 	len = RTA_PAYLOAD(rta);
+ 	if (len < size)
+-		memset(s + len, 0, size - len);
++		memset((char *)s + len, 0, size - len);
+ 	else
+ 		len = size;
+ 
+-- 
+2.20.1
+

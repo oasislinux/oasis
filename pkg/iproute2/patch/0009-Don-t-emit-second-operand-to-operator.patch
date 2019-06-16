@@ -1,0 +1,201 @@
+From 4ca152ce3ec9473183f4a0bf50eea91f95028fa2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 12:39:40 -0700
+Subject: [PATCH] Don't emit second operand to '?' operator
+
+---
+ ip/iproute_lwtunnel.c |  4 ++--
+ ip/iptunnel.c         |  7 ++++++-
+ ip/iptuntap.c         |  2 +-
+ lib/bpf.c             |  2 +-
+ lib/utils.c           |  7 +++++--
+ misc/ss.c             | 26 ++++++++++++++++++--------
+ 6 files changed, 33 insertions(+), 15 deletions(-)
+
+diff --git a/ip/iproute_lwtunnel.c b/ip/iproute_lwtunnel.c
+index 03217b8f..83f92984 100644
+--- a/ip/iproute_lwtunnel.c
++++ b/ip/iproute_lwtunnel.c
+@@ -185,7 +185,7 @@ static const char *format_action_type(int action)
+ 	if (action < 0 || action > SEG6_LOCAL_ACTION_MAX)
+ 		return "<invalid>";
+ 
+-	return seg6_action_names[action] ?: "<unknown>";
++	return seg6_action_names[action] ? seg6_action_names[action] : "<unknown>";
+ }
+ 
+ static int read_action_type(const char *name)
+@@ -216,7 +216,7 @@ static void print_encap_bpf_prog(FILE *fp, struct rtattr *encap,
+ 
+ 	if (is_json_context())
+ 		print_string(PRINT_JSON, str, NULL,
+-			     progname ? : "<unknown>");
++			     progname ? progname : "<unknown>");
+ 	else {
+ 		fprintf(fp, "%s ", str);
+ 		if (progname)
+diff --git a/ip/iptunnel.c b/ip/iptunnel.c
+index 281def0a..eb1a8148 100644
+--- a/ip/iptunnel.c
++++ b/ip/iptunnel.c
+@@ -277,11 +277,16 @@ static int do_add(int cmd, int argc, char **argv)
+ static int do_del(int argc, char **argv)
+ {
+ 	struct ip_tunnel_parm p;
++	const char *name;
+ 
+ 	if (parse_args(argc, argv, SIOCDELTUNNEL, &p) < 0)
+ 		return -1;
+ 
+-	return tnl_del_ioctl(tnl_defname(&p) ? : p.name, p.name, &p);
++	name = tnl_defname(&p);
++	if (!name)
++		name = p.name;
++
++	return tnl_del_ioctl(name, p.name, &p);
+ }
+ 
+ static void print_tunnel(const void *t)
+diff --git a/ip/iptuntap.c b/ip/iptuntap.c
+index 0b3adde1..d19e5531 100644
+--- a/ip/iptuntap.c
++++ b/ip/iptuntap.c
+@@ -347,7 +347,7 @@ static void show_processes(const char *name)
+ 				char *pname = pid_name(pid);
+ 
+ 				print_string(PRINT_ANY, "name",
+-					     "%s", pname ? : "<NULL>");
++					     "%s", pname ? pname : "<NULL>");
+ 
+ 				print_uint(PRINT_ANY, "pid",
+ 					   "(%d)", pid);
+diff --git a/lib/bpf.c b/lib/bpf.c
+index a18e2ae9..d12b42bd 100644
+--- a/lib/bpf.c
++++ b/lib/bpf.c
+@@ -771,7 +771,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
+ 		mnt = bpf_find_mntpt("bpf", BPF_FS_MAGIC, bpf_tmp,
+ 				     sizeof(bpf_tmp), bpf_known_mnts);
+ 	if (!mnt) {
+-		mnt = mnt_env ? : BPF_DIR_MNT;
++		mnt = mnt_env ? mnt_env : BPF_DIR_MNT;
+ 		ret = bpf_mnt_check_target(mnt);
+ 		if (!ret)
+ 			ret = bpf_mnt_fs(mnt);
+diff --git a/lib/utils.c b/lib/utils.c
+index 70cefb93..150d4105 100644
+--- a/lib/utils.c
++++ b/lib/utils.c
+@@ -945,8 +945,10 @@ int __get_hz(void)
+ 	int hz = 0;
+ 	FILE *fp;
+ 
+-	if (getenv("HZ"))
+-		return atoi(getenv("HZ")) ? : HZ;
++	if (getenv("HZ")) {
++		hz = atoi(getenv("HZ"));
++		goto out;
++	}
+ 
+ 	if (getenv("PROC_NET_PSCHED"))
+ 		snprintf(name, sizeof(name)-1,
+@@ -967,6 +969,7 @@ int __get_hz(void)
+ 				hz = denom;
+ 		fclose(fp);
+ 	}
++out:
+ 	if (hz)
+ 		return hz;
+ 	return HZ;
+diff --git a/misc/ss.c b/misc/ss.c
+index 6a6dae44..05327fdc 100644
+--- a/misc/ss.c
++++ b/misc/ss.c
+@@ -479,7 +479,9 @@ static FILE *generic_proc_open(const char *env, const char *name)
+ 	char store[128];
+ 
+ 	if (!p) {
+-		p = getenv("PROC_ROOT") ? : "/proc";
++		p = getenv("PROC_ROOT");
++		if (!p)
++			p = "/proc";
+ 		snprintf(store, sizeof(store)-1, "%s/%s", p, name);
+ 		p = store;
+ 	}
+@@ -571,7 +573,7 @@ static void user_ent_destroy(void)
+ 
+ static void user_ent_hash_build(void)
+ {
+-	const char *root = getenv("PROC_ROOT") ? : "/proc/";
++	const char *root;
+ 	struct dirent *d;
+ 	char name[1024];
+ 	int nameoff;
+@@ -581,6 +583,10 @@ static void user_ent_hash_build(void)
+ 	const char *no_ctx = "unavailable";
+ 	static int user_ent_hash_build_init;
+ 
++	root = getenv("PROC_ROOT");
++	if (!root)
++		root = "/proc/";
++
+ 	/* If show_users & show_proc_ctx set only do this once */
+ 	if (user_ent_hash_build_init != 0)
+ 		return;
+@@ -2186,7 +2192,10 @@ void *parse_hostcond(char *addr, bool is_port)
+ 	} else if (addr[0] == '*') {
+ 		port = addr+1;
+ 	} else {
+-		port = strrchr(strchr(addr, '/') ? : addr, ':');
++		port = strchr(addr, '/');
++		if (!port)
++			port = addr;
++		port = strrchr(port, ':');
+ 	}
+ 
+ 	if (is_port)
+@@ -3617,9 +3626,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
+ 
+ 	sock_state_print(s);
+ 
+-	sock_addr_print(s->name ?: "*", " ",
++	sock_addr_print(s->name ? s->name : "*", " ",
+ 			int_to_str(s->lport, port_name), NULL);
+-	sock_addr_print(s->peer_name ?: "*", " ",
++	sock_addr_print(s->peer_name ? s->peer_name : "*", " ",
+ 			int_to_str(s->rport, port_name), NULL);
+ 
+ 	proc_ctx_print(s);
+@@ -3822,7 +3831,7 @@ static int unix_show(struct filter *f)
+ 			if (!p)
+ 				u->peer_name = "?";
+ 			else
+-				u->peer_name = p->name ? : "*";
++				u->peer_name = p->name ? p->name : "*";
+ 		}
+ 
+ 		if (f->f) {
+@@ -4288,9 +4297,10 @@ static int netlink_show_one(struct filter *f,
+ 			strncpy(procname, "kernel", 7);
+ 		} else if (pid > 0) {
+ 			FILE *fp;
++			const char *root = getenv("PROC_ROOT");
+ 
+ 			snprintf(procname, sizeof(procname), "%s/%d/stat",
+-				getenv("PROC_ROOT") ? : "/proc", pid);
++				root ? root : "/proc", pid);
+ 			if ((fp = fopen(procname, "r")) != NULL) {
+ 				if (fscanf(fp, "%*d (%[^)])", procname) == 1) {
+ 					snprintf(procname+strlen(procname),
+@@ -4333,7 +4343,7 @@ static int netlink_show_one(struct filter *f,
+ 		else if (pid > 0)
+ 			getpidcon(pid, &pid_context);
+ 
+-		out(" proc_ctx=%s", pid_context ? : "unavailable");
++		out(" proc_ctx=%s", pid_context ? pid_context : "unavailable");
+ 		free(pid_context);
+ 	}
+ 
+-- 
+2.20.1
+

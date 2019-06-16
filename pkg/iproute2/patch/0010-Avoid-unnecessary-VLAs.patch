@@ -1,0 +1,57 @@
+From 958ece4ca4331f215f4517c3363ada4359dc149c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 13:38:59 -0700
+Subject: [PATCH] Avoid unnecessary VLAs
+
+---
+ include/bpf_scm.h | 2 +-
+ ip/iptuntap.c     | 8 +++-----
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/include/bpf_scm.h b/include/bpf_scm.h
+index 669f0538..9e456030 100644
+--- a/include/bpf_scm.h
++++ b/include/bpf_scm.h
+@@ -37,7 +37,7 @@ static inline int *bpf_map_set_init(struct bpf_map_set_msg *msg,
+ 				    struct sockaddr_un *addr,
+ 				    unsigned int addr_len)
+ {
+-	const unsigned int cmsg_ctl_len = sizeof(int) * BPF_SCM_MAX_FDS;
++	enum { cmsg_ctl_len = sizeof(int) * BPF_SCM_MAX_FDS };
+ 	struct cmsghdr *cmsg;
+ 
+ 	msg->iov.iov_base = &msg->aux;
+diff --git a/ip/iptuntap.c b/ip/iptuntap.c
+index d19e5531..6928737e 100644
+--- a/ip/iptuntap.c
++++ b/ip/iptuntap.c
+@@ -302,9 +302,7 @@ static void show_processes(const char *name)
+ 
+ 	fd_path = globbuf.gl_pathv;
+ 	while (*fd_path) {
+-		const char *dev_net_tun = "/dev/net/tun";
+-		const size_t linkbuf_len = strlen(dev_net_tun) + 2;
+-		char linkbuf[linkbuf_len], *fdinfo;
++		char linkbuf[sizeof(TUNDEV) + 1], *fdinfo;
+ 		int pid, fd;
+ 		FILE *f;
+ 
+@@ -314,13 +312,13 @@ static void show_processes(const char *name)
+ 		if (pid == getpid())
+ 			goto next;
+ 
+-		err = readlink(*fd_path, linkbuf, linkbuf_len - 1);
++		err = readlink(*fd_path, linkbuf, sizeof(linkbuf) - 1);
+ 		if (err < 0) {
+ 			perror("readlink");
+ 			goto next;
+ 		}
+ 		linkbuf[err] = '\0';
+-		if (strcmp(dev_net_tun, linkbuf))
++		if (strcmp(TUNDEV, linkbuf))
+ 			goto next;
+ 
+ 		if (asprintf(&fdinfo, "/proc/%d/fdinfo/%d", pid, fd) < 0)
+-- 
+2.20.1
+

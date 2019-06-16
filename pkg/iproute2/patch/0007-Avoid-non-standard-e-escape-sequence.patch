@@ -1,0 +1,53 @@
+From b39ddf71d46ff91b8c84a2dd48c154cccc0a685c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 12:28:57 -0700
+Subject: [PATCH] Avoid non-standard \e escape sequence
+
+---
+ lib/color.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/lib/color.c b/lib/color.c
+index 59976847..27de6462 100644
+--- a/lib/color.c
++++ b/lib/color.c
+@@ -32,21 +32,21 @@ enum color {
+ };
+ 
+ static const char * const color_codes[] = {
+-	"\e[31m",
+-	"\e[32m",
+-	"\e[33m",
+-	"\e[34m",
+-	"\e[35m",
+-	"\e[36m",
+-	"\e[37m",
+-	"\e[1;31m",
+-	"\e[1;32m",
+-	"\e[1;33m",
+-	"\e[1;34m",
+-	"\e[1;35m",
+-	"\e[1;36m",
+-	"\e[1;37m",
+-	"\e[0m",
++	"\033[31m",
++	"\033[32m",
++	"\033[33m",
++	"\033[34m",
++	"\033[35m",
++	"\033[36m",
++	"\033[37m",
++	"\033[1;31m",
++	"\033[1;32m",
++	"\033[1;33m",
++	"\033[1;34m",
++	"\033[1;35m",
++	"\033[1;36m",
++	"\033[1;37m",
++	"\033[0m",
+ 	NULL,
+ };
+ 
+-- 
+2.20.1
+

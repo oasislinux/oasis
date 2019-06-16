@@ -1,0 +1,81 @@
+From 440e3f2e32a58af3343c6f654aacfcb7d2cec5f6 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 12:39:04 -0700
+Subject: [PATCH] Remove semicolon after function definitions
+
+---
+ include/json_print.h | 28 ++++++++++++++--------------
+ lib/json_print.c     | 18 +++++++++---------
+ 2 files changed, 23 insertions(+), 23 deletions(-)
+
+diff --git a/include/json_print.h b/include/json_print.h
+index dbdc90e2..ae2be059 100644
+--- a/include/json_print.h
++++ b/include/json_print.h
+@@ -57,20 +57,20 @@ void print_nl(void);
+ 	{								\
+ 		print_color_##type_name(t, COLOR_NONE, key, fmt, value);	\
+ 	}
+-_PRINT_FUNC(int, int);
+-_PRINT_FUNC(s64, int64_t);
+-_PRINT_FUNC(bool, bool);
+-_PRINT_FUNC(null, const char*);
+-_PRINT_FUNC(string, const char*);
+-_PRINT_FUNC(uint, unsigned int);
+-_PRINT_FUNC(u64, uint64_t);
+-_PRINT_FUNC(hhu, unsigned char);
+-_PRINT_FUNC(hu, unsigned short);
+-_PRINT_FUNC(hex, unsigned int);
+-_PRINT_FUNC(0xhex, unsigned long long);
+-_PRINT_FUNC(luint, unsigned long);
+-_PRINT_FUNC(lluint, unsigned long long);
+-_PRINT_FUNC(float, double);
++_PRINT_FUNC(int, int)
++_PRINT_FUNC(s64, int64_t)
++_PRINT_FUNC(bool, bool)
++_PRINT_FUNC(null, const char*)
++_PRINT_FUNC(string, const char*)
++_PRINT_FUNC(uint, unsigned int)
++_PRINT_FUNC(u64, uint64_t)
++_PRINT_FUNC(hhu, unsigned char)
++_PRINT_FUNC(hu, unsigned short)
++_PRINT_FUNC(hex, unsigned int)
++_PRINT_FUNC(0xhex, unsigned long long)
++_PRINT_FUNC(luint, unsigned long)
++_PRINT_FUNC(lluint, unsigned long long)
++_PRINT_FUNC(float, double)
+ #undef _PRINT_FUNC
+ 
+ #endif /* _JSON_PRINT_H_ */
+diff --git a/lib/json_print.c b/lib/json_print.c
+index 4eb2d0dc..cc43031c 100644
+--- a/lib/json_print.c
++++ b/lib/json_print.c
+@@ -116,15 +116,15 @@ void close_json_array(enum output_type type, const char *str)
+ 			color_fprintf(stdout, color, fmt, value);          \
+ 		}							\
+ 	}
+-_PRINT_FUNC(int, int);
+-_PRINT_FUNC(s64, int64_t);
+-_PRINT_FUNC(hhu, unsigned char);
+-_PRINT_FUNC(hu, unsigned short);
+-_PRINT_FUNC(uint, unsigned int);
+-_PRINT_FUNC(u64, uint64_t);
+-_PRINT_FUNC(luint, unsigned long);
+-_PRINT_FUNC(lluint, unsigned long long);
+-_PRINT_FUNC(float, double);
++_PRINT_FUNC(int, int)
++_PRINT_FUNC(s64, int64_t)
++_PRINT_FUNC(hhu, unsigned char)
++_PRINT_FUNC(hu, unsigned short)
++_PRINT_FUNC(uint, unsigned int)
++_PRINT_FUNC(u64, uint64_t)
++_PRINT_FUNC(luint, unsigned long)
++_PRINT_FUNC(lluint, unsigned long long)
++_PRINT_FUNC(float, double)
+ #undef _PRINT_FUNC
+ 
+ void print_color_string(enum output_type type,
+-- 
+2.20.1
+

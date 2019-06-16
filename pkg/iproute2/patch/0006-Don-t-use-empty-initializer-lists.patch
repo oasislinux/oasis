@@ -1,0 +1,2573 @@
+From 5268eef8ee54b54f2d1e6fb3c44f2135385f637f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 12:21:05 -0700
+Subject: [PATCH] Don't use empty initializer lists
+
+---
+ bridge/mdb.c      |  2 +-
+ bridge/vlan.c     |  4 +-
+ devlink/devlink.c | 94 +++++++++++++++++++++++------------------------
+ devlink/mnlg.c    |  6 +--
+ ip/ip6tunnel.c    |  2 +-
+ ip/ipaddress.c    |  8 ++--
+ ip/ipaddrlabel.c  |  2 +-
+ ip/ipl2tp.c       |  2 +-
+ ip/iplink.c       |  2 +-
+ ip/iplink_can.c   |  2 +-
+ ip/ipmacsec.c     |  2 +-
+ ip/ipmaddr.c      |  2 +-
+ ip/ipntable.c     |  4 +-
+ ip/iptunnel.c     | 10 ++---
+ ip/iptuntap.c     |  2 +-
+ ip/ipxfrm.c       | 14 +++----
+ ip/tcp_metrics.c  |  2 +-
+ ip/xfrm_policy.c  | 12 +++---
+ ip/xfrm_state.c   | 12 +++---
+ lib/bpf.c         | 42 ++++++++++-----------
+ lib/libnetlink.c  |  4 +-
+ lib/ll_map.c      |  2 +-
+ misc/arpd.c       |  4 +-
+ misc/ss.c         | 38 +++++++++----------
+ rdma/dev.c        |  2 +-
+ rdma/link.c       |  2 +-
+ rdma/rdma.c       |  2 +-
+ rdma/res-cmid.c   |  6 +--
+ rdma/res-cq.c     |  6 +--
+ rdma/res-mr.c     |  6 +--
+ rdma/res-pd.c     |  6 +--
+ rdma/res-qp.c     |  6 +--
+ rdma/res.c        |  4 +-
+ rdma/utils.c      |  2 +-
+ tc/e_bpf.c        |  4 +-
+ tc/em_cmp.c       |  2 +-
+ tc/em_ipset.c     |  2 +-
+ tc/em_meta.c      |  2 +-
+ tc/em_nbyte.c     |  2 +-
+ tc/em_u32.c       |  2 +-
+ tc/f_bpf.c        |  2 +-
+ tc/f_fw.c         |  2 +-
+ tc/f_rsvp.c       |  2 +-
+ tc/f_u32.c        |  6 +--
+ tc/m_bpf.c        |  4 +-
+ tc/m_connmark.c   |  2 +-
+ tc/m_csum.c       |  2 +-
+ tc/m_mirred.c     |  4 +-
+ tc/m_nat.c        |  2 +-
+ tc/m_pedit.c      |  4 +-
+ tc/m_simple.c     |  2 +-
+ tc/m_tunnel_key.c |  2 +-
+ tc/m_vlan.c       |  2 +-
+ tc/m_xt.c         |  2 +-
+ tc/q_atm.c        |  2 +-
+ tc/q_cbq.c        | 12 +++---
+ tc/q_cbs.c        |  2 +-
+ tc/q_choke.c      |  2 +-
+ tc/q_codel.c      |  2 +-
+ tc/q_fifo.c       |  2 +-
+ tc/q_fq_codel.c   |  2 +-
+ tc/q_gred.c       |  6 +--
+ tc/q_hfsc.c       |  4 +-
+ tc/q_htb.c        |  2 +-
+ tc/q_multiq.c     |  2 +-
+ tc/q_netem.c      | 12 +++---
+ tc/q_red.c        |  2 +-
+ tc/q_sfq.c        |  2 +-
+ tc/q_skbprio.c    |  2 +-
+ tc/q_tbf.c        |  2 +-
+ tc/tc_class.c     | 18 ++++-----
+ tc/tc_exec.c      |  2 +-
+ tc/tc_filter.c    | 12 +++---
+ tc/tc_qdisc.c     | 10 ++---
+ tc/tc_stab.c      |  2 +-
+ tc/tc_util.c      |  6 +--
+ tipc/bearer.c     | 22 +++++------
+ tipc/link.c       | 34 ++++++++---------
+ tipc/media.c      | 10 ++---
+ tipc/misc.c       |  2 +-
+ tipc/msg.c        |  2 +-
+ tipc/nametable.c  |  6 +--
+ tipc/node.c       | 14 +++----
+ tipc/socket.c     | 10 ++---
+ 84 files changed, 288 insertions(+), 288 deletions(-)
+
+diff --git a/bridge/mdb.c b/bridge/mdb.c
+index 2f28d186..18e30e8a 100644
+--- a/bridge/mdb.c
++++ b/bridge/mdb.c
+@@ -376,7 +376,7 @@ static int mdb_modify(int cmd, int flags, int argc, char **argv)
+ 		.n.nlmsg_type = cmd,
+ 		.bpm.family = PF_BRIDGE,
+ 	};
+-	struct br_mdb_entry entry = {};
++	struct br_mdb_entry entry = {0};
+ 	char *d = NULL, *p = NULL, *grp = NULL;
+ 	short vid = 0;
+ 
+diff --git a/bridge/vlan.c b/bridge/vlan.c
+index 5dd9a82e..8ea553d4 100644
+--- a/bridge/vlan.c
++++ b/bridge/vlan.c
+@@ -98,7 +98,7 @@ static int add_tunnel_info_range(struct nlmsghdr *n, int reqsize,
+ static int add_vlan_info_range(struct nlmsghdr *n, int reqsize, __u16 vid_start,
+ 			       int16_t vid_end, __u16 flags)
+ {
+-	struct bridge_vlan_info vinfo = {};
++	struct bridge_vlan_info vinfo = {0};
+ 
+ 	vinfo.flags = flags;
+ 	vinfo.vid = vid_start;
+@@ -137,7 +137,7 @@ static int vlan_modify(int cmd, int argc, char **argv)
+ 	short vid = -1;
+ 	short vid_end = -1;
+ 	struct rtattr *afspec;
+-	struct bridge_vlan_info vinfo = {};
++	struct bridge_vlan_info vinfo = {0};
+ 	bool tunnel_info_set = false;
+ 	unsigned short flags = 0;
+ 	__u32 tun_id_start = 0;
+diff --git a/devlink/devlink.c b/devlink/devlink.c
+index 6a4ce58b..834e9c5d 100644
+--- a/devlink/devlink.c
++++ b/devlink/devlink.c
+@@ -434,7 +434,7 @@ static int attr_cb(const struct nlattr *attr, void *data)
+ 
+ static int ifname_map_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 	struct dl *dl = data;
+ 	struct ifname_map *ifname_map;
+@@ -1989,7 +1989,7 @@ static void pr_out_eswitch(struct dl *dl, struct nlattr **tb)
+ static int cmd_dev_eswitch_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dl *dl = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -2127,7 +2127,7 @@ static const struct param_val_conv param_val_conv[] = {
+ static void pr_out_param_value(struct dl *dl, const char *nla_name,
+ 			       int nla_type, struct nlattr *nl)
+ {
+-	struct nlattr *nla_value[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_value[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct nlattr *val_attr;
+ 	const char *vstr;
+ 	bool conv_exists;
+@@ -2203,7 +2203,7 @@ static void pr_out_param_value(struct dl *dl, const char *nla_name,
+ 
+ static void pr_out_param(struct dl *dl, struct nlattr **tb, bool array)
+ {
+-	struct nlattr *nla_param[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_param[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct nlattr *param_value_attr;
+ 	const char *nla_name;
+ 	int nla_type;
+@@ -2246,7 +2246,7 @@ static void pr_out_param(struct dl *dl, struct nlattr **tb, bool array)
+ static int cmd_dev_param_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct dl *dl = data;
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -2272,8 +2272,8 @@ struct param_ctx {
+ static int cmd_dev_param_set_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *nla_param[DEVLINK_ATTR_MAX + 1] = {};
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_param[DEVLINK_ATTR_MAX + 1] = {0};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct nlattr *param_value_attr;
+ 	enum devlink_param_cmode cmode;
+ 	struct param_ctx *ctx = data;
+@@ -2297,7 +2297,7 @@ static int cmd_dev_param_set_cb(const struct nlmsghdr *nlh, void *data)
+ 	nla_type = mnl_attr_get_u8(nla_param[DEVLINK_ATTR_PARAM_TYPE]);
+ 	mnl_attr_for_each_nested(param_value_attr,
+ 				 nla_param[DEVLINK_ATTR_PARAM_VALUES_LIST]) {
+-		struct nlattr *nla_value[DEVLINK_ATTR_MAX + 1] = {};
++		struct nlattr *nla_value[DEVLINK_ATTR_MAX + 1] = {0};
+ 		struct nlattr *val_attr;
+ 
+ 		err = mnl_attr_parse_nested(param_value_attr,
+@@ -2339,7 +2339,7 @@ static int cmd_dev_param_set_cb(const struct nlmsghdr *nlh, void *data)
+ 
+ static int cmd_dev_param_set(struct dl *dl)
+ {
+-	struct param_ctx ctx = {};
++	struct param_ctx ctx = {0};
+ 	struct nlmsghdr *nlh;
+ 	bool conv_exists;
+ 	uint32_t val_u32;
+@@ -2494,7 +2494,7 @@ static int cmd_dev_param(struct dl *dl)
+ static int cmd_dev_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dl *dl = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -2558,7 +2558,7 @@ static void pr_out_versions_single(struct dl *dl, const struct nlmsghdr *nlh,
+ 	struct nlattr *version;
+ 
+ 	mnl_attr_for_each(version, nlh, sizeof(struct genlmsghdr)) {
+-		struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++		struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 		const char *ver_value;
+ 		const char *ver_name;
+ 		int err;
+@@ -2633,7 +2633,7 @@ static void pr_out_info(struct dl *dl, const struct nlmsghdr *nlh,
+ static int cmd_versions_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	bool has_versions, has_info;
+ 	struct dl *dl = data;
+ 
+@@ -2815,7 +2815,7 @@ static void pr_out_port(struct dl *dl, struct nlattr **tb)
+ static int cmd_port_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dl *dl = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -2958,7 +2958,7 @@ static void pr_out_sb(struct dl *dl, struct nlattr **tb)
+ static int cmd_sb_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dl *dl = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -3036,7 +3036,7 @@ static void pr_out_sb_pool(struct dl *dl, struct nlattr **tb)
+ static int cmd_sb_pool_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dl *dl = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -3121,7 +3121,7 @@ static void pr_out_sb_port_pool(struct dl *dl, struct nlattr **tb)
+ static int cmd_sb_port_pool_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dl *dl = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -3223,7 +3223,7 @@ static void pr_out_sb_tc_bind(struct dl *dl, struct nlattr **tb)
+ static int cmd_sb_tc_bind_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dl *dl = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -3513,7 +3513,7 @@ static void cmd_sb_occ_port_pool_process(struct occ_show *occ_show,
+ static int cmd_sb_occ_port_pool_process_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct occ_show *occ_show = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -3564,7 +3564,7 @@ static void cmd_sb_occ_tc_pool_process(struct occ_show *occ_show,
+ static int cmd_sb_occ_tc_pool_process_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct occ_show *occ_show = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -3769,7 +3769,7 @@ static void pr_out_region(struct dl *dl, struct nlattr **tb);
+ static int cmd_mon_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dl *dl = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 	uint8_t cmd = genl->cmd;
+ 
+@@ -4220,7 +4220,7 @@ static void pr_out_dpipe_headers(struct dpipe_ctx *ctx,
+ 
+ static int dpipe_header_field_get(struct nlattr *nl, struct dpipe_field *field)
+ {
+-	struct nlattr *nla_field[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_field[DEVLINK_ATTR_MAX + 1] = {0};
+ 	const char *name;
+ 	int err;
+ 
+@@ -4271,7 +4271,7 @@ static unsigned int dpipe_header_field_count_get(struct nlattr *nla_fields)
+ 
+ static int dpipe_header_get(struct dpipe_ctx *ctx, struct nlattr *nl)
+ {
+-	struct nlattr *nla_header[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_header[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct dpipe_header *header;
+ 	unsigned int fields_count;
+ 	const char *header_name;
+@@ -4327,7 +4327,7 @@ static int dpipe_headers_get(struct dpipe_ctx *ctx, struct nlattr **tb)
+ static int cmd_dpipe_header_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dpipe_ctx *ctx = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 	int err;
+ 
+@@ -4349,7 +4349,7 @@ static int cmd_dpipe_header_cb(const struct nlmsghdr *nlh, void *data)
+ static int cmd_dpipe_headers_show(struct dl *dl)
+ {
+ 	struct nlmsghdr *nlh;
+-	struct dpipe_ctx ctx = {};
++	struct dpipe_ctx ctx = {0};
+ 	uint16_t flags = NLM_F_REQUEST | NLM_F_ACK;
+ 	int err;
+ 
+@@ -4439,7 +4439,7 @@ static void pr_out_dpipe_action(struct dpipe_action *action,
+ 
+ static int dpipe_action_parse(struct dpipe_action *action, struct nlattr *nl)
+ {
+-	struct nlattr *nla_action[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_action[DEVLINK_ATTR_MAX + 1] = {0};
+ 	int err;
+ 
+ 	err = mnl_attr_parse_nested(nl, attr_cb, nla_action);
+@@ -4523,7 +4523,7 @@ static int dpipe_match_parse(struct dpipe_match *match,
+ 			     struct nlattr *nl)
+ 
+ {
+-	struct nlattr *nla_match[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_match[DEVLINK_ATTR_MAX + 1] = {0};
+ 	int err;
+ 
+ 	err = mnl_attr_parse_nested(nl, attr_cb, nla_match);
+@@ -4627,7 +4627,7 @@ resource_path_print(struct dl *dl, struct resources *resources,
+ 
+ static int dpipe_table_show(struct dpipe_ctx *ctx, struct nlattr *nl)
+ {
+-	struct nlattr *nla_table[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_table[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct dpipe_table *table;
+ 	uint32_t resource_units;
+ 	bool counters_enabled;
+@@ -4720,7 +4720,7 @@ err_table_show:
+ static int cmd_dpipe_table_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dpipe_ctx *ctx = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -4738,8 +4738,8 @@ static int cmd_resource_dump_cb(const struct nlmsghdr *nlh, void *data);
+ static int cmd_dpipe_table_show(struct dl *dl)
+ {
+ 	struct nlmsghdr *nlh;
+-	struct dpipe_ctx dpipe_ctx = {};
+-	struct resource_ctx resource_ctx = {};
++	struct dpipe_ctx dpipe_ctx = {0};
++	struct resource_ctx resource_ctx = {0};
+ 	uint16_t flags = NLM_F_REQUEST;
+ 	int err;
+ 
+@@ -4991,7 +4991,7 @@ static void pr_out_dpipe_entry_value(struct dpipe_ctx *ctx,
+ static int dpipe_entry_match_value_show(struct dpipe_ctx *ctx,
+ 					struct nlattr *nl)
+ {
+-	struct nlattr *nla_match_value[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_match_value[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct dpipe_match match;
+ 	int err;
+ 
+@@ -5022,7 +5022,7 @@ err_match_parse:
+ static int dpipe_entry_action_value_show(struct dpipe_ctx *ctx,
+ 					 struct nlattr *nl)
+ {
+-	struct nlattr *nla_action_value[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_action_value[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct dpipe_action action;
+ 	int err;
+ 
+@@ -5078,7 +5078,7 @@ dpipe_tables_match_values_show(struct dpipe_ctx *ctx,
+ 
+ static int dpipe_entry_show(struct dpipe_ctx *ctx, struct nlattr *nl)
+ {
+-	struct nlattr *nla_entry[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_entry[DEVLINK_ATTR_MAX + 1] = {0};
+ 	uint32_t entry_index;
+ 	uint64_t counter;
+ 	int err;
+@@ -5141,7 +5141,7 @@ err_entry_show:
+ static int cmd_dpipe_table_entry_dump_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct dpipe_ctx *ctx = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -5157,7 +5157,7 @@ static int cmd_dpipe_table_entry_dump_cb(const struct nlmsghdr *nlh, void *data)
+ static int cmd_dpipe_table_dump(struct dl *dl)
+ {
+ 	struct nlmsghdr *nlh;
+-	struct dpipe_ctx ctx = {};
++	struct dpipe_ctx ctx = {0};
+ 	uint16_t flags = NLM_F_REQUEST;
+ 	int err;
+ 
+@@ -5278,7 +5278,7 @@ static int
+ resource_get(struct resource_ctx *ctx, struct resource *resource,
+ 	     struct resource *parent_resource, struct nlattr *nl)
+ {
+-	struct nlattr *nla_resource[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *nla_resource[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct nlattr *nla_child_resource;
+ 	struct nlattr *nla_resources;
+ 	bool top = false;
+@@ -5417,7 +5417,7 @@ static int resources_get(struct resource_ctx *ctx, struct nlattr **tb)
+ static int cmd_resource_dump_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct resource_ctx *ctx = data;
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 	int err;
+ 
+@@ -5441,8 +5441,8 @@ static int cmd_resource_dump_cb(const struct nlmsghdr *nlh, void *data)
+ static int cmd_resource_show(struct dl *dl)
+ {
+ 	struct nlmsghdr *nlh;
+-	struct dpipe_ctx dpipe_ctx = {};
+-	struct resource_ctx resource_ctx = {};
++	struct dpipe_ctx dpipe_ctx = {0};
++	struct resource_ctx resource_ctx = {0};
+ 	int err;
+ 
+ 	err = dl_argv_parse(dl, DL_OPT_HANDLE, 0);
+@@ -5537,7 +5537,7 @@ err_resource_lookup:
+ static int cmd_resource_set(struct dl *dl)
+ {
+ 	struct nlmsghdr *nlh;
+-	struct resource_ctx ctx = {};
++	struct resource_ctx ctx = {0};
+ 	int err;
+ 
+ 	err = resource_ctx_init(&ctx, dl);
+@@ -5655,7 +5655,7 @@ static void pr_out_region_snapshots_id(struct dl *dl, struct nlattr **tb, int in
+ 
+ static void pr_out_snapshots(struct dl *dl, struct nlattr **tb)
+ {
+-	struct nlattr *tb_snapshot[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb_snapshot[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct nlattr *nla_sanpshot;
+ 	int err, index = 0;
+ 
+@@ -5696,7 +5696,7 @@ static void pr_out_region(struct dl *dl, struct nlattr **tb)
+ static int cmd_region_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct dl *dl = data;
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+@@ -5752,8 +5752,8 @@ static int cmd_region_read_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct nlattr *nla_entry, *nla_chunk_data, *nla_chunk_addr;
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *tb_field[DEVLINK_ATTR_MAX + 1] = {};
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb_field[DEVLINK_ATTR_MAX + 1] = {0};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct dl *dl = data;
+ 	int err;
+ 
+@@ -6004,7 +6004,7 @@ static int cmd_fmsg_nest(struct fmsg_cb_data *fmsg_data, uint8_t nest_value,
+ static int cmd_fmsg_object_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct fmsg_cb_data *fmsg_data = data;
+ 	struct dl *dl = fmsg_data->dl;
+ 	struct nlattr *nla_object;
+@@ -6137,7 +6137,7 @@ out:
+ 
+ static void pr_out_health(struct dl *dl, struct nlattr **tb_health)
+ {
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	enum devlink_health_reporter_state state;
+ 	const struct nlattr *attr;
+ 	uint64_t time_ms;
+@@ -6193,7 +6193,7 @@ static void pr_out_health(struct dl *dl, struct nlattr **tb_health)
+ static int cmd_health_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {};
++	struct nlattr *tb[DEVLINK_ATTR_MAX + 1] = {0};
+ 	struct dl *dl = data;
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
+diff --git a/devlink/mnlg.c b/devlink/mnlg.c
+index 37cc25dd..eeb38324 100644
+--- a/devlink/mnlg.c
++++ b/devlink/mnlg.c
+@@ -147,7 +147,7 @@ static void parse_genl_mc_grps(struct nlattr *nested,
+ 	const char *name;
+ 
+ 	mnl_attr_for_each_nested(pos, nested) {
+-		struct nlattr *tb[CTRL_ATTR_MCAST_GRP_MAX + 1] = {};
++		struct nlattr *tb[CTRL_ATTR_MCAST_GRP_MAX + 1] = {0};
+ 
+ 		mnl_attr_parse_nested(pos, parse_mc_grps_cb, tb);
+ 		if (!tb[CTRL_ATTR_MCAST_GRP_NAME] ||
+@@ -181,7 +181,7 @@ static int get_group_id_attr_cb(const struct nlattr *attr, void *data)
+ static int get_group_id_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct group_info *group_info = data;
+-	struct nlattr *tb[CTRL_ATTR_MAX + 1] = {};
++	struct nlattr *tb[CTRL_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), get_group_id_attr_cb, tb);
+@@ -242,7 +242,7 @@ static int get_family_id_attr_cb(const struct nlattr *attr, void *data)
+ static int get_family_id_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	uint32_t *p_id = data;
+-	struct nlattr *tb[CTRL_ATTR_MAX + 1] = {};
++	struct nlattr *tb[CTRL_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), get_family_id_attr_cb, tb);
+diff --git a/ip/ip6tunnel.c b/ip/ip6tunnel.c
+index 35492503..4f733f0a 100644
+--- a/ip/ip6tunnel.c
++++ b/ip/ip6tunnel.c
+@@ -284,7 +284,7 @@ static int parse_args(int argc, char **argv, int cmd, struct ip6_tnl_parm2 *p)
+ 			if (get_ifname(p->name, *argv))
+ 				invarg("\"name\" not a valid ifname", *argv);
+ 			if (cmd == SIOCCHGTUNNEL && count == 0) {
+-				struct ip6_tnl_parm2 old_p = {};
++				struct ip6_tnl_parm2 old_p = {0};
+ 
+ 				if (tnl_get_ioctl(*argv, &old_p))
+ 					return -1;
+diff --git a/ip/ipaddress.c b/ip/ipaddress.c
+index b504200b..e440fac4 100644
+--- a/ip/ipaddress.c
++++ b/ip/ipaddress.c
+@@ -166,7 +166,7 @@ static void print_queuelen(FILE *f, struct rtattr *tb[IFLA_MAX + 1])
+ 	if (tb[IFLA_TXQLEN])
+ 		qlen = rta_getattr_u32(tb[IFLA_TXQLEN]);
+ 	else {
+-		struct ifreq ifr = {};
++		struct ifreq ifr = {0};
+ 		int s = socket(AF_INET, SOCK_STREAM, 0);
+ 
+ 		if (s < 0)
+@@ -353,7 +353,7 @@ static void print_vfinfo(FILE *fp, struct rtattr *vfinfo)
+ {
+ 	struct ifla_vf_mac *vf_mac;
+ 	struct ifla_vf_tx_rate *vf_tx_rate;
+-	struct rtattr *vf[IFLA_VF_MAX + 1] = {};
++	struct rtattr *vf[IFLA_VF_MAX + 1] = {0};
+ 
+ 	SPRINT_BUF(b1);
+ 
+@@ -2155,7 +2155,7 @@ static int ipaddr_modify(int cmd, int flags, int argc, char **argv)
+ 	char  *lcl_arg = NULL;
+ 	char  *valid_lftp = NULL;
+ 	char  *preferred_lftp = NULL;
+-	inet_prefix lcl = {};
++	inet_prefix lcl = {0};
+ 	inet_prefix peer;
+ 	int local_len = 0;
+ 	int peer_len = 0;
+@@ -2331,7 +2331,7 @@ static int ipaddr_modify(int cmd, int flags, int argc, char **argv)
+ 		return nodev(d);
+ 
+ 	if (valid_lftp || preferred_lftp) {
+-		struct ifa_cacheinfo cinfo = {};
++		struct ifa_cacheinfo cinfo = {0};
+ 
+ 		if (!valid_lft) {
+ 			fprintf(stderr, "valid_lft is zero\n");
+diff --git a/ip/ipaddrlabel.c b/ip/ipaddrlabel.c
+index f06ed1e7..53766036 100644
+--- a/ip/ipaddrlabel.c
++++ b/ip/ipaddrlabel.c
+@@ -147,7 +147,7 @@ static int ipaddrlabel_modify(int cmd, int argc, char **argv)
+ 		.ifal.ifal_family = preferred_family,
+ 	};
+ 
+-	inet_prefix prefix = {};
++	inet_prefix prefix = {0};
+ 	uint32_t label = 0xffffffffUL;
+ 	char *p = NULL;
+ 	char *l = NULL;
+diff --git a/ip/ipl2tp.c b/ip/ipl2tp.c
+index f090390f..edbe0f2f 100644
+--- a/ip/ipl2tp.c
++++ b/ip/ipl2tp.c
+@@ -345,7 +345,7 @@ static int get_response(struct nlmsghdr *n, void *arg)
+ 	if (len < 0)
+ 		return -1;
+ 
+-	parse_rtattr(attrs, L2TP_ATTR_MAX, (void *)ghdr + GENL_HDRLEN, len);
++	parse_rtattr(attrs, L2TP_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN), len);
+ 
+ 	if (attrs[L2TP_ATTR_PW_TYPE])
+ 		p->pw_type = rta_getattr_u16(attrs[L2TP_ATTR_PW_TYPE]);
+diff --git a/ip/iplink.c b/ip/iplink.c
+index 7952cb2b..3e86ec5a 100644
+--- a/ip/iplink.c
++++ b/ip/iplink.c
+@@ -1228,7 +1228,7 @@ static int set_mtu(const char *dev, int mtu)
+ 
+ static int get_address(const char *dev, int *htype)
+ {
+-	struct ifreq ifr = {};
++	struct ifreq ifr = {0};
+ 	struct sockaddr_ll me = {
+ 		.sll_family = AF_PACKET,
+ 		.sll_protocol = htons(ETH_P_LOOP),
+diff --git a/ip/iplink_can.c b/ip/iplink_can.c
+index 5bf490a9..009be0e5 100644
+--- a/ip/iplink_can.c
++++ b/ip/iplink_can.c
+@@ -112,7 +112,7 @@ static void print_ctrlmode(FILE *f, __u32 cm)
+ static int can_parse_opt(struct link_util *lu, int argc, char **argv,
+ 			 struct nlmsghdr *n)
+ {
+-	struct can_bittiming bt = {}, dbt = {};
++	struct can_bittiming bt = {0}, dbt = {0};
+ 	struct can_ctrlmode cm = {0, 0};
+ 
+ 	while (argc > 0) {
+diff --git a/ip/ipmacsec.c b/ip/ipmacsec.c
+index 54cd2b8c..cc8d5906 100644
+--- a/ip/ipmacsec.c
++++ b/ip/ipmacsec.c
+@@ -952,7 +952,7 @@ static int process(struct nlmsghdr *n, void *arg)
+ 	if (ghdr->cmd != MACSEC_CMD_GET_TXSC)
+ 		return 0;
+ 
+-	parse_rtattr(attrs, MACSEC_ATTR_MAX, (void *) ghdr + GENL_HDRLEN, len);
++	parse_rtattr(attrs, MACSEC_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN), len);
+ 	if (!validate_dump(attrs)) {
+ 		fprintf(stderr, "incomplete dump message\n");
+ 		return -1;
+diff --git a/ip/ipmaddr.c b/ip/ipmaddr.c
+index 6327100e..c92a4753 100644
+--- a/ip/ipmaddr.c
++++ b/ip/ipmaddr.c
+@@ -288,7 +288,7 @@ static int multiaddr_list(int argc, char **argv)
+ 
+ static int multiaddr_modify(int cmd, int argc, char **argv)
+ {
+-	struct ifreq ifr = {};
++	struct ifreq ifr = {0};
+ 	int family;
+ 	int fd;
+ 
+diff --git a/ip/ipntable.c b/ip/ipntable.c
+index 50fc949f..fbf76f52 100644
+--- a/ip/ipntable.c
++++ b/ip/ipntable.c
+@@ -76,7 +76,7 @@ static int ipntable_modify(int cmd, int flags, int argc, char **argv)
+ 	char *namep = NULL;
+ 	char *threshsp = NULL;
+ 	char *gc_intp = NULL;
+-	char parms_buf[1024] = {};
++	char parms_buf[1024] = {0};
+ 	struct rtattr *parms_rta = (struct rtattr *)parms_buf;
+ 	int parms_change = 0;
+ 
+@@ -312,7 +312,7 @@ static int ipntable_modify(int cmd, int flags, int argc, char **argv)
+ static const char *ntable_strtime_delta(__u32 msec)
+ {
+ 	static char str[32];
+-	struct timeval now = {};
++	struct timeval now = {0};
+ 	time_t t;
+ 	struct tm *tp;
+ 
+diff --git a/ip/iptunnel.c b/ip/iptunnel.c
+index d597908f..281def0a 100644
+--- a/ip/iptunnel.c
++++ b/ip/iptunnel.c
+@@ -175,7 +175,7 @@ static int parse_args(int argc, char **argv, int cmd, struct ip_tunnel_parm *p)
+ 			if (get_ifname(p->name, *argv))
+ 				invarg("\"name\" not a valid ifname", *argv);
+ 			if (cmd == SIOCCHGTUNNEL && count == 0) {
+-				struct ip_tunnel_parm old_p = {};
++				struct ip_tunnel_parm old_p = {0};
+ 
+ 				if (tnl_get_ioctl(*argv, &old_p))
+ 					return -1;
+@@ -287,7 +287,7 @@ static int do_del(int argc, char **argv)
+ static void print_tunnel(const void *t)
+ {
+ 	const struct ip_tunnel_parm *p = t;
+-	struct ip_tunnel_6rd ip6rd = {};
++	struct ip_tunnel_6rd ip6rd = {0};
+ 	char s1[1024];
+ 	char s2[1024];
+ 
+@@ -301,7 +301,7 @@ static void print_tunnel(const void *t)
+ 	       p->iph.saddr ? rt_addr_n2a_r(AF_INET, 4, &p->iph.saddr, s2, sizeof(s2)) : "any");
+ 
+ 	if (p->iph.protocol == IPPROTO_IPV6 && (p->i_flags & SIT_ISATAP)) {
+-		struct ip_tunnel_prl prl[16] = {};
++		struct ip_tunnel_prl prl[16] = {0};
+ 		int i;
+ 
+ 		prl[0].datalen = sizeof(prl) - sizeof(prl[0]);
+@@ -423,7 +423,7 @@ static int do_show(int argc, char **argv)
+ 
+ static int do_prl(int argc, char **argv)
+ {
+-	struct ip_tunnel_prl p = {};
++	struct ip_tunnel_prl p = {0};
+ 	int count = 0;
+ 	int cmd = 0;
+ 	const char *medium = NULL;
+@@ -472,7 +472,7 @@ static int do_prl(int argc, char **argv)
+ 
+ static int do_6rd(int argc, char **argv)
+ {
+-	struct ip_tunnel_6rd ip6rd = {};
++	struct ip_tunnel_6rd ip6rd = {0};
+ 	int cmd = 0;
+ 	const char *medium = NULL;
+ 	inet_prefix prefix;
+diff --git a/ip/iptuntap.c b/ip/iptuntap.c
+index dad82f56..0b3adde1 100644
+--- a/ip/iptuntap.c
++++ b/ip/iptuntap.c
+@@ -289,7 +289,7 @@ static char *pid_name(pid_t pid)
+ 
+ static void show_processes(const char *name)
+ {
+-	glob_t globbuf = { };
++	glob_t globbuf = {0};
+ 	char **fd_path;
+ 	int err;
+ 
+diff --git a/ip/ipxfrm.c b/ip/ipxfrm.c
+index 55d38d65..a2427bbf 100644
+--- a/ip/ipxfrm.c
++++ b/ip/ipxfrm.c
+@@ -903,7 +903,7 @@ void xfrm_xfrma_print(struct rtattr *tb[], __u16 family,
+ 
+ static int xfrm_selector_iszero(struct xfrm_selector *s)
+ {
+-	struct xfrm_selector s0 = {};
++	struct xfrm_selector s0 = {0};
+ 
+ 	return (memcmp(&s0, s, sizeof(s0)) == 0);
+ }
+@@ -912,7 +912,7 @@ void xfrm_state_info_print(struct xfrm_usersa_info *xsinfo,
+ 			    struct rtattr *tb[], FILE *fp, const char *prefix,
+ 			    const char *title, bool nokeys)
+ {
+-	char buf[STRBUF_SIZE] = {};
++	char buf[STRBUF_SIZE] = {0};
+ 	int force_spi = xfrm_xfrmproto_is_ipsec(xsinfo->id.proto);
+ 
+ 	xfrm_id_info_print(&xsinfo->saddr, &xsinfo->id, xsinfo->mode,
+@@ -991,7 +991,7 @@ void xfrm_policy_info_print(struct xfrm_userpolicy_info *xpinfo,
+ 			    struct rtattr *tb[], FILE *fp, const char *prefix,
+ 			    const char *title)
+ {
+-	char buf[STRBUF_SIZE] = {};
++	char buf[STRBUF_SIZE] = {0};
+ 
+ 	xfrm_selector_print(&xpinfo->sel, preferred_family, fp, title);
+ 
+@@ -1092,8 +1092,8 @@ int xfrm_id_parse(xfrm_address_t *saddr, struct xfrm_id *id, __u16 *family,
+ {
+ 	int argc = *argcp;
+ 	char **argv = *argvp;
+-	inet_prefix dst = {};
+-	inet_prefix src = {};
++	inet_prefix dst = {0};
++	inet_prefix src = {0};
+ 
+ 	while (1) {
+ 		if (strcmp(*argv, "src") == 0) {
+@@ -1398,8 +1398,8 @@ int xfrm_selector_parse(struct xfrm_selector *sel, int *argcp, char ***argvp)
+ {
+ 	int argc = *argcp;
+ 	char **argv = *argvp;
+-	inet_prefix dst = {};
+-	inet_prefix src = {};
++	inet_prefix dst = {0};
++	inet_prefix src = {0};
+ 	char *upspecp = NULL;
+ 
+ 	while (1) {
+diff --git a/ip/tcp_metrics.c b/ip/tcp_metrics.c
+index 72ef3ab5..eabe0738 100644
+--- a/ip/tcp_metrics.c
++++ b/ip/tcp_metrics.c
+@@ -177,7 +177,7 @@ static int process_msg(struct nlmsghdr *n, void *arg)
+ 	if (ghdr->cmd != TCP_METRICS_CMD_GET)
+ 		return 0;
+ 
+-	parse_rtattr(attrs, TCP_METRICS_ATTR_MAX, (void *) ghdr + GENL_HDRLEN,
++	parse_rtattr(attrs, TCP_METRICS_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN),
+ 		     len);
+ 
+ 	if (attrs[TCP_METRICS_ATTR_ADDR_IPV4]) {
+diff --git a/ip/xfrm_policy.c b/ip/xfrm_policy.c
+index 98984350..e9bdcb20 100644
+--- a/ip/xfrm_policy.c
++++ b/ip/xfrm_policy.c
+@@ -262,14 +262,14 @@ static int xfrm_policy_modify(int cmd, unsigned int flags, int argc, char **argv
+ 	char *selp = NULL;
+ 	char *ptypep = NULL;
+ 	char *sctxp = NULL;
+-	struct xfrm_userpolicy_type upt = {};
+-	char tmpls_buf[XFRM_TMPLS_BUF_SIZE] = {};
++	struct xfrm_userpolicy_type upt = {0};
++	char tmpls_buf[XFRM_TMPLS_BUF_SIZE] = {0};
+ 	int tmpls_len = 0;
+ 	struct xfrm_mark mark = {0, 0};
+ 	struct {
+ 		struct xfrm_user_sec_ctx sctx;
+ 		char	str[CTX_BUF_SIZE];
+-	} ctx = {};
++	} ctx = {0};
+ 	bool is_if_id_set = false;
+ 	__u32 if_id = 0;
+ 
+@@ -582,12 +582,12 @@ static int xfrm_policy_get_or_delete(int argc, char **argv, int delete,
+ 	char *indexp = NULL;
+ 	char *ptypep = NULL;
+ 	char *sctxp = NULL;
+-	struct xfrm_userpolicy_type upt = {};
++	struct xfrm_userpolicy_type upt = {0};
+ 	struct xfrm_mark mark = {0, 0};
+ 	struct {
+ 		struct xfrm_user_sec_ctx sctx;
+ 		char    str[CTX_BUF_SIZE];
+-	} ctx = {};
++	} ctx = {0};
+ 
+ 	while (argc > 0) {
+ 		if (strcmp(*argv, "dir") == 0) {
+@@ -1127,7 +1127,7 @@ static int xfrm_policy_flush(int argc, char **argv)
+ 		.n.nlmsg_type = XFRM_MSG_FLUSHPOLICY,
+ 	};
+ 	char *ptypep = NULL;
+-	struct xfrm_userpolicy_type upt = {};
++	struct xfrm_userpolicy_type upt = {0};
+ 
+ 	while (argc > 0) {
+ 		if (strcmp(*argv, "ptype") == 0) {
+diff --git a/ip/xfrm_state.c b/ip/xfrm_state.c
+index f2727070..c1002418 100644
+--- a/ip/xfrm_state.c
++++ b/ip/xfrm_state.c
+@@ -305,9 +305,9 @@ static int xfrm_state_modify(int cmd, unsigned int flags, int argc, char **argv)
+ 		.xsinfo.lft.soft_packet_limit = XFRM_INF,
+ 		.xsinfo.lft.hard_packet_limit = XFRM_INF,
+ 	};
+-	struct xfrm_replay_state replay = {};
+-	struct xfrm_replay_state_esn replay_esn = {};
+-	struct xfrm_user_offload xuo = {};
++	struct xfrm_replay_state replay = {0};
++	struct xfrm_replay_state_esn replay_esn = {0};
++	struct xfrm_user_offload xuo = {0};
+ 	unsigned int ifindex = 0;
+ 	__u8 dir = 0;
+ 	bool is_offload = false;
+@@ -325,7 +325,7 @@ static int xfrm_state_modify(int cmd, unsigned int flags, int argc, char **argv)
+ 	struct {
+ 		struct xfrm_user_sec_ctx sctx;
+ 		char    str[CTX_BUF_SIZE];
+-	} ctx = {};
++	} ctx = {0};
+ 	__u32 output_mark = 0;
+ 	bool is_if_id_set = false;
+ 	__u32 if_id = 0;
+@@ -394,7 +394,7 @@ static int xfrm_state_modify(int cmd, unsigned int flags, int argc, char **argv)
+ 				  (void *)&encap, sizeof(encap));
+ 		} else if (strcmp(*argv, "coa") == 0) {
+ 			inet_prefix coa;
+-			xfrm_address_t xcoa = {};
++			xfrm_address_t xcoa = {0};
+ 
+ 			if (coap)
+ 				duparg("coa", *argv);
+@@ -472,7 +472,7 @@ static int xfrm_state_modify(int cmd, unsigned int flags, int argc, char **argv)
+ 						struct xfrm_algo_auth auth;
+ 					} u;
+ 					char buf[XFRM_ALGO_KEY_BUF_SIZE];
+-				} alg = {};
++				} alg = {0};
+ 				int len;
+ 				__u32 icvlen, trunclen;
+ 				char *name;
+diff --git a/lib/bpf.c b/lib/bpf.c
+index 7d2a322f..a18e2ae9 100644
+--- a/lib/bpf.c
++++ b/lib/bpf.c
+@@ -148,7 +148,7 @@ static int bpf(int cmd, union bpf_attr *attr, unsigned int size)
+ static int bpf_map_update(int fd, const void *key, const void *value,
+ 			  uint64_t flags)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 
+ 	attr.map_fd = fd;
+ 	attr.key = bpf_ptr_to_u64(key);
+@@ -160,7 +160,7 @@ static int bpf_map_update(int fd, const void *key, const void *value,
+ 
+ static int bpf_prog_fd_by_id(uint32_t id)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 
+ 	attr.prog_id = id;
+ 
+@@ -170,7 +170,7 @@ static int bpf_prog_fd_by_id(uint32_t id)
+ static int bpf_prog_info_by_fd(int fd, struct bpf_prog_info *info,
+ 			       uint32_t *info_len)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 	int ret;
+ 
+ 	attr.info.bpf_fd = fd;
+@@ -187,7 +187,7 @@ static int bpf_prog_info_by_fd(int fd, struct bpf_prog_info *info,
+ 
+ int bpf_dump_prog_info(FILE *f, uint32_t id)
+ {
+-	struct bpf_prog_info info = {};
++	struct bpf_prog_info info = {0};
+ 	uint32_t len = sizeof(info);
+ 	int fd, ret, dump_ok = 0;
+ 	SPRINT_BUF(tmp);
+@@ -449,7 +449,7 @@ static int bpf_map_selfcheck_pinned(int fd, const struct bpf_elf_map *map,
+ 				    struct bpf_map_ext *ext, int length,
+ 				    enum bpf_prog_type type)
+ {
+-	struct bpf_elf_map tmp, zero = {};
++	struct bpf_elf_map tmp, zero = {0};
+ 	int ret;
+ 
+ 	ret = bpf_derive_elf_map_from_fdinfo(fd, &tmp, ext);
+@@ -510,7 +510,7 @@ static int bpf_mnt_fs(const char *target)
+ 
+ static int bpf_mnt_check_target(const char *target)
+ {
+-	struct stat sb = {};
++	struct stat sb = {0};
+ 	int ret;
+ 
+ 	ret = stat(target, &sb);
+@@ -694,7 +694,7 @@ static int bpf_gen_slave(const char *base, const char *name,
+ {
+ 	char bpf_lnk_dir[PATH_MAX + NAME_MAX + 1];
+ 	char bpf_sub_dir[PATH_MAX + NAME_MAX];
+-	struct stat sb = {};
++	struct stat sb = {0};
+ 	int ret;
+ 
+ 	snprintf(bpf_lnk_dir, sizeof(bpf_lnk_dir), "%s%s/", base, link);
+@@ -797,7 +797,7 @@ out:
+ 
+ static int bpf_obj_get(const char *pathname, enum bpf_prog_type type)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 	char tmp[PATH_MAX];
+ 
+ 	if (strlen(pathname) > 2 && pathname[0] == 'm' &&
+@@ -968,7 +968,7 @@ int bpf_load_common(struct bpf_cfg_in *cfg, const struct bpf_cfg_ops *ops,
+ 
+ int bpf_parse_common(struct bpf_cfg_in *cfg, const struct bpf_cfg_ops *ops)
+ {
+-	bool opt_tbl[BPF_MODE_MAX] = {};
++	bool opt_tbl[BPF_MODE_MAX] = {0};
+ 
+ 	if (ops->cbpf_cb) {
+ 		opt_tbl[CBPF_BYTECODE] = true;
+@@ -1011,7 +1011,7 @@ int bpf_graft_map(const char *map_path, uint32_t *key, int argc, char **argv)
+ 		.argc		= argc,
+ 		.argv		= argv,
+ 	};
+-	struct bpf_map_ext ext = {};
++	struct bpf_map_ext ext = {0};
+ 	int ret, prog_fd, map_fd;
+ 	uint32_t map_key;
+ 
+@@ -1064,7 +1064,7 @@ out_prog:
+ 
+ int bpf_prog_attach_fd(int prog_fd, int target_fd, enum bpf_attach_type type)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 
+ 	attr.target_fd = target_fd;
+ 	attr.attach_bpf_fd = prog_fd;
+@@ -1075,7 +1075,7 @@ int bpf_prog_attach_fd(int prog_fd, int target_fd, enum bpf_attach_type type)
+ 
+ int bpf_prog_detach_fd(int target_fd, enum bpf_attach_type type)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 
+ 	attr.target_fd = target_fd;
+ 	attr.attach_type = type;
+@@ -1088,7 +1088,7 @@ static int bpf_prog_load_dev(enum bpf_prog_type type,
+ 			     const char *license, __u32 ifindex,
+ 			     char *log, size_t size_log)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 
+ 	attr.prog_type = type;
+ 	attr.insns = bpf_ptr_to_u64(insns);
+@@ -1251,7 +1251,7 @@ static int bpf_map_create(enum bpf_map_type type, uint32_t size_key,
+ 			  uint32_t ifindex, uint32_t btf_id_key,
+ 			  uint32_t btf_id_val)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 
+ 	attr.map_type = type;
+ 	attr.key_size = size_key;
+@@ -1270,7 +1270,7 @@ static int bpf_map_create(enum bpf_map_type type, uint32_t size_key,
+ static int bpf_btf_load(void *btf, size_t size_btf,
+ 			char *log, size_t size_log)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 
+ 	attr.btf = bpf_ptr_to_u64(btf);
+ 	attr.btf_size = size_btf;
+@@ -1286,7 +1286,7 @@ static int bpf_btf_load(void *btf, size_t size_btf,
+ 
+ static int bpf_obj_pin(int fd, const char *pathname)
+ {
+-	union bpf_attr attr = {};
++	union bpf_attr attr = {0};
+ 
+ 	attr.pathname = bpf_ptr_to_u64(pathname);
+ 	attr.bpf_fd = fd;
+@@ -1965,7 +1965,7 @@ static int bpf_map_verify_all_offs(struct bpf_elf_ctx *ctx, int end)
+ 
+ static int bpf_fetch_maps_end(struct bpf_elf_ctx *ctx)
+ {
+-	struct bpf_elf_map fixup[ARRAY_SIZE(ctx->maps)] = {};
++	struct bpf_elf_map fixup[ARRAY_SIZE(ctx->maps)] = {0};
+ 	int i, sym_num = bpf_map_num_sym(ctx);
+ 	__u8 *buff;
+ 
+@@ -2471,7 +2471,7 @@ static int bpf_fetch_prog_relo(struct bpf_elf_ctx *ctx, const char *section,
+ 	int ret, idx, i, fd = -1;
+ 
+ 	for (i = 1; i < ctx->elf_hdr.e_shnum; i++) {
+-		struct bpf_relo_props props = {};
++		struct bpf_relo_props props = {0};
+ 
+ 		ret = bpf_fill_section_data(ctx, i, &data_relo);
+ 		if (ret < 0 || data_relo.sec_hdr.sh_type != SHT_REL)
+@@ -2646,7 +2646,7 @@ static int bpf_fill_prog_arrays(struct bpf_elf_ctx *ctx)
+ 		ret = bpf_map_update(ctx->map_fds[idx], &key_id,
+ 				     &fd, BPF_ANY);
+ 		if (ret < 0) {
+-			struct bpf_jited_aux aux = {};
++			struct bpf_jited_aux aux = {0};
+ 
+ 			ret = -errno;
+ 			if (errno == E2BIG) {
+@@ -2737,7 +2737,7 @@ static bool bpf_pinning_reserved(uint32_t pinning)
+ static void bpf_hash_init(struct bpf_elf_ctx *ctx, const char *db_file)
+ {
+ 	struct bpf_hash_entry *entry;
+-	char subpath[PATH_MAX] = {};
++	char subpath[PATH_MAX] = {0};
+ 	uint32_t pinning;
+ 	FILE *fp;
+ 	int ret;
+@@ -2835,7 +2835,7 @@ static void bpf_get_cfg(struct bpf_elf_ctx *ctx)
+ 
+ 	fd = open(path_jit, O_RDONLY);
+ 	if (fd > 0) {
+-		char tmp[16] = {};
++		char tmp[16] = {0};
+ 
+ 		if (read(fd, tmp, sizeof(tmp)) > 0)
+ 			ctx->cfg.jit_enabled = atoi(tmp);
+diff --git a/lib/libnetlink.c b/lib/libnetlink.c
+index ef0793dc..f249cda1 100644
+--- a/lib/libnetlink.c
++++ b/lib/libnetlink.c
+@@ -80,7 +80,7 @@ static void print_ext_ack_msg(bool is_err, const char *msg)
+ /* dump netlink extended ack error message */
+ int nl_dump_ext_ack(const struct nlmsghdr *nlh, nl_ext_ack_fn_t errfn)
+ {
+-	struct nlattr *tb[NLMSGERR_ATTR_MAX + 1] = {};
++	struct nlattr *tb[NLMSGERR_ATTR_MAX + 1] = {0};
+ 	const struct nlmsgerr *err = mnl_nlmsg_get_payload(nlh);
+ 	const struct nlmsghdr *err_nlh = NULL;
+ 	unsigned int hlen = sizeof(*err);
+@@ -127,7 +127,7 @@ int nl_dump_ext_ack(const struct nlmsghdr *nlh, nl_ext_ack_fn_t errfn)
+ 
+ static int nl_dump_ext_ack_done(const struct nlmsghdr *nlh, int error)
+ {
+-	struct nlattr *tb[NLMSGERR_ATTR_MAX + 1] = {};
++	struct nlattr *tb[NLMSGERR_ATTR_MAX + 1] = {0};
+ 	unsigned int hlen = sizeof(int);
+ 	const char *msg = NULL;
+ 
+diff --git a/lib/ll_map.c b/lib/ll_map.c
+index 2d7b65dc..cf5f924b 100644
+--- a/lib/ll_map.c
++++ b/lib/ll_map.c
+@@ -165,7 +165,7 @@ static int ll_link_get(const char *name, int index)
+ 		.ifm.ifi_index = index,
+ 	};
+ 	__u32 filt_mask = RTEXT_FILTER_VF | RTEXT_FILTER_SKIP_STATS;
+-	struct rtnl_handle rth = {};
++	struct rtnl_handle rth = {0};
+ 	struct nlmsghdr *answer;
+ 	int rc = 0;
+ 
+diff --git a/misc/arpd.c b/misc/arpd.c
+index 504961cb..ac412e29 100644
+--- a/misc/arpd.c
++++ b/misc/arpd.c
+@@ -435,7 +435,7 @@ static void get_kern_msg(void)
+ {
+ 	int status;
+ 	struct nlmsghdr *h;
+-	struct sockaddr_nl nladdr = {};
++	struct sockaddr_nl nladdr = {0};
+ 	struct iovec iov;
+ 	char   buf[8192];
+ 	struct msghdr msg = {
+@@ -659,7 +659,7 @@ int main(int argc, char **argv)
+ 
+ 	if (ifnum) {
+ 		int i;
+-		struct ifreq ifr = {};
++		struct ifreq ifr = {0};
+ 
+ 		for (i = 0; i < ifnum; i++) {
+ 			if (get_ifname(ifr.ifr_name, ifnames[i]))
+diff --git a/misc/ss.c b/misc/ss.c
+index 9cb3ee19..6a6dae44 100644
+--- a/misc/ss.c
++++ b/misc/ss.c
+@@ -2606,7 +2606,7 @@ static void sctp_timer_print(struct tcpstat *s)
+ static int tcp_show_line(char *line, const struct filter *f, int family)
+ {
+ 	int rto = 0, ato = 0;
+-	struct tcpstat s = {};
++	struct tcpstat s = {0};
+ 	char *loc, *rem, *data;
+ 	char opt[256];
+ 	int n;
+@@ -2754,7 +2754,7 @@ static void tcp_show_info(const struct nlmsghdr *nlh, struct inet_diag_msg *r,
+ 		struct rtattr *tb[])
+ {
+ 	double rtt = 0;
+-	struct tcpstat s = {};
++	struct tcpstat s = {0};
+ 
+ 	s.ss.state = r->idiag_state;
+ 
+@@ -3018,7 +3018,7 @@ static int inet_show_sock(struct nlmsghdr *nlh,
+ 	inet_stats_print(s, v6only);
+ 
+ 	if (show_options) {
+-		struct tcpstat t = {};
++		struct tcpstat t = {0};
+ 
+ 		t.timer = r->idiag_timer;
+ 		t.timeout = r->idiag_expires;
+@@ -3239,7 +3239,7 @@ static int show_one_inet_sock(struct nlmsghdr *h, void *arg)
+ 	int err;
+ 	struct inet_diag_arg *diag_arg = arg;
+ 	struct inet_diag_msg *r = NLMSG_DATA(h);
+-	struct sockstat s = {};
++	struct sockstat s = {0};
+ 
+ 	if (!(diag_arg->f->families & FAMILY_MASK(r->idiag_family)))
+ 		return 0;
+@@ -3327,7 +3327,7 @@ static int tcp_show_netlink_file(struct filter *f)
+ 	while (1) {
+ 		int status, err2;
+ 		struct nlmsghdr *h = (struct nlmsghdr *)buf;
+-		struct sockstat s = {};
++		struct sockstat s = {0};
+ 
+ 		status = fread(buf, 1, sizeof(*h), fp);
+ 		if (status < 0) {
+@@ -3473,7 +3473,7 @@ static int sctp_show(struct filter *f)
+ 
+ static int dgram_show_line(char *line, const struct filter *f, int family)
+ {
+-	struct sockstat s = {};
++	struct sockstat s = {0};
+ 	char *loc, *rem, *data;
+ 	char opt[256];
+ 	int n;
+@@ -3613,7 +3613,7 @@ static bool unix_type_skip(struct sockstat *s, struct filter *f)
+ 
+ static void unix_stats_print(struct sockstat *s, struct filter *f)
+ {
+-	char port_name[30] = {};
++	char port_name[30] = {0};
+ 
+ 	sock_state_print(s);
+ 
+@@ -3926,7 +3926,7 @@ static int packet_show_sock(struct nlmsghdr *nlh, void *arg)
+ 	struct packet_diag_info *pinfo = NULL;
+ 	struct packet_diag_ring *ring_rx = NULL, *ring_tx = NULL;
+ 	struct rtattr *tb[PACKET_DIAG_MAX+1];
+-	struct sockstat stat = {};
++	struct sockstat stat = {0};
+ 	uint32_t fanout = 0;
+ 	bool has_fanout = false;
+ 
+@@ -4060,7 +4060,7 @@ static int packet_show_netlink(struct filter *f)
+ static int packet_show_line(char *buf, const struct filter *f, int fam)
+ {
+ 	unsigned long long sk;
+-	struct sockstat stat = {};
++	struct sockstat stat = {0};
+ 	int type, prot, iface, state, rq, uid, ino;
+ 
+ 	sscanf(buf, "%llx %*d %d %x %d %d %u %u %u",
+@@ -4178,7 +4178,7 @@ static int xdp_show_sock(struct nlmsghdr *nlh, void *arg)
+ 	struct xdp_diag_info *info = NULL;
+ 	struct xdp_diag_umem *umem = NULL;
+ 	const struct filter *f = arg;
+-	struct sockstat stat = {};
++	struct sockstat stat = {0};
+ 
+ 	parse_rtattr(tb, XDP_DIAG_MAX, (struct rtattr *)(msg + 1),
+ 		     nlh->nlmsg_len - NLMSG_LENGTH(sizeof(*msg)));
+@@ -4259,9 +4259,9 @@ static int netlink_show_one(struct filter *f,
+ 		.remote.family	= AF_NETLINK,
+ 	};
+ 
+-	SPRINT_BUF(prot_buf) = {};
++	SPRINT_BUF(prot_buf) = {0};
+ 	const char *prot_name;
+-	char procname[64] = {};
++	char procname[64] = {0};
+ 
+ 	if (f->f) {
+ 		st.rport = -1;
+@@ -4511,8 +4511,8 @@ static void tipc_sock_addr_print(struct rtattr *net_addr, struct rtattr *id)
+ 	uint32_t node = rta_getattr_u32(net_addr);
+ 	uint32_t identity = rta_getattr_u32(id);
+ 
+-	SPRINT_BUF(addr) = {};
+-	SPRINT_BUF(port) = {};
++	SPRINT_BUF(addr) = {0};
++	SPRINT_BUF(port) = {0};
+ 
+ 	sprintf(addr, "%u", node);
+ 	sprintf(port, "%u", identity);
+@@ -4522,12 +4522,12 @@ static void tipc_sock_addr_print(struct rtattr *net_addr, struct rtattr *id)
+ 
+ static int tipc_show_sock(struct nlmsghdr *nlh, void *arg)
+ {
+-	struct rtattr *stat[TIPC_NLA_SOCK_STAT_MAX + 1] = {};
+-	struct rtattr *attrs[TIPC_NLA_SOCK_MAX + 1] = {};
+-	struct rtattr *con[TIPC_NLA_CON_MAX + 1] = {};
+-	struct rtattr *info[TIPC_NLA_MAX + 1] = {};
++	struct rtattr *stat[TIPC_NLA_SOCK_STAT_MAX + 1] = {0};
++	struct rtattr *attrs[TIPC_NLA_SOCK_MAX + 1] = {0};
++	struct rtattr *con[TIPC_NLA_CON_MAX + 1] = {0};
++	struct rtattr *info[TIPC_NLA_MAX + 1] = {0};
+ 	struct rtattr *msg_ref;
+-	struct sockstat ss = {};
++	struct sockstat ss = {0};
+ 
+ 	parse_rtattr(info, TIPC_NLA_MAX, NLMSG_DATA(nlh),
+ 		     NLMSG_PAYLOAD(nlh, 0));
+diff --git a/rdma/dev.c b/rdma/dev.c
+index 954e0015..cc64dc99 100644
+--- a/rdma/dev.c
++++ b/rdma/dev.c
+@@ -194,7 +194,7 @@ static void dev_print_node_type(struct rd *rd, struct nlattr **tb)
+ 
+ static int dev_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct rd *rd = data;
+ 	const char *name;
+ 	uint32_t idx;
+diff --git a/rdma/link.c b/rdma/link.c
+index 89e81b84..7e801e33 100644
+--- a/rdma/link.c
++++ b/rdma/link.c
+@@ -254,7 +254,7 @@ static void link_print_netdev(struct rd *rd, struct nlattr **tb)
+ 
+ static int link_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct rd *rd = data;
+ 	uint32_t port, idx;
+ 	char name[32];
+diff --git a/rdma/rdma.c b/rdma/rdma.c
+index 676e03c2..9859ecd8 100644
+--- a/rdma/rdma.c
++++ b/rdma/rdma.c
+@@ -130,7 +130,7 @@ int main(int argc, char **argv)
+ 	bool show_details = false;
+ 	bool json_output = false;
+ 	bool force = false;
+-	struct rd rd = {};
++	struct rd rd = {0};
+ 	char *filename;
+ 	int opt;
+ 	int err;
+diff --git a/rdma/res-cmid.c b/rdma/res-cmid.c
+index 0b830088..1978e2c9 100644
+--- a/rdma/res-cmid.c
++++ b/rdma/res-cmid.c
+@@ -227,7 +227,7 @@ out:	if (nla_line[RDMA_NLDEV_ATTR_RES_PID])
+ 
+ int res_cm_id_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct rd *rd = data;
+ 	const char *name;
+ 	int idx;
+@@ -244,7 +244,7 @@ int res_cm_id_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 
+ int res_cm_id_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct nlattr *nla_table, *nla_entry;
+ 	struct rd *rd = data;
+ 	int ret = MNL_CB_OK;
+@@ -261,7 +261,7 @@ int res_cm_id_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 	nla_table = tb[RDMA_NLDEV_ATTR_RES_CM_ID];
+ 
+ 	mnl_attr_for_each_nested(nla_entry, nla_table) {
+-		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {};
++		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {0};
+ 
+ 		ret = mnl_attr_parse_nested(nla_entry, rd_attr_cb, nla_line);
+ 		if (ret != MNL_CB_OK)
+diff --git a/rdma/res-cq.c b/rdma/res-cq.c
+index 5afb97c5..c98dcbd4 100644
+--- a/rdma/res-cq.c
++++ b/rdma/res-cq.c
+@@ -111,7 +111,7 @@ out:	if (nla_line[RDMA_NLDEV_ATTR_RES_PID])
+ 
+ int res_cq_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct rd *rd = data;
+ 	const char *name;
+ 	uint32_t idx;
+@@ -128,7 +128,7 @@ int res_cq_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 
+ int res_cq_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct nlattr *nla_table, *nla_entry;
+ 	struct rd *rd = data;
+ 	int ret = MNL_CB_OK;
+@@ -145,7 +145,7 @@ int res_cq_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 	nla_table = tb[RDMA_NLDEV_ATTR_RES_CQ];
+ 
+ 	mnl_attr_for_each_nested(nla_entry, nla_table) {
+-		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {};
++		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {0};
+ 
+ 		ret = mnl_attr_parse_nested(nla_entry, rd_attr_cb, nla_line);
+ 		if (ret != MNL_CB_OK)
+diff --git a/rdma/res-mr.c b/rdma/res-mr.c
+index f4a24dc1..0c3078f3 100644
+--- a/rdma/res-mr.c
++++ b/rdma/res-mr.c
+@@ -85,7 +85,7 @@ out:
+ 
+ int res_mr_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct rd *rd = data;
+ 	const char *name;
+ 	uint32_t idx;
+@@ -102,7 +102,7 @@ int res_mr_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 
+ int res_mr_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct nlattr *nla_table, *nla_entry;
+ 	struct rd *rd = data;
+ 	int ret = MNL_CB_OK;
+@@ -119,7 +119,7 @@ int res_mr_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 	nla_table = tb[RDMA_NLDEV_ATTR_RES_MR];
+ 
+ 	mnl_attr_for_each_nested(nla_entry, nla_table) {
+-		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {};
++		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {0};
+ 
+ 		ret = mnl_attr_parse_nested(nla_entry, rd_attr_cb, nla_line);
+ 		if (ret != MNL_CB_OK)
+diff --git a/rdma/res-pd.c b/rdma/res-pd.c
+index 07c836e8..c6368fea 100644
+--- a/rdma/res-pd.c
++++ b/rdma/res-pd.c
+@@ -88,7 +88,7 @@ out:	if (nla_line[RDMA_NLDEV_ATTR_RES_PID])
+ 
+ int res_pd_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct rd *rd = data;
+ 	const char *name;
+ 	uint32_t idx;
+@@ -105,7 +105,7 @@ int res_pd_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 
+ int res_pd_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct nlattr *nla_table, *nla_entry;
+ 	struct rd *rd = data;
+ 	int ret = MNL_CB_OK;
+@@ -122,7 +122,7 @@ int res_pd_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 	nla_table = tb[RDMA_NLDEV_ATTR_RES_PD];
+ 
+ 	mnl_attr_for_each_nested(nla_entry, nla_table) {
+-		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {};
++		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {0};
+ 
+ 		ret = mnl_attr_parse_nested(nla_entry, rd_attr_cb, nla_line);
+ 		if (ret != MNL_CB_OK)
+diff --git a/rdma/res-qp.c b/rdma/res-qp.c
+index 954e465d..d687710c 100644
+--- a/rdma/res-qp.c
++++ b/rdma/res-qp.c
+@@ -192,7 +192,7 @@ out:
+ 
+ int res_qp_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct rd *rd = data;
+ 	const char *name;
+ 	uint32_t idx;
+@@ -209,7 +209,7 @@ int res_qp_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 
+ int res_qp_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct nlattr *nla_table, *nla_entry;
+ 	struct rd *rd = data;
+ 	int ret = MNL_CB_OK;
+@@ -226,7 +226,7 @@ int res_qp_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 	nla_table = tb[RDMA_NLDEV_ATTR_RES_QP];
+ 
+ 	mnl_attr_for_each_nested(nla_entry, nla_table) {
+-		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {};
++		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {0};
+ 
+ 		ret = mnl_attr_parse_nested(nla_entry, rd_attr_cb, nla_line);
+ 		if (ret != MNL_CB_OK)
+diff --git a/rdma/res.c b/rdma/res.c
+index ef863f14..e0b70eb3 100644
+--- a/rdma/res.c
++++ b/rdma/res.c
+@@ -34,7 +34,7 @@ static int res_print_summary(struct rd *rd, struct nlattr **tb)
+ 	int err;
+ 
+ 	mnl_attr_for_each_nested(nla_entry, nla_table) {
+-		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {};
++		struct nlattr *nla_line[RDMA_NLDEV_ATTR_MAX] = {0};
+ 
+ 		err = mnl_attr_parse_nested(nla_entry, rd_attr_cb, nla_line);
+ 		if (err != MNL_CB_OK)
+@@ -61,7 +61,7 @@ static int res_no_args_idx_parse_cb(const struct nlmsghdr *nlh, void *data)
+ 
+ static int res_no_args_parse_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct rd *rd = data;
+ 	const char *name;
+ 	uint32_t idx;
+diff --git a/rdma/utils.c b/rdma/utils.c
+index 1f6bf330..d620a111 100644
+--- a/rdma/utils.c
++++ b/rdma/utils.c
+@@ -473,7 +473,7 @@ int rd_attr_cb(const struct nlattr *attr, void *data)
+ 
+ int rd_dev_init_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {};
++	struct nlattr *tb[RDMA_NLDEV_ATTR_MAX] = {0};
+ 	struct dev_map *dev_map;
+ 	struct rd *rd = data;
+ 	const char *dev_name;
+diff --git a/tc/e_bpf.c b/tc/e_bpf.c
+index 84f43e6c..65db703c 100644
+--- a/tc/e_bpf.c
++++ b/tc/e_bpf.c
+@@ -56,8 +56,8 @@ static int parse_bpf(struct exec_util *eu, int argc, char **argv)
+ 	char **argv_run = argv_default, **envp_run, *tmp;
+ 	int ret, i, env_old, env_num, env_map;
+ 	const char *bpf_uds_name = NULL;
+-	int fds[BPF_SCM_MAX_FDS] = {};
+-	struct bpf_map_aux aux = {};
++	int fds[BPF_SCM_MAX_FDS] = {0};
++	struct bpf_map_aux aux = {0};
+ 
+ 	if (argc == 0)
+ 		return 0;
+diff --git a/tc/em_cmp.c b/tc/em_cmp.c
+index e051656f..abe2cd93 100644
+--- a/tc/em_cmp.c
++++ b/tc/em_cmp.c
+@@ -43,7 +43,7 @@ static int cmp_parse_eopt(struct nlmsghdr *n, struct tcf_ematch_hdr *hdr,
+ 	int align, opnd = 0;
+ 	unsigned long offset = 0, layer = TCF_LAYER_NETWORK, mask = 0, value = 0;
+ 	int offset_present = 0, value_present = 0;
+-	struct tcf_em_cmp cmp = {};
++	struct tcf_em_cmp cmp = {0};
+ 
+ #define PARSE_ERR(CARG, FMT, ARGS...) \
+ 	em_parse_error(EINVAL, args, CARG, &cmp_ematch_util, FMT, ##ARGS)
+diff --git a/tc/em_ipset.c b/tc/em_ipset.c
+index 48b287f5..08d83401 100644
+--- a/tc/em_ipset.c
++++ b/tc/em_ipset.c
+@@ -198,7 +198,7 @@ static void ipset_print_usage(FILE *fd)
+ static int ipset_parse_eopt(struct nlmsghdr *n, struct tcf_ematch_hdr *hdr,
+ 			    struct bstr *args)
+ {
+-	struct xt_set_info set_info = {};
++	struct xt_set_info set_info = {0};
+ 	int ret;
+ 
+ #define PARSE_ERR(CARG, FMT, ARGS...) \
+diff --git a/tc/em_meta.c b/tc/em_meta.c
+index 2ddc65ed..6d0755c5 100644
+--- a/tc/em_meta.c
++++ b/tc/em_meta.c
+@@ -360,7 +360,7 @@ static int meta_parse_eopt(struct nlmsghdr *n, struct tcf_ematch_hdr *hdr,
+ {
+ 	int opnd;
+ 	struct bstr *a;
+-	struct tcf_meta_hdr meta_hdr = {};
++	struct tcf_meta_hdr meta_hdr = {0};
+ 	unsigned long lvalue = 0, rvalue = 0;
+ 
+ 	if (args == NULL)
+diff --git a/tc/em_nbyte.c b/tc/em_nbyte.c
+index 274d713f..1e72bdf4 100644
+--- a/tc/em_nbyte.c
++++ b/tc/em_nbyte.c
+@@ -43,7 +43,7 @@ static int nbyte_parse_eopt(struct nlmsghdr *n, struct tcf_ematch_hdr *hdr,
+ 	struct bstr *needle = args;
+ 	unsigned long offset = 0, layer = TCF_LAYER_NETWORK;
+ 	int offset_present = 0;
+-	struct tcf_em_nbyte nb = {};
++	struct tcf_em_nbyte nb = {0};
+ 
+ #define PARSE_ERR(CARG, FMT, ARGS...) \
+ 	em_parse_error(EINVAL, args, CARG, &nbyte_ematch_util, FMT, ##ARGS)
+diff --git a/tc/em_u32.c b/tc/em_u32.c
+index bc284af4..efebb2dc 100644
+--- a/tc/em_u32.c
++++ b/tc/em_u32.c
+@@ -38,7 +38,7 @@ static int u32_parse_eopt(struct nlmsghdr *n, struct tcf_ematch_hdr *hdr,
+ 	struct bstr *a;
+ 	int align, nh_len;
+ 	unsigned long key, mask, offmask = 0, offset;
+-	struct tc_u32_key u_key = {};
++	struct tc_u32_key u_key = {0};
+ 
+ #define PARSE_ERR(CARG, FMT, ARGS...) \
+ 	em_parse_error(EINVAL, args, CARG, &u32_ematch_util, FMT, ##ARGS)
+diff --git a/tc/f_bpf.c b/tc/f_bpf.c
+index 948d9051..1875f215 100644
+--- a/tc/f_bpf.c
++++ b/tc/f_bpf.c
+@@ -80,7 +80,7 @@ static int bpf_parse_opt(struct filter_util *qu, char *handle,
+ 	struct tcmsg *t = NLMSG_DATA(n);
+ 	unsigned int bpf_gen_flags = 0;
+ 	unsigned int bpf_flags = 0;
+-	struct bpf_cfg_in cfg = {};
++	struct bpf_cfg_in cfg = {0};
+ 	bool seen_run = false;
+ 	bool skip_sw = false;
+ 	struct rtattr *tail;
+diff --git a/tc/f_fw.c b/tc/f_fw.c
+index adce2bdb..30b51f8f 100644
+--- a/tc/f_fw.c
++++ b/tc/f_fw.c
+@@ -98,7 +98,7 @@ static int fw_parse_opt(struct filter_util *qu, char *handle, int argc, char **a
+ 			}
+ 			continue;
+ 		} else if (strcmp(*argv, "indev") == 0) {
+-			char d[IFNAMSIZ+1] = {};
++			char d[IFNAMSIZ+1] = {0};
+ 
+ 			argc--;
+ 			argv++;
+diff --git a/tc/f_rsvp.c b/tc/f_rsvp.c
+index bddd4740..75a2b3b4 100644
+--- a/tc/f_rsvp.c
++++ b/tc/f_rsvp.c
+@@ -173,7 +173,7 @@ static int rsvp_parse_opt(struct filter_util *qu, char *handle, int argc,
+ 			  char **argv, struct nlmsghdr *n)
+ {
+ 	int family = strcmp(qu->id, "rsvp") == 0 ? AF_INET : AF_INET6;
+-	struct tc_rsvp_pinfo pinfo = {};
++	struct tc_rsvp_pinfo pinfo = {0};
+ 	struct tcmsg *t = NLMSG_DATA(n);
+ 	int pinfo_ok = 0;
+ 	struct rtattr *tail;
+diff --git a/tc/f_u32.c b/tc/f_u32.c
+index e0a322d5..483c4685 100644
+--- a/tc/f_u32.c
++++ b/tc/f_u32.c
+@@ -984,7 +984,7 @@ static int u32_parse_opt(struct filter_util *qu, char *handle,
+ 	struct {
+ 		struct tc_u32_sel sel;
+ 		struct tc_u32_key keys[128];
+-	} sel = {};
++	} sel = {0};
+ 	struct tcmsg *t = NLMSG_DATA(n);
+ 	struct rtattr *tail;
+ 	int sel_ok = 0, terminal_ok = 0;
+@@ -1089,7 +1089,7 @@ static int u32_parse_opt(struct filter_util *qu, char *handle,
+ 			struct {
+ 				struct tc_u32_sel sel;
+ 				struct tc_u32_key keys[4];
+-			} sel2 = {};
++			} sel2 = {0};
+ 
+ 			NEXT_ARG();
+ 			if (parse_selector(&argc, &argv, &sel2.sel, n)) {
+@@ -1117,7 +1117,7 @@ static int u32_parse_opt(struct filter_util *qu, char *handle,
+ 			sample_ok = 1;
+ 			continue;
+ 		} else if (strcmp(*argv, "indev") == 0) {
+-			char ind[IFNAMSIZ + 1] = {};
++			char ind[IFNAMSIZ + 1] = {0};
+ 
+ 			argc--;
+ 			argv++;
+diff --git a/tc/m_bpf.c b/tc/m_bpf.c
+index 3e8468c6..90cebed1 100644
+--- a/tc/m_bpf.c
++++ b/tc/m_bpf.c
+@@ -75,8 +75,8 @@ static int bpf_parse_opt(struct action_util *a, int *ptr_argc, char ***ptr_argv,
+ 			 int tca_id, struct nlmsghdr *n)
+ {
+ 	const char *bpf_obj = NULL, *bpf_uds_name = NULL;
+-	struct tc_act_bpf parm = {};
+-	struct bpf_cfg_in cfg = {};
++	struct tc_act_bpf parm = {0};
++	struct bpf_cfg_in cfg = {0};
+ 	bool seen_run = false;
+ 	struct rtattr *tail;
+ 	int argc, ret = 0;
+diff --git a/tc/m_connmark.c b/tc/m_connmark.c
+index 13543d33..d3165f7a 100644
+--- a/tc/m_connmark.c
++++ b/tc/m_connmark.c
+@@ -45,7 +45,7 @@ static int
+ parse_connmark(struct action_util *a, int *argc_p, char ***argv_p, int tca_id,
+ 	      struct nlmsghdr *n)
+ {
+-	struct tc_connmark sel = {};
++	struct tc_connmark sel = {0};
+ 	char **argv = *argv_p;
+ 	int argc = *argc_p;
+ 	int ok = 0;
+diff --git a/tc/m_csum.c b/tc/m_csum.c
+index 84396d6a..c6547396 100644
+--- a/tc/m_csum.c
++++ b/tc/m_csum.c
+@@ -88,7 +88,7 @@ static int
+ parse_csum(struct action_util *a, int *argc_p,
+ 	   char ***argv_p, int tca_id, struct nlmsghdr *n)
+ {
+-	struct tc_csum sel = {};
++	struct tc_csum sel = {0};
+ 
+ 	int argc = *argc_p;
+ 	char **argv = *argv_p;
+diff --git a/tc/m_mirred.c b/tc/m_mirred.c
+index c7f7318b..0ea46583 100644
+--- a/tc/m_mirred.c
++++ b/tc/m_mirred.c
+@@ -96,9 +96,9 @@ parse_direction(struct action_util *a, int *argc_p, char ***argv_p,
+ 	int argc = *argc_p;
+ 	char **argv = *argv_p;
+ 	int ok = 0, iok = 0, mirror = 0, redir = 0, ingress = 0, egress = 0;
+-	struct tc_mirred p = {};
++	struct tc_mirred p = {0};
+ 	struct rtattr *tail;
+-	char d[IFNAMSIZ] = {};
++	char d[IFNAMSIZ] = {0};
+ 
+ 	while (argc > 0) {
+ 
+diff --git a/tc/m_nat.c b/tc/m_nat.c
+index ee0b7520..06bb926c 100644
+--- a/tc/m_nat.c
++++ b/tc/m_nat.c
+@@ -83,7 +83,7 @@ bad_val:
+ static int
+ parse_nat(struct action_util *a, int *argc_p, char ***argv_p, int tca_id, struct nlmsghdr *n)
+ {
+-	struct tc_nat sel = {};
++	struct tc_nat sel = {0};
+ 
+ 	int argc = *argc_p;
+ 	char **argv = *argv_p;
+diff --git a/tc/m_pedit.c b/tc/m_pedit.c
+index 6f8d078b..60b50051 100644
+--- a/tc/m_pedit.c
++++ b/tc/m_pedit.c
+@@ -511,7 +511,7 @@ done:
+ 
+ static int parse_munge(int *argc_p, char ***argv_p, struct m_pedit_sel *sel)
+ {
+-	struct m_pedit_key tkey = {};
++	struct m_pedit_key tkey = {0};
+ 	int argc = *argc_p;
+ 	char **argv = *argv_p;
+ 	int res = -1;
+@@ -615,7 +615,7 @@ static int pedit_keys_ex_addattr(struct m_pedit_sel *sel, struct nlmsghdr *n)
+ static int parse_pedit(struct action_util *a, int *argc_p, char ***argv_p,
+ 		       int tca_id, struct nlmsghdr *n)
+ {
+-	struct m_pedit_sel sel = {};
++	struct m_pedit_sel sel = {0};
+ 
+ 	int argc = *argc_p;
+ 	char **argv = *argv_p;
+diff --git a/tc/m_simple.c b/tc/m_simple.c
+index 886606f9..927b3a45 100644
+--- a/tc/m_simple.c
++++ b/tc/m_simple.c
+@@ -96,7 +96,7 @@ static int
+ parse_simple(struct action_util *a, int *argc_p, char ***argv_p, int tca_id,
+ 	     struct nlmsghdr *n)
+ {
+-	struct tc_defact sel = {};
++	struct tc_defact sel = {0};
+ 	int argc = *argc_p;
+ 	char **argv = *argv_p;
+ 	int ok = 0;
+diff --git a/tc/m_tunnel_key.c b/tc/m_tunnel_key.c
+index 9449287e..6215f996 100644
+--- a/tc/m_tunnel_key.c
++++ b/tc/m_tunnel_key.c
+@@ -209,7 +209,7 @@ static int tunnel_key_parse_tos_ttl(char *str, int type, struct nlmsghdr *n)
+ static int parse_tunnel_key(struct action_util *a, int *argc_p, char ***argv_p,
+ 			    int tca_id, struct nlmsghdr *n)
+ {
+-	struct tc_tunnel_key parm = {};
++	struct tc_tunnel_key parm = {0};
+ 	char **argv = *argv_p;
+ 	int argc = *argc_p;
+ 	struct rtattr *tail;
+diff --git a/tc/m_vlan.c b/tc/m_vlan.c
+index 412f6aa1..e7cb9f98 100644
+--- a/tc/m_vlan.c
++++ b/tc/m_vlan.c
+@@ -69,7 +69,7 @@ static int parse_vlan(struct action_util *a, int *argc_p, char ***argv_p,
+ 	int proto_set = 0;
+ 	__u8 prio;
+ 	int prio_set = 0;
+-	struct tc_vlan parm = {};
++	struct tc_vlan parm = {0};
+ 
+ 	if (matches(*argv, "vlan") != 0)
+ 		return -1;
+diff --git a/tc/m_xt.c b/tc/m_xt.c
+index 29574bd4..ca99397b 100644
+--- a/tc/m_xt.c
++++ b/tc/m_xt.c
+@@ -147,7 +147,7 @@ static int parse_ipt(struct action_util *a, int *argc_p,
+ {
+ 	struct xtables_target *m = NULL;
+ #if XTABLES_VERSION_CODE >= 6
+-	struct ipt_entry fw = {};
++	struct ipt_entry fw = {0};
+ #endif
+ 	struct rtattr *tail;
+ 
+diff --git a/tc/q_atm.c b/tc/q_atm.c
+index f8215f06..b8f1b492 100644
+--- a/tc/q_atm.c
++++ b/tc/q_atm.c
+@@ -48,7 +48,7 @@ static void explain(void)
+ static int atm_parse_class_opt(struct qdisc_util *qu, int argc, char **argv,
+ 	struct nlmsghdr *n, const char *dev)
+ {
+-	struct sockaddr_atmsvc addr = {};
++	struct sockaddr_atmsvc addr = {0};
+ 	struct atm_qos qos;
+ 	struct atm_sap sap;
+ 	unsigned char hdr[MAX_HDR_LEN];
+diff --git a/tc/q_cbq.c b/tc/q_cbq.c
+index e7f1a3bf..a8082cbf 100644
+--- a/tc/q_cbq.c
++++ b/tc/q_cbq.c
+@@ -48,8 +48,8 @@ static void explain1(char *arg)
+ 
+ static int cbq_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n, const char *dev)
+ {
+-	struct tc_ratespec r = {};
+-	struct tc_cbq_lssopt lss = {};
++	struct tc_ratespec r = {0};
++	struct tc_cbq_lssopt lss = {0};
+ 	__u32 rtab[256];
+ 	unsigned mpu = 0, avpkt = 0, allot = 0;
+ 	unsigned short overhead = 0;
+@@ -183,10 +183,10 @@ static int cbq_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nl
+ static int cbq_parse_class_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n, const char *dev)
+ {
+ 	int wrr_ok = 0, fopt_ok = 0;
+-	struct tc_ratespec r = {};
+-	struct tc_cbq_lssopt lss = {};
+-	struct tc_cbq_wrropt wrr = {};
+-	struct tc_cbq_fopt fopt = {};
++	struct tc_ratespec r = {0};
++	struct tc_cbq_lssopt lss = {0};
++	struct tc_cbq_wrropt wrr = {0};
++	struct tc_cbq_fopt fopt = {0};
+ 	__u32 rtab[256];
+ 	unsigned mpu = 0;
+ 	int cell_log =  -1;
+diff --git a/tc/q_cbs.c b/tc/q_cbs.c
+index a2ffb1db..c931bd1d 100644
+--- a/tc/q_cbs.c
++++ b/tc/q_cbs.c
+@@ -37,7 +37,7 @@ static void explain1(const char *arg, const char *val)
+ static int cbs_parse_opt(struct qdisc_util *qu, int argc,
+ 			 char **argv, struct nlmsghdr *n, const char *dev)
+ {
+-	struct tc_cbs_qopt opt = {};
++	struct tc_cbs_qopt opt = {0};
+ 	struct rtattr *tail;
+ 
+ 	while (argc > 0) {
+diff --git a/tc/q_choke.c b/tc/q_choke.c
+index 1353c80c..ce70a010 100644
+--- a/tc/q_choke.c
++++ b/tc/q_choke.c
+@@ -33,7 +33,7 @@ static void explain(void)
+ static int choke_parse_opt(struct qdisc_util *qu, int argc, char **argv,
+ 			   struct nlmsghdr *n, const char *dev)
+ {
+-	struct tc_red_qopt opt = {};
++	struct tc_red_qopt opt = {0};
+ 	unsigned int burst = 0;
+ 	unsigned int avpkt = 1000;
+ 	double probability = 0.02;
+diff --git a/tc/q_codel.c b/tc/q_codel.c
+index 8a2a8716..02269ab5 100644
+--- a/tc/q_codel.c
++++ b/tc/q_codel.c
+@@ -173,7 +173,7 @@ static int codel_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
+ static int codel_print_xstats(struct qdisc_util *qu, FILE *f,
+ 			      struct rtattr *xstats)
+ {
+-	struct tc_codel_xstats _st = {}, *st;
++	struct tc_codel_xstats _st = {0}, *st;
+ 
+ 	SPRINT_BUF(b1);
+ 
+diff --git a/tc/q_fifo.c b/tc/q_fifo.c
+index 61493fbb..b4fa76ae 100644
+--- a/tc/q_fifo.c
++++ b/tc/q_fifo.c
+@@ -31,7 +31,7 @@ static int fifo_parse_opt(struct qdisc_util *qu, int argc, char **argv,
+ 			  struct nlmsghdr *n, const char *dev)
+ {
+ 	int ok = 0;
+-	struct tc_fifo_qopt opt = {};
++	struct tc_fifo_qopt opt = {0};
+ 
+ 	while (argc > 0) {
+ 		if (strcmp(*argv, "limit") == 0) {
+diff --git a/tc/q_fq_codel.c b/tc/q_fq_codel.c
+index 02ad2214..800cb86c 100644
+--- a/tc/q_fq_codel.c
++++ b/tc/q_fq_codel.c
+@@ -226,7 +226,7 @@ static int fq_codel_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt
+ static int fq_codel_print_xstats(struct qdisc_util *qu, FILE *f,
+ 				 struct rtattr *xstats)
+ {
+-	struct tc_fq_codel_xstats _st = {}, *st;
++	struct tc_fq_codel_xstats _st = {0}, *st;
+ 
+ 	SPRINT_BUF(b1);
+ 
+diff --git a/tc/q_gred.c b/tc/q_gred.c
+index e297b866..17263eb7 100644
+--- a/tc/q_gred.c
++++ b/tc/q_gred.c
+@@ -303,8 +303,8 @@ gred_parse_vqs(struct tc_gred_info *info, struct rtattr *vqs)
+ 	unsigned int offset = 0;
+ 
+ 	while (rem > offset) {
+-		struct rtattr *tb_entry[TCA_GRED_VQ_ENTRY_MAX + 1] = {};
+-		struct rtattr *tb[TCA_GRED_VQ_MAX + 1] = {};
++		struct rtattr *tb_entry[TCA_GRED_VQ_ENTRY_MAX + 1] = {0};
++		struct rtattr *tb[TCA_GRED_VQ_MAX + 1] = {0};
+ 		struct rtattr *entry;
+ 		unsigned int len;
+ 		unsigned int dp;
+@@ -421,7 +421,7 @@ gred_print_stats(struct tc_gred_info *info, struct tc_gred_qopt *qopt)
+ 
+ static int gred_print_opt(struct qdisc_util *qu, FILE *f, struct rtattr *opt)
+ {
+-	struct tc_gred_info infos[MAX_DPs] = {};
++	struct tc_gred_info infos[MAX_DPs] = {0};
+ 	struct rtattr *tb[TCA_GRED_MAX + 1];
+ 	struct tc_gred_sopt *sopt;
+ 	struct tc_gred_qopt *qopt;
+diff --git a/tc/q_hfsc.c b/tc/q_hfsc.c
+index f34b1b2f..9612df40 100644
+--- a/tc/q_hfsc.c
++++ b/tc/q_hfsc.c
+@@ -73,7 +73,7 @@ static int
+ hfsc_parse_opt(struct qdisc_util *qu, int argc, char **argv,
+ 	       struct nlmsghdr *n, const char *dev)
+ {
+-	struct tc_hfsc_qopt qopt = {};
++	struct tc_hfsc_qopt qopt = {0};
+ 
+ 	while (argc > 0) {
+ 		if (matches(*argv, "default") == 0) {
+@@ -144,7 +144,7 @@ static int
+ hfsc_parse_class_opt(struct qdisc_util *qu, int argc, char **argv,
+ 		     struct nlmsghdr *n, const char *dev)
+ {
+-	struct tc_service_curve rsc = {}, fsc = {}, usc = {};
++	struct tc_service_curve rsc = {0}, fsc = {}, usc = {};
+ 	int rsc_ok = 0, fsc_ok = 0, usc_ok = 0;
+ 	struct rtattr *tail;
+ 
+diff --git a/tc/q_htb.c b/tc/q_htb.c
+index 52052226..2806c7f1 100644
+--- a/tc/q_htb.c
++++ b/tc/q_htb.c
+@@ -109,7 +109,7 @@ static int htb_parse_opt(struct qdisc_util *qu, int argc,
+ 
+ static int htb_parse_class_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n, const char *dev)
+ {
+-	struct tc_htb_opt opt = {};
++	struct tc_htb_opt opt = {0};
+ 	__u32 rtab[256], ctab[256];
+ 	unsigned buffer = 0, cbuffer = 0;
+ 	int cell_log =  -1, ccell_log = -1;
+diff --git a/tc/q_multiq.c b/tc/q_multiq.c
+index 8ad9e0b2..7319b1bf 100644
+--- a/tc/q_multiq.c
++++ b/tc/q_multiq.c
+@@ -42,7 +42,7 @@ static void explain(void)
+ static int multiq_parse_opt(struct qdisc_util *qu, int argc, char **argv,
+ 			    struct nlmsghdr *n, const char *dev)
+ {
+-	struct tc_multiq_qopt opt = {};
++	struct tc_multiq_qopt opt = {0};
+ 
+ 	if (argc) {
+ 		if (strcmp(*argv, "help") == 0) {
+diff --git a/tc/q_netem.c b/tc/q_netem.c
+index 6e0e8a8c..91074973 100644
+--- a/tc/q_netem.c
++++ b/tc/q_netem.c
+@@ -164,17 +164,17 @@ static int netem_parse_opt(struct qdisc_util *qu, int argc, char **argv,
+ 	int slot_dist_size = 0;
+ 	struct rtattr *tail;
+ 	struct tc_netem_qopt opt = { .limit = 1000 };
+-	struct tc_netem_corr cor = {};
+-	struct tc_netem_reorder reorder = {};
+-	struct tc_netem_corrupt corrupt = {};
++	struct tc_netem_corr cor = {0};
++	struct tc_netem_reorder reorder = {0};
++	struct tc_netem_corrupt corrupt = {0};
+ 	struct tc_netem_gimodel gimodel;
+ 	struct tc_netem_gemodel gemodel;
+-	struct tc_netem_rate rate = {};
+-	struct tc_netem_slot slot = {};
++	struct tc_netem_rate rate = {0};
++	struct tc_netem_slot slot = {0};
+ 	__s16 *dist_data = NULL;
+ 	__s16 *slot_dist_data = NULL;
+ 	__u16 loss_type = NETEM_LOSS_UNSPEC;
+-	int present[__TCA_NETEM_MAX] = {};
++	int present[__TCA_NETEM_MAX] = {0};
+ 	__u64 rate64 = 0;
+ 
+ 	for ( ; argc > 0; --argc, ++argv) {
+diff --git a/tc/q_red.c b/tc/q_red.c
+index 3b3a1204..4254f2ff 100644
+--- a/tc/q_red.c
++++ b/tc/q_red.c
+@@ -35,7 +35,7 @@ static void explain(void)
+ static int red_parse_opt(struct qdisc_util *qu, int argc, char **argv,
+ 			 struct nlmsghdr *n, const char *dev)
+ {
+-	struct tc_red_qopt opt = {};
++	struct tc_red_qopt opt = {0};
+ 	unsigned int burst = 0;
+ 	unsigned int avpkt = 0;
+ 	double probability = 0.02;
+diff --git a/tc/q_sfq.c b/tc/q_sfq.c
+index eee31ec5..58681cb5 100644
+--- a/tc/q_sfq.c
++++ b/tc/q_sfq.c
+@@ -37,7 +37,7 @@ static void explain(void)
+ static int sfq_parse_opt(struct qdisc_util *qu, int argc, char **argv, struct nlmsghdr *n, const char *dev)
+ {
+ 	int ok = 0, red = 0;
+-	struct tc_sfq_qopt_v1 opt = {};
++	struct tc_sfq_qopt_v1 opt = {0};
+ 	unsigned int burst = 0;
+ 	int wlog;
+ 	unsigned int avpkt = 1000;
+diff --git a/tc/q_skbprio.c b/tc/q_skbprio.c
+index 2e65a589..09099077 100644
+--- a/tc/q_skbprio.c
++++ b/tc/q_skbprio.c
+@@ -32,7 +32,7 @@ static int skbprio_parse_opt(struct qdisc_util *qu, int argc, char **argv,
+ 			     struct nlmsghdr *n, const char *dev)
+ {
+ 	int ok = 0;
+-	struct tc_skbprio_qopt opt = {};
++	struct tc_skbprio_qopt opt = {0};
+ 
+ 	while (argc > 0) {
+ 		if (strcmp(*argv, "limit") == 0) {
+diff --git a/tc/q_tbf.c b/tc/q_tbf.c
+index b9465b20..12c47506 100644
+--- a/tc/q_tbf.c
++++ b/tc/q_tbf.c
+@@ -39,7 +39,7 @@ static int tbf_parse_opt(struct qdisc_util *qu, int argc, char **argv,
+ 			 struct nlmsghdr *n, const char *dev)
+ {
+ 	int ok = 0;
+-	struct tc_tbf_qopt opt = {};
++	struct tc_tbf_qopt opt = {0};
+ 	__u32 rtab[256];
+ 	__u32 ptab[256];
+ 	unsigned buffer = 0, mtu = 0, mpu = 0, latency = 0;
+diff --git a/tc/tc_class.c b/tc/tc_class.c
+index 7ac700d7..0ad832d4 100644
+--- a/tc/tc_class.c
++++ b/tc/tc_class.c
+@@ -36,8 +36,8 @@ struct graph_node {
+ 	int nodes_count;
+ };
+ 
+-static struct hlist_head cls_list = {};
+-static struct hlist_head root_cls_list = {};
++static struct hlist_head cls_list = {0};
++static struct hlist_head root_cls_list = {0};
+ 
+ static void usage(void);
+ 
+@@ -66,9 +66,9 @@ static int tc_class_modify(int cmd, unsigned int flags, int argc, char **argv)
+ 		.t.tcm_family = AF_UNSPEC,
+ 	};
+ 	struct qdisc_util *q = NULL;
+-	struct tc_estimator est = {};
+-	char  d[IFNAMSIZ] = {};
+-	char  k[FILTER_NAMESZ] = {};
++	struct tc_estimator est = {0};
++	char  d[IFNAMSIZ] = {0};
++	char  k[FILTER_NAMESZ] = {0};
+ 
+ 	while (argc > 0) {
+ 		if (strcmp(*argv, "dev") == 0) {
+@@ -215,14 +215,14 @@ static void graph_cls_show(FILE *fp, char *buf, struct hlist_head *root_list,
+ 		int level)
+ {
+ 	struct hlist_node *n, *tmp_cls;
+-	char cls_id_str[256] = {};
++	char cls_id_str[256] = {0};
+ 	struct rtattr *tb[TCA_MAX + 1];
+ 	struct qdisc_util *q;
+-	char str[300] = {};
++	char str[300] = {0};
+ 
+ 	hlist_for_each_safe(n, tmp_cls, root_list) {
+ 		struct hlist_node *c, *tmp_chld;
+-		struct hlist_head children = {};
++		struct hlist_head children = {0};
+ 		struct graph_node *cls = container_of(n, struct graph_node,
+ 				hlist);
+ 
+@@ -387,7 +387,7 @@ int print_class(struct nlmsghdr *n, void *arg)
+ static int tc_class_list(int argc, char **argv)
+ {
+ 	struct tcmsg t = { .tcm_family = AF_UNSPEC };
+-	char d[IFNAMSIZ] = {};
++	char d[IFNAMSIZ] = {0};
+ 	char buf[1024] = {0};
+ 
+ 	filter_qdisc = 0;
+diff --git a/tc/tc_exec.c b/tc/tc_exec.c
+index 0151af7b..4080ff8a 100644
+--- a/tc/tc_exec.c
++++ b/tc/tc_exec.c
+@@ -84,7 +84,7 @@ noexist:
+ int do_exec(int argc, char **argv)
+ {
+ 	struct exec_util *eu;
+-	char kind[FILTER_NAMESZ] = {};
++	char kind[FILTER_NAMESZ] = {0};
+ 
+ 	if (argc < 1) {
+ 		fprintf(stderr, "No command given, try \"tc exec help\".\n");
+diff --git a/tc/tc_filter.c b/tc/tc_filter.c
+index e5c7bc46..0994a787 100644
+--- a/tc/tc_filter.c
++++ b/tc/tc_filter.c
+@@ -63,10 +63,10 @@ static int tc_filter_modify(int cmd, unsigned int flags, int argc, char **argv,
+ {
+ 	struct tc_filter_req *req, filter_req;
+ 	struct filter_util *q = NULL;
+-	struct tc_estimator est = {};
+-	char k[FILTER_NAMESZ] = {};
++	struct tc_estimator est = {0};
++	char k[FILTER_NAMESZ] = {0};
+ 	int chain_index_set = 0;
+-	char d[IFNAMSIZ] = {};
++	char d[IFNAMSIZ] = {0};
+ 	int protocol_set = 0;
+ 	__u32 block_index = 0;
+ 	char *fhandle = NULL;
+@@ -421,8 +421,8 @@ static int tc_filter_get(int cmd, unsigned int flags, int argc, char **argv)
+ 	__u32 block_index = 0;
+ 	__u32 parent_handle = 0;
+ 	char *fhandle = NULL;
+-	char  d[IFNAMSIZ] = {};
+-	char  k[FILTER_NAMESZ] = {};
++	char  d[IFNAMSIZ] = {0};
++	char  k[FILTER_NAMESZ] = {0};
+ 
+ 	while (argc > 0) {
+ 		if (strcmp(*argv, "dev") == 0) {
+@@ -611,7 +611,7 @@ static int tc_filter_list(int cmd, int argc, char **argv)
+ 		.t.tcm_parent = TC_H_UNSPEC,
+ 		.t.tcm_family = AF_UNSPEC,
+ 	};
+-	char d[IFNAMSIZ] = {};
++	char d[IFNAMSIZ] = {0};
+ 	__u32 prio = 0;
+ 	__u32 protocol = 0;
+ 	__u32 chain_index;
+diff --git a/tc/tc_qdisc.c b/tc/tc_qdisc.c
+index c5da5b5c..c6f1e285 100644
+--- a/tc/tc_qdisc.c
++++ b/tc/tc_qdisc.c
+@@ -45,13 +45,13 @@ static int usage(void)
+ static int tc_qdisc_modify(int cmd, unsigned int flags, int argc, char **argv)
+ {
+ 	struct qdisc_util *q = NULL;
+-	struct tc_estimator est = {};
++	struct tc_estimator est = {0};
+ 	struct {
+ 		struct tc_sizespec	szopts;
+ 		__u16			*data;
+-	} stab = {};
+-	char  d[IFNAMSIZ] = {};
+-	char  k[FILTER_NAMESZ] = {};
++	} stab = {0};
++	char  d[IFNAMSIZ] = {0};
++	char  k[FILTER_NAMESZ] = {0};
+ 	struct {
+ 		struct nlmsghdr	n;
+ 		struct tcmsg		t;
+@@ -345,7 +345,7 @@ int print_qdisc(struct nlmsghdr *n, void *arg)
+ static int tc_qdisc_list(int argc, char **argv)
+ {
+ 	struct tcmsg t = { .tcm_family = AF_UNSPEC };
+-	char d[IFNAMSIZ] = {};
++	char d[IFNAMSIZ] = {0};
+ 	bool dump_invisible = false;
+ 
+ 	while (argc > 0) {
+diff --git a/tc/tc_stab.c b/tc/tc_stab.c
+index c0f1f160..45a6b184 100644
+--- a/tc/tc_stab.c
++++ b/tc/tc_stab.c
+@@ -51,7 +51,7 @@ int parse_size_table(int *argcp, char ***argvp, struct tc_sizespec *sp)
+ {
+ 	char **argv = *argvp;
+ 	int argc = *argcp;
+-	struct tc_sizespec s = {};
++	struct tc_sizespec s = {0};
+ 
+ 	NEXT_ARG();
+ 	if (matches(*argv, "help") == 0) {
+diff --git a/tc/tc_util.c b/tc/tc_util.c
+index e5d15281..52fc5b5a 100644
+--- a/tc/tc_util.c
++++ b/tc/tc_util.c
+@@ -129,7 +129,7 @@ ok:
+ 
+ int print_tc_classid(char *buf, int blen, __u32 h)
+ {
+-	SPRINT_BUF(handle) = {};
++	SPRINT_BUF(handle) = {0};
+ 	int hlen = SPRINT_BSIZE - 1;
+ 
+ 	if (h == TC_H_ROOT)
+@@ -144,7 +144,7 @@ int print_tc_classid(char *buf, int blen, __u32 h)
+ 		snprintf(handle, hlen, "%x:%x", TC_H_MAJ(h) >> 16, TC_H_MIN(h));
+ 
+ 	if (use_names) {
+-		char clname[IDNAME_MAX] = {};
++		char clname[IDNAME_MAX] = {0};
+ 
+ 		if (id_to_name(cls_names, h, clname))
+ 			snprintf(buf, blen, "%s#%s", clname, handle);
+@@ -865,7 +865,7 @@ void print_tcstats_attr(FILE *fp, struct rtattr *tb[], char *prefix, struct rtat
+ 	}
+ 	/* backward compatibility */
+ 	if (tb[TCA_STATS]) {
+-		struct tc_stats st = {};
++		struct tc_stats st = {0};
+ 
+ 		/* handle case where kernel returns more/less than we know about */
+ 		memcpy(&st, RTA_DATA(tb[TCA_STATS]), MIN(RTA_PAYLOAD(tb[TCA_STATS]), sizeof(st)));
+diff --git a/tipc/bearer.c b/tipc/bearer.c
+index 05dc84aa..d7cb2477 100644
+--- a/tipc/bearer.c
++++ b/tipc/bearer.c
+@@ -84,8 +84,8 @@ static void cmd_bearer_enable_udp_help(struct cmdl *cmdl, char *media)
+ static int get_netid_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_NET_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_NET_MAX + 1] = {0};
+ 	int *netid = (int*)data;
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+@@ -660,7 +660,7 @@ static int bearer_dump_udp_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct sockaddr_storage *addr;
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_UDP_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_UDP_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 
+@@ -696,9 +696,9 @@ static int bearer_get_udp_cb(const struct nlmsghdr *nlh, void *data)
+ 	struct cb_data *cb_data = (struct cb_data *) data;
+ 	struct sockaddr_storage *addr;
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_BEARER_MAX + 1] = {};
+-	struct nlattr *opts[TIPC_NLA_UDP_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_BEARER_MAX + 1] = {0};
++	struct nlattr *opts[TIPC_NLA_UDP_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_BEARER])
+@@ -768,9 +768,9 @@ static int bearer_get_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	int *prop = data;
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_BEARER_MAX + 1] = {};
+-	struct nlattr *props[TIPC_NLA_PROP_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_BEARER_MAX + 1] = {0};
++	struct nlattr *props[TIPC_NLA_PROP_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_BEARER])
+@@ -951,8 +951,8 @@ static int cmd_bearer_get(struct nlmsghdr *nlh, const struct cmd *cmd,
+ static int bearer_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_BEARER_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_BEARER_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_BEARER]) {
+diff --git a/tipc/link.c b/tipc/link.c
+index 43e26da3..5f2f722e 100644
+--- a/tipc/link.c
++++ b/tipc/link.c
+@@ -32,8 +32,8 @@
+ static int link_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_LINK_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_LINK_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_LINK])
+@@ -83,9 +83,9 @@ static int link_get_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	int *prop = data;
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_LINK_MAX + 1] = {};
+-	struct nlattr *props[TIPC_NLA_PROP_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_LINK_MAX + 1] = {0};
++	struct nlattr *props[TIPC_NLA_PROP_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_LINK])
+@@ -422,10 +422,10 @@ static int link_stat_show_cb(const struct nlmsghdr *nlh, void *data)
+ 	const char *name;
+ 	const char *link = data;
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_LINK_MAX + 1] = {};
+-	struct nlattr *prop[TIPC_NLA_PROP_MAX + 1] = {};
+-	struct nlattr *stats[TIPC_NLA_STATS_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_LINK_MAX + 1] = {0};
++	struct nlattr *prop[TIPC_NLA_PROP_MAX + 1] = {0};
++	struct nlattr *stats[TIPC_NLA_STATS_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_LINK])
+@@ -628,8 +628,8 @@ static int cmd_link_mon_set_prop(struct nlmsghdr *nlh, const struct cmd *cmd,
+ static int link_mon_summary_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_MON_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_MON_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_MON])
+@@ -761,8 +761,8 @@ static void link_mon_print_peer_state(const uint32_t addr, const char *status,
+ static int link_mon_peer_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *attrs[TIPC_NLA_MON_PEER_MAX + 1] = {};
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
++	struct nlattr *attrs[TIPC_NLA_MON_PEER_MAX + 1] = {0};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
+ 	uint16_t member_cnt;
+ 	uint32_t applied;
+ 	uint32_t dom_gen;
+@@ -839,8 +839,8 @@ static int link_mon_peer_list(uint32_t mon_ref)
+ static int link_mon_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_MON_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_MON_MAX + 1] = {0};
+ 	char *req_bearer = data;
+ 	const char *bname;
+ 	const char title[] =
+@@ -968,8 +968,8 @@ static void cmd_link_mon_get_help(struct cmdl *cmdl)
+ static int link_mon_get_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_MON_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_MON_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_MON])
+diff --git a/tipc/media.c b/tipc/media.c
+index 969ef657..4f60c2bc 100644
+--- a/tipc/media.c
++++ b/tipc/media.c
+@@ -26,8 +26,8 @@
+ static int media_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_MEDIA_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_MEDIA_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_MEDIA])
+@@ -64,9 +64,9 @@ static int media_get_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	int *prop = data;
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_MEDIA_MAX + 1] = {};
+-	struct nlattr *props[TIPC_NLA_PROP_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_MEDIA_MAX + 1] = {0};
++	struct nlattr *props[TIPC_NLA_PROP_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_MEDIA])
+diff --git a/tipc/misc.c b/tipc/misc.c
+index e4b1cd0c..836efb7d 100644
+--- a/tipc/misc.c
++++ b/tipc/misc.c
+@@ -116,7 +116,7 @@ void nodeid2str(uint8_t *id, char *str)
+ 
+ void hash2nodestr(uint32_t hash, char *str)
+ {
+-	struct tipc_sioc_nodeid_req nr = {};
++	struct tipc_sioc_nodeid_req nr = {0};
+ 	int sd;
+ 
+ 	sd = socket(AF_TIPC, SOCK_RDM, 0);
+diff --git a/tipc/msg.c b/tipc/msg.c
+index dc09d050..b2416bb2 100644
+--- a/tipc/msg.c
++++ b/tipc/msg.c
+@@ -32,7 +32,7 @@ int parse_attrs(const struct nlattr *attr, void *data)
+ 
+ static int family_id_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *tb[CTRL_ATTR_MAX + 1] = {};
++	struct nlattr *tb[CTRL_ATTR_MAX + 1] = {0};
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+ 	int *id = data;
+ 
+diff --git a/tipc/nametable.c b/tipc/nametable.c
+index d899eeb6..dd8a7a49 100644
+--- a/tipc/nametable.c
++++ b/tipc/nametable.c
+@@ -29,9 +29,9 @@ static int nametable_show_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	int *iteration = data;
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_NAME_TABLE_MAX + 1] = {};
+-	struct nlattr *publ[TIPC_NLA_PUBL_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_NAME_TABLE_MAX + 1] = {0};
++	struct nlattr *publ[TIPC_NLA_PUBL_MAX + 1] = {0};
+ 	const char *scope[] = { "", "zone", "cluster", "node" };
+ 	char str[33] = {0,};
+ 
+diff --git a/tipc/node.c b/tipc/node.c
+index 2fec6753..39a1ee47 100644
+--- a/tipc/node.c
++++ b/tipc/node.c
+@@ -26,9 +26,9 @@
+ 
+ static int node_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_NODE_MAX + 1] = {};
+-	char str[33] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_NODE_MAX + 1] = {0};
++	char str[33] = {0};
+ 	uint32_t addr;
+ 
+ 	mnl_attr_parse(nlh, sizeof(struct genlmsghdr), parse_attrs, info);
+@@ -159,8 +159,8 @@ static int cmd_node_set_nodeid(struct nlmsghdr *nlh, const struct cmd *cmd,
+ 
+ static int nodeid_get_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_NET_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_NET_MAX + 1] = {0};
+ 	char str[33] = {0,};
+ 	uint8_t id[16] = {0,};
+ 	uint64_t *w0 = (uint64_t *) &id[0];
+@@ -205,8 +205,8 @@ static int cmd_node_get_nodeid(struct nlmsghdr *nlh, const struct cmd *cmd,
+ 
+ static int netid_get_cb(const struct nlmsghdr *nlh, void *data)
+ {
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_NET_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_NET_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(struct genlmsghdr), parse_attrs, info);
+ 	if (!info[TIPC_NLA_NET])
+diff --git a/tipc/socket.c b/tipc/socket.c
+index 852984ec..c6bf518b 100644
+--- a/tipc/socket.c
++++ b/tipc/socket.c
+@@ -26,8 +26,8 @@
+ static int publ_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_SOCK_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_SOCK_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_PUBL])
+@@ -64,8 +64,8 @@ static int publ_list(uint32_t sock)
+ static int sock_list_cb(const struct nlmsghdr *nlh, void *data)
+ {
+ 	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
+-	struct nlattr *info[TIPC_NLA_MAX + 1] = {};
+-	struct nlattr *attrs[TIPC_NLA_SOCK_MAX + 1] = {};
++	struct nlattr *info[TIPC_NLA_MAX + 1] = {0};
++	struct nlattr *attrs[TIPC_NLA_SOCK_MAX + 1] = {0};
+ 
+ 	mnl_attr_parse(nlh, sizeof(*genl), parse_attrs, info);
+ 	if (!info[TIPC_NLA_SOCK])
+@@ -79,7 +79,7 @@ static int sock_list_cb(const struct nlmsghdr *nlh, void *data)
+ 
+ 	if (attrs[TIPC_NLA_SOCK_CON]) {
+ 		uint32_t node;
+-		struct nlattr *con[TIPC_NLA_CON_MAX + 1] = {};
++		struct nlattr *con[TIPC_NLA_CON_MAX + 1] = {0};
+ 
+ 		mnl_attr_parse_nested(attrs[TIPC_NLA_SOCK_CON], parse_attrs, con);
+ 		node = mnl_attr_get_u32(con[TIPC_NLA_CON_NODE]);
+-- 
+2.20.1
+

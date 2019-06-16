@@ -1,0 +1,45 @@
+From 769314ef7dc3fdfb57d714d2edd874763d7f23a7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 12:14:23 -0700
+Subject: [PATCH] Don't return expression in function returning void
+
+---
+ ip/iplink_xdp.c | 8 +++++---
+ ip/ipxfrm.c     | 2 +-
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/ip/iplink_xdp.c b/ip/iplink_xdp.c
+index 4a490bc8..0d52bfac 100644
+--- a/ip/iplink_xdp.c
++++ b/ip/iplink_xdp.c
+@@ -168,9 +168,11 @@ void xdp_dump(FILE *fp, struct rtattr *xdp, bool link, bool details)
+ 	mode = rta_getattr_u8(tb[IFLA_XDP_ATTACHED]);
+ 	if (mode == XDP_ATTACHED_NONE)
+ 		return;
+-	else if (is_json_context())
+-		return details ? (void)0 : xdp_dump_json(tb);
+-	else if (details && link)
++	else if (is_json_context()) {
++		if (details)
++			xdp_dump_json(tb);
++		return;
++	} else if (details && link)
+ 		/* don't print mode */;
+ 	else if (mode == XDP_ATTACHED_DRV)
+ 		fprintf(fp, "xdp");
+diff --git a/ip/ipxfrm.c b/ip/ipxfrm.c
+index 32f56093..55d38d65 100644
+--- a/ip/ipxfrm.c
++++ b/ip/ipxfrm.c
+@@ -541,7 +541,7 @@ static void __xfrm_algo_print(struct xfrm_algo *algo, int type, int len,
+ static inline void xfrm_algo_print(struct xfrm_algo *algo, int type, int len,
+ 				   FILE *fp, const char *prefix, bool nokeys)
+ {
+-	return __xfrm_algo_print(algo, type, len, fp, prefix, 1, nokeys);
++	__xfrm_algo_print(algo, type, len, fp, prefix, 1, nokeys);
+ }
+ 
+ static void xfrm_aead_print(struct xfrm_algo_aead *algo, int len,
+-- 
+2.20.1
+
