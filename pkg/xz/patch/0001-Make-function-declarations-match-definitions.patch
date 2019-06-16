@@ -1,0 +1,55 @@
+From ea663f9fbbf48921cb6b94bd7d8cd6af3b5c82cd Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 15 Jun 2019 20:36:54 -0700
+Subject: [PATCH] Make function declarations match definitions
+
+---
+ src/liblzma/api/lzma/index.h | 4 ++--
+ src/liblzma/api/lzma/vli.h   | 9 +++++----
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/src/liblzma/api/lzma/index.h b/src/liblzma/api/lzma/index.h
+index 3dac6fb..d99f5fc 100644
+--- a/src/liblzma/api/lzma/index.h
++++ b/src/liblzma/api/lzma/index.h
+@@ -564,8 +564,8 @@ extern LZMA_API(lzma_bool) lzma_index_iter_locate(
+  *              - LZMA_MEM_ERROR
+  *              - LZMA_PROG_ERROR
+  */
+-extern LZMA_API(lzma_ret) lzma_index_cat(lzma_index *dest, lzma_index *src,
+-		const lzma_allocator *allocator)
++extern LZMA_API(lzma_ret) lzma_index_cat(lzma_index *restrict dest,
++		lzma_index *restrict src, const lzma_allocator *allocator)
+ 		lzma_nothrow lzma_attr_warn_unused_result;
+ 
+ 
+diff --git a/src/liblzma/api/lzma/vli.h b/src/liblzma/api/lzma/vli.h
+index 9ad13f2..03a7c07 100644
+--- a/src/liblzma/api/lzma/vli.h
++++ b/src/liblzma/api/lzma/vli.h
+@@ -113,7 +113,8 @@ typedef uint64_t lzma_vli;
+  *              - LZMA_PROG_ERROR: Arguments are not sane.
+  */
+ extern LZMA_API(lzma_ret) lzma_vli_encode(lzma_vli vli, size_t *vli_pos,
+-		uint8_t *out, size_t *out_pos, size_t out_size) lzma_nothrow;
++		uint8_t *restrict out, size_t *restrict out_pos,
++		size_t out_size) lzma_nothrow;
+ 
+ 
+ /**
+@@ -151,9 +152,9 @@ extern LZMA_API(lzma_ret) lzma_vli_encode(lzma_vli vli, size_t *vli_pos,
+  *              - LZMA_BUF_ERROR: No input was provided.
+  *              - LZMA_PROG_ERROR: Arguments are not sane.
+  */
+-extern LZMA_API(lzma_ret) lzma_vli_decode(lzma_vli *vli, size_t *vli_pos,
+-		const uint8_t *in, size_t *in_pos, size_t in_size)
+-		lzma_nothrow;
++extern LZMA_API(lzma_ret) lzma_vli_decode(lzma_vli *restrict vli,
++		size_t *vli_pos, const uint8_t *restrict in,
++		size_t *restrict in_pos, size_t in_size) lzma_nothrow;
+ 
+ 
+ /**
+-- 
+2.20.1
+

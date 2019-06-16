@@ -257,6 +257,7 @@
 [submodule "pkg/xz/src"]
 	path = pkg/xz/src
 	url = https://git.tukaani.org/xz.git
+	ignore = all
 [submodule "pkg/youtube-dl/src"]
 	path = pkg/youtube-dl/src
 	url = https://github.com/rg3/youtube-dl
