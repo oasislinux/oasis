@@ -224,6 +224,7 @@
 [submodule "pkg/the_silver_searcher/src"]
 	path = pkg/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher
+	ignore = all
 [submodule "pkg/tz/src"]
 	path = pkg/tz/src
 	url = https://github.com/eggert/tz

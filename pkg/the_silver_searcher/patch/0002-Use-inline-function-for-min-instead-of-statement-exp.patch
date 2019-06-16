@@ -1,0 +1,32 @@
+From dc1be161f9155e92367714b38f6a45d05d4f90cd Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 15 Jun 2019 20:58:46 -0700
+Subject: [PATCH] Use inline function for min instead of statement expression
+
+---
+ src/zfile.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/src/zfile.c b/src/zfile.c
+index e4b7566..29fbb07 100644
+--- a/src/zfile.c
++++ b/src/zfile.c
+@@ -33,10 +33,11 @@ typedef _off64_t off64_t;
+ 
+ #if HAVE_FOPENCOOKIE
+ 
+-#define min(a, b) ({				\
+-	__typeof (a) _a = (a);			\
+-	__typeof (b) _b = (b);			\
+-	_a < _b ? _a : _b; })
++static inline size_t
++min(size_t a, size_t b)
++{
++	return a < b ? a : b;
++}
+ 
+ static cookie_read_function_t zfile_read;
+ static cookie_seek_function_t zfile_seek;
+-- 
+2.20.1
+

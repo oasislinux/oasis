@@ -1,0 +1,25 @@
+From 76adb32c89184406278fd51a3fe138314b134a12 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 15 Jun 2019 20:58:00 -0700
+Subject: [PATCH] Remove `;` after function definition
+
+---
+ src/ignore.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/ignore.c b/src/ignore.c
+index fa41889..bdb03b4 100644
+--- a/src/ignore.c
++++ b/src/ignore.c
+@@ -39,7 +39,7 @@ const char *ignore_pattern_files[] = {
+ 
+ int is_empty(ignores *ig) {
+     return (ig->extensions_len + ig->names_len + ig->slash_names_len + ig->regexes_len + ig->slash_regexes_len == 0);
+-};
++}
+ 
+ ignores *init_ignore(ignores *parent, const char *dirname, const size_t dirname_len) {
+     ignores *ig = ag_malloc(sizeof(ignores));
+-- 
+2.20.1
+
