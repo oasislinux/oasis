@@ -1,10 +1,8 @@
-From 6e7edd8d5093795a96a80e36b7c019de3f637cc8 Mon Sep 17 00:00:00 2001
+From d160eb934654c2a52ef7f8273a7f651fd6178b7d Mon Sep 17 00:00:00 2001
 From: Andreas Schwab <schwab@linux-m68k.org>
-Date: Thu, 16 Jun 2016 22:41:53 -0700
+Date: Sat, 15 Jun 2019 18:13:11 -0700
 Subject: [PATCH] Initialize the symlink flag
 
-From 06-initialize-the-symlink-flag in
-unzip_6.0-16+deb8u2.debian.tar.xz.
 ---
  process.c | 6 ++++++
  1 file changed, 6 insertions(+)
@@ -27,5 +25,5 @@ index df58d28..3228bde 100644
  
  } /* end function process_cdir_file_hdr() */
 -- 
-2.8.1
+2.20.1
 

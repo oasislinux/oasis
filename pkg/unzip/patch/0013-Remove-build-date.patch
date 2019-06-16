@@ -1,0 +1,25 @@
+From f6fa609c9074df6df59023e032f5397c44b40e8d Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=A9r=C3=A9my=20Bobbio?= <lunar@debian.org>
+Date: Sat, 15 Jun 2019 18:13:11 -0700
+Subject: [PATCH] Remove build date
+
+---
+ unix/unix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/unix/unix.c b/unix/unix.c
+index efa97fc..816e3da 100644
+--- a/unix/unix.c
++++ b/unix/unix.c
+@@ -1705,7 +1705,7 @@ void version(__G)
+ #endif /* Sun */
+ #endif /* SGI */
+ 
+-#ifdef __DATE__
++#if 0
+       " on ", __DATE__
+ #else
+       "", ""
+-- 
+2.20.1
+

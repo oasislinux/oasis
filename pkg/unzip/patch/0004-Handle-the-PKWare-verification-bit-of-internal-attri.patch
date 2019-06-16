@@ -1,10 +1,8 @@
-From 4a125f29b8d313456ad91ab6694d84db7d1685da Mon Sep 17 00:00:00 2001
-From: Steven Schweda <sms@antinode.info>
-Date: Thu, 16 Jun 2016 22:41:39 -0700
+From af50c278c5b2c57a76771825a80ca3ff9d315acd Mon Sep 17 00:00:00 2001
+From: "Steven M. Schweda" <sms@antinode.info>
+Date: Sat, 15 Jun 2019 18:13:11 -0700
 Subject: [PATCH] Handle the PKWare verification bit of internal attributes
 
-From 04-handle-pkware-verification-bit in
-unzip_6.0-16+deb8u2.debian.tar.xz.
 ---
  process.c | 7 +++++++
  1 file changed, 7 insertions(+)
@@ -28,5 +26,5 @@ index 1e9a1e1..ed314e1 100644
      if (IS_VOLID(G.crec.external_file_attributes) &&
          (G.pInfo->hostnum == FS_FAT_ || G.pInfo->hostnum == FS_HPFS_ ||
 -- 
-2.8.1
+2.20.1
 

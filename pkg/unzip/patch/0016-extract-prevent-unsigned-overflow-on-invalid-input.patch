@@ -1,16 +1,15 @@
-From 91f3ce1672778ebb41317c2cad4b0a75cf3d002f Mon Sep 17 00:00:00 2001
+From c2b00ce1582efdb781355dfa7b161b5393cfa56f Mon Sep 17 00:00:00 2001
 From: Kamil Dudka <kdudka@redhat.com>
-Date: Thu, 16 Jun 2016 22:42:33 -0700
+Date: Tue, 22 Sep 2015 18:52:23 +0200
 Subject: [PATCH] extract: prevent unsigned overflow on invalid input
 
-From 16-fix-integer-underflow-csiz-decrypted in
-unzip_6.0-16+deb8u2.debian.tar.xz.
+Suggested-by: Stefan Cornelius
 ---
  extract.c | 11 ++++++++++-
  1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/extract.c b/extract.c
-index ad8b3f7..3ec8813 100644
+index 188f1cf..549a5eb 100644
 --- a/extract.c
 +++ b/extract.c
 @@ -1257,8 +1257,17 @@ static int extract_or_test_entrylist(__G__ numchunk,
@@ -33,5 +32,5 @@ index ad8b3f7..3ec8813 100644
                  Info(slide, 0x401, ((char *)slide,
                    LoadFarStringSmall2(WrnStorUCSizCSizDiff),
 -- 
-2.8.1
+2.20.1
 

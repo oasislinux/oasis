@@ -1,0 +1,24 @@
+From 365c0c559506ce300793fe469394ca748dd81b50 Mon Sep 17 00:00:00 2001
+From: "Steven M. Schweda" <sms@antinode.info>
+Date: Sat, 15 Jun 2019 18:13:11 -0700
+Subject: [PATCH] Fix lame code in fileio.c
+
+---
+ fileio.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fileio.c b/fileio.c
+index 7c21ed0..c10ff63 100644
+--- a/fileio.c
++++ b/fileio.c
+@@ -2477,6 +2477,7 @@ zusz_t makeint64(sig)
+      */
+     return (((zusz_t)sig[7]) << 56)
+         + (((zusz_t)sig[6]) << 48)
++        + (((zusz_t)sig[5]) << 40)
+         + (((zusz_t)sig[4]) << 32)
+         + (zusz_t)((((ulg)sig[3]) << 24)
+                  + (((ulg)sig[2]) << 16)
+-- 
+2.20.1
+

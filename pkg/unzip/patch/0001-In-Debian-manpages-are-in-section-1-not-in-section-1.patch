@@ -1,10 +1,8 @@
-From 099364ef5cdd7801c9744815ef5ec75f5f267222 Mon Sep 17 00:00:00 2001
+From 85238f823da4858625f482c696f48e460ba27625 Mon Sep 17 00:00:00 2001
 From: Santiago Vila <sanvila@debian.org>
-Date: Thu, 16 Jun 2016 22:39:42 -0700
-Subject: [PATCH] Drop L suffix from man page sections
+Date: Sat, 15 Jun 2019 18:13:11 -0700
+Subject: [PATCH] In Debian, manpages are in section 1, not in section 1L
 
-From 01-manpages-in-section-1-not-in-section-1l in
-unzip_6.0-16+deb8u2.debian.tar.xz.
 ---
  man/funzip.1   |  8 ++++----
  man/unzip.1    | 24 ++++++++++++------------
@@ -315,5 +313,5 @@ index 428e4b9..22d1fa2 100644
  .\" =========================================================================
  .SH URL
 -- 
-2.8.1
+2.20.1
 

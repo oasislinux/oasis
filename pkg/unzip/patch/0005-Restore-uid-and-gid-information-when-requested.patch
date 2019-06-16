@@ -1,9 +1,8 @@
-From a32a7b300ba2a8df9468a2c029c3a8d20971e823 Mon Sep 17 00:00:00 2001
-From: Steven Schweda <sms@antinode.info>
-Date: Thu, 16 Jun 2016 22:41:43 -0700
+From 8e82b2116b190c9dd4ef2b56e1282ca2c6e30b62 Mon Sep 17 00:00:00 2001
+From: "Steven M. Schweda" <sms@antinode.info>
+Date: Sat, 15 Jun 2019 18:13:11 -0700
 Subject: [PATCH] Restore uid and gid information when requested
 
-From 05-fix-uid-gid-handling in unzip_6.0-16+deb8u2.debian.tar.xz.
 ---
  process.c | 6 +++---
  1 file changed, 3 insertions(+), 3 deletions(-)
@@ -35,5 +34,5 @@ index ed314e1..df58d28 100644
                      flags |= EB_UX2_VALID;   /* signal success */
                  }
 -- 
-2.8.1
+2.20.1
 

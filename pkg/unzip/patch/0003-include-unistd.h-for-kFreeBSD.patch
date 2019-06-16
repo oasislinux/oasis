@@ -1,0 +1,24 @@
+From d27f3482cf46603d05d46bbc290ce6bb0f7ff210 Mon Sep 17 00:00:00 2001
+From: Aurelien Jarno <aurel32@debian.org>
+Date: Sat, 15 Jun 2019 18:13:11 -0700
+Subject: [PATCH] #include <unistd.h> for kFreeBSD
+
+---
+ unix/unxcfg.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/unix/unxcfg.h b/unix/unxcfg.h
+index e39b283..c98c3b9 100644
+--- a/unix/unxcfg.h
++++ b/unix/unxcfg.h
+@@ -52,6 +52,7 @@
+ 
+ #include <sys/types.h>          /* off_t, time_t, dev_t, ... */
+ #include <sys/stat.h>
++#include <unistd.h>
+ 
+ #ifdef NO_OFF_T
+   typedef long zoff_t;
+-- 
+2.20.1
+

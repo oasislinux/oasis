@@ -1,0 +1,26 @@
+From 2561e7b7057dcca65b1ff2d5d2e12b4a1ba254fe Mon Sep 17 00:00:00 2001
+From: Santiago Vila <sanvila@debian.org>
+Date: Sat, 15 Jun 2019 18:13:11 -0700
+Subject: [PATCH] "Branding patch": UnZip by Debian. Original by Info-ZIP.
+
+---
+ unzip.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/unzip.c b/unzip.c
+index 8dbfc95..1abaccb 100644
+--- a/unzip.c
++++ b/unzip.c
+@@ -570,8 +570,7 @@ Send bug reports using //www.info-zip.org/zip-bug.html; see README for details.\
+ #else /* !VMS */
+ # ifdef COPYRIGHT_CLEAN
+    static ZCONST char Far UnzipUsageLine1[] = "\
+-UnZip %d.%d%d%s of %s, by Info-ZIP.  Maintained by C. Spieler.  Send\n\
+-bug reports using http://www.info-zip.org/zip-bug.html; see README for details.\
++UnZip %d.%d%d%s of %s, by Debian. Original by Info-ZIP.\
+ \n\n";
+ # else
+    static ZCONST char Far UnzipUsageLine1[] = "\
+-- 
+2.20.1
+

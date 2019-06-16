@@ -1,10 +1,8 @@
-From 0a3f8770bbe8fbd71a62a806a3fe9681a9e14c9e Mon Sep 17 00:00:00 2001
+From 4d3698e4c587e5071ebedaa12daa8e86e2fcffc2 Mon Sep 17 00:00:00 2001
 From: Santiago Vila <sanvila@debian.org>
-Date: Thu, 16 Jun 2016 22:42:02 -0700
+Date: Sat, 15 Jun 2019 18:13:11 -0700
 Subject: [PATCH] zipinfo.c: Do not crash when hostver byte is >= 100
 
-From 08-allow-greater-hostver-values in
-unzip_6.0-16+deb8u2.debian.tar.xz.
 ---
  zipinfo.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -23,5 +21,5 @@ index a92bca9..5e77018 100644
  
      } /* end switch (hostnum: external attributes format) */
 -- 
-2.8.1
+2.20.1
 

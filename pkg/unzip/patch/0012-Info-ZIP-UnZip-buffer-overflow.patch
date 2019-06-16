@@ -1,16 +1,22 @@
-From fb09687478043d64dc433bd034d063f33f718084 Mon Sep 17 00:00:00 2001
+From 14342a8a5ddafa76a8aa9800da078d415f50af71 Mon Sep 17 00:00:00 2001
 From: mancha <mancha1@zoho.com>
-Date: Thu, 16 Jun 2016 22:42:17 -0700
+Date: Wed, 11 Feb 2015 12:27:06 +0000
 Subject: [PATCH] Info-ZIP UnZip buffer overflow
 
-From 12-cve-2014-9636-test-compr-eb in
-unzip_6.0-16+deb8u2.debian.tar.xz.
+By carefully crafting a corrupt ZIP archive with "extra fields" that
+purport to have compressed blocks larger than the corresponding
+uncompressed blocks in STORED no-compression mode, an attacker can
+trigger a heap overflow that can result in application crash or
+possibly have other unspecified impact.
+
+This patch ensures that when extra fields use STORED mode, the
+"compressed" and uncompressed block sizes match.
 ---
- extract.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ extract.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
 diff --git a/extract.c b/extract.c
-index ec31e60..d816603 100644
+index ec31e60..f951b9f 100644
 --- a/extract.c
 +++ b/extract.c
 @@ -2228,6 +2228,7 @@ static int test_compr_eb(__G__ eb, eb_size, compr_offset, test_uc_ebdata)
@@ -21,21 +27,22 @@ index ec31e60..d816603 100644
  
      if (compr_offset < 4)                /* field is not compressed: */
          return PK_OK;                    /* do nothing and signal OK */
-@@ -2244,6 +2245,14 @@ static int test_compr_eb(__G__ eb, eb_size, compr_offset, test_uc_ebdata)
+@@ -2244,6 +2245,15 @@ static int test_compr_eb(__G__ eb, eb_size, compr_offset, test_uc_ebdata)
       ((eb_ucsize > 0L) && (eb_size <= (compr_offset + EB_CMPRHEADLEN))))
          return IZ_EF_TRUNC;             /* no/bad compressed data! */
  
-+    /* 2014-11-03 Michal Zalewski, SMS.
++    /* 2015-02-10 Mancha(?), Michal Zalewski, Tomas Hoger, SMS.
 +     * For STORE method, compressed and uncompressed sizes must agree.
 +     * http://www.info-zip.org/phpBB3/viewtopic.php?f=7&t=450
 +     */
 +    eb_compr_method = makeword( eb + (EB_HEADSIZE + compr_offset));
-+    if ((eb_compr_method == STORED) && (eb_size - compr_offset != eb_ucsize))
++    if ((eb_compr_method == STORED) &&
++     (eb_size != compr_offset + EB_CMPRHEADLEN + eb_ucsize))
 +        return PK_ERR;
 +
      if (
  #ifdef INT_16BIT
          (((ulg)(extent)eb_ucsize) != eb_ucsize) ||
 -- 
-2.8.1
+2.20.1
 

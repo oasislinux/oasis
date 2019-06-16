@@ -1,9 +1,8 @@
-From 0fbf62b364615cd0566c0803fff8b0dae4118402 Mon Sep 17 00:00:00 2001
+From d97748a061a3beb8bdf4d5d0a2458086951960ff Mon Sep 17 00:00:00 2001
 From: Petr Stodulka <pstodulk@redhat.com>
-Date: Thu, 16 Jun 2016 22:42:25 -0700
+Date: Mon, 14 Sep 2015 18:23:17 +0200
 Subject: [PATCH] Upstream fix for heap overflow
 
-From 14-cve-2015-7696 in unzip_6.0-16+deb8u2.debian.tar.xz.
 ---
  crypt.c | 12 +++++++++++-
  1 file changed, 11 insertions(+), 1 deletion(-)
@@ -32,5 +31,5 @@ index 784e411..a8975f2 100644
          Trace((stdout, " (%02x)", h[n]));
      }
 -- 
-2.8.1
+2.20.1
 

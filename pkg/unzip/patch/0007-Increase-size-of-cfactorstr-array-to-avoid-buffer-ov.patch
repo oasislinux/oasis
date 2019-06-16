@@ -1,10 +1,8 @@
-From 638801fa4a9ffb16839d6dd42e70afc3e989e510 Mon Sep 17 00:00:00 2001
-From: Steven Schweda <sms@antinode.info>
-Date: Thu, 16 Jun 2016 22:41:56 -0700
+From 5ba63850818457aa3147ab40adc376ff7dc0f1c9 Mon Sep 17 00:00:00 2001
+From: "Steven M. Schweda" <sms@antinode.info>
+Date: Sat, 15 Jun 2019 18:13:11 -0700
 Subject: [PATCH] Increase size of cfactorstr array to avoid buffer overflow
 
-From 07-increase-size-of-cfactorstr in
-unzip_6.0-16+deb8u2.debian.tar.xz.
 ---
  list.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -23,5 +21,5 @@ index 15e0011..5de41e5 100644
  #endif
      int date_format;
 -- 
-2.8.1
+2.20.1
 
