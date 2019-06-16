@@ -1,0 +1,26 @@
+From b9d6b372273896085f435dd7060395d631b808b1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 4 Jun 2019 10:57:44 -0700
+Subject: [PATCH] Make parameter qualifiers match between declaration and
+ definition
+
+---
+ lib/fribidi-deprecated.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/fribidi-deprecated.c b/lib/fribidi-deprecated.c
+index 12a13d2..b57c69e 100644
+--- a/lib/fribidi-deprecated.c
++++ b/lib/fribidi-deprecated.c
+@@ -184,7 +184,7 @@ FRIBIDI_ENTRY FriBidiLevel
+ fribidi_log2vis (
+   /* input */
+   const FriBidiChar *str,
+-  FriBidiStrIndex len,
++  const FriBidiStrIndex len,
+   /* input and output */
+   FriBidiParType *pbase_dir,
+   /* output */
+-- 
+2.20.1
+
