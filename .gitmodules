@@ -267,3 +267,4 @@
 [submodule "pkg/zstd/src"]
 	path = pkg/zstd/src
 	url = https://github.com/facebook/zstd
+	ignore = all
