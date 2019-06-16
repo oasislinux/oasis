@@ -1,0 +1,155 @@
+From 33c8f9c16352f016423b4f67ec851318506c17e3 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 15 Jun 2019 20:06:13 -0700
+Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
+
+---
+ usr.bin/rsync/blocks.c     |  6 +++---
+ usr.bin/rsync/downloader.c |  2 +-
+ usr.bin/rsync/io.c         | 12 ++++++------
+ usr.bin/rsync/sender.c     |  4 ++--
+ usr.bin/rsync/uploader.c   |  4 ++--
+ 5 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/usr.bin/rsync/blocks.c b/usr.bin/rsync/blocks.c
+index d02f4f40b4b..9c163600307 100644
+--- a/usr.bin/rsync/blocks.c
++++ b/usr.bin/rsync/blocks.c
+@@ -54,7 +54,7 @@ blk_find(struct sess *sess, const void *buf, off_t size, off_t offs,
+ 	remain = size - offs;
+ 	assert(remain);
+ 	osz = remain < (off_t)blks->len ? remain : (off_t)blks->len;
+-	fhash = hash_fast(buf + offs, (size_t)osz);
++	fhash = hash_fast((char *)buf + offs, (size_t)osz);
+ 	have_md = 0;
+ 
+ 	/*
+@@ -65,7 +65,7 @@ blk_find(struct sess *sess, const void *buf, off_t size, off_t offs,
+ 	if (hint < blks->blksz &&
+ 	    fhash == blks->blks[hint].chksum_short &&
+ 	    (size_t)osz == blks->blks[hint].len) {
+-		hash_slow(buf + offs, (size_t)osz, md, sess);
++		hash_slow((char *)buf + offs, (size_t)osz, md, sess);
+ 		have_md = 1;
+ 		if (memcmp(md, blks->blks[hint].chksum_long, blks->csum) == 0) {
+ 			LOG4(sess, "%s: found matching hinted match: "
+@@ -99,7 +99,7 @@ blk_find(struct sess *sess, const void *buf, off_t size, off_t offs,
+ 		/* Compute slow hash on demand. */
+ 
+ 		if (have_md == 0) {
+-			hash_slow(buf + offs, (size_t)osz, md, sess);
++			hash_slow((char *)buf + offs, (size_t)osz, md, sess);
+ 			have_md = 1;
+ 		}
+ 
+diff --git a/usr.bin/rsync/downloader.c b/usr.bin/rsync/downloader.c
+index 405f7623759..f47c895957d 100644
+--- a/usr.bin/rsync/downloader.c
++++ b/usr.bin/rsync/downloader.c
+@@ -497,7 +497,7 @@ again:
+ 		sz = tok == p->blk.blksz - 1 ? p->blk.rem : p->blk.len;
+ 		assert(sz);
+ 		assert(p->map != MAP_FAILED);
+-		buf = p->map + (tok * p->blk.len);
++		buf = (char *)p->map + (tok * p->blk.len);
+ 
+ 		/*
+ 		 * Now we read from our block.
+diff --git a/usr.bin/rsync/io.c b/usr.bin/rsync/io.c
+index 0e451226d31..404e7bf4112 100644
+--- a/usr.bin/rsync/io.c
++++ b/usr.bin/rsync/io.c
+@@ -117,7 +117,7 @@ io_write_blocking(struct sess *sess, int fd, const void *buf, size_t sz)
+ 			ERRX(sess, "io_write_nonblocking: short write");
+ 			return 0;
+ 		}
+-		buf += wsz;
++		buf = (char *)buf + wsz;
+ 		sz -= wsz;
+ 	}
+ 
+@@ -156,7 +156,7 @@ io_write_buf(struct sess *sess, int fd, const void *buf, size_t sz)
+ 		}
+ 		sess->total_write += wsz;
+ 		sz -= wsz;
+-		buf += wsz;
++		buf = (char *)buf + wsz;
+ 	}
+ 
+ 	return 1;
+@@ -252,7 +252,7 @@ io_read_blocking(struct sess *sess,
+ 			ERRX(sess, "io_read_nonblocking: short read");
+ 			return 0;
+ 		}
+-		buf += rsz;
++		buf = (char *)buf + rsz;
+ 		sz -= rsz;
+ 	}
+ 
+@@ -369,7 +369,7 @@ io_read_buf(struct sess *sess, int fd, void *buf, size_t sz)
+ 			}
+ 			sz -= rsz;
+ 			sess->mplex_read_remain -= rsz;
+-			buf += rsz;
++			buf = (char *)buf + rsz;
+ 			sess->total_read += rsz;
+ 			continue;
+ 		}
+@@ -465,7 +465,7 @@ io_buffer_buf(struct sess *sess, void *buf,
+ {
+ 
+ 	assert(*bufpos + valsz <= buflen);
+-	memcpy(buf + *bufpos, val, valsz);
++	memcpy((char *)buf + *bufpos, val, valsz);
+ 	*bufpos += valsz;
+ }
+ 
+@@ -664,7 +664,7 @@ io_unbuffer_buf(struct sess *sess, const void *buf,
+ {
+ 
+ 	assert(*bufpos + valsz <= bufsz);
+-	memcpy(val, buf + *bufpos, valsz);
++	memcpy(val, (char *)buf + *bufpos, valsz);
+ 	*bufpos += valsz;
+ }
+ 
+diff --git a/usr.bin/rsync/sender.c b/usr.bin/rsync/sender.c
+index ab7221a87d7..8b48ab7cc81 100644
+--- a/usr.bin/rsync/sender.c
++++ b/usr.bin/rsync/sender.c
+@@ -128,7 +128,7 @@ send_up_fsm(struct sess *sess, size_t *phase,
+ 			return 0;
+ 		}
+ 		io_lowbuffer_buf(sess, *wb, &pos, *wbsz,
+-			up->stat.map + up->stat.curpos, sz);
++			(char *)up->stat.map + up->stat.curpos, sz);
+ 
+ 		up->stat.curpos += sz;
+ 		if (up->stat.curpos == up->stat.curlen)
+@@ -568,7 +568,7 @@ rsync_sender(struct sess *sess, int fdin,
+ 			assert(pfd[2].fd == -1);
+ 			assert(wbufsz - wbufpos);
+ 			ssz = write(fdout,
+-				wbuf + wbufpos, wbufsz - wbufpos);
++				(char *)wbuf + wbufpos, wbufsz - wbufpos);
+ 			if (ssz < 0) {
+ 				ERR(sess, "write");
+ 				goto out;
+diff --git a/usr.bin/rsync/uploader.c b/usr.bin/rsync/uploader.c
+index 70aab10e6f5..c6e5ebf4d7a 100644
+--- a/usr.bin/rsync/uploader.c
++++ b/usr.bin/rsync/uploader.c
+@@ -158,8 +158,8 @@ init_blk(struct blk *p, const struct blkset *set, off_t offs,
+ 	p->len = idx < set->blksz - 1 ? set->len : set->rem;
+ 	p->offs = offs;
+ 
+-	p->chksum_short = hash_fast(map + offs, p->len);
+-	hash_slow(map + offs, p->len, p->chksum_long, sess);
++	p->chksum_short = hash_fast((char *)map + offs, p->len);
++	hash_slow((char *)map + offs, p->len, p->chksum_long, sess);
+ }
+ 
+ /*
+-- 
+2.22.0
+

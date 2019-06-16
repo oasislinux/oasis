@@ -1,12 +1,13 @@
-From 2213572d0ef5646c205f5d30e67ba7ad1ac0129e Mon Sep 17 00:00:00 2001
+From 3cc2a61c553d138778a6ec1dd84cd042ce834b4e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 10 Apr 2018 16:24:12 -0700
 Subject: [PATCH] m4: Add missing includes
 
 ---
- usr.bin/m4/look.c | 1 +
- usr.bin/m4/main.c | 1 +
- 2 files changed, 2 insertions(+)
+ usr.bin/m4/look.c   | 1 +
+ usr.bin/m4/main.c   | 1 +
+ usr.bin/m4/parser.y | 1 +
+ 3 files changed, 3 insertions(+)
 
 diff --git a/usr.bin/m4/look.c b/usr.bin/m4/look.c
 index ac504570a9f..5feb0413cd6 100644
@@ -32,6 +33,18 @@ index f1b8fa5a55b..4e664c0a50b 100644
  #include <assert.h>
  #include <signal.h>
  #include <err.h>
+diff --git a/usr.bin/m4/parser.y b/usr.bin/m4/parser.y
+index 5b46d261a9a..fedded1e44c 100644
+--- a/usr.bin/m4/parser.y
++++ b/usr.bin/m4/parser.y
+@@ -17,6 +17,7 @@
+  */
+ #include <math.h>
+ #include <stdint.h>
++#include <stdlib.h>
+ #define YYSTYPE	int32_t
+ extern int32_t end_result;
+ extern int yylex(void);
 -- 
-2.17.0
+2.22.0
 
