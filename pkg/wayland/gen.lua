@@ -33,6 +33,7 @@ pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/cursor', {'wayland-cursor.h'}),
 	'$outdir/include/wayland-client-protocol.h',
 	'$outdir/include/wayland-server-protocol.h',
+	'$outdir/include/wayland-version.h',
 }
 pkg.deps = {
 	'$dir/headers',
