@@ -1,0 +1,48 @@
+From 4988f2d5bf0ecb941320cfe2cde517c860b792a0 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 22:59:39 -0700
+Subject: [PATCH] Avoid unnecessary VLAs
+
+---
+ libass/ass_outline.c | 4 ++--
+ libass/ass_render.c  | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/libass/ass_outline.c b/libass/ass_outline.c
+index 74b791c..d06654a 100644
+--- a/libass/ass_outline.c
++++ b/libass/ass_outline.c
+@@ -517,7 +517,7 @@ static bool process_arc(StrokerState *str, ASS_Vector pt,
+ static bool draw_arc(StrokerState *str, ASS_Vector pt,
+                      ASS_DVector normal0, ASS_DVector normal1, double c, int dir)
+ {
+-    const int max_subdiv = 15;
++    enum { max_subdiv = 15 };
+     double mul[max_subdiv + 1];
+ 
+     ASS_DVector center;
+@@ -553,7 +553,7 @@ static bool draw_arc(StrokerState *str, ASS_Vector pt,
+  */
+ static bool draw_circle(StrokerState *str, ASS_Vector pt, int dir)
+ {
+-    const int max_subdiv = 15;
++    enum { max_subdiv = 15 };
+     double mul[max_subdiv + 1], c = 0;
+ 
+     int pos = max_subdiv;
+diff --git a/libass/ass_render.c b/libass/ass_render.c
+index be76f76..5eb38fd 100644
+--- a/libass/ass_render.c
++++ b/libass/ass_render.c
+@@ -1234,7 +1234,7 @@ get_bitmap_glyph(ASS_Renderer *render_priv, GlyphInfo *info)
+         return;
+     }
+ 
+-    const int n_outlines = 3;
++    enum { n_outlines = 3 };
+     ASS_Outline outline[n_outlines];
+     outline_copy(&outline[0], info->outline);
+     outline_copy(&outline[1], info->border[0]);
+-- 
+2.20.1
+
