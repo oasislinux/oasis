@@ -78,12 +78,11 @@ function print_map() {
 	print "#if __clang__"
 	print "#pragma clang diagnostic push"
 	print "#pragma clang diagnostic ignored \"-Winitializer-overrides\""
-	print "#else"
+	print "#elif __GNUC__"
 	print "#pragma GCC diagnostic push"
 	print "#pragma GCC diagnostic ignored \"-Woverride-init\""
 	print "#endif"
 	print "static const int ev_max[EV_MAX + 1] = {"
-	print "	[0 ... EV_MAX] = -1,"
 	for (i = 1; i <= numprefixes; ++i) {
 		prefix = prefixes[i]
 		if (prefix in skip)
@@ -93,7 +92,7 @@ function print_map() {
 	print "};"
 	print "#if __clang__"
 	print "#pragma clang diagnostic pop /* \"-Winitializer-overrides\" */"
-	print "#else"
+	print "#elif __GNUC__"
 	print "#pragma GCC diagnostic pop /* \"-Woverride-init\" */"
 	print "#endif"
 	print ""

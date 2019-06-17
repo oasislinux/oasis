@@ -96,6 +96,7 @@
 [submodule "pkg/libevdev/src"]
 	path = pkg/libevdev/src
 	url = https://anongit.freedesktop.org/git/libevdev.git
+	ignore = all
 [submodule "pkg/libevent/src"]
 	path = pkg/libevent/src
 	url = https://github.com/libevent/libevent

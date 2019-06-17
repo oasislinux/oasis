@@ -1,0 +1,28 @@
+From be5f47aa16b42f1867d832e89b510088538b4c32 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 17:18:21 -0700
+Subject: [PATCH] Only use __builtin_expect on GNU-compatible compilers
+
+---
+ libevdev/libevdev-util.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libevdev/libevdev-util.h b/libevdev/libevdev-util.h
+index e8b6769..c7f90b9 100644
+--- a/libevdev/libevdev-util.h
++++ b/libevdev/libevdev-util.h
+@@ -30,7 +30,11 @@
+ #define LONG_BITS (sizeof(long) * 8)
+ #define NLONGS(x) (((x) + LONG_BITS - 1) / LONG_BITS)
+ #define ARRAY_LENGTH(a) (sizeof(a) / (sizeof((a)[0])))
++#ifdef __GNUC__
+ #define unlikely(x) (__builtin_expect(!!(x),0))
++#else
++#define unlikely(x) (x)
++#endif
+ 
+ static inline bool
+ startswith(const char *str, size_t len, const char *prefix, size_t plen)
+-- 
+2.20.1
+
