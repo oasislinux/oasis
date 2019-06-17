@@ -1,0 +1,34 @@
+From badd4b57dee6c34643a2b79b682956c56c33bc36 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 23:37:11 -0700
+Subject: [PATCH] Avoid unnecessary VLA
+
+---
+ xfrd-tcp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/xfrd-tcp.c b/xfrd-tcp.c
+index 3c176a38..a4d795c7 100644
+--- a/xfrd-tcp.c
++++ b/xfrd-tcp.c
+@@ -214,12 +214,12 @@ pipeline_find(struct xfrd_tcp_set* set, xfrd_zone_type* zone)
+ 	struct xfrd_tcp_pipeline* r;
+ 	/* smaller buf than a full pipeline with 64kb ID array, only need
+ 	 * the front part with the key info, this front part contains the
+-	 * members that the compare function uses. */
+-	const size_t keysize = sizeof(struct xfrd_tcp_pipeline) -
+-		ID_PIPE_NUM*(sizeof(struct xfrd_zone*) + sizeof(uint16_t));
+-	/* void* type for alignment of the struct,
++	 * members that the compare function uses.
++	 *
++	 * void* type for alignment of the struct,
+ 	 * divide the keysize by ptr-size and then add one to round up */
+-	void* buf[ (keysize / sizeof(void*)) + 1 ];
++	void* buf[ ((sizeof(struct xfrd_tcp_pipeline) -
++		ID_PIPE_NUM*(sizeof(struct xfrd_zone*) + sizeof(uint16_t))) / sizeof(void*)) + 1 ];
+ 	struct xfrd_tcp_pipeline* key = (struct xfrd_tcp_pipeline*)buf;
+ 	key->node.key = key;
+ 	key->ip_len = xfrd_acl_sockaddr_to(zone->master, &key->ip);
+-- 
+2.20.1
+
