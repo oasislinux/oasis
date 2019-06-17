@@ -176,7 +176,7 @@ lib('libavfilter.a', {
 	'libavutil.a',
 })
 
-cc('libavformat/protocols.c', {'$outdir/internal/libavformat/protocol_list.c'})
+cc('libavformat/protocols.c', {'$dir/deps', '$outdir/internal/libavformat/protocol_list.c'})
 lib('libavformat.a', {
 	expand{'libavformat/', {
 		'allformats.c',
