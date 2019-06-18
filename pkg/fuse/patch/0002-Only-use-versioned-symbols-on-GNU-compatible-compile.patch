@@ -1,0 +1,25 @@
+From f065c341a270233b563d54c75dc13ecd7c430938 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 17 Jun 2019 23:15:08 -0700
+Subject: [PATCH] Only use versioned symbols on GNU-compatible compilers
+
+---
+ lib/fuse_misc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/fuse_misc.h b/lib/fuse_misc.h
+index 2f6663e..d4b82e6 100644
+--- a/lib/fuse_misc.h
++++ b/lib/fuse_misc.h
+@@ -13,7 +13,7 @@
+     - confuse the dynamic linker in uClibc
+     - not supported on MacOSX (in MachO binary format)
+ */
+-#if (!defined(__UCLIBC__) && !defined(__APPLE__))
++#if (!defined(__UCLIBC__) && !defined(__APPLE__)) && defined(__GNUC__)
+ #define FUSE_SYMVER(x) __asm__(x)
+ #else
+ #define FUSE_SYMVER(x)
+-- 
+2.20.1
+
