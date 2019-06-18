@@ -1,0 +1,80 @@
+From a57afd937b20e0855d663854e1c1e0a9503b5b6a Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 17 Jun 2019 23:54:24 -0700
+Subject: [PATCH] Avoid cast of address constant to integer constant in
+ initalizer
+
+---
+ src/compress.c | 38 ++++++++++++++++++++------------------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
+
+diff --git a/src/compress.c b/src/compress.c
+index 95e42a24..3df6f02c 100644
+--- a/src/compress.c
++++ b/src/compress.c
+@@ -146,30 +146,33 @@ static const char *zstd_args[] = {
+ #define	do_bzlib	NULL
+ 
+ private const struct {
+-	const void *magic;
++	union {
++		const void *magic;
++		int (*func)(const unsigned char *);
++	} u;
+ 	size_t maglen;
+ 	const char **argv;
+ 	void *unused;
+ } compr[] = {
+-	{ "\037\235",	2, gzip_args, NULL },		/* compressed */
++	{ { "\037\235" },	2, gzip_args, NULL },		/* compressed */
+ 	/* Uncompress can get stuck; so use gzip first if we have it
+ 	 * Idea from Damien Clark, thanks! */
+-	{ "\037\235",	2, uncompress_args, NULL },	/* compressed */
+-	{ "\037\213",	2, gzip_args, do_zlib },	/* gzipped */
+-	{ "\037\236",	2, gzip_args, NULL },		/* frozen */
+-	{ "\037\240",	2, gzip_args, NULL },		/* SCO LZH */
++	{ { "\037\235" },	2, uncompress_args, NULL },	/* compressed */
++	{ { "\037\213" },	2, gzip_args, do_zlib },	/* gzipped */
++	{ { "\037\236" },	2, gzip_args, NULL },		/* frozen */
++	{ { "\037\240" },	2, gzip_args, NULL },		/* SCO LZH */
+ 	/* the standard pack utilities do not accept standard input */
+-	{ "\037\036",	2, gzip_args, NULL },		/* packed */
+-	{ "PK\3\4",	4, gzip_args, NULL },		/* pkzipped, */
++	{ { "\037\036" },	2, gzip_args, NULL },		/* packed */
++	{ { "PK\3\4" },		4, gzip_args, NULL },		/* pkzipped, */
+ 	/* ...only first file examined */
+-	{ "BZh",	3, bzip2_args, do_bzlib },	/* bzip2-ed */
+-	{ "LZIP",	4, lzip_args, NULL },		/* lzip-ed */
+- 	{ "\3757zXZ\0",	6, xz_args, NULL },		/* XZ Utils */
+- 	{ "LRZI",	4, lrzip_args, NULL },	/* LRZIP */
+- 	{ "\004\"M\030",4, lz4_args, NULL },		/* LZ4 */
+- 	{ "\x28\xB5\x2F\xFD", 4, zstd_args, NULL },	/* zstd */
++	{ { "BZh" },		3, bzip2_args, do_bzlib },	/* bzip2-ed */
++	{ { "LZIP" },		4, lzip_args, NULL },		/* lzip-ed */
++	{ { "\3757zXZ\0" },	6, xz_args, NULL },		/* XZ Utils */
++	{ { "LRZI" },		4, lrzip_args, NULL },		/* LRZIP */
++	{ { "\004\"M\030" },	4, lz4_args, NULL },		/* LZ4 */
++	{ { "\x28\xB5\x2F\xFD" }, 4, zstd_args, NULL },		/* zstd */
+ #ifdef ZLIBSUPPORT
+-	{ RCAST(const void *, zlibcmp),	0, zlib_args, NULL },	/* zlib */
++	{ { .func = zlibcmp },	0, zlib_args, NULL },		/* zlib */
+ #endif
+ };
+ 
+@@ -238,11 +241,10 @@ file_zmagic(struct magic_set *ms, const struct buffer *b, const char *name)
+ 			continue;
+ #ifdef ZLIBSUPPORT
+ 		if (compr[i].maglen == 0)
+-			zm = (RCAST(int (*)(const unsigned char *),
+-			    CCAST(void *, compr[i].magic)))(buf);
++			zm = compr[i].u.func(buf);
+ 		else
+ #endif
+-			zm = memcmp(buf, compr[i].magic, compr[i].maglen) == 0;
++			zm = memcmp(buf, compr[i].u.magic, compr[i].maglen) == 0;
+ 
+ 		if (!zm)
+ 			continue;
+-- 
+2.20.1
+
