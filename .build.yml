@@ -1,0 +1,46 @@
+image: alpine/edge
+packages:
+- bison
+- libarchive-tools
+- lua5.2
+- nasm
+- ncurses
+- ninja
+- tzdata
+- wayland-dev
+sources:
+- https://github.com/michaelforney/oasis
+secrets:
+- 0d338ffe-699f-4e82-85a0-3a4407172bed
+environment:
+  PATH: $HOME/toolchain/bin:$HOME/oasis/out/pkg/texi2mdoc:$PATH
+  PAXREAD: '"bsdtar -x -f -"'
+  GIT_SSH_COMMAND: '"ssh -o StrictHostKeyChecking=no"'
+  SETS: '"core desktop devel extra media net"'
+tasks:
+- setup: |
+    git config --global user.name oasis
+    git config --global user.email oasis
+    git clone --mirror --no-single-branch --depth 1 https://github.com/oasislinux/root-x86_64
+    git clone --depth 1 https://github.com/oasislinux/toolchain
+- build: |
+    cd oasis
+    cat >config.lua <<EOF
+    local sets = dofile 'sets.lua'
+    local set = os.getenv('SET')
+    return {
+    	builddir='out',
+    	fs={{sets[set], exclude={'^include/', '^lib/.*%.a$'}}},
+    	target={toolchain='x86_64-linux-musl', cflags='-O2 -pipe -fpie', cxxflags='\$target_cflags', ldflags='-s -static -pie', pie=true},
+    	host={toolchain='default', cflags='-pipe', ldflags=''},
+    	repo={path='$HOME/root-x86_64.git', flags='--bare', tag='tree', branch=set},
+    }
+    EOF
+    export SET
+    for SET in $SETS ; do
+        lua5.2 setup.lua
+        ninja out/pkg/texi2mdoc/texi2mdoc
+        ninja commit
+    done
+- deploy: |
+    git -C root-x86_64.git push git@github.com:oasislinux/root-x86_64 $SETS
