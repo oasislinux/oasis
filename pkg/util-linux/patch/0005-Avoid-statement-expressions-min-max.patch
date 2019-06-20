@@ -1,0 +1,190 @@
+From cdb8be2758e0b8082d86bd38daec78c1efb6383f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 12 Mar 2019 17:13:45 -0700
+Subject: [PATCH] Avoid statement expressions min/max
+
+---
+ include/c.h                  | 24 ++++++++++--------------
+ lib/mbsalign.c               |  2 +-
+ libfdisk/src/alignment.c     |  8 ++++----
+ libfdisk/src/context.c       |  2 +-
+ libfdisk/src/gpt.c           |  4 ++--
+ libsmartcols/src/calculate.c |  8 ++++----
+ libsmartcols/src/column.c    |  2 +-
+ 7 files changed, 23 insertions(+), 27 deletions(-)
+
+diff --git a/include/c.h b/include/c.h
+index ec3f545ad..0b96ff1c0 100644
+--- a/include/c.h
++++ b/include/c.h
+@@ -124,21 +124,17 @@
+ # define FALSE 0
+ #endif
+ 
+-#ifndef min
+-# define min(x, y) __extension__ ({		\
+-	__typeof__(x) _min1 = (x);		\
+-	__typeof__(y) _min2 = (y);		\
+-	(void) (&_min1 == &_min2);		\
+-	_min1 < _min2 ? _min1 : _min2; })
+-#endif
++static inline uintmax_t
++umax(uintmax_t x, uintmax_t y)
++{
++	return x > y ? x : y;
++}
+ 
+-#ifndef max
+-# define max(x, y) __extension__ ({		\
+-	__typeof__(x) _max1 = (x);		\
+-	__typeof__(y) _max2 = (y);		\
+-	(void) (&_max1 == &_max2);		\
+-	_max1 > _max2 ? _max1 : _max2; })
+-#endif
++static inline uintmax_t
++umin(uintmax_t x, uintmax_t y)
++{
++	return x < y ? x : y;
++}
+ 
+ #ifndef cmp_numbers
+ # define cmp_numbers(x, y) __extension__ ({	\
+diff --git a/lib/mbsalign.c b/lib/mbsalign.c
+index 8fdab9ee9..bb31e7583 100644
+--- a/lib/mbsalign.c
++++ b/lib/mbsalign.c
+@@ -563,7 +563,7 @@ mbsalign_unibyte:
+ 
+       dest = mbs_align_pad (dest, dest_end, start_spaces, padchar);
+       space_left = dest_end - dest;
+-      dest = mempcpy (dest, str_to_print, min (n_used_bytes, space_left));
++      dest = mempcpy (dest, str_to_print, umin (n_used_bytes, space_left));
+       mbs_align_pad (dest, dest_end, end_spaces, padchar);
+     }
+ #ifdef HAVE_WIDECHAR
+diff --git a/libfdisk/src/alignment.c b/libfdisk/src/alignment.c
+index 426fa938c..964c66668 100644
+--- a/libfdisk/src/alignment.c
++++ b/libfdisk/src/alignment.c
+@@ -38,7 +38,7 @@
+  */
+ static int lba_is_aligned(struct fdisk_context *cxt, uintmax_t lba)
+ {
+-	unsigned long granularity = max(cxt->phy_sector_size, cxt->min_io_size);
++	unsigned long granularity = umax(cxt->phy_sector_size, cxt->min_io_size);
+ 	uintmax_t offset;
+ 
+ 	if (cxt->grain > granularity)
+@@ -54,7 +54,7 @@ static int lba_is_aligned(struct fdisk_context *cxt, uintmax_t lba)
+  */
+ static int lba_is_phy_aligned(struct fdisk_context *cxt, fdisk_sector_t lba)
+ {
+-	unsigned long granularity = max(cxt->phy_sector_size, cxt->min_io_size);
++	unsigned long granularity = umax(cxt->phy_sector_size, cxt->min_io_size);
+ 	uintmax_t offset = (lba * cxt->sector_size) % granularity;
+ 
+ 	return !((granularity + cxt->alignment_offset - offset) % granularity);
+@@ -103,7 +103,7 @@ fdisk_sector_t fdisk_align_lba(struct fdisk_context *cxt, fdisk_sector_t lba, in
+ 			 * according the offset to be on the physical boundary.
+ 			 */
+ 			/* fprintf(stderr, "LBA: %llu apply alignment_offset\n", res); */
+-			res -= (max(cxt->phy_sector_size, cxt->min_io_size) -
++			res -= (umax(cxt->phy_sector_size, cxt->min_io_size) -
+ 					cxt->alignment_offset) / cxt->sector_size;
+ 
+ 			if (direction == FDISK_ALIGN_UP && res < lba)
+@@ -396,7 +396,7 @@ int fdisk_apply_user_device_properties(struct fdisk_context *cxt)
+ 	fdisk_reset_alignment(cxt);
+ 
+ 	if (cxt->user_grain) {
+-		unsigned long granularity = max(cxt->phy_sector_size, cxt->min_io_size);
++		unsigned long granularity = umax(cxt->phy_sector_size, cxt->min_io_size);
+ 
+ 		cxt->grain = cxt->user_grain < granularity ? granularity : cxt->user_grain;
+ 		DBG(CXT, ul_debugobj(cxt, "new grain: %lu", cxt->grain));
+diff --git a/libfdisk/src/context.c b/libfdisk/src/context.c
+index 56ebb6c1e..879ca53f3 100644
+--- a/libfdisk/src/context.c
++++ b/libfdisk/src/context.c
+@@ -829,7 +829,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
+ 	/* the current layout */
+ 	fdisk_get_partitions(cxt, &tb);
+ 	/* maximal number of partitions */
+-	nparts = max(fdisk_table_get_nents(tb), fdisk_table_get_nents(org));
++	nparts = umax(fdisk_table_get_nents(tb), fdisk_table_get_nents(org));
+ 
+ 	while (fdisk_diff_tables(org, tb, &itr, &pa, &change) == 0) {
+ 		if (change == FDISK_DIFF_UNCHANGED)
+diff --git a/libfdisk/src/gpt.c b/libfdisk/src/gpt.c
+index 64a9cd7b3..497e9f00b 100644
+--- a/libfdisk/src/gpt.c
++++ b/libfdisk/src/gpt.c
+@@ -557,7 +557,7 @@ static int gpt_mknew_pmbr(struct fdisk_context *cxt)
+ 	pmbr->partition_record[0].end_track    = 0xFF;
+ 	pmbr->partition_record[0].starting_lba = cpu_to_le32(1);
+ 	pmbr->partition_record[0].size_in_lba  =
+-		cpu_to_le32((uint32_t) min( cxt->total_sectors - 1ULL, 0xFFFFFFFFULL) );
++		cpu_to_le32((uint32_t) umin(cxt->total_sectors - 1ULL, 0xFFFFFFFFULL));
+ 
+ 	return 0;
+ }
+@@ -903,7 +903,7 @@ static int valid_pmbr(struct fdisk_context *cxt)
+ 			/* Note that gpt_write_pmbr() overwrites PMBR, but we want to keep it valid already 
+ 			 * in memory too to disable warnings when valid_pmbr() called next time */
+ 			pmbr->partition_record[part].size_in_lba  =
+-				cpu_to_le32((uint32_t) min( cxt->total_sectors - 1ULL, 0xFFFFFFFFULL) );
++				cpu_to_le32((uint32_t) umin(cxt->total_sectors - 1ULL, 0xFFFFFFFFULL));
+ 			fdisk_label_set_changed(cxt->label, 1);
+ 		}
+ 	}
+diff --git a/libsmartcols/src/calculate.c b/libsmartcols/src/calculate.c
+index 9426ebb05..da1ffa8fc 100644
+--- a/libsmartcols/src/calculate.c
++++ b/libsmartcols/src/calculate.c
+@@ -55,7 +55,7 @@ static int count_cell_width(struct libscols_table *tb,
+ 
+ 	if (len == (size_t) -1)		/* ignore broken multibyte strings */
+ 		len = 0;
+-	cl->width_max = max(len, cl->width_max);
++	cl->width_max = umax(len, cl->width_max);
+ 
+ 	if (cl->is_extreme && cl->width_avg && len > cl->width_avg * 2)
+ 		return 0;
+@@ -64,10 +64,10 @@ static int count_cell_width(struct libscols_table *tb,
+ 		cl->extreme_sum += len;
+ 		cl->extreme_count++;
+ 	}
+-	cl->width = max(len, cl->width);
++	cl->width = umax(len, cl->width);
+ 	if (scols_column_is_tree(cl)) {
+ 		size_t treewidth = buffer_get_safe_art_size(buf);
+-		cl->width_treeart = max(cl->width_treeart, treewidth);
++		cl->width_treeart = umax(cl->width_treeart, treewidth);
+ 	}
+ 	return 0;
+ }
+@@ -108,7 +108,7 @@ static int count_column_width(struct libscols_table *tb,
+ 		}
+ 		if (scols_cell_get_data(&cl->header)) {
+ 			size_t len = mbs_safe_width(scols_cell_get_data(&cl->header));
+-			cl->width_min = max(cl->width_min, len);
++			cl->width_min = umax(cl->width_min, len);
+ 		} else
+ 			no_header = 1;
+ 
+diff --git a/libsmartcols/src/column.c b/libsmartcols/src/column.c
+index 4b42938f6..81fe76000 100644
+--- a/libsmartcols/src/column.c
++++ b/libsmartcols/src/column.c
+@@ -343,7 +343,7 @@ size_t scols_wrapnl_chunksize(const struct libscols_column *cl __attribute__((un
+ 		} else
+ 			sz = mbs_safe_width(data);
+ 
+-		sum = max(sum, sz);
++		sum = umax(sum, sz);
+ 		data = p;
+ 	}
+ 
+-- 
+2.20.1
+

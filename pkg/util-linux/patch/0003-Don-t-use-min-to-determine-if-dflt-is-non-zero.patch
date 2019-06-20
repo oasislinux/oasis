@@ -1,0 +1,36 @@
+From 417ef5a41b19c9cc7ccdf3002453c0fec9caa960 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 18 Jun 2019 02:31:19 -0700
+Subject: [PATCH] Don't use min to determine if dflt is non-zero
+
+---
+ libfdisk/src/bsd.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/libfdisk/src/bsd.c b/libfdisk/src/bsd.c
+index 817f50c87..25e878c32 100644
+--- a/libfdisk/src/bsd.c
++++ b/libfdisk/src/bsd.c
+@@ -576,8 +576,7 @@ static uint32_t ask_uint32(struct fdisk_context *cxt,
+ {
+ 	uintmax_t res;
+ 
+-	if (fdisk_ask_number(cxt, min(dflt, (uint32_t) 1), dflt,
+-				UINT32_MAX, mesg, &res) == 0)
++	if (fdisk_ask_number(cxt, !!dflt, dflt, UINT32_MAX, mesg, &res) == 0)
+ 		return res;
+ 	return dflt;
+ }
+@@ -587,8 +586,7 @@ static uint16_t ask_uint16(struct fdisk_context *cxt,
+ {
+ 	uintmax_t res;
+ 
+-	if (fdisk_ask_number(cxt, min(dflt, (uint16_t) 1),
+-				dflt, UINT16_MAX, mesg, &res) == 0)
++	if (fdisk_ask_number(cxt, !!dflt, dflt, UINT16_MAX, mesg, &res) == 0)
+ 		return res;
+ 	return dflt;
+ }
+-- 
+2.20.1
+

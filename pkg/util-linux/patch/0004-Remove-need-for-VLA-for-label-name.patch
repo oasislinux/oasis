@@ -1,0 +1,83 @@
+From 7e73e83c21c9b20dadd429b06db30b2ff8ef5c2b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 18 Jun 2019 11:54:57 -0700
+Subject: [PATCH] Remove need for VLA for label name
+
+---
+ disk-utils/fdisk-list.c    | 10 +++-------
+ libfdisk/src/label.c       |  6 ++++--
+ libfdisk/src/libfdisk.h.in |  2 +-
+ 3 files changed, 8 insertions(+), 10 deletions(-)
+
+diff --git a/disk-utils/fdisk-list.c b/disk-utils/fdisk-list.c
+index 6bc52d704..66c04fb6a 100644
+--- a/disk-utils/fdisk-list.c
++++ b/disk-utils/fdisk-list.c
+@@ -464,19 +464,15 @@ void list_available_columns(FILE *out)
+ static int fieldname_to_id(const char *name, size_t namesz)
+ {
+ 	const struct fdisk_field *fl;
+-	char buf[namesz + 1];
+ 
+ 	assert(name);
+ 	assert(namesz);
+ 	assert(fields_label);
+ 
+-	memcpy(buf, name, namesz);
+-	buf[namesz] = '\0';
+-
+-	fl = fdisk_label_get_field_by_name(fields_label, buf);
++	fl = fdisk_label_get_field_by_name(fields_label, name, namesz);
+ 	if (!fl) {
+-		warnx(_("%s unknown column: %s"),
+-				fdisk_label_get_name(fields_label), buf);
++		warnx(_("%s unknown column: %.*s"),
++				fdisk_label_get_name(fields_label), (int)namesz, name);
+ 		return -1;
+ 	}
+ 	return fdisk_field_get_id(fl);
+diff --git a/libfdisk/src/label.c b/libfdisk/src/label.c
+index 2a11acad6..dcd35cfdc 100644
+--- a/libfdisk/src/label.c
++++ b/libfdisk/src/label.c
+@@ -223,12 +223,14 @@ const struct fdisk_field *fdisk_label_get_field(const struct fdisk_label *lb, in
+  * fdisk_label_get_field_by_name
+  * @lb: label
+  * @name: field name
++ * @len: field name length
+  *
+  * Returns: pointer to static instance of the field.
+  */
+ const struct fdisk_field *fdisk_label_get_field_by_name(
+ 				const struct fdisk_label *lb,
+-				const char *name)
++				const char *name,
++				size_t len)
+ {
+ 	size_t i;
+ 
+@@ -236,7 +238,7 @@ const struct fdisk_field *fdisk_label_get_field_by_name(
+ 	assert(name);
+ 
+ 	for (i = 0; i < lb->nfields; i++) {
+-		if (lb->fields[i].name && strcasecmp(lb->fields[i].name, name) == 0)
++		if (lb->fields[i].name && strncasecmp(lb->fields[i].name, name, len) == 0 && lb->fields[i].name[len] == '\0')
+ 			return &lb->fields[i];
+ 	}
+ 
+diff --git a/libfdisk/src/libfdisk.h.in b/libfdisk/src/libfdisk.h.in
+index 47e778a67..09fdc4522 100644
+--- a/libfdisk/src/libfdisk.h.in
++++ b/libfdisk/src/libfdisk.h.in
+@@ -423,7 +423,7 @@ extern int fdisk_label_get_fields_ids_all(
+ extern const struct fdisk_field *fdisk_label_get_field(const struct fdisk_label *lb, int id);
+ extern const struct fdisk_field *fdisk_label_get_field_by_name(
+ 			const struct fdisk_label *lb,
+-			const char *name);
++			const char *name, size_t len);
+ 
+ extern void fdisk_label_set_changed(struct fdisk_label *lb, int changed);
+ extern int fdisk_label_is_changed(const struct fdisk_label *lb);
+-- 
+2.20.1
+

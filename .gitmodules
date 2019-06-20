@@ -239,6 +239,7 @@
 [submodule "pkg/util-linux/src"]
 	path = pkg/util-linux/src
 	url = https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git
+	ignore = all
 [submodule "pkg/velox/src"]
 	path = pkg/velox/src
 	url = https://github.com/michaelforney/velox

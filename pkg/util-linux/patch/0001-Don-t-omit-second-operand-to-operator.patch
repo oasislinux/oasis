@@ -1,0 +1,95 @@
+From c8ea4def89774dbc0e0d4957108c7d6d18a00320 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 18 Jun 2019 01:38:53 -0700
+Subject: [PATCH] Don't omit second operand to `?` operator
+
+---
+ libfdisk/src/bsd.c      | 2 +-
+ libfdisk/src/dos.c      | 2 +-
+ libfdisk/src/gpt.c      | 2 +-
+ libfdisk/src/parttype.c | 2 +-
+ libfdisk/src/sgi.c      | 2 +-
+ libfdisk/src/sun.c      | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/libfdisk/src/bsd.c b/libfdisk/src/bsd.c
+index 4e05bb328..817f50c87 100644
+--- a/libfdisk/src/bsd.c
++++ b/libfdisk/src/bsd.c
+@@ -116,7 +116,7 @@ static struct fdisk_parttype *bsd_partition_parttype(
+ {
+ 	struct fdisk_parttype *t
+ 		= fdisk_label_get_parttype_from_code(cxt->label, p->p_fstype);
+-	return t ? : fdisk_new_unknown_parttype(p->p_fstype, NULL);
++	return t ? t : fdisk_new_unknown_parttype(p->p_fstype, NULL);
+ }
+ 
+ 
+diff --git a/libfdisk/src/dos.c b/libfdisk/src/dos.c
+index 6dc276e8a..2543edc04 100644
+--- a/libfdisk/src/dos.c
++++ b/libfdisk/src/dos.c
+@@ -136,7 +136,7 @@ static struct fdisk_parttype *dos_partition_parttype(
+ {
+ 	struct fdisk_parttype *t
+ 		= fdisk_label_get_parttype_from_code(cxt->label, p->sys_ind);
+-	return t ? : fdisk_new_unknown_parttype(p->sys_ind, NULL);
++	return t ? t : fdisk_new_unknown_parttype(p->sys_ind, NULL);
+ }
+ 
+ /*
+diff --git a/libfdisk/src/gpt.c b/libfdisk/src/gpt.c
+index 1658782a8..64a9cd7b3 100644
+--- a/libfdisk/src/gpt.c
++++ b/libfdisk/src/gpt.c
+@@ -384,7 +384,7 @@ static struct fdisk_parttype *gpt_partition_parttype(
+ 
+ 	guid_to_string(&guid, str);
+ 	t = fdisk_label_get_parttype_from_string(cxt->label, str);
+-	return t ? : fdisk_new_unknown_parttype(0, str);
++	return t ? t : fdisk_new_unknown_parttype(0, str);
+ }
+ 
+ static void gpt_entry_set_type(struct gpt_entry *e, struct gpt_guid *uuid)
+diff --git a/libfdisk/src/parttype.c b/libfdisk/src/parttype.c
+index 110ef3ba7..5dfe51996 100644
+--- a/libfdisk/src/parttype.c
++++ b/libfdisk/src/parttype.c
+@@ -354,7 +354,7 @@ struct fdisk_parttype *fdisk_label_parse_parttype(
+ 
+ done:
+ 	DBG(PARTTYPE, ul_debugobj(ret, "returns parsed '%s' [%s] partition type",
+-				ret->name, ret->typestr ? : ""));
++				ret->name, ret->typestr ? ret->typestr : ""));
+ 	return ret;
+ }
+ 
+diff --git a/libfdisk/src/sgi.c b/libfdisk/src/sgi.c
+index 884e385ac..4bdc5729c 100644
+--- a/libfdisk/src/sgi.c
++++ b/libfdisk/src/sgi.c
+@@ -351,7 +351,7 @@ static struct fdisk_parttype *sgi_get_parttype(struct fdisk_context *cxt, size_t
+ 		return NULL;
+ 
+ 	t = fdisk_label_get_parttype_from_code(cxt->label, sgi_get_sysid(cxt, n));
+-	return t ? : fdisk_new_unknown_parttype(sgi_get_sysid(cxt, n), NULL);
++	return t ? t : fdisk_new_unknown_parttype(sgi_get_sysid(cxt, n), NULL);
+ }
+ 
+ /* fdisk_get_partition() backend */
+diff --git a/libfdisk/src/sun.c b/libfdisk/src/sun.c
+index df91f543d..b1fb26d06 100644
+--- a/libfdisk/src/sun.c
++++ b/libfdisk/src/sun.c
+@@ -819,7 +819,7 @@ static struct fdisk_parttype *sun_get_parttype(
+ 
+ 	t = fdisk_label_get_parttype_from_code(cxt->label,
+ 			be16_to_cpu(sunlabel->vtoc.infos[n].id));
+-	return t ? : fdisk_new_unknown_parttype(be16_to_cpu(sunlabel->vtoc.infos[n].id), NULL);
++	return t ? t : fdisk_new_unknown_parttype(be16_to_cpu(sunlabel->vtoc.infos[n].id), NULL);
+ }
+ 
+ 
+-- 
+2.20.1
+

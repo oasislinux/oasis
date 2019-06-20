@@ -1,0 +1,55 @@
+From aa429b34bbaf8fee4f8f0d625cd0b9813d9ba733 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 18 Jun 2019 02:29:07 -0700
+Subject: [PATCH] Avoid a few unnecessary statement expressions
+
+---
+ include/c.h | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/include/c.h b/include/c.h
+index 02e9e59fa..ec3f545ad 100644
+--- a/include/c.h
++++ b/include/c.h
+@@ -159,9 +159,8 @@
+  * @member:	the name of the member within the struct.
+  */
+ #ifndef container_of
+-#define container_of(ptr, type, member) __extension__ ({	\
+-	const __typeof__( ((type *)0)->member ) *__mptr = (ptr); \
+-	(type *)( (char *)__mptr - offsetof(type,member) );})
++#define container_of(ptr, type, member)		\
++	((type *)( (char *)ptr - offsetof(type,member) ))
+ #endif
+ 
+ #ifndef HAVE_PROGRAM_INVOCATION_SHORT_NAME
+@@ -239,11 +238,11 @@ errmsg(char doexit, int excode, char adderr, const char *fmt, ...)
+ 
+ /* Don't use inline function to avoid '#include "nls.h"' in c.h
+  */
+-#define errtryhelp(eval) __extension__ ({ \
++#define errtryhelp(eval) do { \
+ 	fprintf(stderr, _("Try '%s --help' for more information.\n"), \
+ 			program_invocation_short_name); \
+ 	exit(eval); \
+-})
++} while (0)
+ 
+ /* After failed execvp() */
+ #define EX_EXEC_FAILED		126	/* Program located, but not usable. */
+@@ -364,10 +363,10 @@ static inline int xusleep(useconds_t usec)
+ 
+ #define UTIL_LINUX_VERSION _("%s from %s\n"), program_invocation_short_name, PACKAGE_STRING
+ 
+-#define print_version(eval) __extension__ ({ \
++#define print_version(eval) do { \
+ 		printf(UTIL_LINUX_VERSION); \
+ 		exit(eval); \
+-})
++} while (0)
+ 
+ /*
+  * scanf modifiers for "strings allocation"
+-- 
+2.20.1
+

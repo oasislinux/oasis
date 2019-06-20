@@ -1,0 +1,28 @@
+From 91696aa317a78a594ca8ae6e6a810fe778490e6a Mon Sep 17 00:00:00 2001
+From: Karel Zak <kzak@redhat.com>
+Date: Tue, 18 Jun 2019 22:05:16 +0200
+Subject: [PATCH] Revert "lib/loopdev.c: Inline loopcxt_has_device"
+
+... no caller in that file, this change has no effect.
+
+This reverts commit 3bb960c7b5f1428f1bff885b2667787e8af5001b.
+---
+ lib/loopdev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/loopdev.c b/lib/loopdev.c
+index ede1b5cdc..99a093926 100644
+--- a/lib/loopdev.c
++++ b/lib/loopdev.c
+@@ -127,7 +127,7 @@ int loopcxt_set_device(struct loopdev_cxt *lc, const char *device)
+ 	return 0;
+ }
+ 
+-inline int loopcxt_has_device(struct loopdev_cxt *lc)
++int loopcxt_has_device(struct loopdev_cxt *lc)
+ {
+ 	return lc && *lc->device;
+ }
+-- 
+2.20.1
+
