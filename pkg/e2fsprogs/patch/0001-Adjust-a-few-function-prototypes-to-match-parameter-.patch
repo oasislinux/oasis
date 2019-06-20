@@ -1,0 +1,46 @@
+From 820815508bbe54fd6be4ad4f4f9a24d69c535ab7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 19 Jun 2019 18:58:10 -0700
+Subject: [PATCH] Adjust a few function prototypes to match parameter
+ qualifiers in definitions
+
+The `const` is not meaningful for function declarations that are not
+definitions, and the definitions don't use it, so just remove it.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ e2fsck/e2fsck.h    | 4 ++--
+ lib/blkid/blkidP.h | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/e2fsck/e2fsck.h b/e2fsck/e2fsck.h
+index 2d359b38..693ad95b 100644
+--- a/e2fsck/e2fsck.h
++++ b/e2fsck/e2fsck.h
+@@ -625,8 +625,8 @@ extern int inode_has_valid_blocks(struct ext2_inode *inode);
+ extern void e2fsck_read_inode(e2fsck_t ctx, unsigned long ino,
+ 			      struct ext2_inode * inode, const char * proc);
+ extern void e2fsck_read_inode_full(e2fsck_t ctx, unsigned long ino,
+-				   struct ext2_inode *inode,
+-				   const int bufsize, const char *proc);
++				   struct ext2_inode *inode, int bufsize,
++				   const char *proc);
+ extern void e2fsck_write_inode(e2fsck_t ctx, unsigned long ino,
+ 			       struct ext2_inode * inode, const char * proc);
+ extern void e2fsck_write_inode_full(e2fsck_t ctx, unsigned long ino,
+diff --git a/lib/blkid/blkidP.h b/lib/blkid/blkidP.h
+index b3fe4a66..816b5344 100644
+--- a/lib/blkid/blkidP.h
++++ b/lib/blkid/blkidP.h
+@@ -108,7 +108,7 @@ struct blkid_struct_cache
+ #define BLKID_BIC_FL_CHANGED	0x0004	/* Cache has changed from disk */
+ 
+ extern char *blkid_strdup(const char *s);
+-extern char *blkid_strndup(const char *s, const int length);
++extern char *blkid_strndup(const char *s, int length);
+ 
+ #define BLKID_CACHE_FILE "/etc/blkid.tab"
+ 
+-- 
+2.20.1
+
