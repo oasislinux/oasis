@@ -1,3 +1,4 @@
+local version = '4.1.3'
 local arch = 'x86'
 cflags{
 	'-Wno-deprecated-declarations',
@@ -61,8 +62,8 @@ genlist('$outdir/internal/libavdevice/indev_list.c', '$srcdir/libavdevice/alldev
 genlist('$outdir/internal/libavdevice/outdev_list.c', '$srcdir/libavdevice/alldevices.c', 'AVOutputFormat', 'outdev_list')
 genlist('$outdir/internal/libavformat/protocol_list.c', '$srcdir/libavformat/protocols.c', 'URLProtocol', 'url_protocols')
 
-rule('ffversion', 'sh $srcdir/ffbuild/version.sh $srcdir $out')
-build('ffversion', '$outdir/include/libavutil/ffversion.h', {'|', '$srcdir/ffbuild/version.sh'})
+rule('ffversion', 'revision=$version $srcdir/ffbuild/version.sh $srcdir $out')
+build('ffversion', '$outdir/include/libavutil/ffversion.h', {'|', '$srcdir/ffbuild/version.sh'}, {version=version})
 
 local options = {}
 for line in iterlines('options.h', 1) do
