@@ -1,0 +1,120 @@
+From f16d8ca1735373b9da42f15955a50c2cfff4e6e3 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 19 Jun 2019 19:32:01 -0700
+Subject: [PATCH] Always replace realpath
+
+---
+ misc.c                          |  4 ++--
+ openbsd-compat/openbsd-compat.h | 12 +-----------
+ openbsd-compat/realpath.c       |  5 +----
+ sftp-server.c                   |  2 +-
+ ssh-agent.c                     |  4 ++--
+ 5 files changed, 7 insertions(+), 20 deletions(-)
+
+diff --git a/misc.c b/misc.c
+index 009e02bc..8669e7d0 100644
+--- a/misc.c
++++ b/misc.c
+@@ -1848,12 +1848,12 @@ safe_path(const char *name, struct stat *stp, const char *pw_dir,
+ 	int comparehome = 0;
+ 	struct stat st;
+ 
+-	if (realpath(name, buf) == NULL) {
++	if (_ssh_compat_realpath(name, buf) == NULL) {
+ 		snprintf(err, errlen, "realpath %s failed: %s", name,
+ 		    strerror(errno));
+ 		return -1;
+ 	}
+-	if (pw_dir != NULL && realpath(pw_dir, homedir) != NULL)
++	if (pw_dir != NULL && _ssh_compat_realpath(pw_dir, homedir) != NULL)
+ 		comparehome = 1;
+ 
+ 	if (!S_ISREG(stp->st_mode)) {
+diff --git a/openbsd-compat/openbsd-compat.h b/openbsd-compat/openbsd-compat.h
+index 865aaee5..4a5fd8cb 100644
+--- a/openbsd-compat/openbsd-compat.h
++++ b/openbsd-compat/openbsd-compat.h
+@@ -81,17 +81,7 @@ void *reallocarray(void *, size_t, size_t);
+ void *recallocarray(void *, size_t, size_t, size_t);
+ #endif
+ 
+-#if !defined(HAVE_REALPATH) || defined(BROKEN_REALPATH)
+-/*
+- * glibc's FORTIFY_SOURCE can redefine this and prevent us picking up the
+- * compat version.
+- */
+-# ifdef BROKEN_REALPATH
+-#  define realpath(x, y) _ssh_compat_realpath(x, y)
+-# endif
+-
+-char *realpath(const char *path, char *resolved);
+-#endif
++char *_ssh_compat_realpath(const char *path, char *resolved);
+ 
+ #ifndef HAVE_RRESVPORT_AF
+ int rresvport_af(int *alport, sa_family_t af);
+diff --git a/openbsd-compat/realpath.c b/openbsd-compat/realpath.c
+index a2f090e5..0f0cea78 100644
+--- a/openbsd-compat/realpath.c
++++ b/openbsd-compat/realpath.c
+@@ -31,8 +31,6 @@
+ 
+ #include "includes.h"
+ 
+-#if !defined(HAVE_REALPATH) || defined(BROKEN_REALPATH)
+-
+ #include <sys/types.h>
+ #include <sys/param.h>
+ #include <sys/stat.h>
+@@ -58,7 +56,7 @@
+  * in which case the path which caused trouble is left in (resolved).
+  */
+ char *
+-realpath(const char *path, char *resolved)
++_ssh_compat_realpath(const char *path, char *resolved)
+ {
+ 	struct stat sb;
+ 	char *p, *q, *s;
+@@ -226,4 +224,3 @@ err:
+ 		free(resolved);
+ 	return (NULL);
+ }
+-#endif /* !defined(HAVE_REALPATH) || defined(BROKEN_REALPATH) */
+diff --git a/sftp-server.c b/sftp-server.c
+index 19a132bd..bc0257af 100644
+--- a/sftp-server.c
++++ b/sftp-server.c
+@@ -1174,7 +1174,7 @@ process_realpath(u_int32_t id)
+ 	}
+ 	debug3("request %u: realpath", id);
+ 	verbose("realpath \"%s\"", path);
+-	if (realpath(path, resolvedname) == NULL) {
++	if (_ssh_compat_realpath(path, resolvedname) == NULL) {
+ 		send_status(id, errno_to_portable(errno));
+ 	} else {
+ 		Stat s;
+diff --git a/ssh-agent.c b/ssh-agent.c
+index d06ecfd9..04a684de 100644
+--- a/ssh-agent.c
++++ b/ssh-agent.c
+@@ -587,7 +587,7 @@ process_add_smartcard_key(SocketEntry *e)
+ 			goto send;
+ 		}
+ 	}
+-	if (realpath(provider, canonical_provider) == NULL) {
++	if (_ssh_compat_realpath(provider, canonical_provider) == NULL) {
+ 		verbose("failed PKCS#11 add of \"%.100s\": realpath: %s",
+ 		    provider, strerror(errno));
+ 		goto send;
+@@ -640,7 +640,7 @@ process_remove_smartcard_key(SocketEntry *e)
+ 	}
+ 	free(pin);
+ 
+-	if (realpath(provider, canonical_provider) == NULL) {
++	if (_ssh_compat_realpath(provider, canonical_provider) == NULL) {
+ 		verbose("failed PKCS#11 add of \"%.100s\": realpath: %s",
+ 		    provider, strerror(errno));
+ 		goto send;
+-- 
+2.20.1
+

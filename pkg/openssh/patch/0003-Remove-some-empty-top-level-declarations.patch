@@ -1,0 +1,132 @@
+From a98535df996adc9e1028760b699b38bdb417a638 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 19 Jun 2019 20:00:52 -0700
+Subject: [PATCH] Remove some empty top-level declarations
+
+---
+ defines.h                       | 7 -------
+ krl.c                           | 6 +++---
+ openbsd-compat/readpassphrase.c | 1 -
+ openbsd-compat/recallocarray.c  | 1 -
+ openbsd-compat/strcasestr.c     | 1 -
+ openbsd-compat/strndup.c        | 2 +-
+ openbsd-compat/vis.c            | 2 --
+ 7 files changed, 4 insertions(+), 16 deletions(-)
+
+diff --git a/defines.h b/defines.h
+index 8f421306..7a54ee2e 100644
+--- a/defines.h
++++ b/defines.h
+@@ -831,13 +831,6 @@ struct winsize {
+ # define SSH_IOBUFSZ 8192
+ #endif
+ 
+-/*
+- * We want functions in openbsd-compat, if enabled, to override system ones.
+- * We no-op out the weak symbol definition rather than remove it to reduce
+- * future sync problems.
+- */
+-#define DEF_WEAK(x)
+-
+ /*
+  * Platforms that have arc4random_uniform() and not arc4random_stir()
+  * shouldn't need the latter.
+diff --git a/krl.c b/krl.c
+index 8e2d5d5d..65f40205 100644
+--- a/krl.c
++++ b/krl.c
+@@ -59,7 +59,7 @@ struct revoked_serial {
+ };
+ static int serial_cmp(struct revoked_serial *a, struct revoked_serial *b);
+ RB_HEAD(revoked_serial_tree, revoked_serial);
+-RB_GENERATE_STATIC(revoked_serial_tree, revoked_serial, tree_entry, serial_cmp);
++RB_GENERATE_STATIC(revoked_serial_tree, revoked_serial, tree_entry, serial_cmp)
+ 
+ /* Tree of key IDs */
+ struct revoked_key_id {
+@@ -68,7 +68,7 @@ struct revoked_key_id {
+ };
+ static int key_id_cmp(struct revoked_key_id *a, struct revoked_key_id *b);
+ RB_HEAD(revoked_key_id_tree, revoked_key_id);
+-RB_GENERATE_STATIC(revoked_key_id_tree, revoked_key_id, tree_entry, key_id_cmp);
++RB_GENERATE_STATIC(revoked_key_id_tree, revoked_key_id, tree_entry, key_id_cmp)
+ 
+ /* Tree of blobs (used for keys and fingerprints) */
+ struct revoked_blob {
+@@ -78,7 +78,7 @@ struct revoked_blob {
+ };
+ static int blob_cmp(struct revoked_blob *a, struct revoked_blob *b);
+ RB_HEAD(revoked_blob_tree, revoked_blob);
+-RB_GENERATE_STATIC(revoked_blob_tree, revoked_blob, tree_entry, blob_cmp);
++RB_GENERATE_STATIC(revoked_blob_tree, revoked_blob, tree_entry, blob_cmp)
+ 
+ /* Tracks revoked certs for a single CA */
+ struct revoked_certs {
+diff --git a/openbsd-compat/readpassphrase.c b/openbsd-compat/readpassphrase.c
+index ff8ff3de..6862a5e9 100644
+--- a/openbsd-compat/readpassphrase.c
++++ b/openbsd-compat/readpassphrase.c
+@@ -191,7 +191,6 @@ restart:
+ 		errno = save_errno;
+ 	return(nr == -1 ? NULL : buf);
+ }
+-DEF_WEAK(readpassphrase);
+ 
+ #if 0
+ char *
+diff --git a/openbsd-compat/recallocarray.c b/openbsd-compat/recallocarray.c
+index 3e1156ce..e391b979 100644
+--- a/openbsd-compat/recallocarray.c
++++ b/openbsd-compat/recallocarray.c
+@@ -85,6 +85,5 @@ recallocarray(void *ptr, size_t oldnmemb, size_t newnmemb, size_t size)
+ 
+ 	return newptr;
+ }
+-/* DEF_WEAK(recallocarray); */
+ 
+ #endif /* HAVE_RECALLOCARRAY */
+diff --git a/openbsd-compat/strcasestr.c b/openbsd-compat/strcasestr.c
+index 4c4d1475..020f3475 100644
+--- a/openbsd-compat/strcasestr.c
++++ b/openbsd-compat/strcasestr.c
+@@ -64,6 +64,5 @@ strcasestr(const char *s, const char *find)
+ 	}
+ 	return ((char *)s);
+ }
+-DEF_WEAK(strcasestr);
+ 
+ #endif
+diff --git a/openbsd-compat/strndup.c b/openbsd-compat/strndup.c
+index 30ac6f04..30e47544 100644
+--- a/openbsd-compat/strndup.c
++++ b/openbsd-compat/strndup.c
+@@ -39,5 +39,5 @@ strndup(const char *str, size_t maxlen)
+ 
+ 	return copy;
+ }
+-DEF_WEAK(strndup);
++
+ #endif  /* HAVE_STRNDUP */
+diff --git a/openbsd-compat/vis.c b/openbsd-compat/vis.c
+index 0e04ed02..a5a05b1b 100644
+--- a/openbsd-compat/vis.c
++++ b/openbsd-compat/vis.c
+@@ -142,7 +142,6 @@ done:
+ 	*dst = '\0';
+ 	return (dst);
+ }
+-DEF_WEAK(vis);
+ 
+ /*
+  * strvis, strnvis, strvisx - visually encode characters from src into dst
+@@ -168,7 +167,6 @@ strvis(char *dst, const char *src, int flag)
+ 	*dst = '\0';
+ 	return (dst - start);
+ }
+-DEF_WEAK(strvis);
+ 
+ int
+ strnvis(char *dst, const char *src, size_t siz, int flag)
+-- 
+2.20.1
+
