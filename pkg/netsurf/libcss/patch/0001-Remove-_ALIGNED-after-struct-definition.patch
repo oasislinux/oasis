@@ -1,0 +1,25 @@
+From c56708515c29edf097bcf1f021728dacf4173d69 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 19 Jun 2019 21:36:22 -0700
+Subject: [PATCH] Remove _ALIGNED after struct definition
+
+---
+ src/stylesheet.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/stylesheet.h b/src/stylesheet.h
+index 18e077e..59632cc 100644
+--- a/src/stylesheet.h
++++ b/src/stylesheet.h
+@@ -120,7 +120,7 @@ struct css_rule {
+ 		     index : 16,		/**< index in sheet */
+ 		     items :  8,		/**< # items in rule */
+ 		     ptype :  1;		/**< css_rule_parent_type */
+-} _ALIGNED;
++};
+ 
+ typedef struct css_rule_selector {
+ 	css_rule base;
+-- 
+2.20.1
+
