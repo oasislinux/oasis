@@ -1,0 +1,736 @@
+From 25f4b5afa6e1158adff616659b5d654a253885d2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 21 Jun 2019 00:07:49 -0700
+Subject: [PATCH] Avoid casts of string literal to integer in initializers
+
+---
+ builtin/am.c            |  2 +-
+ builtin/blame.c         |  2 +-
+ builtin/clone.c         |  4 ++--
+ builtin/commit-tree.c   |  2 +-
+ builtin/commit.c        | 10 +++++-----
+ builtin/config.c        |  6 +++---
+ builtin/describe.c      |  4 ++--
+ builtin/fmt-merge-msg.c |  4 ++--
+ builtin/gc.c            |  2 +-
+ builtin/grep.c          |  4 ++--
+ builtin/init-db.c       |  2 +-
+ builtin/merge.c         |  6 +++---
+ builtin/name-rev.c      |  2 +-
+ builtin/rebase.c        | 18 +++++++++---------
+ builtin/revert.c        |  2 +-
+ builtin/show-branch.c   |  2 +-
+ builtin/tag.c           |  4 ++--
+ builtin/update-index.c  | 22 +++++++++++-----------
+ builtin/write-tree.c    |  2 +-
+ diff.c                  |  2 +-
+ parse-options-cb.c      |  2 +-
+ parse-options.c         | 30 +++++++++++++++---------------
+ parse-options.h         | 31 +++++++++++++++++--------------
+ ref-filter.h            |  2 +-
+ 24 files changed, 85 insertions(+), 82 deletions(-)
+
+diff --git a/builtin/am.c b/builtin/am.c
+index 912d9821b1..07a31fa124 100644
+--- a/builtin/am.c
++++ b/builtin/am.c
+@@ -2253,7 +2253,7 @@ int cmd_am(int argc, const char **argv, const char *prefix)
+ 		OPT_RERERE_AUTOUPDATE(&state.allow_rerere_autoupdate),
+ 		{ OPTION_STRING, 'S', "gpg-sign", &state.sign_commit, N_("key-id"),
+ 		  N_("GPG-sign commits"),
+-		  PARSE_OPT_OPTARG, NULL, (intptr_t) "" },
++		  PARSE_OPT_OPTARG, NULL, { .strval = "" } },
+ 		OPT_HIDDEN_BOOL(0, "rebasing", &state.rebasing,
+ 			N_("(internal use for git-rebase)")),
+ 		OPT_END()
+diff --git a/builtin/blame.c b/builtin/blame.c
+index 21cde57e71..6947378dcc 100644
+--- a/builtin/blame.c
++++ b/builtin/blame.c
+@@ -815,7 +815,7 @@ int cmd_blame(int argc, const char **argv, const char *prefix)
+ 		 * and are only included here to get included in the "-h"
+ 		 * output:
+ 		 */
+-		{ OPTION_LOWLEVEL_CALLBACK, 0, "indent-heuristic", NULL, NULL, N_("Use an experimental heuristic to improve diffs"), PARSE_OPT_NOARG, NULL, 0, parse_opt_unknown_cb },
++		{ OPTION_LOWLEVEL_CALLBACK, 0, "indent-heuristic", NULL, NULL, N_("Use an experimental heuristic to improve diffs"), PARSE_OPT_NOARG, NULL, { 0 }, parse_opt_unknown_cb },
+ 
+ 		OPT_BIT(0, "minimal", &xdl_opts, N_("Spend extra cycles to find better match"), XDF_NEED_MINIMAL),
+ 		OPT_STRING('S', NULL, &revs_file, N_("file"), N_("Use revisions from <file> instead of calling git-rev-list")),
+diff --git a/builtin/clone.c b/builtin/clone.c
+index 85b0d3155d..1884593ed3 100644
+--- a/builtin/clone.c
++++ b/builtin/clone.c
+@@ -77,7 +77,7 @@ static int recurse_submodules_cb(const struct option *opt,
+ 		string_list_append((struct string_list *)opt->value, arg);
+ 	else
+ 		string_list_append((struct string_list *)opt->value,
+-				   (const char *)opt->defval);
++				   opt->def.strval);
+ 
+ 	return 0;
+ }
+@@ -102,7 +102,7 @@ static struct option builtin_clone_options[] = {
+ 	OPT_ALIAS(0, "recursive", "recurse-submodules"),
+ 	{ OPTION_CALLBACK, 0, "recurse-submodules", &option_recurse_submodules,
+ 	  N_("pathspec"), N_("initialize submodules in the clone"),
+-	  PARSE_OPT_OPTARG, recurse_submodules_cb, (intptr_t)"." },
++	  PARSE_OPT_OPTARG, recurse_submodules_cb, { .strval = "." } },
+ 	OPT_INTEGER('j', "jobs", &max_jobs,
+ 		    N_("number of submodules cloned in parallel")),
+ 	OPT_STRING(0, "template", &option_template, N_("template-directory"),
+diff --git a/builtin/commit-tree.c b/builtin/commit-tree.c
+index b866d83951..13e7647f16 100644
+--- a/builtin/commit-tree.c
++++ b/builtin/commit-tree.c
+@@ -118,7 +118,7 @@ int cmd_commit_tree(int argc, const char **argv, const char *prefix)
+ 			N_("read commit log message from file"), PARSE_OPT_NONEG,
+ 			parse_file_arg_callback },
+ 		{ OPTION_STRING, 'S', "gpg-sign", &sign_commit, N_("key-id"),
+-			N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, (intptr_t) "" },
++			N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, { .strval = "" } },
+ 		OPT_END()
+ 	};
+ 
+diff --git a/builtin/commit.c b/builtin/commit.c
+index 1c9e8e2228..121a6cca17 100644
+--- a/builtin/commit.c
++++ b/builtin/commit.c
+@@ -1334,14 +1334,14 @@ int cmd_status(int argc, const char **argv, const char *prefix)
+ 		{ OPTION_STRING, 'u', "untracked-files", &untracked_files_arg,
+ 		  N_("mode"),
+ 		  N_("show untracked files, optional modes: all, normal, no. (Default: all)"),
+-		  PARSE_OPT_OPTARG, NULL, (intptr_t)"all" },
++		  PARSE_OPT_OPTARG, NULL, { .strval = "all" } },
+ 		{ OPTION_STRING, 0, "ignored", &ignored_arg,
+ 		  N_("mode"),
+ 		  N_("show ignored files, optional modes: traditional, matching, no. (Default: traditional)"),
+-		  PARSE_OPT_OPTARG, NULL, (intptr_t)"traditional" },
++		  PARSE_OPT_OPTARG, NULL, { .strval = "traditional" } },
+ 		{ OPTION_STRING, 0, "ignore-submodules", &ignore_submodule_arg, N_("when"),
+ 		  N_("ignore changes to submodules, optional when: all, dirty, untracked. (Default: all)"),
+-		  PARSE_OPT_OPTARG, NULL, (intptr_t)"all" },
++		  PARSE_OPT_OPTARG, NULL, { .strval = "all" } },
+ 		OPT_COLUMN(0, "column", &s.colopts, N_("list untracked files in columns")),
+ 		OPT_BOOL(0, "no-renames", &no_renames, N_("do not detect renames")),
+ 		{ OPTION_CALLBACK, 'M', "find-renames", &rename_score_arg,
+@@ -1489,7 +1489,7 @@ int cmd_commit(int argc, const char **argv, const char *prefix)
+ 		OPT_CLEANUP(&cleanup_arg),
+ 		OPT_BOOL(0, "status", &include_status, N_("include status in commit message template")),
+ 		{ OPTION_STRING, 'S', "gpg-sign", &sign_commit, N_("key-id"),
+-		  N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, (intptr_t) "" },
++		  N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, { .strval = "" } },
+ 		/* end commit message options */
+ 
+ 		OPT_GROUP(N_("Commit contents options")),
+@@ -1514,7 +1514,7 @@ int cmd_commit(int argc, const char **argv, const char *prefix)
+ 			 N_("terminate entries with NUL")),
+ 		OPT_BOOL(0, "amend", &amend, N_("amend previous commit")),
+ 		OPT_BOOL(0, "no-post-rewrite", &no_post_rewrite, N_("bypass post-rewrite hook")),
+-		{ OPTION_STRING, 'u', "untracked-files", &untracked_files_arg, N_("mode"), N_("show untracked files, optional modes: all, normal, no. (Default: all)"), PARSE_OPT_OPTARG, NULL, (intptr_t)"all" },
++		{ OPTION_STRING, 'u', "untracked-files", &untracked_files_arg, N_("mode"), N_("show untracked files, optional modes: all, normal, no. (Default: all)"), PARSE_OPT_OPTARG, NULL, { .strval = "all" } },
+ 		/* end commit contents options */
+ 
+ 		OPT_HIDDEN_BOOL(0, "allow-empty", &allow_empty,
+diff --git a/builtin/config.c b/builtin/config.c
+index 98d65bc0ad..071853337b 100644
+--- a/builtin/config.c
++++ b/builtin/config.c
+@@ -67,7 +67,7 @@ static int show_origin;
+ 
+ #define OPT_CALLBACK_VALUE(s, l, v, h, i) \
+ 	{ OPTION_CALLBACK, (s), (l), (v), NULL, (h), PARSE_OPT_NOARG | \
+-	PARSE_OPT_NONEG, option_parse_type, (i) }
++	PARSE_OPT_NONEG, option_parse_type, { (i) } }
+ 
+ static NORETURN void usage_builtin_config(void);
+ 
+@@ -83,9 +83,9 @@ static int option_parse_type(const struct option *opt, const char *arg,
+ 
+ 	/*
+ 	 * To support '--<type>' style flags, begin with new_type equal to
+-	 * opt->defval.
++	 * opt->def.intval.
+ 	 */
+-	new_type = opt->defval;
++	new_type = opt->def.intval;
+ 	if (!new_type) {
+ 		if (!strcmp(arg, "bool"))
+ 			new_type = TYPE_BOOL;
+diff --git a/builtin/describe.c b/builtin/describe.c
+index 1409cedce2..1857e12340 100644
+--- a/builtin/describe.c
++++ b/builtin/describe.c
+@@ -551,10 +551,10 @@ int cmd_describe(int argc, const char **argv, const char *prefix)
+ 			N_("show abbreviated commit object as fallback")),
+ 		{OPTION_STRING, 0, "dirty",  &dirty, N_("mark"),
+ 			N_("append <mark> on dirty working tree (default: \"-dirty\")"),
+-			PARSE_OPT_OPTARG, NULL, (intptr_t) "-dirty"},
++			PARSE_OPT_OPTARG, NULL, {.strval = "-dirty"}},
+ 		{OPTION_STRING, 0, "broken",  &broken, N_("mark"),
+ 			N_("append <mark> on broken working tree (default: \"-broken\")"),
+-			PARSE_OPT_OPTARG, NULL, (intptr_t) "-broken"},
++			PARSE_OPT_OPTARG, NULL, {.strval = "-broken"}},
+ 		OPT_END(),
+ 	};
+ 
+diff --git a/builtin/fmt-merge-msg.c b/builtin/fmt-merge-msg.c
+index a4615587fd..507d1841ab 100644
+--- a/builtin/fmt-merge-msg.c
++++ b/builtin/fmt-merge-msg.c
+@@ -670,11 +670,11 @@ int cmd_fmt_merge_msg(int argc, const char **argv, const char *prefix)
+ 	struct option options[] = {
+ 		{ OPTION_INTEGER, 0, "log", &shortlog_len, N_("n"),
+ 		  N_("populate log with at most <n> entries from shortlog"),
+-		  PARSE_OPT_OPTARG, NULL, DEFAULT_MERGE_LOG_LEN },
++		  PARSE_OPT_OPTARG, NULL, { DEFAULT_MERGE_LOG_LEN } },
+ 		{ OPTION_INTEGER, 0, "summary", &shortlog_len, N_("n"),
+ 		  N_("alias for --log (deprecated)"),
+ 		  PARSE_OPT_OPTARG | PARSE_OPT_HIDDEN, NULL,
+-		  DEFAULT_MERGE_LOG_LEN },
++		  { DEFAULT_MERGE_LOG_LEN } },
+ 		OPT_STRING('m', "message", &message, N_("text"),
+ 			N_("use <text> as start of message")),
+ 		OPT_FILENAME('F', "file", &inpath, N_("file to read from")),
+diff --git a/builtin/gc.c b/builtin/gc.c
+index 8943bcc300..e823b6cfb3 100644
+--- a/builtin/gc.c
++++ b/builtin/gc.c
+@@ -538,7 +538,7 @@ int cmd_gc(int argc, const char **argv, const char *prefix)
+ 		OPT__QUIET(&quiet, N_("suppress progress reporting")),
+ 		{ OPTION_STRING, 0, "prune", &prune_expire, N_("date"),
+ 			N_("prune unreferenced objects"),
+-			PARSE_OPT_OPTARG, NULL, (intptr_t)prune_expire },
++			PARSE_OPT_OPTARG, NULL, { .strval = prune_expire } },
+ 		OPT_BOOL(0, "aggressive", &aggressive, N_("be more thorough (increased runtime)")),
+ 		OPT_BOOL_F(0, "auto", &auto_gc, N_("enable auto-gc mode"),
+ 			   PARSE_OPT_NOCOMPLETE),
+diff --git a/builtin/grep.c b/builtin/grep.c
+index 580fd38f41..7653f461b6 100644
+--- a/builtin/grep.c
++++ b/builtin/grep.c
+@@ -835,7 +835,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
+ 			    N_("search in subdirectories (default)"), -1),
+ 		{ OPTION_INTEGER, 0, "max-depth", &opt.max_depth, N_("depth"),
+ 			N_("descend at most <depth> levels"), PARSE_OPT_NONEG,
+-			NULL, 1 },
++			NULL, { 1 } },
+ 		OPT_GROUP(""),
+ 		OPT_SET_INT('E', "extended-regexp", &pattern_type_arg,
+ 			    N_("use extended POSIX regular expressions"),
+@@ -919,7 +919,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
+ 		{ OPTION_STRING, 'O', "open-files-in-pager", &show_in_pager,
+ 			N_("pager"), N_("show matching files in the pager"),
+ 			PARSE_OPT_OPTARG | PARSE_OPT_NOCOMPLETE,
+-			NULL, (intptr_t)default_pager },
++			NULL, { .strval = default_pager } },
+ 		OPT_BOOL_F(0, "ext-grep", &external_grep_allowed__ignored,
+ 			   N_("allow calling of grep(1) (ignored by this build)"),
+ 			   PARSE_OPT_NOCOMPLETE),
+diff --git a/builtin/init-db.c b/builtin/init-db.c
+index 6ca002893f..4137ff74f1 100644
+--- a/builtin/init-db.c
++++ b/builtin/init-db.c
+@@ -490,7 +490,7 @@ int cmd_init_db(int argc, const char **argv, const char *prefix)
+ 		{ OPTION_CALLBACK, 0, "shared", &init_shared_repository,
+ 			N_("permissions"),
+ 			N_("specify that the git repository is to be shared amongst several users"),
+-			PARSE_OPT_OPTARG | PARSE_OPT_NONEG, shared_callback, 0},
++			PARSE_OPT_OPTARG | PARSE_OPT_NONEG, shared_callback, { 0 } },
+ 		OPT_BIT('q', "quiet", &flags, N_("be quiet"), INIT_DB_QUIET),
+ 		OPT_STRING(0, "separate-git-dir", &real_git_dir, N_("gitdir"),
+ 			   N_("separate git dir from working tree")),
+diff --git a/builtin/merge.c b/builtin/merge.c
+index e96f72af80..259d86a2c0 100644
+--- a/builtin/merge.c
++++ b/builtin/merge.c
+@@ -246,7 +246,7 @@ static struct option builtin_merge_options[] = {
+ 	OPT_BOOL(0, "summary", &show_diffstat, N_("(synonym to --stat)")),
+ 	{ OPTION_INTEGER, 0, "log", &shortlog_len, N_("n"),
+ 	  N_("add (at most <n>) entries from shortlog to merge commit message"),
+-	  PARSE_OPT_OPTARG, NULL, DEFAULT_MERGE_LOG_LEN },
++	  PARSE_OPT_OPTARG, NULL, { DEFAULT_MERGE_LOG_LEN } },
+ 	OPT_BOOL(0, "squash", &squash,
+ 		N_("create a single commit instead of doing a merge")),
+ 	OPT_BOOL(0, "commit", &option_commit,
+@@ -270,7 +270,7 @@ static struct option builtin_merge_options[] = {
+ 		option_parse_message),
+ 	{ OPTION_LOWLEVEL_CALLBACK, 'F', "file", &merge_msg, N_("path"),
+ 		N_("read message from file"), PARSE_OPT_NONEG,
+-		NULL, 0, option_read_message },
++		NULL, { 0 }, option_read_message },
+ 	OPT__VERBOSITY(&verbosity),
+ 	OPT_BOOL(0, "abort", &abort_current_merge,
+ 		N_("abort the current in-progress merge")),
+@@ -280,7 +280,7 @@ static struct option builtin_merge_options[] = {
+ 		 N_("allow merging unrelated histories")),
+ 	OPT_SET_INT(0, "progress", &show_progress, N_("force progress reporting"), 1),
+ 	{ OPTION_STRING, 'S', "gpg-sign", &sign_commit, N_("key-id"),
+-	  N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, (intptr_t) "" },
++	  N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, { .strval = "" } },
+ 	OPT_BOOL(0, "overwrite-ignore", &overwrite_ignore, N_("update ignored files (default)")),
+ 	OPT_BOOL(0, "signoff", &signoff, N_("add Signed-off-by:")),
+ 	OPT_BOOL(0, "verify", &verify_msg, N_("verify commit-msg hook")),
+diff --git a/builtin/name-rev.c b/builtin/name-rev.c
+index 05ccf53e00..baca21432e 100644
+--- a/builtin/name-rev.c
++++ b/builtin/name-rev.c
+@@ -428,7 +428,7 @@ int cmd_name_rev(int argc, const char **argv, const char *prefix)
+ 			/* A Hidden OPT_BOOL */
+ 			OPTION_SET_INT, 0, "peel-tag", &peel_tag, NULL,
+ 			N_("dereference tags in the input (internal use)"),
+-			PARSE_OPT_NOARG | PARSE_OPT_HIDDEN, NULL, 1,
++			PARSE_OPT_NOARG | PARSE_OPT_HIDDEN, NULL, { 1 },
+ 		},
+ 		OPT_END(),
+ 	};
+diff --git a/builtin/rebase.c b/builtin/rebase.c
+index db6ca9bd7d..5de445da04 100644
+--- a/builtin/rebase.c
++++ b/builtin/rebase.c
+@@ -476,19 +476,19 @@ int cmd_rebase__interactive(int argc, const char **argv, const char *prefix)
+ 		OPT_CMDMODE(0, "add-exec-commands", &command,
+ 			N_("insert exec commands in todo list"), ACTION_ADD_EXEC),
+ 		{ OPTION_CALLBACK, 0, "onto", &opts.onto, N_("onto"), N_("onto"),
+-		  PARSE_OPT_NONEG, parse_opt_commit, 0 },
++		  PARSE_OPT_NONEG, parse_opt_commit, { 0 } },
+ 		{ OPTION_CALLBACK, 0, "restrict-revision", &opts.restrict_revision,
+ 		  N_("restrict-revision"), N_("restrict revision"),
+-		  PARSE_OPT_NONEG, parse_opt_commit, 0 },
++		  PARSE_OPT_NONEG, parse_opt_commit, { 0 } },
+ 		{ OPTION_CALLBACK, 0, "squash-onto", &squash_onto, N_("squash-onto"),
+-		  N_("squash onto"), PARSE_OPT_NONEG, parse_opt_object_id, 0 },
++		  N_("squash onto"), PARSE_OPT_NONEG, parse_opt_object_id, { 0 } },
+ 		{ OPTION_CALLBACK, 0, "upstream", &opts.upstream, N_("upstream"),
+ 		  N_("the upstream commit"), PARSE_OPT_NONEG, parse_opt_commit,
+-		  0 },
++		  { 0 } },
+ 		OPT_STRING(0, "head-name", &opts.head_name, N_("head-name"), N_("head name")),
+ 		{ OPTION_STRING, 'S', "gpg-sign", &opts.gpg_sign_opt, N_("key-id"),
+ 			N_("GPG-sign commits"),
+-			PARSE_OPT_OPTARG, NULL, (intptr_t) "" },
++			PARSE_OPT_OPTARG, NULL, { .strval = "" } },
+ 		OPT_STRING(0, "strategy", &opts.strategy, N_("strategy"),
+ 			   N_("rebase strategy")),
+ 		OPT_STRING(0, "strategy-opts", &opts.strategy_opts, N_("strategy-opts"),
+@@ -1398,7 +1398,7 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
+ 			REBASE_NO_QUIET | REBASE_VERBOSE | REBASE_DIFFSTAT),
+ 		{OPTION_NEGBIT, 'n', "no-stat", &options.flags, NULL,
+ 			N_("do not show diffstat of what changed upstream"),
+-			PARSE_OPT_NOARG, NULL, REBASE_DIFFSTAT },
++			PARSE_OPT_NOARG, NULL, { REBASE_DIFFSTAT } },
+ 		OPT_BOOL(0, "signoff", &options.signoff,
+ 			 N_("add a Signed-off-by: line to each commit")),
+ 		OPT_PASSTHRU_ARGV(0, "ignore-whitespace", &options.git_am_opts,
+@@ -1452,7 +1452,7 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
+ 			    "squash!/fixup! under -i")),
+ 		{ OPTION_STRING, 'S', "gpg-sign", &gpg_sign, N_("key-id"),
+ 			N_("GPG-sign commits"),
+-			PARSE_OPT_OPTARG, NULL, (intptr_t) "" },
++			PARSE_OPT_OPTARG, NULL, { .strval = "" } },
+ 		OPT_BOOL(0, "autostash", &options.autostash,
+ 			 N_("automatically stash/stash pop before and after")),
+ 		OPT_STRING_LIST('x', "exec", &exec, N_("exec"),
+@@ -1461,10 +1461,10 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
+ 		OPT_BOOL(0, "allow-empty-message",
+ 			 &options.allow_empty_message,
+ 			 N_("allow rebasing commits with empty messages")),
+-		{OPTION_STRING, 'r', "rebase-merges", &rebase_merges,
++		{ OPTION_STRING, 'r', "rebase-merges", &rebase_merges,
+ 			N_("mode"),
+ 			N_("try to rebase merges instead of skipping them"),
+-			PARSE_OPT_OPTARG, NULL, (intptr_t)""},
++			PARSE_OPT_OPTARG, NULL, { .strval = "" } },
+ 		OPT_BOOL(0, "fork-point", &fork_point,
+ 			 N_("use 'merge-base --fork-point' to refine upstream")),
+ 		OPT_STRING('s', "strategy", &options.strategy,
+diff --git a/builtin/revert.c b/builtin/revert.c
+index d4dcedbdc6..d73bbf7ffa 100644
+--- a/builtin/revert.c
++++ b/builtin/revert.c
+@@ -114,7 +114,7 @@ static int run_sequencer(int argc, const char **argv, struct replay_opts *opts)
+ 		OPT_CALLBACK('X', "strategy-option", &opts, N_("option"),
+ 			N_("option for merge strategy"), option_parse_x),
+ 		{ OPTION_STRING, 'S', "gpg-sign", &opts->gpg_sign, N_("key-id"),
+-		  N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, (intptr_t) "" },
++		  N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, { .strval = "" } },
+ 		OPT_END()
+ 	};
+ 	struct option *options = base_options;
+diff --git a/builtin/show-branch.c b/builtin/show-branch.c
+index 082daeac32..21e32e3b87 100644
+--- a/builtin/show-branch.c
++++ b/builtin/show-branch.c
+@@ -650,7 +650,7 @@ int cmd_show_branch(int ac, const char **av, const char *prefix)
+ 			    N_("color '*!+-' corresponding to the branch")),
+ 		{ OPTION_INTEGER, 0, "more", &extra, N_("n"),
+ 			    N_("show <n> more commits after the common ancestor"),
+-			    PARSE_OPT_OPTARG, NULL, (intptr_t)1 },
++			    PARSE_OPT_OPTARG, NULL, { 1 } },
+ 		OPT_SET_INT(0, "list", &extra, N_("synonym to more=-1"), -1),
+ 		OPT_BOOL(0, "no-name", &no_name, N_("suppress naming strings")),
+ 		OPT_BOOL(0, "current", &with_current_branch,
+diff --git a/builtin/tag.c b/builtin/tag.c
+index ef37dccf86..991da75157 100644
+--- a/builtin/tag.c
++++ b/builtin/tag.c
+@@ -396,7 +396,7 @@ int cmd_tag(int argc, const char **argv, const char *prefix)
+ 		OPT_CMDMODE('l', "list", &cmdmode, N_("list tag names"), 'l'),
+ 		{ OPTION_INTEGER, 'n', NULL, &filter.lines, N_("n"),
+ 				N_("print <n> lines of each tag message"),
+-				PARSE_OPT_OPTARG, NULL, 1 },
++				PARSE_OPT_OPTARG, NULL, { 1 } },
+ 		OPT_CMDMODE('d', "delete", &cmdmode, N_("delete tags"), 'd'),
+ 		OPT_CMDMODE('v', "verify", &cmdmode, N_("verify tags"), 'v'),
+ 
+@@ -426,7 +426,7 @@ int cmd_tag(int argc, const char **argv, const char *prefix)
+ 		{
+ 			OPTION_CALLBACK, 0, "points-at", &filter.points_at, N_("object"),
+ 			N_("print only tags of the object"), PARSE_OPT_LASTARG_DEFAULT,
+-			parse_opt_object_name, (intptr_t) "HEAD"
++			parse_opt_object_name, { .strval = "HEAD" },
+ 		},
+ 		OPT_STRING(  0 , "format", &format.format, N_("format"),
+ 			   N_("format to use for the output")),
+diff --git a/builtin/update-index.c b/builtin/update-index.c
+index 27db0928bf..11af1887ee 100644
+--- a/builtin/update-index.c
++++ b/builtin/update-index.c
+@@ -995,7 +995,7 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
+ 			N_("add the specified entry to the index"),
+ 			PARSE_OPT_NOARG | /* disallow --cacheinfo=<mode> form */
+ 			PARSE_OPT_NONEG | PARSE_OPT_LITERAL_ARGHELP,
+-			NULL, 0,
++			NULL, {0},
+ 			cacheinfo_callback},
+ 		{OPTION_CALLBACK, 0, "chmod", &set_executable_bit, "(+|-)x",
+ 			N_("override the executable bit of the listed files"),
+@@ -1003,16 +1003,16 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
+ 			chmod_callback},
+ 		{OPTION_SET_INT, 0, "assume-unchanged", &mark_valid_only, NULL,
+ 			N_("mark files as \"not changing\""),
+-			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, MARK_FLAG},
++			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, {MARK_FLAG}},
+ 		{OPTION_SET_INT, 0, "no-assume-unchanged", &mark_valid_only, NULL,
+ 			N_("clear assumed-unchanged bit"),
+-			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, UNMARK_FLAG},
++			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, {UNMARK_FLAG}},
+ 		{OPTION_SET_INT, 0, "skip-worktree", &mark_skip_worktree_only, NULL,
+ 			N_("mark files as \"index-only\""),
+-			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, MARK_FLAG},
++			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, {MARK_FLAG}},
+ 		{OPTION_SET_INT, 0, "no-skip-worktree", &mark_skip_worktree_only, NULL,
+ 			N_("clear skip-worktree bit"),
+-			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, UNMARK_FLAG},
++			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, {UNMARK_FLAG}},
+ 		OPT_SET_INT(0, "info-only", &info_only,
+ 			N_("add to index only; do not add content to object database"), 1),
+ 		OPT_SET_INT(0, "force-remove", &force_remove,
+@@ -1022,19 +1022,19 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
+ 		{OPTION_LOWLEVEL_CALLBACK, 0, "stdin", &read_from_stdin, NULL,
+ 			N_("read list of paths to be updated from standard input"),
+ 			PARSE_OPT_NONEG | PARSE_OPT_NOARG,
+-			NULL, 0, stdin_callback},
++			NULL, {0}, stdin_callback},
+ 		{OPTION_LOWLEVEL_CALLBACK, 0, "index-info", &nul_term_line, NULL,
+ 			N_("add entries from standard input to the index"),
+ 			PARSE_OPT_NONEG | PARSE_OPT_NOARG,
+-			NULL, 0, stdin_cacheinfo_callback},
++			NULL, {0}, stdin_cacheinfo_callback},
+ 		{OPTION_LOWLEVEL_CALLBACK, 0, "unresolve", &has_errors, NULL,
+ 			N_("repopulate stages #2 and #3 for the listed paths"),
+ 			PARSE_OPT_NONEG | PARSE_OPT_NOARG,
+-			NULL, 0, unresolve_callback},
++			NULL, {0}, unresolve_callback},
+ 		{OPTION_LOWLEVEL_CALLBACK, 'g', "again", &has_errors, NULL,
+ 			N_("only update entries that differ from HEAD"),
+ 			PARSE_OPT_NONEG | PARSE_OPT_NOARG,
+-			NULL, 0, reupdate_callback},
++			NULL, {0}, reupdate_callback},
+ 		OPT_BIT(0, "ignore-missing", &refresh_args.flags,
+ 			N_("ignore files missing from worktree"),
+ 			REFRESH_IGNORE_MISSING),
+@@ -1060,10 +1060,10 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
+ 			N_("enable or disable file system monitor")),
+ 		{OPTION_SET_INT, 0, "fsmonitor-valid", &mark_fsmonitor_only, NULL,
+ 			N_("mark files as fsmonitor valid"),
+-			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, MARK_FLAG},
++			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, {MARK_FLAG}},
+ 		{OPTION_SET_INT, 0, "no-fsmonitor-valid", &mark_fsmonitor_only, NULL,
+ 			N_("clear fsmonitor valid bit"),
+-			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, UNMARK_FLAG},
++			PARSE_OPT_NOARG | PARSE_OPT_NONEG, NULL, {UNMARK_FLAG}},
+ 		OPT_END()
+ 	};
+ 
+diff --git a/builtin/write-tree.c b/builtin/write-tree.c
+index 3d46d22ee5..635f4e7219 100644
+--- a/builtin/write-tree.c
++++ b/builtin/write-tree.c
+@@ -30,7 +30,7 @@ int cmd_write_tree(int argc, const char **argv, const char *unused_prefix)
+ 		{ OPTION_BIT, 0, "ignore-cache-tree", &flags, NULL,
+ 		  N_("only useful for debugging"),
+ 		  PARSE_OPT_HIDDEN | PARSE_OPT_NOARG, NULL,
+-		  WRITE_TREE_IGNORE_CACHE_TREE },
++		  { WRITE_TREE_IGNORE_CACHE_TREE } },
+ 		OPT_END()
+ 	};
+ 
+diff --git a/diff.c b/diff.c
+index a654d46f6a..7ef104dd69 100644
+--- a/diff.c
++++ b/diff.c
+@@ -5515,7 +5515,7 @@ static void prep_parse_options(struct diff_options *options)
+ 			       PARSE_OPT_NONEG, diff_opt_diff_filter),
+ 		{ OPTION_CALLBACK, 0, "output", options, N_("<file>"),
+ 		  N_("Output to a specific file"),
+-		  PARSE_OPT_NONEG, NULL, 0, diff_opt_output },
++		  PARSE_OPT_NONEG, NULL, { 0 }, diff_opt_output },
+ 
+ 		OPT_END()
+ 	};
+diff --git a/parse-options-cb.c b/parse-options-cb.c
+index a3de795c58..0cdb4c3061 100644
+--- a/parse-options-cb.c
++++ b/parse-options-cb.c
+@@ -48,7 +48,7 @@ int parse_opt_color_flag_cb(const struct option *opt, const char *arg,
+ 	int value;
+ 
+ 	if (!arg)
+-		arg = unset ? "never" : (const char *)opt->defval;
++		arg = unset ? "never" : opt->def.strval;
+ 	value = git_config_colorbool(NULL, arg);
+ 	if (value < 0)
+ 		return error(_("option `%s' expects \"always\", \"auto\", or \"never\""),
+diff --git a/parse-options.c b/parse-options.c
+index 87b26a1d92..4edaeabc0b 100644
+--- a/parse-options.c
++++ b/parse-options.c
+@@ -30,7 +30,7 @@ static enum parse_opt_result get_arg(struct parse_opt_ctx_t *p,
+ 		*arg = p->opt;
+ 		p->opt = NULL;
+ 	} else if (p->argc == 1 && (opt->flags & PARSE_OPT_LASTARG_DEFAULT)) {
+-		*arg = (const char *)opt->defval;
++		*arg = opt->def.strval;
+ 	} else if (p->argc > 1) {
+ 		p->argc--;
+ 		*arg = *++p->argv;
+@@ -63,7 +63,7 @@ static enum parse_opt_result opt_command_mode_error(
+ 		if (that == opt ||
+ 		    that->type != OPTION_CMDMODE ||
+ 		    that->value != opt->value ||
+-		    that->defval != *(int *)opt->value)
++		    that->def.intval != *(int *)opt->value)
+ 			continue;
+ 
+ 		if (that->long_name)
+@@ -101,23 +101,23 @@ static enum parse_opt_result get_value(struct parse_opt_ctx_t *p,
+ 
+ 	case OPTION_BIT:
+ 		if (unset)
+-			*(int *)opt->value &= ~opt->defval;
++			*(int *)opt->value &= ~opt->def.intval;
+ 		else
+-			*(int *)opt->value |= opt->defval;
++			*(int *)opt->value |= opt->def.intval;
+ 		return 0;
+ 
+ 	case OPTION_NEGBIT:
+ 		if (unset)
+-			*(int *)opt->value |= opt->defval;
++			*(int *)opt->value |= opt->def.intval;
+ 		else
+-			*(int *)opt->value &= ~opt->defval;
++			*(int *)opt->value &= ~opt->def.intval;
+ 		return 0;
+ 
+ 	case OPTION_BITOP:
+ 		if (unset)
+ 			BUG("BITOP can't have unset form");
+ 		*(int *)opt->value &= ~opt->extra;
+-		*(int *)opt->value |= opt->defval;
++		*(int *)opt->value |= opt->def.intval;
+ 		return 0;
+ 
+ 	case OPTION_COUNTUP:
+@@ -127,7 +127,7 @@ static enum parse_opt_result get_value(struct parse_opt_ctx_t *p,
+ 		return 0;
+ 
+ 	case OPTION_SET_INT:
+-		*(int *)opt->value = unset ? 0 : opt->defval;
++		*(int *)opt->value = unset ? 0 : opt->def.intval;
+ 		return 0;
+ 
+ 	case OPTION_CMDMODE:
+@@ -135,16 +135,16 @@ static enum parse_opt_result get_value(struct parse_opt_ctx_t *p,
+ 		 * Giving the same mode option twice, although is unnecessary,
+ 		 * is not a grave error, so let it pass.
+ 		 */
+-		if (*(int *)opt->value && *(int *)opt->value != opt->defval)
++		if (*(int *)opt->value && *(int *)opt->value != opt->def.intval)
+ 			return opt_command_mode_error(opt, all_opts, flags);
+-		*(int *)opt->value = opt->defval;
++		*(int *)opt->value = opt->def.intval;
+ 		return 0;
+ 
+ 	case OPTION_STRING:
+ 		if (unset)
+ 			*(const char **)opt->value = NULL;
+ 		else if (opt->flags & PARSE_OPT_OPTARG && !p->opt)
+-			*(const char **)opt->value = (const char *)opt->defval;
++			*(const char **)opt->value = opt->def.strval;
+ 		else
+ 			return get_arg(p, opt, flags, (const char **)opt->value);
+ 		return 0;
+@@ -154,7 +154,7 @@ static enum parse_opt_result get_value(struct parse_opt_ctx_t *p,
+ 		if (unset)
+ 			*(const char **)opt->value = NULL;
+ 		else if (opt->flags & PARSE_OPT_OPTARG && !p->opt)
+-			*(const char **)opt->value = (const char *)opt->defval;
++			*(const char **)opt->value = opt->def.strval;
+ 		else
+ 			err = get_arg(p, opt, flags, (const char **)opt->value);
+ 
+@@ -190,7 +190,7 @@ static enum parse_opt_result get_value(struct parse_opt_ctx_t *p,
+ 			return 0;
+ 		}
+ 		if (opt->flags & PARSE_OPT_OPTARG && !p->opt) {
+-			*(int *)opt->value = opt->defval;
++			*(int *)opt->value = opt->def.intval;
+ 			return 0;
+ 		}
+ 		if (get_arg(p, opt, flags, &arg))
+@@ -210,7 +210,7 @@ static enum parse_opt_result get_value(struct parse_opt_ctx_t *p,
+ 			return 0;
+ 		}
+ 		if (opt->flags & PARSE_OPT_OPTARG && !p->opt) {
+-			*(unsigned long *)opt->value = opt->defval;
++			*(unsigned long *)opt->value = opt->def.intval;
+ 			return 0;
+ 		}
+ 		if (get_arg(p, opt, flags, &arg))
+@@ -321,7 +321,7 @@ static enum parse_opt_result parse_long_opt(
+ 			if (*rest)
+ 				continue;
+ 			if (options->value)
+-				*(int *)options->value = options->defval;
++				*(int *)options->value = options->def.intval;
+ 			p->out[p->cpidx++] = arg - 2;
+ 			return PARSE_OPT_DONE;
+ 		}
+diff --git a/parse-options.h b/parse-options.h
+index ac6ba8abf9..2aa1178a6b 100644
+--- a/parse-options.h
++++ b/parse-options.h
+@@ -104,7 +104,7 @@ typedef enum parse_opt_result parse_opt_ll_cb(struct parse_opt_ctx_t *ctx,
+  * `callback`::
+  *   pointer to the callback to use for OPTION_CALLBACK
+  *
+- * `defval`::
++ * `def`::
+  *   default value to fill (*->value) with for PARSE_OPT_OPTARG.
+  *   OPTION_{BIT,SET_INT} store the {mask,integer} to put in the value when met.
+  *   CALLBACKS can use it like they want.
+@@ -123,17 +123,20 @@ struct option {
+ 
+ 	int flags;
+ 	parse_opt_cb *callback;
+-	intptr_t defval;
++	union {
++		intptr_t intval;
++		const char *strval;
++	} def;
+ 	parse_opt_ll_cb *ll_callback;
+ 	intptr_t extra;
+ };
+ 
+ #define OPT_BIT_F(s, l, v, h, b, f) { OPTION_BIT, (s), (l), (v), NULL, (h), \
+-				      PARSE_OPT_NOARG|(f), NULL, (b) }
++				      PARSE_OPT_NOARG|(f), NULL, { (b) } }
+ #define OPT_COUNTUP_F(s, l, v, h, f) { OPTION_COUNTUP, (s), (l), (v), NULL, \
+ 				       (h), PARSE_OPT_NOARG|(f) }
+ #define OPT_SET_INT_F(s, l, v, h, i, f) { OPTION_SET_INT, (s), (l), (v), NULL, \
+-					  (h), PARSE_OPT_NOARG | (f), NULL, (i) }
++					  (h), PARSE_OPT_NOARG | (f), NULL, { (i) } }
+ #define OPT_BOOL_F(s, l, v, h, f)   OPT_SET_INT_F(s, l, v, h, 1, f)
+ #define OPT_CALLBACK_F(s, l, v, a, h, f, cb)			\
+ 	{ OPTION_CALLBACK, (s), (l), (v), (a), (h), (f), (cb) }
+@@ -142,21 +145,21 @@ struct option {
+ 
+ #define OPT_END()                   { OPTION_END }
+ #define OPT_ARGUMENT(l, v, h)       { OPTION_ARGUMENT, 0, (l), (v), NULL, \
+-				      (h), PARSE_OPT_NOARG, NULL, 1 }
++				      (h), PARSE_OPT_NOARG, NULL, { 1 } }
+ #define OPT_GROUP(h)                { OPTION_GROUP, 0, NULL, NULL, NULL, (h) }
+ #define OPT_BIT(s, l, v, h, b)      OPT_BIT_F(s, l, v, h, b, 0)
+ #define OPT_BITOP(s, l, v, h, set, clear) { OPTION_BITOP, (s), (l), (v), NULL, (h), \
+ 					    PARSE_OPT_NOARG|PARSE_OPT_NONEG, NULL, \
+-					    (set), NULL, (clear) }
++					    { (set) }, NULL, (clear) }
+ #define OPT_NEGBIT(s, l, v, h, b)   { OPTION_NEGBIT, (s), (l), (v), NULL, \
+-				      (h), PARSE_OPT_NOARG, NULL, (b) }
++				      (h), PARSE_OPT_NOARG, NULL, { (b) } }
+ #define OPT_COUNTUP(s, l, v, h)     OPT_COUNTUP_F(s, l, v, h, 0)
+ #define OPT_SET_INT(s, l, v, h, i)  OPT_SET_INT_F(s, l, v, h, i, 0)
+ #define OPT_BOOL(s, l, v, h)        OPT_BOOL_F(s, l, v, h, 0)
+ #define OPT_HIDDEN_BOOL(s, l, v, h) { OPTION_SET_INT, (s), (l), (v), NULL, \
+-				      (h), PARSE_OPT_NOARG | PARSE_OPT_HIDDEN, NULL, 1}
++				      (h), PARSE_OPT_NOARG | PARSE_OPT_HIDDEN, NULL, { 1 } }
+ #define OPT_CMDMODE(s, l, v, h, i)  { OPTION_CMDMODE, (s), (l), (v), NULL, \
+-				      (h), PARSE_OPT_NOARG|PARSE_OPT_NONEG, NULL, (i) }
++				      (h), PARSE_OPT_NOARG|PARSE_OPT_NONEG, NULL, { (i) } }
+ #define OPT_INTEGER(s, l, v, h)     OPT_INTEGER_F(s, l, v, h, 0)
+ #define OPT_MAGNITUDE(s, l, v, h)   { OPTION_MAGNITUDE, (s), (l), (v), \
+ 				      N_("n"), (h), PARSE_OPT_NONEG }
+@@ -177,7 +180,7 @@ struct option {
+ 				       N_("file"), (h) }
+ #define OPT_COLOR_FLAG(s, l, v, h) \
+ 	{ OPTION_CALLBACK, (s), (l), (v), N_("when"), (h), PARSE_OPT_OPTARG, \
+-		parse_opt_color_flag_cb, (intptr_t)"always" }
++		parse_opt_color_flag_cb, { .strval = "always" } }
+ 
+ #define OPT_NOOP_NOARG(s, l) \
+ 	{ OPTION_CALLBACK, (s), (l), NULL, NULL, \
+@@ -302,15 +305,15 @@ int parse_opt_passthru_argv(const struct option *, const char *, int);
+ #define OPT__QUIET(var, h)    OPT_COUNTUP('q', "quiet",   (var), (h))
+ #define OPT__VERBOSITY(var) \
+ 	{ OPTION_CALLBACK, 'v', "verbose", (var), NULL, N_("be more verbose"), \
+-	  PARSE_OPT_NOARG, &parse_opt_verbosity_cb, 0 }, \
++	  PARSE_OPT_NOARG, &parse_opt_verbosity_cb, { 0 } }, \
+ 	{ OPTION_CALLBACK, 'q', "quiet", (var), NULL, N_("be more quiet"), \
+-	  PARSE_OPT_NOARG, &parse_opt_verbosity_cb, 0 }
++	  PARSE_OPT_NOARG, &parse_opt_verbosity_cb, { 0 } }
+ #define OPT__DRY_RUN(var, h)  OPT_BOOL('n', "dry-run", (var), (h))
+ #define OPT__FORCE(var, h, f) OPT_COUNTUP_F('f', "force",   (var), (h), (f))
+ #define OPT__ABBREV(var)  \
+ 	{ OPTION_CALLBACK, 0, "abbrev", (var), N_("n"),	\
+ 	  N_("use <n> digits to display SHA-1s"),	\
+-	  PARSE_OPT_OPTARG, &parse_opt_abbrev_cb, 0 }
++	  PARSE_OPT_OPTARG, &parse_opt_abbrev_cb, { 0 } }
+ #define OPT__COLOR(var, h) \
+ 	OPT_COLOR_FLAG(0, "color", (var), (h))
+ #define OPT_COLUMN(s, l, v, h) \
+@@ -322,7 +325,7 @@ int parse_opt_passthru_argv(const struct option *, const char *, int);
+ #define _OPT_CONTAINS_OR_WITH(name, variable, help, flag) \
+ 	{ OPTION_CALLBACK, 0, name, (variable), N_("commit"), (help), \
+ 	  PARSE_OPT_LASTARG_DEFAULT | flag, \
+-	  parse_opt_commits, (intptr_t) "HEAD" \
++	  parse_opt_commits, { .strval = "HEAD" } \
+ 	}
+ #define OPT_CONTAINS(v, h) _OPT_CONTAINS_OR_WITH("contains", v, h, PARSE_OPT_NONEG)
+ #define OPT_NO_CONTAINS(v, h) _OPT_CONTAINS_OR_WITH("no-contains", v, h, PARSE_OPT_NONEG)
+diff --git a/ref-filter.h b/ref-filter.h
+index f1dcff4c6e..5807c8f9c8 100644
+--- a/ref-filter.h
++++ b/ref-filter.h
+@@ -91,7 +91,7 @@ struct ref_format {
+ #define _OPT_MERGED_NO_MERGED(option, filter, h) \
+ 	{ OPTION_CALLBACK, 0, option, (filter), N_("commit"), (h), \
+ 	  PARSE_OPT_LASTARG_DEFAULT | PARSE_OPT_NONEG, \
+-	  parse_opt_merge_filter, (intptr_t) "HEAD" \
++	  parse_opt_merge_filter, { .strval = "HEAD" } \
+ 	}
+ #define OPT_MERGED(f, h) _OPT_MERGED_NO_MERGED("merged", f, h)
+ #define OPT_NO_MERGED(f, h) _OPT_MERGED_NO_MERGED("no-merged", f, h)
+-- 
+2.22.0
+
