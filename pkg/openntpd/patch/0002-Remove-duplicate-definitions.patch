@@ -1,27 +1,38 @@
-From 63da2d40cd92c5851ac18fe9a8adecf512cd669c Mon Sep 17 00:00:00 2001
+From 2cb7923eeee6b66e083f52fb2979318a026ff8b5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 Jun 2019 19:42:17 -0700
 Subject: [PATCH] Remove duplicate definitions
 
 ---
- src/ntp.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/ntp.c     | 1 -
+ src/ntp_dns.c | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/src/ntp.c b/src/ntp.c
-index f7a6ede..8009755 100644
+index f7a6ede..a3d0036 100644
 --- a/src/ntp.c
 +++ b/src/ntp.c
-@@ -42,8 +42,8 @@
- 
+@@ -43,7 +43,6 @@
  volatile sig_atomic_t	 ntp_quit = 0;
  struct imsgbuf		*ibuf_main;
--struct imsgbuf		*ibuf_dns;
+ struct imsgbuf		*ibuf_dns;
 -struct ntpd_conf	*conf;
-+extern struct imsgbuf	*ibuf_dns;
-+extern struct ntpd_conf	*conf;
  struct ctl_conns	 ctl_conns;
  u_int			 peer_cnt;
  u_int			 sensors_cnt;
+diff --git a/src/ntp_dns.c b/src/ntp_dns.c
+index c194324..694257c 100644
+--- a/src/ntp_dns.c
++++ b/src/ntp_dns.c
+@@ -33,7 +33,7 @@
+ #include "ntpd.h"
+ 
+ volatile sig_atomic_t	 quit_dns = 0;
+-struct imsgbuf		*ibuf_dns;
++extern struct imsgbuf	*ibuf_dns;
+ 
+ void	sighdlr_dns(int);
+ int	dns_dispatch_imsg(void);
 -- 
 2.20.1
 
