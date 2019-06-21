@@ -1,0 +1,70 @@
+From b5586408623a3b346ad9e5157d0b9a2ad6d78614 Mon Sep 17 00:00:00 2001
+From: Val Lorentz <progval@progval.net>
+Date: Sun, 29 Jan 2017 17:39:54 -0800
+Subject: [PATCH] Remove date from version info to make build reproducible
+
+Signed-off-by: Jordan Justen <jordan.l.justen@intel.com>
+---
+ asm/nasm.c       | 4 ++--
+ disasm/ndisasm.c | 4 ++--
+ include/ver.h    | 1 -
+ nasmlib/ver.c    | 1 -
+ 4 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/asm/nasm.c b/asm/nasm.c
+index 1c5a5fc5..35c1e974 100644
+--- a/asm/nasm.c
++++ b/asm/nasm.c
+@@ -871,8 +871,8 @@ static const struct textargs textopts[] = {
+ 
+ static void show_version(void)
+ {
+-    printf("NASM version %s compiled on %s%s\n",
+-           nasm_version, nasm_date, nasm_compile_options);
++    printf("NASM version %s%s\n",
++           nasm_version, nasm_compile_options);
+     exit(0);
+ }
+ 
+diff --git a/disasm/ndisasm.c b/disasm/ndisasm.c
+index 2d0cf153..7383170c 100644
+--- a/disasm/ndisasm.c
++++ b/disasm/ndisasm.c
+@@ -118,8 +118,8 @@ int main(int argc, char **argv)
+                 case 'r':
+                 case 'v':
+                     fprintf(stderr,
+-                            "NDISASM version %s compiled on %s\n",
+-			    nasm_version, nasm_date);
++                            "NDISASM version %s\n",
++                            nasm_version);
+                     return 0;
+                 case 'u':	/* -u for -b 32, -uu for -b 64 */
+ 		    if (bits < 64)
+diff --git a/include/ver.h b/include/ver.h
+index 62d9c52d..6c93fe15 100644
+--- a/include/ver.h
++++ b/include/ver.h
+@@ -39,7 +39,6 @@
+ #define NASM_VER_H
+ 
+ extern const char nasm_version[];
+-extern const char nasm_date[];
+ extern const char nasm_compile_options[];
+ extern const char nasm_comment[];
+ extern const char nasm_signature[];
+diff --git a/nasmlib/ver.c b/nasmlib/ver.c
+index 98362e35..826ff159 100644
+--- a/nasmlib/ver.c
++++ b/nasmlib/ver.c
+@@ -36,7 +36,6 @@
+ 
+ /* This is printed when entering nasm -v */
+ const char nasm_version[] = NASM_VER;
+-const char nasm_date[] = __DATE__;
+ const char nasm_compile_options[] = ""
+ #ifdef DEBUG
+     " with -DDEBUG"
+-- 
+2.22.0
+
