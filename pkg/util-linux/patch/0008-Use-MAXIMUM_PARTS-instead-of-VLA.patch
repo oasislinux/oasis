@@ -1,0 +1,28 @@
+From b0a9d92b358b22ef7759f16aca681a7b99935f22 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 24 Jun 2019 23:41:53 -0700
+Subject: [PATCH] Use MAXIMUM_PARTS instead of VLA
+
+This is the upper bound on the pte array, so just use it as the
+static array length.
+---
+ libfdisk/src/dos.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/libfdisk/src/dos.c b/libfdisk/src/dos.c
+index 2543edc04..1ba95c34a 100644
+--- a/libfdisk/src/dos.c
++++ b/libfdisk/src/dos.c
+@@ -1543,8 +1543,7 @@ static int dos_verify_disklabel(struct fdisk_context *cxt)
+ {
+ 	size_t i, j;
+ 	fdisk_sector_t total = 1, n_sectors = cxt->total_sectors;
+-	fdisk_sector_t first[cxt->label->nparts_max],
+-		       last[cxt->label->nparts_max];
++	fdisk_sector_t first[MAXIMUM_PARTS], last[MAXIMUM_PARTS];
+ 	struct dos_partition *p;
+ 	struct fdisk_dos_label *l = self_label(cxt);
+ 
+-- 
+2.22.0
+

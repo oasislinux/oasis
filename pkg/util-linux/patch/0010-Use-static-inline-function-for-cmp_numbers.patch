@@ -1,0 +1,37 @@
+From 324b036444402fd2f008c1bfe979ea4281827313 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 25 Jun 2019 00:13:43 -0700
+Subject: [PATCH] Use static inline function for cmp_numbers
+
+All callers use it with an unsigned type, so just specialize for
+uintmax_t.
+---
+ include/c.h | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/include/c.h b/include/c.h
+index 0b96ff1c0..9787ec341 100644
+--- a/include/c.h
++++ b/include/c.h
+@@ -136,13 +136,11 @@ umin(uintmax_t x, uintmax_t y)
+ 	return x < y ? x : y;
+ }
+ 
+-#ifndef cmp_numbers
+-# define cmp_numbers(x, y) __extension__ ({	\
+-	__typeof__(x) _a = (x);			\
+-	__typeof__(y) _b = (y);			\
+-	(void) (&_a == &_b);			\
+-	_a == _b ? 0 : _a > _b ? 1 : -1; })
+-#endif
++static inline uintmax_t
++cmp_numbers(uintmax_t x, uintmax_t y)
++{
++	return x == y ? 0 : x > y ? 1 : -1;
++}
+ 
+ #ifndef offsetof
+ #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+-- 
+2.22.0
+
