@@ -1,0 +1,124 @@
+From cced9508238bd4ea087986ad683661cd7f27df27 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 24 Jun 2019 16:03:55 -0700
+Subject: [PATCH] ip: Fix get_link_kind when linked statically
+
+---
+ ip/iplink.c | 95 ++++++++++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 86 insertions(+), 9 deletions(-)
+
+diff --git a/ip/iplink.c b/ip/iplink.c
+index 3e86ec5a..27a33591 100644
+--- a/ip/iplink.c
++++ b/ip/iplink.c
+@@ -149,21 +149,98 @@ struct link_util *get_link_kind(const char *id)
+ 	char buf[256];
+ 	struct link_util *l;
+ 
++	if (linkutil_list == NULL) {
++		// <sed -n 's/^\(struct link_util .*_link_util\) = {/		extern \1;/p' ip/*.c
++		extern struct link_util bond_link_util;
++		extern struct link_util bond_slave_link_util;
++		extern struct link_util bridge_link_util;
++		extern struct link_util bridge_slave_link_util;
++		extern struct link_util can_link_util;
++		extern struct link_util dummy_link_util;
++		extern struct link_util geneve_link_util;
++		extern struct link_util hsr_link_util;
++		extern struct link_util ifb_link_util;
++		extern struct link_util ipoib_link_util;
++		extern struct link_util ipvlan_link_util;
++		extern struct link_util ipvtap_link_util;
++		extern struct link_util macvlan_link_util;
++		extern struct link_util macvtap_link_util;
++		extern struct link_util netdevsim_link_util;
++		extern struct link_util nlmon_link_util;
++		extern struct link_util rmnet_link_util;
++		extern struct link_util team_link_util;
++		extern struct link_util vcan_link_util;
++		extern struct link_util vlan_link_util;
++		extern struct link_util vrf_link_util;
++		extern struct link_util vrf_slave_link_util;
++		extern struct link_util vxcan_link_util;
++		extern struct link_util vxlan_link_util;
++		extern struct link_util macsec_link_util;
++		extern struct link_util tun_link_util;
++		extern struct link_util gre_link_util;
++		extern struct link_util gretap_link_util;
++		extern struct link_util erspan_link_util;
++		extern struct link_util ip6gre_link_util;
++		extern struct link_util ip6gretap_link_util;
++		extern struct link_util ip6erspan_link_util;
++		extern struct link_util ip6tnl_link_util;
++		extern struct link_util ipip_link_util;
++		extern struct link_util sit_link_util;
++		extern struct link_util veth_link_util;
++		extern struct link_util vti_link_util;
++		extern struct link_util vti6_link_util;
++		extern struct link_util xfrm_link_util;
++
++		// <sed -n 's/^struct link_util \(.*_link_util\) = {/		\1.next = linkutil_list, linkutil_list = \&\1;/p' ip/*.c
++		bond_link_util.next = linkutil_list, linkutil_list = &bond_link_util;
++		bond_slave_link_util.next = linkutil_list, linkutil_list = &bond_slave_link_util;
++		bridge_link_util.next = linkutil_list, linkutil_list = &bridge_link_util;
++		bridge_slave_link_util.next = linkutil_list, linkutil_list = &bridge_slave_link_util;
++		can_link_util.next = linkutil_list, linkutil_list = &can_link_util;
++		dummy_link_util.next = linkutil_list, linkutil_list = &dummy_link_util;
++		geneve_link_util.next = linkutil_list, linkutil_list = &geneve_link_util;
++		hsr_link_util.next = linkutil_list, linkutil_list = &hsr_link_util;
++		ifb_link_util.next = linkutil_list, linkutil_list = &ifb_link_util;
++		ipoib_link_util.next = linkutil_list, linkutil_list = &ipoib_link_util;
++		ipvlan_link_util.next = linkutil_list, linkutil_list = &ipvlan_link_util;
++		ipvtap_link_util.next = linkutil_list, linkutil_list = &ipvtap_link_util;
++		macvlan_link_util.next = linkutil_list, linkutil_list = &macvlan_link_util;
++		macvtap_link_util.next = linkutil_list, linkutil_list = &macvtap_link_util;
++		netdevsim_link_util.next = linkutil_list, linkutil_list = &netdevsim_link_util;
++		nlmon_link_util.next = linkutil_list, linkutil_list = &nlmon_link_util;
++		rmnet_link_util.next = linkutil_list, linkutil_list = &rmnet_link_util;
++		team_link_util.next = linkutil_list, linkutil_list = &team_link_util;
++		vcan_link_util.next = linkutil_list, linkutil_list = &vcan_link_util;
++		vlan_link_util.next = linkutil_list, linkutil_list = &vlan_link_util;
++		vrf_link_util.next = linkutil_list, linkutil_list = &vrf_link_util;
++		vrf_slave_link_util.next = linkutil_list, linkutil_list = &vrf_slave_link_util;
++		vxcan_link_util.next = linkutil_list, linkutil_list = &vxcan_link_util;
++		vxlan_link_util.next = linkutil_list, linkutil_list = &vxlan_link_util;
++		macsec_link_util.next = linkutil_list, linkutil_list = &macsec_link_util;
++		tun_link_util.next = linkutil_list, linkutil_list = &tun_link_util;
++		gre_link_util.next = linkutil_list, linkutil_list = &gre_link_util;
++		gretap_link_util.next = linkutil_list, linkutil_list = &gretap_link_util;
++		erspan_link_util.next = linkutil_list, linkutil_list = &erspan_link_util;
++		ip6gre_link_util.next = linkutil_list, linkutil_list = &ip6gre_link_util;
++		ip6gretap_link_util.next = linkutil_list, linkutil_list = &ip6gretap_link_util;
++		ip6erspan_link_util.next = linkutil_list, linkutil_list = &ip6erspan_link_util;
++		ip6tnl_link_util.next = linkutil_list, linkutil_list = &ip6tnl_link_util;
++		ipip_link_util.next = linkutil_list, linkutil_list = &ipip_link_util;
++		sit_link_util.next = linkutil_list, linkutil_list = &sit_link_util;
++		veth_link_util.next = linkutil_list, linkutil_list = &veth_link_util;
++		vti_link_util.next = linkutil_list, linkutil_list = &vti_link_util;
++		vti6_link_util.next = linkutil_list, linkutil_list = &vti6_link_util;
++		xfrm_link_util.next = linkutil_list, linkutil_list = &xfrm_link_util;
++	}
++
+ 	for (l = linkutil_list; l; l = l->next)
+ 		if (strcmp(l->id, id) == 0)
+ 			return l;
+ 
+ 	snprintf(buf, sizeof(buf), LIBDIR "/ip/link_%s.so", id);
+ 	dlh = dlopen(buf, RTLD_LAZY);
+-	if (dlh == NULL) {
+-		/* look in current binary, only open once */
+-		dlh = BODY;
+-		if (dlh == NULL) {
+-			dlh = BODY = dlopen(NULL, RTLD_LAZY);
+-			if (dlh == NULL)
+-				return NULL;
+-		}
+-	}
++	if (dlh == NULL)
++		return NULL;
+ 
+ 	snprintf(buf, sizeof(buf), "%s_link_util", id);
+ 	l = dlsym(dlh, buf);
+-- 
+2.22.0
+
