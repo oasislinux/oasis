@@ -1,0 +1,44 @@
+From cbdee3bebdd860293f5c6803e4afebfea307e205 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 24 Jun 2019 16:48:56 -0700
+Subject: [PATCH] Use alloca instead of VLA when VLA is not available
+
+---
+ ip/ipaddress.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
+
+diff --git a/ip/ipaddress.c b/ip/ipaddress.c
+index e440fac4..2fb82076 100644
+--- a/ip/ipaddress.c
++++ b/ip/ipaddress.c
+@@ -247,7 +247,12 @@ static void print_linktype(FILE *fp, struct rtattr *tb)
+ 
+ 		lu = get_link_kind(kind);
+ 		if (lu && lu->print_opt) {
+-			struct rtattr *attr[lu->maxattr+1], **data = NULL;
++#ifndef __STDC_NO_VLA
++			struct rtattr **attr = alloca((lu->maxattr+1)*sizeof(attr[0]));
++#else
++			struct rtattr *attr[lu->maxattr+1];
++#endif
++			struct rtattr **data = NULL;
+ 
+ 			if (linkinfo[IFLA_INFO_DATA]) {
+ 				parse_rtattr_nested(attr, lu->maxattr,
+@@ -281,7 +286,12 @@ static void print_linktype(FILE *fp, struct rtattr *tb)
+ 
+ 		slave_lu = get_link_kind(slave);
+ 		if (slave_lu && slave_lu->print_opt) {
+-			struct rtattr *attr[slave_lu->maxattr+1], **data = NULL;
++#ifndef __STDC_NO_VLA
++			struct rtattr **attr = alloca((slave_lu->maxattr+1)*sizeof(attr[0]));
++#else
++			struct rtattr *attr[slave_lu->maxattr+1];
++#endif
++			struct rtattr **data = NULL;
+ 
+ 			if (linkinfo[IFLA_INFO_SLAVE_DATA]) {
+ 				parse_rtattr_nested(attr, slave_lu->maxattr,
+-- 
+2.22.0
+

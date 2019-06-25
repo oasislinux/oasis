@@ -1,0 +1,36 @@
+From 93601123c369ccc18d71e02724a80f118ab1ee0c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 24 Jun 2019 17:38:56 -0700
+Subject: [PATCH] Use static inline function for min()
+
+It is only called to calculate a minimum `int`, so specialize for
+`int`.
+---
+ include/utils.h | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/include/utils.h b/include/utils.h
+index 8a9c3020..e9d35409 100644
+--- a/include/utils.h
++++ b/include/utils.h
+@@ -271,13 +271,10 @@ unsigned int print_name_and_link(const char *fmt,
+ # define offsetof(type, member) ((size_t) &((type *)0)->member)
+ #endif
+ 
+-#ifndef min
+-# define min(x, y) ({			\
+-	typeof(x) _min1 = (x);		\
+-	typeof(y) _min2 = (y);		\
+-	(void) (&_min1 == &_min2);	\
+-	_min1 < _min2 ? _min1 : _min2; })
+-#endif
++static inline int min(int a, int b)
++{
++	return a < b ? a : b;
++}
+ 
+ #ifndef __check_format_string
+ # define __check_format_string(pos_str, pos_args) \
+-- 
+2.22.0
+
