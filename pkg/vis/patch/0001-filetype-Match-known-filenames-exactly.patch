@@ -1,0 +1,44 @@
+From 0258112511c3a268f06e95bab93f96f03ca5df4f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 26 Jun 2019 12:34:35 -0700
+Subject: [PATCH] filetype: Match known filenames exactly
+
+Otherwise, a file like `passwd.c` will match both ansi_c and dsv.
+The one that gets chosen depends on the iteration order of table,
+which is non-deterministic.
+---
+ lua/plugins/filetype.lua | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/lua/plugins/filetype.lua b/lua/plugins/filetype.lua
+index ba770aa..a820a0e 100644
+--- a/lua/plugins/filetype.lua
++++ b/lua/plugins/filetype.lua
+@@ -102,13 +102,13 @@ vis.ftdetect.filetypes = {
+ 		ext = { "%.d$", "%.di$" },
+ 	},
+ 	dockerfile = {
+-		ext = { "Dockerfile" },
++		ext = { "^Dockerfile$" },
+ 	},
+ 	dot = {
+ 		ext = { "%.dot$" },
+ 	},
+ 	dsv = {
+-		ext = { "group", "gshadow", "passwd", "shadow" },
++		ext = { "^group$", "^gshadow$", "^passwd$", "^shadow$" },
+ 	},
+ 	eiffel = {
+ 		ext = { "%.e$", "%.eif$" },
+@@ -279,7 +279,7 @@ vis.ftdetect.filetypes = {
+ 		ext = { "%.pike$", "%.pmod$" },
+ 	},
+ 	pkgbuild = {
+-		ext = { "PKGBUILD" },
++		ext = { "^PKGBUILD$" },
+ 	},
+ 	pony = {
+ 		ext = { "%.pony$" },
+-- 
+2.22.0
+
