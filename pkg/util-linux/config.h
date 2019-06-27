@@ -200,7 +200,9 @@
 #define HAVE_TERM_H 1
 #define HAVE_TIMEGM 1
 #define HAVE_TIMER_CREATE 1
-#define HAVE_TLS 1
+#ifdef HAVE__THREAD_LOCAL
+# define HAVE_TLS 1
+#endif
 #define HAVE_TM_GMTOFF 1
 #define HAVE_TM_ZONE 1
 /* #undef HAVE_TZNAME */

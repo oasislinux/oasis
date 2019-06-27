@@ -1,11 +1,15 @@
 set('version', '2.34.0')
 cflags{
 	'-include $dir/config.h',
-	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir/include',
 	'-I $srcdir/libuuid/src',
 }
+
+build('cat', '$outdir/config.h', {
+	'$builddir/probe/HAVE__THREAD_LOCAL',
+	'$dir/config.h',
+})
 
 build('sed', '$outdir/libsmartcols.h', '$srcdir/libsmartcols/src/libsmartcols.h.in', {
 	expr='s,@LIBSMARTCOLS_VERSION@,$version,',
@@ -21,6 +25,7 @@ build('sed', '$outdir/libfdisk.h', '$srcdir/libfdisk/src/libfdisk.h.in', {
 
 pkg.hdrs = copy('$outdir/include/uuid', '$srcdir/libuuid/src', {'uuid.h'})
 pkg.deps = {
+	'$outdir/config.h',
 	'$outdir/libsmartcols.h',
 	'$outdir/libfdisk.h',
 }

@@ -10,9 +10,10 @@ cflags{
 }
 
 build('cat', '$outdir/config.h', {
-	'$dir/config.h',
+	'$builddir/probe/HAVE__THREAD_LOCAL',
 	'$builddir/probe/SIZEOF_LONG',
 	'$builddir/probe/SIZEOF_TIME_T',
+	'$dir/config.h',
 })
 
 set('subst', {

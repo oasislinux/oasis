@@ -227,7 +227,9 @@
 #endif
 /* #undef STACK_DIRECTION */
 #define STDC_HEADERS 1
-#define TLS __thread
+#ifdef HAVE__THREAD_LOCAL
+# define TLS _Thread_local
+#endif
 #define USE_POSIX_THREADS 1
 /* #undef USE_POSIX_THREADS_WEAK */
 /* #undef USE_PTH_THREADS */
