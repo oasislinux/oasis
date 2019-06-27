@@ -1,5 +1,5 @@
 cflags{
-	[[-D 'DEF_WEAK(n)=']],
+	[[-D 'DEF_WEAK(n)=_Static_assert(1, "")']],
 	'-I $dir/include',
 	'-idirafter $srcdir/include',
 	'-idirafter $srcdir/sys',

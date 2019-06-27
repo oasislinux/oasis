@@ -5,7 +5,7 @@ cflags{
 	'-D OPENSSL_NO_ASM',
 	'-D __BEGIN_HIDDEN_DECLS=',
 	'-D __END_HIDDEN_DECLS=',
-	[[-D '__warn_references(sym,msg)=']],
+	[[-D '__warn_references(sym,msg)=_Static_assert(1, "")']],
 	'-I $srcdir/include',
 	'-I $srcdir/crypto',
 	'-I $srcdir/crypto/asn1',
