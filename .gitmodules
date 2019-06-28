@@ -22,8 +22,7 @@
 	ignore = all
 [submodule "pkg/bzip2/src"]
 	path = pkg/bzip2/src
-	url = https://gitlab.com/federicomenaquintero/bzip2.git
-	ignore = all
+	url = git://sourceware.org/git/bzip2.git
 [submodule "pkg/cmark/src"]
 	path = pkg/cmark/src
 	url = https://github.com/commonmark/cmark

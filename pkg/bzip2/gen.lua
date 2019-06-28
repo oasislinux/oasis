@@ -12,7 +12,7 @@ lib('libbz2.a', {
 exe('bzip2', {'bzip2.c', 'libbz2.a'})
 
 file('bin/bzip2', '755', '$outdir/bzip2')
-man{'man/bzip2.1'}
+man{'bzip2.1'}
 sym('bin/bzcat', 'bzip2')
 
 fetch 'git'
