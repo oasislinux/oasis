@@ -1,10 +1,10 @@
 [submodule "pkg/alsa-lib/src"]
 	path = pkg/alsa-lib/src
-	url = git://git.alsa-project.org/alsa-lib.git
+	url = https://github.com/alsa-project/alsa-lib.git
 	ignore = all
 [submodule "pkg/alsa-utils/src"]
 	path = pkg/alsa-utils/src
-	url = git://git.alsa-project.org/alsa-utils.git
+	url = https://github.com/alsa-project/alsa-utils.git
 	ignore = all
 [submodule "pkg/awk/src"]
 	path = pkg/awk/src
