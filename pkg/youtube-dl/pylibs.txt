@@ -419,7 +419,6 @@ youtube_dl/extractor/newgrounds.py
 youtube_dl/extractor/newstube.py
 youtube_dl/extractor/nextmedia.py
 youtube_dl/extractor/nexx.py
-youtube_dl/extractor/nfb.py
 youtube_dl/extractor/nfl.py
 youtube_dl/extractor/nhk.py
 youtube_dl/extractor/nhl.py
