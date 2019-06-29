@@ -12,15 +12,8 @@ cflags{'$common_cflags'}
 sub('tools.ninja', function()
 	toolchain 'host'
 	cflags{'$common_cflags', '-D USE_BUILD_CC'}
-	exe('make_keys', {'ncurses/tinfo/make_keys.c'}, {
-		'$outdir/names.c',
-		'$outdir/include/curses.h',
-		'$outdir/include/ncurses_dll.h',
-	})
-	exe('make_hash', {'ncurses/tinfo/make_hash.c'}, {
-		'$outdir/hashsize.h',
-		'$outdir/include/curses.h',
-	})
+	exe('make_keys', {'ncurses/tinfo/make_keys.c'}, {'$dir/headers', '$outdir/names.c'})
+	exe('make_hash', {'ncurses/tinfo/make_hash.c'}, {'$dir/headers', '$outdir/hashsize.h'})
 end)
 
 build('sed', '$outdir/curses.head', {'$srcdir/include/curses.h.in', '|', '$dir/subst.sed'}, {
