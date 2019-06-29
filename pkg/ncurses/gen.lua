@@ -39,10 +39,6 @@ build('mkkeys', '$outdir/init_keytry.h', {'$outdir/keys.list', '|', '$outdir/mak
 rule('mkdefs', 'sh $srcdir/include/MKncurses_def.sh $in >$out.tmp && mv $out.tmp $out')
 build('mkdefs', '$outdir/ncurses_def.h', {'$srcdir/include/ncurses_defs', '|', '$srcdir/include/MKncurses_def.sh'})
 
-build('sed', '$outdir/include/ncurses_dll.h', '$srcdir/include/ncurses_dll.h.in', {
-	expr='s,@NCURSES_WRAP_PREFIX@,_nc_,',
-})
-
 rule('mkparam', '$srcdir/include/MKparametrized.sh $in >$out.tmp && mv $out.tmp $out')
 build('mkparam', '$outdir/parametrized.h', {'$srcdir/include/Caps', '|', '$srcdir/include/MKparametrized.sh'})
 
@@ -50,7 +46,7 @@ build('sed', '$outdir/MKterm.h.awk', {'$srcdir/include/MKterm.h.awk.in', '|', '$
 	expr='-f $dir/subst.sed',
 })
 
-for _, f in ipairs{'termcap.h', 'unctrl.h'} do
+for _, f in ipairs{'ncurses_dll.h', 'termcap.h', 'unctrl.h'} do
 	build('sed', '$outdir/include/'..f, {'$srcdir/include/'..f..'.in', '|', '$dir/subst.sed'}, {
 		expr='-f $dir/subst.sed',
 	})
