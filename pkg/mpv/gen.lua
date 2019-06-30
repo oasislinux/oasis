@@ -1,5 +1,6 @@
-rule('versionhdr', 'sh $srcdir/version.sh --cwd=$srcdir --versionh=$out')
-build('versionhdr', '$outdir/version.h', {'|', '$srcdir/version.sh'})
+build('awk', '$outdir/version.h', {'$srcdir/VERSION', '|', '$dir/version.awk'}, {
+	expr='-f $dir/version.awk',
+})
 
 sub('tools.ninja', function()
 	toolchain 'host'
