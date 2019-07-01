@@ -38,11 +38,10 @@ pkg.hdrs = {
 pkg.deps = {
 	'$dir/headers',
 	'$outdir/include/wayland-version.h',
-	'pkg/expat/headers',
 	'pkg/libffi/headers',
 }
 
-cc('src/wayland-util.c')
+cc('src/wayland-util.c', {'$outdir/include/wayland-version.h'})
 cc('src/wayland-os.c')
 cc('src/connection.c')
 
@@ -52,7 +51,7 @@ exe('wayland-scanner', [[
 		wayland-util.c.o
 	)
 	$builddir/pkg/expat/libexpat.a.d
-]])
+]], {'pkg/expat/headers', '$outdir/include/wayland-version.h'})
 file('bin/wayland-scanner', '755', '$outdir/wayland-scanner')
 
 lib('libwayland-server.a', [[
