@@ -46,31 +46,46 @@ cc('src/wayland-util.c')
 cc('src/wayland-os.c')
 cc('src/connection.c')
 
-exe('wayland-scanner', {'src/scanner.c', 'src/wayland-util.c.o', '$builddir/pkg/expat/libexpat.a.d'})
+exe('wayland-scanner', [[
+	src/(
+		scanner.c
+		wayland-util.c.o
+	)
+	$builddir/pkg/expat/libexpat.a.d
+]])
 file('bin/wayland-scanner', '755', '$outdir/wayland-scanner')
 
-lib('libwayland-server.a', [[src/(
-	connection.c.o
-	wayland-os.c.o
-	wayland-protocol.c.o
-	wayland-server.c
-	wayland-shm.c
-	wayland-util.c.o
-	event-loop.c
-) $builddir/pkg/libffi/libffi.a]])
+lib('libwayland-server.a', [[
+	src/(
+		connection.c.o
+		wayland-os.c.o
+		wayland-protocol.c.o
+		wayland-server.c
+		wayland-shm.c
+		wayland-util.c.o
+		event-loop.c
+	)
+	$builddir/pkg/libffi/libffi.a
+]])
 
-lib('libwayland-client.a', [[src/(
-	connection.c.o
-	wayland-os.c.o
-	wayland-protocol.c.o
-	wayland-client.c
-	wayland-util.c.o
-) $builddir/pkg/libffi/libffi.a]])
+lib('libwayland-client.a', [[
+	src/(
+		connection.c.o
+		wayland-os.c.o
+		wayland-protocol.c.o
+		wayland-client.c
+		wayland-util.c.o
+	)
+	$builddir/pkg/libffi/libffi.a
+]])
 
-lib('libwayland-cursor.a', [[cursor/(
-	os-compatibility.c
-	wayland-cursor.c
-	xcursor.c
-) libwayland-client.a.d]])
+lib('libwayland-cursor.a', [[
+	cursor/(
+		os-compatibility.c
+		wayland-cursor.c
+		xcursor.c
+	)
+	libwayland-client.a.d
+]])
 
 fetch 'git'
