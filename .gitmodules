@@ -181,6 +181,7 @@
 [submodule "pkg/netsurf/libwapcaplet/src"]
 	path = pkg/netsurf/libwapcaplet/src
 	url = git://git.netsurf-browser.org/libwapcaplet.git
+	ignore = all
 [submodule "pkg/nginx/src"]
 	path = pkg/nginx/src
 	url = https://github.com/nginx/nginx
