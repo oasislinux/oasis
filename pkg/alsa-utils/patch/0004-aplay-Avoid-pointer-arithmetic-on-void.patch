@@ -1,0 +1,35 @@
+From c77b78a4a71d8e0950bde18e1a38f8795f4deac7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 00:26:12 -0700
+Subject: [PATCH] aplay: Avoid pointer arithmetic on `void *`
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ aplay/aplay.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/aplay/aplay.c b/aplay/aplay.c
+index ecfc8b8..d789222 100644
+--- a/aplay/aplay.c
++++ b/aplay/aplay.c
+@@ -440,7 +440,7 @@ static ssize_t xwrite(int fd, const void *buf, size_t count)
+ 	size_t offset = 0;
+ 
+ 	while (offset < count) {
+-		written = write(fd, buf + offset, count - offset);
++		written = write(fd, (char *)buf + offset, count - offset);
+ 		if (written <= 0)
+ 			return written;
+ 
+@@ -1208,7 +1208,7 @@ static int test_au(int fd, void *buffer)
+ 	hwparams.channels = BE_INT(ap->channels);
+ 	if (hwparams.channels < 1 || hwparams.channels > 256)
+ 		return -1;
+-	if ((size_t)safe_read(fd, buffer + sizeof(AuHeader), BE_INT(ap->hdr_size) - sizeof(AuHeader)) != BE_INT(ap->hdr_size) - sizeof(AuHeader)) {
++	if ((size_t)safe_read(fd, (char *)buffer + sizeof(AuHeader), BE_INT(ap->hdr_size) - sizeof(AuHeader)) != BE_INT(ap->hdr_size) - sizeof(AuHeader)) {
+ 		error(_("read error"));
+ 		prg_exit(EXIT_FAILURE);
+ 	}
+-- 
+2.22.0
+

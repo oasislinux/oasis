@@ -1,0 +1,34 @@
+From e835394dfbff2f34bbb081a6b0bd302e99e384b6 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 00:26:36 -0700
+Subject: [PATCH] amixer: Use %lli for long long in printf
+
+---
+ amixer/amixer.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/amixer/amixer.c b/amixer/amixer.c
+index 64fd4bb..00b0018 100644
+--- a/amixer/amixer.c
++++ b/amixer/amixer.c
+@@ -617,7 +617,7 @@ static int show_control(const char *space, snd_hctl_elem_t *elem,
+ 		       snd_ctl_elem_info_get_step(info));
+ 		break;
+ 	case SND_CTL_ELEM_TYPE_INTEGER64:
+-		printf(",min=%Li,max=%Li,step=%Li\n", 
++		printf(",min=%lli,max=%lli,step=%lli\n",
+ 		       snd_ctl_elem_info_get_min64(info),
+ 		       snd_ctl_elem_info_get_max64(info),
+ 		       snd_ctl_elem_info_get_step64(info));
+@@ -659,7 +659,7 @@ static int show_control(const char *space, snd_hctl_elem_t *elem,
+ 				printf("%li", snd_ctl_elem_value_get_integer(control, idx));
+ 				break;
+ 			case SND_CTL_ELEM_TYPE_INTEGER64:
+-				printf("%Li", snd_ctl_elem_value_get_integer64(control, idx));
++				printf("%lli", snd_ctl_elem_value_get_integer64(control, idx));
+ 				break;
+ 			case SND_CTL_ELEM_TYPE_ENUMERATED:
+ 				printf("%u", snd_ctl_elem_value_get_enumerated(control, idx));
+-- 
+2.22.0
+
