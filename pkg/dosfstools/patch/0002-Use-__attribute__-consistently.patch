@@ -1,0 +1,31 @@
+From d38b4d1d39784aefebb585ed955d16bb674bd2ff Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 1 Jul 2019 22:52:11 -0700
+Subject: [PATCH] Use __attribute__ consistently
+
+---
+ src/common.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/common.h b/src/common.h
+index e2c398c..03f6984 100644
+--- a/src/common.h
++++ b/src/common.h
+@@ -24,12 +24,12 @@
+ #define _COMMON_H
+ 
+ void die(const char *msg, ...)
+-    __attribute((noreturn, format(printf, 1, 2)));
++    __attribute__ ((noreturn, format(printf, 1, 2)));
+ 
+ /* Displays a prinf-style message and terminates the program. */
+ 
+ void pdie(const char *msg, ...)
+-    __attribute((noreturn, format(printf, 1, 2)));
++    __attribute__ ((noreturn, format(printf, 1, 2)));
+ 
+ /* Like die, but appends an error message according to the state of errno. */
+ 
+-- 
+2.22.0
+
