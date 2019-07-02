@@ -1,0 +1,726 @@
+From 60941b7bdcf436b022a23d5f80767c49abb65d72 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 1 Jul 2019 22:57:10 -0700
+Subject: [PATCH] Remove empty top-level declarations
+
+---
+ src/html/html_anchor_element.c       | 22 +++++++++++-----------
+ src/html/html_applet_element.c       | 18 +++++++++---------
+ src/html/html_area_element.c         | 12 ++++++------
+ src/html/html_base_element.c         |  4 ++--
+ src/html/html_basefont_element.c     |  4 ++--
+ src/html/html_br_element.c           |  2 +-
+ src/html/html_button_element.c       |  8 ++++----
+ src/html/html_div_element.c          |  2 +-
+ src/html/html_font_element.c         |  6 +++---
+ src/html/html_frame_element.c        | 14 +++++++-------
+ src/html/html_frameset_element.c     |  4 ++--
+ src/html/html_heading_element.c      |  2 +-
+ src/html/html_hr_element.c           |  6 +++---
+ src/html/html_iframe_element.c       | 20 ++++++++++----------
+ src/html/html_image_element.c        | 14 +++++++-------
+ src/html/html_input_element.c        | 18 +++++++++---------
+ src/html/html_isindex_element.c      |  2 +-
+ src/html/html_label_element.c        |  4 ++--
+ src/html/html_legend_element.c       |  4 ++--
+ src/html/html_li_element.c           |  2 +-
+ src/html/html_map_element.c          |  2 +-
+ src/html/html_mod_element.c          |  4 ++--
+ src/html/html_object_element.c       | 26 +++++++++++++-------------
+ src/html/html_olist_element.c        |  2 +-
+ src/html/html_opt_group_element.c    |  2 +-
+ src/html/html_paragraph_element.c    |  2 +-
+ src/html/html_param_element.c        |  8 ++++----
+ src/html/html_quote_element.c        |  2 +-
+ src/html/html_script_element.c       | 10 +++++-----
+ src/html/html_style_element.c        |  4 ++--
+ src/html/html_table_element.c        | 18 +++++++++---------
+ src/html/html_tablecaption_element.c |  2 +-
+ src/html/html_tablecell_element.c    | 22 +++++++++++-----------
+ src/html/html_tablecol_element.c     | 10 +++++-----
+ src/html/html_tablerow_element.c     | 10 +++++-----
+ src/html/html_tablesection_element.c |  8 ++++----
+ src/html/html_text_area_element.c    |  4 ++--
+ src/html/html_ulist_element.c        |  2 +-
+ 38 files changed, 153 insertions(+), 153 deletions(-)
+
+diff --git a/src/html/html_anchor_element.c b/src/html/html_anchor_element.c
+index 8d64c2b..8aa6a79 100644
+--- a/src/html/html_anchor_element.c
++++ b/src/html/html_anchor_element.c
+@@ -185,17 +185,17 @@ dom_exception dom_html_anchor_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(access_key);
+-SIMPLE_GET_SET(charset);
+-SIMPLE_GET_SET(coords);
+-SIMPLE_GET_SET(href);
+-SIMPLE_GET_SET(hreflang);
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET_SET(rel);
+-SIMPLE_GET_SET(rev);
+-SIMPLE_GET_SET(shape);
+-SIMPLE_GET_SET(target);
+-SIMPLE_GET_SET(type);
++SIMPLE_GET_SET(access_key)
++SIMPLE_GET_SET(charset)
++SIMPLE_GET_SET(coords)
++SIMPLE_GET_SET(href)
++SIMPLE_GET_SET(hreflang)
++SIMPLE_GET_SET(name)
++SIMPLE_GET_SET(rel)
++SIMPLE_GET_SET(rev)
++SIMPLE_GET_SET(shape)
++SIMPLE_GET_SET(target)
++SIMPLE_GET_SET(type)
+ 
+ dom_exception dom_html_anchor_element_get_tab_index(
+ 	dom_html_anchor_element *anchor, int32_t *tab_index)
+diff --git a/src/html/html_applet_element.c b/src/html/html_applet_element.c
+index 93ea1b5..9451810 100644
+--- a/src/html/html_applet_element.c
++++ b/src/html/html_applet_element.c
+@@ -185,15 +185,15 @@ dom_exception _dom_html_applet_element_copy_internal(
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(alt);
+-SIMPLE_GET_SET(archive);
+-SIMPLE_GET_SET(code);
+-SIMPLE_GET_SET(code_base);
+-SIMPLE_GET_SET(height);
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET_SET(object);
+-SIMPLE_GET_SET(width);
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(alt)
++SIMPLE_GET_SET(archive)
++SIMPLE_GET_SET(code)
++SIMPLE_GET_SET(code_base)
++SIMPLE_GET_SET(height)
++SIMPLE_GET_SET(name)
++SIMPLE_GET_SET(object)
++SIMPLE_GET_SET(width)
+ 
+ dom_exception dom_html_applet_element_get_hspace(
+ 		dom_html_applet_element *applet, int32_t *hspace)
+diff --git a/src/html/html_area_element.c b/src/html/html_area_element.c
+index 828b073..967fba5 100644
+--- a/src/html/html_area_element.c
++++ b/src/html/html_area_element.c
+@@ -240,10 +240,10 @@ dom_exception dom_html_area_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(access_key);
+-SIMPLE_GET_SET(alt);
+-SIMPLE_GET_SET(coords);
+-SIMPLE_GET_SET(href);
+-SIMPLE_GET_SET(shape);
+-SIMPLE_GET_SET(target);
++SIMPLE_GET_SET(access_key)
++SIMPLE_GET_SET(alt)
++SIMPLE_GET_SET(coords)
++SIMPLE_GET_SET(href)
++SIMPLE_GET_SET(shape)
++SIMPLE_GET_SET(target)
+ 
+diff --git a/src/html/html_base_element.c b/src/html/html_base_element.c
+index 0034f7c..6aac094 100644
+--- a/src/html/html_base_element.c
++++ b/src/html/html_base_element.c
+@@ -180,5 +180,5 @@ dom_exception dom_html_base_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(href);
+-SIMPLE_GET_SET(target);
++SIMPLE_GET_SET(href)
++SIMPLE_GET_SET(target)
+diff --git a/src/html/html_basefont_element.c b/src/html/html_basefont_element.c
+index ac1183d..ff4a6d7 100644
+--- a/src/html/html_basefont_element.c
++++ b/src/html/html_basefont_element.c
+@@ -207,5 +207,5 @@ dom_exception _dom_html_base_font_element_copy_internal(
+ 			}
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(color);
+-SIMPLE_GET_SET(face);
++SIMPLE_GET_SET(color)
++SIMPLE_GET_SET(face)
+diff --git a/src/html/html_br_element.c b/src/html/html_br_element.c
+index 74e3ea8..c2eb8e5 100644
+--- a/src/html/html_br_element.c
++++ b/src/html/html_br_element.c
+@@ -185,5 +185,5 @@ dom_exception dom_html_br_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(clear);
++SIMPLE_GET_SET(clear)
+ 
+diff --git a/src/html/html_button_element.c b/src/html/html_button_element.c
+index 04a17dd..e7b429d 100644
+--- a/src/html/html_button_element.c
++++ b/src/html/html_button_element.c
+@@ -221,10 +221,10 @@ dom_exception dom_html_button_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(access_key);
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET(type);
+-SIMPLE_GET_SET(value);
++SIMPLE_GET_SET(access_key)
++SIMPLE_GET_SET(name)
++SIMPLE_GET(type)
++SIMPLE_GET_SET(value)
+ 
+ dom_exception dom_html_button_element_get_tab_index(
+ 	dom_html_button_element *button, int32_t *tab_index)
+diff --git a/src/html/html_div_element.c b/src/html/html_div_element.c
+index b061246..2516a8e 100644
+--- a/src/html/html_div_element.c
++++ b/src/html/html_div_element.c
+@@ -184,5 +184,5 @@ dom_exception dom_html_div_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(align);
++SIMPLE_GET_SET(align)
+ 
+diff --git a/src/html/html_font_element.c b/src/html/html_font_element.c
+index ecedfb0..ad90642 100644
+--- a/src/html/html_font_element.c
++++ b/src/html/html_font_element.c
+@@ -185,7 +185,7 @@ dom_exception dom_html_font_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(color);
+-SIMPLE_GET_SET(face);
+-SIMPLE_GET_SET(size);
++SIMPLE_GET_SET(color)
++SIMPLE_GET_SET(face)
++SIMPLE_GET_SET(size)
+ 
+diff --git a/src/html/html_frame_element.c b/src/html/html_frame_element.c
+index fe6859c..c659cea 100644
+--- a/src/html/html_frame_element.c
++++ b/src/html/html_frame_element.c
+@@ -212,13 +212,13 @@ dom_exception dom_html_frame_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(long_desc);
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET_SET(src);
+-SIMPLE_GET_SET(frame_border);
+-SIMPLE_GET_SET(margin_width);
+-SIMPLE_GET_SET(margin_height);
+-SIMPLE_GET_SET(scrolling);
++SIMPLE_GET_SET(long_desc)
++SIMPLE_GET_SET(name)
++SIMPLE_GET_SET(src)
++SIMPLE_GET_SET(frame_border)
++SIMPLE_GET_SET(margin_width)
++SIMPLE_GET_SET(margin_height)
++SIMPLE_GET_SET(scrolling)
+ 
+ dom_exception dom_html_frame_element_get_content_document(
+ 		dom_html_frame_element *ele,
+diff --git a/src/html/html_frameset_element.c b/src/html/html_frameset_element.c
+index be44d5d..38bb9c8 100644
+--- a/src/html/html_frameset_element.c
++++ b/src/html/html_frameset_element.c
+@@ -184,6 +184,6 @@ dom_exception dom_html_frame_set_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET (rows);
+-SIMPLE_GET_SET (cols);
++SIMPLE_GET_SET (rows)
++SIMPLE_GET_SET (cols)
+ 
+diff --git a/src/html/html_heading_element.c b/src/html/html_heading_element.c
+index 8ab2c5a..0a4b515 100644
+--- a/src/html/html_heading_element.c
++++ b/src/html/html_heading_element.c
+@@ -184,5 +184,5 @@ dom_exception dom_html_heading_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(align);
++SIMPLE_GET_SET(align)
+ 
+diff --git a/src/html/html_hr_element.c b/src/html/html_hr_element.c
+index e6086f5..aed04d7 100644
+--- a/src/html/html_hr_element.c
++++ b/src/html/html_hr_element.c
+@@ -212,7 +212,7 @@ dom_exception dom_html_hr_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(size);
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(width);
++SIMPLE_GET_SET(size)
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(width)
+ 
+diff --git a/src/html/html_iframe_element.c b/src/html/html_iframe_element.c
+index 4d7272b..884385b 100644
+--- a/src/html/html_iframe_element.c
++++ b/src/html/html_iframe_element.c
+@@ -184,16 +184,16 @@ dom_exception dom_html_iframe_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(long_desc);
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET_SET(src);
+-SIMPLE_GET_SET(margin_width);
+-SIMPLE_GET_SET(margin_height);
+-SIMPLE_GET_SET(scrolling);
+-SIMPLE_GET_SET(frame_border);
+-SIMPLE_GET_SET(width);
+-SIMPLE_GET_SET(height);
++SIMPLE_GET_SET(long_desc)
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(name)
++SIMPLE_GET_SET(src)
++SIMPLE_GET_SET(margin_width)
++SIMPLE_GET_SET(margin_height)
++SIMPLE_GET_SET(scrolling)
++SIMPLE_GET_SET(frame_border)
++SIMPLE_GET_SET(width)
++SIMPLE_GET_SET(height)
+ 
+ 
+ /**
+diff --git a/src/html/html_image_element.c b/src/html/html_image_element.c
+index 3cdd15f..95b2875 100644
+--- a/src/html/html_image_element.c
++++ b/src/html/html_image_element.c
+@@ -185,13 +185,13 @@ dom_exception dom_html_image_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(alt);
+-SIMPLE_GET_SET(border);
+-SIMPLE_GET_SET(long_desc);
+-SIMPLE_GET_SET(src);
+-SIMPLE_GET_SET(use_map);
++SIMPLE_GET_SET(name)
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(alt)
++SIMPLE_GET_SET(border)
++SIMPLE_GET_SET(long_desc)
++SIMPLE_GET_SET(src)
++SIMPLE_GET_SET(use_map)
+ 
+ dom_exception dom_html_image_element_get_height(
+ 	dom_html_image_element *image, dom_ulong *height)
+diff --git a/src/html/html_input_element.c b/src/html/html_input_element.c
+index 079b55e..22e1e63 100644
+--- a/src/html/html_input_element.c
++++ b/src/html/html_input_element.c
+@@ -390,15 +390,15 @@ dom_exception dom_html_input_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(accept);
+-SIMPLE_GET_SET(access_key);
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(alt);
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET_SET(src);
+-SIMPLE_GET(type);
+-SIMPLE_GET_SET(use_map);
+-SIMPLE_GET_SET(value);
++SIMPLE_GET_SET(accept)
++SIMPLE_GET_SET(access_key)
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(alt)
++SIMPLE_GET_SET(name)
++SIMPLE_GET_SET(src)
++SIMPLE_GET(type)
++SIMPLE_GET_SET(use_map)
++SIMPLE_GET_SET(value)
+ 
+ dom_exception dom_html_input_element_get_size(
+ 	dom_html_input_element *input, dom_ulong *size)
+diff --git a/src/html/html_isindex_element.c b/src/html/html_isindex_element.c
+index 40cb99c..216f7b8 100644
+--- a/src/html/html_isindex_element.c
++++ b/src/html/html_isindex_element.c
+@@ -181,7 +181,7 @@ dom_exception dom_html_isindex_element_set_##attr(			\
+ 	}
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(prompt);
++SIMPLE_GET_SET(prompt)
+ /*-----------------------------------------------------------------------*/
+ /* Public APIs */
+ 
+diff --git a/src/html/html_label_element.c b/src/html/html_label_element.c
+index 3864cc4..dbd5428 100644
+--- a/src/html/html_label_element.c
++++ b/src/html/html_label_element.c
+@@ -214,6 +214,6 @@ dom_exception dom_html_label_element_set_##attr(			\
+ 	}
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(access_key);
+-SIMPLE_GET_SET(html_for);
++SIMPLE_GET_SET(access_key)
++SIMPLE_GET_SET(html_for)
+ 
+diff --git a/src/html/html_legend_element.c b/src/html/html_legend_element.c
+index efb712b..e558be3 100644
+--- a/src/html/html_legend_element.c
++++ b/src/html/html_legend_element.c
+@@ -219,8 +219,8 @@ dom_exception dom_html_legend_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(access_key);
+-SIMPLE_SET(align);
++SIMPLE_GET_SET(access_key)
++SIMPLE_SET(align)
+ 
+ dom_exception dom_html_legend_element_get_align(
+         dom_html_legend_element *legend, dom_string **align)
+diff --git a/src/html/html_li_element.c b/src/html/html_li_element.c
+index 84becf9..1207a5c 100644
+--- a/src/html/html_li_element.c
++++ b/src/html/html_li_element.c
+@@ -208,4 +208,4 @@ dom_exception _dom_html_li_element_copy_internal(
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(type);
++SIMPLE_GET_SET(type)
+diff --git a/src/html/html_map_element.c b/src/html/html_map_element.c
+index 3b10222..206e649 100644
+--- a/src/html/html_map_element.c
++++ b/src/html/html_map_element.c
+@@ -187,7 +187,7 @@ dom_exception dom_html_map_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(name);
++SIMPLE_GET_SET(name)
+ 
+ /* The callback function for  _dom_html_collection_create*/
+ static bool callback(struct dom_node_internal *node, void *ctx)
+diff --git a/src/html/html_mod_element.c b/src/html/html_mod_element.c
+index 20cb042..7b9b90f 100644
+--- a/src/html/html_mod_element.c
++++ b/src/html/html_mod_element.c
+@@ -185,6 +185,6 @@ dom_exception dom_html_mod_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(cite);
+-SIMPLE_GET_SET(date_time);
++SIMPLE_GET_SET(cite)
++SIMPLE_GET_SET(date_time)
+ 
+diff --git a/src/html/html_object_element.c b/src/html/html_object_element.c
+index e926aef..b145a63 100644
+--- a/src/html/html_object_element.c
++++ b/src/html/html_object_element.c
+@@ -187,19 +187,19 @@ dom_exception _dom_html_object_element_copy_internal(
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(code);
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(archive);
+-SIMPLE_GET_SET(border);
+-SIMPLE_GET_SET(code_base);
+-SIMPLE_GET_SET(code_type);
+-SIMPLE_GET_SET(data);
+-SIMPLE_GET_SET(height);
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET_SET(standby);
+-SIMPLE_GET_SET(type);
+-SIMPLE_GET_SET(use_map);
+-SIMPLE_GET_SET(width);
++SIMPLE_GET_SET(code)
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(archive)
++SIMPLE_GET_SET(border)
++SIMPLE_GET_SET(code_base)
++SIMPLE_GET_SET(code_type)
++SIMPLE_GET_SET(data)
++SIMPLE_GET_SET(height)
++SIMPLE_GET_SET(name)
++SIMPLE_GET_SET(standby)
++SIMPLE_GET_SET(type)
++SIMPLE_GET_SET(use_map)
++SIMPLE_GET_SET(width)
+ 
+ dom_exception dom_html_object_element_get_hspace(
+ 		dom_html_object_element *object, int32_t *hspace)
+diff --git a/src/html/html_olist_element.c b/src/html/html_olist_element.c
+index c89d11f..17d7317 100644
+--- a/src/html/html_olist_element.c
++++ b/src/html/html_olist_element.c
+@@ -232,4 +232,4 @@ dom_exception _dom_html_olist_element_copy_internal(
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(type);
++SIMPLE_GET_SET(type)
+diff --git a/src/html/html_opt_group_element.c b/src/html/html_opt_group_element.c
+index 6af0a29..3c20d1c 100644
+--- a/src/html/html_opt_group_element.c
++++ b/src/html/html_opt_group_element.c
+@@ -215,4 +215,4 @@ dom_exception dom_html_opt_group_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(label);
++SIMPLE_GET_SET(label)
+diff --git a/src/html/html_paragraph_element.c b/src/html/html_paragraph_element.c
+index 2b2f420..4f75528 100644
+--- a/src/html/html_paragraph_element.c
++++ b/src/html/html_paragraph_element.c
+@@ -184,5 +184,5 @@ dom_exception dom_html_paragraph_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(align);
++SIMPLE_GET_SET(align)
+ 
+diff --git a/src/html/html_param_element.c b/src/html/html_param_element.c
+index c75e1ce..b2ba7aa 100644
+--- a/src/html/html_param_element.c
++++ b/src/html/html_param_element.c
+@@ -183,7 +183,7 @@ dom_exception _dom_html_param_element_copy_internal(
+ 			}
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(name);
+-SIMPLE_GET_SET(type);
+-SIMPLE_GET_SET(value);
+-SIMPLE_GET_SET(value_type);
++SIMPLE_GET_SET(name)
++SIMPLE_GET_SET(type)
++SIMPLE_GET_SET(value)
++SIMPLE_GET_SET(value_type)
+diff --git a/src/html/html_quote_element.c b/src/html/html_quote_element.c
+index cf3e0c5..e42d153 100644
+--- a/src/html/html_quote_element.c
++++ b/src/html/html_quote_element.c
+@@ -184,5 +184,5 @@ dom_exception dom_html_quote_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(cite);
++SIMPLE_GET_SET(cite)
+ 
+diff --git a/src/html/html_script_element.c b/src/html/html_script_element.c
+index d20d727..8c21cf1 100644
+--- a/src/html/html_script_element.c
++++ b/src/html/html_script_element.c
+@@ -184,11 +184,11 @@ dom_exception dom_html_script_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(html_for);
+-SIMPLE_GET_SET(event);
+-SIMPLE_GET_SET(charset);
+-SIMPLE_GET_SET(src);
+-SIMPLE_GET_SET(type);
++SIMPLE_GET_SET(html_for)
++SIMPLE_GET_SET(event)
++SIMPLE_GET_SET(charset)
++SIMPLE_GET_SET(src)
++SIMPLE_GET_SET(type)
+ 
+ /**
+  * Get the defer property
+diff --git a/src/html/html_style_element.c b/src/html/html_style_element.c
+index ae845be..6d4ecf6 100644
+--- a/src/html/html_style_element.c
++++ b/src/html/html_style_element.c
+@@ -180,8 +180,8 @@ dom_exception dom_html_style_element_set_##attr(			\
+ 	}
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(type);
+-SIMPLE_GET_SET(media);
++SIMPLE_GET_SET(type)
++SIMPLE_GET_SET(media)
+ 
+ /**
+  * Get the disabled property
+diff --git a/src/html/html_table_element.c b/src/html/html_table_element.c
+index f197d07..a96717a 100644
+--- a/src/html/html_table_element.c
++++ b/src/html/html_table_element.c
+@@ -187,15 +187,15 @@ dom_exception _dom_html_table_element_copy_internal(
+ }
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(bg_color);
+-SIMPLE_GET_SET(border);
+-SIMPLE_GET_SET(cell_padding);
+-SIMPLE_GET_SET(cell_spacing);
+-SIMPLE_GET_SET(frame);
+-SIMPLE_GET_SET(rules);
+-SIMPLE_GET_SET(summary);
+-SIMPLE_GET_SET(width);
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(bg_color)
++SIMPLE_GET_SET(border)
++SIMPLE_GET_SET(cell_padding)
++SIMPLE_GET_SET(cell_spacing)
++SIMPLE_GET_SET(frame)
++SIMPLE_GET_SET(rules)
++SIMPLE_GET_SET(summary)
++SIMPLE_GET_SET(width)
+ 
+ /**
+  * Get the caption Attribute
+diff --git a/src/html/html_tablecaption_element.c b/src/html/html_tablecaption_element.c
+index cae229c..fa41525 100644
+--- a/src/html/html_tablecaption_element.c
++++ b/src/html/html_tablecaption_element.c
+@@ -183,5 +183,5 @@ dom_exception _dom_html_table_caption_element_copy_internal(
+ 			}
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(align);
++SIMPLE_GET_SET(align)
+ 
+diff --git a/src/html/html_tablecell_element.c b/src/html/html_tablecell_element.c
+index 7a1f968..a3b3095 100644
+--- a/src/html/html_tablecell_element.c
++++ b/src/html/html_tablecell_element.c
+@@ -185,17 +185,17 @@ dom_exception _dom_html_table_cell_element_copy_internal(
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(abbr);
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(axis);
+-SIMPLE_GET_SET(bg_color);
+-SIMPLE_GET_SET(ch);
+-SIMPLE_GET_SET(ch_off);
+-SIMPLE_GET_SET(headers);
+-SIMPLE_GET_SET(height);
+-SIMPLE_GET_SET(scope);
+-SIMPLE_GET_SET(v_align);
+-SIMPLE_GET_SET(width);
++SIMPLE_GET_SET(abbr)
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(axis)
++SIMPLE_GET_SET(bg_color)
++SIMPLE_GET_SET(ch)
++SIMPLE_GET_SET(ch_off)
++SIMPLE_GET_SET(headers)
++SIMPLE_GET_SET(height)
++SIMPLE_GET_SET(scope)
++SIMPLE_GET_SET(v_align)
++SIMPLE_GET_SET(width)
+ 
+ /**
+  * Get the cell_index property
+diff --git a/src/html/html_tablecol_element.c b/src/html/html_tablecol_element.c
+index 74169be..33be3e5 100644
+--- a/src/html/html_tablecol_element.c
++++ b/src/html/html_tablecol_element.c
+@@ -207,9 +207,9 @@ dom_exception _dom_html_table_col_element_copy_internal(
+ 			}
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(ch);
+-SIMPLE_GET_SET(ch_off);
+-SIMPLE_GET_SET(v_align);
+-SIMPLE_GET_SET(width);
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(ch)
++SIMPLE_GET_SET(ch_off)
++SIMPLE_GET_SET(v_align)
++SIMPLE_GET_SET(width)
+ 
+diff --git a/src/html/html_tablerow_element.c b/src/html/html_tablerow_element.c
+index fe7d929..b1ac520 100644
+--- a/src/html/html_tablerow_element.c
++++ b/src/html/html_tablerow_element.c
+@@ -187,11 +187,11 @@ dom_exception _dom_html_table_row_element_copy_internal(
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(bg_color);
+-SIMPLE_GET_SET(ch);
+-SIMPLE_GET_SET(ch_off);
+-SIMPLE_GET_SET(v_align);
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(bg_color)
++SIMPLE_GET_SET(ch)
++SIMPLE_GET_SET(ch_off)
++SIMPLE_GET_SET(v_align)
+ 
+ /**
+  * Get the index of the Row in logical order
+diff --git a/src/html/html_tablesection_element.c b/src/html/html_tablesection_element.c
+index f839758..7bb5289 100644
+--- a/src/html/html_tablesection_element.c
++++ b/src/html/html_tablesection_element.c
+@@ -187,10 +187,10 @@ dom_exception _dom_html_table_section_element_copy_internal(
+ }
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+-SIMPLE_GET_SET(align);
+-SIMPLE_GET_SET(ch);
+-SIMPLE_GET_SET(ch_off);
+-SIMPLE_GET_SET(v_align);
++SIMPLE_GET_SET(align)
++SIMPLE_GET_SET(ch)
++SIMPLE_GET_SET(ch_off)
++SIMPLE_GET_SET(v_align)
+ 
+ /* The callback function for  _dom_html_collection_create*/
+ static bool table_section_callback(struct dom_node_internal *node, void *ctx)
+diff --git a/src/html/html_text_area_element.c b/src/html/html_text_area_element.c
+index 6117e83..b031360 100644
+--- a/src/html/html_text_area_element.c
++++ b/src/html/html_text_area_element.c
+@@ -385,8 +385,8 @@ dom_exception dom_html_text_area_element_set_##attr(			\
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(access_key);
+-SIMPLE_GET_SET(name);
++SIMPLE_GET_SET(access_key)
++SIMPLE_GET_SET(name)
+ 
+ dom_exception dom_html_text_area_element_get_type(
+ 	dom_html_text_area_element *text_area, dom_string **type)
+diff --git a/src/html/html_ulist_element.c b/src/html/html_ulist_element.c
+index f2b87fb..11ecdfb 100644
+--- a/src/html/html_ulist_element.c
++++ b/src/html/html_ulist_element.c
+@@ -208,4 +208,4 @@ dom_exception _dom_html_u_list_element_copy_internal(
+ 
+ #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
+ 
+-SIMPLE_GET_SET(type);
++SIMPLE_GET_SET(type)
+-- 
+2.22.0
+
