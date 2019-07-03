@@ -1,4 +1,4 @@
-Copyright © 2016-2017 Michael Forney
+Copyright © 2016-2019 Michael Forney
 
 Permission to use, copy, modify, and/or distribute this software for any purpose
 with or without fee is hereby granted, provided that the above copyright notice
@@ -18,9 +18,6 @@ same terms as the files they change or are derived from in the respective
 projects. Unless specified below, these patches are original work, taken
 directly from upstream, or generated directly from scripts within the package's
 source tree.
-
-pkg/bc/patch/0001-Fix-use-of-uninitialized-f_void.patch
-	http://www.pixelbeat.org/programming/oss_bug_flow.html
 
 pkg/unzip/patch/*
 	Taken from Debian's unzip package,
