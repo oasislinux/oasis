@@ -1,0 +1,261 @@
+From 94f9d25b16f3600aa85a68c4bf83b3282b0ad8ab Mon Sep 17 00:00:00 2001
+From: Zackery Spytz <zspytz@gmail.com>
+Date: Mon, 6 May 2019 10:56:51 -0600
+Subject: [PATCH] bpo-36594: Fix incorrect use of %p in format strings
+ (GH-12769)
+
+In addition, fix some other minor violations of C99.
+---
+ .../2019-04-10-18-12-11.bpo-36594.fbnJAc.rst              | 2 ++
+ Modules/_ctypes/_ctypes_test.c                            | 8 ++++----
+ Modules/_ctypes/callproc.c                                | 4 ++--
+ Modules/hashtable.c                                       | 2 +-
+ Objects/object.c                                          | 8 ++++----
+ Objects/obmalloc.c                                        | 2 +-
+ Objects/unicodeobject.c                                   | 6 +++---
+ Programs/_freeze_importlib.c                              | 2 +-
+ Python/sysmodule.c                                        | 8 ++++----
+ Python/thread_pthread.h                                   | 4 ++--
+ 10 files changed, 24 insertions(+), 22 deletions(-)
+ create mode 100644 Misc/NEWS.d/next/Core and Builtins/2019-04-10-18-12-11.bpo-36594.fbnJAc.rst
+
+diff --git a/Misc/NEWS.d/next/Core and Builtins/2019-04-10-18-12-11.bpo-36594.fbnJAc.rst b/Misc/NEWS.d/next/Core and Builtins/2019-04-10-18-12-11.bpo-36594.fbnJAc.rst
+new file mode 100644
+index 0000000000..7ca5dd998d
+--- /dev/null
++++ b/Misc/NEWS.d/next/Core and Builtins/2019-04-10-18-12-11.bpo-36594.fbnJAc.rst	
+@@ -0,0 +1,2 @@
++Fix incorrect use of ``%p`` in format strings.
++Patch by Zackery Spytz.
+diff --git a/Modules/_ctypes/_ctypes_test.c b/Modules/_ctypes/_ctypes_test.c
+index 0152945ca1..c837c4cbf8 100644
+--- a/Modules/_ctypes/_ctypes_test.c
++++ b/Modules/_ctypes/_ctypes_test.c
+@@ -87,7 +87,7 @@ EXPORT(void)testfunc_array(int values[4])
+ EXPORT(long double)testfunc_Ddd(double a, double b)
+ {
+     long double result = (long double)(a * b);
+-    printf("testfunc_Ddd(%p, %p)\n", &a, &b);
++    printf("testfunc_Ddd(%p, %p)\n", (void *)&a, (void *)&b);
+     printf("testfunc_Ddd(%g, %g)\n", a, b);
+     return result;
+ }
+@@ -95,7 +95,7 @@ EXPORT(long double)testfunc_Ddd(double a, double b)
+ EXPORT(long double)testfunc_DDD(long double a, long double b)
+ {
+     long double result = a * b;
+-    printf("testfunc_DDD(%p, %p)\n", &a, &b);
++    printf("testfunc_DDD(%p, %p)\n", (void *)&a, (void *)&b);
+     printf("testfunc_DDD(%Lg, %Lg)\n", a, b);
+     return result;
+ }
+@@ -103,7 +103,7 @@ EXPORT(long double)testfunc_DDD(long double a, long double b)
+ EXPORT(int)testfunc_iii(int a, int b)
+ {
+     int result = a * b;
+-    printf("testfunc_iii(%p, %p)\n", &a, &b);
++    printf("testfunc_iii(%p, %p)\n", (void *)&a, (void *)&b);
+     return result;
+ }
+ 
+@@ -361,7 +361,7 @@ static void _xxx_init(void *(*Xalloc)(int), void (*Xfree)(void *))
+ {
+     void *ptr;
+ 
+-    printf("_xxx_init got %p %p\n", Xalloc, Xfree);
++    printf("_xxx_init got %p %p\n", (void *)Xalloc, (void *)Xfree);
+     printf("calling\n");
+     ptr = Xalloc(32);
+     Xfree(ptr);
+diff --git a/Modules/_ctypes/callproc.c b/Modules/_ctypes/callproc.c
+index e971388f69..611585f0fe 100644
+--- a/Modules/_ctypes/callproc.c
++++ b/Modules/_ctypes/callproc.c
+@@ -528,11 +528,11 @@ PyCArg_repr(PyCArgObject *self)
+     default:
+         if (is_literal_char((unsigned char)self->tag)) {
+             sprintf(buffer, "<cparam '%c' at %p>",
+-                (unsigned char)self->tag, self);
++                (unsigned char)self->tag, (void *)self);
+         }
+         else {
+             sprintf(buffer, "<cparam 0x%02x at %p>",
+-                (unsigned char)self->tag, self);
++                (unsigned char)self->tag, (void *)self);
+         }
+         break;
+     }
+diff --git a/Modules/hashtable.c b/Modules/hashtable.c
+index e6f8daf796..4a36a1e71c 100644
+--- a/Modules/hashtable.c
++++ b/Modules/hashtable.c
+@@ -240,7 +240,7 @@ _Py_hashtable_print_stats(_Py_hashtable_t *ht)
+     }
+     printf("hash table %p: entries=%"
+            PY_FORMAT_SIZE_T "u/%" PY_FORMAT_SIZE_T "u (%.0f%%), ",
+-           ht, ht->entries, ht->num_buckets, load * 100.0);
++           (void *)ht, ht->entries, ht->num_buckets, load * 100.0);
+     if (nchains)
+         printf("avg_chain_len=%.1f, ", (double)total_chain_len / nchains);
+     printf("max_chain_len=%" PY_FORMAT_SIZE_T "u, %" PY_FORMAT_SIZE_T "u KiB\n",
+diff --git a/Objects/object.c b/Objects/object.c
+index 138df44880..246c5befd4 100644
+--- a/Objects/object.c
++++ b/Objects/object.c
+@@ -359,7 +359,7 @@ PyObject_Print(PyObject *op, FILE *fp, int flags)
+                universally available */
+             Py_BEGIN_ALLOW_THREADS
+             fprintf(fp, "<refcnt %ld at %p>",
+-                (long)op->ob_refcnt, op);
++                (long)op->ob_refcnt, (void *)op);
+             Py_END_ALLOW_THREADS
+         else {
+             PyObject *s;
+@@ -474,7 +474,7 @@ _PyObject_Dump(PyObject* op)
+         "address : %p\n",
+         Py_TYPE(op)==NULL ? "NULL" : Py_TYPE(op)->tp_name,
+         (long)op->ob_refcnt,
+-        op);
++        (void *)op);
+     fflush(stderr);
+ }
+ 
+@@ -1980,7 +1980,7 @@ _Py_PrintReferences(FILE *fp)
+     PyObject *op;
+     fprintf(fp, "Remaining objects:\n");
+     for (op = refchain._ob_next; op != &refchain; op = op->_ob_next) {
+-        fprintf(fp, "%p [%" PY_FORMAT_SIZE_T "d] ", op, op->ob_refcnt);
++        fprintf(fp, "%p [%" PY_FORMAT_SIZE_T "d] ", (void *)op, op->ob_refcnt);
+         if (PyObject_Print(op, fp, 0) != 0)
+             PyErr_Clear();
+         putc('\n', fp);
+@@ -1996,7 +1996,7 @@ _Py_PrintReferenceAddresses(FILE *fp)
+     PyObject *op;
+     fprintf(fp, "Remaining object addresses:\n");
+     for (op = refchain._ob_next; op != &refchain; op = op->_ob_next)
+-        fprintf(fp, "%p [%" PY_FORMAT_SIZE_T "d] %s\n", op,
++        fprintf(fp, "%p [%" PY_FORMAT_SIZE_T "d] %s\n", (void *)op,
+             op->ob_refcnt, Py_TYPE(op)->tp_name);
+ }
+ 
+diff --git a/Objects/obmalloc.c b/Objects/obmalloc.c
+index 3b0c35bcc9..187e40055e 100644
+--- a/Objects/obmalloc.c
++++ b/Objects/obmalloc.c
+@@ -2369,7 +2369,7 @@ _PyObject_DebugDumpAddress(const void *p)
+     }
+ 
+     tail = q + nbytes;
+-    fprintf(stderr, "    The %d pad bytes at tail=%p are ", SST, tail);
++    fprintf(stderr, "    The %d pad bytes at tail=%p are ", SST, (void *)tail);
+     ok = 1;
+     for (i = 0; i < SST; ++i) {
+         if (tail[i] != FORBIDDENBYTE) {
+diff --git a/Objects/unicodeobject.c b/Objects/unicodeobject.c
+index b67ffac4e9..c5b308cbd6 100644
+--- a/Objects/unicodeobject.c
++++ b/Objects/unicodeobject.c
+@@ -1214,7 +1214,7 @@ void *_PyUnicode_compact_data(void *unicode) {
+     return _PyUnicode_COMPACT_DATA(unicode);
+ }
+ void *_PyUnicode_data(void *unicode){
+-    printf("obj %p\n", unicode);
++    printf("obj %p\n", (void *)unicode);
+     printf("compact %d\n", PyUnicode_IS_COMPACT(unicode));
+     printf("compact ascii %d\n", PyUnicode_IS_COMPACT_ASCII(unicode));
+     printf("ascii op %p\n", ((void*)((PyASCIIObject*)(unicode) + 1)));
+@@ -1245,14 +1245,14 @@ _PyUnicode_Dump(PyObject *op)
+ 
+     if (ascii->wstr == data)
+         printf("shared ");
+-    printf("wstr=%p", ascii->wstr);
++    printf("wstr=%p", (void *)ascii->wstr);
+ 
+     if (!(ascii->state.ascii == 1 && ascii->state.compact == 1)) {
+         printf(" (%" PY_FORMAT_SIZE_T "u), ", compact->wstr_length);
+         if (!ascii->state.compact && compact->utf8 == unicode->data.any)
+             printf("shared ");
+         printf("utf8=%p (%" PY_FORMAT_SIZE_T "u)",
+-               compact->utf8, compact->utf8_length);
++               (void *)compact->utf8, compact->utf8_length);
+     }
+     printf(", data=%p\n", data);
+ }
+diff --git a/Programs/_freeze_importlib.c b/Programs/_freeze_importlib.c
+index 7de641e1a5..609133cca8 100644
+--- a/Programs/_freeze_importlib.c
++++ b/Programs/_freeze_importlib.c
+@@ -132,7 +132,7 @@ main(int argc, char *argv[])
+         size_t i, end = Py_MIN(n + 16, data_size);
+         fprintf(outfile, "    ");
+         for (i = n; i < end; i++) {
+-            fprintf(outfile, "%d,", (unsigned int) data[i]);
++            fprintf(outfile, "%u,", (unsigned int) data[i]);
+         }
+         fprintf(outfile, "\n");
+     }
+diff --git a/Python/sysmodule.c b/Python/sysmodule.c
+index cdc2edf038..69ac43d9bf 100644
+--- a/Python/sysmodule.c
++++ b/Python/sysmodule.c
+@@ -1681,7 +1681,7 @@ _alloc_preinit_entry(const wchar_t *value)
+ 
+     PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &old_alloc);
+     return node;
+-};
++}
+ 
+ static int
+ _append_preinit_entry(_Py_PreInitEntry *optionlist, const wchar_t *value)
+@@ -1703,7 +1703,7 @@ _append_preinit_entry(_Py_PreInitEntry *optionlist, const wchar_t *value)
+         last_entry->next = new_entry;
+     }
+     return 0;
+-};
++}
+ 
+ static void
+ _clear_preinit_entries(_Py_PreInitEntry *optionlist)
+@@ -1720,7 +1720,7 @@ _clear_preinit_entries(_Py_PreInitEntry *optionlist)
+         current = next;
+     }
+     PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &old_alloc);
+-};
++}
+ 
+ static void
+ _clear_all_preinit_options(void)
+@@ -1751,7 +1751,7 @@ _PySys_ReadPreInitOptions(void)
+ 
+     _clear_all_preinit_options();
+     return 0;
+-};
++}
+ 
+ static PyObject *
+ get_warnoptions(void)
+diff --git a/Python/thread_pthread.h b/Python/thread_pthread.h
+index f79f9b90a6..2677cc945e 100644
+--- a/Python/thread_pthread.h
++++ b/Python/thread_pthread.h
+@@ -298,7 +298,7 @@ PyThread_allocate_lock(void)
+         }
+     }
+ 
+-    dprintf(("PyThread_allocate_lock() -> %p\n", lock));
++    dprintf(("PyThread_allocate_lock() -> %p\n", (void *)lock));
+     return (PyThread_type_lock)lock;
+ }
+ 
+@@ -482,7 +482,7 @@ PyThread_allocate_lock(void)
+         }
+     }
+ 
+-    dprintf(("PyThread_allocate_lock() -> %p\n", lock));
++    dprintf(("PyThread_allocate_lock() -> %p\n", (void *)lock));
+     return (PyThread_type_lock) lock;
+ }
+ 
+-- 
+2.22.0
+
