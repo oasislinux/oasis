@@ -1,0 +1,27 @@
+From 0b9ea41f9e4e30552ef3cce4fee512db99c4e3ed Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 19:50:44 -0700
+Subject: [PATCH] Use __VA_ARGS__ for variadic macros arguments
+
+---
+ sshfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sshfs.c b/sshfs.c
+index d682c8f..9c65cc4 100644
+--- a/sshfs.c
++++ b/sshfs.c
+@@ -479,8 +479,8 @@ static struct fuse_opt workaround_opts[] = {
+ 	FUSE_OPT_END
+ };
+ 
+-#define DEBUG(format, args...)						\
+-	do { if (sshfs.debug) fprintf(stderr, format, args); } while(0)
++#define DEBUG(format, ...)						\
++	do { if (sshfs.debug) fprintf(stderr, format, __VA_ARGS__); } while(0)
+ 
+ static const char *type_name(uint8_t type)
+ {
+-- 
+2.22.0
+

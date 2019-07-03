@@ -1,0 +1,25 @@
+From 9d938bc129dfde5c497cc7f4b780ae4ebc6bfb81 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 19:52:43 -0700
+Subject: [PATCH] Avoid pointer arithmetic on `void *`
+
+---
+ sshfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sshfs.c b/sshfs.c
+index 9c65cc4..c65fa73 100644
+--- a/sshfs.c
++++ b/sshfs.c
+@@ -1173,7 +1173,7 @@ static int do_write(struct iovec *iov, size_t count)
+ 		do {
+ 			if ((unsigned) res < iov->iov_len) {
+ 				iov->iov_len -= res;
+-				iov->iov_base += res;
++				iov->iov_base = (char *) iov->iov_base + res;
+ 				break;
+ 			} else {
+ 				res -= iov->iov_len;
+-- 
+2.22.0
+
