@@ -1,0 +1,52 @@
+From 642824dea853e98be336bea496e7e5301c70c3a1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 23:54:25 -0700
+Subject: [PATCH] Use _Alignof when built as C11
+
+---
+ libelf/libelf_align.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/libelf/libelf_align.c b/libelf/libelf_align.c
+index f74789f5..9ddf172e 100644
+--- a/libelf/libelf_align.c
++++ b/libelf/libelf_align.c
+@@ -37,19 +37,32 @@ struct align {
+ 	unsigned int a64;
+ };
+ 
+-#ifdef	__GNUC__
++#if	__STDC_VERSION__ >= 201112L
++#define	MALIGN(N)	{					\
++		.a32 = _Alignof(Elf32_##N),			\
++		.a64 = _Alignof(Elf64_##N)			\
++	}
++#define	MALIGN64(V)	{					\
++		.a32 = 0,					\
++		.a64 = _Alignof(Elf64_##V)			\
++	}
++#define	MALIGN_WORD()	{					\
++		.a32 = _Alignof(int32_t),			\
++		.a64 = _Alignof(int64_t)			\
++	}
++#elif	defined(__GNUC__)
+ #define	MALIGN(N)	{					\
+ 		.a32 = __alignof__(Elf32_##N),			\
+ 		.a64 = __alignof__(Elf64_##N)			\
+ 	}
+-#define	MALIGN64(V)	  {					\
++#define	MALIGN64(V)	{					\
+ 		.a32 = 0,					\
+ 		.a64 = __alignof__(Elf64_##V)			\
+ 	}
+ #define	MALIGN_WORD()	{					\
+ 		.a32 = __alignof__(int32_t),			\
+ 		.a64 = __alignof__(int64_t)			\
+-	    }
++	}
+ #else
+ #error	Need the __alignof__ builtin.
+ #endif
+-- 
+2.22.0
+

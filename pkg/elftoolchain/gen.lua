@@ -1,5 +1,5 @@
 cflags{
-	'-Wall',
+	'-Wall', '-pedantic',
 	'-I $dir',
 	'-I $srcdir/common',
 	'-I $srcdir/libelf',

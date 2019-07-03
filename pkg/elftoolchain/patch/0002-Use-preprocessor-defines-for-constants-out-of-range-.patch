@@ -1,0 +1,530 @@
+From 61265f1723d00c3af174291f01ab58fe55e34a31 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 23:24:30 -0700
+Subject: [PATCH] Use preprocessor defines for constants out of range of int
+
+---
+ common/elfdefinitions.h | 486 +++++++++++++---------------------------
+ 1 file changed, 156 insertions(+), 330 deletions(-)
+
+diff --git a/common/elfdefinitions.h b/common/elfdefinitions.h
+index 2669d5c7..5d6a897e 100644
+--- a/common/elfdefinitions.h
++++ b/common/elfdefinitions.h
+@@ -345,105 +345,52 @@ enum {
+ /*
+  * Flags used in the executable header (field: e_flags).
+  */
+-#define	_ELF_DEFINE_EHDR_FLAGS()					\
+-_ELF_DEFINE_EF(EF_ARM_RELEXEC,      0x00000001UL,			\
+-	"dynamic segment describes only how to relocate segments")	\
+-_ELF_DEFINE_EF(EF_ARM_HASENTRY,     0x00000002UL,			\
+-	"e_entry contains a program entry point")			\
+-_ELF_DEFINE_EF(EF_ARM_SYMSARESORTED, 0x00000004UL,			\
+-	"subsection of symbol table is sorted by symbol value")		\
+-_ELF_DEFINE_EF(EF_ARM_DYNSYMSUSESEGIDX, 0x00000008UL,			\
+-	"dynamic symbol st_shndx = containing segment index + 1")	\
+-_ELF_DEFINE_EF(EF_ARM_MAPSYMSFIRST, 0x00000010UL,			\
+-	"mapping symbols precede other local symbols in symtab")	\
+-_ELF_DEFINE_EF(EF_ARM_BE8,          0x00800000UL,			\
+-	"file contains BE-8 code")					\
+-_ELF_DEFINE_EF(EF_ARM_LE8,          0x00400000UL,			\
+-	"file contains LE-8 code")					\
+-_ELF_DEFINE_EF(EF_ARM_EABIMASK,     0xFF000000UL,			\
+-	"mask for ARM EABI version number (0 denotes GNU or unknown)")	\
+-_ELF_DEFINE_EF(EF_ARM_EABI_UNKNOWN, 0x00000000UL,			\
+-	"Unknown or GNU ARM EABI version number")			\
+-_ELF_DEFINE_EF(EF_ARM_EABI_VER1,    0x01000000UL,			\
+-	"ARM EABI version 1")						\
+-_ELF_DEFINE_EF(EF_ARM_EABI_VER2,    0x02000000UL,			\
+-	"ARM EABI version 2")						\
+-_ELF_DEFINE_EF(EF_ARM_EABI_VER3,    0x03000000UL,			\
+-	"ARM EABI version 3")						\
+-_ELF_DEFINE_EF(EF_ARM_EABI_VER4,    0x04000000UL,			\
+-	"ARM EABI version 4")						\
+-_ELF_DEFINE_EF(EF_ARM_EABI_VER5,    0x05000000UL,			\
+-	"ARM EABI version 5")						\
+-_ELF_DEFINE_EF(EF_ARM_INTERWORK,    0x00000004UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_APCS_26,      0x00000008UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_APCS_FLOAT,   0x00000010UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_PIC,          0x00000020UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_ALIGN8,       0x00000040UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_NEW_ABI,      0x00000080UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_OLD_ABI,      0x00000100UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_SOFT_FLOAT,   0x00000200UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_VFP_FLOAT,    0x00000400UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_ARM_MAVERICK_FLOAT, 0x00000800UL,			\
+-	"GNU EABI extension")						\
+-_ELF_DEFINE_EF(EF_MIPS_NOREORDER,   0x00000001UL,			\
+-	"at least one .noreorder directive appeared in the source")	\
+-_ELF_DEFINE_EF(EF_MIPS_PIC,         0x00000002UL,			\
+-	"file contains position independent code")			\
+-_ELF_DEFINE_EF(EF_MIPS_CPIC,        0x00000004UL,			\
+-	"file's code uses standard conventions for calling PIC")	\
+-_ELF_DEFINE_EF(EF_MIPS_UCODE,       0x00000010UL,			\
+-	"file contains UCODE (obsolete)")				\
+-_ELF_DEFINE_EF(EF_MIPS_ABI2,        0x00000020UL,			\
+-	"file follows MIPS III 32-bit ABI")				\
+-_ELF_DEFINE_EF(EF_MIPS_OPTIONS_FIRST, 0x00000080UL,			\
+-	"ld(1) should process .MIPS.options section first")		\
+-_ELF_DEFINE_EF(EF_MIPS_ARCH_ASE,    0x0F000000UL,			\
+-	"file uses application-specific architectural extensions")	\
+-_ELF_DEFINE_EF(EF_MIPS_ARCH_ASE_MDMX, 0x08000000UL,			\
+-	"file uses MDMX multimedia extensions")				\
+-_ELF_DEFINE_EF(EF_MIPS_ARCH_ASE_M16, 0x04000000UL,			\
+-	"file uses MIPS-16 ISA extensions")				\
+-_ELF_DEFINE_EF(EF_MIPS_ARCH,         0xF0000000UL,			\
+-	"4-bit MIPS architecture field")				\
+-_ELF_DEFINE_EF(EF_PPC_EMB,          0x80000000UL,			\
+-	"Embedded PowerPC flag")					\
+-_ELF_DEFINE_EF(EF_PPC_RELOCATABLE,  0x00010000UL,			\
+-	"-mrelocatable flag")						\
+-_ELF_DEFINE_EF(EF_PPC_RELOCATABLE_LIB, 0x00008000UL,			\
+-	"-mrelocatable-lib flag")					\
+-_ELF_DEFINE_EF(EF_SPARC_EXT_MASK,   0x00ffff00UL,			\
+-	"Vendor Extension mask")					\
+-_ELF_DEFINE_EF(EF_SPARC_32PLUS,     0x00000100UL,			\
+-	"Generic V8+ features")						\
+-_ELF_DEFINE_EF(EF_SPARC_SUN_US1,    0x00000200UL,			\
+-	"Sun UltraSPARCTM 1 Extensions")				\
+-_ELF_DEFINE_EF(EF_SPARC_HAL_R1,     0x00000400UL, "HAL R1 Extensions")	\
+-_ELF_DEFINE_EF(EF_SPARC_SUN_US3,    0x00000800UL,			\
+-	"Sun UltraSPARC 3 Extensions")					\
+-_ELF_DEFINE_EF(EF_SPARCV9_MM,       0x00000003UL,			\
+-	"Mask for Memory Model")					\
+-_ELF_DEFINE_EF(EF_SPARCV9_TSO,      0x00000000UL,			\
+-	"Total Store Ordering")						\
+-_ELF_DEFINE_EF(EF_SPARCV9_PSO,      0x00000001UL,			\
+-	"Partial Store Ordering")					\
+-_ELF_DEFINE_EF(EF_SPARCV9_RMO,      0x00000002UL,			\
+-	"Relaxed Memory Ordering")
+-
+-#undef	_ELF_DEFINE_EF
+-#define	_ELF_DEFINE_EF(N, V, DESCR)	N = V ,
+-enum {
+-	_ELF_DEFINE_EHDR_FLAGS()
+-	EF__LAST__
+-};
++#define EF_ARM_RELEXEC          0x00000001UL /* dynamic segment describes only how to relocate segments */
++#define EF_ARM_HASENTRY         0x00000002UL /* e_entry contains a program entry point */
++#define EF_ARM_SYMSARESORTED    0x00000004UL /* subsection of symbol table is sorted by symbol value */
++#define EF_ARM_DYNSYMSUSESEGIDX 0x00000008UL /* dynamic symbol st_shndx = containing segment index + 1 */
++#define EF_ARM_MAPSYMSFIRST     0x00000010UL /* mapping symbols precede other local symbols in symtab */
++#define EF_ARM_BE8              0x00800000UL /* file contains BE-8 code */
++#define EF_ARM_LE8              0x00400000UL /* file contains LE-8 code */
++#define EF_ARM_EABIMASK         0xFF000000UL /* mask for ARM EABI version number (0 denotes GNU or unknown) */
++#define EF_ARM_EABI_UNKNOWN     0x00000000UL /* Unknown or GNU ARM EABI version number */
++#define EF_ARM_EABI_VER1        0x01000000UL /* ARM EABI version 1 */
++#define EF_ARM_EABI_VER2        0x02000000UL /* ARM EABI version 2 */
++#define EF_ARM_EABI_VER3        0x03000000UL /* ARM EABI version 3 */
++#define EF_ARM_EABI_VER4        0x04000000UL /* ARM EABI version 4 */
++#define EF_ARM_EABI_VER5        0x05000000UL /* ARM EABI version 5 */
++#define EF_ARM_INTERWORK        0x00000004UL /* GNU EABI extension */
++#define EF_ARM_APCS_26          0x00000008UL /* GNU EABI extension */
++#define EF_ARM_APCS_FLOAT       0x00000010UL /* GNU EABI extension */
++#define EF_ARM_PIC              0x00000020UL /* GNU EABI extension */
++#define EF_ARM_ALIGN8           0x00000040UL /* GNU EABI extension */
++#define EF_ARM_NEW_ABI          0x00000080UL /* GNU EABI extension */
++#define EF_ARM_OLD_ABI          0x00000100UL /* GNU EABI extension */
++#define EF_ARM_SOFT_FLOAT       0x00000200UL /* GNU EABI extension */
++#define EF_ARM_VFP_FLOAT        0x00000400UL /* GNU EABI extension */
++#define EF_ARM_MAVERICK_FLOAT   0x00000800UL /* GNU EABI extension */
++#define EF_MIPS_NOREORDER       0x00000001UL /* at least one .noreorder directive appeared in the source */
++#define EF_MIPS_PIC             0x00000002UL /* file contains position independent code */
++#define EF_MIPS_CPIC            0x00000004UL /* file's code uses standard conventions for calling PIC */
++#define EF_MIPS_UCODE           0x00000010UL /* file contains UCODE (obsolete) */
++#define EF_MIPS_ABI2            0x00000020UL /* file follows MIPS III 32-bit ABI */
++#define EF_MIPS_OPTIONS_FIRST   0x00000080UL /* ld(1) should process .MIPS.options section first */
++#define EF_MIPS_ARCH_ASE        0x0F000000UL /* file uses application-specific architectural extensions */
++#define EF_MIPS_ARCH_ASE_MDMX   0x08000000UL /* file uses MDMX multimedia extensions */
++#define EF_MIPS_ARCH_ASE_M16    0x04000000UL /* file uses MIPS-16 ISA extensions */
++#define EF_MIPS_ARCH            0xF0000000UL /* 4-bit MIPS architecture field */
++#define EF_PPC_EMB              0x80000000UL /* Embedded PowerPC flag */
++#define EF_PPC_RELOCATABLE      0x00010000UL /* -mrelocatable flag */
++#define EF_PPC_RELOCATABLE_LIB  0x00008000UL /* -mrelocatable-lib flag */
++#define EF_SPARC_EXT_MASK       0x00ffff00UL /* Vendor Extension mask */
++#define EF_SPARC_32PLUS         0x00000100UL /* Generic V8+ features */
++#define EF_SPARC_SUN_US1        0x00000200UL /* Sun UltraSPARCTM 1 Extensions */
++#define EF_SPARC_HAL_R1         0x00000400UL
++#define EF_SPARC_SUN_US3        0x00000800UL /* Sun UltraSPARC 3 Extensions */
++#define EF_SPARCV9_MM           0x00000003UL /* Mask for Memory Model */
++#define EF_SPARCV9_TSO          0x00000000UL /* Total Store Ordering */
++#define EF_SPARCV9_PSO          0x00000001UL /* Partial Store Ordering */
++#define EF_SPARCV9_RMO          0x00000002UL /* Relaxed Memory Ordering */
+ 
+ /*
+  * Offsets in the `ei_ident[]` field of an ELF executable header.
+@@ -868,26 +815,14 @@ enum {
+ /*
+  * Flags used by program header table entries.
+  */
+-
+-#define	_ELF_DEFINE_PHDR_FLAGS()					\
+-_ELF_DEFINE_PF(PF_X,                0x1, "Execute")			\
+-_ELF_DEFINE_PF(PF_W,                0x2, "Write")			\
+-_ELF_DEFINE_PF(PF_R,                0x4, "Read")			\
+-_ELF_DEFINE_PF(PF_MASKOS,           0x0ff00000, "OS-specific flags")	\
+-_ELF_DEFINE_PF(PF_MASKPROC,         0xf0000000, "Processor-specific flags") \
+-_ELF_DEFINE_PF(PF_ARM_SB,           0x10000000,				\
+-	"segment contains the location addressed by the static base")	\
+-_ELF_DEFINE_PF(PF_ARM_PI,           0x20000000,				\
+-	"segment is position-independent")				\
+-_ELF_DEFINE_PF(PF_ARM_ABS,          0x40000000,				\
+-	"segment must be loaded at its base address")
+-
+-#undef	_ELF_DEFINE_PF
+-#define	_ELF_DEFINE_PF(N, V, DESCR)	N = V ,
+-enum {
+-	_ELF_DEFINE_PHDR_FLAGS()
+-	PF__LAST__
+-};
++#define PF_X        0x1        /* Execute */
++#define PF_W        0x2        /* Write */
++#define PF_R        0x4        /* Read */
++#define PF_MASKOS   0x0ff00000 /* OS-specific flags */
++#define PF_MASKPROC 0xf0000000 /* Processor-specific flags */
++#define PF_ARM_SB   0x10000000 /* segment contains the location addressed by the static base */
++#define PF_ARM_PI   0x20000000 /* segment is position-independent */
++#define PF_ARM_ABS  0x40000000 /* segment must be loaded at its base address */
+ 
+ /*
+  * Types of program header table entries.
+@@ -954,66 +889,32 @@ enum {
+ /*
+  * Section flags.
+  */
+-
+-#define	_ELF_DEFINE_SECTION_FLAGS()					\
+-_ELF_DEFINE_SHF(SHF_WRITE,           0x1,				\
+-	"writable during program execution")				\
+-_ELF_DEFINE_SHF(SHF_ALLOC,           0x2,				\
+-	"occupies memory during program execution")			\
+-_ELF_DEFINE_SHF(SHF_EXECINSTR,       0x4, "executable instructions")	\
+-_ELF_DEFINE_SHF(SHF_MERGE,           0x10,				\
+-	"may be merged to prevent duplication")				\
+-_ELF_DEFINE_SHF(SHF_STRINGS,         0x20,				\
+-	"NUL-terminated character strings")				\
+-_ELF_DEFINE_SHF(SHF_INFO_LINK,       0x40,				\
+-	"the sh_info field holds a link")				\
+-_ELF_DEFINE_SHF(SHF_LINK_ORDER,      0x80,				\
+-	"special ordering requirements during linking")			\
+-_ELF_DEFINE_SHF(SHF_OS_NONCONFORMING, 0x100,				\
+-	"requires OS-specific processing during linking")		\
+-_ELF_DEFINE_SHF(SHF_GROUP,           0x200,				\
+-	"member of a section group")					\
+-_ELF_DEFINE_SHF(SHF_TLS,             0x400,				\
+-	"holds thread-local storage")					\
+-_ELF_DEFINE_SHF(SHF_COMPRESSED,      0x800,				\
+-	"holds compressed data")					\
+-_ELF_DEFINE_SHF(SHF_MASKOS,          0x0FF00000UL,			\
+-	"bits reserved for OS-specific semantics")			\
+-_ELF_DEFINE_SHF(SHF_AMD64_LARGE,     0x10000000UL,			\
+-	"section uses large code model")				\
+-_ELF_DEFINE_SHF(SHF_ENTRYSECT,       0x10000000UL,			\
+-	"section contains an entry point (ARM)")			\
+-_ELF_DEFINE_SHF(SHF_COMDEF,          0x80000000UL,			\
+-	"section may be multiply defined in input to link step (ARM)")	\
+-_ELF_DEFINE_SHF(SHF_MIPS_GPREL,      0x10000000UL,			\
+-	"section must be part of global data area")			\
+-_ELF_DEFINE_SHF(SHF_MIPS_MERGE,      0x20000000UL,			\
+-	"section data should be merged to eliminate duplication")	\
+-_ELF_DEFINE_SHF(SHF_MIPS_ADDR,       0x40000000UL,			\
+-	"section data is addressed by default")				\
+-_ELF_DEFINE_SHF(SHF_MIPS_STRING,     0x80000000UL,			\
+-	"section data is string data by default")			\
+-_ELF_DEFINE_SHF(SHF_MIPS_NOSTRIP,    0x08000000UL,			\
+-	"section data may not be stripped")				\
+-_ELF_DEFINE_SHF(SHF_MIPS_LOCAL,      0x04000000UL,			\
+-	"section data local to process")				\
+-_ELF_DEFINE_SHF(SHF_MIPS_NAMES,      0x02000000UL,			\
+-	"linker must generate implicit hidden weak names")		\
+-_ELF_DEFINE_SHF(SHF_MIPS_NODUPE,     0x01000000UL,			\
+-	"linker must retain only one copy")				\
+-_ELF_DEFINE_SHF(SHF_ORDERED,         0x40000000UL,			\
+-	"section is ordered with respect to other sections")		\
+-_ELF_DEFINE_SHF(SHF_EXCLUDE,	     0x80000000UL,			\
+-	"section is excluded from executables and shared objects")	\
+-_ELF_DEFINE_SHF(SHF_MASKPROC,        0xF0000000UL,			\
+-	"bits reserved for processor-specific semantics")
+-
+-#undef	_ELF_DEFINE_SHF
+-#define	_ELF_DEFINE_SHF(N, V, DESCR)	N = V ,
+-enum {
+-	_ELF_DEFINE_SECTION_FLAGS()
+-	SHF__LAST__
+-};
++#define SHF_WRITE            0x1          /* writable during program execution */
++#define SHF_ALLOC            0x2          /* occupies memory during program execution */
++#define SHF_EXECINSTR        0x4
++#define SHF_MERGE            0x10         /* may be merged to prevent duplication */
++#define SHF_STRINGS          0x20         /* NUL-terminated character strings */
++#define SHF_INFO_LINK        0x40         /* the sh_info field holds a link */
++#define SHF_LINK_ORDER       0x80         /* special ordering requirements during linking */
++#define SHF_OS_NONCONFORMING 0x100        /* requires OS-specific processing during linking */
++#define SHF_GROUP            0x200        /* member of a section group */
++#define SHF_TLS              0x400        /* holds thread-local storage */
++#define SHF_COMPRESSED       0x800        /* holds compressed data */
++#define SHF_MASKOS           0x0FF00000UL /* bits reserved for OS-specific semantics */
++#define SHF_AMD64_LARGE      0x10000000UL /* section uses large code model */
++#define SHF_ENTRYSECT        0x10000000UL /* section contains an entry point (ARM) */
++#define SHF_COMDEF           0x80000000UL /* section may be multiply defined in input to link step (ARM) */
++#define SHF_MIPS_GPREL       0x10000000UL /* section must be part of global data area */
++#define SHF_MIPS_MERGE       0x20000000UL /* section data should be merged to eliminate duplication */
++#define SHF_MIPS_ADDR        0x40000000UL /* section data is addressed by default */
++#define SHF_MIPS_STRING      0x80000000UL /* section data is string data by default */
++#define SHF_MIPS_NOSTRIP     0x08000000UL /* section data may not be stripped */
++#define SHF_MIPS_LOCAL       0x04000000UL /* section data local to process */
++#define SHF_MIPS_NAMES       0x02000000UL /* linker must generate implicit hidden weak names */
++#define SHF_MIPS_NODUPE      0x01000000UL /* linker must retain only one copy */
++#define SHF_ORDERED          0x40000000UL /* section is ordered with respect to other sections */
++#define SHF_EXCLUDE          0x80000000UL /* section is excluded from executables and shared objects */
++#define SHF_MASKPROC         0xF0000000UL /* bits reserved for processor-specific semantics */
+ 
+ /*
+  * Special section indices.
+@@ -1059,157 +960,82 @@ enum {
+ /*
+  * Section types.
+  */
+-
+-#define	_ELF_DEFINE_SECTION_TYPES()					\
+-_ELF_DEFINE_SHT(SHT_NULL,            0, "inactive header")		\
+-_ELF_DEFINE_SHT(SHT_PROGBITS,        1, "program defined information")	\
+-_ELF_DEFINE_SHT(SHT_SYMTAB,          2, "symbol table")			\
+-_ELF_DEFINE_SHT(SHT_STRTAB,          3, "string table")			\
+-_ELF_DEFINE_SHT(SHT_RELA,            4,					\
+-	"relocation entries with addends")				\
+-_ELF_DEFINE_SHT(SHT_HASH,            5, "symbol hash table")		\
+-_ELF_DEFINE_SHT(SHT_DYNAMIC,         6,					\
+-	"information for dynamic linking")				\
+-_ELF_DEFINE_SHT(SHT_NOTE,            7, "additional notes")		\
+-_ELF_DEFINE_SHT(SHT_NOBITS,          8, "section occupying no space")	\
+-_ELF_DEFINE_SHT(SHT_REL,             9,					\
+-	"relocation entries without addends")				\
+-_ELF_DEFINE_SHT(SHT_SHLIB,           10, "reserved")			\
+-_ELF_DEFINE_SHT(SHT_DYNSYM,          11, "symbol table")		\
+-_ELF_DEFINE_SHT(SHT_INIT_ARRAY,      14,				\
+-	"pointers to initialization functions")				\
+-_ELF_DEFINE_SHT(SHT_FINI_ARRAY,      15,				\
+-	"pointers to termination functions")				\
+-_ELF_DEFINE_SHT(SHT_PREINIT_ARRAY,   16,				\
+-	"pointers to functions called before initialization")		\
+-_ELF_DEFINE_SHT(SHT_GROUP,           17, "defines a section group")	\
+-_ELF_DEFINE_SHT(SHT_SYMTAB_SHNDX,    18,				\
+-	"used for extended section numbering")				\
+-_ELF_DEFINE_SHT(SHT_LOOS,            0x60000000UL,			\
+-	"start of OS-specific range")					\
+-_ELF_DEFINE_SHT(SHT_SUNW_dof,	     0x6FFFFFF4UL,			\
+-	"used by dtrace")						\
+-_ELF_DEFINE_SHT(SHT_SUNW_cap,	     0x6FFFFFF5UL,			\
+-	"capability requirements")					\
+-_ELF_DEFINE_SHT(SHT_GNU_ATTRIBUTES,  0x6FFFFFF5UL,			\
+-	"object attributes")						\
+-_ELF_DEFINE_SHT(SHT_SUNW_SIGNATURE,  0x6FFFFFF6UL,			\
+-	"module verification signature")				\
+-_ELF_DEFINE_SHT(SHT_GNU_HASH,	     0x6FFFFFF6UL,			\
+-	"GNU Hash sections")						\
+-_ELF_DEFINE_SHT(SHT_GNU_LIBLIST,     0x6FFFFFF7UL,			\
+-	"List of libraries to be prelinked")				\
+-_ELF_DEFINE_SHT(SHT_SUNW_ANNOTATE,   0x6FFFFFF7UL,			\
+-	"special section where unresolved references are allowed")	\
+-_ELF_DEFINE_SHT(SHT_SUNW_DEBUGSTR,   0x6FFFFFF8UL,			\
+-	"debugging information")					\
+-_ELF_DEFINE_SHT(SHT_CHECKSUM, 	     0x6FFFFFF8UL,			\
+-	"checksum for dynamic shared objects")				\
+-_ELF_DEFINE_SHT(SHT_SUNW_DEBUG,      0x6FFFFFF9UL,			\
+-	"debugging information")					\
+-_ELF_DEFINE_SHT(SHT_SUNW_move,       0x6FFFFFFAUL,			\
+-	"information to handle partially initialized symbols")		\
+-_ELF_DEFINE_SHT(SHT_SUNW_COMDAT,     0x6FFFFFFBUL,			\
+-	"section supporting merging of multiple copies of data")	\
+-_ELF_DEFINE_SHT(SHT_SUNW_syminfo,    0x6FFFFFFCUL,			\
+-	"additional symbol information")				\
+-_ELF_DEFINE_SHT(SHT_SUNW_verdef,     0x6FFFFFFDUL,			\
+-	"symbol versioning information")				\
+-_ELF_DEFINE_SHT(SHT_SUNW_verneed,    0x6FFFFFFEUL,			\
+-	"symbol versioning requirements")				\
+-_ELF_DEFINE_SHT(SHT_SUNW_versym,     0x6FFFFFFFUL,			\
+-	"symbol versioning table")					\
+-_ELF_DEFINE_SHT(SHT_HIOS,            0x6FFFFFFFUL,			\
+-	"end of OS-specific range")					\
+-_ELF_DEFINE_SHT(SHT_LOPROC,          0x70000000UL,			\
+-	"start of processor-specific range")				\
+-_ELF_DEFINE_SHT(SHT_ARM_EXIDX,       0x70000001UL,			\
+-	"exception index table")					\
+-_ELF_DEFINE_SHT(SHT_ARM_PREEMPTMAP,  0x70000002UL,			\
+-	"BPABI DLL dynamic linking preemption map")			\
+-_ELF_DEFINE_SHT(SHT_ARM_ATTRIBUTES,  0x70000003UL,			\
+-	"object file compatibility attributes")				\
+-_ELF_DEFINE_SHT(SHT_ARM_DEBUGOVERLAY, 0x70000004UL,			\
+-	"overlay debug information")					\
+-_ELF_DEFINE_SHT(SHT_ARM_OVERLAYSECTION, 0x70000005UL,			\
+-	"overlay debug information")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_LIBLIST,    0x70000000UL,			\
+-	"DSO library information used in link")				\
+-_ELF_DEFINE_SHT(SHT_MIPS_MSYM,       0x70000001UL,			\
+-	"MIPS symbol table extension")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_CONFLICT,   0x70000002UL,			\
+-	"symbol conflicting with DSO-defined symbols ")			\
+-_ELF_DEFINE_SHT(SHT_MIPS_GPTAB,      0x70000003UL,			\
+-	"global pointer table")						\
+-_ELF_DEFINE_SHT(SHT_MIPS_UCODE,      0x70000004UL,			\
+-	"reserved")							\
+-_ELF_DEFINE_SHT(SHT_MIPS_DEBUG,      0x70000005UL,			\
+-	"reserved (obsolete debug information)")			\
+-_ELF_DEFINE_SHT(SHT_MIPS_REGINFO,    0x70000006UL,			\
+-	"register usage information")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_PACKAGE,    0x70000007UL,			\
+-	"OSF reserved")							\
+-_ELF_DEFINE_SHT(SHT_MIPS_PACKSYM,    0x70000008UL,			\
+-	"OSF reserved")							\
+-_ELF_DEFINE_SHT(SHT_MIPS_RELD,       0x70000009UL,			\
+-	"dynamic relocation")						\
+-_ELF_DEFINE_SHT(SHT_MIPS_IFACE,      0x7000000BUL,			\
+-	"subprogram interface information")				\
+-_ELF_DEFINE_SHT(SHT_MIPS_CONTENT,    0x7000000CUL,			\
+-	"section content classification")				\
+-_ELF_DEFINE_SHT(SHT_MIPS_OPTIONS,     0x7000000DUL,			\
+-	"general options")						\
+-_ELF_DEFINE_SHT(SHT_MIPS_DELTASYM,   0x7000001BUL,			\
+-	"Delta C++: symbol table")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_DELTAINST,  0x7000001CUL,			\
+-	"Delta C++: instance table")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_DELTACLASS, 0x7000001DUL,			\
+-	"Delta C++: class table")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_DWARF,      0x7000001EUL,			\
+-	"DWARF debug information")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_DELTADECL,  0x7000001FUL,			\
+-	"Delta C++: declarations")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_SYMBOL_LIB, 0x70000020UL,			\
+-	"symbol-to-library mapping")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_EVENTS,     0x70000021UL,			\
+-	"event locations")						\
+-_ELF_DEFINE_SHT(SHT_MIPS_TRANSLATE,  0x70000022UL,			\
+-	"???")								\
+-_ELF_DEFINE_SHT(SHT_MIPS_PIXIE,      0x70000023UL,			\
+-	"special pixie sections")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_XLATE,      0x70000024UL,			\
+-	"address translation table")					\
+-_ELF_DEFINE_SHT(SHT_MIPS_XLATE_DEBUG, 0x70000025UL,			\
+-	"SGI internal address translation table")			\
+-_ELF_DEFINE_SHT(SHT_MIPS_WHIRL,      0x70000026UL,			\
+-	"intermediate code")						\
+-_ELF_DEFINE_SHT(SHT_MIPS_EH_REGION,  0x70000027UL,			\
+-	"C++ exception handling region info")				\
+-_ELF_DEFINE_SHT(SHT_MIPS_XLATE_OLD,  0x70000028UL,			\
+-	"obsolete")							\
+-_ELF_DEFINE_SHT(SHT_MIPS_PDR_EXCEPTION, 0x70000029UL,			\
+-	"runtime procedure descriptor table exception information")	\
+-_ELF_DEFINE_SHT(SHT_MIPS_ABIFLAGS,   0x7000002AUL,			\
+-	"ABI flags")							\
+-_ELF_DEFINE_SHT(SHT_SPARC_GOTDATA,   0x70000000UL,			\
+-	"SPARC-specific data")						\
+-_ELF_DEFINE_SHT(SHT_AMD64_UNWIND,    0x70000001UL,			\
+-	"unwind tables for the AMD64")					\
+-_ELF_DEFINE_SHT(SHT_ORDERED,         0x7FFFFFFFUL,			\
+-	"sort entries in the section")					\
+-_ELF_DEFINE_SHT(SHT_HIPROC,          0x7FFFFFFFUL,			\
+-	"end of processor-specific range")				\
+-_ELF_DEFINE_SHT(SHT_LOUSER,          0x80000000UL,			\
+-	"start of application-specific range")				\
+-_ELF_DEFINE_SHT(SHT_HIUSER,          0xFFFFFFFFUL,			\
+-	"end of application-specific range")
+-
+-#undef	_ELF_DEFINE_SHT
+-#define	_ELF_DEFINE_SHT(N, V, DESCR)	N = V ,
+-enum {
+-	_ELF_DEFINE_SECTION_TYPES()
+-	SHT__LAST__ = SHT_HIUSER
+-};
++#define SHT_NULL                0            /* inactive header */
++#define SHT_PROGBITS            1            /* program defined information */
++#define SHT_SYMTAB              2            /* symbol table */
++#define SHT_STRTAB              3            /* string table */
++#define SHT_RELA                4            /* relocation entries with addends */
++#define SHT_HASH                5            /* symbol hash table */
++#define SHT_DYNAMIC             6            /* information for dynamic linking */
++#define SHT_NOTE                7            /* additional notes */
++#define SHT_NOBITS              8            /* section occupying no space */
++#define SHT_REL                 9            /* relocation entries without addends */
++#define SHT_SHLIB               10           /* reserved */
++#define SHT_DYNSYM              11           /* symbol table */
++#define SHT_INIT_ARRAY          14           /* pointers to initialization functions */
++#define SHT_FINI_ARRAY          15           /* pointers to termination functions */
++#define SHT_PREINIT_ARRAY       16           /* pointers to functions called before initialization */
++#define SHT_GROUP               17           /* defines a section group */
++#define SHT_SYMTAB_SHNDX        18           /* used for extended section numbering */
++#define SHT_LOOS                0x60000000UL /* start of OS-specific range */
++#define SHT_SUNW_dof            0x6FFFFFF4UL /* used by dtrace */
++#define SHT_SUNW_cap            0x6FFFFFF5UL /* capability requirements */
++#define SHT_GNU_ATTRIBUTES      0x6FFFFFF5UL /* object attributes */
++#define SHT_SUNW_SIGNATURE      0x6FFFFFF6UL /* module verification signature */
++#define SHT_GNU_HASH            0x6FFFFFF6UL /* GNU Hash sections */
++#define SHT_GNU_LIBLIST         0x6FFFFFF7UL /* List of libraries to be prelinked */
++#define SHT_SUNW_ANNOTATE       0x6FFFFFF7UL /* special section where unresolved references are allowed */
++#define SHT_SUNW_DEBUGSTR       0x6FFFFFF8UL /* debugging information */
++#define SHT_CHECKSUM            0x6FFFFFF8UL /* checksum for dynamic shared objects */
++#define SHT_SUNW_DEBUG          0x6FFFFFF9UL /* debugging information */
++#define SHT_SUNW_move           0x6FFFFFFAUL /* information to handle partially initialized symbols */
++#define SHT_SUNW_COMDAT         0x6FFFFFFBUL /* section supporting merging of multiple copies of data */
++#define SHT_SUNW_syminfo        0x6FFFFFFCUL /* additional symbol information */
++#define SHT_SUNW_verdef         0x6FFFFFFDUL /* symbol versioning information */
++#define SHT_SUNW_verneed        0x6FFFFFFEUL /* symbol versioning requirements */
++#define SHT_SUNW_versym         0x6FFFFFFFUL /* symbol versioning table */
++#define SHT_HIOS                0x6FFFFFFFUL /* end of OS-specific range */
++#define SHT_LOPROC              0x70000000UL /* start of processor-specific range */
++#define SHT_ARM_EXIDX           0x70000001UL /* exception index table */
++#define SHT_ARM_PREEMPTMAP      0x70000002UL /* BPABI DLL dynamic linking preemption map */
++#define SHT_ARM_ATTRIBUTES      0x70000003UL /* object file compatibility attributes */
++#define SHT_ARM_DEBUGOVERLAY    0x70000004UL /* overlay debug information */
++#define SHT_ARM_OVERLAYSECTION  0x70000005UL /* overlay debug information */
++#define SHT_MIPS_LIBLIST        0x70000000UL /* DSO library information used in link */
++#define SHT_MIPS_MSYM           0x70000001UL /* MIPS symbol table extension */
++#define SHT_MIPS_CONFLICT       0x70000002UL /* symbol conflicting with DSO-defined symbols  */
++#define SHT_MIPS_GPTAB          0x70000003UL /* global pointer table */
++#define SHT_MIPS_UCODE          0x70000004UL /* reserved */
++#define SHT_MIPS_DEBUG          0x70000005UL /* reserved (obsolete debug information) */
++#define SHT_MIPS_REGINFO        0x70000006UL /* register usage information */
++#define SHT_MIPS_PACKAGE        0x70000007UL /* OSF reserved */
++#define SHT_MIPS_PACKSYM        0x70000008UL /* OSF reserved */
++#define SHT_MIPS_RELD           0x70000009UL /* dynamic relocation */
++#define SHT_MIPS_IFACE          0x7000000BUL /* subprogram interface information */
++#define SHT_MIPS_CONTENT        0x7000000CUL /* section content classification */
++#define SHT_MIPS_OPTIONS        0x7000000DUL /* general options */
++#define SHT_MIPS_DELTASYM       0x7000001BUL /* Delta C++: symbol table */
++#define SHT_MIPS_DELTAINST      0x7000001CUL /* Delta C++: instance table */
++#define SHT_MIPS_DELTACLASS     0x7000001DUL /* Delta C++: class table */
++#define SHT_MIPS_DWARF          0x7000001EUL /* DWARF debug information */
++#define SHT_MIPS_DELTADECL      0x7000001FUL /* Delta C++: declarations */
++#define SHT_MIPS_SYMBOL_LIB     0x70000020UL /* symbol-to-library mapping */
++#define SHT_MIPS_EVENTS         0x70000021UL /* event locations */
++#define SHT_MIPS_TRANSLATE      0x70000022UL /* ??? */
++#define SHT_MIPS_PIXIE          0x70000023UL /* special pixie sections */
++#define SHT_MIPS_XLATE          0x70000024UL /* address translation table */
++#define SHT_MIPS_XLATE_DEBUG    0x70000025UL /* SGI internal address translation table */
++#define SHT_MIPS_WHIRL          0x70000026UL /* intermediate code */
++#define SHT_MIPS_EH_REGION      0x70000027UL /* C++ exception handling region info */
++#define SHT_MIPS_XLATE_OLD      0x70000028UL /* obsolete */
++#define SHT_MIPS_PDR_EXCEPTION  0x70000029UL /* runtime procedure descriptor table exception information */
++#define SHT_MIPS_ABIFLAGS       0x7000002AUL /* ABI flags */
++#define SHT_SPARC_GOTDATA       0x70000000UL /* SPARC-specific data */
++#define SHT_AMD64_UNWIND        0x70000001UL /* unwind tables for the AMD64 */
++#define SHT_ORDERED             0x7FFFFFFFUL /* sort entries in the section */
++#define SHT_HIPROC              0x7FFFFFFFUL /* end of processor-specific range */
++#define SHT_LOUSER              0x80000000UL /* start of application-specific range */
++#define SHT_HIUSER              0xFFFFFFFFUL /* end of application-specific range */
+ 
+ /* Aliases for section types. */
+ #define	SHT_GNU_verdef		SHT_SUNW_verdef
+-- 
+2.22.0
+
