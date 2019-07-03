@@ -1,0 +1,73 @@
+From d4d5e44e1064cff4f6b3c25b174ec53d294c6e09 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 24 May 2019 18:56:12 -0700
+Subject: [PATCH] amd64: Fix floating-point equality check with NaN
+
+arm64 does not have the same issue, and the added test passes there
+as well.
+---
+ amd64/isel.c   | 15 +++++++++++++++
+ test/isel2.ssa | 25 +++++++++++++++++++++++++
+ 2 files changed, 40 insertions(+)
+ create mode 100644 test/isel2.ssa
+
+diff --git a/amd64/isel.c b/amd64/isel.c
+index 56e4cf3..9bf5c74 100644
+--- a/amd64/isel.c
++++ b/amd64/isel.c
+@@ -327,6 +327,21 @@ Emit:
+ 		if (isload(i.op))
+ 			goto case_Oload;
+ 		if (iscmp(i.op, &kc, &x)) {
++			/* ZF is set when operands are unordered, so we
++			 * may have to check PF as well.
++			 */
++			switch (x) {
++			case NCmpI+Cfeq:
++				r0 = newtmp("isel", Kw, fn);
++				emit(Oand, Kw, i.to, i.to, r0);
++				emit(Oflagfo, k, r0, R, R);
++				break;
++			case NCmpI+Cfne:
++				r0 = newtmp("isel", Kw, fn);
++				emit(Oor, Kw, i.to, i.to, r0);
++				emit(Oflagfuo, k, r0, R, R);
++				break;
++			}
+ 			emit(Oflag+x, k, i.to, R, R);
+ 			i1 = curi;
+ 			if (selcmp(i.arg, kc, fn))
+diff --git a/test/isel2.ssa b/test/isel2.ssa
+new file mode 100644
+index 0000000..d6e009c
+--- /dev/null
++++ b/test/isel2.ssa
+@@ -0,0 +1,25 @@
++# tests that floating point equality works
++# on amd64, which requires additional
++# instructions to check that the operands
++# are ordered.
++
++export function w $eq(s %x, s %y) {
++@start
++	%r =w ceqs %x, %y
++	ret %r
++}
++
++export function w $ne(s %x, s %y) {
++@start
++	%r =w cnes %x, %y
++	ret %r
++}
++
++# >>> driver
++# #include <math.h>
++# extern int eq(float, float);
++# extern int ne(float, float);
++# int main() {
++# 	return !(eq(NAN, NAN) == 0 && ne(NAN, NAN) == 1);
++# }
++# <<<
+-- 
+2.22.0
+

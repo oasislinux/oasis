@@ -1,0 +1,66 @@
+From 264b07e0cb0ce869cfcdab0a3e66c92a99de5dee Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Jun 2019 01:38:27 -0700
+Subject: [PATCH] fold: Don't fold invalid addition/subtraction rather than
+ failing
+
+This may happen in a branch QBE doesn't realize is unreachable,
+for example (simplified from real code found in ncurses)
+
+	data $str = { b "abcdef", b 0 }
+	function l $f(w %x) {
+	@start
+		%.1 =w ceqw %x, 0
+		jnz %.1, @logic_join, @logic_right
+	@logic_right
+		%p =l call $strchr(l $str, w %x)
+		%.2 =w ceql %p, 0
+	@logic_join
+		%.3 =w phi @start %.1, @logic_right %.2
+		jnz %.3, @fail, @return
+	@fail
+		ret 0
+	@return
+		%.4 =l sub %p, $str
+		ret %.4
+	}
+---
+ fold.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/fold.c b/fold.c
+index 0a3945f..9e1a12d 100644
+--- a/fold.c
++++ b/fold.c
+@@ -343,7 +343,7 @@ foldint(Con *res, int op, int w, Con *cl, Con *cr)
+ 	if (op == Oadd) {
+ 		if (cl->type == CAddr) {
+ 			if (cr->type == CAddr)
+-				err("undefined addition (addr + addr)");
++				return 1;
+ 			lab = cl->label;
+ 			typ = CAddr;
+ 		}
+@@ -358,16 +358,13 @@ foldint(Con *res, int op, int w, Con *cl, Con *cr)
+ 				lab = cl->label;
+ 				typ = CAddr;
+ 			} else if (cl->label != cr->label)
+-				err("undefined substraction (addr1 - addr2)");
++				return 1;
+ 		}
+ 		else if (cr->type == CAddr)
+-			err("undefined substraction (num - addr)");
+-	}
+-	else if (cl->type == CAddr || cr->type == CAddr) {
+-		if (Ocmpl <= op && op <= Ocmpl1)
+ 			return 1;
+-		err("invalid address operand for '%s'", optab[op].name);
+ 	}
++	else if (cl->type == CAddr || cr->type == CAddr)
++		return 1;
+ 	switch (op) {
+ 	case Oadd:  x = l.u + r.u; break;
+ 	case Osub:  x = l.u - r.u; break;
+-- 
+2.22.0
+

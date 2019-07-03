@@ -1,0 +1,25 @@
+From b391a6bdf819585cd956107b2346cd939b48ce41 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 31 May 2019 13:31:04 -0700
+Subject: [PATCH] Increase NString to 96
+
+---
+ all.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/all.h b/all.h
+index 5f67e81..8819e85 100644
+--- a/all.h
++++ b/all.h
+@@ -31,7 +31,7 @@ typedef struct Dat Dat;
+ typedef struct Target Target;
+ 
+ enum {
+-	NString = 64,
++	NString = 96,
+ 	NPred   = 63,
+ 	NIns    = 1 << 20,
+ 	NAlign  = 3,
+-- 
+2.22.0
+
