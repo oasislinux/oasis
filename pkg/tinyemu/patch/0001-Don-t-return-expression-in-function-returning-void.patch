@@ -1,0 +1,39 @@
+From 4eb4d3cbddf520f0db68973d1fd95da6d282539c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 17:51:44 -0700
+Subject: [PATCH] Don't return expression in function returning void
+
+---
+ iomem.c | 2 +-
+ temu.c  | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/iomem.c b/iomem.c
+index c63ada0..8a90bb6 100644
+--- a/iomem.c
++++ b/iomem.c
+@@ -237,7 +237,7 @@ void phys_mem_set_addr(PhysMemoryRange *pr, uint64_t addr, BOOL enabled)
+     if (!pr->is_ram) {
+         default_set_addr(map, pr, addr, enabled);
+     } else {
+-        return map->set_ram_addr(map, pr, addr, enabled);
++        map->set_ram_addr(map, pr, addr, enabled);
+     }
+ }
+ 
+diff --git a/temu.c b/temu.c
+index 7c07f3b..02696a8 100644
+--- a/temu.c
++++ b/temu.c
+@@ -475,7 +475,7 @@ int slirp_can_output(void *opaque)
+ void slirp_output(void *opaque, const uint8_t *pkt, int pkt_len)
+ {
+     EthernetDevice *net = opaque;
+-    return net->device_write_packet(net, pkt, pkt_len);
++    net->device_write_packet(net, pkt, pkt_len);
+ }
+ 
+ static void slirp_select_fill1(EthernetDevice *net, int *pfd_max,
+-- 
+2.22.0
+
