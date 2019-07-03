@@ -1,0 +1,48 @@
+From dcc4b6ceb21cc7422326cb74223ded4e042ce9d9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 17:41:43 -0700
+Subject: [PATCH] Use memset to initialize large structures
+
+These are over 256 KiB in size.
+---
+ video/out/gpu/video.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/video/out/gpu/video.c b/video/out/gpu/video.c
+index 26d6e5b9a8..9654bc1c75 100644
+--- a/video/out/gpu/video.c
++++ b/video/out/gpu/video.c
+@@ -3319,7 +3319,7 @@ static void frame_perf_data(struct pass_info pass[], struct mp_frame_perf *out)
+ 
+ void gl_video_perfdata(struct gl_video *p, struct voctrl_performance_data *out)
+ {
+-    *out = (struct voctrl_performance_data){0};
++    memset(out, 0, sizeof(*out));
+     frame_perf_data(p->pass_fresh,  &out->fresh);
+     frame_perf_data(p->pass_redraw, &out->redraw);
+ }
+@@ -3783,14 +3783,13 @@ struct gl_video *gl_video_init(struct ra *ra, struct mp_log *log,
+                                struct mpv_global *g)
+ {
+     struct gl_video *p = talloc_ptrtype(NULL, p);
+-    *p = (struct gl_video) {
+-        .ra = ra,
+-        .global = g,
+-        .log = log,
+-        .sc = gl_sc_create(ra, g, log),
+-        .video_eq = mp_csp_equalizer_create(p, g),
+-        .opts_cache = m_config_cache_alloc(p, g, &gl_video_conf),
+-    };
++    memset(p, 0, sizeof(*p));
++    p->ra = ra;
++    p->global = g;
++    p->log = log;
++    p->sc = gl_sc_create(ra, g, log);
++    p->video_eq = mp_csp_equalizer_create(p, g);
++    p->opts_cache = m_config_cache_alloc(p, g, &gl_video_conf);
+     // make sure this variable is initialized to *something*
+     p->pass = p->pass_fresh;
+     struct gl_video_opts *opts = p->opts_cache->opts;
+-- 
+2.22.0
+

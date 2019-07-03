@@ -1,0 +1,72 @@
+From b321e317874d2cf2b9fdc16116f88a57baa2147c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 3 Jul 2019 02:21:16 -0700
+Subject: [PATCH] video/out/gpu: Prevent empty array when no compilers or
+ contexts are enabled
+
+---
+ video/out/gpu/context.c | 9 +++++----
+ video/out/gpu/spirv.c   | 1 +
+ 2 files changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/video/out/gpu/context.c b/video/out/gpu/context.c
+index 36f9c2dad5..475a44722c 100644
+--- a/video/out/gpu/context.c
++++ b/video/out/gpu/context.c
+@@ -116,6 +116,7 @@ static const struct ra_ctx_fns *contexts[] = {
+ #endif
+ 
+ #endif
++    NULL
+ };
+ 
+ int ra_ctx_validate_api(struct mp_log *log, const struct m_option *opt,
+@@ -130,7 +131,7 @@ int ra_ctx_validate_api(struct mp_log *log, const struct m_option *opt,
+     }
+     if (bstr_equals0(param, "auto"))
+         return 1;
+-    for (int i = 0; i < MP_ARRAY_SIZE(contexts); i++) {
++    for (int i = 0; i < MP_ARRAY_SIZE(contexts) - 1; i++) {
+         if (bstr_equals0(param, contexts[i]->type))
+             return 1;
+     }
+@@ -143,13 +144,13 @@ int ra_ctx_validate_context(struct mp_log *log, const struct m_option *opt,
+     if (bstr_equals0(param, "help")) {
+         mp_info(log, "GPU contexts (APIs):\n");
+         mp_info(log, "    auto (autodetect)\n");
+-        for (int n = 0; n < MP_ARRAY_SIZE(contexts); n++)
++        for (int n = 0; n < MP_ARRAY_SIZE(contexts) - 1; n++)
+             mp_info(log, "    %s (%s)\n", contexts[n]->name, contexts[n]->type);
+         return M_OPT_EXIT;
+     }
+     if (bstr_equals0(param, "auto"))
+         return 1;
+-    for (int i = 0; i < MP_ARRAY_SIZE(contexts); i++) {
++    for (int i = 0; i < MP_ARRAY_SIZE(contexts) - 1; i++) {
+         if (bstr_equals0(param, contexts[i]->name))
+             return 1;
+     }
+@@ -174,7 +175,7 @@ struct ra_ctx *ra_ctx_create(struct vo *vo, const char *context_type,
+     bool old_probing = vo->probing;
+     vo->probing = opts.probing;
+ 
+-    for (int i = 0; i < MP_ARRAY_SIZE(contexts); i++) {
++    for (int i = 0; i < MP_ARRAY_SIZE(contexts) - 1; i++) {
+         if (!opts.probing && strcmp(contexts[i]->name, context_name) != 0)
+             continue;
+         if (!api_auto && strcmp(contexts[i]->type, context_type) != 0)
+diff --git a/video/out/gpu/spirv.c b/video/out/gpu/spirv.c
+index e20fbe7483..130d704d5c 100644
+--- a/video/out/gpu/spirv.c
++++ b/video/out/gpu/spirv.c
+@@ -21,6 +21,7 @@ static const struct spirv_compiler_fns *compilers[] = {
+ #if HAVE_VULKAN
+     [SPIRV_NVIDIA]  = &spirv_nvidia_builtin,
+ #endif
++    NULL
+ };
+ 
+ static const struct m_opt_choice_alternatives compiler_choices[] = {
+-- 
+2.22.0
+
