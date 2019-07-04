@@ -8,3 +8,7 @@ Generated with
 		--disable-hwdep \
 		--disable-rawmidi \
 		--without-libdl
+
+## Updating
+
+Make sure to update the version in `alsa/version.h`.
