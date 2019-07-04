@@ -1,0 +1,34 @@
+From 6afffaf09b33fdec905dcb6405c32289dcae923f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 3 Jul 2019 18:10:27 -0700
+Subject: [PATCH] Remove forward declarations of vfscanf and vsscanf
+
+These will be declared in stdio.h, possibly with different parameter
+qualifiers, like `restrict`.
+---
+ src/input.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/src/input.c b/src/input.c
+index 35324f1f..6ae75bb8 100644
+--- a/src/input.c
++++ b/src/input.c
+@@ -135,7 +135,6 @@ static int snd_input_stdio_close(snd_input_t *input ATTRIBUTE_UNUSED)
+ static int snd_input_stdio_scan(snd_input_t *input, const char *format, va_list args)
+ {
+ 	snd_input_stdio_t *stdio = input->private_data;
+-	extern int vfscanf(FILE *, const char *, va_list);
+ 	return vfscanf(stdio->fp, format, args);
+ }
+ 
+@@ -239,7 +238,6 @@ static int snd_input_buffer_close(snd_input_t *input)
+ static int snd_input_buffer_scan(snd_input_t *input, const char *format, va_list args)
+ {
+ 	snd_input_buffer_t *buffer = input->private_data;
+-	extern int vsscanf(const char *, const char *, va_list);
+ 	/* FIXME: how can I obtain consumed chars count? */
+ 	assert(0);
+ 	return vsscanf((char *)buffer->ptr, format, args);
+-- 
+2.22.0
+
