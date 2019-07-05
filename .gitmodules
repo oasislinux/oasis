@@ -120,6 +120,9 @@
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng
+[submodule "pkg/libutp/src"]
+	path = pkg/libutp/src
+	url = https://github.com/oasislinux/libutp.git
 [submodule "pkg/loksh/src"]
 	path = pkg/loksh/src
 	url = https://github.com/dimkr/loksh
