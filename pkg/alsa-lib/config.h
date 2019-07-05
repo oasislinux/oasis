@@ -40,7 +40,10 @@
 #define HAVE_UNISTD_H 1
 #define HAVE_USELOCALE 1
 /* #undef HAVE_WORDEXP */
-#define HAVE___THREAD 1
+#ifdef HAVE__THREAD_LOCAL
+# define HAVE___THREAD 1
+# define __thread _Thread_local
+#endif
 #define LT_OBJDIR ".libs/"
 /* #undef NDEBUG */
 #define PACKAGE "alsa-lib"

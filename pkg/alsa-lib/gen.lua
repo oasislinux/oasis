@@ -1,8 +1,14 @@
 cflags{
+	'-I $outdir',
 	'-I $dir',
 	'-I $dir/alsa',
 	'-I $srcdir/include',
 }
+
+build('cat', '$outdir/config.h', {
+	'$builddir/probe/HAVE__THREAD_LOCAL',
+	'$dir/config.h',
+})
 
 pkg.hdrs = {
 	copy('$outdir/include/alsa', '$srcdir/include/alsa', {
@@ -30,6 +36,7 @@ pkg.hdrs = {
 	}),
 	copy('$outdir/include/alsa', '$dir/alsa', {'asoundlib.h', 'version.h'}),
 }
+pkg.deps = {'$outdir/config.h'}
 
 cc('src/pcm/pcm.c')
 build('objcopy', '$outdir/src/pcm/pcm.nowarn.c.o', '$outdir/src/pcm/pcm.c.o', {
