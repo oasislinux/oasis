@@ -1,0 +1,176 @@
+From 0b0f3d38b297fe0fd53cff9dd5291199148be934 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 6 Jul 2019 01:33:01 -0700
+Subject: [PATCH] Use __typeof__ spelling of typeof
+
+---
+ btrfs.c              |  8 ++++----
+ file_ioctl.c         |  4 ++--
+ gcc_compat.h         |  2 +-
+ list.h               | 10 +++++-----
+ tests/btrfs.c        |  2 +-
+ tests/fcntl-common.c |  2 +-
+ util.c               |  4 ++--
+ 7 files changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/btrfs.c b/btrfs.c
+index dc5eff1a..693b1b7d 100644
+--- a/btrfs.c
++++ b/btrfs.c
+@@ -247,7 +247,7 @@ btrfs_print_logical_ino_container(struct tcb *tcp,
+ 		tprints(", ...");
+ 	} else {
+ 		const uint64_t val_addr =
+-			inodes_addr + offsetof(typeof(container), val);
++			inodes_addr + offsetof(__typeof__(container), val);
+ 		uint64_t record[3];
+ 		tprints(", val=");
+ 		print_array(tcp, val_addr, container.elem_cnt / 3,
+@@ -286,7 +286,7 @@ btrfs_print_ino_path_container(struct tcb *tcp,
+ 		tprints(", ...");
+ 	} else {
+ 		uint64_t val_addr =
+-			fspath_addr + offsetof(typeof(container), val);
++			fspath_addr + offsetof(__typeof__(container), val);
+ 		uint64_t offset;
+ 		tprints(", val=");
+ 		print_array(tcp, val_addr, container.elem_cnt,
+@@ -319,7 +319,7 @@ btrfs_print_qgroup_inherit(struct tcb *const tcp, const kernel_ulong_t qgi_addr)
+ 	} else {
+ 		uint64_t record;
+ 		tprints(", qgroups=");
+-		print_array(tcp, qgi_addr + offsetof(typeof(inherit), qgroups),
++		print_array(tcp, qgi_addr + offsetof(__typeof__(inherit), qgroups),
+ 			    inherit.num_qgroups, &record, sizeof(record),
+ 			    tfetch_mem, print_uint64_array_member, 0);
+ 	}
+@@ -1149,7 +1149,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+ 		} else {
+ 			struct btrfs_ioctl_space_info info;
+ 			tprints(", spaces=");
+-			print_array(tcp, arg + offsetof(typeof(args), spaces),
++			print_array(tcp, arg + offsetof(__typeof__(args), spaces),
+ 				    args.total_spaces,
+ 				    &info, sizeof(info), tfetch_mem,
+ 				    print_btrfs_ioctl_space_info, 0);
+diff --git a/file_ioctl.c b/file_ioctl.c
+index 27ba4c82..d09bdce3 100644
+--- a/file_ioctl.c
++++ b/file_ioctl.c
+@@ -163,7 +163,7 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
+ 		if (abbrev(tcp) && args.dest_count > count)
+ 			limit = &count;
+ 
+-		rc = print_array(tcp, arg + offsetof(typeof(args), info),
++		rc = print_array(tcp, arg + offsetof(__typeof__(args), info),
+ 				 args.dest_count, &info, sizeof(info),
+ 				 tfetch_mem,
+ 				 print_file_dedupe_range_info, limit);
+@@ -211,7 +211,7 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
+ 			struct fiemap_extent fe;
+ 			tprints(", fm_extents=");
+ 			print_array(tcp,
+-				    arg + offsetof(typeof(args), fm_extents),
++				    arg + offsetof(__typeof__(args), fm_extents),
+ 				    args.fm_mapped_extents, &fe, sizeof(fe),
+ 				    tfetch_mem,
+ 				    print_fiemap_extent, 0);
+diff --git a/gcc_compat.h b/gcc_compat.h
+index 2d5d7f9e..3cbf5abe 100644
+--- a/gcc_compat.h
++++ b/gcc_compat.h
+@@ -44,7 +44,7 @@
+ # endif
+ 
+ # if GNUC_PREREQ(3, 0)
+-#  define SAME_TYPE(x, y)	__builtin_types_compatible_p(typeof(x), typeof(y))
++#  define SAME_TYPE(x, y)	__builtin_types_compatible_p(__typeof__(x), __typeof__(y))
+ #  define FAIL_BUILD_ON_ZERO(expr) (sizeof(int[-1 + 2 * !!(expr)]) * 0)
+ /* &(a)[0] is a pointer and not an array, shouldn't be treated as the same */
+ #  define MUST_BE_ARRAY(a) FAIL_BUILD_ON_ZERO(!SAME_TYPE((a), &(a)[0]))
+diff --git a/list.h b/list.h
+index 98563e4d..7b44e4f8 100644
+--- a/list.h
++++ b/list.h
+@@ -158,7 +158,7 @@ list_is_empty(const struct list_item *l)
+  * @param field Name of the field that holds the respective struct list_item.
+  */
+ # define list_next(var, field) \
+-	list_elem((var)->field.next, typeof(*(var)), field)
++	list_elem((var)->field.next, __typeof__(*(var)), field)
+ /**
+  * Get the previous element in a list.
+  *
+@@ -166,7 +166,7 @@ list_is_empty(const struct list_item *l)
+  * @param field Name of the field that holds the respective struct list_item.
+  */
+ # define list_prev(var, field) \
+-	list_elem((var)->field.prev, typeof(*(var)), field)
++	list_elem((var)->field.prev, __typeof__(*(var)), field)
+ 
+ /**
+  * Insert an item into a list. The item is placed as the next list item
+@@ -280,7 +280,7 @@ list_replace(struct list_item *old, struct list_item *new)
+  *               inside list items.
+  */
+ # define list_foreach(var_, head_, field_) \
+-	for (var_ = list_elem((head_)->next, typeof(*var_), field_); \
++	for (var_ = list_elem((head_)->next, __typeof__(*var_), field_); \
+ 	    &(var_->field_) != (head_); var_ = list_next(var_, field_))
+ 
+ /**
+@@ -293,8 +293,8 @@ list_replace(struct list_item *old, struct list_item *new)
+  * @param _tmp   Temporary variable for storing pointer to the next item.
+  */
+ # define list_foreach_safe(var_, head_, field_, _tmp) \
+-	for (var_ = list_elem((head_)->next, typeof(*var_), field_), \
+-	    _tmp = list_elem((var_)->field_.next, typeof(*var_), field_); \
++	for (var_ = list_elem((head_)->next, __typeof__(*var_), field_), \
++	    _tmp = list_elem((var_)->field_.next, __typeof__(*var_), field_); \
+ 	    &var_->field_ != head_; var_ = _tmp, _tmp = list_next(_tmp, field_))
+ 
+ #endif /* !STRACE_LIST_H */
+diff --git a/tests/btrfs.c b/tests/btrfs.c
+index f1a26bf3..6f0b50b5 100644
+--- a/tests/btrfs.c
++++ b/tests/btrfs.c
+@@ -954,7 +954,7 @@ btrfs_print_tree_search_buf(struct btrfs_ioctl_search_key *key,
+ 		printf("buf=[");
+ 		for (i = 0; i < key->nr_items; i++) {
+ 			struct btrfs_ioctl_search_header *sh;
+-			sh = (typeof(sh))(buf + off);
++			sh = (__typeof__(sh))(buf + off);
+ 			if (i)
+ 				printf(", ");
+ 			printf("{transid=%" PRI__u64 ", objectid=",
+diff --git a/tests/fcntl-common.c b/tests/fcntl-common.c
+index b2125171..0b0242c8 100644
+--- a/tests/fcntl-common.c
++++ b/tests/fcntl-common.c
+@@ -20,7 +20,7 @@
+ #define TEST_FLOCK64_EINVAL(cmd) test_flock64_einval(cmd, #cmd)
+ 
+ #ifdef HAVE_TYPEOF
+-# define TYPEOF_FLOCK_OFF_T typeof(((struct_kernel_flock *) NULL)->l_len)
++# define TYPEOF_FLOCK_OFF_T __typeof__(((struct_kernel_flock *) NULL)->l_len)
+ #else
+ # define TYPEOF_FLOCK_OFF_T off_t
+ #endif
+diff --git a/util.c b/util.c
+index fa384c59..4367a9de 100644
+--- a/util.c
++++ b/util.c
+@@ -927,8 +927,8 @@ dumpiov_upto(struct tcb *const tcp, const int len, const kernel_ulong_t addr,
+ 
+ #define ILOG2_ITER_(val_, ret_, bit_)					\
+ 	do {								\
+-		typeof(ret_) shift_ =					\
+-			((val_) > ((((typeof(val_)) 1)			\
++		__typeof__(ret_) shift_ =				\
++			((val_) > ((((__typeof__(val_)) 1)		\
+ 				   << (1 << (bit_))) - 1)) << (bit_);	\
+ 		(val_) >>= shift_;					\
+ 		(ret_) |= shift_;					\
+-- 
+2.22.0
+

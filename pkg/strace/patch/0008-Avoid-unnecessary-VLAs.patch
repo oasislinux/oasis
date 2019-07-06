@@ -1,0 +1,104 @@
+From f67310662b958087ff7ead38517af06bbf57d58b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 7 Jul 2019 21:58:46 -0700
+Subject: [PATCH] Avoid unnecessary VLAs
+
+---
+ desc.c        | 7 ++++---
+ socketutils.c | 4 ++--
+ syscall.c     | 2 +-
+ util.c        | 5 ++---
+ 4 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/desc.c b/desc.c
+index 92e6fe16..8f705d70 100644
+--- a/desc.c
++++ b/desc.c
+@@ -206,11 +206,11 @@ SYS_FUNC(select)
+ 
+ static int
+ umove_kulong_array_or_printaddr(struct tcb *const tcp, const kernel_ulong_t addr,
+-				kernel_ulong_t *const ptr, const size_t n)
++				kernel_ulong_t *const ptr, uint32_t *ptr32,
++				const size_t n)
+ {
+ #ifndef current_klongsize
+ 	if (current_klongsize < sizeof(*ptr)) {
+-		uint32_t ptr32[n];
+ 		int r = umove_or_printaddr(tcp, addr, &ptr32);
+ 		if (!r) {
+ 			size_t i;
+@@ -231,10 +231,11 @@ do_pselect6(struct tcb *const tcp, const print_obj_by_addr_fn print_ts,
+ 	int rc = decode_select(tcp, tcp->u_arg, print_ts, sprint_ts);
+ 	if (entering(tcp)) {
+ 		kernel_ulong_t data[2];
++		uint32_t data32[ARRAY_SIZE(data)];
+ 
+ 		tprints(", ");
+ 		if (!umove_kulong_array_or_printaddr(tcp, tcp->u_arg[5],
+-						     data, ARRAY_SIZE(data))) {
++						     data, data32, ARRAY_SIZE(data))) {
+ 			tprints("{");
+ 			/* NB: kernel requires data[1] == NSIG_BYTES */
+ 			print_sigset_addr_len(tcp, data[0], data[1]);
+diff --git a/socketutils.c b/socketutils.c
+index d6191187..6ce9bc30 100644
+--- a/socketutils.c
++++ b/socketutils.c
+@@ -144,7 +144,7 @@ inet_parse_response(const void *const data, const int data_len,
+ 			return -1;
+ 	}
+ 
+-	char src_buf[text_size];
++	char src_buf[INET6_ADDRSTRLEN];
+ 	char *details;
+ 
+ 	/* open/closing brackets for IPv6 addresses */
+@@ -157,7 +157,7 @@ inet_parse_response(const void *const data, const int data_len,
+ 
+ 	if (diag_msg->id.idiag_dport ||
+ 	    memcmp(zero_addr, diag_msg->id.idiag_dst, addr_size)) {
+-		char dst_buf[text_size];
++		char dst_buf[INET6_ADDRSTRLEN];
+ 
+ 		if (!inet_ntop(diag_msg->idiag_family, diag_msg->id.idiag_dst,
+ 			       dst_buf, text_size))
+diff --git a/syscall.c b/syscall.c
+index bae7343c..f79af930 100644
+--- a/syscall.c
++++ b/syscall.c
+@@ -292,7 +292,7 @@ decode_socket_subcall(struct tcb *tcp)
+ 
+ 	const kernel_ulong_t scno = SYS_socket_subcall + call;
+ 	const unsigned int nargs = sysent[scno].nargs;
+-	uint64_t buf[nargs];
++	uint64_t buf[MAX_ARGS];
+ 
+ 	if (umoven(tcp, tcp->u_arg[1], nargs * current_wordsize, buf) < 0)
+ 		return;
+diff --git a/util.c b/util.c
+index 4367a9de..7a4fcd38 100644
+--- a/util.c
++++ b/util.c
+@@ -394,8 +394,7 @@ enum sock_proto
+ getfdproto(struct tcb *tcp, int fd)
+ {
+ #ifdef HAVE_SYS_XATTR_H
+-	size_t bufsize = 256;
+-	char buf[bufsize];
++	char buf[256];
+ 	ssize_t r;
+ 	char path[sizeof("/proc/%u/fd/%u") + 2 * sizeof(int)*3];
+ 
+@@ -403,7 +402,7 @@ getfdproto(struct tcb *tcp, int fd)
+ 		return SOCK_PROTO_UNKNOWN;
+ 
+ 	xsprintf(path, "/proc/%u/fd/%u", tcp->pid, fd);
+-	r = getxattr(path, "system.sockprotoname", buf, bufsize - 1);
++	r = getxattr(path, "system.sockprotoname", buf, sizeof(buf) - 1);
+ 	if (r <= 0)
+ 		return SOCK_PROTO_UNKNOWN;
+ 	else {
+-- 
+2.22.0
+

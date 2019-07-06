@@ -1,0 +1,75 @@
+From c7a363f45bd223e49314945d4cfb385e39527682 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 7 Jul 2019 21:25:13 -0700
+Subject: [PATCH] Avoid pointer arithmetic on `void *`
+
+---
+ netlink_smc_diag.c | 4 ++--
+ sockaddr.c         | 2 +-
+ ucopy.c            | 6 +++---
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/netlink_smc_diag.c b/netlink_smc_diag.c
+index 9255c0de..2ed39590 100644
+--- a/netlink_smc_diag.c
++++ b/netlink_smc_diag.c
+@@ -41,7 +41,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_req)
+ 	if (len >= sizeof(req)) {
+ 		if (!umoven_or_printaddr(tcp, addr + offset,
+ 					 sizeof(req) - offset,
+-					 (void *) &req + offset)) {
++					 (char *) &req + offset)) {
+ 			PRINT_FIELD_FLAGS("", req, diag_ext,
+ 					  smc_diag_extended_flags,
+ 					  "1<<SMC_DIAG_\?\?\?-1");
+@@ -212,7 +212,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_msg)
+ 	if (len >= sizeof(msg)) {
+ 		if (!umoven_or_printaddr(tcp, addr + offset,
+ 					 sizeof(msg) - offset,
+-					 (void *) &msg + offset)) {
++					 (char *) &msg + offset)) {
+ 			PRINT_FIELD_XVAL("", msg, diag_state,
+ 					 smc_states, "SMC_???");
+ 			PRINT_FIELD_XVAL_INDEX(", ", msg, diag_fallback,
+diff --git a/sockaddr.c b/sockaddr.c
+index acba7f02..62f357f5 100644
+--- a/sockaddr.c
++++ b/sockaddr.c
+@@ -475,7 +475,7 @@ print_sockaddr_data_ll(const void *const buf, const int addrlen)
+ static void
+ print_sockaddr_data_raw(const void *const buf, const int addrlen)
+ {
+-	const char *const data = buf + SIZEOF_SA_FAMILY;
++	const char *const data = (const char *)buf + SIZEOF_SA_FAMILY;
+ 	const int datalen = addrlen - SIZEOF_SA_FAMILY;
+ 
+ 	tprints("sa_data=");
+diff --git a/ucopy.c b/ucopy.c
+index 7db49c4a..f509b948 100644
+--- a/ucopy.c
++++ b/ucopy.c
+@@ -122,7 +122,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+ 		memcpy(laddr, &u.x[residue], m);
+ 		residue = 0;
+ 		addr += sizeof(long);
+-		laddr += m;
++		laddr = (char *)laddr + m;
+ 		nread += m;
+ 		len -= m;
+ 	}
+@@ -218,10 +218,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+ 		memcpy(laddr, &u.x[residue], m);
+ 		while (residue < sizeof(long))
+ 			if (u.x[residue++] == '\0')
+-				return (laddr - orig_addr) + residue;
++				return nread + residue;
+ 		residue = 0;
+ 		addr += sizeof(long);
+-		laddr += m;
++		laddr = (char *)laddr + m;
+ 		nread += m;
+ 		len -= m;
+ 	}
+-- 
+2.22.0
+

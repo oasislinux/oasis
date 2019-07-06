@@ -1,0 +1,38 @@
+From 9373bbf0bc3d17265f165845eb16c85843e92cf6 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 7 Jul 2019 21:50:31 -0700
+Subject: [PATCH] Avoid empty struct definition
+
+---
+ fetch_struct_stat64.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/fetch_struct_stat64.c b/fetch_struct_stat64.c
+index 8b445ba3..5b7641a1 100644
+--- a/fetch_struct_stat64.c
++++ b/fetch_struct_stat64.c
+@@ -32,12 +32,6 @@
+ # endif /* HAVE_MX32_STRUCT_STAT64 */
+ #endif /* MPERS_IS_m32 || MPERS_IS_mx32 */
+ 
+-#ifndef HAVE_STRUCT_STAT64
+-struct stat64 {};
+-#endif
+-
+-typedef struct stat64 struct_stat64;
+-
+ #include MPERS_DEFS
+ 
+ #include "stat.h"
+@@ -55,7 +49,7 @@ MPERS_PRINTER_DECL(bool, fetch_struct_stat64,
+ 		   struct strace_stat *const dst)
+ {
+ #ifdef HAVE_STRUCT_STAT64
+-	struct_stat64 buf;
++	struct stat64 buf;
+ 	if (umove_or_printaddr(tcp, addr, &buf))
+ 		return false;
+ 
+-- 
+2.22.0
+

@@ -1,0 +1,33 @@
+From f61bb03c8847240807ebdb905e257d865c7a7850 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 6 Jul 2019 01:40:36 -0700
+Subject: [PATCH] Make tcp_sysent a static inline function
+
+This way we can include the second operand to the conditional
+operator without evaluating the macro argument multiple times.
+---
+ defs.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/defs.h b/defs.h
+index 2dd5d65b..5d65fa3a 100644
+--- a/defs.h
++++ b/defs.h
+@@ -299,8 +299,12 @@ struct tcb {
+ # define syscall_delayed(tcp)	((tcp)->flags & TCB_DELAYED)
+ # define syscall_tampered_nofail(tcp) ((tcp)->flags & TCB_TAMPERED_NO_FAIL)
+ 
+-extern const struct_sysent stub_sysent;
+-# define tcp_sysent(tcp) (tcp->s_ent ?: &stub_sysent)
++static inline const struct_sysent *
++tcp_sysent(struct tcb *tcp)
++{
++	extern const struct_sysent stub_sysent;
++	return tcp->s_ent ? tcp->s_ent : &stub_sysent;
++}
+ # define n_args(tcp) (tcp_sysent(tcp)->nargs)
+ 
+ # include "xlat.h"
+-- 
+2.22.0
+

@@ -1,0 +1,1300 @@
+From 513e5862c05c21449d4ef2d5937743680f2ca9c4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 7 Jul 2019 22:29:34 -0700
+Subject: [PATCH] Avoid index ranges and empty initializer lists in syscallent
+ arrays
+
+---
+ linux/alpha/syscallent.h       | 34 +++++++--------
+ linux/arm/syscallent.h         |  2 +-
+ linux/avr32/syscallent.h       |  4 +-
+ linux/bfin/syscallent.h        |  2 +-
+ linux/i386/syscallent.h        |  6 +--
+ linux/m68k/syscallent.h        |  2 +-
+ linux/microblaze/syscallent.h  |  6 +--
+ linux/mips/syscallent-compat.h | 46 ++++++++++----------
+ linux/mips/syscallent-n32.h    |  2 +-
+ linux/mips/syscallent-n64.h    |  2 +-
+ linux/mips/syscallent-o32.h    |  2 +-
+ linux/powerpc/syscallent.h     |  2 +-
+ linux/powerpc64/syscallent.h   | 10 ++---
+ linux/s390/syscallent.h        | 42 +++++++++---------
+ linux/s390x/syscallent.h       | 78 +++++++++++++++++-----------------
+ linux/sh/syscallent.h          | 12 +++---
+ linux/sh64/syscallent.h        | 18 ++++----
+ linux/sparc/syscallent.h       |  6 +--
+ linux/sparc64/syscallent.h     | 38 ++++++++---------
+ linux/xtensa/syscallent.h      | 32 +++++++-------
+ 20 files changed, 173 insertions(+), 173 deletions(-)
+
+diff --git a/linux/alpha/syscallent.h b/linux/alpha/syscallent.h
+index d569fa67..42a7e119 100644
+--- a/linux/alpha/syscallent.h
++++ b/linux/alpha/syscallent.h
+@@ -60,7 +60,7 @@
+ [ 50] = { 5,	0,		SEN(printargs),			"osf_setlogin"		}, /* not implemented */
+ [ 51] = { 1,	TF,		SEN(acct),			"acct"			},
+ [ 52] = { 1,	TS,		SEN(sigpending),		"sigpending"		},
+-[ 53] = { },
++/* [ 53] - unused */
+ [ 54] = { 3,	TD,		SEN(ioctl),			"ioctl"			},
+ [ 55] = { 5,	0,		SEN(printargs),			"osf_reboot"		}, /* not implemented */
+ [ 56] = { 5,	0,		SEN(printargs),			"osf_revoke"		}, /* not implemented */
+@@ -126,7 +126,7 @@
+ [116] = { 2,	0,		SEN(osf_gettimeofday),		"osf_gettimeofday"	},
+ [117] = { 2,	0,		SEN(osf_getrusage),		"osf_getrusage"		},
+ [118] = { 5,	TN,		SEN(getsockopt),		"getsockopt"		},
+-[119] = { },
++/* [119] - unused */
+ [120] = { 3,	TD,		SEN(readv),			"readv"			},
+ [121] = { 3,	TD,		SEN(writev),			"writev"		},
+ [122] = { 2,	0,		SEN(osf_settimeofday),		"osf_settimeofday"	},
+@@ -158,31 +158,31 @@
+ [148] = { 4,	TF,		SEN(quotactl),			"quotactl"		},
+ [149] = { 5,	0,		SEN(printargs),			"osf_oldquota"		}, /* not implemented */
+ [150] = { 3,	TN,		SEN(getsockname),		"getsockname"		},
+-[151 ... 152] = { },
++/* [151 ... 152] - unused */
+ [153] = { 5,	0,		SEN(printargs),			"osf_pid_block"		}, /* not implemented */
+ [154] = { 5,	0,		SEN(printargs),			"osf_pid_unblock"	}, /* not implemented */
+-[155] = { },
++/* [155] - unused */
+ [156] = { 3,	TS,		SEN(sigaction),			"sigaction"		},
+ [157] = { 5,	0,		SEN(printargs),			"osf_sigwaitprim"	}, /* not implemented */
+ [158] = { 5,	0,		SEN(printargs),			"osf_nfssvc"		}, /* not implemented */
+ [159] = { 4,	0,		SEN(printargs),			"osf_getdirentries"	},
+ [160] = { 3,	TF|TSF|TSFA,	SEN(osf_statfs),		"osf_statfs"		},
+ [161] = { 3,	TD|TFSF|TSFA,	SEN(osf_fstatfs),		"osf_fstatfs"		},
+-[162] = { },
++/* [162] - unused */
+ [163] = { 5,	0,		SEN(printargs),			"osf_asynch_daemon"	}, /* not implemented */
+ [164] = { 5,	0,		SEN(printargs),			"osf_getfh"		}, /* not implemented */
+ [165] = { 2,	0,		SEN(printargs),			"osf_getdomainname"	},
+ [166] = { 2,	0,		SEN(setdomainname),		"setdomainname"		},
+-[167 ... 168] = { },
++/* [167 ... 168] - unused */
+ [169] = { 5,	0,		SEN(printargs),			"osf_exportfs"		}, /* not implemented */
+-[170 ... 180] = { },
++/* [170 ... 180] - unused */
+ [181] = { 5,	0,		SEN(printargs),			"osf_alt_plock"		}, /* not implemented */
+-[182 ... 183] = { },
++/* [182 ... 183] - unused */
+ [184] = { 5,	0,		SEN(printargs),			"osf_getmnt"		}, /* not implemented */
+-[185 ... 186] = { },
++/* [185 ... 186] - unused */
+ [187] = { 5,	0,		SEN(printargs),			"osf_alt_sigpending"	}, /* not implemented */
+ [188] = { 5,	0,		SEN(printargs),			"osf_alt_setsid"	}, /* not implemented */
+-[189 ... 198] = { },
++/* [189 ... 198] - unused */
+ [199] = { 4,	0,		SEN(printargs),			"osf_swapon"		},
+ [200] = { 3,	TI,		SEN(msgctl),			"msgctl"		},
+ [201] = { 2,	TI,		SEN(msgget),			"msgget"		},
+@@ -205,7 +205,7 @@
+ [218] = { 5,	0,		SEN(printargs),			"osf_signal"		}, /* not implemented */
+ [219] = { 5,	0,		SEN(printargs),			"osf_utc_gettime"	}, /* not implemented */
+ [220] = { 5,	0,		SEN(printargs),			"osf_utc_adjtime"	}, /* not implemented */
+-[221] = { },
++/* [221] - unused */
+ [222] = { 5,	0,		SEN(printargs),			"osf_security"		}, /* not implemented */
+ [223] = { 5,	0,		SEN(printargs),			"osf_kloadcall"		}, /* not implemented */
+ [224] = { 2,	TF|TST|TSTA,	SEN(printargs),			"osf_stat"		},
+@@ -213,7 +213,7 @@
+ [226] = { 2,	TD|TFST|TSTA,	SEN(printargs),			"osf_fstat"		},
+ [227] = { 3,	TF|TSF|TSFA,	SEN(osf_statfs),		"osf_statfs64"		},
+ [228] = { 3,	TD|TFSF|TSFA,	SEN(osf_fstatfs),		"osf_fstatfs64"		},
+-[229 ... 232] = { },
++/* [229 ... 232] - unused */
+ [233] = { 1,	0,		SEN(getpgid),			"getpgid"		},
+ [234] = { 1,	0,		SEN(getsid),			"getsid"		},
+ [235] = { 2,	TS,		SEN(sigaltstack),		"sigaltstack"		},
+@@ -230,7 +230,7 @@
+ [246] = { 5,	0,		SEN(printargs),			"osf_ntp_gettime"	}, /* not implemented */
+ [247] = { 5,	0,		SEN(printargs),			"osf_pathconf"		}, /* not implemented */
+ [248] = { 5,	0,		SEN(printargs),			"osf_fpathconf"		}, /* not implemented */
+-[249] = { },
++/* [249] - unused */
+ [250] = { 5,	0,		SEN(printargs),			"osf_uswitch"		}, /* not implemented */
+ [251] = { 2,	0,		SEN(printargs),			"osf_usleep_thread"	},
+ [252] = { 5,	0,		SEN(printargs),			"osf_audcntl"		}, /* not implemented */
+@@ -243,7 +243,7 @@
+ [259] = { 5,	0,		SEN(printargs),			"osf_swapctl"		}, /* not implemented */
+ [260] = { 5,	0,		SEN(printargs),			"osf_memcntl"		}, /* not implemented */
+ [261] = { 5,	0,		SEN(printargs),			"osf_fdatasync"		}, /* not implemented */
+-[262 ... 299] = { },
++/* [262 ... 299] - unused */
+ [300] = { 2,	0,		SEN(bdflush),			"bdflush"		},
+ [301] = { 1,	0,		SEN(printargs),			"sethae"		},
+ [302] = { 5,	TF,		SEN(mount),			"mount"			},
+@@ -264,7 +264,7 @@
+ [317] = { 0,	TM,		SEN(munlockall),		"munlockall"		},
+ [318] = { 1,	0,		SEN(sysinfo),			"sysinfo"		},
+ [319] = { 1,	0,		SEN(sysctl),			"_sysctl"		},
+-[320] = { },
++/* [320] - unused */
+ [321] = { 1,	TF,		SEN(umount),			"oldumount"		},
+ [322] = { 2,	TF,		SEN(swapon),			"swapon"		},
+ [323] = { 1,	0,		SEN(times),			"times"			},
+@@ -324,7 +324,7 @@
+ [377] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+ [378] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
+ [379] = { 3,	TD,		SEN(readahead),			"readahead"		},
+-[380] = { },
++/* [380] - unused */
+ [381] = { 2,	TS,		SEN(kill),			"tkill"			},
+ [382] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
+ [383] = { 5,	TF,		SEN(setxattr),			"lsetxattr"		},
+@@ -347,7 +347,7 @@
+ [400] = { 5,	0,		SEN(io_getevents_time64),	"io_getevents"		},
+ [401] = { 3,	0,		SEN(io_submit),			"io_submit"		},
+ [402] = { 3,	0,		SEN(io_cancel),			"io_cancel"		},
+-[403 ... 404] = { },
++/* [403 ... 404] - unused */
+ [405] = { 1,	TP|SE,		SEN(exit),			"exit_group"		},
+ [406] = { 3,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
+ [407] = { 1,	TD,		SEN(epoll_create),		"epoll_create"		},
+diff --git a/linux/arm/syscallent.h b/linux/arm/syscallent.h
+index 065e79f3..a7a8e9e0 100644
+--- a/linux/arm/syscallent.h
++++ b/linux/arm/syscallent.h
+@@ -455,7 +455,7 @@
+  * ARM specific syscalls. Encoded with scno 0x000f00xx.
+  * Remapped by shuffle_scno() to be directly after __ARM_NR_cmpxchg.
+  */
+-[ARM_FIRST_SHUFFLED_SYSCALL+1+0] = { },
++/* [ARM_FIRST_SHUFFLED_SYSCALL+1+0] - unused */
+ [ARM_FIRST_SHUFFLED_SYSCALL+1+1] = { 0,	0,	SEN(printargs),	"breakpoint"		},
+ [ARM_FIRST_SHUFFLED_SYSCALL+1+2] = { 3,	TM,	SEN(printargs),	"cacheflush"		},
+ [ARM_FIRST_SHUFFLED_SYSCALL+1+3] = { 0,	0,	SEN(printargs),	"usr26"			},
+diff --git a/linux/avr32/syscallent.h b/linux/avr32/syscallent.h
+index 81d18d6b..95acfefd 100644
+--- a/linux/avr32/syscallent.h
++++ b/linux/avr32/syscallent.h
+@@ -228,7 +228,7 @@
+ [219] = { 3,	TF|TSF|TSFA,	SEN(statfs64),			"statfs64"		},
+ [220] = { 3,	TD|TFSF|TSFA,	SEN(fstatfs64),			"fstatfs64"		},
+ [221] = { 3,	TS,		SEN(tgkill),			"tgkill"		},
+-[222] = { },
++/* [222] - unused */
+ [223] = { 2,	TF,		SEN(utimes),			"utimes"		},
+ [224] = { 6,	TD,		SEN(fadvise64_64),		"fadvise64_64"		},
+ [225] = { 3,	0,		SEN(printargs),			"cacheflush"		},
+@@ -288,7 +288,7 @@
+ [279] = { 3,	TD|TS,		SEN(signalfd),			"signalfd"		},
+ [280] = { 4,	TD,		SEN(timerfd),			"timerfd"		},
+ [281] = { 1,	TD,		SEN(eventfd),			"eventfd"		},
+-[282] = { },
++/* [282] - unused */
+ [283] = { 2,	TD,		SEN(setns),			"setns"			},
+ [284] = { 5,	TD,		SEN(pread),			"pread64"		},
+ [285] = { 5,	TD,		SEN(pwrite),			"pwrite64"		},
+diff --git a/linux/bfin/syscallent.h b/linux/bfin/syscallent.h
+index 8a3209d1..d0b2c761 100644
+--- a/linux/bfin/syscallent.h
++++ b/linux/bfin/syscallent.h
+@@ -229,7 +229,7 @@
+ [219] = { 3,	TM,		SEN(madvise),			"madvise"		},
+ [220] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+ [221] = { 3,	TD,		SEN(fcntl64),			"fcntl64"		},
+-[222 ... 223] = { },
++/* [222 ... 223] - unused */
+ [224] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
+ [225] = { 4,	TD,		SEN(readahead),			"readahead"		},
+ [226] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
+diff --git a/linux/i386/syscallent.h b/linux/i386/syscallent.h
+index 98866f3d..96270976 100644
+--- a/linux/i386/syscallent.h
++++ b/linux/i386/syscallent.h
+@@ -229,7 +229,7 @@
+ [219] = { 3,	TM,		SEN(madvise),			"madvise"		},
+ [220] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+ [221] = { 3,	TD,		SEN(fcntl64),			"fcntl64"		},
+-[222 ... 223] = { },
++/* [222 ... 223] - unused */
+ [224] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
+ [225] = { 4,	TD,		SEN(readahead),			"readahead"		},
+ [226] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
+@@ -257,7 +257,7 @@
+ [248] = { 3,	0,		SEN(io_submit),			"io_submit"		},
+ [249] = { 3,	0,		SEN(io_cancel),			"io_cancel"		},
+ [250] = { 5,	TD,		SEN(fadvise64),			"fadvise64"		},
+-[251] = { }, /* sys_set_zone_reclaim */
++/* [251] - sys_set_zone_reclaim */
+ [252] = { 1,	TP|SE,		SEN(exit),			"exit_group"		},
+ [253] = { 4,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
+ [254] = { 1,	TD,		SEN(epoll_create),		"epoll_create"		},
+@@ -291,7 +291,7 @@
+ [282] = { 3,	TD,		SEN(mq_getsetattr),		"mq_getsetattr"		},
+ [283] = { 4,	0,		SEN(kexec_load),		"kexec_load"		},
+ [284] = { 5,	TP,		SEN(waitid),			"waitid"		},
+-[285] = { }, /* sys_setaltroot */
++/* [285] - sys_setaltroot */
+ [286] = { 5,	0,		SEN(add_key),			"add_key"		},
+ [287] = { 4,	0,		SEN(request_key),		"request_key"		},
+ [288] = { 5,	0,		SEN(keyctl),			"keyctl"		},
+diff --git a/linux/m68k/syscallent.h b/linux/m68k/syscallent.h
+index f2117697..f2918b83 100644
+--- a/linux/m68k/syscallent.h
++++ b/linux/m68k/syscallent.h
+@@ -225,7 +225,7 @@
+ [215] = { 1,	NF,		SEN(setfsuid),			"setfsuid32"		},
+ [216] = { 1,	NF,		SEN(setfsgid),			"setfsgid32"		},
+ [217] = { 2,	TF,		SEN(pivotroot),			"pivot_root"		},
+-[218 ... 219] = { },
++/* [218 ... 219] - unused */
+ [220] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+ [221] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
+ [222] = { 2,	TS,		SEN(kill),			"tkill"			},
+diff --git a/linux/microblaze/syscallent.h b/linux/microblaze/syscallent.h
+index 8e2a3dd9..fac21dbd 100644
+--- a/linux/microblaze/syscallent.h
++++ b/linux/microblaze/syscallent.h
+@@ -229,7 +229,7 @@
+ [219] = { 3,	TM,		SEN(madvise),			"madvise"		},
+ [220] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+ [221] = { 3,	TD,		SEN(fcntl64),			"fcntl64"		},
+-[222 ... 223] = { },
++/* [222 ... 223] - unused */
+ [224] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
+ [225] = { 4,	TD,		SEN(readahead),			"readahead"		},
+ [226] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
+@@ -257,7 +257,7 @@
+ [248] = { 3,	0,		SEN(io_submit),			"io_submit"		},
+ [249] = { 3,	0,		SEN(io_cancel),			"io_cancel"		},
+ [250] = { 5,	TD,		SEN(fadvise64),			"fadvise64"		},
+-[251] = { },
++/* [251] - unused */
+ [252] = { 1,	TP|SE,		SEN(exit),			"exit_group"		},
+ [253] = { 4,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
+ [254] = { 1,	TD,		SEN(epoll_create),		"epoll_create"		},
+@@ -291,7 +291,7 @@
+ [282] = { 3,	TD,		SEN(mq_getsetattr),		"mq_getsetattr"		},
+ [283] = { 4,	0,		SEN(kexec_load),		"kexec_load"		},
+ [284] = { 5,	TP,		SEN(waitid),			"waitid"		},
+-[285] = { },
++/* [285] - unused */
+ [286] = { 5,	0,		SEN(add_key),			"add_key"		},
+ [287] = { 4,	0,		SEN(request_key),		"request_key"		},
+ [288] = { 5,	0,		SEN(keyctl),			"keyctl"		},
+diff --git a/linux/mips/syscallent-compat.h b/linux/mips/syscallent-compat.h
+index fce44a27..297bfb90 100644
+--- a/linux/mips/syscallent-compat.h
++++ b/linux/mips/syscallent-compat.h
+@@ -69,13 +69,13 @@
+ [  61] = { 0,	0,	SEN(printargs),		"svr4_chroot"	},
+ [  62] = { 0,	0,	SEN(printargs),		"svr4_fcntl"	},
+ [  63] = { 0,	0,	SEN(printargs),		"svr4_ulimit"	},
+-[64 ... 69] = { },
++/* [64 ... 69] - unused */
+ [  70] = { 0,	0,	SEN(printargs),		"svr4_advfs"	},
+ [  71] = { 0,	0,	SEN(printargs),		"svr4_unadvfs"	},
+-[  72] = { },
+-[  73] = { },
++/* [  72] - unused */
++/* [  73] - unused */
+ [  74] = { 0,	0,	SEN(printargs),		"svr4_rfstart"	},
+-[  75] = { },
++/* [  75] - unused */
+ [  76] = { 0,	0,	SEN(printargs),		"svr4_rdebug"	},
+ [  77] = { 0,	0,	SEN(printargs),		"svr4_rfstop"	},
+ [  78] = { 0,	0,	SEN(printargs),		"svr4_rfsys"	},
+@@ -105,7 +105,7 @@
+ [ 102] = { 0,	0,	SEN(printargs),		"svr4_evtrapret"	},
+ [ 103] = { 0,	TF|TSF|TSFA,SEN(printargs),		"svr4_statvfs"	},
+ [ 104] = { 0,	TD|TFSF|TSFA,SEN(printargs),		"svr4_fstatvfs"	},
+-[ 105] = { },
++/* [ 105] - unused */
+ [ 106] = { 0,	0,	SEN(printargs),		"svr4_nfssys"	},
+ [ 107] = { 0,	0,	SEN(printargs),		"svr4_waitid"	},
+ [ 108] = { 0,	0,	SEN(printargs),		"svr4_sigsendset"	},
+@@ -140,13 +140,13 @@
+ [ 137] = { 0,	0,	SEN(printargs),		"svr4_sysconf"	},
+ [ 138] = { 0,	0,	SEN(printargs),		"svr4_adjtime"	},
+ [ 139] = { 0,	0,	SEN(printargs),		"svr4_sysinfo"	},
+-[ 140] = { },
++/* [ 140] - unused */
+ [ 141] = { 0,	0,	SEN(printargs),		"svr4_seteuid"	},
+ [ 142] = { 0,	0,	SEN(printargs),		"svr4_PYRAMID_statis"	},
+ [ 143] = { 0,	0,	SEN(printargs),		"svr4_PYRAMID_tuning"	},
+ [ 144] = { 0,	0,	SEN(printargs),		"svr4_PYRAMID_forcerr"	},
+ [ 145] = { 0,	0,	SEN(printargs),		"svr4_PYRAMID_mpcntl"	},
+-[146 ... 200] = { },
++/* [146 ... 200] - unused */
+ [ 201] = { 0,	0,	SEN(printargs),		"svr4_aread"	},
+ [ 202] = { 0,	0,	SEN(printargs),		"svr4_awrite"	},
+ [ 203] = { 0,	0,	SEN(printargs),		"svr4_listio"	},
+@@ -214,13 +214,13 @@
+ [1055] = { 0,	0,	SEN(printargs),		"sysv_uadmin"	},
+ [1056] = { 0,	0,	SEN(printargs),		"sysv_sysmp"	},
+ [1057] = { 0,	0,	SEN(printargs),		"sysv_utssys"	},
+-[1058] = { },
++/* [1058] - unused */
+ [1059] = { 0,	0,	SEN(printargs),		"sysv_execve"	},
+ [1060] = { 0,	0,	SEN(printargs),		"sysv_umask"	},
+ [1061] = { 0,	0,	SEN(printargs),		"sysv_chroot"	},
+ [1062] = { 0,	0,	SEN(printargs),		"sysv_fcntl"	},
+ [1063] = { 0,	0,	SEN(printargs),		"sysv_ulimit"	},
+-[1064 ... 1069] = { },
++/* [1064 ... 1069] - unused */
+ [1070] = { 0,	0,	SEN(printargs),		"sysv_advfs"	},
+ [1071] = { 0,	0,	SEN(printargs),		"sysv_unadvfs"	},
+ [1072] = { 0,	0,	SEN(printargs),		"sysv_rmount"	},
+@@ -390,8 +390,8 @@
+ [2046] = { 0,	0,	SEN(printargs),		"bsd43_setgid"	},
+ [2047] = { 0,	0,	SEN(printargs),		"bsd43_getgid"	},
+ [2048] = { 0,	0,	SEN(printargs),		"bsd43_ssig"	},
+-[2049] = { },
+-[2050] = { },
++/* [2049] - unused */
++/* [2050] - unused */
+ [2051] = { 0,	0,	SEN(printargs),		"bsd43_sysacct"	},
+ [2052] = { 0,	0,	SEN(printargs),		"bsd43_phys"	},
+ [2053] = { 0,	0,	SEN(printargs),		"bsd43_lock"	},
+@@ -404,7 +404,7 @@
+ [2060] = { 0,	0,	SEN(printargs),		"bsd43_umask"	},
+ [2061] = { 0,	0,	SEN(printargs),		"bsd43_chroot"	},
+ [2062] = { 0,	TD|TFST|TSTA,SEN(printargs),		"bsd43_fstat"	},
+-[2063] = { },
++/* [2063] - unused */
+ [2064] = { 0,	0,	SEN(printargs),		"bsd43_getpagesize"	},
+ [2065] = { 0,	TM|SI,	SEN(printargs),		"bsd43_mremap"	},
+ [2066] = { 0,	0,	SEN(printargs),		"bsd43_vfork"	},
+@@ -460,7 +460,7 @@
+ [2116] = { 0,	0,	SEN(printargs),		"bsd43_gettimeofday"	},
+ [2117] = { 0,	0,	SEN(printargs),		"bsd43_getrusage"	},
+ [2118] = { 0,	0,	SEN(printargs),		"bsd43_getsockopt"	},
+-[2119] = { },
++/* [2119] - unused */
+ [2120] = { 0,	0,	SEN(printargs),		"bsd43_readv"	},
+ [2121] = { 0,	0,	SEN(printargs),		"bsd43_writev"	},
+ [2122] = { 0,	0,	SEN(printargs),		"bsd43_settimeofday"	},
+@@ -496,8 +496,8 @@
+ [2152] = { 0,	0,	SEN(printargs),		"bsd43_cacheflush"	},
+ [2153] = { 0,	0,	SEN(printargs),		"bsd43_cachectl"	},
+ [2154] = { 0,	0,	SEN(printargs),		"bsd43_debug"	},
+-[2155] = { },
+-[2156] = { },
++/* [2155] - unused */
++/* [2156] - unused */
+ [2157] = { 0,	0,	SEN(printargs),		"bsd43_nfs_mount"	},
+ [2158] = { 0,	0,	SEN(printargs),		"bsd43_nfs_svc"	},
+ [2159] = { 0,	0,	SEN(printargs),		"bsd43_getdirentries"	},
+@@ -518,8 +518,8 @@
+ [2174] = { 0,	0,	SEN(printargs),		"bsd43_libattach"	},
+ [2175] = { 0,	0,	SEN(printargs),		"bsd43_libdetach"	},
+ [2176] = { 0,	0,	SEN(printargs),		"bsd43_accept"	},
+-[2177] = { },
+-[2178] = { },
++/* [2177] - unused */
++/* [2178] - unused */
+ [2179] = { 0,	0,	SEN(printargs),		"bsd43_recvmsg"	},
+ [2180] = { 0,	0,	SEN(printargs),		"bsd43_recvfrom"	},
+ [2181] = { 0,	0,	SEN(printargs),		"bsd43_sendmsg"	},
+@@ -592,19 +592,19 @@
+ [3055] = { 0,	0,	SEN(printargs),		"posix_uadmin"	},
+ [3056] = { 0,	0,	SEN(printargs),		"posix_exch"	},
+ [3057] = { 0,	0,	SEN(printargs),		"posix_utssys"	},
+-[3058] = { },
++/* [3058] - unused */
+ [3059] = { 0,	0,	SEN(printargs),		"posix_exece"	},
+ [3060] = { 0,	0,	SEN(printargs),		"posix_umask"	},
+ [3061] = { 0,	0,	SEN(printargs),		"posix_chroot"	},
+ [3062] = { 0,	0,	SEN(printargs),		"posix_fcntl"	},
+ [3063] = { 0,	0,	SEN(printargs),		"posix_ulimit"	},
+-[3064 ... 3069] = { },
++/* [3064 ... 3069] - unused */
+ [3070] = { 0,	0,	SEN(printargs),		"posix_advfs"	},
+ [3071] = { 0,	0,	SEN(printargs),		"posix_unadvfs"	},
+ [3072] = { 0,	0,	SEN(printargs),		"posix_rmount"	},
+ [3073] = { 0,	0,	SEN(printargs),		"posix_rumount"	},
+ [3074] = { 0,	0,	SEN(printargs),		"posix_rfstart"	},
+-[3075] = { },
++/* [3075] - unused */
+ [3076] = { 0,	0,	SEN(printargs),		"posix_rdebug"	},
+ [3077] = { 0,	0,	SEN(printargs),		"posix_rfstop"	},
+ [3078] = { 0,	0,	SEN(printargs),		"posix_rfsys"	},
+@@ -661,7 +661,7 @@
+ [3129] = { 0,	0,	SEN(printargs),		"posix_SGI_sproc"	},
+ [3130] = { 0,	0,	SEN(printargs),		"posix_SGI_prctl"	},
+ [3131] = { 0,	0,	SEN(printargs),		"posix_SGI_blkproc"	},
+-[3132] = { },
++/* [3132] - unused */
+ [3133] = { 0,	0,	SEN(printargs),		"posix_SGI_sgigsc"	},
+ [3134] = { 0,	TD|TM|SI,	SEN(printargs),		"posix_SGI_mmap"	},
+ [3135] = { 0,	TM|SI,	SEN(printargs),		"posix_SGI_munmap"	},
+@@ -674,7 +674,7 @@
+ [3142] = { 0,	0,	SEN(printargs),		"posix_SGI_libdetach"	},
+ [3143] = { 0,	0,	SEN(printargs),		"posix_SGI_getpgrp"	},
+ [3144] = { 0,	0,	SEN(printargs),		"posix_SGI_setpgrp"	},
+-[3145 ... 3149] = { },
++/* [3145 ... 3149] - unused */
+ [3150] = { 0,	0,	SEN(printargs),		"posix_cacheflush"	},
+ [3151] = { 0,	0,	SEN(printargs),		"posix_cachectl"	},
+ [3152] = { 0,	0,	SEN(printargs),		"posix_fchown"	},
+@@ -695,7 +695,7 @@
+ [3167] = { 0,	0,	SEN(printargs),		"posix_setrlimit"	},
+ [3168] = { 0,	0,	SEN(printargs),		"posix_waitpid"	},
+ [3169] = { 0,	0,	SEN(printargs),		"posix_dup2"	},
+-[3170 ... 3259] = { },
++/* [3170 ... 3259] - unused */
+ [3260] = { 0,	0,	SEN(printargs),		"posix_netboot"	},
+ [3261] = { 0,	0,	SEN(printargs),		"posix_netunboot"	},
+ [3262] = { 0,	0,	SEN(printargs),		"posix_rdump"	},
+diff --git a/linux/mips/syscallent-n32.h b/linux/mips/syscallent-n32.h
+index 16ec2a1b..44d0bd6a 100644
+--- a/linux/mips/syscallent-n32.h
++++ b/linux/mips/syscallent-n32.h
+@@ -249,7 +249,7 @@
+ [6239] = { 3,	TD,		SEN(mq_getsetattr),		"mq_getsetattr"		},
+ [6240] = { 5,	0,		SEN(vserver),			"vserver"		},
+ [6241] = { 5,	TP,		SEN(waitid),			"waitid"		},
+-[6242] = { },
++/* [6242] - unused */
+ [6243] = { 5,	0,		SEN(add_key),			"add_key"		},
+ [6244] = { 4,	0,		SEN(request_key),		"request_key"		},
+ [6245] = { 5,	0,		SEN(keyctl),			"keyctl"		},
+diff --git a/linux/mips/syscallent-n64.h b/linux/mips/syscallent-n64.h
+index 15db301e..9127b16b 100644
+--- a/linux/mips/syscallent-n64.h
++++ b/linux/mips/syscallent-n64.h
+@@ -245,7 +245,7 @@
+ [5235] = { 3,	TD,		SEN(mq_getsetattr),		"mq_getsetattr"		},
+ [5236] = { 5,	0,		SEN(vserver),			"vserver"		},
+ [5237] = { 5,	TP,		SEN(waitid),			"waitid"		},
+-[5238] = { },
++/* [5238] - unused */
+ [5239] = { 5,	0,		SEN(add_key),			"add_key"		},
+ [5240] = { 4,	0,		SEN(request_key),		"request_key"		},
+ [5241] = { 5,	0,		SEN(keyctl),			"keyctl"		},
+diff --git a/linux/mips/syscallent-o32.h b/linux/mips/syscallent-o32.h
+index 7fdc60f6..131a8960 100644
+--- a/linux/mips/syscallent-o32.h
++++ b/linux/mips/syscallent-o32.h
+@@ -287,7 +287,7 @@
+ [4276] = { 3,	TD,		SEN(mq_getsetattr),		"mq_getsetattr"		},
+ [4277] = { 5,	0,		SEN(vserver),			"vserver"		},
+ [4278] = { 5,	TP,		SEN(waitid),			"waitid"		},
+-[4279] = { },
++/* [4279] - unused */
+ [4280] = { 5,	0,		SEN(add_key),			"add_key"		},
+ [4281] = { 4,	0,		SEN(request_key),		"request_key"		},
+ [4282] = { 5,	0,		SEN(keyctl),			"keyctl"		},
+diff --git a/linux/powerpc/syscallent.h b/linux/powerpc/syscallent.h
+index 4e184646..3f299295 100644
+--- a/linux/powerpc/syscallent.h
++++ b/linux/powerpc/syscallent.h
+@@ -231,7 +231,7 @@
+ [221] = { 6,	0,		SEN(futex_time32),		"futex"			},
+ [222] = { 3,	0,		SEN(sched_setaffinity),		"sched_setaffinity"	},
+ [223] = { 3,	0,		SEN(sched_getaffinity),		"sched_getaffinity"	},
+-[224] = { },
++/* [224] - unused */
+ [225] = { 5,	0,		SEN(printargs),			"tuxcall"		},
+ [226] = { 4,	TD|TN,		SEN(sendfile64),		"sendfile64"		},
+ [227] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+diff --git a/linux/powerpc64/syscallent.h b/linux/powerpc64/syscallent.h
+index 47a59990..1d8b918c 100644
+--- a/linux/powerpc64/syscallent.h
++++ b/linux/powerpc64/syscallent.h
+@@ -199,14 +199,14 @@
+ [189] = { 0,	TP,		SEN(vfork),			"vfork"			},
+ [190] = { 2,	0,		SEN(getrlimit),			"ugetrlimit"		},
+ [191] = { 3,	TD,		SEN(readahead),			"readahead"		},
+-[192 ... 197] = { },
++/* [192 ... 197] - unused */
+ [198] = { 5,	0,		SEN(printargs),			"pciconfig_read"	},
+ [199] = { 5,	0,		SEN(printargs),			"pciconfig_write"	},
+ [200] = { 3,	0,		SEN(printargs),			"pciconfig_iobase"	},
+ [201] = { 6,	0,		SEN(printargs),			"multiplexer"		},
+ [202] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+ [203] = { 2,	TF,		SEN(pivotroot),			"pivot_root"		},
+-[204] = { },
++/* [204] - unused */
+ [205] = { 3,	TM,		SEN(madvise),			"madvise"		},
+ [206] = { 3,	TM,		SEN(mincore),			"mincore"		},
+ [207] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
+@@ -226,9 +226,9 @@
+ [221] = { 6,	0,		SEN(futex_time64),		"futex"			},
+ [222] = { 3,	0,		SEN(sched_setaffinity),		"sched_setaffinity"	},
+ [223] = { 3,	0,		SEN(sched_getaffinity),		"sched_getaffinity"	},
+-[224] = { },
++/* [224] - unused */
+ [225] = { 5,	0,		SEN(printargs),			"tuxcall"		},
+-[226] = { },
++/* [226] - unused */
+ [227] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+ [228] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
+ [229] = { 5,	0,		SEN(io_getevents_time64),	"io_getevents"		},
+@@ -256,7 +256,7 @@
+ [251] = { 2,	TF,		SEN(utimes),			"utimes"		},
+ [252] = { 3,	TF|TSF|TSFA,	SEN(statfs64),			"statfs64"		},
+ [253] = { 3,	TD|TFSF|TSFA,	SEN(fstatfs64),			"fstatfs64"		},
+-[254] = { },
++/* [254] - unused */
+ [255] = { 1,	0,		SEN(printargs),			"rtas"			},
+ [256] = { 5,	0,		SEN(printargs),			"sys_debug_setcontext"	},
+ [257] = { 5,	0,		SEN(vserver),			"vserver"		},
+diff --git a/linux/s390/syscallent.h b/linux/s390/syscallent.h
+index 24cd190b..1e23efc8 100644
+--- a/linux/s390/syscallent.h
++++ b/linux/s390/syscallent.h
+@@ -26,8 +26,8 @@
+ [ 14] = { 3,	TF,		SEN(mknod),			"mknod"			},
+ [ 15] = { 2,	TF,		SEN(chmod),			"chmod"			},
+ [ 16] = { 3,	TF,		SEN(chown16),			"lchown"		},
+-[ 17] = { },
+-[ 18] = { },
++/* [ 17] - unused */
++/* [ 18] - unused */
+ [ 19] = { 3,	TD,		SEN(lseek),			"lseek"			},
+ [ 20] = { 0,	PU|NF,		SEN(getpid),			"getpid"		},
+ [ 21] = { 5,	TF,		SEN(mount),			"mount"			},
+@@ -37,14 +37,14 @@
+ [ 25] = { 1,	0,		SEN(stime),			"stime"			},
+ [ 26] = { 4,	0,		SEN(ptrace),			"ptrace"		},
+ [ 27] = { 1,	0,		SEN(alarm),			"alarm"			},
+-[ 28] = { },
++/* [ 28] - unused */
+ [ 29] = { 0,	TS,		SEN(pause),			"pause"			},
+ [ 30] = { 2,	TF,		SEN(utime),			"utime"			},
+-[ 31] = { },
+-[ 32] = { },
++/* [ 31] - unused */
++/* [ 32] - unused */
+ [ 33] = { 2,	TF,		SEN(access),			"access"		},
+ [ 34] = { 1,	0,		SEN(nice),			"nice"			},
+-[ 35] = { },
++/* [ 35] - unused */
+ [ 36] = { 0,	0,		SEN(sync),			"sync"			},
+ [ 37] = { 2,	TS,		SEN(kill),			"kill"			},
+ [ 38] = { 2,	TF,		SEN(rename),			"rename"		},
+@@ -53,7 +53,7 @@
+ [ 41] = { 1,	TD,		SEN(dup),			"dup"			},
+ [ 42] = { 1,	TD,		SEN(pipe),			"pipe"			},
+ [ 43] = { 1,	0,		SEN(times),			"times"			},
+-[ 44] = { },
++/* [ 44] - unused */
+ [ 45] = { 1,	TM|SI,		SEN(brk),			"brk"			},
+ [ 46] = { 1,	0,		SEN(setgid16),			"setgid"		},
+ [ 47] = { 0,	PU|NF,		SEN(getgid16),			"getgid"		},
+@@ -62,13 +62,13 @@
+ [ 50] = { 0,	PU|NF,		SEN(getegid16),			"getegid"		},
+ [ 51] = { 1,	TF,		SEN(acct),			"acct"			},
+ [ 52] = { 2,	TF,		SEN(umount2),			"umount2"		},
+-[ 53] = { },
++/* [ 53] - unused */
+ [ 54] = { 3,	TD,		SEN(ioctl),			"ioctl"			},
+ [ 55] = { 3,	TD,		SEN(fcntl),			"fcntl"			},
+-[ 56] = { },
++/* [ 56] - unused */
+ [ 57] = { 2,	0,		SEN(setpgid),			"setpgid"		},
+-[ 58] = { },
+-[ 59] = { },
++/* [ 58] - unused */
++/* [ 59] - unused */
+ [ 60] = { 1,	NF,		SEN(umask),			"umask"			},
+ [ 61] = { 1,	TF,		SEN(chroot),			"chroot"		},
+ [ 62] = { 2,	TSFA,		SEN(ustat),			"ustat"			},
+@@ -77,8 +77,8 @@
+ [ 65] = { 0,	PU|NF,		SEN(getpgrp),			"getpgrp"		},
+ [ 66] = { 0,	0,		SEN(setsid),			"setsid"		},
+ [ 67] = { 3,	TS,		SEN(sigaction),			"sigaction"		},
+-[ 68] = { },
+-[ 69] = { },
++/* [ 68] - unused */
++/* [ 69] - unused */
+ [ 70] = { 2,	0,		SEN(setreuid16),		"setreuid"		},
+ [ 71] = { 2,	0,		SEN(setregid16),		"setregid"		},
+ [ 72] = { 3,	TS,		SEN(sigsuspend),		"sigsuspend"		},
+@@ -91,9 +91,9 @@
+ [ 79] = { 2,	0,		SEN(settimeofday),		"settimeofday"		},
+ [ 80] = { 2,	0,		SEN(getgroups16),		"getgroups"		},
+ [ 81] = { 2,	0,		SEN(setgroups16),		"setgroups"		},
+-[ 82] = { },
++/* [ 82] - unused */
+ [ 83] = { 2,	TF,		SEN(symlink),			"symlink"		},
+-[ 84] = { },
++/* [ 84] - unused */
+ [ 85] = { 3,	TF,		SEN(readlink),			"readlink"		},
+ [ 86] = { 1,	TF,		SEN(uselib),			"uselib"		},
+ [ 87] = { 2,	TF,		SEN(swapon),			"swapon"		},
+@@ -107,7 +107,7 @@
+ [ 95] = { 3,	TD,		SEN(fchown16),			"fchown"		},
+ [ 96] = { 2,	0,		SEN(getpriority),		"getpriority"		},
+ [ 97] = { 3,	0,		SEN(setpriority),		"setpriority"		},
+-[ 98] = { },
++/* [ 98] - unused */
+ [ 99] = { 2,	TF|TSF|TSFA,	SEN(statfs),			"statfs"		},
+ [100] = { 2,	TD|TFSF|TSFA,	SEN(fstatfs),			"fstatfs"		},
+ [101] = { 3,	0,		SEN(ioperm),			"ioperm"		},
+@@ -118,11 +118,11 @@
+ [106] = { 2,	TF|TST|TSTA,	SEN(stat),			"stat"			},
+ [107] = { 2,	TF|TLST|TSTA,	SEN(lstat),			"lstat"			},
+ [108] = { 2,	TD|TFST|TSTA,	SEN(fstat),			"fstat"			},
+-[109] = { },
++/* [109] - unused */
+ [110] = { 4,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
+ [111] = { 0,	0,		SEN(vhangup),			"vhangup"		},
+ [112] = { 0,	0,		SEN(idle),			"idle"			},
+-[113] = { },
++/* [113] - unused */
+ [114] = { 4,	TP,		SEN(wait4),			"wait4"			},
+ [115] = { 1,	TF,		SEN(swapoff),			"swapoff"		},
+ [116] = { 1,	0,		SEN(sysinfo),			"sysinfo"		},
+@@ -132,7 +132,7 @@
+ [120] = { 5,	TP,		SEN(clone),			"clone"			},
+ [121] = { 2,	0,		SEN(setdomainname),		"setdomainname"		},
+ [122] = { 1,	0,		SEN(uname),			"uname"			},
+-[123] = { },
++/* [123] - unused */
+ [124] = { 1,	0,		SEN(adjtimex32),		"adjtimex"		},
+ [125] = { 3,	TM|SI,		SEN(mprotect),			"mprotect"		},
+ [126] = { 3,	TS,		SEN(sigprocmask),		"sigprocmask"		},
+@@ -175,7 +175,7 @@
+ [163] = { 5,	TM|SI,		SEN(mremap),			"mremap"		},
+ [164] = { 3,	0,		SEN(setresuid16),		"setresuid"		},
+ [165] = { 3,	0,		SEN(getresuid16),		"getresuid"		},
+-[166] = { },
++/* [166] - unused */
+ [167] = { 5,	0,		SEN(query_module),		"query_module"		},
+ [168] = { 3,	TD,		SEN(poll_time32),		"poll"			},
+ [169] = { 3,	0,		SEN(nfsservctl),		"nfsservctl"		},
+@@ -251,7 +251,7 @@
+ [239] = { 3,	0,		SEN(sched_setaffinity),		"sched_setaffinity"	},
+ [240] = { 3,	0,		SEN(sched_getaffinity),		"sched_getaffinity"	},
+ [241] = { 3,	TS,		SEN(tgkill),			"tgkill"		},
+-[242] = { },
++/* [242] - unused */
+ [243] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+ [244] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
+ [245] = { 5,	0,		SEN(io_getevents_time32),	"io_getevents"		},
+diff --git a/linux/s390x/syscallent.h b/linux/s390x/syscallent.h
+index 5b61cdc2..2c0d9cc2 100644
+--- a/linux/s390x/syscallent.h
++++ b/linux/s390x/syscallent.h
+@@ -21,29 +21,29 @@
+ [ 10] = { 1,	TF,		SEN(unlink),			"unlink"		},
+ [ 11] = { 3,	TF|TP|SE|SI,	SEN(execve),			"execve"		},
+ [ 12] = { 1,	TF,		SEN(chdir),			"chdir"			},
+-[ 13] = { },
++/* [ 13] - unused */
+ [ 14] = { 3,	TF,		SEN(mknod),			"mknod"			},
+ [ 15] = { 2,	TF,		SEN(chmod),			"chmod"			},
+-[ 16] = { },
+-[ 17] = { },
+-[ 18] = { },
++/* [ 16] - unused */
++/* [ 17] - unused */
++/* [ 18] - unused */
+ [ 19] = { 3,	TD,		SEN(lseek),			"lseek"			},
+ [ 20] = { 0,	PU|NF,		SEN(getpid),			"getpid"		},
+ [ 21] = { 5,	TF,		SEN(mount),			"mount"			},
+ [ 22] = { 1,	TF,		SEN(umount),			"umount"		},
+-[ 23] = { },
+-[ 24] = { },
+-[ 25] = { },
++/* [ 23] - unused */
++/* [ 24] - unused */
++/* [ 25] - unused */
+ [ 26] = { 4,	0,		SEN(ptrace),			"ptrace"		},
+ [ 27] = { 1,	0,		SEN(alarm),			"alarm"			},
+-[ 28] = { },
++/* [ 28] - unused */
+ [ 29] = { 0,	TS,		SEN(pause),			"pause"			},
+ [ 30] = { 2,	TF,		SEN(utime),			"utime"			},
+-[ 31] = { },
+-[ 32] = { },
++/* [ 31] - unused */
++/* [ 32] - unused */
+ [ 33] = { 2,	TF,		SEN(access),			"access"		},
+ [ 34] = { 1,	0,		SEN(nice),			"nice"			},
+-[ 35] = { },
++/* [ 35] - unused */
+ [ 36] = { 0,	0,		SEN(sync),			"sync"			},
+ [ 37] = { 2,	TS,		SEN(kill),			"kill"			},
+ [ 38] = { 2,	TF,		SEN(rename),			"rename"		},
+@@ -52,22 +52,22 @@
+ [ 41] = { 1,	TD,		SEN(dup),			"dup"			},
+ [ 42] = { 1,	TD,		SEN(pipe),			"pipe"			},
+ [ 43] = { 1,	0,		SEN(times),			"times"			},
+-[ 44] = { },
++/* [ 44] - unused */
+ [ 45] = { 1,	TM|SI,		SEN(brk),			"brk"			},
+-[ 46] = { },
+-[ 47] = { },
++/* [ 46] - unused */
++/* [ 47] - unused */
+ [ 48] = { 2,	TS,		SEN(signal),			"signal"		},
+-[ 49] = { },
+-[ 50] = { },
++/* [ 49] - unused */
++/* [ 50] - unused */
+ [ 51] = { 1,	TF,		SEN(acct),			"acct"			},
+ [ 52] = { 2,	TF,		SEN(umount2),			"umount2"		},
+-[ 53] = { },
++/* [ 53] - unused */
+ [ 54] = { 3,	TD,		SEN(ioctl),			"ioctl"			},
+ [ 55] = { 3,	TD,		SEN(fcntl),			"fcntl"			},
+-[ 56] = { },
++/* [ 56] - unused */
+ [ 57] = { 2,	0,		SEN(setpgid),			"setpgid"		},
+-[ 58] = { },
+-[ 59] = { },
++/* [ 58] - unused */
++/* [ 59] - unused */
+ [ 60] = { 1,	NF,		SEN(umask),			"umask"			},
+ [ 61] = { 1,	TF,		SEN(chroot),			"chroot"		},
+ [ 62] = { 2,	TSFA,		SEN(ustat),			"ustat"			},
+@@ -76,18 +76,18 @@
+ [ 65] = { 0,	PU|NF,		SEN(getpgrp),			"getpgrp"		},
+ [ 66] = { 0,	0,		SEN(setsid),			"setsid"		},
+ [ 67] = { 3,	TS,		SEN(sigaction),			"sigaction"		},
+-[ 68 ... 71] = { },
++/* [ 68 ... 71] - unused */
+ [ 72] = { 3,	TS,		SEN(sigsuspend),		"sigsuspend"		},
+ [ 73] = { 1,	TS,		SEN(sigpending),		"sigpending"		},
+ [ 74] = { 2,	0,		SEN(sethostname),		"sethostname"		},
+ [ 75] = { 2,	0,		SEN(setrlimit),			"setrlimit"		},
+-[ 76] = { },
++/* [ 76] - unused */
+ [ 77] = { 2,	0,		SEN(getrusage),			"getrusage"		},
+ [ 78] = { 2,	0,		SEN(gettimeofday),		"gettimeofday"		},
+ [ 79] = { 2,	0,		SEN(settimeofday),		"settimeofday"		},
+-[ 80 ... 82] = { },
++/* [ 80 ... 82] - unused */
+ [ 83] = { 2,	TF,		SEN(symlink),			"symlink"		},
+-[ 84] = { },
++/* [ 84] - unused */
+ [ 85] = { 3,	TF,		SEN(readlink),			"readlink"		},
+ [ 86] = { 1,	TF,		SEN(uselib),			"uselib"		},
+ [ 87] = { 2,	TF,		SEN(swapon),			"swapon"		},
+@@ -98,13 +98,13 @@
+ [ 92] = { 2,	TF,		SEN(truncate),			"truncate"		},
+ [ 93] = { 2,	TD,		SEN(ftruncate),			"ftruncate"		},
+ [ 94] = { 2,	TD,		SEN(fchmod),			"fchmod"		},
+-[ 95] = { },
++/* [ 95] - unused */
+ [ 96] = { 2,	0,		SEN(getpriority),		"getpriority"		},
+ [ 97] = { 3,	0,		SEN(setpriority),		"setpriority"		},
+-[ 98] = { },
++/* [ 98] - unused */
+ [ 99] = { 2,	TF|TSF|TSFA,	SEN(statfs),			"statfs"		},
+ [100] = { 2,	TD|TFSF|TSFA,	SEN(fstatfs),			"fstatfs"		},
+-[101] = { },
++/* [101] - unused */
+ [102] = { 2,	TD,		SEN(socketcall),		"socketcall"		},
+ [103] = { 3,	0,		SEN(syslog),			"syslog"		},
+ [104] = { 3,	0,		SEN(setitimer),			"setitimer"		},
+@@ -112,11 +112,11 @@
+ [106] = { 2,	TF|TST|TSTA,	SEN(stat),			"stat"			},
+ [107] = { 2,	TF|TLST|TSTA,	SEN(lstat),			"lstat"			},
+ [108] = { 2,	TD|TFST|TSTA,	SEN(fstat),			"fstat"			},
+-[109] = { },
++/* [109] - unused */
+ [110] = { 3,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
+ [111] = { 0,	0,		SEN(vhangup),			"vhangup"		},
+ [112] = { 0,	0,		SEN(idle),			"idle"			},
+-[113] = { },
++/* [113] - unused */
+ [114] = { 4,	TP,		SEN(wait4),			"wait4"			},
+ [115] = { 1,	TF,		SEN(swapoff),			"swapoff"		},
+ [116] = { 1,	0,		SEN(sysinfo),			"sysinfo"		},
+@@ -126,7 +126,7 @@
+ [120] = { 5,	TP,		SEN(clone),			"clone"			},
+ [121] = { 2,	0,		SEN(setdomainname),		"setdomainname"		},
+ [122] = { 1,	0,		SEN(uname),			"uname"			},
+-[123] = { },
++/* [123] - unused */
+ [124] = { 1,	0,		SEN(adjtimex64),		"adjtimex"		},
+ [125] = { 3,	TM|SI,		SEN(mprotect),			"mprotect"		},
+ [126] = { 3,	TS,		SEN(sigprocmask),		"sigprocmask"		},
+@@ -141,7 +141,7 @@
+ [135] = { 3,	0,		SEN(sysfs),			"sysfs"			},
+ [136] = { 1,	NF,		SEN(personality),		"personality"		},
+ [137] = { 5,	0,		SEN(afs_syscall),		"afs_syscall"		},
+-[138 ... 140] = { },
++/* [138 ... 140] - unused */
+ [141] = { 3,	TD,		SEN(getdents),			"getdents"		},
+ [142] = { 5,	TD,		SEN(select),			"select"		},
+ [143] = { 2,	TD,		SEN(flock),			"flock"			},
+@@ -165,11 +165,11 @@
+ [161] = { 2,	0,		SEN(sched_rr_get_interval_time64),"sched_rr_get_interval"},
+ [162] = { 2,	0,		SEN(nanosleep_time64),		"nanosleep"		},
+ [163] = { 5,	TM|SI,		SEN(mremap),			"mremap"		},
+-[164 ... 166] = { },
++/* [164 ... 166] - unused */
+ [167] = { 5,	0,		SEN(query_module),		"query_module"		},
+ [168] = { 3,	TD,		SEN(poll_time64),		"poll"			},
+ [169] = { 3,	0,		SEN(nfsservctl),		"nfsservctl"		},
+-[170 ... 171] = { },
++/* [170 ... 171] - unused */
+ [172] = { 5,	0,		SEN(prctl),			"prctl"			},
+ [173] = { 0,	TS,		SEN(rt_sigreturn),		"rt_sigreturn"		},
+ [174] = { 4,	TS,		SEN(rt_sigaction),		"rt_sigaction"		},
+@@ -180,7 +180,7 @@
+ [179] = { 2,	TS,		SEN(rt_sigsuspend),		"rt_sigsuspend"		},
+ [180] = { 4,	TD,		SEN(pread),			"pread64"		},
+ [181] = { 4,	TD,		SEN(pwrite),			"pwrite64"		},
+-[182] = { },
++/* [182] - unused */
+ [183] = { 2,	TF,		SEN(getcwd),			"getcwd"		},
+ [184] = { 2,	0,		SEN(capget),			"capget"		},
+ [185] = { 2,	0,		SEN(capset),			"capset"		},
+@@ -190,7 +190,7 @@
+ [189] = { 5,	TN,		SEN(putpmsg),			"putpmsg"		},
+ [190] = { 0,	TP,		SEN(vfork),			"vfork"			},
+ [191] = { 2,	0,		SEN(getrlimit),			"getrlimit"		},
+-[196 ... 197] = { },
++/* [196 ... 197] - unused */
+ [198] = { 3,	TF,		SEN(chown),			"lchown"		},
+ [199] = { 0,	PU|NF,		SEN(getuid),			"getuid"		},
+ [200] = { 0,	PU|NF,		SEN(getgid),			"getgid"		},
+@@ -214,9 +214,9 @@
+ [218] = { 3,	TM,		SEN(mincore),			"mincore"		},
+ [219] = { 3,	TM,		SEN(madvise),			"madvise"		},
+ [220] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+-[221] = { },
++/* [221] - unused */
+ [222] = { 3,	TD,		SEN(readahead),			"readahead"		},
+-[223] = { },
++/* [223] - unused */
+ [224] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
+ [225] = { 5,	TF,		SEN(setxattr),			"lsetxattr"		},
+ [226] = { 5,	TD,		SEN(fsetxattr),			"fsetxattr"		},
+@@ -235,7 +235,7 @@
+ [239] = { 3,	0,		SEN(sched_setaffinity),		"sched_setaffinity"	},
+ [240] = { 3,	0,		SEN(sched_getaffinity),		"sched_getaffinity"	},
+ [241] = { 3,	TS,		SEN(tgkill),			"tgkill"		},
+-[242] = { },
++/* [242] - unused */
+ [243] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+ [244] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
+ [245] = { 5,	0,		SEN(io_getevents_time64),	"io_getevents"		},
+@@ -257,7 +257,7 @@
+ [261] = { 2,	0,		SEN(clock_getres_time64),	"clock_getres"		},
+ [262] = { 4,	0,		SEN(clock_nanosleep_time64),	"clock_nanosleep"	},
+ [263] = { 5,	0,		SEN(vserver),			"vserver"		},
+-[264] = { },
++/* [264] - unused */
+ [265] = { 3,	TF|TSF|TSFA,	SEN(statfs64),			"statfs64"		},
+ [266] = { 3,	TD|TFSF|TSFA,	SEN(fstatfs64),			"fstatfs64"		},
+ [267] = { 5,	TM|SI,		SEN(remap_file_pages),		"remap_file_pages"	},
+diff --git a/linux/sh/syscallent.h b/linux/sh/syscallent.h
+index 44cc9d90..2707e0b3 100644
+--- a/linux/sh/syscallent.h
++++ b/linux/sh/syscallent.h
+@@ -197,7 +197,7 @@
+ [185] = { 2,	0,		SEN(capset),			"capset"		},
+ [186] = { 2,	TS,		SEN(sigaltstack),		"sigaltstack"		},
+ [187] = { 4,	TD|TN,		SEN(sendfile),			"sendfile"		},
+-[188 ... 189] = { },
++/* [188 ... 189] - unused */
+ [190] = { 0,	TP,		SEN(vfork),			"vfork"			},
+ [191] = { 2,	0,		SEN(getrlimit),			"ugetrlimit"		},
+ [192] = { 6,	TD|TM|SI,	SEN(mmap_4koff),		"mmap2"			},
+@@ -230,7 +230,7 @@
+ [219] = { 3,	TM,		SEN(madvise),			"madvise"		},
+ [220] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+ [221] = { 3,	TD,		SEN(fcntl64),			"fcntl64"		},
+-[222 ... 223] = { },
++/* [222 ... 223] - unused */
+ [224] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
+ [225] = { 4,	TD,		SEN(readahead),			"readahead"		},
+ [226] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
+@@ -250,14 +250,14 @@
+ [240] = { 6,	0,		SEN(futex_time32),		"futex"			},
+ [241] = { 3,	0,		SEN(sched_setaffinity),		"sched_setaffinity"	},
+ [242] = { 3,	0,		SEN(sched_getaffinity),		"sched_getaffinity"	},
+-[243 ... 244] = { },
++/* [243 ... 244] - unused */
+ [245] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+ [246] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
+ [247] = { 5,	0,		SEN(io_getevents_time32),	"io_getevents"		},
+ [248] = { 3,	0,		SEN(io_submit),			"io_submit"		},
+ [249] = { 3,	0,		SEN(io_cancel),			"io_cancel"		},
+ [250] = { 5,	TD,		SEN(fadvise64),			"fadvise64"		},
+-[251] = { },
++/* [251] - unused */
+ [252] = { 1,	TP|SE,		SEN(exit),			"exit_group"		},
+ [253] = { 4,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
+ [254] = { 1,	TD,		SEN(epoll_create),		"epoll_create"		},
+@@ -279,7 +279,7 @@
+ [270] = { 3,	TS,		SEN(tgkill),			"tgkill"		},
+ [271] = { 2,	TF,		SEN(utimes),			"utimes"		},
+ [272] = { 6,	TD,		SEN(fadvise64_64),		"fadvise64_64"		},
+-[273] = { },
++/* [273] - unused */
+ [274] = { 6,	TM,		SEN(mbind),			"mbind"			},
+ [275] = { 5,	TM,		SEN(get_mempolicy),		"get_mempolicy"		},
+ [276] = { 3,	TM,		SEN(set_mempolicy),		"set_mempolicy"		},
+@@ -299,7 +299,7 @@
+ [290] = { 0,	TD,		SEN(inotify_init),		"inotify_init"		},
+ [291] = { 3,	TD|TF,		SEN(inotify_add_watch),		"inotify_add_watch"	},
+ [292] = { 2,	TD,		SEN(inotify_rm_watch),		"inotify_rm_watch"	},
+-[293] = { },
++/* [293] - unused */
+ [294] = { 4,	TM,		SEN(migrate_pages),		"migrate_pages"		},
+ [295] = { 4,	TD|TF,		SEN(openat),			"openat"		},
+ [296] = { 3,	TD|TF,		SEN(mkdirat),			"mkdirat"		},
+diff --git a/linux/sh64/syscallent.h b/linux/sh64/syscallent.h
+index a21b0c47..e3790e73 100644
+--- a/linux/sh64/syscallent.h
++++ b/linux/sh64/syscallent.h
+@@ -89,7 +89,7 @@
+ [ 79] = { 2,	0,		SEN(settimeofday),		"settimeofday"		},
+ [ 80] = { 2,	0,		SEN(getgroups16),		"getgroups"		},
+ [ 81] = { 2,	0,		SEN(setgroups16),		"setgroups"		},
+-[ 82] = { },
++/* [ 82] - unused */
+ [ 83] = { 2,	TF,		SEN(symlink),			"symlink"		},
+ [ 84] = { 2,	TF|TLST|TSTA,	SEN(oldlstat),			"oldlstat"		},
+ [ 85] = { 3,	TF,		SEN(readlink),			"readlink"		},
+@@ -120,7 +120,7 @@
+ [110] = { 1,	0,		SEN(iopl),			"iopl"			},
+ [111] = { 0,	0,		SEN(vhangup),			"vhangup"		},
+ [112] = { 0,	0,		SEN(idle),			"idle"			},
+-[113] = { },
++/* [113] - unused */
+ [114] = { 4,	TP,		SEN(wait4),			"wait4"			},
+ [115] = { 1,	TF,		SEN(swapoff),			"swapoff"		},
+ [116] = { 1,	0,		SEN(sysinfo),			"sysinfo"		},
+@@ -173,7 +173,7 @@
+ [163] = { 5,	TM|SI,		SEN(mremap),			"mremap"		},
+ [164] = { 3,	0,		SEN(setresuid16),		"setresuid"		},
+ [165] = { 3,	0,		SEN(getresuid16),		"getresuid"		},
+-[166] = { },
++/* [166] - unused */
+ [167] = { 5,	0,		SEN(query_module),		"query_module"		},
+ [168] = { 3,	TD,		SEN(poll_time64),		"poll"			},
+ [169] = { 3,	0,		SEN(nfsservctl),		"nfsservctl"		},
+@@ -195,7 +195,7 @@
+ [185] = { 2,	0,		SEN(capset),			"capset"		},
+ [186] = { 2,	TS,		SEN(sigaltstack),		"sigaltstack"		},
+ [187] = { 4,	TD|TN,		SEN(sendfile),			"sendfile"		},
+-[188 ... 189] = { },
++/* [188 ... 189] - unused */
+ [190] = { 0,	TP,		SEN(vfork),			"vfork"			},
+ [191] = { 2,	0,		SEN(getrlimit),			"ugetrlimit"		},
+ [192] = { 6,	TD|TM|SI,	SEN(mmap_4koff),		"mmap2"			},
+@@ -256,7 +256,7 @@
+ [247] = { 3,	TI,		SEN(shmctl),			"shmctl"		},
+ [248] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+ [249] = { 3,	TD,		SEN(fcntl64),			"fcntl64"		},
+-[250 ... 251] = { },
++/* [250 ... 251] - unused */
+ [252] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
+ [253] = { 3,	TD,		SEN(readahead),			"readahead"		},
+ [254] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
+@@ -276,14 +276,14 @@
+ [268] = { 6,	0,		SEN(futex_time64),		"futex"			},
+ [269] = { 3,	0,		SEN(sched_setaffinity),		"sched_setaffinity"	},
+ [270] = { 3,	0,		SEN(sched_getaffinity),		"sched_getaffinity"	},
+-[271 ... 272] = { },
++/* [271 ... 272] - unused */
+ [273] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+ [274] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
+ [275] = { 5,	0,		SEN(io_getevents_time64),	"io_getevents"		},
+ [276] = { 3,	0,		SEN(io_submit),			"io_submit"		},
+ [277] = { 3,	0,		SEN(io_cancel),			"io_cancel"		},
+ [278] = { 4,	TD,		SEN(fadvise64),			"fadvise64"		},
+-[279] = { },
++/* [279] - unused */
+ [280] = { 1,	TP|SE,		SEN(exit),			"exit_group"		},
+ [281] = { 3,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
+ [282] = { 1,	TD,		SEN(epoll_create),		"epoll_create"		},
+@@ -305,7 +305,7 @@
+ [298] = { 3,	TS,		SEN(tgkill),			"tgkill"		},
+ [299] = { 2,	TF,		SEN(utimes),			"utimes"		},
+ [300] = { 4,	TD,		SEN(fadvise64_64),		"fadvise64_64"		},
+-[301] = { },
++/* [301] - unused */
+ [302] = { 6,	TM,		SEN(mbind),			"mbind"			},
+ [303] = { 5,	TM,		SEN(get_mempolicy),		"get_mempolicy"		},
+ [304] = { 3,	TM,		SEN(set_mempolicy),		"set_mempolicy"		},
+@@ -325,7 +325,7 @@
+ [318] = { 0,	TD,		SEN(inotify_init),		"inotify_init"		},
+ [319] = { 3,	TD|TF,		SEN(inotify_add_watch),		"inotify_add_watch"	},
+ [320] = { 2,	TD,		SEN(inotify_rm_watch),		"inotify_rm_watch"	},
+-[321] = { },
++/* [321] - unused */
+ [322] = { 4,	TM,		SEN(migrate_pages),		"migrate_pages"		},
+ [323] = { 4,	TD|TF,		SEN(openat),			"openat"		},
+ [324] = { 3,	TD|TF,		SEN(mkdirat),			"mkdirat"		},
+diff --git a/linux/sparc/syscallent.h b/linux/sparc/syscallent.h
+index 706c15e6..beba901a 100644
+--- a/linux/sparc/syscallent.h
++++ b/linux/sparc/syscallent.h
+@@ -57,7 +57,7 @@
+ [ 49] = { 0,	PU|NF,		SEN(geteuid16),			"geteuid"		},
+ [ 50] = { 0,	PU|NF,		SEN(getegid16),			"getegid"		},
+ [ 51] = { 1,	TF,		SEN(acct),			"acct"			},
+-[ 52] = { },
++/* [ 52] - unused */
+ [ 53] = { 0,	PU|NF,		SEN(getgid),			"getgid32"		},
+ [ 54] = { 3,	TD,		SEN(ioctl),			"ioctl"			},
+ [ 55] = { 4,	0,		SEN(reboot),			"reboot"		},
+@@ -169,7 +169,7 @@
+ [161] = { 3,	0,		SEN(sched_getaffinity),		"sched_get_affinity"	},
+ [162] = { 2,	0,		SEN(printargs),			"getdomainname"		},
+ [163] = { 2,	0,		SEN(setdomainname),		"setdomainname"		},
+-[164] = { },
++/* [164] - unused */
+ [165] = { 4,	TF,		SEN(quotactl),			"quotactl"		},
+ [166] = { 1,	0,		SEN(set_tid_address),		"set_tid_address"	},
+ [167] = { 5,	TF,		SEN(mount),			"mount"			},
+@@ -272,7 +272,7 @@
+ [264] = { 1,	0,		SEN(timer_getoverrun),		"timer_getoverrun"	},
+ [265] = { 1,	0,		SEN(timer_delete),		"timer_delete"		},
+ [266] = { 3,	0,		SEN(timer_create),		"timer_create"		},
+-[267] = { },
++/* [267] - unused */
+ [268] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+ [269] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
+ [270] = { 3,	0,		SEN(io_submit),			"io_submit"		},
+diff --git a/linux/sparc64/syscallent.h b/linux/sparc64/syscallent.h
+index 1023b07d..cdb3ae7b 100644
+--- a/linux/sparc64/syscallent.h
++++ b/linux/sparc64/syscallent.h
+@@ -36,10 +36,10 @@
+ [ 28] = { 2,	TS,		SEN(sigaltstack),		"sigaltstack"		},
+ [ 29] = { 0,	TS,		SEN(pause),			"pause"			},
+ [ 30] = { 2,	TF,		SEN(utime),			"utime"			},
+-[ 31 ... 32] = { },
++/* [ 31 ... 32] - unused */
+ [ 33] = { 2,	TF,		SEN(access),			"access"		},
+ [ 34] = { 1,	0,		SEN(nice),			"nice"			},
+-[ 35] = { },
++/* [ 35] - unused */
+ [ 36] = { 0,	0,		SEN(sync),			"sync"			},
+ [ 37] = { 2,	TS,		SEN(kill),			"kill"			},
+ [ 38] = { 2,	TF|TST|TSTA,	SEN(stat),			"stat"			},
+@@ -48,7 +48,7 @@
+ [ 41] = { 1,	TD,		SEN(dup),			"dup"			},
+ [ 42] = { 0,	TD,		SEN(pipe),			"pipe"			},
+ [ 43] = { 1,	0,		SEN(times),			"times"			},
+-[ 44] = { },
++/* [ 44] - unused */
+ [ 45] = { 2,	TF,		SEN(umount2),			"umount2"		},
+ [ 46] = { 1,	0,		SEN(setgid),			"setgid"		},
+ [ 47] = { 0,	PU|NF,		SEN(getgid),			"getgid"		},
+@@ -57,10 +57,10 @@
+ [ 50] = { 0,	PU|NF,		SEN(getegid),			"getegid"		},
+ [ 51] = { 1,	TF,		SEN(acct),			"acct"			},
+ [ 52] = { 2,	0,		SEN(printargs),			"memory_ordering"	},
+-[ 53] = { },
++/* [ 53] - unused */
+ [ 54] = { 3,	TD,		SEN(ioctl),			"ioctl"			},
+ [ 55] = { 4,	0,		SEN(reboot),			"reboot"		},
+-[ 56] = { },
++/* [ 56] - unused */
+ [ 57] = { 2,	TF,		SEN(symlink),			"symlink"		},
+ [ 58] = { 3,	TF,		SEN(readlink),			"readlink"		},
+ [ 59] = { 3,	TF|TP|SE|SI,	SEN(execve),			"execve"		},
+@@ -73,31 +73,31 @@
+ [ 66] = { 0,	TP,		SEN(vfork),			"vfork"			},
+ [ 67] = { 4,	TD,		SEN(pread),			"pread64"		},
+ [ 68] = { 4,	TD,		SEN(pwrite),			"pwrite64"		},
+-[ 69 ... 70] = { },
++/* [ 69 ... 70] */
+ [ 71] = { 6,	TD|TM|SI,	SEN(mmap),			"mmap"			},
+-[ 72] = { },
++/* [ 72] - unused */
+ [ 73] = { 2,	TM|SI,		SEN(munmap),			"munmap"		},
+ [ 74] = { 3,	TM|SI,		SEN(mprotect),			"mprotect"		},
+ [ 75] = { 3,	TM,		SEN(madvise),			"madvise"		},
+ [ 76] = { 0,	0,		SEN(vhangup),			"vhangup"		},
+-[ 77] = { },
++/* [ 77] - unused */
+ [ 78] = { 3,	TM,		SEN(mincore),			"mincore"		},
+ [ 79] = { 2,	0,		SEN(getgroups),			"getgroups"		},
+ [ 80] = { 2,	0,		SEN(setgroups),			"setgroups"		},
+ [ 81] = { 0,	PU|NF,		SEN(getpgrp),			"getpgrp"		},
+-[ 82] = { },
++/* [ 82] - unused */
+ [ 83] = { 3,	0,		SEN(setitimer),			"setitimer"		},
+-[ 84] = { },
++/* [ 84] - unused */
+ [ 85] = { 2,	TF,		SEN(swapon),			"swapon"		},
+ [ 86] = { 2,	0,		SEN(getitimer),			"getitimer"		},
+-[ 87] = { },
++/* [ 87] - unused */
+ [ 88] = { 2,	0,		SEN(sethostname),		"sethostname"		},
+-[ 89] = { },
++/* [ 89] - unused */
+ [ 90] = { 2,	TD,		SEN(dup2),			"dup2"			},
+-[ 91] = { },
++/* [ 91] - unused */
+ [ 92] = { 3,	TD,		SEN(fcntl),			"fcntl"			},
+ [ 93] = { 5,	TD,		SEN(select),			"select"		},
+-[ 94] = { },
++/* [ 94] - unused */
+ [ 95] = { 1,	TD,		SEN(fsync),			"fsync"			},
+ [ 96] = { 3,	0,		SEN(setpriority),		"setpriority"		},
+ [ 97] = { 3,	TN,		SEN(socket),			"socket"		},
+@@ -115,10 +115,10 @@
+ [109] = { 3,	0,		SEN(getresuid),			"getresuid"		},
+ [110] = { 3,	0,		SEN(setresgid),			"setresgid"		},
+ [111] = { 3,	0,		SEN(getresgid),			"getresgid"		},
+-[112] = { },
++/* [112] - unused */
+ [113] = { 3,	TN,		SEN(recvmsg),			"recvmsg"		},
+ [114] = { 3,	TN,		SEN(sendmsg),			"sendmsg"		},
+-[115] = { },
++/* [115] - unused */
+ [116] = { 2,	0,		SEN(gettimeofday),		"gettimeofday"		},
+ [117] = { 2,	0,		SEN(getrusage),			"getrusage"		},
+ [118] = { 5,	TN,		SEN(getsockopt),		"getsockopt"		},
+@@ -158,7 +158,7 @@
+ [152] = { 3,	TD|TF,		SEN(inotify_add_watch),		"inotify_add_watch"	},
+ [153] = { 3,	TD,		SEN(poll_time64),		"poll"			},
+ [154] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
+-[155] = { },
++/* [155] - unused */
+ [156] = { 2,	TD,		SEN(inotify_rm_watch),		"inotify_rm_watch"	},
+ [157] = { 2,	TF|TSF|TSFA,	SEN(statfs),			"statfs"		},
+ [158] = { 2,	TD|TFSF|TSFA,	SEN(fstatfs),			"fstatfs"		},
+@@ -234,7 +234,7 @@
+ [228] = { 1,	NF,		SEN(setfsuid),			"setfsuid"		},
+ [229] = { 1,	NF,		SEN(setfsgid),			"setfsgid"		},
+ [230] = { 5,	TD,		SEN(select),			"_newselect"		},
+-[231] = { },
++/* [231] - unused */
+ [232] = { 6,	TD,		SEN(splice),			"splice"		},
+ [233] = { 1,	0,		SEN(stime),			"stime"			},
+ [234] = { 3,	TF|TSF|TSFA,	SEN(statfs64),			"statfs64"		},
+@@ -270,7 +270,7 @@
+ [264] = { 1,	0,		SEN(timer_getoverrun),		"timer_getoverrun"	},
+ [265] = { 1,	0,		SEN(timer_delete),		"timer_delete"		},
+ [266] = { 3,	0,		SEN(timer_create),		"timer_create"		},
+-[267] = { },
++/* [267] - unused */
+ [268] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+ [269] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
+ [270] = { 3,	0,		SEN(io_submit),			"io_submit"		},
+diff --git a/linux/xtensa/syscallent.h b/linux/xtensa/syscallent.h
+index 8cb6a46c..0bf390eb 100644
+--- a/linux/xtensa/syscallent.h
++++ b/linux/xtensa/syscallent.h
+@@ -7,7 +7,7 @@
+ 
+ [  0] = { 0,	0,		SEN(printargs),			"spill"			},
+ [  1] = { 0,	0,		SEN(printargs),			"xtensa"		},
+-[  2 ... 7] = { },
++/* [  2 ... 7] - unused */
+ [  8] = { 3,	TD|TF,		SEN(open),			"open"			},
+ [  9] = { 1,	TD,		SEN(close),			"close"			},
+ [ 10] = { 1,	TD,		SEN(dup),			"dup"			},
+@@ -51,7 +51,7 @@
+ [ 48] = { 3,	TF,		SEN(chown),			"lchown"		},
+ [ 49] = { 2,	TF|TLST|TSTA,	SEN(lstat),			"lstat"			},
+ [ 50] = { 2,	TF|TLST|TSTA,	SEN(lstat64),			"lstat64"		},
+-[ 51] = { },
++/* [ 51] - unused */
+ [ 52] = { 2,	TD,		SEN(fchmod),			"fchmod"		},
+ [ 53] = { 3,	TD,		SEN(fchown),			"fchown"		},
+ [ 54] = { 2,	TD|TFST|TSTA,	SEN(fstat),			"fstat"			},
+@@ -152,7 +152,7 @@
+ [149] = { 1,	0,		SEN(getpgid),			"getpgid"		},
+ [150] = { 0,	PU|NF,		SEN(getppid),			"getppid"		},
+ [151] = { 0,	PU|NF,		SEN(getpgrp),			"getpgrp"		},
+-[152 ... 153] = { },
++/* [152 ... 153] - unused */
+ [154] = { 1,	0,		SEN(times),			"times"			},
+ [155] = { 1,	TF,		SEN(acct),			"acct"			},
+ [156] = { 3,	0,		SEN(sched_setaffinity),		"sched_setaffinity"	},
+@@ -164,12 +164,12 @@
+ [162] = { 3,	TI,		SEN(semget),			"semget"		},
+ [163] = { 3,	TI,		SEN(semop),			"semop"			},
+ [164] = { 4,	TI,		SEN(semctl),			"semctl"		},
+-[165] = { },
++/* [165] - unused */
+ [166] = { 2,	TI,		SEN(msgget),			"msgget"		},
+ [167] = { 4,	TI,		SEN(msgsnd),			"msgsnd"		},
+ [168] = { 5,	TI,		SEN(msgrcv),			"msgrcv"		},
+ [169] = { 3,	TI,		SEN(msgctl),			"msgctl"		},
+-[170] = { },
++/* [170] - unused */
+ [171] = { 2,	TF,		SEN(umount2),			"umount2"		},
+ [172] = { 5,	TF,		SEN(mount),			"mount"			},
+ [173] = { 2,	TF,		SEN(swapon),			"swapon"		},
+@@ -219,7 +219,7 @@
+ [217] = { 1,	0,		SEN(sched_get_priority_min),	"sched_get_priority_min"},
+ [218] = { 2,	0,		SEN(sched_rr_get_interval_time32),"sched_rr_get_interval"},
+ [219] = { 0,	0,		SEN(sched_yield),		"sched_yield"		},
+-[220 ... 222] = { },
++/* [220 ... 222] - unused */
+ [223] = { 0,	0,		SEN(restart_syscall),		"restart_syscall"	},
+ [224] = { 2,	TS,		SEN(sigaltstack),		"sigaltstack"		},
+ [225] = { 0,	TS,		SEN(rt_sigreturn),		"rt_sigreturn"		},
+@@ -235,7 +235,7 @@
+ [235] = { 5,	TD,		SEN(mq_timedreceive_time32),	"mq_timedreceive"	},
+ [236] = { 2,	TD,		SEN(mq_notify),			"mq_notify"		},
+ [237] = { 3,	TD,		SEN(mq_getsetattr),		"mq_getsetattr"		},
+-[238] = { },
++/* [238] - unused */
+ [239] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
+ [240] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
+ [241] = { 3,	0,		SEN(io_submit),			"io_submit"		},
+@@ -250,13 +250,13 @@
+ [250] = { 4,	0,		SEN(timer_settime32),		"timer_settime"		},
+ [251] = { 2,	0,		SEN(timer_gettime32),		"timer_gettime"		},
+ [252] = { 1,	0,		SEN(timer_getoverrun),		"timer_getoverrun"	},
+-[253] = { },
++/* [253] - unused */
+ [254] = { 4,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
+-[255] = { },
++/* [255] - unused */
+ [256] = { 5,	0,		SEN(add_key),			"add_key"		},
+ [257] = { 4,	0,		SEN(request_key),		"request_key"		},
+ [258] = { 5,	0,		SEN(keyctl),			"keyctl"		},
+-[259] = { },
++/* [259] - unused */
+ [260] = { 5,	TD,		SEN(readahead),			"readahead"		},
+ [261] = { 5,	TM|SI,		SEN(remap_file_pages),		"remap_file_pages"	},
+ [262] = { 4,	TM,		SEN(migrate_pages),		"migrate_pages"		},
+@@ -268,7 +268,7 @@
+ [268] = { 6,	TD,		SEN(splice),			"splice"		},
+ [269] = { 4,	TD,		SEN(tee),			"tee"			},
+ [270] = { 4,	TD,		SEN(vmsplice),			"vmsplice"		},
+-[271] = { },
++/* [271] - unused */
+ [272] = { 6,	TD,		SEN(pselect6_time32),		"pselect6"		},
+ [273] = { 5,	TD,		SEN(ppoll_time32),		"ppoll"			},
+ [274] = { 6,	TD,		SEN(epoll_pwait),		"epoll_pwait"		},
+@@ -283,7 +283,7 @@
+ [283] = { 2,	0,		SEN(ioprio_get),		"ioprio_get"		},
+ [284] = { 2,	0,		SEN(set_robust_list),		"set_robust_list"	},
+ [285] = { 3,	0,		SEN(get_robust_list),		"get_robust_list"	},
+-[286 ... 287] = { },
++/* [286 ... 287] - unused */
+ [288] = { 4,	TD|TF,		SEN(openat),			"openat"		},
+ [289] = { 3,	TD|TF,		SEN(mkdirat),			"mkdirat"		},
+ [290] = { 4,	TD|TF,		SEN(mknodat),			"mknodat"		},
+@@ -298,9 +298,9 @@
+ [299] = { 4,	TD|TF|TFST|TSTA,SEN(fstatat64),			"fstatat64"		},
+ [300] = { 3,	TD|TF,		SEN(fchmodat),			"fchmodat"		},
+ [301] = { 3,	TD|TF,		SEN(faccessat),			"faccessat"		},
+-[302 ... 303] = { },
++/* [302 ... 303] - unused */
+ [304] = { 3,	TD|TS,		SEN(signalfd),			"signalfd"		},
+-[305] = { },
++/* [305] - unused */
+ [306] = { 1,	TD,		SEN(eventfd),			"eventfd"		},
+ [307] = { 5,	TN,		SEN(recvmmsg_time32),		"recvmmsg"		},
+ [308] = { 2,	TD,		SEN(setns),			"setns"			},
+@@ -310,11 +310,11 @@
+ [312] = { 2,	TD,		SEN(timerfd_create),		"timerfd_create"	},
+ [313] = { 4,	TD,		SEN(timerfd_settime32),		"timerfd_settime"	},
+ [314] = { 2,	TD,		SEN(timerfd_gettime32),		"timerfd_gettime"	},
+-[315] = { },
++/* [315] - unused */
+ [316] = { 2,	TD,		SEN(eventfd2),			"eventfd2"		},
+ [317] = { 5,	TD,		SEN(preadv),			"preadv"		},
+ [318] = { 5,	TD,		SEN(pwritev),			"pwritev"		},
+-[319] = { },
++/* [319] - unused */
+ [320] = { 2,	TD,		SEN(fanotify_init),		"fanotify_init"		},
+ [321] = { 6,	TD|TF,		SEN(fanotify_mark),		"fanotify_mark"		},
+ [322] = { 6,	0,		SEN(process_vm_readv),		"process_vm_readv"	},
+-- 
+2.22.0
+

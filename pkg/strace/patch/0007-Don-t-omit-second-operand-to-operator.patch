@@ -1,0 +1,25 @@
+From 0c4077c28a50eff8a39b2e6d99df5575f67619b4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 7 Jul 2019 21:53:16 -0700
+Subject: [PATCH] Don't omit second operand to '?' operator
+
+---
+ prctl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/prctl.c b/prctl.c
+index 814abc2a..9db14d55 100644
+--- a/prctl.c
++++ b/prctl.c
+@@ -76,7 +76,7 @@ sprint_sve_val(kernel_ulong_t arg)
+ 	const char *flags_str = sprintflags("", pr_sve_vl_flags, flags);
+ 
+ 	xsprintf(out, "%s%s%#" PRI_klx,
+-		 flags_str ?: "", flags_str ? "|" : "", vl);
++		 flags_str ? flags_str : "", flags_str ? "|" : "", vl);
+ 
+ 	return out;
+ }
+-- 
+2.22.0
+
