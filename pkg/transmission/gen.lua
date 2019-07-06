@@ -29,19 +29,6 @@ sub('libminiupnp.ninja', function()
 		)
 	]], {'$outdir/miniupnp/miniupnpcstrings.h', 'pkg/openbsd/fetch'})
 end)
-sub('libutp.ninja', function()
-	set('cc', '$cxx')
-	set('cflags', {
-		'$cxxflags',
-		'-fno-exceptions',
-		'-fno-rtti',
-		'-ansi',
-		'-D POSIX',
-		'-I $srcdir/third-party/libutp',
-	})
-
-	lib('libutp.a', 'third-party/libutp/(utp.cpp utp_utils.cpp)')
-end)
 
 cflags{
 	'-D __TRANSMISSION__',
@@ -54,8 +41,8 @@ cflags{
 	'-I $srcdir/third-party',
 	'-I $srcdir/third-party/libb64',
 	'-I $srcdir/third-party/libnatpmp',
-	'-I $srcdir/third-party/libutp',
 	'-I pkg/libevent/src/include',
+	'-I pkg/libutp/src',
 	'-idirafter pkg/openbsd/src/sys',
 	'-include config.h',
 }
@@ -64,6 +51,8 @@ pkg.deps = {
 	'pkg/curl/headers',
 	'pkg/libevent/headers',
 	'pkg/libressl/headers',
+	'pkg/libressl/headers',
+	'pkg/libutp/fetch',
 	'pkg/openbsd/fetch',
 	'pkg/zlib/headers',
 }
@@ -134,11 +123,12 @@ lib('libtransmission.a', [[
 		file-posix.c
 		crypto-utils-openssl.c
 	)
-	libb64.a libdht.a libminiupnp.a libnatpmp.a libutp.a
+	libb64.a libdht.a libminiupnp.a libnatpmp.a
 	$builddir/pkg/(
 		curl/libcurl.a.d
 		libevent/libevent.a
 		libressl/libcrypto.a.d
+		libutp/libutp.a
 		zlib/libz.a
 	)
 ]])
