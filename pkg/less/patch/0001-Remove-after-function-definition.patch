@@ -1,0 +1,29 @@
+From 5c87a344bc528c1878708c5e497f0e8e1742b7d4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 5 Jul 2019 22:05:36 -0700
+Subject: [PATCH] Remove ';' after function definition
+
+The STR_TO_TYPE_FUNC macro expands to a function definition, so the ';'
+is treated as an empty top-level declaration, which is not valid in ISO C.
+---
+ output.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/output.c b/output.c
+index 100eb79..d1d20c4 100644
+--- a/output.c
++++ b/output.c
+@@ -493,8 +493,8 @@ type funcname(buf, ebuf) \
+ 	return val; \
+ }
+ 
+-STR_TO_TYPE_FUNC(lstrtopos, POSITION);
+-STR_TO_TYPE_FUNC(lstrtoi, int);
++STR_TO_TYPE_FUNC(lstrtopos, POSITION)
++STR_TO_TYPE_FUNC(lstrtoi, int)
+ 
+ /*
+  * Output an integer in a given radix.
+-- 
+2.22.0
+
