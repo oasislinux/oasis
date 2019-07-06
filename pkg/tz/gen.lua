@@ -1,4 +1,7 @@
-cflags{'-I $dir'}
+cflags{
+	'-I $dir',
+	[[-D 'ZIC_BLOAT_DEFAULT="slim"']],
+}
 
 exe('zic', {'zic.c'})
 file('bin/zic', '755', '$outdir/zic')
