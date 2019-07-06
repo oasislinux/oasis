@@ -8,9 +8,7 @@ cflags{
 	'-I $outdir',
 }
 
-build('cc', '$outdir/ioctl_iocdef.i', '$srcdir/ioctl_iocdef.c', {
-	cflags='$cflags -P -E -MT $outdir/ioctl_iocdef.i',
-})
+build('cpp', '$outdir/ioctl_iocdef.i', '$srcdir/ioctl_iocdef.c')
 build('sed', '$outdir/ioctl_iocdef.h', '$outdir/ioctl_iocdef.i', {
 	expr=[[-n 's/^DEFINE HOST/#define /p']],
 })
@@ -41,8 +39,8 @@ end)
 
 local mpers = lines('mpers.txt')
 for _, f in ipairs(mpers) do
-	build('cc', '$outdir/'..f..'.mpers.i', '$srcdir/'..f, {
-		cflags='$cflags -P -E -MT $outdir/'..f..'.mpers.i -DIN_MPERS_BOOTSTRAP',
+	build('cpp', '$outdir/'..f..'.mpers.i', '$srcdir/'..f, {
+		cflags='$cflags -DIN_MPERS_BOOTSTRAP',
 	})
 end
 
@@ -56,9 +54,7 @@ makempers('printers.h', 'printers.awk')
 makempers('native_printer_decls.h', 'printerdecls.awk')
 makempers('native_printer_defs.h', 'printerdefs.awk')
 
-build('cc', '$outdir/syscallent.i', '$srcdir/linux/x86_64/syscallent.h', {
-	cflags='$cflags -P -E -MT $outdir/syscallent.i',
-})
+build('cpp', '$outdir/syscallent.i', '$srcdir/linux/x86_64/syscallent.h')
 build('awk', '$outdir/scno-syscallent.h', {'$outdir/syscallent.i', '|', '$dir/scno.awk'}, {
 	expr='-f $dir/scno.awk',
 })

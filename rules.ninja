@@ -9,6 +9,12 @@ rule cc
   deps = gcc
   description = CC $out
 
+rule cpp
+  command = $cc -MMD -MF $out.d $cflags -E -P -o $out $in
+  depfile = $out.d
+  deps = gcc
+  description = CPP $out
+
 rule as
   command = $as $asflags -o $out $in
 

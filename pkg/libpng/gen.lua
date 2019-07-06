@@ -14,9 +14,7 @@ build('awk', '$outdir/pnglibconf.tf4', {
 build('awk', '$outdir/pnglibconf.c', '$outdir/pnglibconf.tf4', {
 	expr='-f $srcdir/scripts/options.awk out=/dev/stdout',
 })
-build('cc', '$outdir/pnglibconf.tf1', {'$outdir/pnglibconf.c', '||', 'pkg/zlib/headers'}, {
-	cflags='$cflags -E -MT $outdir/pnglibconf.tf1',
-})
+build('cpp', '$outdir/pnglibconf.tf1', {'$outdir/pnglibconf.c', '||', 'pkg/zlib/headers'})
 build('awk', '$outdir/include/pnglibconf.h', '$outdir/pnglibconf.tf1', {
 	expr='-f $srcdir/scripts/dfn.awk out=/dev/stdout',
 })
