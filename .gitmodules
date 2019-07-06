@@ -26,6 +26,9 @@
 [submodule "pkg/cmark/src"]
 	path = pkg/cmark/src
 	url = https://github.com/commonmark/cmark
+[submodule "pkg/cproc/src"]
+	path = pkg/cproc/src
+	url = https://git.sr.ht/~mcf/cproc
 [submodule "pkg/dmenu/src"]
 	path = pkg/dmenu/src
 	url = git://git.suckless.org/dmenu

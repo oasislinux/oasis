@@ -40,11 +40,12 @@ return {
 		'zstd',
 	},
 	devel={
+		'cproc',
 		'make',
-		'qbe',
-		'nasm',
-		'strace',
 		'man-pages-posix',
+		'nasm',
+		'qbe',
+		'strace',
 	},
 	media={
 		'alsa-lib',
