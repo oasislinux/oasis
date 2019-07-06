@@ -1,4 +1,4 @@
-From 6a79779295462f8a828c7039ae00834f52179dec Mon Sep 17 00:00:00 2001
+From 6d06d5b4a14c7ece154404f4f1b2e4b5e29ec1fb Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 27 Oct 2016 21:04:23 -0700
 Subject: [PATCH] Port to wayland using wld and swc panels
@@ -888,7 +888,7 @@ index 6b8f51b..d1d60b2 100644
  	run();
  
 diff --git a/drw.c b/drw.c
-index 8fd1ca4..13cd06a 100644
+index 8fd1ca4..e4995a6 100644
 --- a/drw.c
 +++ b/drw.c
 @@ -2,8 +2,9 @@
@@ -999,7 +999,7 @@ index 8fd1ca4..13cd06a 100644
 -	if(FcPatternGetBool(xfont->pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
 -		XftFontClose(drw->dpy, xfont);
 +	if(FcPatternGetBool(pattern, FC_COLOR, 0, &iscol) == FcResultMatch && iscol) {
-+		wld_font_close(font->wld);
++		wld_font_close(wld);
  		return NULL;
  	}
  
@@ -1278,5 +1278,5 @@ index 4c67419..1f1967e 100644
 -void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
 +void drw_map(Drw *drw, struct wl_surface *surface, int x, int y, unsigned int w, unsigned int h);
 -- 
-2.21.0
+2.22.0
 
