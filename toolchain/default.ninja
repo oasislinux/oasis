@@ -1,7 +1,6 @@
 ar = ar
 as = as
 cc = cc
-cxx = c++
 ld = ld
 mc = 6m
 objcopy = objcopy

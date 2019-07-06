@@ -17,10 +17,10 @@ a solution for many common tasks:
 * DNS server (nsd)
 * BitTorrent client (transmission)
 
-The entire system can be compiled in minutes, and uses up up only a couple
-hundred megabytes of disk space (despite being statically linked). It is almost
-entirely C-based, and only one optional component requires C++ (libutp for
-transmission).
+The entire system can be compiled in minutes, and uses up up only
+a couple hundred megabytes of disk space (despite being statically
+linked). It is entirely C-based, and most packages make limited use
+of GNU C extensions.
 
 Updating your system is as simple as
 

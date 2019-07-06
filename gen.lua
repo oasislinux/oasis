@@ -5,12 +5,10 @@ set('outdir', '$builddir')
 
 set('target_toolchain', config.target.toolchain)
 set('target_cflags', config.target.cflags)
-set('target_cxxflags', config.target.cxxflags)
 set('target_ldflags', config.target.ldflags)
 
 set('host_toolchain', config.host.toolchain)
 set('host_cflags', config.host.cflags)
-set('host_cxxflags', config.host.cxxflags)
 set('host_ldflags', config.host.ldflags)
 
 set('repo', config.repo.path)

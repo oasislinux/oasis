@@ -230,7 +230,6 @@ end
 
 function toolchain(name)
 	set('cflags', '$'..name..'_cflags')
-	set('cxxflags', '$'..name..'_cxxflags')
 	set('ldflags', '$'..name..'_ldflags')
 	include('toolchain/$'..name..'_toolchain.ninja')
 end

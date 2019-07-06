@@ -16,7 +16,6 @@ return {
 	target={
 		toolchain='x86_64-linux-musl',
 		cflags='-O2 -pipe -fpie',
-		cxxflags='$target_cflags',
 		ldflags='-s -static -pie',
 		pie=true
 	},
@@ -25,7 +24,6 @@ return {
 	host={
 		toolchain='default',
 		cflags='-pipe',
-		cxxflags='$host_cflags',
 		ldflags='',
 	},
 
