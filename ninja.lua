@@ -406,7 +406,7 @@ local function specmatch(spec, path)
 	return true
 end
 
-local function fs(name, path)
+function fs(name, path)
 	for _, spec in ipairs(config.fs) do
 		for specname in iterstrings(spec) do
 			if name == specname then
