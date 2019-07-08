@@ -68,7 +68,6 @@
 [submodule "pkg/fribidi/src"]
 	path = pkg/fribidi/src
 	url = https://github.com/fribidi/fribidi
-	ignore = all
 [submodule "pkg/fuse/src"]
 	path = pkg/fuse/src
 	url = https://github.com/libfuse/libfuse
