@@ -1,4 +1,4 @@
-From 94f9d25b16f3600aa85a68c4bf83b3282b0ad8ab Mon Sep 17 00:00:00 2001
+From 2060c4983a600b654c0128e93640f702cf1cbc3e Mon Sep 17 00:00:00 2001
 From: Zackery Spytz <zspytz@gmail.com>
 Date: Mon, 6 May 2019 10:56:51 -0600
 Subject: [PATCH] bpo-36594: Fix incorrect use of %p in format strings
@@ -68,7 +68,7 @@ index 0152945ca1..c837c4cbf8 100644
      ptr = Xalloc(32);
      Xfree(ptr);
 diff --git a/Modules/_ctypes/callproc.c b/Modules/_ctypes/callproc.c
-index e971388f69..611585f0fe 100644
+index ec854c864c..8de36893a1 100644
 --- a/Modules/_ctypes/callproc.c
 +++ b/Modules/_ctypes/callproc.c
 @@ -528,11 +528,11 @@ PyCArg_repr(PyCArgObject *self)
@@ -99,7 +99,7 @@ index e6f8daf796..4a36a1e71c 100644
          printf("avg_chain_len=%.1f, ", (double)total_chain_len / nchains);
      printf("max_chain_len=%" PY_FORMAT_SIZE_T "u, %" PY_FORMAT_SIZE_T "u KiB\n",
 diff --git a/Objects/object.c b/Objects/object.c
-index 138df44880..246c5befd4 100644
+index 8a3f8831d6..b2baf0c7a5 100644
 --- a/Objects/object.c
 +++ b/Objects/object.c
 @@ -359,7 +359,7 @@ PyObject_Print(PyObject *op, FILE *fp, int flags)
@@ -111,7 +111,7 @@ index 138df44880..246c5befd4 100644
              Py_END_ALLOW_THREADS
          else {
              PyObject *s;
-@@ -474,7 +474,7 @@ _PyObject_Dump(PyObject* op)
+@@ -472,7 +472,7 @@ _PyObject_Dump(PyObject* op)
          "address : %p\n",
          Py_TYPE(op)==NULL ? "NULL" : Py_TYPE(op)->tp_name,
          (long)op->ob_refcnt,
@@ -139,10 +139,10 @@ index 138df44880..246c5befd4 100644
  }
  
 diff --git a/Objects/obmalloc.c b/Objects/obmalloc.c
-index 3b0c35bcc9..187e40055e 100644
+index 885ad537ad..4966ac8a10 100644
 --- a/Objects/obmalloc.c
 +++ b/Objects/obmalloc.c
-@@ -2369,7 +2369,7 @@ _PyObject_DebugDumpAddress(const void *p)
+@@ -2362,7 +2362,7 @@ _PyObject_DebugDumpAddress(const void *p)
      }
  
      tail = q + nbytes;
@@ -152,7 +152,7 @@ index 3b0c35bcc9..187e40055e 100644
      for (i = 0; i < SST; ++i) {
          if (tail[i] != FORBIDDENBYTE) {
 diff --git a/Objects/unicodeobject.c b/Objects/unicodeobject.c
-index b67ffac4e9..c5b308cbd6 100644
+index c0e9c2d112..dda2208edc 100644
 --- a/Objects/unicodeobject.c
 +++ b/Objects/unicodeobject.c
 @@ -1214,7 +1214,7 @@ void *_PyUnicode_compact_data(void *unicode) {
@@ -195,10 +195,10 @@ index 7de641e1a5..609133cca8 100644
          fprintf(outfile, "\n");
      }
 diff --git a/Python/sysmodule.c b/Python/sysmodule.c
-index cdc2edf038..69ac43d9bf 100644
+index 942a8b6bec..9f73bbd62c 100644
 --- a/Python/sysmodule.c
 +++ b/Python/sysmodule.c
-@@ -1681,7 +1681,7 @@ _alloc_preinit_entry(const wchar_t *value)
+@@ -1683,7 +1683,7 @@ _alloc_preinit_entry(const wchar_t *value)
  
      PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &old_alloc);
      return node;
@@ -207,7 +207,7 @@ index cdc2edf038..69ac43d9bf 100644
  
  static int
  _append_preinit_entry(_Py_PreInitEntry *optionlist, const wchar_t *value)
-@@ -1703,7 +1703,7 @@ _append_preinit_entry(_Py_PreInitEntry *optionlist, const wchar_t *value)
+@@ -1705,7 +1705,7 @@ _append_preinit_entry(_Py_PreInitEntry *optionlist, const wchar_t *value)
          last_entry->next = new_entry;
      }
      return 0;
@@ -216,7 +216,7 @@ index cdc2edf038..69ac43d9bf 100644
  
  static void
  _clear_preinit_entries(_Py_PreInitEntry *optionlist)
-@@ -1720,7 +1720,7 @@ _clear_preinit_entries(_Py_PreInitEntry *optionlist)
+@@ -1722,7 +1722,7 @@ _clear_preinit_entries(_Py_PreInitEntry *optionlist)
          current = next;
      }
      PyMem_SetAllocator(PYMEM_DOMAIN_RAW, &old_alloc);
@@ -225,7 +225,7 @@ index cdc2edf038..69ac43d9bf 100644
  
  static void
  _clear_all_preinit_options(void)
-@@ -1751,7 +1751,7 @@ _PySys_ReadPreInitOptions(void)
+@@ -1753,7 +1753,7 @@ _PySys_ReadPreInitOptions(void)
  
      _clear_all_preinit_options();
      return 0;
