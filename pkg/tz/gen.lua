@@ -7,7 +7,7 @@ exe('zic', {'zic.c'})
 file('bin/zic', '755', '$outdir/zic')
 man{'zic.8'}
 
-local tzdata = {
+local srcs = {
 	'africa',
 	'antarctica',
 	'asia',
@@ -19,12 +19,22 @@ local tzdata = {
 	'systemv',
 	'factory',
 }
-rule('tzdata', 'lua5.2 $dir/tzdata.lua $repo $outdir/zoneinfo $in >$out.tmp && mv $out.tmp $out')
-build('tzdata', '$outdir/tzdata.index', {
-	expand{'$srcdir/', tzdata},
-	'|', '$dir/tzdata.lua', 'scripts/hash.sh',
-	'||', '$builddir/root.stamp',
-})
-table.insert(pkg.inputs.index, '$outdir/tzdata.index')
+
+local zones = {}
+local data = load 'data.lua'
+for _, src in ipairs(srcs) do
+	for name, target in pairs(data[src]) do
+		if target then
+			target = name:gsub('[^/]+', '..'):sub(1, -3)..target
+			sym('share/zoneinfo/'..name, target)
+		else
+			file('share/zoneinfo/'..name, '644', '$outdir/zoneinfo/'..name)
+			table.insert(zones, name)
+		end
+	end
+end
+
+rule('zic', 'zic -d $outdir/zoneinfo $in')
+build('zic', expand{'$outdir/zoneinfo/', zones}, expand{'$srcdir/', srcs})
 
 fetch 'git'
