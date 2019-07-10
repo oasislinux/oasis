@@ -1,4 +1,4 @@
-From b6dcbe554a0c174360bb1e01a95a43a867dcc9cb Mon Sep 17 00:00:00 2001
+From a343504a3158d52e58161c5f0f87962595250809 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -13,10 +13,10 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  6 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/include/libnetlink.h b/include/libnetlink.h
-index 503b3ec1..867a1a23 100644
+index 0205af80..ec2eea30 100644
 --- a/include/libnetlink.h
 +++ b/include/libnetlink.h
-@@ -162,7 +162,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
+@@ -163,7 +163,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
  int rta_nest_end(struct rtattr *rta, struct rtattr *nest);
  
  #define RTA_TAIL(rta) \
@@ -25,7 +25,7 @@ index 503b3ec1..867a1a23 100644
  				    RTA_ALIGN((rta)->rta_len)))
  
  #define parse_rtattr_nested(tb, max, rta) \
-@@ -225,7 +225,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
+@@ -226,7 +226,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
  		   void *jarg);
  
  #define NLMSG_TAIL(nmsg) \
@@ -35,10 +35,10 @@ index 503b3ec1..867a1a23 100644
  #ifndef IFA_RTA
  #define IFA_RTA(r) \
 diff --git a/ip/ipfou.c b/ip/ipfou.c
-index 346522dd..da5c23fb 100644
+index ea126b08..f24586d4 100644
 --- a/ip/ipfou.c
 +++ b/ip/ipfou.c
-@@ -151,7 +151,7 @@ static int print_fou_mapping(struct nlmsghdr *n, void *arg)
+@@ -228,7 +228,7 @@ static int print_fou_mapping(struct nlmsghdr *n, void *arg)
  		return -1;
  
  	ghdr = NLMSG_DATA(n);
@@ -74,7 +74,7 @@ index 33076e72..72ee01bf 100644
  	open_json_object(NULL);
  	switch (ghdr->cmd) {
 diff --git a/lib/libnetlink.c b/lib/libnetlink.c
-index 0d48a3d4..ef0793dc 100644
+index 028d5502..5a13898c 100644
 --- a/lib/libnetlink.c
 +++ b/lib/libnetlink.c
 @@ -1238,7 +1238,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
@@ -126,10 +126,10 @@ index 0d48a3d4..ef0793dc 100644
  	}
  	memset(tb, 0, sizeof(struct rtattr *) * (max + 1));
 diff --git a/lib/utils.c b/lib/utils.c
-index a81c0700..70cefb93 100644
+index be0f11b0..7f8a7da1 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
-@@ -1561,7 +1561,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
+@@ -1534,7 +1534,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
  
  	len = RTA_PAYLOAD(rta);
  	if (len < size)
@@ -139,5 +139,5 @@ index a81c0700..70cefb93 100644
  		len = size;
  
 -- 
-2.20.1
+2.22.0
 
