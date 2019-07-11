@@ -1,8 +1,13 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I $dir',
+	'-I $outdir',
 	'-I $outdir/include',
 }
+
+build('cat', '$outdir/config.h', {
+	'$builddir/probe/HAVE___BUILTIN_CLZ',
+	'$dir/config.h',
+})
 
 build('sed', '$outdir/include/pixman-version.h', '$srcdir/pixman/pixman-version.h.in', {
 	expr={
@@ -11,16 +16,21 @@ build('sed', '$outdir/include/pixman-version.h', '$srcdir/pixman/pixman-version.
 		'-e s,@PIXMAN_VERSION_MICRO@,0,',
 	},
 })
+
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/pixman', {'pixman.h'}),
 	'$outdir/include/pixman-version.h',
 }
+pkg.deps = {
+	'$dir/headers',
+	'$outdir/config.h',
+}
 
 -- processor-specific features
 cflags{'-D USE_SSE2=1', '-D USE_SSSE3=1', '-D USE_X86_MMX=1'}
-cc('pixman/pixman-mmx.c', {'$dir/headers'}, {cflags='$cflags -mmmx -Winline'})
-cc('pixman/pixman-sse2.c', {'$dir/headers'}, {cflags='$cflags -msse2 -Winline'})
-cc('pixman/pixman-ssse3.c', {'$dir/headers'}, {cflags='$cflags -mssse3 -Winline'})
+cc('pixman/pixman-mmx.c', nil, {cflags='$cflags -mmmx -Winline'})
+cc('pixman/pixman-sse2.c', nil, {cflags='$cflags -msse2 -Winline'})
+cc('pixman/pixman-ssse3.c', nil, {cflags='$cflags -mssse3 -Winline'})
 local cpuobjs = {'pixman-mmx.c.o', 'pixman-sse2.c.o', 'pixman-ssse3.c.o'}
 
 lib('libpixman.a', expand{'pixman/', {
@@ -55,6 +65,6 @@ lib('libpixman.a', expand{'pixman/', {
 	'pixman-trap.c',
 	'pixman-utils.c',
 	cpuobjs,
-}}, {'$dir/headers'})
+}})
 
 fetch 'git'

@@ -1,0 +1,4 @@
+unsigned x = -1;
+int main(void) {
+	return __builtin_clz(x);
+}

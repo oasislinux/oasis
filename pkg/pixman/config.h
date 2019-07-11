@@ -1,6 +1,8 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 #define HAVE_ALARM 1
-#define HAVE_BUILTIN_CLZ /**/
+#ifdef HAVE___BUILTIN_CLZ
+# define HAVE_BUILTIN_CLZ /**/
+#endif
 #define HAVE_DLFCN_H 1
 #define HAVE_FEDIVBYZERO 1
 /* #undef HAVE_FEENABLEEXCEPT */

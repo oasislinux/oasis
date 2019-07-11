@@ -1,6 +1,6 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I $dir',
+	'-I $outdir',
 	'-I $srcdir',
 	'-I $srcdir/include',
 	'-I $srcdir/x86',
@@ -8,6 +8,13 @@ cflags{
 	'-I $srcdir/disasm',
 	'-I $srcdir/output',
 }
+
+build('cat', '$outdir/config/config.h', {
+	'$builddir/probe/HAVE___BUILTIN_CLZ',
+	'$dir/config.h',
+})
+
+pkg.deps = {'$outdir/config/config.h'}
 
 lib('libnasm.a', [[
 	stdlib/(snprintf.c vsnprintf.c strlcpy.c strnlen.c strrchrnul.c)
