@@ -3,6 +3,6 @@
 
 #define WT_NO_GIT 1
 #define WT_MODIFIED 0
-#define WT_MODIFICATIONS {}
+#define WT_MODIFICATIONS {{NULL, NULL}}
 
 #endif
