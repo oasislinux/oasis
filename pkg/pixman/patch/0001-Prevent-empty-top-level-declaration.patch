@@ -1,0 +1,59 @@
+From 66f8839181d4cf81efc9beb8bd85cb8263795b56 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 11 Jul 2019 00:12:19 -0700
+Subject: [PATCH] Prevent empty top-level declaration
+
+The expansion of PIXMAN_DEFINE_THREAD_LOCAL(...) may end in a
+function definition, so the following semicolon is considered an
+empty top-level declaration, which is not allowed in ISO C.
+---
+ pixman/pixman-compiler.h       | 6 +++---
+ pixman/pixman-implementation.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/pixman/pixman-compiler.h b/pixman/pixman-compiler.h
+index 2489adc..e96d81e 100644
+--- a/pixman/pixman-compiler.h
++++ b/pixman/pixman-compiler.h
+@@ -107,14 +107,14 @@
+ #if defined(PIXMAN_NO_TLS)
+ 
+ #   define PIXMAN_DEFINE_THREAD_LOCAL(type, name)			\
+-    static type name
++    static type name;
+ #   define PIXMAN_GET_THREAD_LOCAL(name)				\
+     (&name)
+ 
+ #elif defined(TLS)
+ 
+ #   define PIXMAN_DEFINE_THREAD_LOCAL(type, name)			\
+-    static TLS type name
++    static TLS type name;
+ #   define PIXMAN_GET_THREAD_LOCAL(name)				\
+     (&name)
+ 
+@@ -174,7 +174,7 @@
+ #elif defined(_MSC_VER)
+ 
+ #   define PIXMAN_DEFINE_THREAD_LOCAL(type, name)			\
+-    static __declspec(thread) type name
++    static __declspec(thread) type name;
+ #   define PIXMAN_GET_THREAD_LOCAL(name)				\
+     (&name)
+ 
+diff --git a/pixman/pixman-implementation.c b/pixman/pixman-implementation.c
+index 2c7de4c..5a2cbfe 100644
+--- a/pixman/pixman-implementation.c
++++ b/pixman/pixman-implementation.c
+@@ -63,7 +63,7 @@ typedef struct
+     } cache [N_CACHED_FAST_PATHS];
+ } cache_t;
+ 
+-PIXMAN_DEFINE_THREAD_LOCAL (cache_t, fast_path_cache);
++PIXMAN_DEFINE_THREAD_LOCAL (cache_t, fast_path_cache)
+ 
+ static void
+ dummy_composite_rect (pixman_implementation_t *imp,
+-- 
+2.22.0
+
