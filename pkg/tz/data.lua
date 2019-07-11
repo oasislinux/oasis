@@ -1,4 +1,4 @@
--- 2,<cd src && awk -f ../data.awk africa antarctica asia australasia europe northamerica southamerica etcetera systemv factory
+-- 2,<cd src && awk -f ../data.awk africa antarctica asia australasia europe northamerica southamerica etcetera factory
 return {
 	africa={
 		["Africa/Algiers"]=false,
@@ -488,8 +488,6 @@ return {
 		["Etc/GMT+10"]=false,
 		["Etc/GMT+11"]=false,
 		["Etc/GMT+12"]=false,
-	},
-	systemv={
 	},
 	factory={
 		["Factory"]=false,

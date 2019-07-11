@@ -16,7 +16,6 @@ local srcs = {
 	'northamerica',
 	'southamerica',
 	'etcetera',
-	'systemv',
 	'factory',
 }
 
