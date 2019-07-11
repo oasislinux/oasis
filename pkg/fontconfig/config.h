@@ -1,4 +1,5 @@
 #define FC_CACHEDIR "/var/cache/fontconfig"
+#define FC_NO_MT /* we don't use fontconfig in multi-threaded programs */
 #define FC_TEMPLATEDIR "/share/fontconfig/conf.avail"
 #define FONTCONFIG_PATH "/etc/fonts"
 
