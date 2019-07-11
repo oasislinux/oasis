@@ -1,4 +1,4 @@
-From 5cdc556331c54b3a01faf6726ad8f4452edc2cf4 Mon Sep 17 00:00:00 2001
+From 9781465ad7e57508b23614d5552b9305e3353fa3 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 1 Jul 2019 23:13:26 -0700
 Subject: [PATCH] Use static inline functions instead of macros
@@ -8,7 +8,7 @@ Subject: [PATCH] Use static inline functions instead of macros
  1 file changed, 67 insertions(+), 49 deletions(-)
 
 diff --git a/include/libwapcaplet/libwapcaplet.h b/include/libwapcaplet/libwapcaplet.h
-index d8cc841..2db31f6 100644
+index d8cc841..59ab14c 100644
 --- a/include/libwapcaplet/libwapcaplet.h
 +++ b/include/libwapcaplet/libwapcaplet.h
 @@ -133,7 +133,21 @@ extern lwc_error lwc_string_tolower(lwc_string *str, lwc_string **ret);
@@ -146,7 +146,7 @@ index d8cc841..2db31f6 100644
 +static inline const char *lwc_string_data(lwc_string *str)
 +{
 +	assert(str != NULL);
-+	return (const char *)str + 1;
++	return (const char *)(str + 1);
 +}
  
  /**
