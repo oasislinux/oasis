@@ -41,7 +41,9 @@
 /* #undef PIXMAN_TIMERS */
 #define SIZEOF_LONG 8
 #define STDC_HEADERS 1
-#define TLS __thread
+#ifdef HAVE__THREAD_LOCAL
+# define TLS _Thread_local
+#endif
 #define TOOLCHAIN_SUPPORTS_ATTRIBUTE_CONSTRUCTOR /**/
 /* #undef USE_ARM_IWMMXT */
 /* #undef USE_ARM_NEON */

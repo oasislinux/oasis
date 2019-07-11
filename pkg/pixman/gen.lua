@@ -5,6 +5,7 @@ cflags{
 }
 
 build('cat', '$outdir/config.h', {
+	'$builddir/probe/HAVE__THREAD_LOCAL',
 	'$builddir/probe/HAVE___BUILTIN_CLZ',
 	'$dir/config.h',
 })
