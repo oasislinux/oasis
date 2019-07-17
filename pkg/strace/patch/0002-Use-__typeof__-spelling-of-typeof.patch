@@ -1,4 +1,4 @@
-From 0b0f3d38b297fe0fd53cff9dd5291199148be934 Mon Sep 17 00:00:00 2001
+From 89a46be60797ef4eab8756b3654967f080585107 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:33:01 -0700
 Subject: [PATCH] Use __typeof__ spelling of typeof
@@ -157,10 +157,10 @@ index b2125171..0b0242c8 100644
  # define TYPEOF_FLOCK_OFF_T off_t
  #endif
 diff --git a/util.c b/util.c
-index fa384c59..4367a9de 100644
+index 42253ebb..f0b578e3 100644
 --- a/util.c
 +++ b/util.c
-@@ -927,8 +927,8 @@ dumpiov_upto(struct tcb *const tcp, const int len, const kernel_ulong_t addr,
+@@ -939,8 +939,8 @@ dumpiov_upto(struct tcb *const tcp, const int len, const kernel_ulong_t addr,
  
  #define ILOG2_ITER_(val_, ret_, bit_)					\
  	do {								\

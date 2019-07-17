@@ -1,4 +1,4 @@
-From 7905844ea2f5bb68b4152311d30c9479d0ef8a74 Mon Sep 17 00:00:00 2001
+From 5281dd0a41e6c1819a62154056b1163ca54ef398 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/bpf.c b/bpf.c
-index 420b4402..60cecdd9 100644
+index 20ad938f..1a967e20 100644
 --- a/bpf.c
 +++ b/bpf.c
 @@ -42,7 +42,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -68,10 +68,10 @@ index 417ff742..ab21fa67 100644
  
  	if (usize) {
 diff --git a/signal.c b/signal.c
-index fcaf9d4f..22e2f407 100644
+index 3cb54bb3..bc03dae8 100644
 --- a/signal.c
 +++ b/signal.c
-@@ -265,7 +265,7 @@ print_sigset_addr_len_limit(struct tcb *const tcp, const kernel_ulong_t addr,
+@@ -246,7 +246,7 @@ print_sigset_addr_len_limit(struct tcb *const tcp, const kernel_ulong_t addr,
  		printaddr(addr);
  		return;
  	}
@@ -81,10 +81,10 @@ index fcaf9d4f..22e2f407 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/strace.c b/strace.c
-index 318b1409..686d1a3a 100644
+index 4f03a4c9..a1972b83 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -2534,7 +2534,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -2601,7 +2601,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
