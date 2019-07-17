@@ -168,6 +168,7 @@ youtube_dl/extractor/discoverynetworks.py
 youtube_dl/extractor/discoveryvr.py
 youtube_dl/extractor/disney.py
 youtube_dl/extractor/dispeak.py
+youtube_dl/extractor/dlive.py
 youtube_dl/extractor/dotsub.py
 youtube_dl/extractor/douyutv.py
 youtube_dl/extractor/dplay.py
@@ -233,7 +234,6 @@ youtube_dl/extractor/freshlive.py
 youtube_dl/extractor/frontendmasters.py
 youtube_dl/extractor/funimation.py
 youtube_dl/extractor/funk.py
-youtube_dl/extractor/funnyordie.py
 youtube_dl/extractor/fusion.py
 youtube_dl/extractor/fxnetworks.py
 youtube_dl/extractor/gaia.py
@@ -346,6 +346,7 @@ youtube_dl/extractor/line.py
 youtube_dl/extractor/linkedin.py
 youtube_dl/extractor/linuxacademy.py
 youtube_dl/extractor/litv.py
+youtube_dl/extractor/livejournal.py
 youtube_dl/extractor/liveleak.py
 youtube_dl/extractor/livestream.py
 youtube_dl/extractor/lnkgo.py
@@ -541,7 +542,6 @@ youtube_dl/extractor/rts.py
 youtube_dl/extractor/rtve.py
 youtube_dl/extractor/rtvnh.py
 youtube_dl/extractor/rtvs.py
-youtube_dl/extractor/rudo.py
 youtube_dl/extractor/ruhd.py
 youtube_dl/extractor/rutube.py
 youtube_dl/extractor/rutv.py
