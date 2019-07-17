@@ -19,10 +19,11 @@ exe('msmtp', [[
 		xalloc.c
 		aliases.c
 		password.c
+		base64.c
 
 		tls.c
 
-		base64.c md5.c md5-apps.c
+		md5.c md5-apps.c
 	)
 	$builddir/pkg/libressl/(libssl.a.d libcrypto.a.d)
 ]], {'pkg/libressl/headers'})
