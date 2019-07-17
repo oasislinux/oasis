@@ -3,19 +3,20 @@ cflags{
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/src',
+	'-I $srcdir/src/libcommon',
+	'-I $srcdir/src/libkbdfile',
 	'-I $srcdir/src/libkeymap',
 	'-I $srcdir/src/libkeymap/keymap',
 }
 
-lib('libcommon.a', 'src/(getfd.c xmalloc.c kbd_error.c version.c)')
-lib('libfont.a', 'src/(kdfontop.c kdmapop.c loadunimap.c psffontop.c utf8.c)')
+lib('libcommon.a', 'src/libcommon/(getfd.c error.c version.c xmalloc.c)')
+lib('libkbdfile.a', 'src/libkbdfile/(init.c kbdfile.c)')
 lib('libkeymap.a', [[src/libkeymap/(
 	analyze.c
 	array.c
 	common.c
 	diacr.c
 	dump.c
-	findfile.c
 	func.c
 	kernel.c
 	kmap.c
@@ -25,6 +26,7 @@ lib('libkeymap.a', [[src/libkeymap/(
 	parser.c
 	summary.c
 )]])
+lib('libfont.a', 'src/(kdfontop.c kdmapop.c loadunimap.c psffontop.c utf8.c)')
 
 -- old: loadunimap mapscrn
 -- optional: clrunmap getunimap setlogcons setvesablank setpalette screendump
@@ -35,7 +37,7 @@ local function x(cmd, section, subst, srcs)
 	if not srcs then
 		srcs = 'src/'..cmd..'.c'
 	end
-	exe(cmd, {srcs, 'libcommon.a', 'libfont.a', 'libkeymap.a'})
+	exe(cmd, {srcs, 'libcommon.a', 'libfont.a', 'libkeymap.a', 'libkbdfile.a'})
 	file('bin/'..cmd, '755', '$outdir/'..cmd)
 	if not section then
 		return
