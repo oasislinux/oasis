@@ -231,7 +231,7 @@
 # define TLS _Thread_local
 #endif
 #define USE_POSIX_THREADS 1
-/* #undef USE_POSIX_THREADS_WEAK */
+#define USE_POSIX_THREADS_WEAK 1
 /* #undef USE_PTH_THREADS */
 /* #undef USE_PTH_THREADS_WEAK */
 /* #undef USE_SOLARIS_THREADS */
