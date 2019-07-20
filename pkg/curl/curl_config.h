@@ -6,23 +6,29 @@
 /* #undef CURL_DISABLE_COOKIES */
 /* #undef CURL_DISABLE_CRYPTO_AUTH */
 /* #undef CURL_DISABLE_DICT */
+/* #undef CURL_DISABLE_DOH */
 /* #undef CURL_DISABLE_FILE */
 /* #undef CURL_DISABLE_FTP */
 /* #undef CURL_DISABLE_GOPHER */
 /* #undef CURL_DISABLE_HTTP */
+/* #undef CURL_DISABLE_HTTP_AUTH */
 /* #undef CURL_DISABLE_IMAP */
 #define CURL_DISABLE_LDAP 1
 #define CURL_DISABLE_LDAPS 1
 /* #undef CURL_DISABLE_LIBCURL_OPTION */
+/* #undef CURL_DISABLE_MIME */
+/* #undef CURL_DISABLE_NETRC */
 /* #undef CURL_DISABLE_OPENSSL_AUTO_LOAD_CONFIG */
+/* #undef CURL_DISABLE_PARSEDATE */
 #define CURL_DISABLE_POP3 1
+/* #undef CURL_DISABLE_PROGRESS_METER */
 /* #undef CURL_DISABLE_PROXY */
 /* #undef CURL_DISABLE_RTSP */
+/* #undef CURL_DISABLE_SHUFFLE_DNS */
 #define CURL_DISABLE_SMB 1
 #define CURL_DISABLE_SMTP 1
 /* #undef CURL_DISABLE_TELNET */
 /* #undef CURL_DISABLE_TFTP */
-/* #undef CURL_DISABLE_TLS_SRP */
 /* #undef CURL_DISABLE_VERBOSE_STRINGS */
 #define CURL_EXTERN_SYMBOL __attribute__ ((__visibility__ ("default")))
 #define CURL_SA_FAMILY_T sa_family_t
@@ -49,10 +55,6 @@
 /* #undef HAVE_CLOSESOCKET_CAMEL */
 #define HAVE_CONNECT 1
 /* #undef HAVE_CRYPTO_H */
-/* #undef HAVE_CYASSL_CTX_USESUPPORTEDCURVE */
-/* #undef HAVE_CYASSL_ERROR_SSL_H */
-/* #undef HAVE_CYASSL_GET_PEER_CERTIFICATE */
-/* #undef HAVE_CYASSL_OPTIONS_H */
 #define HAVE_DECL_GETPWUID_R 1
 /* #undef HAVE_DECL_GETPWUID_R_MISSING */
 #define HAVE_DLFCN_H 1
@@ -200,7 +202,6 @@
 #define HAVE_SOCKETPAIR 1
 /* #undef HAVE_SOCKET_H */
 /* #undef HAVE_SSLV2_CLIENT_METHOD */
-#define HAVE_SSL_GET_SHUTDOWN 1
 /* #undef HAVE_SSL_H */
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
@@ -308,7 +309,6 @@
 /* #undef USE_ALTSVC */
 /* #undef USE_AMISSL */
 /* #undef USE_ARES */
-/* #undef USE_CYASSL */
 /* #undef USE_GNUTLS */
 /* #undef USE_GNUTLS_NETTLE */
 /* #undef USE_LIBPSL */
@@ -334,6 +334,7 @@
 /* #undef USE_WIN32_LDAP */
 /* #undef USE_WIN32_SMALL_FILES */
 /* #undef USE_WINDOWS_SSPI */
+/* #undef USE_WOLFSSL */
 #define VERSION "-"
 /* #undef WANT_IDN_PROTOTYPES */
 #ifndef _ALL_SOURCE
