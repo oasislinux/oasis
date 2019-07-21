@@ -1,4 +1,5 @@
 cflags{
+	[[-D '_ALIGNED=__attribute__((aligned))']],
 	'-I $srcdir/include',
 	'-I $srcdir/src',
 	'-I pkg/netsurf/libparserutils/src/include',
@@ -25,7 +26,7 @@ lib('libcss.a', [[src/(
 	charset/detect.c
 	lex/lex.c
 	parse/(
-		parse.c language.c important.c propstrings.c font_face.c
+		parse.c language.c important.c propstrings.c font_face.c mq.c
 		properties/(
 			azimuth.c
 			background.c

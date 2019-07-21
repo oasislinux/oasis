@@ -1,4 +1,4 @@
-From 60941b7bdcf436b022a23d5f80767c49abb65d72 Mon Sep 17 00:00:00 2001
+From 64cefc96a96ea5cade24179ee17bc3dfb3c90187 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 1 Jul 2019 22:57:10 -0700
 Subject: [PATCH] Remove empty top-level declarations
@@ -370,7 +370,7 @@ index 40cb99c..216f7b8 100644
  /* Public APIs */
  
 diff --git a/src/html/html_label_element.c b/src/html/html_label_element.c
-index 3864cc4..dbd5428 100644
+index 777144a..9b69c55 100644
 --- a/src/html/html_label_element.c
 +++ b/src/html/html_label_element.c
 @@ -214,6 +214,6 @@ dom_exception dom_html_label_element_set_##attr(			\
@@ -434,7 +434,7 @@ index 20cb042..7b9b90f 100644
 +SIMPLE_GET_SET(date_time)
  
 diff --git a/src/html/html_object_element.c b/src/html/html_object_element.c
-index e926aef..b145a63 100644
+index b51e3a0..e9f02cb 100644
 --- a/src/html/html_object_element.c
 +++ b/src/html/html_object_element.c
 @@ -187,19 +187,19 @@ dom_exception _dom_html_object_element_copy_internal(
@@ -529,10 +529,10 @@ index cf3e0c5..e42d153 100644
 +SIMPLE_GET_SET(cite)
  
 diff --git a/src/html/html_script_element.c b/src/html/html_script_element.c
-index d20d727..8c21cf1 100644
+index e8dfb1d..369cb2a 100644
 --- a/src/html/html_script_element.c
 +++ b/src/html/html_script_element.c
-@@ -184,11 +184,11 @@ dom_exception dom_html_script_element_set_##attr(			\
+@@ -186,11 +186,11 @@ dom_exception dom_html_script_element_set_##attr(			\
  
  #define SIMPLE_GET_SET(attr) SIMPLE_GET(attr) SIMPLE_SET(attr)
  

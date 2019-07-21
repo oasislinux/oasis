@@ -125,7 +125,7 @@ exe('netsurf', [[
 		utils.c
 		http/(
 			challenge.c generics.c primitives.c parameter.c
-			content-disposition.c content-type.c
+			cache-control.c content-disposition.c content-type.c
 			strict-transport-security.c www-authenticate.c
 		)
 		nsurl/(
