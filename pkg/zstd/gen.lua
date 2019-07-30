@@ -26,6 +26,8 @@ lib('libzstd.a', [[lib/(
 		hist.c
 		huf_compress.c
 		zstd_compress.c
+		zstd_compress_literals.c
+		zstd_compress_sequences.c
 		zstd_double_fast.c
 		zstd_fast.c
 		zstd_lazy.c
