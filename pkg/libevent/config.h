@@ -136,14 +136,14 @@
 #define HAVE___FUNCTION__ 1
 #define HAVE___func__ 1
 #define LT_OBJDIR ".libs/"
-#define NUMERIC_VERSION 0x02010a00
+#define NUMERIC_VERSION 0x02010b00
 #define PACKAGE "libevent"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "libevent"
-#define PACKAGE_STRING "libevent 2.1.10-stable"
+#define PACKAGE_STRING "libevent 2.1.11-stable"
 #define PACKAGE_TARNAME "libevent"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.1.10-stable"
+#define PACKAGE_VERSION "2.1.11-stable"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 8
@@ -171,7 +171,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.1.10-stable"
+#define VERSION "2.1.11-stable"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
