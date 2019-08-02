@@ -50,13 +50,13 @@
 #define PACKAGE "kbd"
 #define PACKAGE_BUGREPORT "gladkov.alexey@gmail.com"
 #define PACKAGE_NAME "kbd"
-#define PACKAGE_STRING "kbd 2.1.0"
+#define PACKAGE_STRING "kbd 2.2.0"
 #define PACKAGE_TARNAME "kbd"
 #define PACKAGE_URL "http://kbd-project.org/"
-#define PACKAGE_VERSION "2.1.0"
+#define PACKAGE_VERSION "2.2.0"
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
-#define VERSION "2.1.0"
+#define VERSION "2.2.0"
 /* #undef YYTEXT_POINTER */
 /* #undef const */
 /* #undef gid_t */
