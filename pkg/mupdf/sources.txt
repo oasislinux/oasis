@@ -1,4 +1,4 @@
-# 2,<cd src/source && ls fitz/*.c pdf/*.c xps/*.c svg/*.c cbz/*.c gprf/*.c | grep -v fitz/harfbuzz.c
+# 2,<cd src/source && ls fitz/*.c pdf/*.c xps/*.c svg/*.c cbz/*.c | grep -v fitz/harfbuzz.c
 cbz/mucbz.c
 cbz/muimg.c
 fitz/archive.c
@@ -7,6 +7,7 @@ fitz/bidi-std.c
 fitz/bidi.c
 fitz/bitmap.c
 fitz/buffer.c
+fitz/color-fast.c
 fitz/color-icc-create.c
 fitz/color-lcms.c
 fitz/colorspace.c
@@ -96,7 +97,6 @@ fitz/stream-read.c
 fitz/string.c
 fitz/strtof.c
 fitz/svg-device.c
-fitz/tempfile.c
 fitz/test-device.c
 fitz/text.c
 fitz/time.c
@@ -111,8 +111,6 @@ fitz/util.c
 fitz/writer.c
 fitz/xml.c
 fitz/zip.c
-gprf/gprf-doc.c
-gprf/gprf-skeleton.c
 pdf/pdf-annot.c
 pdf/pdf-appearance.c
 pdf/pdf-clean-file.c
