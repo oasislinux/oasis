@@ -152,6 +152,9 @@
 [submodule "pkg/mupdf/src"]
 	path = pkg/mupdf/src
 	url = https://github.com/michaelforney/mupdf
+[submodule "pkg/musl/src"]
+	path = pkg/musl/src
+	url = git://git.musl-libc.org/musl
 [submodule "pkg/netsurf/src"]
 	path = pkg/netsurf/src
 	url = https://github.com/michaelforney/netsurf
