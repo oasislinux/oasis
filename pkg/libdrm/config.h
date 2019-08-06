@@ -28,7 +28,7 @@
 #define HAVE_VMWGFX 0
 #define LT_OBJDIR ".libs/"
 /* #undef MAJOR_IN_MKDEV */
-/* #undef MAJOR_IN_SYSMACROS */
+#define MAJOR_IN_SYSMACROS 1
 #define PACKAGE "libdrm"
 #define PACKAGE_BUGREPORT "https://bugs.freedesktop.org/enter_bug.cgi?product=DRI"
 #define PACKAGE_NAME "libdrm"
