@@ -1,4 +1,4 @@
-local arch = config.target.toolchain:match('[^-]*')
+local arch = 'x86_64'
 cflags{
 	'-D _XOPEN_SOURCE=700',
 	'-nostdinc',
