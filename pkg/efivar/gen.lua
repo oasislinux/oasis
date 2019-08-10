@@ -1,5 +1,5 @@
 cc('src/guids.S', {'$outdir/guids.bin', '$outdir/names.bin'}, {
-	cflags='$cflags -I $outdir',
+	cflags='$cflags -Wa,-I,$outdir',
 })
 
 cflags{
