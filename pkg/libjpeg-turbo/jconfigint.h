@@ -4,7 +4,9 @@
 #define PACKAGE_NAME  "libjpeg-turbo"
 #define VERSION  "2.0.2"
 #define SIZEOF_SIZE_T  8
+#ifdef HAVE___BUILTIN_CTZL
 #define HAVE_BUILTIN_CTZL
+#endif
 /* #undef HAVE_INTRIN_H */
 #if defined(_MSC_VER) && defined(HAVE_INTRIN_H)
 #if (SIZEOF_SIZE_T == 8)

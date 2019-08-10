@@ -6,6 +6,7 @@ probe('HAVE_IMMINTRIN_H')
 probe('HAVE__MM_MOVEMASK_EPI8')
 probe('HAVE__THREAD_LOCAL')
 probe('HAVE___BUILTIN_CLZ')
+probe('HAVE___BUILTIN_CTZL')
 
 local function probesize(var)
 	build('probesize', '$outdir/'..var, {'$dir/'..var, '|', 'scripts/probe-size.sh'}, {var=var})

@@ -1,0 +1,4 @@
+unsigned long x = -1;
+int main(void) {
+	return __builtin_ctzl(x);
+}

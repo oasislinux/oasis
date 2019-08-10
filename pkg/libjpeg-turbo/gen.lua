@@ -1,4 +1,17 @@
-cflags{'-I $dir'}
+cflags{
+	'-I $outdir',
+	'-I $outdir/include',
+}
+
+build('cat', '$outdir/jconfigint.h', {
+	'$builddir/probe/HAVE___BUILTIN_CTZL',
+	'$dir/jconfigint.h',
+})
+
+pkg.deps = {
+	'$dir/headers',
+	'$outdir/jconfigint.h',
+}
 
 lib('libjpeg-turbo.a', [[
 	jcapimin.c jcapistd.c jccoefct.c jccolor.c jcdctmgr.c jchuff.c
