@@ -1,5 +1,4 @@
 cflags{
-	'-fwrapv',
 	'-D NDEBUG',
 	'-I $dir',
 	'-I $srcdir/Include',
