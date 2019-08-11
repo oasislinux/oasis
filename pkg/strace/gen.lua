@@ -1,12 +1,16 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I $dir',
 	-- it is important that the arch-specific directory is searched first
 	'-I $srcdir/linux/x86_64',
 	'-I $srcdir/linux',
 	'-I $srcdir',
 	'-I $outdir',
 }
+
+build('cat', '$outdir/config.h', {
+	'$builddir/probe/HAVE___BUILTIN_POPCOUNT',
+	'$dir/config.h',
+})
 
 build('cpp', '$outdir/ioctl_iocdef.i', '$srcdir/ioctl_iocdef.c')
 build('sed', '$outdir/ioctl_iocdef.h', '$outdir/ioctl_iocdef.i', {
@@ -39,7 +43,7 @@ end)
 
 local mpers = lines('mpers.txt')
 for _, f in ipairs(mpers) do
-	build('cpp', '$outdir/'..f..'.mpers.i', '$srcdir/'..f, {
+	build('cpp', '$outdir/'..f..'.mpers.i', {'$srcdir/'..f, '|', '$outdir/config.h'}, {
 		cflags='$cflags -DIN_MPERS_BOOTSTRAP',
 	})
 end
@@ -327,6 +331,7 @@ build('sed', '$outdir/sys_func.h', expand{'$srcdir/', {libsrcs, srcs}}, {
 })
 
 pkg.deps = {
+	'$outdir/config.h',
 	'$outdir/ioctlent0.h',
 	'$outdir/ioctlent1.h',
 	'$outdir/ioctlent2.h',

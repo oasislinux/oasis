@@ -536,7 +536,7 @@
 /* #undef HAVE_USTAT_H */
 #define HAVE_UTIMENSAT 1
 /* #undef HAVE__STATIC_ASSERT */
-#define HAVE___BUILTIN_POPCOUNT 1
+/* probe HAVE___BUILTIN_POPCOUNT */
 #define HAVE___KERNEL_LONG_T 1
 #define HAVE___KERNEL_ULONG_T 1
 /* #undef HPPA */

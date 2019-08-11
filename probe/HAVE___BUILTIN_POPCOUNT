@@ -1,0 +1,4 @@
+unsigned x = 0;
+int main(void) {
+	return __builtin_popcount(x);
+}
