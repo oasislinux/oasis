@@ -1,0 +1,52 @@
+From f36da3297eeb6b2363bcede62a72f567cd971617 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 03:18:22 +0000
+Subject: [PATCH] eloop: Prevent stray semicolons in struct specifier
+
+---
+ src/utils/eloop.c | 8 ++++----
+ src/utils/trace.h | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/utils/eloop.c b/src/utils/eloop.c
+index bb375be10..b82853308 100644
+--- a/src/utils/eloop.c
++++ b/src/utils/eloop.c
+@@ -44,8 +44,8 @@ struct eloop_sock {
+ 	void *eloop_data;
+ 	void *user_data;
+ 	eloop_sock_handler handler;
+-	WPA_TRACE_REF(eloop);
+-	WPA_TRACE_REF(user);
++	WPA_TRACE_REF(eloop)
++	WPA_TRACE_REF(user)
+ 	WPA_TRACE_INFO
+ };
+ 
+@@ -55,8 +55,8 @@ struct eloop_timeout {
+ 	void *eloop_data;
+ 	void *user_data;
+ 	eloop_timeout_handler handler;
+-	WPA_TRACE_REF(eloop);
+-	WPA_TRACE_REF(user);
++	WPA_TRACE_REF(eloop)
++	WPA_TRACE_REF(user)
+ 	WPA_TRACE_INFO
+ };
+ 
+diff --git a/src/utils/trace.h b/src/utils/trace.h
+index d1636de07..43bc03f1e 100644
+--- a/src/utils/trace.h
++++ b/src/utils/trace.h
+@@ -23,7 +23,7 @@ struct wpa_trace_ref {
+ 	const void *addr;
+ 	WPA_TRACE_INFO
+ };
+-#define WPA_TRACE_REF(name) struct wpa_trace_ref wpa_trace_ref_##name
++#define WPA_TRACE_REF(name) struct wpa_trace_ref wpa_trace_ref_##name;
+ 
+ #define wpa_trace_dump(title, ptr) \
+ 	wpa_trace_dump_func((title), (ptr)->btrace, (ptr)->btrace_num)
+-- 
+2.22.0
+

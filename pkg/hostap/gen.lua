@@ -11,7 +11,7 @@ pkg.deps = {
 	'pkg/libnl/headers',
 }
 
-lib('libcommon.a', 'src/utils/(common.c eloop.c os_unix.c wpa_debug.c)')
+lib('libcommon.a', 'src/utils/(common.c eloop.c os_unix.c wpabuf.c wpa_debug.c)')
 
 exe('bin/wpa_supplicant', [[
 	src/ap/(
@@ -53,7 +53,7 @@ exe('bin/wpa_supplicant', [[
 		wpa.c
 		wpa_ie.c
 	)
-	src/utils/(bitfield.c radiotap.c wpabuf.c)
+	src/utils/(bitfield.c radiotap.c)
 	wpa_supplicant/(
 		blacklist.c
 		bss.c

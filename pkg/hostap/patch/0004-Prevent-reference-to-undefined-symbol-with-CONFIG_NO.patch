@@ -1,0 +1,33 @@
+From 5fba603af060a3fd3f0436213527b4b2b74cbd0d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 04:00:13 +0000
+Subject: [PATCH] Prevent reference to undefined symbol with CONFIG_NO_RADIUS
+
+---
+ src/radius/radius.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/radius/radius.h b/src/radius/radius.h
+index 630c0f9d0..dd013c415 100644
+--- a/src/radius/radius.h
++++ b/src/radius/radius.h
+@@ -296,6 +296,7 @@ char * radius_msg_get_tunnel_password(struct radius_msg *msg, int *keylen,
+ 				      const u8 *secret, size_t secret_len,
+ 				      struct radius_msg *sent_msg, size_t n);
+ 
++#ifndef CONFIG_NO_RADIUS
+ static inline int radius_msg_add_attr_int32(struct radius_msg *msg, u8 type,
+ 					    u32 value)
+ {
+@@ -315,6 +316,8 @@ static inline int radius_msg_get_attr_int32(struct radius_msg *msg, u8 type,
+ 	*value = ntohl(val);
+ 	return 0;
+ }
++#endif /* CONFIG_NO_RADIUS */
++
+ int radius_msg_get_attr_ptr(struct radius_msg *msg, u8 type, u8 **buf,
+ 			    size_t *len, const u8 *start);
+ int radius_msg_count_attr(struct radius_msg *msg, u8 type, int min_len);
+-- 
+2.22.0
+
