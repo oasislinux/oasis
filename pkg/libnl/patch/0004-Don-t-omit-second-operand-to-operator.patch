@@ -1,0 +1,25 @@
+From aea1d02c2700adec3a5c67cfa2d74bb812d95725 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 04:57:33 +0000
+Subject: [PATCH] Don't omit second operand to `?` operator
+
+---
+ lib/nl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/nl.c b/lib/nl.c
+index 1b4355b..9065389 100644
+--- a/lib/nl.c
++++ b/lib/nl.c
+@@ -681,7 +681,7 @@ int nl_recv(struct nl_sock *sk, struct sockaddr_nl *nla,
+ 	if (page_size == 0)
+ 		page_size = getpagesize() * 4;
+ 
+-	iov.iov_len = sk->s_bufsize ? : page_size;
++	iov.iov_len = sk->s_bufsize ? sk->s_bufsize : page_size;
+ 	iov.iov_base = malloc(iov.iov_len);
+ 
+ 	if (!iov.iov_base) {
+-- 
+2.22.0
+

@@ -1,0 +1,28 @@
+From caff6ac158a66ecf0688ee00a58e30e67971125c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 05:14:48 +0000
+Subject: [PATCH] Avoid statement expression in nl_container_of
+
+---
+ include/netlink/list.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/include/netlink/list.h b/include/netlink/list.h
+index fcfb826..a5ce74f 100644
+--- a/include/netlink/list.h
++++ b/include/netlink/list.h
+@@ -59,9 +59,8 @@ static inline int nl_list_empty(struct nl_list_head *head)
+ 	return head->next == head;
+ }
+ 
+-#define nl_container_of(ptr, type, member) ({			\
+-        const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
+-        (type *)( (char *)__mptr - (offsetof(type, member)));})
++#define nl_container_of(ptr, type, member) (			\
++        (type *)( (char *)(ptr) - (offsetof(type, member))))
+ 
+ #define nl_list_entry(ptr, type, member) \
+ 	nl_container_of(ptr, type, member)
+-- 
+2.22.0
+

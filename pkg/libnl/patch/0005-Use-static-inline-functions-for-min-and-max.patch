@@ -1,0 +1,123 @@
+From e9dc83c59917fc86d3bd684a6b1d31e1619bc07e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 05:05:09 +0000
+Subject: [PATCH] Use static inline functions for min and max
+
+These generic macros were only ever used with type `int`, and making
+them inline functions avoids the use of non-standard statement
+expressions.
+---
+ include/netlink-private/netlink.h | 27 +++++++++++----------------
+ lib/attr.c                        |  2 +-
+ lib/msg.c                         |  2 +-
+ lib/route/cls/ematch_syntax.y     |  2 +-
+ lib/route/link/inet.c             |  2 +-
+ lib/route/link/inet6.c            |  2 +-
+ 6 files changed, 16 insertions(+), 21 deletions(-)
+
+diff --git a/include/netlink-private/netlink.h b/include/netlink-private/netlink.h
+index 728ca5c..d9a3597 100644
+--- a/include/netlink-private/netlink.h
++++ b/include/netlink-private/netlink.h
+@@ -159,22 +159,17 @@ static inline int nl_cb_call(struct nl_cb *cb, enum nl_cb_type type, struct nl_m
+ #undef __deprecated
+ #define __deprecated __attribute__ ((deprecated))
+ 
+-#define min(x,y) ({ \
+-	typeof(x) _x = (x);	\
+-	typeof(y) _y = (y);	\
+-	(void) (&_x == &_y);		\
+-	_x < _y ? _x : _y; })
+-
+-#define max(x,y) ({ \
+-	typeof(x) _x = (x);	\
+-	typeof(y) _y = (y);	\
+-	(void) (&_x == &_y);		\
+-	_x > _y ? _x : _y; })
+-
+-#define min_t(type,x,y) \
+-	({ type __x = (x); type __y = (y); __x < __y ? __x: __y; })
+-#define max_t(type,x,y) \
+-	({ type __x = (x); type __y = (y); __x > __y ? __x: __y; })
++static inline int
++min(int x, int y)
++{
++	return x < y ? x : y;
++}
++
++static inline int
++max(int x, int y)
++{
++	return x > y ? x : y;
++}
+ 
+ extern int nl_cache_parse(struct nl_cache_ops *, struct sockaddr_nl *,
+ 			  struct nlmsghdr *, struct nl_parser_param *);
+diff --git a/lib/attr.c b/lib/attr.c
+index 7c0ac4d..9382b7f 100644
+--- a/lib/attr.c
++++ b/lib/attr.c
+@@ -357,7 +357,7 @@ int nla_memcpy(void *dest, const struct nlattr *src, int count)
+ 	if (!src)
+ 		return 0;
+ 	
+-	minlen = min_t(int, count, nla_len(src));
++	minlen = min(count, nla_len(src));
+ 	memcpy(dest, nla_data(src), minlen);
+ 
+ 	return minlen;
+diff --git a/lib/msg.c b/lib/msg.c
+index 0ce5887..226a1d2 100644
+--- a/lib/msg.c
++++ b/lib/msg.c
+@@ -154,7 +154,7 @@ struct nlattr *nlmsg_attrdata(const struct nlmsghdr *nlh, int hdrlen)
+  */
+ int nlmsg_attrlen(const struct nlmsghdr *nlh, int hdrlen)
+ {
+-	return max_t(int, nlmsg_len(nlh) - NLMSG_ALIGN(hdrlen), 0);
++	return max(nlmsg_len(nlh) - NLMSG_ALIGN(hdrlen), 0);
+ }
+ 
+ /** @} */
+diff --git a/lib/route/cls/ematch_syntax.y b/lib/route/cls/ematch_syntax.y
+index a0ca4bb..d730511 100644
+--- a/lib/route/cls/ematch_syntax.y
++++ b/lib/route/cls/ematch_syntax.y
+@@ -411,7 +411,7 @@ pattern:
+ 			if (nl_addr_parse($1, AF_UNSPEC, &addr) == 0) {
+ 				$$.len = nl_addr_get_len(addr);
+ 
+-				$$.index = min_t(int, $$.len, nl_addr_get_prefixlen(addr)/8);
++				$$.index = min($$.len, nl_addr_get_prefixlen(addr)/8);
+ 
+ 				if (!($$.data = calloc(1, $$.len))) {
+ 					nl_addr_put(addr);
+diff --git a/lib/route/link/inet.c b/lib/route/link/inet.c
+index 6651bc3..e33a3fe 100644
+--- a/lib/route/link/inet.c
++++ b/lib/route/link/inet.c
+@@ -110,7 +110,7 @@ static int inet_parse_af(struct rtnl_link *link, struct nlattr *attr, void *data
+ 
+ 	if (tb[IFLA_INET_CONF]) {
+ 		int i;
+-		int len = min_t(int, IPV4_DEVCONF_MAX, nla_len(tb[IFLA_INET_CONF]) / 4);
++		int len = min(IPV4_DEVCONF_MAX, nla_len(tb[IFLA_INET_CONF]) / 4);
+ 
+ 		for (i = 0; i < len; i++)
+ 			id->i_confset[i] = 1;
+diff --git a/lib/route/link/inet6.c b/lib/route/link/inet6.c
+index e638d06..8f403ce 100644
+--- a/lib/route/link/inet6.c
++++ b/lib/route/link/inet6.c
+@@ -197,7 +197,7 @@ static int inet6_parse_protinfo(struct rtnl_link *link, struct nlattr *attr,
+ 			map_stat_id = map_stat_id_from_IPSTATS_MIB_v1;
+ 		}
+ 
+-		len = min_t(int, __IPSTATS_MIB_MAX, len);
++		len = min(__IPSTATS_MIB_MAX, len);
+ 		for (i = 1; i < len; i++) {
+ 			memcpy(&stat, &cnt[i * sizeof(stat)], sizeof(stat));
+ 			rtnl_link_set_stat(link, map_stat_id[i], stat);
+-- 
+2.22.0
+

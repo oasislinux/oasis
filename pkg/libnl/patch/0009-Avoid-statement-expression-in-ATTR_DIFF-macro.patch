@@ -1,0 +1,28 @@
+From 84eb9f312cc183e98d97805eda9d5e5bef7542b6 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 21:57:03 +0000
+Subject: [PATCH] Avoid statement expression in ATTR_DIFF macro
+
+---
+ include/netlink-private/object-api.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/include/netlink-private/object-api.h b/include/netlink-private/object-api.h
+index 517e672..269cd4b 100644
+--- a/include/netlink-private/object-api.h
++++ b/include/netlink-private/object-api.h
+@@ -260,10 +260,7 @@ struct nl_object
+  * @endcode
+  */
+ #define ATTR_DIFF(LIST, ATTR, A, B, EXPR) \
+-({	uint64_t diff = 0; \
+-	if (((LIST) & (ATTR)) && ATTR_MISMATCH(A, B, ATTR, EXPR)) \
+-		diff = ATTR; \
+-	diff; })
++	((uint64_t)(((LIST) & (ATTR)) && ATTR_MISMATCH(A, B, ATTR, EXPR) ? (ATTR) : 0))
+ 
+ /**
+  * Object Operations
+-- 
+2.22.0
+

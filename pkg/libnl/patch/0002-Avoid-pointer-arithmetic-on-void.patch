@@ -1,0 +1,139 @@
+From 02a03be66ad59503e43be9d7915ae18161007e6f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 04:49:07 +0000
+Subject: [PATCH] Avoid pointer arithmetic on `void *`
+
+ISO C requires that the pointer operand to the binary + operator be to
+a complete object type[0].
+
+[0] http://port70.net/~nsz/c/c11/n1570.html#6.5.6p2
+---
+ lib/attr.c      | 8 ++++----
+ lib/data.c      | 2 +-
+ lib/genl/genl.c | 4 ++--
+ lib/msg.c       | 6 +++---
+ lib/object.c    | 2 +-
+ 5 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/lib/attr.c b/lib/attr.c
+index 0dca3ec..7c0ac4d 100644
+--- a/lib/attr.c
++++ b/lib/attr.c
+@@ -477,7 +477,7 @@ struct nlattr *nla_reserve(struct nl_msg *msg, int attrtype, int attrlen)
+ 	NL_DBG(2, "msg %p: attr <%p> %d: Reserved %d (%d) bytes at offset +%td "
+ 		  "nlmsg_len=%d\n", msg, nla, nla->nla_type,
+ 		  nla_total_size(attrlen), attrlen,
+-		  (void *) nla - nlmsg_data(msg->nm_nlh),
++		  (char *) nla - (char *) nlmsg_data(msg->nm_nlh),
+ 		  msg->nm_nlh->nlmsg_len);
+ 
+ 	return nla;
+@@ -513,7 +513,7 @@ int nla_put(struct nl_msg *msg, int attrtype, int datalen, const void *data)
+ 		memcpy(nla_data(nla), data, datalen);
+ 		NL_DBG(2, "msg %p: attr <%p> %d: Wrote %d bytes at offset +%td\n",
+ 		       msg, nla, nla->nla_type, datalen,
+-		       (void *) nla - nlmsg_data(msg->nm_nlh));
++		       (char *) nla - (char *) nlmsg_data(msg->nm_nlh));
+ 	}
+ 
+ 	return 0;
+@@ -925,7 +925,7 @@ int nla_nest_end(struct nl_msg *msg, struct nlattr *start)
+ {
+ 	size_t pad, len;
+ 
+-	len = (void *) nlmsg_tail(msg->nm_nlh) - (void *) start;
++	len = (char *) nlmsg_tail(msg->nm_nlh) - (char *) start;
+ 
+ 	if (len == NLA_HDRLEN || len > USHRT_MAX) {
+ 		/*
+@@ -974,7 +974,7 @@ void nla_nest_cancel(struct nl_msg *msg, const struct nlattr *attr)
+ {
+ 	ssize_t len;
+ 
+-	len = (void *) nlmsg_tail(msg->nm_nlh) - (void *) attr;
++	len = (char *) nlmsg_tail(msg->nm_nlh) - (char *) attr;
+ 	if (len < 0)
+ 		BUG();
+ 	else if (len > 0) {
+diff --git a/lib/data.c b/lib/data.c
+index 83ecd03..0123170 100644
+--- a/lib/data.c
++++ b/lib/data.c
+@@ -111,7 +111,7 @@ struct nl_data *nl_data_clone(const struct nl_data *src)
+ int nl_data_append(struct nl_data *data, const void *buf, size_t size)
+ {
+ 	if (size > 0) {
+-		void *d_data = realloc(data->d_data, data->d_size + size);
++		char *d_data = realloc(data->d_data, data->d_size + size);
+ 		if (!d_data)
+ 			return -NLE_NOMEM;
+ 
+diff --git a/lib/genl/genl.c b/lib/genl/genl.c
+index a663ad8..30e8c8b 100644
+--- a/lib/genl/genl.c
++++ b/lib/genl/genl.c
+@@ -259,7 +259,7 @@ void *genlmsg_user_hdr(const struct genlmsghdr *gnlh)
+  */
+ void *genlmsg_user_data(const struct genlmsghdr *gnlh, const int hdrlen)
+ {
+-	return genlmsg_user_hdr(gnlh) + NLMSG_ALIGN(hdrlen);
++	return (char *) genlmsg_user_hdr(gnlh) + NLMSG_ALIGN(hdrlen);
+ }
+ 
+ /**
+@@ -363,7 +363,7 @@ void *genlmsg_put(struct nl_msg *msg, uint32_t port, uint32_t seq, int family,
+ 	NL_DBG(2, "msg %p: Added generic netlink header cmd=%d version=%d\n",
+ 	       msg, cmd, version);
+ 
+-	return nlmsg_data(nlh) + GENL_HDRLEN;
++	return (char *) nlmsg_data(nlh) + GENL_HDRLEN;
+ }
+ 
+ /** @} */
+diff --git a/lib/msg.c b/lib/msg.c
+index 3e27d4e..0ce5887 100644
+--- a/lib/msg.c
++++ b/lib/msg.c
+@@ -407,7 +407,7 @@ struct nl_msg *nlmsg_convert(struct nlmsghdr *hdr)
+  */
+ void *nlmsg_reserve(struct nl_msg *n, size_t len, int pad)
+ {
+-	void *buf = n->nm_nlh;
++	char *buf = (char *) n->nm_nlh;
+ 	size_t nlmsg_len = n->nm_nlh->nlmsg_len;
+ 	size_t tlen;
+ 
+@@ -835,7 +835,7 @@ static void print_genl_hdr(FILE *ofd, void *start)
+ static void *print_genl_msg(struct nl_msg *msg, FILE *ofd, struct nlmsghdr *hdr,
+ 			    struct nl_cache_ops *ops, int *payloadlen)
+ {
+-	void *data = nlmsg_data(hdr);
++	char *data = nlmsg_data(hdr);
+ 
+ 	if (*payloadlen < GENL_HDRLEN)
+ 		return data;
+@@ -898,7 +898,7 @@ static void dump_attrs(FILE *ofd, struct nlattr *attrs, int attrlen,
+ 			prefix_line(ofd, prefix);
+ 			fprintf(ofd, "  [PADDING] %d octets\n",
+ 				padlen);
+-			dump_hex(ofd, nla_data(nla) + alen,
++			dump_hex(ofd, (char *) nla_data(nla) + alen,
+ 				 padlen, prefix);
+ 		}
+ 	}
+diff --git a/lib/object.c b/lib/object.c
+index 64e3b07..aeb4307 100644
+--- a/lib/object.c
++++ b/lib/object.c
+@@ -131,7 +131,7 @@ struct nl_object *nl_object_clone(struct nl_object *obj)
+ 	new->ce_mask = obj->ce_mask;
+ 
+ 	if (size)
+-		memcpy((void *)new + doff, (void *)obj + doff, size);
++		memcpy((char *)new + doff, (char *)obj + doff, size);
+ 
+ 	if (ops->oo_clone) {
+ 		if (ops->oo_clone(new, obj) < 0) {
+-- 
+2.22.0
+

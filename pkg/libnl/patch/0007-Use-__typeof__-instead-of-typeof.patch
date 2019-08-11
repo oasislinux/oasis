@@ -1,0 +1,37 @@
+From 334b5121a678ef1ec200c5b83855b46f6d238756 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 05:15:37 +0000
+Subject: [PATCH] Use __typeof__ instead of typeof
+
+---
+ include/netlink/list.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/netlink/list.h b/include/netlink/list.h
+index a5ce74f..f116126 100644
+--- a/include/netlink/list.h
++++ b/include/netlink/list.h
+@@ -78,15 +78,15 @@ static inline int nl_list_empty(struct nl_list_head *head)
+ 	nl_list_entry((head)->next, type, member)
+ 
+ #define nl_list_for_each_entry(pos, head, member)				\
+-	for (pos = nl_list_entry((head)->next, typeof(*pos), member);	\
++	for (pos = nl_list_entry((head)->next, __typeof__(*pos), member);	\
+ 	     &(pos)->member != (head); 	\
+-	     (pos) = nl_list_entry((pos)->member.next, typeof(*(pos)), member))
++	     (pos) = nl_list_entry((pos)->member.next, __typeof__(*(pos)), member))
+ 
+ #define nl_list_for_each_entry_safe(pos, n, head, member)			\
+-	for (pos = nl_list_entry((head)->next, typeof(*pos), member),	\
+-		n = nl_list_entry(pos->member.next, typeof(*pos), member);	\
++	for (pos = nl_list_entry((head)->next, __typeof__(*pos), member),	\
++		n = nl_list_entry(pos->member.next, __typeof__(*pos), member);	\
+ 	     &(pos)->member != (head); 					\
+-	     pos = n, n = nl_list_entry(n->member.next, typeof(*n), member))
++	     pos = n, n = nl_list_entry(n->member.next, __typeof__(*n), member))
+ 
+ #define nl_init_list_head(head) \
+ 	do { (head)->next = (head); (head)->prev = (head); } while (0)
+-- 
+2.22.0
+

@@ -1,0 +1,39 @@
+From 90733be9145ba1d977ec23f21eae45b062dc8bcf Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 11 Aug 2019 21:55:54 +0000
+Subject: [PATCH] Avoid initialization of flexible array member
+
+---
+ include/netlink-private/cache-api.h | 2 +-
+ include/netlink-private/netlink.h   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/netlink-private/cache-api.h b/include/netlink-private/cache-api.h
+index c684e79..82be310 100644
+--- a/include/netlink-private/cache-api.h
++++ b/include/netlink-private/cache-api.h
+@@ -259,7 +259,7 @@ struct nl_cache_ops
+ 	struct genl_ops *	co_genl;
+ 
+ 	/* Message type definition */
+-	struct nl_msgtype	co_msgtypes[];
++	struct nl_msgtype	*co_msgtypes;
+ };
+ 
+ /** @} */
+diff --git a/include/netlink-private/netlink.h b/include/netlink-private/netlink.h
+index d9a3597..531940f 100644
+--- a/include/netlink-private/netlink.h
++++ b/include/netlink-private/netlink.h
+@@ -201,7 +201,7 @@ static inline const char *nl_cache_name(struct nl_cache *cache)
+ }
+ 
+ #define GENL_FAMILY(id, name) \
+-	{ \
++	(struct nl_msgtype[]){ \
+ 		{ id, NL_ACT_UNSPEC, name }, \
+ 		END_OF_MSGTYPES_LIST, \
+ 	}
+-- 
+2.22.0
+
