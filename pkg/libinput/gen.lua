@@ -18,9 +18,11 @@ lib('libinput.a', [[
 		evdev.c
 		evdev-debounce.c
 		evdev-fallback.c
+		evdev-totem.c
 		evdev-middle-button.c
 		evdev-mt-touchpad.c
 		evdev-mt-touchpad-tap.c
+		evdev-mt-touchpad-thumb.c
 		evdev-mt-touchpad-buttons.c
 		evdev-mt-touchpad-edge-scroll.c
 		evdev-mt-touchpad-gestures.c
@@ -53,9 +55,8 @@ local quirks = {
 	'30-vendor-aiptek.quirks',
 	'30-vendor-alps.quirks',
 	'30-vendor-contour.quirks',
-	'30-vendor-cyapa.quirks',
+	'30-vendor-cypress.quirks',
 	'30-vendor-elantech.quirks',
-	'30-vendor-huion.quirks',
 	'30-vendor-ibm.quirks',
 	'30-vendor-kensington.quirks',
 	'30-vendor-logitech.quirks',
