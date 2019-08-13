@@ -1,6 +1,6 @@
 cflags{
 	'-std=c90',
-	'-D _POSIX_C_SOURCE=200809L',
+	'-D _XOPEN_SOURCE=700',
 	'-I $outdir',
 	'-I $srcdir',
 }
