@@ -1,0 +1,41 @@
+From 0e209181497d1bd3db35c390fdf05ae58e3d81eb Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 13 Aug 2019 22:27:49 +0000
+Subject: [PATCH] Use generic padding instead of 128-bit integers
+
+---
+ src/x86/ffi64.c | 14 +-------------
+ 1 file changed, 1 insertion(+), 13 deletions(-)
+
+diff --git a/src/x86/ffi64.c b/src/x86/ffi64.c
+index 5a5e043..fb9ab13 100644
+--- a/src/x86/ffi64.c
++++ b/src/x86/ffi64.c
+@@ -38,23 +38,11 @@
+ #define MAX_GPR_REGS 6
+ #define MAX_SSE_REGS 8
+ 
+-#if defined(__INTEL_COMPILER)
+-#include "xmmintrin.h"
+-#define UINT128 __m128
+-#else
+-#if defined(__SUNPRO_C)
+-#include <sunmedia_types.h>
+-#define UINT128 __m128i
+-#else
+-#define UINT128 __int128_t
+-#endif
+-#endif
+-
+ union big_int_union
+ {
+   UINT32 i32;
+   UINT64 i64;
+-  UINT128 i128;
++  char pad[16];
+ };
+ 
+ struct register_args
+-- 
+2.22.0
+

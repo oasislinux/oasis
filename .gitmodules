@@ -106,6 +106,7 @@
 [submodule "pkg/libffi/src"]
 	path = pkg/libffi/src
 	url = https://github.com/libffi/libffi
+	ignore = all
 [submodule "pkg/libinput/src"]
 	path = pkg/libinput/src
 	url = https://github.com/oasislinux/libinput

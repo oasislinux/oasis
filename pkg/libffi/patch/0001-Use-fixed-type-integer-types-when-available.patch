@@ -1,0 +1,36 @@
+From 8aee4bf7573a7d52c0e3a84e03a964222e13f4c2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 13 Aug 2019 22:20:39 +0000
+Subject: [PATCH] Use fixed-type integer types when available
+
+This avoids the use of gcc attributes to select the integer width.
+---
+ include/ffi_common.h | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/include/ffi_common.h b/include/ffi_common.h
+index 37f5a9e..56145f4 100644
+--- a/include/ffi_common.h
++++ b/include/ffi_common.h
+@@ -91,7 +91,17 @@ typedef struct
+ } extended_cif;
+ 
+ /* Terse sized type definitions.  */
+-#if defined(_MSC_VER) || defined(__sgi) || defined(__SUNPRO_C)
++#if __STDC_VERSION__ >= 199901L
++# include <inttypes.h>
++typedef uint8_t UINT8;
++typedef int8_t SINT8;
++typedef uint16_t UINT16;
++typedef int16_t SINT16;
++typedef uint32_t UINT32;
++typedef int32_t SINT32;
++typedef uint64_t UINT64;
++typedef int64_t SINT64;
++#elif defined(_MSC_VER) || defined(__sgi) || defined(__SUNPRO_C)
+ typedef unsigned char UINT8;
+ typedef signed char   SINT8;
+ typedef unsigned short UINT16;
+-- 
+2.22.0
+

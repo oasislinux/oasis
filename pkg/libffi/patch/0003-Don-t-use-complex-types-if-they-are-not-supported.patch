@@ -1,0 +1,26 @@
+From 11d46eaa4293840e7a4c1dde18f75453bfaca54e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 13 Aug 2019 22:28:49 +0000
+Subject: [PATCH] Don't use complex types if they are not supported
+
+---
+ src/x86/ffitarget.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/x86/ffitarget.h b/src/x86/ffitarget.h
+index a236677..709140d 100644
+--- a/src/x86/ffitarget.h
++++ b/src/x86/ffitarget.h
+@@ -50,7 +50,9 @@
+ #endif
+ 
+ #define FFI_TARGET_SPECIFIC_STACK_SPACE_ALLOCATION
++#ifndef __STDC_NO_COMPLEX__
+ #define FFI_TARGET_HAS_COMPLEX_TYPE
++#endif
+ 
+ /* ---- Generic type definitions ----------------------------------------- */
+ 
+-- 
+2.22.0
+
