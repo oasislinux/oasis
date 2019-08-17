@@ -1,4 +1,4 @@
-# 2,<xzcat git-manpages-2.22.1.tar.xz | pax -s '/\.\///' '*.[1-9]' | sort
+# 2,<xzcat git-manpages-2.23.0.tar.xz | pax -s '/\.\///' '*.[1-9]' | sort
 man1/git-add.1
 man1/git-am.1
 man1/git-annotate.1
@@ -110,6 +110,7 @@ man1/git-replace.1
 man1/git-request-pull.1
 man1/git-rerere.1
 man1/git-reset.1
+man1/git-restore.1
 man1/git-rev-list.1
 man1/git-rev-parse.1
 man1/git-revert.1
@@ -131,6 +132,7 @@ man1/git-status.1
 man1/git-stripspace.1
 man1/git-submodule.1
 man1/git-svn.1
+man1/git-switch.1
 man1/git-symbolic-ref.1
 man1/git-tag.1
 man1/git-unpack-file.1

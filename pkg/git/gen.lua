@@ -286,6 +286,7 @@ local builtins = {
 	'diff-tree',
 	'diff',
 	'difftool',
+	'env--helper',
 	'fast-export',
 	'fetch-pack',
 	'fetch',
@@ -377,9 +378,11 @@ local syms = {
 	'fsck-objects',
 	'init',
 	'merge-subtree',
+	'restore',
 	'show',
 	'stage',
 	'status',
+	'switch',
 	'whatchanged',
 }
 for name in iterstrings(syms) do
@@ -429,8 +432,6 @@ x('web--browse', '755')
 -- src/Makefile:/^SCRIPT_LIB.\+=
 x('mergetool--lib', '644')
 x('parse-remote', '644')
-x('rebase--am', '644')
-x('rebase--common', '644')
 x('rebase--preserve-merges', '644')
 x('sh-setup', '644')
 x('sh-i18n', '644')
