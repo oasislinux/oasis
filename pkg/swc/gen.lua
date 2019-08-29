@@ -1,4 +1,5 @@
 cflags{
+	'-Wall',
 	'-D _GNU_SOURCE',
 	'-D screen_new=swc__screen_new',
 	'-D remove_resource=swc__remove_resource',
@@ -59,10 +60,10 @@ lib('libswc.a', [[
 	libswc/(
 		bindings.c
 		compositor.c
-		cursor_plane.c
 		data.c
 		data_device.c
 		data_device_manager.c
+		dmabuf.c
 		drm.c
 		input.c
 		keyboard.c
@@ -71,13 +72,14 @@ lib('libswc.a', [[
 		output.c
 		panel.c
 		panel_manager.c
+		plane.c
 		pointer.c
 		primary_plane.c
 		region.c
 		screen.c
-		seat.c
 		shell.c
 		shell_surface.c
+		seat.c
 		shm.c
 		subcompositor.c
 		subsurface.c
@@ -95,6 +97,7 @@ lib('libswc.a', [[
 		pkg/libinput/libinput.a.d
 		pkg/libxkbcommon/libxkbcommon.a
 		pkg/wayland-protocols/xdg-shell-protocol.c.o
+		pkg/wayland-protocols/linux-dmabuf-unstable-v1-protocol.c.o
 		pkg/wayland/libwayland-server.a.d
 		pkg/wld/libwld.a.d
 	)

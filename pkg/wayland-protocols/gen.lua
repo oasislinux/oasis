@@ -12,11 +12,19 @@ waylandproto('unstable/idle-inhibit/idle-inhibit-unstable-v1.xml', {
 	code='idle-inhibit-v1-protocol.c'
 })
 
+waylandproto('unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml', {
+	client='include/linux-dmabuf-unstable-v1-client-protocol.h',
+	server='include/linux-dmabuf-unstable-v1-server-protocol.h',
+	code='linux-dmabuf-unstable-v1-protocol.c',
+})
+
 pkg.hdrs = {
 	'$outdir/include/xdg-shell-client-protocol.h',
 	'$outdir/include/xdg-shell-server-protocol.h',
 	'$outdir/include/idle-inhibit-unstable-v1-client-protocol.h',
 	'$outdir/include/idle-inhibit-unstable-v1-server-protocol.h',
+	'$outdir/include/linux-dmabuf-unstable-v1-client-protocol.h',
+	'$outdir/include/linux-dmabuf-unstable-v1-server-protocol.h',
 }
 
 fetch 'git'
