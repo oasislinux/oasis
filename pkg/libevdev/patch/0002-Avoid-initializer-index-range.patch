@@ -1,4 +1,4 @@
-From 3ff74cb7e1f62fe95b77f74a5428bc4c787627b7 Mon Sep 17 00:00:00 2001
+From 2c63dd5278059b4513a265299915c4237e5b0178 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 17:14:18 -0700
 Subject: [PATCH] Avoid initializer index range
@@ -9,10 +9,10 @@ Subject: [PATCH] Avoid initializer index range
  2 files changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/libevdev/libevdev.c b/libevdev/libevdev.c
-index e5abe91..1dc71ed 100644
+index d750186..29cb615 100644
 --- a/libevdev/libevdev.c
 +++ b/libevdev/libevdev.c
-@@ -1639,7 +1639,7 @@ libevdev_property_get_name(unsigned int prop)
+@@ -1708,7 +1708,7 @@ libevdev_property_get_name(unsigned int prop)
  LIBEVDEV_EXPORT int
  libevdev_event_type_get_max(unsigned int type)
  {
@@ -34,5 +34,5 @@ index 716c1d7..de3a725 100755
  		if prefix in ["BTN_", "EV_", "INPUT_PROP_", "MT_TOOL_"]:
  			continue
 -- 
-2.20.1
+2.23.0
 
