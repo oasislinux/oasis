@@ -1,4 +1,4 @@
-From 31b2b7afa23a282fb9c960651571802d5779ac6b Mon Sep 17 00:00:00 2001
+From fcfbed8db1c746bd938ac6a548036af95b678341 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 23:17:47 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -162,10 +162,10 @@ index 8d7ee137..3ee98648 100644
  /** MAX 2**x exponent of alloced chunks, for 1Mbytes.  The smallest
   * chunk is 16bytes (8preamble+8data), so 0-3 is unused. */
 diff --git a/xfrd.c b/xfrd.c
-index 48339c54..e90dc4f9 100644
+index 3865747a..89713236 100644
 --- a/xfrd.c
 +++ b/xfrd.c
-@@ -2463,7 +2463,7 @@ static void
+@@ -2465,7 +2465,7 @@ static void
  xfrd_process_stat_info_task(xfrd_state_type* xfrd, struct task_list_d* task)
  {
  	size_t i;
@@ -175,5 +175,5 @@ index 48339c54..e90dc4f9 100644
  	for(i=0; i<xfrd->nsd->child_count; i++) {
  		xfrd->nsd->children[i].query_count += *p++;
 -- 
-2.22.0
+2.23.0
 
