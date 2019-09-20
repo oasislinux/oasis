@@ -16,11 +16,11 @@ build('sed', '$outdir/include/wayland-version.h', '$srcdir/src/wayland-version.h
 	},
 })
 
-waylandproto('protocol/wayland.xml',
-	'include/wayland-client-protocol.h',
-	'include/wayland-server-protocol.h',
-	'src/wayland-protocol.c'
-)
+waylandproto('protocol/wayland.xml', {
+	client='include/wayland-client-protocol.h',
+	server='include/wayland-server-protocol.h',
+	code='src/wayland-protocol.c'
+})
 
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/src', {

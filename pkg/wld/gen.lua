@@ -48,11 +48,11 @@ if config.video_drivers and config.video_drivers['nouveau'] then
 	table.insert(libs, 'libdrm/libdrm_nouveau.a')
 end
 
-waylandproto('protocol/wayland-drm.xml',
-	'protocol/wayland-drm-client-protocol.h',
-	'protocol/wayland-drm-server-protocol.h',
-	'wayland-drm-protocol.c'
-)
+waylandproto('protocol/wayland-drm.xml', {
+	client='protocol/wayland-drm-client-protocol.h',
+	server='protocol/wayland-drm-server-protocol.h',
+	code='wayland-drm-protocol.c'
+})
 
 pkg.deps = {
 	'$outdir/protocol/wayland-drm-client-protocol.h',
