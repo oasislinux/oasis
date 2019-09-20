@@ -5,7 +5,7 @@ cflags{
 }
 
 lib('libexpat.a', [[
-	expat/lib/(loadlibrary.c xmlparse.c xmltok.c xmlrole.c)
+	expat/lib/(xmlparse.c xmltok.c xmlrole.c)
 	$builddir/pkg/openbsd/libbsd.a.d
 ]])
 

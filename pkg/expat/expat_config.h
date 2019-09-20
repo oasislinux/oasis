@@ -14,7 +14,7 @@
 #define HAVE_STDLIB_H 1
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
-/* #undef HAVE_SYSCALL_GETRANDOM */
+#define HAVE_SYSCALL_GETRANDOM 1
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TYPES_H 1
@@ -23,12 +23,12 @@
 #define PACKAGE "expat"
 #define PACKAGE_BUGREPORT "expat-bugs@libexpat.org"
 #define PACKAGE_NAME "expat"
-#define PACKAGE_STRING "expat 2.2.7"
+#define PACKAGE_STRING "expat 2.2.8"
 #define PACKAGE_TARNAME "expat"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.2.7"
+#define PACKAGE_VERSION "2.2.8"
 #define STDC_HEADERS 1
-#define VERSION "2.2.7"
+#define VERSION "2.2.8"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
@@ -38,6 +38,7 @@
 /* #  undef WORDS_BIGENDIAN */
 # endif
 #endif
+/* #undef XML_ATTR_INFO */
 #define XML_CONTEXT_BYTES 1024
 #define XML_DEV_URANDOM 1
 #define XML_DTD 1
