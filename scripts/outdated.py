@@ -19,6 +19,8 @@ names = {
 }
 skip = set([
 	'adobe-source-fonts',
+	'cproc',
+	'libutp',
 	'mc',
 	'openbsd',
 	'plan9port',
