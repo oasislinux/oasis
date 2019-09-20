@@ -13,10 +13,10 @@ sources:
 secrets:
 - 0d338ffe-699f-4e82-85a0-3a4407172bed
 environment:
-  PATH: $HOME/toolchain/bin:$HOME/oasis/out/pkg/texi2mdoc:$PATH
-  PAXREAD: '"bsdtar -x -f -"'
-  GIT_SSH_COMMAND: '"ssh -o StrictHostKeyChecking=no"'
-  SETS: '"core desktop devel extra media net"'
+  PATH: /home/build/toolchain/bin:/home/build/oasis/out/pkg/texi2mdoc:/usr/sbin:/usr/bin:/sbin:/bin
+  PAXREAD: bsdtar -x -f -
+  GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
+  SETS: core desktop devel extra media net
 tasks:
 - setup: |
     git config --global user.name oasis
