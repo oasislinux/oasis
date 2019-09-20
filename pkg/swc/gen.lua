@@ -18,7 +18,11 @@ cflags{
 
 cc('launch/protocol.c')
 
-waylandproto('protocol/swc.xml', 'include/swc-client-protocol.h', 'include/swc-server-protocol.h', 'swc-protocol.c')
+waylandproto('protocol/swc.xml', {
+	client='include/swc-client-protocol.h',
+	server='include/swc-server-protocol.h',
+	code='swc-protocol.c',
+})
 
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/libswc', {'swc.h'}),

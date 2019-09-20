@@ -9,10 +9,11 @@ cflags{
 	'-I $builddir/pkg/wld/include',
 }
 
-waylandproto('protocol/velox.xml',
-	'protocol/velox-client-protocol.h',
-	'protocol/velox-server-protocol.h',
-	'velox-protocol.c')
+waylandproto('protocol/velox.xml', {
+	client='protocol/velox-client-protocol.h',
+	server='protocol/velox-server-protocol.h',
+	code='velox-protocol.c',
+})
 build('copy', '$outdir/protocol/swc-client-protocol.h', '$builddir/pkg/swc/include/swc-client-protocol.h')
 
 pkg.deps = {
