@@ -48,7 +48,7 @@ lib('libcurl.a', [[
 		http_digest.c md4.c md5.c http_negotiate.c inet_pton.c strtoofft.c
 		strerror.c amigaos.c hostasyn.c hostip4.c hostip6.c hostsyn.c
 		inet_ntop.c parsedate.c select.c tftp.c splay.c strdup.c socks.c
-		ssh.c ssh-libssh.c curl_addrinfo.c socks_gssapi.c socks_sspi.c
+		curl_addrinfo.c socks_gssapi.c socks_sspi.c
 		curl_sspi.c slist.c nonblock.c curl_memrchr.c imap.c pop3.c smtp.c
 		pingpong.c rtsp.c curl_threads.c warnless.c hmac.c curl_rtmp.c
 		openldap.c curl_gethostname.c gopher.c idn_win32.c
@@ -70,6 +70,8 @@ lib('libcurl.a', [[
 			wolfssl.c schannel.c schannel_verify.c
 			sectransp.c gskit.c mbedtls.c mesalink.c
 		)
+		vquic/(ngtcp2.c quiche.c)
+		vssh/(libssh2.c libssh.c)
 	)
 	$builddir/pkg/(
 		libressl/libssl.a.d
@@ -115,6 +117,7 @@ exe('curl', [[
 		tool_panykey.c
 		tool_paramhlp.c
 		tool_parsecfg.c
+		tool_progress.c
 		tool_strdup.c
 		tool_setopt.c
 		tool_sleep.c

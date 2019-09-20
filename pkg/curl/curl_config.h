@@ -159,6 +159,9 @@
 #define HAVE_NETINET_TCP_H 1
 #define HAVE_NET_IF_H 1
 /* #undef HAVE_NGHTTP2_NGHTTP2_H */
+/* #undef HAVE_NGHTTP3_NGHTTP3_H */
+/* #undef HAVE_NGTCP2_NGTCP2_CRYPTO_H */
+/* #undef HAVE_NGTCP2_NGTCP2_H */
 /* #undef HAVE_OLD_GSSMIT */
 #define HAVE_OPENSSL_CRYPTO_H 1
 #define HAVE_OPENSSL_ERR_H 1
@@ -178,6 +181,7 @@
 /* #undef HAVE_PROTO_BSDSOCKET_H */
 #define HAVE_PTHREAD_H 1
 #define HAVE_PWD_H 1
+/* #undef HAVE_QUICHE_H */
 /* #undef HAVE_RAND_EGD */
 #define HAVE_RECV 1
 /* #undef HAVE_RSA_H */
@@ -243,6 +247,7 @@
 #define HAVE_TIME_H 1
 /* #undef HAVE_TIME_T_UNSIGNED */
 #define HAVE_UNISTD_H 1
+#define HAVE_USLEEP 1
 #define HAVE_UTIME 1
 #define HAVE_UTIMES 1
 #define HAVE_UTIME_H 1
@@ -320,9 +325,13 @@
 /* #undef USE_MESALINK */
 /* #undef USE_METALINK */
 /* #undef USE_NGHTTP2 */
+/* #undef USE_NGHTTP3 */
+/* #undef USE_NGTCP2 */
+/* #undef USE_NGTCP2_CRYPTO_OPENSSL */
 /* #undef USE_NSS */
 /* #undef USE_OPENLDAP */
 #define USE_OPENSSL 1
+/* #undef USE_QUICHE */
 /* #undef USE_SCHANNEL */
 /* #undef USE_SECTRANSP */
 #define USE_THREADS_POSIX 1
