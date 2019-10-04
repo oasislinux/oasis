@@ -1,4 +1,4 @@
-From e23b765a6419159a50d70eab4f4df6a940af699c Mon Sep 17 00:00:00 2001
+From 7bd30736765189bac13c4de5f9376c24bf5a3b33 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 17 Jun 2019 23:17:13 -0700
 Subject: [PATCH] Remove extra ';' when symbol versions are disabled
@@ -10,10 +10,10 @@ Subject: [PATCH] Remove extra ';' when symbol versions are disabled
  3 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/lib/fuse.c b/lib/fuse.c
-index ec6cc59..e75efcd 100755
+index 229e139..a22fab1 100755
 --- a/lib/fuse.c
 +++ b/lib/fuse.c
-@@ -4525,7 +4525,7 @@ int fuse_loop(struct fuse *f)
+@@ -4526,7 +4526,7 @@ int fuse_loop(struct fuse *f)
  	return fuse_session_loop(f->se);
  }
  
@@ -22,7 +22,7 @@ index ec6cc59..e75efcd 100755
  int fuse_loop_mt_32(struct fuse *f, struct fuse_loop_config *config)
  {
  	if (f == NULL)
-@@ -4541,7 +4541,7 @@ int fuse_loop_mt_32(struct fuse *f, struct fuse_loop_config *config)
+@@ -4542,7 +4542,7 @@ int fuse_loop_mt_32(struct fuse *f, struct fuse_loop_config *config)
  }
  
  int fuse_loop_mt_31(struct fuse *f, int clone_fd);
@@ -31,7 +31,7 @@ index ec6cc59..e75efcd 100755
  int fuse_loop_mt_31(struct fuse *f, int clone_fd)
  {
  	struct fuse_loop_config config;
-@@ -4826,7 +4826,7 @@ void fuse_stop_cleanup_thread(struct fuse *f)
+@@ -4827,7 +4827,7 @@ void fuse_stop_cleanup_thread(struct fuse *f)
  }
  
  
@@ -40,7 +40,7 @@ index ec6cc59..e75efcd 100755
  struct fuse *fuse_new_31(struct fuse_args *args,
  		      const struct fuse_operations *op,
  		      size_t op_size, void *user_data)
-@@ -4980,7 +4980,7 @@ out:
+@@ -4981,7 +4981,7 @@ out:
  /* Emulates 3.0-style fuse_new(), which processes --help */
  struct fuse *fuse_new_30(struct fuse_args *args, const struct fuse_operations *op,
  			 size_t op_size, void *private_data);
@@ -50,7 +50,7 @@ index ec6cc59..e75efcd 100755
  			 const struct fuse_operations *op,
  			 size_t op_size, void *user_data)
 diff --git a/lib/fuse_loop_mt.c b/lib/fuse_loop_mt.c
-index 83f1641..753a6e9 100644
+index 445e9a0..97f56db 100644
 --- a/lib/fuse_loop_mt.c
 +++ b/lib/fuse_loop_mt.c
 @@ -304,7 +304,7 @@ static void fuse_join_worker(struct fuse_mt *mt, struct fuse_worker *w)
@@ -85,5 +85,5 @@ index d4b82e6..cdb1850 100644
  #define FUSE_SYMVER(x)
  #endif
 -- 
-2.20.1
+2.23.0
 

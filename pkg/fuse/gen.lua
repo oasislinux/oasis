@@ -15,6 +15,7 @@ lib('libfuse.a', [[lib/(
 	fuse_lowlevel.c fuse_opt.c
 	fuse_signals.c buffer.c cuse_lowlevel.c
 	helper.c modules/subdir.c mount_util.c.o
+	fuse_log.c
 	mount.c
 )]])
 
