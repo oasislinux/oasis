@@ -1,4 +1,4 @@
-From cced9508238bd4ea087986ad683661cd7f27df27 Mon Sep 17 00:00:00 2001
+From f69248c97b449709b54d4f431ff965c0dc7e2148 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 16:03:55 -0700
 Subject: [PATCH] ip: Fix get_link_kind when linked statically
@@ -8,10 +8,10 @@ Subject: [PATCH] ip: Fix get_link_kind when linked statically
  1 file changed, 86 insertions(+), 9 deletions(-)
 
 diff --git a/ip/iplink.c b/ip/iplink.c
-index 3e86ec5a..27a33591 100644
+index 43f86189..a9fc9b11 100644
 --- a/ip/iplink.c
 +++ b/ip/iplink.c
-@@ -149,21 +149,98 @@ struct link_util *get_link_kind(const char *id)
+@@ -150,21 +150,98 @@ struct link_util *get_link_kind(const char *id)
  	char buf[256];
  	struct link_util *l;
  
@@ -120,5 +120,5 @@ index 3e86ec5a..27a33591 100644
  	snprintf(buf, sizeof(buf), "%s_link_util", id);
  	l = dlsym(dlh, buf);
 -- 
-2.22.0
+2.23.0
 

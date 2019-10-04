@@ -1,0 +1,25 @@
+From b6e8de281dc67c4d12eaf54d39bfc056a8c1056b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 3 Oct 2019 23:36:32 -0700
+Subject: [PATCH] Prevent multiple definitions of global
+
+---
+ lib/rt_names.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/lib/rt_names.c b/lib/rt_names.c
+index 41cccfb8..66f2d984 100644
+--- a/lib/rt_names.c
++++ b/lib/rt_names.c
+@@ -27,8 +27,6 @@
+ 
+ #define NAME_MAX_LEN 512
+ 
+-int numeric;
+-
+ struct rtnl_hash_entry {
+ 	struct rtnl_hash_entry	*next;
+ 	const char		*name;
+-- 
+2.23.0
+

@@ -1,4 +1,4 @@
-From a343504a3158d52e58161c5f0f87962595250809 Mon Sep 17 00:00:00 2001
+From fc4d606317d20f72c929e01a60adbbe21f28d0a3 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -13,10 +13,10 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  6 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/include/libnetlink.h b/include/libnetlink.h
-index 0205af80..ec2eea30 100644
+index 311cf3fc..2f80d4c4 100644
 --- a/include/libnetlink.h
 +++ b/include/libnetlink.h
-@@ -163,7 +163,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
+@@ -168,7 +168,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
  int rta_nest_end(struct rtattr *rta, struct rtattr *nest);
  
  #define RTA_TAIL(rta) \
@@ -25,7 +25,7 @@ index 0205af80..ec2eea30 100644
  				    RTA_ALIGN((rta)->rta_len)))
  
  #define parse_rtattr_nested(tb, max, rta) \
-@@ -226,7 +226,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
+@@ -231,7 +231,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
  		   void *jarg);
  
  #define NLMSG_TAIL(nmsg) \
@@ -48,7 +48,7 @@ index ea126b08..f24586d4 100644
  	open_json_object(NULL);
  	if (tb[FOU_ATTR_PORT])
 diff --git a/ip/ipila.c b/ip/ipila.c
-index 11fbb5fa..563ce9cb 100644
+index 739ee4e1..50c8c300 100644
 --- a/ip/ipila.c
 +++ b/ip/ipila.c
 @@ -95,7 +95,7 @@ static int print_ila_mapping(struct nlmsghdr *n, void *arg)
@@ -61,10 +61,10 @@ index 11fbb5fa..563ce9cb 100644
  	open_json_object(NULL);
  	print_ila_locid("locator_match", ILA_ATTR_LOCATOR_MATCH, tb);
 diff --git a/ip/ipseg6.c b/ip/ipseg6.c
-index 33076e72..72ee01bf 100644
+index 56a76996..1c3c3bf5 100644
 --- a/ip/ipseg6.c
 +++ b/ip/ipseg6.c
-@@ -114,7 +114,7 @@ static int process_msg(struct nlmsghdr *n, void *arg)
+@@ -115,7 +115,7 @@ static int process_msg(struct nlmsghdr *n, void *arg)
  
  	ghdr = NLMSG_DATA(n);
  
@@ -74,10 +74,10 @@ index 33076e72..72ee01bf 100644
  	open_json_object(NULL);
  	switch (ghdr->cmd) {
 diff --git a/lib/libnetlink.c b/lib/libnetlink.c
-index 028d5502..5a13898c 100644
+index 8c490f89..8fbdfeee 100644
 --- a/lib/libnetlink.c
 +++ b/lib/libnetlink.c
-@@ -1238,7 +1238,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
+@@ -1271,7 +1271,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
  	}
  
  	memcpy(NLMSG_TAIL(n), data, len);
@@ -86,7 +86,7 @@ index 028d5502..5a13898c 100644
  	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len);
  	return 0;
  }
-@@ -1253,7 +1253,7 @@ struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type)
+@@ -1286,7 +1286,7 @@ struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type)
  
  int addattr_nest_end(struct nlmsghdr *n, struct rtattr *nest)
  {
@@ -95,7 +95,7 @@ index 028d5502..5a13898c 100644
  	return n->nlmsg_len;
  }
  
-@@ -1269,9 +1269,9 @@ struct rtattr *addattr_nest_compat(struct nlmsghdr *n, int maxlen, int type,
+@@ -1302,9 +1302,9 @@ struct rtattr *addattr_nest_compat(struct nlmsghdr *n, int maxlen, int type,
  
  int addattr_nest_compat_end(struct nlmsghdr *n, struct rtattr *start)
  {
@@ -107,7 +107,7 @@ index 028d5502..5a13898c 100644
  	addattr_nest_end(n, nest);
  	return n->nlmsg_len;
  }
-@@ -1342,7 +1342,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type)
+@@ -1376,7 +1376,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type)
  
  int rta_nest_end(struct rtattr *rta, struct rtattr *nest)
  {
@@ -116,7 +116,7 @@ index 028d5502..5a13898c 100644
  
  	return rta->rta_len;
  }
-@@ -1391,7 +1391,7 @@ int __parse_rtattr_nested_compat(struct rtattr *tb[], int max,
+@@ -1425,7 +1425,7 @@ int __parse_rtattr_nested_compat(struct rtattr *tb[], int max,
  	if (RTA_PAYLOAD(rta) < len)
  		return -1;
  	if (RTA_PAYLOAD(rta) >= RTA_ALIGN(len) + sizeof(struct rtattr)) {
@@ -126,10 +126,10 @@ index 028d5502..5a13898c 100644
  	}
  	memset(tb, 0, sizeof(struct rtattr *) * (max + 1));
 diff --git a/lib/utils.c b/lib/utils.c
-index be0f11b0..7f8a7da1 100644
+index 95d46ff2..21a87b7c 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
-@@ -1534,7 +1534,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
+@@ -1523,7 +1523,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
  
  	len = RTA_PAYLOAD(rta);
  	if (len < size)
@@ -139,5 +139,5 @@ index be0f11b0..7f8a7da1 100644
  		len = size;
  
 -- 
-2.22.0
+2.23.0
 
