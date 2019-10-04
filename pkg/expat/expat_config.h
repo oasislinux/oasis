@@ -23,12 +23,12 @@
 #define PACKAGE "expat"
 #define PACKAGE_BUGREPORT "expat-bugs@libexpat.org"
 #define PACKAGE_NAME "expat"
-#define PACKAGE_STRING "expat 2.2.8"
+#define PACKAGE_STRING "expat 2.2.9"
 #define PACKAGE_TARNAME "expat"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.2.8"
+#define PACKAGE_VERSION "2.2.9"
 #define STDC_HEADERS 1
-#define VERSION "2.2.8"
+#define VERSION "2.2.9"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
