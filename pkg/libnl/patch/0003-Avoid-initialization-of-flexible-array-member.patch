@@ -1,4 +1,4 @@
-From 90733be9145ba1d977ec23f21eae45b062dc8bcf Mon Sep 17 00:00:00 2001
+From d1f59de10a2fbce42735b3a1938ecd4d60c8e205 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 11 Aug 2019 21:55:54 +0000
 Subject: [PATCH] Avoid initialization of flexible array member
@@ -22,10 +22,10 @@ index c684e79..82be310 100644
  
  /** @} */
 diff --git a/include/netlink-private/netlink.h b/include/netlink-private/netlink.h
-index d9a3597..531940f 100644
+index fca3133..1148cec 100644
 --- a/include/netlink-private/netlink.h
 +++ b/include/netlink-private/netlink.h
-@@ -201,7 +201,7 @@ static inline const char *nl_cache_name(struct nl_cache *cache)
+@@ -200,7 +200,7 @@ static inline const char *nl_cache_name(struct nl_cache *cache)
  }
  
  #define GENL_FAMILY(id, name) \
@@ -35,5 +35,5 @@ index d9a3597..531940f 100644
  		END_OF_MSGTYPES_LIST, \
  	}
 -- 
-2.22.0
+2.23.0
 

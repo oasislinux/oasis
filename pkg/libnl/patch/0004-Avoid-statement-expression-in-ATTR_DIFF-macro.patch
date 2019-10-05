@@ -1,4 +1,4 @@
-From 84eb9f312cc183e98d97805eda9d5e5bef7542b6 Mon Sep 17 00:00:00 2001
+From e56f5df0379c7dc70f6ce61a31167185daa51cae Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 11 Aug 2019 21:57:03 +0000
 Subject: [PATCH] Avoid statement expression in ATTR_DIFF macro
@@ -24,5 +24,5 @@ index 517e672..269cd4b 100644
  /**
   * Object Operations
 -- 
-2.22.0
+2.23.0
 

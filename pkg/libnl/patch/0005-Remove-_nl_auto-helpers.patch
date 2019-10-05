@@ -1,0 +1,238 @@
+From 558f898c413bd46423c6b07073422fc6fc18769c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 4 Oct 2019 18:13:36 -0700
+Subject: [PATCH] Remove _nl_auto helpers
+
+These use non-standard __attribute__((cleanup)) and statement
+expressions.
+---
+ include/netlink-private/utils.h | 49 ---------------------------------
+ lib/genl/mngt.c                 | 10 +++++--
+ lib/xfrm/sa.c                   | 24 ++++++++--------
+ 3 files changed, 19 insertions(+), 64 deletions(-)
+
+diff --git a/include/netlink-private/utils.h b/include/netlink-private/utils.h
+index f33a2f8..1456797 100644
+--- a/include/netlink-private/utils.h
++++ b/include/netlink-private/utils.h
+@@ -67,7 +67,6 @@
+ /*****************************************************************************/
+ 
+ #define _nl_unused                  __attribute__ ((__unused__))
+-#define _nl_auto(fcn)               __attribute__ ((__cleanup__(fcn)))
+ 
+ /*****************************************************************************/
+ 
+@@ -83,18 +82,6 @@
+ 
+ /*****************************************************************************/
+ 
+-#define _NL_AUTO_DEFINE_FCN_VOID0(CastType, name, func) \
+-static inline void name (void *v) \
+-{ \
+-	if (*((CastType *) v)) \
+-		func (*((CastType *) v)); \
+-}
+-
+-#define _nl_auto_free _nl_auto(_nl_auto_free_fcn)
+-_NL_AUTO_DEFINE_FCN_VOID0 (void *, _nl_auto_free_fcn, free)
+-
+-/*****************************************************************************/
+-
+ extern const char *nl_strerror_l(int err);
+ 
+ /*****************************************************************************/
+@@ -106,42 +93,6 @@ extern const char *nl_strerror_l(int err);
+ 
+ /*****************************************************************************/
+ 
+-#define _nl_clear_pointer(pp, destroy) \
+-	({ \
+-		__typeof__ (*(pp)) *_pp = (pp); \
+-		__typeof__ (*_pp) _p; \
+-		int _changed = 0; \
+-		\
+-		if (   _pp \
+-			&& (_p = *_pp)) { \
+-			_nl_unused const void *const _p_check_is_pointer = _p; \
+-			\
+-			*_pp = NULL; \
+-			\
+-			(destroy) (_p); \
+-			\
+-			_changed = 1; \
+-		} \
+-		_changed; \
+-	})
+-
+-#define _nl_clear_free(pp) _nl_clear_pointer (pp, free)
+-
+-#define _nl_steal_pointer(pp) \
+-	({ \
+-		__typeof__ (*(pp)) *const _pp = (pp); \
+-		__typeof__ (*_pp) _p = NULL; \
+-		\
+-		if (   _pp \
+-		    && (_p = *_pp)) { \
+-			*_pp = NULL; \
+-		} \
+-		\
+-		_p; \
+-	})
+-
+-/*****************************************************************************/
+-
+ #define _nl_malloc_maybe_a(alloca_maxlen, bytes, to_free) \
+ 	({ \
+ 		const size_t _bytes = (bytes); \
+diff --git a/lib/genl/mngt.c b/lib/genl/mngt.c
+index 28326cd..ff50e1d 100644
+--- a/lib/genl/mngt.c
++++ b/lib/genl/mngt.c
+@@ -50,7 +50,7 @@ static struct genl_cmd *lookup_cmd(struct genl_ops *ops, int cmd_id)
+ static int cmd_msg_parser(struct sockaddr_nl *who, struct nlmsghdr *nlh,
+                           struct genl_ops *ops, struct nl_cache_ops *cache_ops, void *arg)
+ {
+-	_nl_auto_free struct nlattr **tb_free = NULL;
++	struct nlattr **tb_free = NULL;
+ 	int err;
+ 	struct genlmsghdr *ghdr;
+ 	struct genl_cmd *cmd;
+@@ -74,7 +74,7 @@ static int cmd_msg_parser(struct sockaddr_nl *who, struct nlmsghdr *nlh,
+ 	                  cmd->c_maxattr,
+ 	                  cmd->c_attr_policy);
+ 	if (err < 0)
+-		return err;
++		goto out;
+ 
+ 	{
+ 		struct genl_info info = {
+@@ -85,8 +85,12 @@ static int cmd_msg_parser(struct sockaddr_nl *who, struct nlmsghdr *nlh,
+ 			.attrs   = tb,
+ 		};
+ 
+-		return cmd->c_msg_parser(cache_ops, cmd, &info, arg);
++		err = cmd->c_msg_parser(cache_ops, cmd, &info, arg);
+ 	}
++
++out:
++	free(tb_free);
++	return err;
+ }
+ 
+ static int genl_msg_parser(struct nl_cache_ops *ops, struct sockaddr_nl *who,
+diff --git a/lib/xfrm/sa.c b/lib/xfrm/sa.c
+index 48265ba..14bf298 100644
+--- a/lib/xfrm/sa.c
++++ b/lib/xfrm/sa.c
+@@ -1683,7 +1683,7 @@ int xfrmnl_sa_get_aead_params (struct xfrmnl_sa* sa, char* alg_name, unsigned in
+ 
+ int xfrmnl_sa_set_aead_params (struct xfrmnl_sa* sa, const char* alg_name, unsigned int key_len, unsigned int icv_len, const char* key)
+ {
+-	_nl_auto_free struct xfrmnl_algo_aead *b = NULL;
++	struct xfrmnl_algo_aead *b = NULL;
+ 	size_t keysize = sizeof (uint8_t) * ((key_len + 7)/8);
+ 	uint32_t newlen = sizeof (struct xfrmnl_algo_aead) + keysize;
+ 
+@@ -1699,7 +1699,7 @@ int xfrmnl_sa_set_aead_params (struct xfrmnl_sa* sa, const char* alg_name, unsig
+ 	memcpy (b->alg_key, key, keysize);
+ 
+ 	free (sa->aead);
+-	sa->aead = _nl_steal_pointer (&b);
++	sa->aead = b;
+ 	sa->ce_mask |= XFRM_SA_ATTR_ALG_AEAD;
+ 	return 0;
+ }
+@@ -1741,7 +1741,7 @@ int xfrmnl_sa_get_auth_params (struct xfrmnl_sa* sa, char* alg_name, unsigned in
+ 
+ int xfrmnl_sa_set_auth_params (struct xfrmnl_sa* sa, const char* alg_name, unsigned int key_len, unsigned int trunc_len, const char* key)
+ {
+-	_nl_auto_free struct xfrmnl_algo_auth *b = NULL;
++	struct xfrmnl_algo_auth *b = NULL;
+ 	size_t keysize = sizeof (uint8_t) * ((key_len + 7)/8);
+ 	uint32_t newlen = sizeof (struct xfrmnl_algo_auth) + keysize;
+ 
+@@ -1756,7 +1756,7 @@ int xfrmnl_sa_set_auth_params (struct xfrmnl_sa* sa, const char* alg_name, unsig
+ 	memcpy (b->alg_key, key, keysize);
+ 
+ 	free (sa->auth);
+-	sa->auth = _nl_steal_pointer (&b);
++	sa->auth = b;
+ 	sa->ce_mask |= XFRM_SA_ATTR_ALG_AUTH;
+ 	return 0;
+ }
+@@ -1795,7 +1795,7 @@ int xfrmnl_sa_get_crypto_params (struct xfrmnl_sa* sa, char* alg_name, unsigned
+ 
+ int xfrmnl_sa_set_crypto_params (struct xfrmnl_sa* sa, const char* alg_name, unsigned int key_len, const char* key)
+ {
+-	_nl_auto_free struct xfrmnl_algo *b = NULL;
++	struct xfrmnl_algo *b = NULL;
+ 	size_t keysize = sizeof (uint8_t) * ((key_len + 7)/8);
+ 	uint32_t newlen = sizeof (struct xfrmnl_algo) + keysize;
+ 
+@@ -1809,7 +1809,7 @@ int xfrmnl_sa_set_crypto_params (struct xfrmnl_sa* sa, const char* alg_name, uns
+ 	memcpy (b->alg_key, key, keysize);
+ 
+ 	free(sa->crypt);
+-	sa->crypt = _nl_steal_pointer(&b);
++	sa->crypt = b;
+ 	sa->ce_mask |= XFRM_SA_ATTR_ALG_CRYPT;
+ 	return 0;
+ }
+@@ -1848,7 +1848,7 @@ int xfrmnl_sa_get_comp_params (struct xfrmnl_sa* sa, char* alg_name, unsigned in
+ 
+ int xfrmnl_sa_set_comp_params (struct xfrmnl_sa* sa, const char* alg_name, unsigned int key_len, const char* key)
+ {
+-	_nl_auto_free struct xfrmnl_algo *b = NULL;
++	struct xfrmnl_algo *b = NULL;
+ 	size_t keysize = sizeof (uint8_t) * ((key_len + 7)/8);
+ 	uint32_t newlen = sizeof (struct xfrmnl_algo) + keysize;
+ 
+@@ -1862,7 +1862,7 @@ int xfrmnl_sa_set_comp_params (struct xfrmnl_sa* sa, const char* alg_name, unsig
+ 	memcpy (b->alg_key, key, keysize);
+ 
+ 	free(sa->comp);
+-	sa->comp = _nl_steal_pointer(&b);
++	sa->comp = b;
+ 	sa->ce_mask |= XFRM_SA_ATTR_ALG_COMP;
+ 	return 0;
+ }
+@@ -2023,7 +2023,7 @@ int xfrmnl_sa_get_sec_ctx (struct xfrmnl_sa* sa, unsigned int* doi, unsigned int
+ int xfrmnl_sa_set_sec_ctx (struct xfrmnl_sa* sa, unsigned int doi, unsigned int alg, unsigned int len,
+                            unsigned int sid, const char* ctx_str)
+ {
+-	_nl_auto_free struct xfrmnl_user_sec_ctx *b = NULL;
++	struct xfrmnl_user_sec_ctx *b = NULL;
+ 
+ 	if (!(b = calloc(1, sizeof (struct xfrmnl_user_sec_ctx) + 1 + len)))
+ 		return -1;
+@@ -2037,7 +2037,7 @@ int xfrmnl_sa_set_sec_ctx (struct xfrmnl_sa* sa, unsigned int doi, unsigned int
+ 	b->ctx[len] = '\0';
+ 
+ 	free(sa->sec_ctx);
+-	sa->sec_ctx = _nl_steal_pointer(&b);
++	sa->sec_ctx = b;
+ 	sa->ce_mask |= XFRM_SA_ATTR_SECCTX;
+ 	return 0;
+ }
+@@ -2136,7 +2136,7 @@ int xfrmnl_sa_set_replay_state_esn (struct xfrmnl_sa* sa, unsigned int oseq, uns
+                                     unsigned int oseq_hi, unsigned int seq_hi, unsigned int replay_window,
+                                     unsigned int bmp_len, unsigned int* bmp)
+ {
+-	_nl_auto_free struct xfrmnl_replay_state_esn *b = NULL;
++	struct xfrmnl_replay_state_esn *b = NULL;
+ 
+ 	if (!(b = calloc (1, sizeof (struct xfrmnl_replay_state_esn) + (sizeof (uint32_t) * bmp_len))))
+ 		return -1;
+@@ -2150,7 +2150,7 @@ int xfrmnl_sa_set_replay_state_esn (struct xfrmnl_sa* sa, unsigned int oseq, uns
+ 	memcpy (b->bmp, bmp, bmp_len * sizeof (uint32_t));
+ 
+ 	free(sa->replay_state_esn);
+-	sa->replay_state_esn = _nl_steal_pointer(&b);
++	sa->replay_state_esn = b;
+ 	sa->ce_mask |= XFRM_SA_ATTR_REPLAY_STATE;
+ 	return 0;
+ }
+-- 
+2.23.0
+

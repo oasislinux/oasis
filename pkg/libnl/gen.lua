@@ -9,10 +9,10 @@ cflags{
 
 build('sed', '$outdir/include/netlink/version.h', '$srcdir/include/netlink/version.h.in', {
 	expr={
-		'-e s,@PACKAGE_STRING@,\'libnl 3.4.0\',',
-		'-e s,@PACKAGE_VERSION@,3.4.0,',
+		'-e s,@PACKAGE_STRING@,\'libnl 3.5.0\',',
+		'-e s,@PACKAGE_VERSION@,3.5.0,',
 		'-e s,@MAJ_VERSION@,3,',
-		'-e s,@MIN_VERSION@,4,',
+		'-e s,@MIN_VERSION@,5,',
 		'-e s,@MIC_VERSION@,0,',
 		'-e s,@LT_CURRENT@,226,',
 		'-e s,@LT_REVISION@,0,',

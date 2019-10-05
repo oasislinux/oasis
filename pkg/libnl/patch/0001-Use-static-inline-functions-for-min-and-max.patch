@@ -1,4 +1,4 @@
-From e9dc83c59917fc86d3bd684a6b1d31e1619bc07e Mon Sep 17 00:00:00 2001
+From 5205a990e10f9bf1102c719198f82aba342cbca5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 11 Aug 2019 05:05:09 +0000
 Subject: [PATCH] Use static inline functions for min and max
@@ -16,22 +16,22 @@ expressions.
  6 files changed, 16 insertions(+), 21 deletions(-)
 
 diff --git a/include/netlink-private/netlink.h b/include/netlink-private/netlink.h
-index 728ca5c..d9a3597 100644
+index 5f6e3f7..fca3133 100644
 --- a/include/netlink-private/netlink.h
 +++ b/include/netlink-private/netlink.h
-@@ -159,22 +159,17 @@ static inline int nl_cb_call(struct nl_cb *cb, enum nl_cb_type type, struct nl_m
+@@ -158,22 +158,17 @@ static inline int nl_cb_call(struct nl_cb *cb, enum nl_cb_type type, struct nl_m
  #undef __deprecated
  #define __deprecated __attribute__ ((deprecated))
  
 -#define min(x,y) ({ \
--	typeof(x) _x = (x);	\
--	typeof(y) _y = (y);	\
+-	__typeof__(x) _x = (x);	\
+-	__typeof__(y) _y = (y);	\
 -	(void) (&_x == &_y);		\
 -	_x < _y ? _x : _y; })
 -
 -#define max(x,y) ({ \
--	typeof(x) _x = (x);	\
--	typeof(y) _y = (y);	\
+-	__typeof__(x) _x = (x);	\
+-	__typeof__(y) _y = (y);	\
 -	(void) (&_x == &_y);		\
 -	_x > _y ? _x : _y; })
 -
@@ -54,10 +54,10 @@ index 728ca5c..d9a3597 100644
  extern int nl_cache_parse(struct nl_cache_ops *, struct sockaddr_nl *,
  			  struct nlmsghdr *, struct nl_parser_param *);
 diff --git a/lib/attr.c b/lib/attr.c
-index 7c0ac4d..9382b7f 100644
+index a4f5852..025627e 100644
 --- a/lib/attr.c
 +++ b/lib/attr.c
-@@ -357,7 +357,7 @@ int nla_memcpy(void *dest, const struct nlattr *src, int count)
+@@ -358,7 +358,7 @@ int nla_memcpy(void *dest, const struct nlattr *src, int count)
  	if (!src)
  		return 0;
  	
@@ -67,10 +67,10 @@ index 7c0ac4d..9382b7f 100644
  
  	return minlen;
 diff --git a/lib/msg.c b/lib/msg.c
-index 0ce5887..226a1d2 100644
+index c08b3a4..d854df3 100644
 --- a/lib/msg.c
 +++ b/lib/msg.c
-@@ -154,7 +154,7 @@ struct nlattr *nlmsg_attrdata(const struct nlmsghdr *nlh, int hdrlen)
+@@ -155,7 +155,7 @@ struct nlattr *nlmsg_attrdata(const struct nlmsghdr *nlh, int hdrlen)
   */
  int nlmsg_attrlen(const struct nlmsghdr *nlh, int hdrlen)
  {
@@ -80,7 +80,7 @@ index 0ce5887..226a1d2 100644
  
  /** @} */
 diff --git a/lib/route/cls/ematch_syntax.y b/lib/route/cls/ematch_syntax.y
-index a0ca4bb..d730511 100644
+index 82d753d..88665cc 100644
 --- a/lib/route/cls/ematch_syntax.y
 +++ b/lib/route/cls/ematch_syntax.y
 @@ -411,7 +411,7 @@ pattern:
@@ -106,10 +106,10 @@ index 6651bc3..e33a3fe 100644
  		for (i = 0; i < len; i++)
  			id->i_confset[i] = 1;
 diff --git a/lib/route/link/inet6.c b/lib/route/link/inet6.c
-index e638d06..8f403ce 100644
+index f02792c..8a3de01 100644
 --- a/lib/route/link/inet6.c
 +++ b/lib/route/link/inet6.c
-@@ -197,7 +197,7 @@ static int inet6_parse_protinfo(struct rtnl_link *link, struct nlattr *attr,
+@@ -199,7 +199,7 @@ static int inet6_parse_protinfo(struct rtnl_link *link, struct nlattr *attr,
  			map_stat_id = map_stat_id_from_IPSTATS_MIB_v1;
  		}
  
@@ -119,5 +119,5 @@ index e638d06..8f403ce 100644
  			memcpy(&stat, &cnt[i * sizeof(stat)], sizeof(stat));
  			rtnl_link_set_stat(link, map_stat_id[i], stat);
 -- 
-2.22.0
+2.23.0
 

@@ -16,12 +16,12 @@
 #define PACKAGE "libnl"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "libnl"
-#define PACKAGE_STRING "libnl 3.4.0"
+#define PACKAGE_STRING "libnl 3.5.0"
 #define PACKAGE_TARNAME "libnl"
 #define PACKAGE_URL "http://www.infradead.org/~tgr/libnl/"
-#define PACKAGE_VERSION "3.4.0"
+#define PACKAGE_VERSION "3.5.0"
 #define STDC_HEADERS 1
-#define VERSION "3.4.0"
+#define VERSION "3.5.0"
 /* #undef const */
 #ifndef __cplusplus
 /* #undef inline */
