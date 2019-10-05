@@ -1,17 +1,17 @@
-From daed49b01621b8044b788a5a4b1d2f9da0378a09 Mon Sep 17 00:00:00 2001
+From 29761222c4b0a5688c21a99ae4b8241bb0209ce5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 5 Jul 2019 20:52:24 -0700
 Subject: [PATCH] Don't return expression in void function
 
 ---
- defs.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ defs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/defs.h b/defs.h
-index 93b35d71..cd045591 100644
+index 06bf1248..12c5b92f 100644
 --- a/defs.h
 +++ b/defs.h
-@@ -612,7 +612,7 @@ extern bool pathtrace_match_set(struct tcb *, struct path_set *);
+@@ -667,7 +667,7 @@ extern bool pathtrace_match_set(struct tcb *, struct path_set *);
  static inline void
  pathtrace_select(const char *path)
  {
@@ -20,17 +20,6 @@ index 93b35d71..cd045591 100644
  }
  
  static inline bool
-@@ -757,8 +757,8 @@ static inline void
- printxval_dispatch(const struct xlat *xlat, size_t xlat_size, uint64_t val,
- 		   const char *dflt, enum xlat_type xt)
- {
--	return printxval_dispatch_ex(xlat, xlat_size, val, dflt, xt,
--				     XLAT_STYLE_DEFAULT);
-+	printxval_dispatch_ex(xlat, xlat_size, val, dflt, xt,
-+			      XLAT_STYLE_DEFAULT);
- }
- 
- enum xlat_style_private_flag_bits {
 -- 
-2.22.0
+2.23.0
 

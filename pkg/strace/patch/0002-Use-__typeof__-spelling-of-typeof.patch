@@ -1,4 +1,4 @@
-From 89a46be60797ef4eab8756b3654967f080585107 Mon Sep 17 00:00:00 2001
+From dc36e102eb17dfbcc9bcd52038da9d0076319c87 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:33:01 -0700
 Subject: [PATCH] Use __typeof__ spelling of typeof
@@ -131,7 +131,7 @@ index 98563e4d..7b44e4f8 100644
  
  #endif /* !STRACE_LIST_H */
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index f1a26bf3..6f0b50b5 100644
+index f631310d..c94926d1 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
 @@ -954,7 +954,7 @@ btrfs_print_tree_search_buf(struct btrfs_ioctl_search_key *key,
@@ -157,10 +157,10 @@ index b2125171..0b0242c8 100644
  # define TYPEOF_FLOCK_OFF_T off_t
  #endif
 diff --git a/util.c b/util.c
-index 42253ebb..f0b578e3 100644
+index 8d9e092b..3c630e9e 100644
 --- a/util.c
 +++ b/util.c
-@@ -939,8 +939,8 @@ dumpiov_upto(struct tcb *const tcp, const int len, const kernel_ulong_t addr,
+@@ -982,8 +982,8 @@ dumpiov_upto(struct tcb *const tcp, const int len, const kernel_ulong_t addr,
  
  #define ILOG2_ITER_(val_, ret_, bit_)					\
  	do {								\
@@ -172,5 +172,5 @@ index 42253ebb..f0b578e3 100644
  		(val_) >>= shift_;					\
  		(ret_) |= shift_;					\
 -- 
-2.22.0
+2.23.0
 

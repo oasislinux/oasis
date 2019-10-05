@@ -27,7 +27,6 @@ print_sigevent.c
 print_time.c
 print_timespec.c
 print_timeval.c
-print_timex.c
 printrusage.c
 printsiginfo.c
 rt_sigreturn.c

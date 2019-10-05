@@ -1,4 +1,4 @@
-From 5281dd0a41e6c1819a62154056b1163ca54ef398 Mon Sep 17 00:00:00 2001
+From 4d573929d68366371d23f0ed191cb6ad6207051b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/bpf.c b/bpf.c
-index 20ad938f..1a967e20 100644
+index e335bb74..8e3b2f3b 100644
 --- a/bpf.c
 +++ b/bpf.c
 @@ -42,7 +42,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -42,7 +42,7 @@ index 20ad938f..1a967e20 100644
  
  		print_array(tcp, addr, len, &insn, sizeof(insn),
 diff --git a/net.c b/net.c
-index f08691c7..a6afc4db 100644
+index a58fa921..d5f2dc1d 100644
 --- a/net.c
 +++ b/net.c
 @@ -729,7 +729,7 @@ print_tpacket_stats(struct tcb *const tcp, const kernel_ulong_t addr,
@@ -81,10 +81,10 @@ index 3cb54bb3..bc03dae8 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/strace.c b/strace.c
-index 4f03a4c9..a1972b83 100644
+index b52a3db3..2dd50005 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -2601,7 +2601,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -2664,7 +2664,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -94,7 +94,7 @@ index 4f03a4c9..a1972b83 100644
  		if (res != 0) {
  			res = syscall_exiting_trace(tcp, &ts, res);
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index 6f0b50b5..e3737132 100644
+index c94926d1..dedb8754 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
 @@ -382,7 +382,7 @@ btrfs_test_subvol_ioctls(void)
@@ -134,7 +134,7 @@ index 6f0b50b5..e3737132 100644
  	ioctl(-1, BTRFS_IOC_SPACE_INFO, NULL);
  	printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n",
 diff --git a/tests/clock_nanosleep.c b/tests/clock_nanosleep.c
-index 258c3ac1..54b323bd 100644
+index d7ed269a..eed3e996 100644
 --- a/tests/clock_nanosleep.c
 +++ b/tests/clock_nanosleep.c
 @@ -36,7 +36,7 @@ main(void)
@@ -173,10 +173,10 @@ index 9a8f7e3a..10ea7d6f 100644
  	const struct itimerval itv = { .it_value.tv_usec = 111111 };
  	struct timespec req = { .tv_nsec = 222222222 }, rem;
 diff --git a/tests/setrlimit.c b/tests/setrlimit.c
-index 099e2402..9c1262d8 100644
+index 886cf65a..89ed1077 100644
 --- a/tests/setrlimit.c
 +++ b/tests/setrlimit.c
-@@ -35,7 +35,7 @@ main(void)
+@@ -39,7 +39,7 @@ main(void)
  		printf("setrlimit(%s, NULL) = %s\n", xlat->str, sprintrc(rc));
  # endif
  
@@ -186,10 +186,10 @@ index 099e2402..9c1262d8 100644
  			continue;
  		rlimit[0] = libc_rlim.rlim_cur;
 diff --git a/tests/timer_create.c b/tests/timer_create.c
-index c9c64813..72aceb92 100644
+index 2c4dae19..59bc2dd0 100644
 --- a/tests/timer_create.c
 +++ b/tests/timer_create.c
-@@ -25,7 +25,7 @@ main(void)
+@@ -26,7 +26,7 @@ main(void)
  	printf("timer_create(CLOCK_REALTIME, NULL, NULL) = -1 %s (%m)\n",
  	       errno2name());
  
@@ -212,7 +212,7 @@ index 29b0cadd..89faf508 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 diff --git a/tests/waitid.c b/tests/waitid.c
-index f4e4a0a8..f7bacc23 100644
+index 8c87b7c4..c37736b7 100644
 --- a/tests/waitid.c
 +++ b/tests/waitid.c
 @@ -130,7 +130,7 @@ do_waitid(const unsigned int idtype,
@@ -225,5 +225,5 @@ index f4e4a0a8..f7bacc23 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.22.0
+2.23.0
 

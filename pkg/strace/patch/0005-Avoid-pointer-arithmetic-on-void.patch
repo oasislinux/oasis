@@ -1,4 +1,4 @@
-From c7a363f45bd223e49314945d4cfb385e39527682 Mon Sep 17 00:00:00 2001
+From 7ac1f99173c3a5c994bfe4c063d38da4a086002c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -10,7 +10,7 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/netlink_smc_diag.c b/netlink_smc_diag.c
-index 9255c0de..2ed39590 100644
+index 16815fde..09a748a8 100644
 --- a/netlink_smc_diag.c
 +++ b/netlink_smc_diag.c
 @@ -41,7 +41,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_req)
@@ -30,9 +30,9 @@ index 9255c0de..2ed39590 100644
 +					 (char *) &msg + offset)) {
  			PRINT_FIELD_XVAL("", msg, diag_state,
  					 smc_states, "SMC_???");
- 			PRINT_FIELD_XVAL_INDEX(", ", msg, diag_fallback,
+ 			PRINT_FIELD_XVAL(", ", msg, diag_fallback,
 diff --git a/sockaddr.c b/sockaddr.c
-index acba7f02..62f357f5 100644
+index c67d60e9..0e6360f0 100644
 --- a/sockaddr.c
 +++ b/sockaddr.c
 @@ -475,7 +475,7 @@ print_sockaddr_data_ll(const void *const buf, const int addrlen)
@@ -45,10 +45,10 @@ index acba7f02..62f357f5 100644
  
  	tprints("sa_data=");
 diff --git a/ucopy.c b/ucopy.c
-index 7db49c4a..f509b948 100644
+index 21f55e28..cee9f2e0 100644
 --- a/ucopy.c
 +++ b/ucopy.c
-@@ -122,7 +122,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+@@ -183,7 +183,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
  		memcpy(laddr, &u.x[residue], m);
  		residue = 0;
  		addr += sizeof(long);
@@ -57,7 +57,7 @@ index 7db49c4a..f509b948 100644
  		nread += m;
  		len -= m;
  	}
-@@ -218,10 +218,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+@@ -280,10 +280,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
  		memcpy(laddr, &u.x[residue], m);
  		while (residue < sizeof(long))
  			if (u.x[residue++] == '\0')
@@ -71,5 +71,5 @@ index 7db49c4a..f509b948 100644
  		len -= m;
  	}
 -- 
-2.22.0
+2.23.0
 
