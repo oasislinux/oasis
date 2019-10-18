@@ -2,6 +2,7 @@ cflags{
 	'-D NDEBUG',
 	'-I $dir',
 	'-I $srcdir/Include',
+	'-I $srcdir/Include/internal',
 }
 
 pkg.deps = {}
@@ -34,21 +35,14 @@ end
 
 local sources = {}
 sub('modules.ninja', function()
-	-- snapshot $cflags in the subninja environment
-	cflags{}
+	cflags{'-D Py_BUILD_CORE_BUILTIN'}
 
 	for _, mod in pairs(modules) do
-		if mod.core then
-			for _, src in ipairs(mod) do
-				sources[src] = true
-			end
-		else
-			for _, src in ipairs(mod) do
-				local obj = src..'.o'
-				if not sources[obj] then
-					cc('Modules/'..src)
-					sources[obj] = true
-				end
+		for _, src in ipairs(mod) do
+			local obj = src..'.o'
+			if not sources[obj] then
+				cc('Modules/'..src)
+				sources[obj] = true
 			end
 		end
 	end
@@ -61,7 +55,7 @@ rule('makesetup', 'lua5.2 $dir/makesetup.lua $dir/modules.lua <$in >$out.tmp && 
 build('makesetup', '$outdir/config.c', {'$srcdir/Modules/config.c.in', '|', '$dir/makesetup.lua', '$dir/modules.lua'})
 
 cc('Modules/getbuildinfo.c', nil, {
-	cflags=[[$cflags -D 'DATE="Oct 20 2018"' -D 'TIME="02:05:48"']]
+	cflags=[[$cflags -D 'DATE="Oct 14 2019"' -D 'TIME="15:34:47"']]
 })
 cc('Modules/getpath.c', nil, {
 	cflags={
@@ -69,7 +63,7 @@ cc('Modules/getpath.c', nil, {
 		[[-D 'PYTHONPATH=":plat-linux"']],
 		[[-D 'PREFIX="/"']],
 		[[-D 'EXEC_PREFIX="/"']],
-		[[-D 'VERSION="3.7"']],
+		[[-D 'VERSION="3.8"']],
 		[[-D 'VPATH=""']],
 	},
 })
@@ -106,6 +100,7 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		bytearrayobject.c
 		bytesobject.c
 		call.c
+		capsule.c
 		cellobject.c
 		classobject.c
 		codeobject.c
@@ -118,6 +113,7 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		floatobject.c
 		frameobject.c
 		funcobject.c
+		interpreteridobject.c
 		iterobject.c
 		listobject.c
 		longobject.c
@@ -129,7 +125,7 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		namespaceobject.c
 		object.c
 		obmalloc.c
-		capsule.c
+		picklebufobject.c
 		rangeobject.c
 		setobject.c
 		sliceobject.c
@@ -146,11 +142,7 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		listnode.c
 		node.c
 		parser.c
-		bitset.c
-		metagrammar.c
-		firstsets.c
-		grammar.c
-		pgen.c
+		token.c
 		myreadline.c parsetok.c tokenizer.c
 	)
 	Python/(
@@ -162,9 +154,9 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		ast_unparse.c
 		bltinmodule.c
 		ceval.c
-		compile.c
 		codecs.c
-		dynamic_annotations.c
+		compile.c
+		context.c
 		errors.c
 		frozenmain.c
 		future.c
@@ -174,14 +166,17 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		getplatform.c.o
 		getversion.c
 		graminit.c
+		hamt.c
 		import.c
 		importdl.c
+		initconfig.c
 		marshal.c
 		modsupport.c
 		mysnprintf.c
 		mystrtoul.c
 		pathconfig.c
 		peephole.c
+		preconfig.c
 		pyarena.c
 		pyctype.c
 		pyfpe.c
@@ -189,8 +184,6 @@ lib('libpython.a', {expand{'Modules/', sources}, paths[[
 		pylifecycle.c
 		pymath.c
 		pystate.c
-		context.c
-		hamt.c
 		pythonrun.c
 		pytime.c
 		bootstrap_hash.c
@@ -217,10 +210,10 @@ file('bin/python3', '755', '$outdir/python')
 sym('bin/python', 'python3')
 
 for f in iterlines('pylibs.txt') do
-	file('lib/python3.7/'..f, '644', '$srcdir/Lib/'..f)
+	file('lib/python3.8/'..f, '644', '$srcdir/Lib/'..f)
 end
-file('lib/python3.7/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$dir/lib/_sysconfigdata.py')
-file('lib/python3.7/Makefile', '644', '$dir/lib/Makefile')
-dir('lib/python3.7/lib-dynload', '755')
+file('lib/python3.8/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$dir/lib/_sysconfigdata.py')
+file('lib/python3.8/Makefile', '644', '$dir/lib/Makefile')
+dir('lib/python3.8/lib-dynload', '755')
 
 fetch 'curl'

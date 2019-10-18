@@ -22,6 +22,7 @@ argparse.py
 ast.py
 asynchat.py
 asyncio/__init__.py
+asyncio/__main__.py
 asyncio/base_events.py
 asyncio/base_futures.py
 asyncio/base_subprocess.py
@@ -29,6 +30,7 @@ asyncio/base_tasks.py
 asyncio/constants.py
 asyncio/coroutines.py
 asyncio/events.py
+asyncio/exceptions.py
 asyncio/format_helpers.py
 asyncio/futures.py
 asyncio/locks.py
@@ -39,10 +41,12 @@ asyncio/queues.py
 asyncio/runners.py
 asyncio/selector_events.py
 asyncio/sslproto.py
+asyncio/staggered.py
 asyncio/streams.py
 asyncio/subprocess.py
 asyncio/tasks.py
 asyncio/transports.py
+asyncio/trsock.py
 asyncio/unix_events.py
 asyncio/windows_events.py
 asyncio/windows_utils.py
@@ -208,7 +212,6 @@ encodings/cp273.py
 encodings/cp424.py
 encodings/cp437.py
 encodings/cp500.py
-encodings/cp65001.py
 encodings/cp720.py
 encodings/cp737.py
 encodings/cp775.py
@@ -295,7 +298,6 @@ encodings/shift_jisx0213.py
 encodings/tis_620.py
 encodings/undefined.py
 encodings/unicode_escape.py
-encodings/unicode_internal.py
 encodings/utf_16.py
 encodings/utf_16_be.py
 encodings/utf_16_le.py
@@ -356,6 +358,7 @@ idlelib/delegator.py
 idlelib/dynoption.py
 idlelib/editor.py
 idlelib/filelist.py
+idlelib/format.py
 idlelib/grep.py
 idlelib/help.py
 idlelib/help_about.py
@@ -367,7 +370,6 @@ idlelib/macosx.py
 idlelib/mainmenu.py
 idlelib/multicall.py
 idlelib/outwin.py
-idlelib/paragraph.py
 idlelib/parenmatch.py
 idlelib/pathbrowser.py
 idlelib/percolator.py
@@ -377,13 +379,13 @@ idlelib/query.py
 idlelib/redirector.py
 idlelib/replace.py
 idlelib/rpc.py
-idlelib/rstrip.py
 idlelib/run.py
 idlelib/runscript.py
 idlelib/scrolledlist.py
 idlelib/search.py
 idlelib/searchbase.py
 idlelib/searchengine.py
+idlelib/sidebar.py
 idlelib/squeezer.py
 idlelib/stackviewer.py
 idlelib/statusbar.py
@@ -402,6 +404,7 @@ importlib/_bootstrap.py
 importlib/_bootstrap_external.py
 importlib/abc.py
 importlib/machinery.py
+importlib/metadata.py
 importlib/resources.py
 importlib/util.py
 inspect.py
@@ -494,7 +497,6 @@ logging/__init__.py
 logging/config.py
 logging/handlers.py
 lzma.py
-macpath.py
 mailbox.py
 mailcap.py
 mimetypes.py
@@ -520,7 +522,8 @@ multiprocessing/process.py
 multiprocessing/queues.py
 multiprocessing/reduction.py
 multiprocessing/resource_sharer.py
-multiprocessing/semaphore_tracker.py
+multiprocessing/resource_tracker.py
+multiprocessing/shared_memory.py
 multiprocessing/sharedctypes.py
 multiprocessing/spawn.py
 multiprocessing/synchronize.py
@@ -644,6 +647,7 @@ types.py
 typing.py
 unittest/__init__.py
 unittest/__main__.py
+unittest/async_case.py
 unittest/case.py
 unittest/loader.py
 unittest/main.py
@@ -701,3 +705,4 @@ xmlrpc/client.py
 xmlrpc/server.py
 zipapp.py
 zipfile.py
+zipimport.py
