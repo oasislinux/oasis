@@ -24,11 +24,11 @@ lib('libopenbsd-compat.a', [[openbsd-compat/(
 	base64.c basename.c bcrypt_pbkdf.c bindresvport.c blowfish.c daemon.c
 	dirname.c explicit_bzero.c fmt_scaled.c freezero.c getcwd.c
 	getgrouplist.c getopt_long.c getrrsetbyname.c glob.c inet_aton.c
-	inet_ntoa.c inet_ntop.c md5.c mktemp.c pwcache.c readpassphrase.c
-	reallocarray.c realpath.c recallocarray.c rmd160.c rresvport.c setenv.c
-	setproctitle.c sha1.c sha2.c sigact.c strcasestr.c strlcat.c strlcpy.c
-	strmode.c strndup.c strnlen.c strptime.c strsep.c strtoll.c strtonum.c
-	strtoull.c strtoul.c timingsafe_bcmp.c vis.c
+	inet_ntoa.c inet_ntop.c md5.c memmem.c mktemp.c pwcache.c
+	readpassphrase.c reallocarray.c recallocarray.c rmd160.c rresvport.c
+	setenv.c setproctitle.c sha1.c sha2.c sigact.c strcasestr.c strlcat.c
+	strlcpy.c strmode.c strndup.c strnlen.c strptime.c strsep.c strtoll.c
+	strtonum.c strtoull.c strtoul.c timingsafe_bcmp.c vis.c
 
 	arc4random.c bsd-asprintf.c bsd-closefrom.c bsd-cygwin_util.c bsd-err.c
 	bsd-flock.c bsd-getpagesize.c bsd-getpeereid.c bsd-malloc.c bsd-misc.c
@@ -64,10 +64,10 @@ lib('libssh.a', [[
 	authfd.c authfile.c
 	canohost.c channels.c cipher.c cipher-aes.c cipher-aesctr.c
 	cipher-ctr.c cleanup.c
-	compat.c crc32.c fatal.c hostfile.c
+	compat.c fatal.c hostfile.c
 	log.c match.c moduli.c nchan.c packet.c
 	readpass.c ttymodes.c xmalloc.c addrmatch.c
-	atomicio.c dispatch.c mac.c uuencode.c misc.c utf8.c
+	atomicio.c dispatch.c mac.c misc.c utf8.c
 	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-rsa.c dh.c
 	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c
 	ssh-pkcs11.c smult_curve25519_ref.c
@@ -91,6 +91,7 @@ file('bin/ssh', '755', '$outdir/ssh')
 
 cc('sftp-server.c')
 cc('sftp-common.c')
+cc('sftp-realpath.c')
 
 exe('sshd', [[
 	sshd.c auth-rhosts.c auth-passwd.c
@@ -103,7 +104,7 @@ exe('sshd', [[
 	monitor.c monitor_wrap.c auth-krb5.c
 	auth2-gss.c gss-serv.c gss-serv-krb5.c
 	loginrec.c auth-pam.c auth-shadow.c auth-sia.c md5crypt.c
-	sftp-server.c.o sftp-common.c.o
+	sftp-server.c.o sftp-common.c.o sftp-realpath.c.o
 	sandbox-null.c sandbox-rlimit.c sandbox-systrace.c sandbox-darwin.c
 	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c
 	sandbox-solaris.c uidswap.c
@@ -120,10 +121,10 @@ file('bin/ssh-add', '755', '$outdir/ssh-add')
 exe('ssh-agent', {'ssh-agent.c', 'ssh-pkcs11-client.c', 'libssh.a.d'})
 file('bin/ssh-agent', '755', '$outdir/ssh-agent')
 
-exe('ssh-keygen', {'ssh-keygen.c', 'libssh.a.d'})
+exe('ssh-keygen', {'ssh-keygen.c', 'sshsig.c', 'libssh.a.d'})
 file('bin/ssh-keygen', '755', '$outdir/ssh-keygen')
 
-exe('sftp-server', {'sftp-common.c.o', 'sftp-server.c.o', 'sftp-server-main.c', 'libssh.a.d'})
+exe('sftp-server', {'sftp-common.c.o', 'sftp-server.c.o', 'sftp-realpath.c.o', 'sftp-server-main.c', 'libssh.a.d'})
 file('libexec/sftp-server', '755', '$outdir/sftp-server')
 
 exe('sftp', {'sftp.c', 'sftp-client.c', 'sftp-common.c.o', 'sftp-glob.c', 'libssh.a.d'})

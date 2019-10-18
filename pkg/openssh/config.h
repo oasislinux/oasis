@@ -24,7 +24,6 @@
 /* #undef BROKEN_ONE_BYTE_DIRENT_D_NAME */
 /* #undef BROKEN_READV_COMPARISON */
 /* #undef BROKEN_READ_COMPARISON */
-#define BROKEN_REALPATH 1
 /* #undef BROKEN_SAVED_UIDS */
 /* #undef BROKEN_SETREGID */
 /* #undef BROKEN_SETRESGID */
@@ -175,6 +174,8 @@
 #define HAVE_EVP_PKEY_GET0_RSA 1
 #define HAVE_EVP_RIPEMD160 1
 #define HAVE_EVP_SHA256 1
+#define HAVE_EVP_SHA384 1
+#define HAVE_EVP_SHA512 1
 #define HAVE_EXIT_IN_UTMP 1
 #define HAVE_EXPLICIT_BZERO 1
 #define HAVE_FCHMOD 1
@@ -273,6 +274,7 @@
 /* #undef HAVE_LIBIAF */
 /* #undef HAVE_LIBNETWORK */
 /* #undef HAVE_LIBPAM */
+/* #undef HAVE_LIBPROC_H */
 /* #undef HAVE_LIBSOCKET */
 /* #undef HAVE_LIBUTIL_H */
 /* #undef HAVE_LIBXNET */
@@ -298,6 +300,7 @@
 #define HAVE_MBTOWC 1
 /* #undef HAVE_MD5_CRYPT */
 /* #undef HAVE_MD5_PASSWORDS */
+#define HAVE_MEMMEM 1
 #define HAVE_MEMMOVE 1
 #define HAVE_MEMORY_H 1
 /* #undef HAVE_MEMSET_S */
@@ -335,6 +338,7 @@
 /* #undef HAVE_PRIV_BASICSET */
 /* #undef HAVE_PRIV_H */
 #define HAVE_PROC_PID 1
+/* #undef HAVE_PROC_PIDINFO */
 /* #undef HAVE_PSTAT */
 #define HAVE_PTY_H 1
 #define HAVE_PUTUTLINE 1
@@ -344,7 +348,6 @@
 #define HAVE_READPASSPHRASE_H 1
 #define HAVE_REALLOC 1
 #define HAVE_REALLOCARRAY 1
-#define HAVE_REALPATH 1
 #define HAVE_RECALLOCARRAY 1
 #define HAVE_RECVMSG 1
 #define HAVE_RLIMIT_NPROC /**/
@@ -398,8 +401,10 @@
 #define HAVE_SETUTXENT 1
 #define HAVE_SETVBUF 1
 /* #undef HAVE_SET_ID */
-#define HAVE_SHA256_UPDATE 1
+/* #undef HAVE_SHA256UPDATE */
 /* #undef HAVE_SHA2_H */
+/* #undef HAVE_SHA384UPDATE */
+/* #undef HAVE_SHA512UPDATE */
 #define HAVE_SHADOW_H 1
 #define HAVE_SIGACTION 1
 /* #undef HAVE_SIGVEC */
@@ -614,7 +619,7 @@
 #define STDC_HEADERS 1
 /* #undef SUPERUSER_PATH */
 /* #undef SYSLOG_R_SAFE_IN_SIGHAND */
-/* #undef SYS_RDOMAIN_LINUX */
+#define SYS_RDOMAIN_LINUX 1
 /* #undef UNIXWARE_LONG_PASSWORDS */
 #define USER_PATH "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 /* #undef USE_AFS */
