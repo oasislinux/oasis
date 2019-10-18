@@ -1,4 +1,4 @@
-From 65238908e99eaffcc1c9d61d927a0f9443c82f05 Mon Sep 17 00:00:00 2001
+From a9958b98fd7e746f4da6df5b8e89507a5ac85dab Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -22,15 +22,15 @@ Replace calls to errc with err after setting errno.
 Call openlog at start to set syslog identity.
 ---
  usr.bin/doas/doas.1    |   9 ---
- usr.bin/doas/doas.c    |  96 ++++++++++++++++-------------
+ usr.bin/doas/doas.c    |  97 ++++++++++++++++--------------
  usr.bin/doas/doas.h    |   4 ++
  usr.bin/doas/parse.y   |   1 +
  usr.bin/doas/persist.c | 133 +++++++++++++++++++++++++++++++++++++++++
- 5 files changed, 191 insertions(+), 52 deletions(-)
+ 5 files changed, 191 insertions(+), 53 deletions(-)
  create mode 100644 usr.bin/doas/persist.c
 
 diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
-index d39c4aab2..3097991bc 100644
+index fc769bdb336..c7196e347a9 100644
 --- a/usr.bin/doas/doas.1
 +++ b/usr.bin/doas/doas.1
 @@ -22,7 +22,6 @@
@@ -41,7 +41,7 @@ index d39c4aab2..3097991bc 100644
  .Op Fl C Ar config
  .Op Fl u Ar user
  .Ar command
-@@ -42,14 +41,6 @@ is specified.
+@@ -67,14 +66,6 @@ The working directory is not changed.
  .Pp
  The options are as follows:
  .Bl -tag -width tenletters
@@ -57,7 +57,7 @@ index d39c4aab2..3097991bc 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index 116ac6f16..289d4fef4 100644
+index dfd8c8603bf..b2180a5f0e0 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -20,8 +20,6 @@
@@ -166,7 +166,7 @@ index 116ac6f16..289d4fef4 100644
  		close(fd);
  	}
  }
-@@ -281,14 +298,13 @@ done:
+@@ -281,15 +298,14 @@ done:
  int
  main(int argc, char **argv)
  {
@@ -176,14 +176,15 @@ index 116ac6f16..289d4fef4 100644
  	const char *confpath = NULL;
  	char *shargv[] = { NULL, NULL };
  	char *sh;
+ 	const char *p;
  	const char *cmd;
  	char cmdline[LINE_MAX];
--	char myname[_PW_NAME_LEN + 1];
-+	char myname[LOGIN_NAME_MAX + 1];
- 	struct passwd *pw;
+-	char mypwbuf[_PW_BUF_LEN], targpwbuf[_PW_BUF_LEN];
++	char mypwbuf[1024], targpwbuf[1024];
+ 	struct passwd mypwstore, targpwstore;
+ 	struct passwd *mypw, *targpw;
  	const struct rule *rule;
- 	uid_t uid;
-@@ -300,28 +316,20 @@ main(int argc, char **argv)
+@@ -302,28 +318,20 @@ main(int argc, char **argv)
  	int nflag = 0;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
@@ -220,9 +221,9 @@ index 116ac6f16..289d4fef4 100644
  	if (!permit(uid, groups, ngroups, &rule, target, cmd,
  	    (const char **)argv + 1)) {
 -		syslog(LOG_AUTHPRIV | LOG_NOTICE,
--		    "failed command for %s: %s", myname, cmdline);
+-		    "failed command for %s: %s", mypw->pw_name, cmdline);
 -		errc(1, EPERM, NULL);
-+		syslog(LOG_NOTICE, "failed command for %s: %s", myname, cmdline);
++		syslog(LOG_NOTICE, "failed command for %s: %s", mypw->pw_name, cmdline);
 +		errno = EPERM;
 +		err(1, NULL);
  	}
@@ -231,44 +232,45 @@ index 116ac6f16..289d4fef4 100644
  		if (nflag)
  			errx(1, "Authorization required");
  
--		authuser(myname, login_style, rule->options & PERSIST);
-+		authuser(myname, rule->options & PERSIST);
+-		authuser(mypw->pw_name, login_style, rule->options & PERSIST);
++		authuser(mypw->pw_name, rule->options & PERSIST);
  	}
  
- 	if (unveil(_PATH_LOGIN_CONF, "r") == -1)
-@@ -419,10 +427,12 @@ main(int argc, char **argv)
- 	if (!pw)
+ 	if ((p = getenv("PATH")) != NULL)
+@@ -427,11 +435,12 @@ main(int argc, char **argv)
+ 	if (targpw == NULL)
  		errx(1, "no passwd entry for target");
  
--	if (setusercontext(NULL, pw, target, LOGIN_SETGROUP |
+-	if (setusercontext(NULL, targpw, target, LOGIN_SETGROUP |
+-	    LOGIN_SETPATH |
 -	    LOGIN_SETPRIORITY | LOGIN_SETRESOURCES | LOGIN_SETUMASK |
 -	    LOGIN_SETUSER) != 0)
 -		errx(1, "failed to set user context for target");
-+	if (initgroups(pw->pw_name, pw->pw_gid) < 0)
++	if (initgroups(targpw->pw_name, targpw->pw_gid) < 0)
 +		err(1, "initgroups");
-+	if (setgid(pw->pw_gid) < 0)
++	if (setgid(targpw->pw_gid) < 0)
 +		err(1, "setgid");
-+	if (setuid(pw->pw_uid) < 0)
++	if (setuid(targpw->pw_uid) < 0)
 +		err(1, "setuid");
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
-@@ -435,7 +445,7 @@ main(int argc, char **argv)
+@@ -444,7 +453,7 @@ main(int argc, char **argv)
  	if (pledge("stdio exec", NULL) == -1)
  		err(1, "pledge");
  
 -	syslog(LOG_AUTHPRIV | LOG_INFO, "%s ran command %s as %s from %s",
 +	syslog(LOG_INFO, "%s ran command %s as %s from %s",
- 	    myname, cmdline, pw->pw_name, cwd);
+ 	    mypw->pw_name, cmdline, targpw->pw_name, cwd);
  
- 	envp = prepenv(rule);
+ 	envp = prepenv(rule, mypw, targpw);
 diff --git a/usr.bin/doas/doas.h b/usr.bin/doas/doas.h
-index cbeb33994..b1a4c8199 100644
+index 6f50fc22869..c97986e3cf3 100644
 --- a/usr.bin/doas/doas.h
 +++ b/usr.bin/doas/doas.h
-@@ -31,6 +31,10 @@ extern int parse_errors;
- 
- char **prepenv(const struct rule *);
+@@ -36,6 +36,10 @@ struct passwd;
+ char **prepenv(const struct rule *, const struct passwd *,
+     const struct passwd *);
  
 +int openpersist(int *valid);
 +int setpersist(int fd);
@@ -278,7 +280,7 @@ index cbeb33994..b1a4c8199 100644
  #define DENY	2
  
 diff --git a/usr.bin/doas/parse.y b/usr.bin/doas/parse.y
-index dd9466e5f..d1f698c76 100644
+index dd9466e5f13..d1f698c7679 100644
 --- a/usr.bin/doas/parse.y
 +++ b/usr.bin/doas/parse.y
 @@ -19,6 +19,7 @@
@@ -291,7 +293,7 @@ index dd9466e5f..d1f698c76 100644
  #include <stdio.h>
 diff --git a/usr.bin/doas/persist.c b/usr.bin/doas/persist.c
 new file mode 100644
-index 000000000..41fa74745
+index 00000000000..41fa747458b
 --- /dev/null
 +++ b/usr.bin/doas/persist.c
 @@ -0,0 +1,133 @@
@@ -429,5 +431,5 @@ index 000000000..41fa74745
 +	return 0;
 +}
 -- 
-2.21.0
+2.23.0
 

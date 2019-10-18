@@ -1,4 +1,4 @@
-From 3de436f052626bc02b272e6eef65db5624ba22d1 Mon Sep 17 00:00:00 2001
+From b8ea0a7fc75f79d89f9f225da1112f477419d0bd Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 14 Jun 2019 12:42:15 -0700
 Subject: [PATCH] rsync: Use standard S_ISVTX instead of S_ISTXT
@@ -8,13 +8,13 @@ Subject: [PATCH] rsync: Use standard S_ISVTX instead of S_ISTXT
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/usr.bin/rsync/receiver.c b/usr.bin/rsync/receiver.c
-index c6d26cb0917..1ab080cb111 100644
+index 5ffd3458b74..51f9ddf6a5c 100644
 --- a/usr.bin/rsync/receiver.c
 +++ b/usr.bin/rsync/receiver.c
 @@ -86,7 +86,7 @@ rsync_set_metadata(struct sess *sess, int newfile,
  				    "to user.group: %u.%u", f->path, uid, gid);
  		} else
- 			LOG4(sess, "%s: updated uid and/or gid", f->path);
+ 			LOG4("%s: updated uid and/or gid", f->path);
 -		mode &= ~(S_ISTXT | S_ISUID | S_ISGID);
 +		mode &= ~(S_ISVTX | S_ISUID | S_ISGID);
  	}
@@ -23,12 +23,12 @@ index c6d26cb0917..1ab080cb111 100644
 @@ -147,7 +147,7 @@ rsync_set_metadata_at(struct sess *sess, int newfile, int rootfd,
  				    "to user.group: %u.%u", f->path, uid, gid);
  		} else
- 			LOG4(sess, "%s: updated uid and/or gid", f->path);
+ 			LOG4("%s: updated uid and/or gid", f->path);
 -		mode &= ~(S_ISTXT | S_ISUID | S_ISGID);
 +		mode &= ~(S_ISVTX | S_ISUID | S_ISGID);
  	}
  
  	/* Conditionally adjust file permissions. */
 -- 
-2.22.0
+2.23.0
 

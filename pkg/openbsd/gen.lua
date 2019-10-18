@@ -41,7 +41,7 @@ sub('acme-client.ninja', function()
 		usr.sbin/acme-client/(
 			acctproc.c base64.c certproc.c chngproc.c dbg.c dnsproc.c
 			fileproc.c http.c jsmn.c json.c keyproc.c main.c netproc.c
-			parse.tab.c.o revokeproc.c rsa.c util.c
+			parse.tab.c.o revokeproc.c key.c util.c
 		)
 		$builddir/pkg/libressl/libtls.a.d
 	]], {'pkg/libressl/headers'})
