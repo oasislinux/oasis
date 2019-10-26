@@ -38,4 +38,4 @@ lib('libxkbcommon.a', [[src/(
 	utils.c
 )]])
 
-fetch 'curl'
+fetch 'git'

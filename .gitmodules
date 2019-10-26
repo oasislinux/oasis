@@ -126,6 +126,10 @@
 [submodule "pkg/libutp/src"]
 	path = pkg/libutp/src
 	url = https://github.com/oasislinux/libutp.git
+[submodule "pkg/libxkbcommon/src"]
+	path = pkg/libxkbcommon/src
+	url = https://github.com/xkbcommon/libxkbcommon.git
+	ignore = all
 [submodule "pkg/loksh/src"]
 	path = pkg/loksh/src
 	url = https://github.com/dimkr/loksh
