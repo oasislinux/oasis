@@ -137,6 +137,7 @@ youtube_dl/extractor/common.py
 youtube_dl/extractor/commonmistakes.py
 youtube_dl/extractor/commonprotocols.py
 youtube_dl/extractor/condenast.py
+youtube_dl/extractor/contv.py
 youtube_dl/extractor/corus.py
 youtube_dl/extractor/coub.py
 youtube_dl/extractor/cracked.py
@@ -500,7 +501,6 @@ youtube_dl/extractor/pornotube.py
 youtube_dl/extractor/pornovoisines.py
 youtube_dl/extractor/pornoxo.py
 youtube_dl/extractor/presstv.py
-youtube_dl/extractor/promptfile.py
 youtube_dl/extractor/prosiebensat1.py
 youtube_dl/extractor/puhutv.py
 youtube_dl/extractor/puls4.py
@@ -557,7 +557,6 @@ youtube_dl/extractor/scrippsnetworks.py
 youtube_dl/extractor/seeker.py
 youtube_dl/extractor/senateisvp.py
 youtube_dl/extractor/sendtonews.py
-youtube_dl/extractor/servingsys.py
 youtube_dl/extractor/servus.py
 youtube_dl/extractor/sevenplus.py
 youtube_dl/extractor/sexu.py
@@ -707,7 +706,6 @@ youtube_dl/extractor/varzesh3.py
 youtube_dl/extractor/vbox7.py
 youtube_dl/extractor/veehd.py
 youtube_dl/extractor/veoh.py
-youtube_dl/extractor/vessel.py
 youtube_dl/extractor/vesti.py
 youtube_dl/extractor/vevo.py
 youtube_dl/extractor/vgtv.py
@@ -727,7 +725,6 @@ youtube_dl/extractor/vidme.py
 youtube_dl/extractor/vidzi.py
 youtube_dl/extractor/vier.py
 youtube_dl/extractor/viewlift.py
-youtube_dl/extractor/viewster.py
 youtube_dl/extractor/viidea.py
 youtube_dl/extractor/viki.py
 youtube_dl/extractor/vimeo.py
@@ -763,7 +760,6 @@ youtube_dl/extractor/webcaster.py
 youtube_dl/extractor/webofstories.py
 youtube_dl/extractor/weibo.py
 youtube_dl/extractor/weiqitv.py
-youtube_dl/extractor/wimp.py
 youtube_dl/extractor/wistia.py
 youtube_dl/extractor/worldstarhiphop.py
 youtube_dl/extractor/wsj.py
