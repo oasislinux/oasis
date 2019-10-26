@@ -6,7 +6,6 @@ audio/decode/ad_lavc.c
 audio/decode/ad_spdif.c
 audio/filter/af_format.c
 audio/filter/af_lavcac3enc.c
-audio/filter/af_lavrresample.c
 audio/filter/af_rubberband.c rubberband
 audio/filter/af_scaletempo.c
 audio/fmt-conversion.c
@@ -15,12 +14,10 @@ audio/out/ao.c
 audio/out/ao_alsa.c alsa
 audio/out/ao_audiounit.m audiounit
 audio/out/ao_coreaudio.c coreaudio
-audio/out/ao_coreaudio_chmap.c audiounit
-audio/out/ao_coreaudio_chmap.c coreaudio
+audio/out/ao_coreaudio_chmap.c coreaudio || audiounit
 audio/out/ao_coreaudio_exclusive.c coreaudio
 audio/out/ao_coreaudio_properties.c coreaudio
-audio/out/ao_coreaudio_utils.c audiounit
-audio/out/ao_coreaudio_utils.c coreaudio
+audio/out/ao_coreaudio_utils.c coreaudio || audiounit
 audio/out/ao_jack.c jack
 audio/out/ao_lavc.c
 audio/out/ao_null.c
@@ -30,7 +27,7 @@ audio/out/ao_oss.c oss-audio
 audio/out/ao_pcm.c
 audio/out/ao_pulse.c pulse
 audio/out/ao_rsound.c rsound
-audio/out/ao_sdl.c sdl2
+audio/out/ao_sdl.c sdl2-audio
 audio/out/ao_sndio.c sndio
 audio/out/ao_wasapi.c wasapi
 audio/out/ao_wasapi_changenotify.c wasapi
@@ -49,6 +46,7 @@ common/tags.c
 common/version.c
 demux/codec_tags.c
 demux/cue.c
+demux/cache.c
 demux/demux.c
 demux/demux_cue.c
 demux/demux_disc.c
@@ -60,10 +58,8 @@ demux/demux_mkv.c
 demux/demux_mkv_timeline.c
 demux/demux_null.c
 demux/demux_playlist.c
-demux/demux_rar.c
 demux/demux_raw.c
 demux/demux_timeline.c
-demux/demux_tv.c tv
 demux/ebml.c
 demux/packet.c
 demux/timeline.c
@@ -86,14 +82,17 @@ input/input.c
 input/ipc.c
 input/keycodes.c
 input/pipe-win32.c win32-pipes
+input/sdl_gamepad.c sdl2-gamepad
 misc/bstr.c
 misc/charset_conv.c
 misc/dispatch.c
 misc/json.c
+misc/natural_sort.c
 misc/node.c
 misc/rendezvous.c
 misc/ring.c
 misc/thread_pool.c
+misc/thread_tools.c
 options/m_config.c
 options/m_option.c
 options/m_property.c
@@ -117,24 +116,15 @@ player/screenshot.c
 player/scripting.c
 player/sub.c
 player/video.c
-stream/ai_alsa1x.c alsa && audio-input
-stream/ai_oss.c oss-audio && audio-input
-stream/ai_sndio.c sndio && audio-input
-stream/audio_in.c audio-input
-stream/cache.c
-stream/cache_file.c
 stream/cookies.c
 stream/dvb_tune.c dvbin
-stream/frequencies.c tv
-stream/rar.c
 stream/stream.c
 stream/stream_avdevice.c
 stream/stream_bluray.c libbluray
 stream/stream_cb.c
 stream/stream_cdda.c cdda
+stream/stream_concat.c
 stream/stream_dvb.c dvbin
-stream/stream_dvd.c dvdread-common
-stream/stream_dvd_common.c dvdread-common
 stream/stream_dvdnav.c dvdnav
 stream/stream_edl.c
 stream/stream_file.c
@@ -143,12 +133,7 @@ stream/stream_libarchive.c libarchive
 stream/stream_memory.c
 stream/stream_mf.c
 stream/stream_null.c
-stream/stream_rar.c
 stream/stream_smb.c libsmbclient
-stream/stream_tv.c tv
-stream/tv.c tv
-stream/tvi_dummy.c tv
-stream/tvi_v4l2.c tv-v4l2
 sub/ass_mp.c libass
 sub/dec_sub.c
 sub/draw_bmp.c
@@ -165,9 +150,10 @@ video/d3d.c d3d-hwaccel
 video/decode/vd_lavc.c
 video/filter/refqueue.c
 video/filter/vf_d3d11vpp.c d3d-hwaccel
+video/filter/vf_fingerprint.c zimg
 video/filter/vf_format.c
 video/filter/vf_sub.c
-video/filter/vf_vapoursynth.c vapoursynth-core
+video/filter/vf_vapoursynth.c vapoursynth
 video/filter/vf_vavpp.c vaapi
 video/filter/vf_vdpaupp.c vdpau
 video/fmt-conversion.c
@@ -177,6 +163,7 @@ video/image_writer.c
 video/img_format.c
 video/mp_image.c
 video/mp_image_pool.c
+video/out/android_common.c android
 video/out/aspect.c
 video/out/bitmap_packer.c
 video/out/cocoa/events_view.m cocoa
@@ -195,6 +182,7 @@ video/out/drm_prime.c drm && drmprime
 video/out/filter_kernels.c
 video/out/gpu/context.c
 video/out/gpu/d3d11_helpers.c d3d11 || egl-angle-win32
+video/out/gpu/error_diffusion.c
 video/out/gpu/hwdec.c
 video/out/gpu/lcms.c
 video/out/gpu/libmpv_gpu.c
@@ -207,35 +195,39 @@ video/out/gpu/user_shaders.c
 video/out/gpu/utils.c
 video/out/gpu/video.c
 video/out/gpu/video_shaders.c
+video/out/hwdec/hwdec_cuda.c cuda-hwaccel
+video/out/hwdec/hwdec_cuda_gl.c cuda-hwaccel && gl
+video/out/hwdec/hwdec_cuda_vk.c cuda-hwaccel && vulkan
+video/out/hwdec/hwdec_vaapi.c vaapi-egl || vaapi-vulkan
+video/out/hwdec/hwdec_vaapi_gl.c vaapi-egl
+video/out/hwdec/hwdec_vaapi_vk.c vaapi-vulkan
+video/out/placebo/ra_pl.c libplacebo
+video/out/placebo/utils.c libplacebo
 video/out/opengl/angle_dynamic.c egl-angle
 video/out/opengl/common.c gl
 video/out/opengl/context.c gl
-video/out/opengl/context_android.c android
+video/out/opengl/context_android.c egl-android
 video/out/opengl/context_angle.c egl-angle-win32
 video/out/opengl/context_cocoa.c gl-cocoa
 video/out/opengl/context_drm_egl.c egl-drm
 video/out/opengl/context_dxinterop.c gl-dxinterop
 video/out/opengl/context_glx.c gl-x11
-video/out/opengl/context_mali_fbdev.c mali-fbdev
 video/out/opengl/context_rpi.c rpi
-video/out/opengl/context_vdpau.c vdpau-gl-x11
 video/out/opengl/context_wayland.c gl-wayland
 video/out/opengl/context_win.c gl-win32
 video/out/opengl/context_x11egl.c egl-x11
 video/out/opengl/egl_helpers.c egl-helpers
 video/out/opengl/formats.c gl
-video/out/opengl/hwdec_cuda.c cuda-hwaccel
 video/out/opengl/hwdec_d3d11egl.c d3d-hwaccel && egl-angle
-video/out/opengl/hwdec_d3d11eglrgb.c d3d-hwaccel && egl-angle
 video/out/opengl/hwdec_drmprime_drm.c drmprime && drm
 video/out/opengl/hwdec_dxva2egl.c d3d9-hwaccel && egl-angle
 video/out/opengl/hwdec_dxva2gldx.c gl-dxinterop-d3d9
 video/out/opengl/hwdec_ios.m ios-gl
 video/out/opengl/hwdec_osx.c videotoolbox-gl
-video/out/opengl/hwdec_rpi.c rpi
-video/out/opengl/hwdec_vaegl.c vaapi-egl
+video/out/opengl/hwdec_rpi.c rpi-mmal
 video/out/opengl/hwdec_vdpau.c vdpau-gl-x11
 video/out/opengl/libmpv_gl.c gl
+video/out/opengl/oml_sync.c egl-x11 || gl-x11
 video/out/opengl/ra_gl.c gl
 video/out/opengl/utils.c gl
 video/out/vo.c
@@ -248,26 +240,24 @@ video/out/vo_lavc.c
 video/out/vo_libmpv.c
 video/out/vo_mediacodec_embed.c android
 video/out/vo_null.c
-video/out/vo_rpi.c rpi
-video/out/vo_sdl.c sdl2
+video/out/vo_rpi.c rpi-mmal
+video/out/vo_sdl.c sdl2-video
 video/out/vo_tct.c
 video/out/vo_vaapi.c vaapi-x11 && gpl
 video/out/vo_vdpau.c vdpau
-video/out/vo_wayland.c wayland
+video/out/vo_wlshm.c wayland && memfd_create
 video/out/vo_x11.c x11
 video/out/vo_xv.c xv
 video/out/vulkan/context.c vulkan
+video/out/vulkan/context_android.c vulkan && android
 video/out/vulkan/context_wayland.c vulkan && wayland
 video/out/vulkan/context_win.c vulkan && win32-desktop
 video/out/vulkan/context_xlib.c vulkan && x11
-video/out/vulkan/formats.c vulkan
-video/out/vulkan/malloc.c vulkan
-video/out/vulkan/ra_vk.c vulkan
-video/out/vulkan/spirv_nvidia.c vulkan
 video/out/vulkan/utils.c vulkan
 video/out/w32_common.c win32-desktop
-$builddir/pkg/wayland-protocols/idle-inhibit-v1-protocol.c.o wayland
-video/out/wayland/srv-decor.c.o wayland
+$builddir/pkg/wayland-protocols/idle-inhibit-unstable-v1-protocol.c.o wayland
+$builddir/pkg/wayland-protocols/presentation-time-protocol.c.o wayland
+$builddir/pkg/wayland-protocols/xdg-decoration-unstable-v1-protocol.c.o wayland
 $builddir/pkg/wayland-protocols/xdg-shell-protocol.c.o wayland
 video/out/wayland_common.c wayland
 video/out/win32/displayconfig.c win32-desktop
@@ -275,6 +265,7 @@ video/out/win32/droptarget.c win32-desktop
 video/out/win_state.c
 video/out/x11_common.c x11
 video/sws_utils.c
+video/zimg.c zimg
 video/vaapi.c vaapi
 video/vdpau.c vdpau
 video/vdpau_mixer.c vdpau

@@ -1,4 +1,4 @@
-From 0c5fe8d80ded0ac8f575ec18d60397549c3ccfc6 Mon Sep 17 00:00:00 2001
+From ca6d8b57abcd14969f6595196a3ed5d497dd6a72 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 2 Jul 2019 17:25:30 -0700
 Subject: [PATCH] Remove stray top-level ';'
@@ -22,10 +22,10 @@ index 0c1565149f..2ca94583ba 100644
  struct glsl_fmt {
      enum ra_ctype ctype;
 diff --git a/video/out/gpu/video.c b/video/out/gpu/video.c
-index ebb63cc02d..26d6e5b9a8 100644
+index 08cd08ebe4..254ee931d2 100644
 --- a/video/out/gpu/video.c
 +++ b/video/out/gpu/video.c
-@@ -3987,7 +3987,7 @@ static void *gl_video_dr_alloc_buffer(struct gl_video *p, size_t size)
+@@ -4149,7 +4149,7 @@ static void *gl_video_dr_alloc_buffer(struct gl_video *p, size_t size)
      p->dr_buffers[p->num_dr_buffers++] = (struct dr_buffer){ .buf = buf };
  
      return buf->data;
@@ -35,5 +35,5 @@ index ebb63cc02d..26d6e5b9a8 100644
  static void gl_video_dr_free_buffer(void *opaque, uint8_t *data)
  {
 -- 
-2.22.0
+2.23.0
 
