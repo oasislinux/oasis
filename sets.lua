@@ -2,6 +2,7 @@ return {
 	core={
 		'awk',
 		'bc',
+		'byacc',
 		'bzip2',
 		'curl',
 		'e2fsprogs',

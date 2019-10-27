@@ -109,12 +109,4 @@ sub('rsync.ninja', function()
 	man{'usr.bin/rsync/rsync.1', 'usr.bin/rsync/rsync.5', 'usr.bin/rsync/rsyncd.5'}
 end)
 
--- yacc
-exe('yacc', [[usr.bin/yacc/(
-	closure.c error.c lalr.c lr0.c main.c mkpar.c output.c reader.c
-	skeleton.c symtab.c verbose.c warshall.c
-) libbsd.a]])
-file('bin/yacc', '755', '$outdir/yacc')
-man{'usr.bin/yacc/yacc.1'}
-
 fetch 'local'

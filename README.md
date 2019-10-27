@@ -53,10 +53,11 @@ up from the following:
 * [suckless](http://core.suckless.org/)
 	- sbase, ubase, sinit, sdhcp
 * [openbsd](http://openbsd.org/)
-	- pax, yacc, fmt, diff, patch, doas
+	- pax, fmt, diff, patch, doas
 * [plan9port](http://swtch.com/plan9port/)
 	- rc, sam
 * [awk](http://github.com/onetrueawk/awk/)
+* [byacc](https://invisible-island.net/byacc/byacc.html)
 * [bzip2](http://bzip.org/)
 * [bc](https://github.com/gavinhoward/bc)
 * [curl](https://curl.haxx.se/)
