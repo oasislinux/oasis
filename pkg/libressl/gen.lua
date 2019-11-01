@@ -10,10 +10,11 @@ cflags{
 	'-I $srcdir/crypto',
 	'-I $srcdir/crypto/asn1',
 	'-I $srcdir/crypto/bn',
+	'-I $srcdir/crypto/ec',
+	'-I $srcdir/crypto/ecdh',
+	'-I $srcdir/crypto/ecdsa',
 	'-I $srcdir/crypto/evp',
 	'-I $srcdir/crypto/modes',
-	'-I $srcdir/crypto/ecdsa',
-	'-I $srcdir/crypto/ec',
 	'-I pkg/openbsd/include',
 }
 
@@ -31,6 +32,7 @@ pkg.hdrs = {
 		'cast.h',
 		'chacha.h',
 		'cmac.h',
+		'cms.h',
 		'comp.h',
 		'conf.h',
 		'conf_api.h',
@@ -174,7 +176,7 @@ lib('libcrypto.a', [[crypto/(
 		ec2_smpl.c ec2_mult.c ec_ameth.c ec_pmeth.c ec_kmeth.c eck_prn.c
 		ecp_oct.c ec2_oct.c ec_oct.c
 	)
-	ecdh/(ech_lib.c ech_key.c ech_err.c)
+	ecdh/(ech_lib.c ech_key.c ech_err.c ecdh_kdf.c)
 	ecdsa/(ecs_lib.c ecs_asn1.c ecs_ossl.c ecs_sign.c ecs_vrf.c ecs_err.c)
 	engine/(
 		eng_err.c eng_lib.c eng_list.c eng_init.c eng_ctrl.c
