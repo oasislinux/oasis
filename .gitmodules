@@ -93,6 +93,9 @@
 	path = pkg/libass/src
 	url = https://github.com/libass/libass
 	ignore = all
+[submodule "pkg/libcbor/src"]
+	path = pkg/libcbor/src
+	url = https://github.com/PJK/libcbor.git
 [submodule "pkg/libdrm/src"]
 	path = pkg/libdrm/src
 	url = https://anongit.freedesktop.org/git/mesa/drm.git
