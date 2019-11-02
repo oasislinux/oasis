@@ -262,7 +262,6 @@ youtube_dl/extractor/googlesearch.py
 youtube_dl/extractor/goshgay.py
 youtube_dl/extractor/gputechconf.py
 youtube_dl/extractor/groupon.py
-youtube_dl/extractor/hark.py
 youtube_dl/extractor/hbo.py
 youtube_dl/extractor/hearthisat.py
 youtube_dl/extractor/heise.py
@@ -332,7 +331,6 @@ youtube_dl/extractor/la7.py
 youtube_dl/extractor/laola1tv.py
 youtube_dl/extractor/lci.py
 youtube_dl/extractor/lcp.py
-youtube_dl/extractor/learnr.py
 youtube_dl/extractor/lecture2go.py
 youtube_dl/extractor/lecturio.py
 youtube_dl/extractor/leeco.py
@@ -356,9 +354,7 @@ youtube_dl/extractor/lovehomeporn.py
 youtube_dl/extractor/lrt.py
 youtube_dl/extractor/lynda.py
 youtube_dl/extractor/m6.py
-youtube_dl/extractor/macgamestore.py
 youtube_dl/extractor/mailru.py
-youtube_dl/extractor/makertv.py
 youtube_dl/extractor/malltv.py
 youtube_dl/extractor/mangomolo.py
 youtube_dl/extractor/manyvids.py
@@ -629,6 +625,7 @@ youtube_dl/extractor/telequebec.py
 youtube_dl/extractor/teletask.py
 youtube_dl/extractor/telewebion.py
 youtube_dl/extractor/tennistv.py
+youtube_dl/extractor/tenplay.py
 youtube_dl/extractor/testurl.py
 youtube_dl/extractor/tf1.py
 youtube_dl/extractor/tfo.py
@@ -663,7 +660,6 @@ youtube_dl/extractor/tunein.py
 youtube_dl/extractor/tunepk.py
 youtube_dl/extractor/turbo.py
 youtube_dl/extractor/turner.py
-youtube_dl/extractor/tutv.py
 youtube_dl/extractor/tv2.py
 youtube_dl/extractor/tv2hu.py
 youtube_dl/extractor/tv4.py
