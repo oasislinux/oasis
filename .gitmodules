@@ -250,6 +250,9 @@
 [submodule "pkg/ubase/src"]
 	path = pkg/ubase/src
 	url = https://github.com/michaelforney/ubase
+[submodule "pkg/usbids/src"]
+	path = pkg/usbids/src
+	url = https://github.com/usbids/usbids.git
 [submodule "pkg/utf8proc/src"]
 	path = pkg/utf8proc/src
 	url = https://github.com/JuliaLang/utf8proc
