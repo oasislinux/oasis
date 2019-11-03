@@ -7,6 +7,7 @@
 #define _PATH_SSH_KEY_SIGN "/libexec/ssh-keysign"
 #define _PATH_SSH_PIDDIR "/run"
 #define _PATH_SSH_PKCS11_HELPER "/libexec/ssh-pkcs11-helper"
+#define _PATH_SSH_SK_HELPER "/libexec/ssh-sk-helper"
 #define _PATH_SSH_PROGRAM "/bin/ssh"
 #define _PATH_XAUTH "/dev/null/xauth"
 
@@ -52,7 +53,8 @@
 /* #undef DISABLE_UTMPX */
 #define DISABLE_WTMP 1
 #define DISABLE_WTMPX 1
-#define ENABLE_PKCS11 /**/
+/* #undef ENABLE_PKCS11 */
+#define ENABLE_SK /**/
 /* #undef FFLUSH_NULL_BUG */
 /* #undef FILESYSTEM_NO_BACKSLASH */
 /* #undef FSID_HAS_VAL */
@@ -126,6 +128,7 @@
 #define HAVE_DECL_READV 1
 /* #undef HAVE_DECL_SETAUTHDB */
 #define HAVE_DECL_SHUT_RD 1
+#define HAVE_DECL_UINT32_MAX 1
 #define HAVE_DECL_WRITEV 1
 #define HAVE_DECL__GETLONG 0
 #define HAVE_DECL__GETSHORT 0
@@ -140,6 +143,7 @@
 #define HAVE_DIRENT_H 1
 #define HAVE_DIRFD 1
 #define HAVE_DIRNAME 1
+#define HAVE_DLOPEN 1
 #define HAVE_DSA_GENERATE_PARAMETERS_EX 1
 #define HAVE_DSA_GET0_KEY 1
 #define HAVE_DSA_GET0_PQG 1
@@ -189,6 +193,8 @@
 /* #undef HAVE_FLOATINGPOINT_H */
 #define HAVE_FLOCK 1
 /* #undef HAVE_FMT_SCALED */
+#define HAVE_FNMATCH 1
+#define HAVE_FNMATCH_H 1
 #define HAVE_FREEADDRINFO 1
 #define HAVE_FREEZERO 1
 #define HAVE_FSBLKCNT_T 1
@@ -286,6 +292,7 @@
 #define HAVE_LINUX_SECCOMP_H 1
 #define HAVE_LLABS 1
 #define HAVE_LOCALE_H 1
+#define HAVE_LOCALTIME_R 1
 /* #undef HAVE_LOGIN */
 /* #undef HAVE_LOGIN_CAP_H */
 /* #undef HAVE_LOGIN_GETCAPBOOL */
@@ -348,6 +355,7 @@
 #define HAVE_READPASSPHRASE_H 1
 #define HAVE_REALLOC 1
 #define HAVE_REALLOCARRAY 1
+#define HAVE_REALPATH 1
 #define HAVE_RECALLOCARRAY 1
 #define HAVE_RECVMSG 1
 #define HAVE_RLIMIT_NPROC /**/
@@ -449,6 +457,7 @@
 #define HAVE_STRUCT_SOCKADDR_IN6 1
 #define HAVE_STRUCT_SOCKADDR_IN6_SIN6_SCOPE_ID 1
 #define HAVE_STRUCT_SOCKADDR_STORAGE 1
+#define HAVE_STRUCT_STATFS_F_FILES 1
 #define HAVE_STRUCT_STATFS_F_FLAGS 1
 #define HAVE_STRUCT_STAT_ST_BLKSIZE 1
 #define HAVE_STRUCT_STAT_ST_MTIM 1
@@ -663,4 +672,5 @@
 #endif
 /* #undef malloc */
 /* #undef realloc */
+/* #undef realpath */
 /* #undef socklen_t */

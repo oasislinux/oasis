@@ -68,18 +68,20 @@ lib('libssh.a', [[
 	log.c match.c moduli.c nchan.c packet.c
 	readpass.c ttymodes.c xmalloc.c addrmatch.c
 	atomicio.c dispatch.c mac.c misc.c utf8.c
-	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-rsa.c dh.c
+	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-ecdsa-sk.c
+	ssh-rsa.c dh.c
 	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c
 	ssh-pkcs11.c smult_curve25519_ref.c
 	poly1305.c chacha.c cipher-chachapoly.c
-	ssh-ed25519.c digest-openssl.c digest-libc.c hmac.c
+	ssh-ed25519.c ssh-sk.c digest-openssl.c digest-libc.c hmac.c
 	sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c
 	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c
 	kexgexc.c kexgexs.c
 	sntrup4591761.c kexsntrup4591761x25519.c kexgen.c
-	platform-pledge.c platform-tracing.c platform-misc.c
+	sftp-realpath.c platform-pledge.c platform-tracing.c platform-misc.c
 	libopenbsd-compat.a
 	$builddir/pkg/(libressl/libcrypto.a.d zlib/libz.a)
+	$builddir/pkg/(libfido2/libsk-libfido2.a.d)
 ]])
 
 exe('ssh', [[
@@ -91,7 +93,6 @@ file('bin/ssh', '755', '$outdir/ssh')
 
 cc('sftp-server.c')
 cc('sftp-common.c')
-cc('sftp-realpath.c')
 
 exe('sshd', [[
 	sshd.c auth-rhosts.c auth-passwd.c
@@ -104,7 +105,7 @@ exe('sshd', [[
 	monitor.c monitor_wrap.c auth-krb5.c
 	auth2-gss.c gss-serv.c gss-serv-krb5.c
 	loginrec.c auth-pam.c auth-shadow.c auth-sia.c md5crypt.c
-	sftp-server.c.o sftp-common.c.o sftp-realpath.c.o
+	sftp-server.c.o sftp-common.c.o
 	sandbox-null.c sandbox-rlimit.c sandbox-systrace.c sandbox-darwin.c
 	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c
 	sandbox-solaris.c uidswap.c
@@ -124,7 +125,10 @@ file('bin/ssh-agent', '755', '$outdir/ssh-agent')
 exe('ssh-keygen', {'ssh-keygen.c', 'sshsig.c', 'libssh.a.d'})
 file('bin/ssh-keygen', '755', '$outdir/ssh-keygen')
 
-exe('sftp-server', {'sftp-common.c.o', 'sftp-server.c.o', 'sftp-realpath.c.o', 'sftp-server-main.c', 'libssh.a.d'})
+exe('ssh-sk-helper', {'ssh-sk-helper.c', 'libssh.a.d'})
+file('libexec/ssh-sk-helper', '755', '$outdir/ssh-sk-helper')
+
+exe('sftp-server', {'sftp-common.c.o', 'sftp-server.c.o', 'sftp-server-main.c', 'libssh.a.d'})
 file('libexec/sftp-server', '755', '$outdir/sftp-server')
 
 exe('sftp', {'sftp.c', 'sftp-client.c', 'sftp-common.c.o', 'sftp-glob.c', 'libssh.a.d'})
