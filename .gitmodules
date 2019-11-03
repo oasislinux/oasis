@@ -110,6 +110,10 @@
 	path = pkg/libffi/src
 	url = https://github.com/libffi/libffi
 	ignore = all
+[submodule "pkg/libfido2/src"]
+	path = pkg/libfido2/src
+	url = https://github.com/Yubico/libfido2.git
+	ignore = all
 [submodule "pkg/libinput/src"]
 	path = pkg/libinput/src
 	url = https://github.com/oasislinux/libinput
