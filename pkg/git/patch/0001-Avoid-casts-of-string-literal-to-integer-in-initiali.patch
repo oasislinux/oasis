@@ -1,4 +1,4 @@
-From 760c58497b48f432260c817728e50ac08787ac13 Mon Sep 17 00:00:00 2001
+From c5e1a197551f2e98c2c2f04e280ceefc05b4d491 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 21 Jun 2019 00:07:49 -0700
 Subject: [PATCH] Avoid casts of string literal to integer in initializers
@@ -31,10 +31,10 @@ Subject: [PATCH] Avoid casts of string literal to integer in initializers
  24 files changed, 85 insertions(+), 82 deletions(-)
 
 diff --git a/builtin/am.c b/builtin/am.c
-index 1aea657a7f..76f9b4de7d 100644
+index 8181c2aef3..399868a882 100644
 --- a/builtin/am.c
 +++ b/builtin/am.c
-@@ -2251,7 +2251,7 @@ int cmd_am(int argc, const char **argv, const char *prefix)
+@@ -2240,7 +2240,7 @@ int cmd_am(int argc, const char **argv, const char *prefix)
  		OPT_RERERE_AUTOUPDATE(&state.allow_rerere_autoupdate),
  		{ OPTION_STRING, 'S', "gpg-sign", &state.sign_commit, N_("key-id"),
  		  N_("GPG-sign commits"),
@@ -44,10 +44,10 @@ index 1aea657a7f..76f9b4de7d 100644
  			N_("(internal use for git-rebase)")),
  		OPT_END()
 diff --git a/builtin/blame.c b/builtin/blame.c
-index b6534d4dea..7150f61cab 100644
+index e946ba6cd9..acb221b75a 100644
 --- a/builtin/blame.c
 +++ b/builtin/blame.c
-@@ -868,7 +868,7 @@ int cmd_blame(int argc, const char **argv, const char *prefix)
+@@ -867,7 +867,7 @@ int cmd_blame(int argc, const char **argv, const char *prefix)
  		 * and are only included here to get included in the "-h"
  		 * output:
  		 */
@@ -57,10 +57,10 @@ index b6534d4dea..7150f61cab 100644
  		OPT_BIT(0, "minimal", &xdl_opts, N_("Spend extra cycles to find better match"), XDF_NEED_MINIMAL),
  		OPT_STRING('S', NULL, &revs_file, N_("file"), N_("Use revisions from <file> instead of calling git-rev-list")),
 diff --git a/builtin/clone.c b/builtin/clone.c
-index f665b28ccc..5624cb25ee 100644
+index c46ee29f0a..fcfd4d0465 100644
 --- a/builtin/clone.c
 +++ b/builtin/clone.c
-@@ -80,7 +80,7 @@ static int recurse_submodules_cb(const struct option *opt,
+@@ -79,7 +79,7 @@ static int recurse_submodules_cb(const struct option *opt,
  		string_list_append((struct string_list *)opt->value, arg);
  	else
  		string_list_append((struct string_list *)opt->value,
@@ -69,7 +69,7 @@ index f665b28ccc..5624cb25ee 100644
  
  	return 0;
  }
-@@ -105,7 +105,7 @@ static struct option builtin_clone_options[] = {
+@@ -104,7 +104,7 @@ static struct option builtin_clone_options[] = {
  	OPT_ALIAS(0, "recursive", "recurse-submodules"),
  	{ OPTION_CALLBACK, 0, "recurse-submodules", &option_recurse_submodules,
  	  N_("pathspec"), N_("initialize submodules in the clone"),
@@ -92,7 +92,7 @@ index b866d83951..13e7647f16 100644
  	};
  
 diff --git a/builtin/commit.c b/builtin/commit.c
-index ae7aaf6dc6..c5dd215da7 100644
+index e588bc6ad3..9370a6bef9 100644
 --- a/builtin/commit.c
 +++ b/builtin/commit.c
 @@ -1354,14 +1354,14 @@ int cmd_status(int argc, const char **argv, const char *prefix)
@@ -157,10 +157,10 @@ index 98d65bc0ad..071853337b 100644
  		if (!strcmp(arg, "bool"))
  			new_type = TYPE_BOOL;
 diff --git a/builtin/describe.c b/builtin/describe.c
-index 200154297d..c0ccfd9ff1 100644
+index b6df81d8d0..415fc0813c 100644
 --- a/builtin/describe.c
 +++ b/builtin/describe.c
-@@ -551,10 +551,10 @@ int cmd_describe(int argc, const char **argv, const char *prefix)
+@@ -553,10 +553,10 @@ int cmd_describe(int argc, const char **argv, const char *prefix)
  			N_("show abbreviated commit object as fallback")),
  		{OPTION_STRING, 0, "dirty",  &dirty, N_("mark"),
  			N_("append <mark> on dirty working tree (default: \"-dirty\")"),
@@ -192,10 +192,10 @@ index a4615587fd..507d1841ab 100644
  			N_("use <text> as start of message")),
  		OPT_FILENAME('F', "file", &inpath, N_("file to read from")),
 diff --git a/builtin/gc.c b/builtin/gc.c
-index c18efadda5..b1a4d1b8a6 100644
+index fadb45489f..a8aa48360c 100644
 --- a/builtin/gc.c
 +++ b/builtin/gc.c
-@@ -538,7 +538,7 @@ int cmd_gc(int argc, const char **argv, const char *prefix)
+@@ -537,7 +537,7 @@ int cmd_gc(int argc, const char **argv, const char *prefix)
  		OPT__QUIET(&quiet, N_("suppress progress reporting")),
  		{ OPTION_STRING, 0, "prune", &prune_expire, N_("date"),
  			N_("prune unreferenced objects"),
@@ -205,10 +205,10 @@ index c18efadda5..b1a4d1b8a6 100644
  		OPT_BOOL_F(0, "auto", &auto_gc, N_("enable auto-gc mode"),
  			   PARSE_OPT_NOCOMPLETE),
 diff --git a/builtin/grep.c b/builtin/grep.c
-index 560051784e..221680e9c0 100644
+index 50ce8d9461..1c6a56fcdc 100644
 --- a/builtin/grep.c
 +++ b/builtin/grep.c
-@@ -837,7 +837,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
+@@ -839,7 +839,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
  			    N_("search in subdirectories (default)"), -1),
  		{ OPTION_INTEGER, 0, "max-depth", &opt.max_depth, N_("depth"),
  			N_("descend at most <depth> levels"), PARSE_OPT_NONEG,
@@ -217,7 +217,7 @@ index 560051784e..221680e9c0 100644
  		OPT_GROUP(""),
  		OPT_SET_INT('E', "extended-regexp", &pattern_type_arg,
  			    N_("use extended POSIX regular expressions"),
-@@ -921,7 +921,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
+@@ -923,7 +923,7 @@ int cmd_grep(int argc, const char **argv, const char *prefix)
  		{ OPTION_STRING, 'O', "open-files-in-pager", &show_in_pager,
  			N_("pager"), N_("show matching files in the pager"),
  			PARSE_OPT_OPTARG | PARSE_OPT_NOCOMPLETE,
@@ -240,7 +240,7 @@ index 944ec77fe1..8241581ef9 100644
  		OPT_STRING(0, "separate-git-dir", &real_git_dir, N_("gitdir"),
  			   N_("separate git dir from working tree")),
 diff --git a/builtin/merge.c b/builtin/merge.c
-index e2ccbc44e2..657a06b073 100644
+index 062e911441..5a05a63a56 100644
 --- a/builtin/merge.c
 +++ b/builtin/merge.c
 @@ -248,7 +248,7 @@ static struct option builtin_merge_options[] = {
@@ -269,12 +269,12 @@ index e2ccbc44e2..657a06b073 100644
 +	  N_("GPG sign commit"), PARSE_OPT_OPTARG, NULL, { .strval = "" } },
  	OPT_BOOL(0, "overwrite-ignore", &overwrite_ignore, N_("update ignored files (default)")),
  	OPT_BOOL(0, "signoff", &signoff, N_("add Signed-off-by:")),
- 	OPT_BOOL(0, "verify", &verify_msg, N_("verify commit-msg hook")),
+ 	OPT_BOOL(0, "no-verify", &no_verify, N_("bypass pre-merge-commit and commit-msg hooks")),
 diff --git a/builtin/name-rev.c b/builtin/name-rev.c
-index c785fe16ba..0700834386 100644
+index b0f0776947..ccf8885fbb 100644
 --- a/builtin/name-rev.c
 +++ b/builtin/name-rev.c
-@@ -424,7 +424,7 @@ int cmd_name_rev(int argc, const char **argv, const char *prefix)
+@@ -428,7 +428,7 @@ int cmd_name_rev(int argc, const char **argv, const char *prefix)
  			/* A Hidden OPT_BOOL */
  			OPTION_SET_INT, 0, "peel-tag", &peel_tag, NULL,
  			N_("dereference tags in the input (internal use)"),
@@ -284,10 +284,10 @@ index c785fe16ba..0700834386 100644
  		OPT_END(),
  	};
 diff --git a/builtin/rebase.c b/builtin/rebase.c
-index 670096c065..f83ce5d46a 100644
+index 4a20582e72..0a3ed94ebd 100644
 --- a/builtin/rebase.c
 +++ b/builtin/rebase.c
-@@ -476,19 +476,19 @@ int cmd_rebase__interactive(int argc, const char **argv, const char *prefix)
+@@ -477,19 +477,19 @@ int cmd_rebase__interactive(int argc, const char **argv, const char *prefix)
  		OPT_CMDMODE(0, "add-exec-commands", &command,
  			N_("insert exec commands in todo list"), ACTION_ADD_EXEC),
  		{ OPTION_CALLBACK, 0, "onto", &opts.onto, N_("onto"), N_("onto"),
@@ -312,7 +312,7 @@ index 670096c065..f83ce5d46a 100644
  		OPT_STRING(0, "strategy", &opts.strategy, N_("strategy"),
  			   N_("rebase strategy")),
  		OPT_STRING(0, "strategy-opts", &opts.strategy_opts, N_("strategy-opts"),
-@@ -1404,7 +1404,7 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
+@@ -1428,7 +1428,7 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
  			REBASE_NO_QUIET | REBASE_VERBOSE | REBASE_DIFFSTAT),
  		{OPTION_NEGBIT, 'n', "no-stat", &options.flags, NULL,
  			N_("do not show diffstat of what changed upstream"),
@@ -321,7 +321,7 @@ index 670096c065..f83ce5d46a 100644
  		OPT_BOOL(0, "signoff", &options.signoff,
  			 N_("add a Signed-off-by: line to each commit")),
  		OPT_PASSTHRU_ARGV(0, "ignore-whitespace", &options.git_am_opts,
-@@ -1458,7 +1458,7 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
+@@ -1482,7 +1482,7 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
  			    "squash!/fixup! under -i")),
  		{ OPTION_STRING, 'S', "gpg-sign", &gpg_sign, N_("key-id"),
  			N_("GPG-sign commits"),
@@ -330,7 +330,7 @@ index 670096c065..f83ce5d46a 100644
  		OPT_BOOL(0, "autostash", &options.autostash,
  			 N_("automatically stash/stash pop before and after")),
  		OPT_STRING_LIST('x', "exec", &exec, N_("exec"),
-@@ -1467,10 +1467,10 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
+@@ -1491,10 +1491,10 @@ int cmd_rebase(int argc, const char **argv, const char *prefix)
  		OPT_BOOL(0, "allow-empty-message",
  			 &options.allow_empty_message,
  			 N_("allow rebasing commits with empty messages")),
@@ -392,10 +392,10 @@ index e0a4c25382..2d6aa2354f 100644
  		OPT_STRING(  0 , "format", &format.format, N_("format"),
  			   N_("format to use for the output")),
 diff --git a/builtin/update-index.c b/builtin/update-index.c
-index dff2f4b837..7bea31d024 100644
+index 49302d98c5..de3a676636 100644
 --- a/builtin/update-index.c
 +++ b/builtin/update-index.c
-@@ -995,7 +995,7 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
+@@ -996,7 +996,7 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
  			N_("add the specified entry to the index"),
  			PARSE_OPT_NOARG | /* disallow --cacheinfo=<mode> form */
  			PARSE_OPT_NONEG | PARSE_OPT_LITERAL_ARGHELP,
@@ -404,7 +404,7 @@ index dff2f4b837..7bea31d024 100644
  			cacheinfo_callback},
  		{OPTION_CALLBACK, 0, "chmod", &set_executable_bit, "(+|-)x",
  			N_("override the executable bit of the listed files"),
-@@ -1003,16 +1003,16 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
+@@ -1004,16 +1004,16 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
  			chmod_callback},
  		{OPTION_SET_INT, 0, "assume-unchanged", &mark_valid_only, NULL,
  			N_("mark files as \"not changing\""),
@@ -425,7 +425,7 @@ index dff2f4b837..7bea31d024 100644
  		OPT_SET_INT(0, "info-only", &info_only,
  			N_("add to index only; do not add content to object database"), 1),
  		OPT_SET_INT(0, "force-remove", &force_remove,
-@@ -1022,19 +1022,19 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
+@@ -1023,19 +1023,19 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
  		{OPTION_LOWLEVEL_CALLBACK, 0, "stdin", &read_from_stdin, NULL,
  			N_("read list of paths to be updated from standard input"),
  			PARSE_OPT_NONEG | PARSE_OPT_NOARG,
@@ -449,7 +449,7 @@ index dff2f4b837..7bea31d024 100644
  		OPT_BIT(0, "ignore-missing", &refresh_args.flags,
  			N_("ignore files missing from worktree"),
  			REFRESH_IGNORE_MISSING),
-@@ -1060,10 +1060,10 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
+@@ -1061,10 +1061,10 @@ int cmd_update_index(int argc, const char **argv, const char *prefix)
  			N_("enable or disable file system monitor")),
  		{OPTION_SET_INT, 0, "fsmonitor-valid", &mark_fsmonitor_only, NULL,
  			N_("mark files as fsmonitor valid"),
@@ -476,10 +476,10 @@ index 45d61707e7..eba6c68cd6 100644
  	};
  
 diff --git a/diff.c b/diff.c
-index efe42b341a..338003b036 100644
+index afe4400a60..73f2be9e0b 100644
 --- a/diff.c
 +++ b/diff.c
-@@ -5520,7 +5520,7 @@ static void prep_parse_options(struct diff_options *options)
+@@ -5523,7 +5523,7 @@ static void prep_parse_options(struct diff_options *options)
  			       PARSE_OPT_NONEG, diff_opt_diff_filter),
  		{ OPTION_CALLBACK, 0, "output", options, N_("<file>"),
  		  N_("Output to a specific file"),
@@ -502,7 +502,7 @@ index 1240a8514e..e5af6dcb64 100644
  	if (value < 0)
  		return error(_("option `%s' expects \"always\", \"auto\", or \"never\""),
 diff --git a/parse-options.c b/parse-options.c
-index 87b26a1d92..4edaeabc0b 100644
+index b42f54d48b..f58dd9ae51 100644
 --- a/parse-options.c
 +++ b/parse-options.c
 @@ -30,7 +30,7 @@ static enum parse_opt_result get_arg(struct parse_opt_ctx_t *p,
@@ -618,10 +618,10 @@ index 87b26a1d92..4edaeabc0b 100644
  			return PARSE_OPT_DONE;
  		}
 diff --git a/parse-options.h b/parse-options.h
-index a4bd40bb6a..82c39f50a2 100644
+index 38a33a087e..3120470fbd 100644
 --- a/parse-options.h
 +++ b/parse-options.h
-@@ -104,7 +104,7 @@ typedef enum parse_opt_result parse_opt_ll_cb(struct parse_opt_ctx_t *ctx,
+@@ -113,7 +113,7 @@ typedef enum parse_opt_result parse_opt_ll_cb(struct parse_opt_ctx_t *ctx,
   * `callback`::
   *   pointer to the callback to use for OPTION_CALLBACK
   *
@@ -630,7 +630,7 @@ index a4bd40bb6a..82c39f50a2 100644
   *   default value to fill (*->value) with for PARSE_OPT_OPTARG.
   *   OPTION_{BIT,SET_INT} store the {mask,integer} to put in the value when met.
   *   CALLBACKS can use it like they want.
-@@ -123,17 +123,20 @@ struct option {
+@@ -132,17 +132,20 @@ struct option {
  
  	int flags;
  	parse_opt_cb *callback;
@@ -654,7 +654,7 @@ index a4bd40bb6a..82c39f50a2 100644
  #define OPT_BOOL_F(s, l, v, h, f)   OPT_SET_INT_F(s, l, v, h, 1, f)
  #define OPT_CALLBACK_F(s, l, v, a, h, f, cb)			\
  	{ OPTION_CALLBACK, (s), (l), (v), (a), (h), (f), (cb) }
-@@ -142,21 +145,21 @@ struct option {
+@@ -151,21 +154,21 @@ struct option {
  
  #define OPT_END()                   { OPTION_END }
  #define OPT_ARGUMENT(l, v, h)       { OPTION_ARGUMENT, 0, (l), (v), NULL, \
@@ -681,7 +681,7 @@ index a4bd40bb6a..82c39f50a2 100644
  #define OPT_INTEGER(s, l, v, h)     OPT_INTEGER_F(s, l, v, h, 0)
  #define OPT_MAGNITUDE(s, l, v, h)   { OPTION_MAGNITUDE, (s), (l), (v), \
  				      N_("n"), (h), PARSE_OPT_NONEG }
-@@ -177,7 +180,7 @@ struct option {
+@@ -186,7 +189,7 @@ struct option {
  				       N_("file"), (h) }
  #define OPT_COLOR_FLAG(s, l, v, h) \
  	{ OPTION_CALLBACK, (s), (l), (v), N_("when"), (h), PARSE_OPT_OPTARG, \
@@ -732,5 +732,5 @@ index f1dcff4c6e..5807c8f9c8 100644
  #define OPT_MERGED(f, h) _OPT_MERGED_NO_MERGED("merged", f, h)
  #define OPT_NO_MERGED(f, h) _OPT_MERGED_NO_MERGED("no-merged", f, h)
 -- 
-2.22.0
+2.23.0
 

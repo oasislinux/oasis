@@ -82,7 +82,6 @@ lib('libgit.a', [[
 	ewah/ewah_rlw.c
 	exec-cmd.c.o
 	fetch-negotiator.c
-	fetch-object.c
 	fetch-pack.c
 	fsck.c
 	fsmonitor.c
@@ -146,6 +145,7 @@ lib('libgit.a', [[
 	pretty.c
 	prio-queue.c
 	progress.c
+	promisor-remote.c
 	prompt.c
 	protocol.c
 	quote.c
@@ -163,6 +163,7 @@ lib('libgit.a', [[
 	refspec.c
 	remote.c
 	replace-object.c
+	repo-settings.c
 	repository.c
 	rerere.c
 	resolve-undo.c
@@ -181,6 +182,7 @@ lib('libgit.a', [[
 	sideband.c
 	sigchain.c
 	split-index.c
+	stable-qsort.c
 	strbuf.c
 	streaming.c
 	string-list.c
