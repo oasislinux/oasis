@@ -354,34 +354,6 @@ lib('libmux.a', 'src/libmux/(io.c mux.c queue.c thread.c)')
 -- src/src/libplumb/mkfile:/^OFILES
 lib('libplumb.a', 'src/libplumb/(event.c fid.c mesg.c)')
 
--- src/src/cmd/rc/mkfile:/^OFILES
-yacc('rc/x', '$srcdir/src/cmd/rc/syn.y')
--- remove stdlib.h and string.h includes so that u.h comes first.
-build('grep', '$outdir/rc/syn.c', '$outdir/rc/x.tab.c', {
-	expr=[[-F -x -v -e '#include <stdlib.h>' -e '#include <string.h>']],
-})
-exe('bin/rc', [[$outdir/rc/syn.c src/cmd/rc/(
-	code.c
-	exec.c
-	getflags.c
-	glob.c
-	havefork.c
-	here.c
-	io.c
-	lex.c
-	pcmd.c
-	pfnc.c
-	plan9ish.c
-	simple.c
-	subr.c
-	trap.c
-	tree.c
-	unixcrap.c
-	var.c
-) lib9.a]], {'$outdir/rc/x.tab.h'})
-file('bin/rc', '755', '$outdir/bin/rc')
-file('lib/rcmain', '644', '$srcdir/rcmain')
-
 -- src/src/cmd/sam/mkfile:/^OFILES
 exe('bin/sam', [[src/cmd/sam/(
 	sam.c

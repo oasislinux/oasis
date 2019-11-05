@@ -1,0 +1,242 @@
+From 8d15541e85b391c1cd86907089d33f70d7ca0f65 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 4 Nov 2019 20:50:08 -0800
+Subject: [PATCH] Avoid multiple definitions of global variables
+
+---
+ exec.c   |  9 ++++++++-
+ exec.h   | 12 ++++++------
+ io.c     |  1 +
+ io.h     |  2 +-
+ lex.c    |  3 +++
+ rc.h     | 30 +++++++++++++++---------------
+ simple.c |  2 ++
+ subr.c   |  1 +
+ var.c    |  1 +
+ 9 files changed, 38 insertions(+), 23 deletions(-)
+
+diff --git a/exec.c b/exec.c
+index 3ad8a0d..268f429 100644
+--- a/exec.c
++++ b/exec.c
+@@ -3,10 +3,17 @@
+ #include "exec.h"
+ #include "io.h"
+ #include "fns.h"
++int mypid;
++thread *runq;
++code *codebuf;
++int ntrap;
++int trap[NSIG];
++int eflagok;
++
+ /*
+  * Start executing the given code at the given pc with the given redirection
+  */
+-char *argv0="rc";
++char *argv0 = "rc";
+ 
+ void
+ start(code *c, int pc, var *local)
+diff --git a/exec.h b/exec.h
+index 06d2991..ab0bfb4 100644
+--- a/exec.h
++++ b/exec.h
+@@ -56,18 +56,18 @@ struct thread{
+ 	tree *treenodes;		/* tree nodes created by this process */
+ 	thread *ret;		/* who continues when this finishes */
+ };
+-thread *runq;
++extern thread *runq;
+ code *codecopy(code*);
+-code *codebuf;				/* compiler output */
+-int ntrap;				/* number of outstanding traps */
+-int trap[NSIG];				/* number of outstanding traps per type */
++extern code *codebuf;			/* compiler output */
++extern int ntrap;			/* number of outstanding traps */
++extern int trap[NSIG];			/* number of outstanding traps per type */
+ struct builtin{
+ 	char *name;
+ 	void (*fnc)(void);
+ };
+ extern struct builtin Builtin[];
+-int eflagok;			/* kludge flag so that -e doesn't exit in startup */
+-int havefork;
++extern int eflagok;			/* kludge flag so that -e doesn't exit in startup */
++extern int havefork;
+ 
+ void execcd(void), execwhatis(void), execeval(void), execexec(void);
+ int execforkexec(void);
+diff --git a/io.c b/io.c
+index bb8af4a..228ec56 100644
+--- a/io.c
++++ b/io.c
+@@ -3,6 +3,7 @@
+ #include "exec.h"
+ #include "io.h"
+ #include "fns.h"
++io *err;
+ int pfmtnest = 0;
+ 
+ void
+diff --git a/io.h b/io.h
+index 21cc6b8..68b9e89 100644
+--- a/io.h
++++ b/io.h
+@@ -10,7 +10,7 @@ struct io{
+ 	int fd;
+ 	char *bufp, *ebuf, *strp, buf[NBUF];
+ };
+-io *err;
++extern io *err;
+ io *openfd(int), *openstr(void), *opencore(char *, int);
+ int emptybuf(io*);
+ void pchr(io*, int);
+diff --git a/lex.c b/lex.c
+index d2bef32..943112a 100644
+--- a/lex.c
++++ b/lex.c
+@@ -22,6 +22,7 @@ idchr(int c)
+ 	return c>' ' && !strchr("!\"#$%&'()+,-./:;<=>?@[\\]^`{|}~", c);
+ }
+ int future = EOF;
++char *promptstr;
+ int doprompt = 1;
+ int inquote;
+ int incomm;
+@@ -36,6 +37,7 @@ nextc(void)
+ 		future = getnext();
+ 	return future;
+ }
++int lastc;
+ /*
+  * Consume the lookahead character.
+  */
+@@ -131,6 +133,7 @@ nextis(int c)
+ 	}
+ 	return 0;
+ }
++char tok[NTOK];
+ 
+ char*
+ addtok(char *p, int val)
+diff --git a/rc.h b/rc.h
+index 8a6a5bb..cbec275 100644
+--- a/rc.h
++++ b/rc.h
+@@ -53,7 +53,7 @@ tree *mung1(tree*, tree*), *mung2(tree*, tree*, tree*);
+ tree *mung3(tree*, tree*, tree*, tree*), *epimung(tree*, tree*);
+ tree *simplemung(tree*), *heredoc(tree*);
+ void freetree(tree*);
+-tree *cmdtree;
++extern tree *cmdtree;
+ /*
+  * The first word of any code vector is a reference count.
+  * Always create a new reference to a code vector by calling codecopy(.).
+@@ -64,10 +64,10 @@ union code{
+ 	int i;
+ 	char *s;
+ };
+-char *promptstr;
+-int doprompt;
++extern char *promptstr;
++extern int doprompt;
+ #define	NTOK	8192
+-char tok[NTOK];
++extern char tok[NTOK];
+ #define	APPEND	1
+ #define	WRITE	2
+ #define	READ	3
+@@ -87,7 +87,7 @@ struct var{
+ };
+ var *vlook(char*), *gvlook(char*), *newvar(char*, var*);
+ #define	NVAR	521
+-var *gvar[NVAR];				/* hash for globals */
++extern var *gvar[NVAR];				/* hash for globals */
+ #define	new(type)	((type *)emalloc(sizeof(type)))
+ void *emalloc(long);
+ void *Malloc(ulong);
+@@ -98,7 +98,7 @@ struct here{
+ 	char *name;
+ 	struct here *next;
+ };
+-int mypid;
++extern int mypid;
+ /*
+  * Glob character escape in strings:
+  *	In a string, GLOB must be followed by *?[ or GLOB.
+@@ -117,10 +117,10 @@ int mypid;
+ #define	threebyte(c)	((c&0xf0)==0xe0)
+ #define	fourbyte(c)	((c&0xf8)==0xf0)
+ 
+-char **argp;
+-char **args;
+-int nerror;		/* number of errors encountered during compilation */
+-int doprompt;		/* is it time for a prompt? */
++extern char **argp;
++extern char **args;
++extern int nerror;	/* number of errors encountered during compilation */
++extern int doprompt;	/* is it time for a prompt? */
+ /*
+  * Which fds are the reading/writing end of a pipe?
+  * Unfortunately, this can vary from system to system.
+@@ -129,14 +129,14 @@ int doprompt;		/* is it time for a prompt? */
+  */
+ #define	PRD	0
+ #define	PWR	1
+-char *Rcmain, *Fdprefix;
++extern char *Rcmain, *Fdprefix;
+ #define	register
+ /*
+  * How many dot commands have we executed?
+  * Used to ensure that -v flag doesn't print rcmain.
+  */
+-int ndot;
++extern int ndot;
+ char *getstatus(void);
+-int lastc;
+-int lastword;
+-int kidpid;
++extern int lastc;
++extern int lastword;
++extern int kidpid;
+diff --git a/simple.c b/simple.c
+index d587227..7f1ee12 100644
+--- a/simple.c
++++ b/simple.c
+@@ -6,6 +6,8 @@
+ #include "exec.h"
+ #include "io.h"
+ #include "fns.h"
++int ndot;
++
+ /*
+  * Search through the following code to see if we're just going to exit.
+  */
+diff --git a/subr.c b/subr.c
+index a2d8a18..f031be5 100644
+--- a/subr.c
++++ b/subr.c
+@@ -23,6 +23,7 @@ efree(void *p)
+ 	else pfmt(err, "free 0\n");
+ }
+ extern int lastword, lastdol;
++int nerror;
+ 
+ void
+ yyerror(char *m)
+diff --git a/var.c b/var.c
+index 2564ba2..b4a3ef5 100644
+--- a/var.c
++++ b/var.c
+@@ -1,6 +1,7 @@
+ #include "rc.h"
+ #include "exec.h"
+ #include "fns.h"
++var *gvar[NVAR];
+ 
+ int
+ hash(char *s, int n)
+-- 
+2.24.0
+

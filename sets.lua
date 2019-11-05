@@ -19,6 +19,7 @@ return {
 		'perp',
 		'pigz',
 		'plan9port',
+		'rc',
 		'samurai',
 		'sbase',
 		'sdhcp',

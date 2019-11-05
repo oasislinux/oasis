@@ -1,0 +1,28 @@
+From 56359f53946306347ef9bb1f8f3c402adb8f8a5b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 4 Nov 2019 20:59:30 -0800
+Subject: [PATCH] Use /proc/self/fd/0 instead of /dev/fd/0
+
+---
+ rcmain.unix | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/rcmain.unix b/rcmain.unix
+index 42b3be4..1b5d6d2 100644
+--- a/rcmain.unix
++++ b/rcmain.unix
+@@ -25,9 +25,9 @@ if not if(flag i){
+ 	if(flag l && test -r $profile) . $profile
+ 	status=''
+ 	if(! ~ $#* 0) . $*
+-	. -i /dev/fd/0
++	. -i /proc/self/fd/0
+ }
+-if not if(~ $#* 0) . /dev/fd/0
++if not if(~ $#* 0) . /proc/self/fd/0
+ if not{
+ 	status=''
+ 	. $*
+-- 
+2.24.0
+

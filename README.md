@@ -73,6 +73,7 @@ up from the following:
 * [openssh](http://www.openssh.com/)
 * [perp](http://b0llix.net/perp/) (process supervisor)
 * [pigz](http://zlib.net/pigz/) (gzip)
+* [rc](https://github.com/benavento/rc)
 * [tz](https://www.iana.org/time-zones)
 * util-linux (fdisk, losetup)
 * [xz](http://tukaani.org/xz/)
