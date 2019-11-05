@@ -1,4 +1,4 @@
-#define DEFAULT_EDITOR "sam -d"
+#define DEFAULT_EDITOR "ed"
 #define DEFAULT_GIT_TEMPLATE_DIR "share/git-core/templates"
 #define DEFAULT_PAGER ""
 #define ETC_GITATTRIBUTES "/etc/gitattributes"
