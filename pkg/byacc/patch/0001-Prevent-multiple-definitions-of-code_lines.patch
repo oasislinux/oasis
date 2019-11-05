@@ -1,0 +1,25 @@
+From 71ddf61cc892a771d15d95937f1f13a9ce17e98b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 4 Nov 2019 18:20:04 -0800
+Subject: [PATCH] Prevent multiple definitions of `code_lines`
+
+---
+ defs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/defs.h b/defs.h
+index 99d409c..2f3f923 100644
+--- a/defs.h
++++ b/defs.h
+@@ -592,7 +592,7 @@ typedef enum
+     ,CODE_MAX		/* this must be last */
+ }
+ CODE_CASES;
+-struct code_lines
++extern struct code_lines
+ {
+     char *lines;
+     size_t num;
+-- 
+2.24.0
+

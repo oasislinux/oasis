@@ -5,6 +5,9 @@
 /* #undef GCC_SCANFLIKE */
 /* #undef GCC_UNUSED */
 #define HAVE_FCNTL_H 1
+#define HAVE_GETOPT 1
+#define HAVE_GETOPT_H 1
+#define HAVE_GETOPT_HEADER 1
 #define HAVE_INTTYPES_H 1
 /* #undef HAVE_LIBDBMALLOC */
 /* #undef HAVE_LIBDMALLOC */
@@ -20,6 +23,7 @@
 #define HAVE_VSNPRINTF 1
 /* #undef MAXTABLE */
 #define MIXEDCASE_FILENAMES 1
+/* #undef NEED_GETOPT_H */
 /* #undef NO_LEAKS */
 #define STDC_HEADERS 1
 #define SYSTEM_NAME "linux-gnu"
