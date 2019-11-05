@@ -1,9 +1,0 @@
-root:x:0:root
-admin:x:1:root
-tty:x:2:
-disk:x:3:
-audio:x:4:
-video:x:5:
-log:x:100:
-sshd:x:101:
-ntpd:x:102:
