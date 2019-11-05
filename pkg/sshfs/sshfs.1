@@ -264,6 +264,30 @@ sets the interval for automatic cleaning of the directory cache.
 sets the interval for forced cleaning of the directory cache
 when full.
 .UNINDENT
+.INDENT 0.0
+.TP
+.BI \-o \ direct_io
+This option disables the use of page cache (file content cache) in
+the kernel for this filesystem.
+This has several affects:
+1. Each read() or write() system call will initiate one or more read or
+.IP "System Message: ERROR/3 (sshfs.rst:, line 210)"
+Unexpected indentation.
+.INDENT 7.0
+.INDENT 3.5
+write operations, data will not be cached in the kernel.
+.UNINDENT
+.UNINDENT
+.IP "System Message: WARNING/2 (sshfs.rst:, line 211)"
+Block quote ends without a blank line; unexpected unindent.
+.INDENT 7.0
+.IP 2. 3
+The return value of the read() and write() system calls will correspond
+to the return values of the read and write operations. This is useful
+for example if the file size is not known in advance (before reading it).
+e.g. /proc filesystem
+.UNINDENT
+.UNINDENT
 .sp
 In addition, SSHFS accepts several options common to all FUSE file
 systems. These are described in the \fImount.fuse\fP manpage (look

@@ -1,4 +1,4 @@
-From ea71f225b4e7e732f2e7b724fff26f72d5aa7c62 Mon Sep 17 00:00:00 2001
+From 3ed67a49b1daf016a2cffaad89fdfb2b4a89892c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 17:30:20 -0700
 Subject: [PATCH] Use struct list_head instead of GList
@@ -8,10 +8,10 @@ Subject: [PATCH] Use struct list_head instead of GList
  1 file changed, 7 insertions(+), 9 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index e86bf96..3505777 100644
+index 391afdd..9c074a3 100644
 --- a/sshfs.c
 +++ b/sshfs.c
-@@ -2081,14 +2081,14 @@ static int sshfs_req_pending(struct request *req)
+@@ -2090,14 +2090,14 @@ static int sshfs_req_pending(struct request *req)
  static int sftp_readdir_async(struct buffer *handle, void *buf, off_t offset,
  			     fuse_fill_dir_t filler)
  {
@@ -29,7 +29,7 @@ index e86bf96..3505777 100644
  	while (!done || outstanding) {
  		struct request *req;
  		struct buffer name;
-@@ -2103,16 +2103,14 @@ static int sftp_readdir_async(struct buffer *handle, void *buf, off_t offset,
+@@ -2112,16 +2112,14 @@ static int sftp_readdir_async(struct buffer *handle, void *buf, off_t offset,
  				break;
  			}
  
@@ -49,7 +49,7 @@ index e86bf96..3505777 100644
  			outstanding--;
  
  			if (done) {
-@@ -2151,7 +2149,7 @@ static int sftp_readdir_async(struct buffer *handle, void *buf, off_t offset,
+@@ -2160,7 +2158,7 @@ static int sftp_readdir_async(struct buffer *handle, void *buf, off_t offset,
  			}
  		}
  	}
@@ -59,5 +59,5 @@ index e86bf96..3505777 100644
  	return err;
  }
 -- 
-2.21.0
+2.24.0
 

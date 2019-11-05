@@ -1,4 +1,4 @@
-From 931911b42c5ec3ee6872a2ce2316554bca6a1af3 Mon Sep 17 00:00:00 2001
+From 3f7a20f30c23aead6460e18fda27ba439b369045 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 2 Jul 2019 19:53:34 -0700
 Subject: [PATCH] Avoid statement expression in container_of macro
@@ -8,10 +8,10 @@ Subject: [PATCH] Avoid statement expression in container_of macro
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index c65fa73..1532028 100644
+index 133b248..8f974e2 100644
 --- a/sshfs.c
 +++ b/sshfs.c
-@@ -516,9 +516,8 @@ static const char *type_name(uint8_t type)
+@@ -522,9 +522,8 @@ static const char *type_name(uint8_t type)
  	}
  }
  
@@ -24,5 +24,5 @@ index c65fa73..1532028 100644
  #define list_entry(ptr, type, member)		\
  	container_of(ptr, type, member)
 -- 
-2.22.0
+2.24.0
 

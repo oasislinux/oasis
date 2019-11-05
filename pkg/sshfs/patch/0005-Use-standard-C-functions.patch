@@ -1,4 +1,4 @@
-From 57c0228a88925225425674b34644b139e2560e64 Mon Sep 17 00:00:00 2001
+From af353da1558da816a014983d3abaafaa4929e04c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 17:42:29 -0700
 Subject: [PATCH] Use standard C functions
@@ -8,10 +8,10 @@ Subject: [PATCH] Use standard C functions
  1 file changed, 55 insertions(+), 36 deletions(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index 3505777..8f8d67b 100644
+index 9c074a3..17f7d6a 100644
 --- a/sshfs.c
 +++ b/sshfs.c
-@@ -665,25 +665,25 @@ static inline void buf_add_path(struct buffer *buf, const char *path)
+@@ -671,25 +671,25 @@ static inline void buf_add_path(struct buffer *buf, const char *path)
  	if (sshfs.base_path[0]) {
  		if (path[1]) {
  			if (sshfs.base_path[strlen(sshfs.base_path)-1] != '/') {
@@ -47,7 +47,7 @@ index 3505777..8f8d67b 100644
  }
  
  static int buf_check_get(struct buffer *buf, size_t len)
-@@ -1263,7 +1263,7 @@ static void request_free(struct request *req)
+@@ -1272,7 +1272,7 @@ static void request_free(struct request *req)
  {
  	buf_free(&req->reply);
  	sem_destroy(&req->ready);
@@ -56,7 +56,7 @@ index 3505777..8f8d67b 100644
  }
  
  static int request_table_insert(struct request_table *reqtab, struct request *req)
-@@ -1311,9 +1311,9 @@ static void chunk_free(struct read_chunk *chunk)
+@@ -1320,9 +1320,9 @@ static void chunk_free(struct read_chunk *chunk)
  		rreq = list_entry(chunk->reqs.prev, struct read_req, list);
  		list_del(&rreq->list);
  		buf_free(&rreq->data);
@@ -68,7 +68,7 @@ index 3505777..8f8d67b 100644
  }
  
  static void chunk_put(struct read_chunk *chunk)
-@@ -1862,8 +1862,10 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
+@@ -1871,8 +1871,10 @@ static int sftp_request_send(uint8_t type, struct iovec *iov, size_t count,
                               struct request **reqp)
  {
  	int err;
@@ -80,7 +80,7 @@ index 3505777..8f8d67b 100644
  	req->want_reply = want_reply;
  	req->end_func = end_func;
  	req->data = data;
-@@ -2567,8 +2569,10 @@ static int sshfs_open_common(const char *path, mode_t mode,
+@@ -2579,8 +2581,10 @@ static int sshfs_open_common(const char *path, mode_t mode,
  
  	if (fi->flags & O_APPEND)
  		pflags |= SSH_FXF_APPEND;
@@ -93,7 +93,7 @@ index 3505777..8f8d67b 100644
  	list_init(&sf->write_reqs);
  	pthread_cond_init(&sf->write_finished, NULL);
  	/* Assume random read after open */
-@@ -2612,7 +2616,7 @@ static int sshfs_open_common(const char *path, mode_t mode,
+@@ -2624,7 +2628,7 @@ static int sshfs_open_common(const char *path, mode_t mode,
  	} else {
  		if (sshfs.dir_cache)
  			cache_invalidate(path);
@@ -102,7 +102,7 @@ index 3505777..8f8d67b 100644
  	}
  	buf_free(&buf);
  	return err;
-@@ -2679,7 +2683,7 @@ static void sshfs_file_put(struct sshfs_file *sf)
+@@ -2691,7 +2695,7 @@ static void sshfs_file_put(struct sshfs_file *sf)
  {
  	sf->refs--;
  	if (!sf->refs)
@@ -111,7 +111,7 @@ index 3505777..8f8d67b 100644
  }
  
  static void sshfs_file_get(struct sshfs_file *sf)
-@@ -2749,9 +2753,11 @@ static void sshfs_read_begin(struct request *req)
+@@ -2761,9 +2765,11 @@ static void sshfs_read_begin(struct request *req)
  static struct read_chunk *sshfs_send_read(struct sshfs_file *sf, size_t size,
  					  off_t offset)
  {
@@ -124,7 +124,7 @@ index 3505777..8f8d67b 100644
  	pthread_cond_init(&chunk->sio.finished, NULL);
  	list_init(&chunk->reqs);
  	chunk->size = size;
-@@ -2765,7 +2771,9 @@ static struct read_chunk *sshfs_send_read(struct sshfs_file *sf, size_t size,
+@@ -2777,7 +2783,9 @@ static struct read_chunk *sshfs_send_read(struct sshfs_file *sf, size_t size,
  		struct read_req *rreq;
  		size_t bsize = size < sshfs.max_read ? size : sshfs.max_read;
  
@@ -135,7 +135,7 @@ index 3505777..8f8d67b 100644
  		rreq->sio = &chunk->sio;
  		rreq->size = bsize;
  		buf_init(&rreq->data, 0);
-@@ -2836,7 +2844,7 @@ static int wait_chunk(struct read_chunk *chunk, char *buf, size_t size)
+@@ -2848,7 +2856,7 @@ static int wait_chunk(struct read_chunk *chunk, char *buf, size_t size)
  			size -= rreq->res;
  			list_del(&rreq->list);
  			buf_free(&rreq->data);
@@ -144,7 +144,7 @@ index 3505777..8f8d67b 100644
  		}
  	}
  
-@@ -3459,9 +3467,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
+@@ -3473,9 +3481,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
  	switch (key) {
  	case FUSE_OPT_KEY_OPT:
  		if (is_ssh_opt(arg)) {
@@ -157,7 +157,7 @@ index 3505777..8f8d67b 100644
  			return 0;
  		}
  		/* Pass through */
-@@ -3530,9 +3539,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
+@@ -3544,9 +3553,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
  
  
  	case KEY_PORT:
@@ -170,7 +170,7 @@ index 3505777..8f8d67b 100644
  		return 0;
  
  	case KEY_COMPRESS:
-@@ -3540,9 +3550,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
+@@ -3554,9 +3564,10 @@ static int sshfs_opt_proc(void *data, const char *arg, int key,
  		return 0;
  
  	case KEY_CONFIGFILE:
@@ -183,7 +183,7 @@ index 3505777..8f8d67b 100644
  		return 0;
  
  	default:
-@@ -3718,17 +3729,19 @@ static char *find_base_path(void)
+@@ -3732,17 +3743,19 @@ static char *find_base_path(void)
  
  static char *fsname_escape_commas(char *fsnameold)
  {
@@ -205,7 +205,7 @@ index 3505777..8f8d67b 100644
  
  	return fsname;
  }
-@@ -4065,15 +4078,20 @@ int main(int argc, char *argv[])
+@@ -4083,15 +4096,20 @@ int main(int argc, char *argv[])
  	else
  		sshfs.max_outstanding_len = ~0;
  
@@ -230,7 +230,7 @@ index 3505777..8f8d67b 100644
  	ssh_add_arg(sshfs.host);
  	if (sshfs.sftp_server)
  		sftp_server = sshfs.sftp_server;
-@@ -4100,10 +4118,11 @@ int main(int argc, char *argv[])
+@@ -4118,10 +4136,11 @@ int main(int argc, char *argv[])
  		sshfs.max_write = 65536;
  
          fsname = fsname_escape_commas(fsname);
@@ -246,5 +246,5 @@ index 3505777..8f8d67b 100644
  	if(sshfs.dir_cache)
  		sshfs.op = cache_wrap(&sshfs_oper);
 -- 
-2.21.0
+2.24.0
 

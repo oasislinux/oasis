@@ -1,4 +1,4 @@
-From cabb791c3fb5f73b12132f8236216f508d4612bb Mon Sep 17 00:00:00 2001
+From 08fa01f1e9cc564b9ace1872823fea40cd41d717 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 5 Jun 2016 18:24:31 -0700
 Subject: [PATCH] Remove remaining uses of glib
@@ -8,11 +8,11 @@ Subject: [PATCH] Remove remaining uses of glib
  1 file changed, 1 deletion(-)
 
 diff --git a/sshfs.c b/sshfs.c
-index e027265..b035d65 100644
+index 472f98c..a7bcc87 100644
 --- a/sshfs.c
 +++ b/sshfs.c
 @@ -44,7 +44,6 @@
- #include <sys/poll.h>
+ #include <poll.h>
  #include <netinet/in.h>
  #include <netinet/tcp.h>
 -#include <glib.h>
@@ -20,5 +20,5 @@ index e027265..b035d65 100644
  #include <grp.h>
  #include <limits.h>
 -- 
-2.13.2
+2.24.0
 
