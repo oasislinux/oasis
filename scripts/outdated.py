@@ -23,7 +23,6 @@ skip = set([
 	'libutp',
 	'mc',
 	'openbsd',
-	'plan9port',
 	'qbe',
 	'sbase',
 	'sdhcp',

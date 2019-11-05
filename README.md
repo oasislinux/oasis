@@ -54,8 +54,6 @@ up from the following:
 	- sbase, ubase, sinit, sdhcp
 * [openbsd](http://openbsd.org/)
 	- pax, fmt, diff, patch, doas
-* [plan9port](http://swtch.com/plan9port/)
-	- rc, sam
 * [awk](http://github.com/onetrueawk/awk/)
 * [byacc](https://invisible-island.net/byacc/byacc.html)
 * [bzip2](http://bzip.org/)
