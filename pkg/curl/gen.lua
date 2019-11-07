@@ -57,7 +57,7 @@ lib('libcurl.a', [[
 		curl_multibyte.c hostcheck.c conncache.c dotdot.c
 		x509asn1.c http2.c smb.c curl_endian.c curl_des.c system_win32.c
 		mime.c sha256.c setopt.c curl_path.c curl_ctype.c curl_range.c psl.c
-		doh.c urlapi.c curl_get_line.c altsvc.c
+		doh.c urlapi.c curl_get_line.c altsvc.c socketpair.c
 		vauth/(
 			vauth.c cleartext.c cram.c
 			digest.c digest_sspi.c krb5_gssapi.c

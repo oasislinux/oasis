@@ -206,6 +206,7 @@
 #define HAVE_SOCKETPAIR 1
 /* #undef HAVE_SOCKET_H */
 /* #undef HAVE_SSLV2_CLIENT_METHOD */
+/* #undef HAVE_SSL_GET_ESNI_STATUS */
 /* #undef HAVE_SSL_H */
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
@@ -314,6 +315,7 @@
 /* #undef USE_ALTSVC */
 /* #undef USE_AMISSL */
 /* #undef USE_ARES */
+/* #undef USE_ESNI */
 /* #undef USE_GNUTLS */
 /* #undef USE_GNUTLS_NETTLE */
 /* #undef USE_LIBPSL */
