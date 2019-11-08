@@ -60,7 +60,6 @@ youtube_dl/extractor/awaan.py
 youtube_dl/extractor/aws.py
 youtube_dl/extractor/azmedien.py
 youtube_dl/extractor/baidu.py
-youtube_dl/extractor/bambuser.py
 youtube_dl/extractor/bandcamp.py
 youtube_dl/extractor/bbc.py
 youtube_dl/extractor/beampro.py
@@ -216,7 +215,6 @@ youtube_dl/extractor/firsttv.py
 youtube_dl/extractor/fivemin.py
 youtube_dl/extractor/fivetv.py
 youtube_dl/extractor/flickr.py
-youtube_dl/extractor/flipagram.py
 youtube_dl/extractor/folketinget.py
 youtube_dl/extractor/footyroom.py
 youtube_dl/extractor/formula1.py
@@ -239,7 +237,6 @@ youtube_dl/extractor/fusion.py
 youtube_dl/extractor/fxnetworks.py
 youtube_dl/extractor/gaia.py
 youtube_dl/extractor/gameinformer.py
-youtube_dl/extractor/gameone.py
 youtube_dl/extractor/gamespot.py
 youtube_dl/extractor/gamestar.py
 youtube_dl/extractor/gaskrank.py
@@ -253,7 +250,6 @@ youtube_dl/extractor/gigya.py
 youtube_dl/extractor/glide.py
 youtube_dl/extractor/globo.py
 youtube_dl/extractor/go.py
-youtube_dl/extractor/go90.py
 youtube_dl/extractor/godtube.py
 youtube_dl/extractor/golem.py
 youtube_dl/extractor/googledrive.py
@@ -284,7 +280,6 @@ youtube_dl/extractor/huajiao.py
 youtube_dl/extractor/huffpost.py
 youtube_dl/extractor/hungama.py
 youtube_dl/extractor/hypem.py
-youtube_dl/extractor/iconosquare.py
 youtube_dl/extractor/ign.py
 youtube_dl/extractor/imdb.py
 youtube_dl/extractor/imgur.py
@@ -315,7 +310,6 @@ youtube_dl/extractor/kanalplay.py
 youtube_dl/extractor/kankan.py
 youtube_dl/extractor/karaoketv.py
 youtube_dl/extractor/karrierevideos.py
-youtube_dl/extractor/keek.py
 youtube_dl/extractor/keezmovies.py
 youtube_dl/extractor/ketnet.py
 youtube_dl/extractor/khanacademy.py
@@ -550,6 +544,7 @@ youtube_dl/extractor/sbs.py
 youtube_dl/extractor/screencast.py
 youtube_dl/extractor/screencastomatic.py
 youtube_dl/extractor/scrippsnetworks.py
+youtube_dl/extractor/scte.py
 youtube_dl/extractor/seeker.py
 youtube_dl/extractor/senateisvp.py
 youtube_dl/extractor/sendtonews.py
@@ -661,6 +656,7 @@ youtube_dl/extractor/tunepk.py
 youtube_dl/extractor/turbo.py
 youtube_dl/extractor/turner.py
 youtube_dl/extractor/tv2.py
+youtube_dl/extractor/tv2dk.py
 youtube_dl/extractor/tv2hu.py
 youtube_dl/extractor/tv4.py
 youtube_dl/extractor/tv5mondeplus.py
