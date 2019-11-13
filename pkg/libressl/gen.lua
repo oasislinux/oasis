@@ -357,6 +357,4 @@ exe('nc', [[apps/nc/(netcat.c atomicio.c socks.c) libtls.a.d]])
 file('bin/nc', '755', '$outdir/nc')
 man{'apps/nc/nc.1'}
 
-file('share/libressl/cert.pem', '644', '$srcdir/apps/openssl/cert.pem')
-
 fetch 'curl'
