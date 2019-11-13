@@ -1,0 +1,1130 @@
+From 7500502be5490e60f62ecc8be8e96f1f23405684 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 7 Nov 2019 20:17:18 -0800
+Subject: [PATCH] Add BearSSL vtls implementation
+
+---
+ CMake/FindBearSSL.cmake           |   9 +
+ CMakeLists.txt                    |  11 +
+ Makefile.am                       |   4 +-
+ configure.ac                      |  98 ++++-
+ docs/FAQ                          |   6 +-
+ docs/INSTALL.md                   |   1 +
+ docs/LICENSE-MIXING.md            |   5 +
+ docs/libcurl/curl_global_sslset.3 |   3 +-
+ docs/libcurl/symbols-in-versions  |   1 +
+ include/curl/curl.h               |   3 +-
+ lib/Makefile.inc                  |   5 +-
+ lib/curl_config.h.cmake           |   3 +
+ lib/curl_setup.h                  |   3 +-
+ lib/vtls/bearssl.c                | 690 ++++++++++++++++++++++++++++++
+ lib/vtls/bearssl.h                |  32 ++
+ lib/vtls/vtls.c                   |   4 +-
+ lib/vtls/vtls.h                   |   1 +
+ 17 files changed, 865 insertions(+), 14 deletions(-)
+ create mode 100644 CMake/FindBearSSL.cmake
+ create mode 100644 lib/vtls/bearssl.c
+ create mode 100644 lib/vtls/bearssl.h
+
+diff --git a/CMake/FindBearSSL.cmake b/CMake/FindBearSSL.cmake
+new file mode 100644
+index 000000000..20d239a4f
+--- /dev/null
++++ b/CMake/FindBearSSL.cmake
+@@ -0,0 +1,9 @@
++find_path(BEARSSL_INCLUDE_DIRS bearssl.h)
++
++find_library(BEARSSL_LIBRARY bearssl)
++
++include(FindPackageHandleStandardArgs)
++find_package_handle_standard_args(BEARSSL DEFAULT_MSG
++    BEARSSL_INCLUDE_DIRS BEARSSL_LIBRARY)
++
++mark_as_advanced(BEARSSL_INCLUDE_DIRS BEARSSL_LIBRARY)
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 20b9bd011..a2ad6933b 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -295,6 +295,7 @@ if(WIN32)
+     CMAKE_USE_WINSSL OFF)
+ endif()
+ option(CMAKE_USE_MBEDTLS "Enable mbedTLS for SSL/TLS" OFF)
++option(CMAKE_USE_BEARSSL "Enable BearSSL for SSL/TLS" OFF)
+ 
+ set(openssl_default ON)
+ if(WIN32 OR CMAKE_USE_SECTRANSP OR CMAKE_USE_WINSSL OR CMAKE_USE_MBEDTLS)
+@@ -307,6 +308,7 @@ count_true(enabled_ssl_options_count
+   CMAKE_USE_SECTRANSP
+   CMAKE_USE_OPENSSL
+   CMAKE_USE_MBEDTLS
++  CMAKE_USE_BEARSSL
+ )
+ if(enabled_ssl_options_count GREATER "1")
+   set(CURL_WITH_MULTI_SSL ON)
+@@ -379,6 +381,14 @@ if(CMAKE_USE_MBEDTLS)
+   include_directories(${MBEDTLS_INCLUDE_DIRS})
+ endif()
+ 
++if(CMAKE_USE_BEARSSL)
++  find_package(BearSSL REQUIRED)
++  set(SSL_ENABLED ON)
++  set(USE_BEARSSL ON)
++  list(APPEND CURL_LIBS ${BEARSSL_LIBRARY})
++  include_directories(${BEARSSL_INCLUDE_DIRS})
++endif()
++
+ option(USE_NGHTTP2 "Use Nghttp2 library" OFF)
+ if(USE_NGHTTP2)
+   find_package(NGHTTP2 REQUIRED)
+@@ -1251,6 +1261,7 @@ _add_if("WinSSL"           SSL_ENABLED AND USE_WINDOWS_SSPI)
+ _add_if("OpenSSL"          SSL_ENABLED AND USE_OPENSSL)
+ _add_if("Secure Transport" SSL_ENABLED AND USE_SECTRANSP)
+ _add_if("mbedTLS"          SSL_ENABLED AND USE_MBEDTLS)
++_add_if("BearSSL"          SSL_ENABLED AND USE_BEARSSL)
+ if(_items)
+   list(SORT _items)
+ endif()
+diff --git a/Makefile.am b/Makefile.am
+index 3116e1053..b98d5ee71 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -30,8 +30,8 @@ CMAKE_DIST = CMakeLists.txt CMake/CMakeConfigurableFile.in      \
+  CMake/Macros.cmake              \
+  CMake/CurlSymbolHiding.cmake CMake/FindCARES.cmake             \
+  CMake/FindLibSSH2.cmake CMake/FindNGHTTP2.cmake                \
+- CMake/FindMbedTLS.cmake CMake/cmake_uninstall.cmake.in         \
+- CMake/curl-config.cmake.in
++ CMake/FindMbedTLS.cmake CMake/FindBearSSL.cmake                \
++ CMake/cmake_uninstall.cmake.in CMake/curl-config.cmake.in
+ 
+ VC6_LIBTMPL = projects/Windows/VC6/lib/libcurl.tmpl
+ VC6_LIBDSP = projects/Windows/VC6/lib/libcurl.dsp.dist
+diff --git a/configure.ac b/configure.ac
+index cb8f4943e..de081a5df 100755
+--- a/configure.ac
++++ b/configure.ac
+@@ -156,7 +156,7 @@ AC_SUBST(PKGADD_VENDOR)
+ 
+ dnl
+ dnl initialize all the info variables
+-    curl_ssl_msg="no      (--with-{ssl,gnutls,nss,mbedtls,wolfssl,schannel,secure-transport,mesalink,amissl} )"
++    curl_ssl_msg="no      (--with-{ssl,gnutls,nss,mbedtls,wolfssl,schannel,secure-transport,mesalink,amissl,bearssl} )"
+     curl_ssh_msg="no      (--with-libssh2)"
+    curl_zlib_msg="no      (--with-zlib)"
+  curl_brotli_msg="no      (--with-brotli)"
+@@ -2399,6 +2399,98 @@ if test -z "$ssl_backends" -o "x$OPT_MESALINK" != xno; then
+   test -z "$ssl_msg" || ssl_backends="${ssl_backends:+$ssl_backends, }$ssl_msg"
+ fi
+ 
++dnl ----------------------------------------------------
++dnl check for BearSSL
++dnl ----------------------------------------------------
++
++OPT_BEARSSL=no
++
++_cppflags=$CPPFLAGS
++_ldflags=$LDFLAGS
++AC_ARG_WITH(bearssl,dnl
++AC_HELP_STRING([--with-bearssl=PATH],[where to look for BearSSL, PATH points to the installation root])
++AC_HELP_STRING([--without-bearssl], [disable BearSSL detection]),
++  OPT_BEARSSL=$withval)
++
++if test -z "$ssl_backends" -o "x$OPT_BEARSSL" != xno; then
++  ssl_msg=
++
++  if test X"$OPT_BEARSSL" != Xno; then
++
++    if test "$OPT_BEARSSL" = "yes"; then
++      OPT_BEARSSL=""
++    fi
++
++    if test -z "$OPT_BEARSSL" ; then
++      dnl check for lib first without setting any new path
++
++      AC_CHECK_LIB(bearssl, br_ssl_client_init_full,
++      dnl libbearssl found, set the variable
++       [
++         AC_DEFINE(USE_BEARSSL, 1, [if BearSSL is enabled])
++         AC_SUBST(USE_BEARSSL, [1])
++         BEARSSL_ENABLED=1
++         USE_BEARSSL="yes"
++         ssl_msg="BearSSL"
++	 test bearssl != "$DEFAULT_SSL_BACKEND" || VALID_DEFAULT_SSL_BACKEND=yes
++        ], [], -lbearssl)
++    fi
++
++    addld=""
++    addlib=""
++    addcflags=""
++    bearssllib=""
++
++    if test "x$USE_BEARSSL" != "xyes"; then
++      dnl add the path and test again
++      addld=-L$OPT_BEARSSL/lib$libsuff
++      addcflags=-I$OPT_BEARSSL/include
++      bearssllib=$OPT_BEARSSL/lib$libsuff
++
++      LDFLAGS="$LDFLAGS $addld"
++      if test "$addcflags" != "-I/usr/include"; then
++         CPPFLAGS="$CPPFLAGS $addcflags"
++      fi
++
++      AC_CHECK_LIB(bearssl, br_ssl_client_init_full,
++       [
++       AC_DEFINE(USE_MBEDTLS, 1, [if BearSSL is enabled])
++       AC_SUBST(USE_BEARSSL, [1])
++       BEARSSL_ENABLED=1
++       USE_BEARSSL="yes"
++       ssl_msg="BearSSL"
++       test bearssl != "$DEFAULT_SSL_BACKEND" || VALID_DEFAULT_SSL_BACKEND=yes
++       ],
++       [
++         CPPFLAGS=$_cppflags
++         LDFLAGS=$_ldflags
++       ], -lbearssl)
++    fi
++
++    if test "x$USE_BEARSSL" = "xyes"; then
++      AC_MSG_NOTICE([detected BearSSL])
++      check_for_ca_bundle=1
++
++      LIBS="-lbearssl $LIBS"
++
++      if test -n "$bearssllib"; then
++        dnl when shared libs were found in a path that the run-time
++        dnl linker doesn't search through, we need to add it to
++        dnl CURL_LIBRARY_PATH to prevent further configure tests to fail
++        dnl due to this
++        if test "x$cross_compiling" != "xyes"; then
++          CURL_LIBRARY_PATH="$CURL_LIBRARY_PATH:$bearssllib"
++          export CURL_LIBRARY_PATH
++          AC_MSG_NOTICE([Added $bearssllib to CURL_LIBRARY_PATH])
++        fi
++      fi
++    fi
++
++  fi dnl BearSSL not disabled
++
++  test -z "$ssl_msg" || ssl_backends="${ssl_backends:+$ssl_backends, }$ssl_msg"
++fi
++
+ dnl ----------------------------------------------------
+ dnl NSS. Only check if GnuTLS and OpenSSL are not enabled
+ dnl ----------------------------------------------------
+@@ -2529,10 +2621,10 @@ if test -z "$ssl_backends" -o "x$OPT_NSS" != xno; then
+   test -z "$ssl_msg" || ssl_backends="${ssl_backends:+$ssl_backends, }$ssl_msg"
+ fi
+ 
+-case "x$OPENSSL_ENABLED$GNUTLS_ENABLED$NSS_ENABLED$MBEDTLS_ENABLED$WOLFSSL_ENABLED$WINSSL_ENABLED$SECURETRANSPORT_ENABLED$MESALINK_ENABLED$AMISSL_ENABLED" in
++case "x$OPENSSL_ENABLED$GNUTLS_ENABLED$NSS_ENABLED$MBEDTLS_ENABLED$WOLFSSL_ENABLED$WINSSL_ENABLED$SECURETRANSPORT_ENABLED$MESALINK_ENABLED$BEARSSL_ENABLED$AMISSL_ENABLED" in
+ x)
+   AC_MSG_WARN([SSL disabled, you will not be able to use HTTPS, FTPS, NTLM and more.])
+-  AC_MSG_WARN([Use --with-ssl, --with-gnutls, --with-wolfssl, --with-mbedtls, --with-nss, --with-schannel, --with-secure-transport, --with-mesalink or --with-amissl to address this.])
++  AC_MSG_WARN([Use --with-ssl, --with-gnutls, --with-wolfssl, --with-mbedtls, --with-nss, --with-schannel, --with-secure-transport, --with-mesalink, --with-amissl or --with-bearssl to address this.])
+   ;;
+ x1)
+   # one SSL backend is enabled
+diff --git a/docs/FAQ b/docs/FAQ
+index 4136b9170..53f1c9e7a 100644
+--- a/docs/FAQ
++++ b/docs/FAQ
+@@ -447,9 +447,9 @@ FAQ
+ 
+   curl can be built to use one of the following SSL alternatives: OpenSSL,
+   libressl, BoringSSL, GnuTLS, wolfSSL, NSS, mbedTLS, MesaLink, Secure
+-  Transport (native iOS/OS X), Schannel (native Windows) or GSKit (native IBM
+-  i). They all have their pros and cons, and we try to maintain a comparison
+-  of them here: https://curl.haxx.se/docs/ssl-compared.html
++  Transport (native iOS/OS X), Schannel (native Windows), GSKit (native IBM
++  i), or BearSSL. They all have their pros and cons, and we try to maintain a
++  comparison of them here: https://curl.haxx.se/docs/ssl-compared.html
+ 
+   2.3 Where can I find a copy of LIBEAY32.DLL?
+ 
+diff --git a/docs/INSTALL.md b/docs/INSTALL.md
+index 78d632c70..de1e3b7c8 100644
+--- a/docs/INSTALL.md
++++ b/docs/INSTALL.md
+@@ -120,6 +120,7 @@ libressl.
+  - schannel: `--without-ssl --with-schannel`
+  - secure transport: `--without-ssl --with-secure-transport`
+  - MesaLink: `--without-ssl --with-mesalink`
++ - BearSSL: `--without-ssl --with-bearssl`
+ 
+ # Windows
+ 
+diff --git a/docs/LICENSE-MIXING.md b/docs/LICENSE-MIXING.md
+index e4f6759e4..1083a2dcd 100644
+--- a/docs/LICENSE-MIXING.md
++++ b/docs/LICENSE-MIXING.md
+@@ -75,6 +75,11 @@ not have the announcement clause that collides with GPL.
+  (May be used for SSL/TLS support) As an OpenSSL fork, it has the same
+  license as that.
+ 
++## BearSSL
++
++ (May be used for SSL/TLS support) Uses an MIT license that is very liberal
++ and imposes no restrictions on any other library or part you may link with.
++
+ ## c-ares
+ 
+  (Used for asynchronous name resolves) Uses an MIT license that is very
+diff --git a/docs/libcurl/curl_global_sslset.3 b/docs/libcurl/curl_global_sslset.3
+index 22d95065d..b3a6967c6 100644
+--- a/docs/libcurl/curl_global_sslset.3
++++ b/docs/libcurl/curl_global_sslset.3
+@@ -43,7 +43,8 @@ typedef enum {
+   CURLSSLBACKEND_DARWINSSL = 9,
+   CURLSSLBACKEND_AXTLS = 10, /* deprecated */
+   CURLSSLBACKEND_MBEDTLS = 11,
+-  CURLSSLBACKEND_MESALINK = 12
++  CURLSSLBACKEND_MESALINK = 12,
++  CURLSSLBACKEND_BEARSSL = 13
+ } curl_sslbackend;
+ 
+ .B "CURLsslset curl_global_sslset(curl_sslbackend " id,
+diff --git a/docs/libcurl/symbols-in-versions b/docs/libcurl/symbols-in-versions
+index bf23b4488..b68d30556 100644
+--- a/docs/libcurl/symbols-in-versions
++++ b/docs/libcurl/symbols-in-versions
+@@ -718,6 +718,7 @@ CURLSSH_AUTH_NONE               7.16.1
+ CURLSSH_AUTH_PASSWORD           7.16.1
+ CURLSSH_AUTH_PUBLICKEY          7.16.1
+ CURLSSLBACKEND_AXTLS            7.38.0       7.61.0
++CURLSSLBACKEND_BEARSSL          7.68.0
+ CURLSSLBACKEND_BORINGSSL        7.49.0
+ CURLSSLBACKEND_CYASSL           7.34.0
+ CURLSSLBACKEND_DARWINSSL        7.34.0       7.64.1
+diff --git a/include/curl/curl.h b/include/curl/curl.h
+index dcbe8995c..d4ba6441b 100644
+--- a/include/curl/curl.h
++++ b/include/curl/curl.h
+@@ -154,7 +154,8 @@ typedef enum {
+   CURLSSLBACKEND_SECURETRANSPORT = 9,
+   CURLSSLBACKEND_AXTLS = 10, /* never used since 7.63.0 */
+   CURLSSLBACKEND_MBEDTLS = 11,
+-  CURLSSLBACKEND_MESALINK = 12
++  CURLSSLBACKEND_MESALINK = 12,
++  CURLSSLBACKEND_BEARSSL = 13
+ } curl_sslbackend;
+ 
+ /* aliases for library clones and renames */
+diff --git a/lib/Makefile.inc b/lib/Makefile.inc
+index 72ef428ee..c58d72e87 100644
+--- a/lib/Makefile.inc
++++ b/lib/Makefile.inc
+@@ -30,12 +30,13 @@ LIB_VAUTH_HFILES = vauth/vauth.h vauth/digest.h vauth/ntlm.h
+ LIB_VTLS_CFILES = vtls/openssl.c vtls/gtls.c vtls/vtls.c vtls/nss.c     \
+   vtls/polarssl.c vtls/polarssl_threadlock.c                            \
+   vtls/wolfssl.c vtls/schannel.c vtls/schannel_verify.c                 \
+-  vtls/sectransp.c vtls/gskit.c vtls/mbedtls.c vtls/mesalink.c
++  vtls/sectransp.c vtls/gskit.c vtls/mbedtls.c vtls/mesalink.c          \
++  vtls/bearssl.c
+ 
+ LIB_VTLS_HFILES = vtls/openssl.h vtls/vtls.h vtls/gtls.h                \
+   vtls/nssg.h vtls/polarssl.h vtls/polarssl_threadlock.h                \
+   vtls/wolfssl.h vtls/schannel.h vtls/sectransp.h vtls/gskit.h          \
+-  vtls/mbedtls.h vtls/mesalink.h
++  vtls/mbedtls.h vtls/mesalink.h vtls/bearssl.h
+ 
+ LIB_VQUIC_CFILES = vquic/ngtcp2.c vquic/quiche.c
+ 
+diff --git a/lib/curl_config.h.cmake b/lib/curl_config.h.cmake
+index e0793a7ee..60837d4f4 100644
+--- a/lib/curl_config.h.cmake
++++ b/lib/curl_config.h.cmake
+@@ -948,6 +948,9 @@ ${SIZEOF_TIME_T_CODE}
+ /* if mbedTLS is enabled */
+ #cmakedefine USE_MBEDTLS 1
+ 
++/* if BearSSL is enabled */
++#cmakedefine USE_BEARSSL 1
++
+ /* if libSSH2 is in use */
+ #cmakedefine USE_LIBSSH2 1
+ 
+diff --git a/lib/curl_setup.h b/lib/curl_setup.h
+index 13af8cdec..b4ba92931 100644
+--- a/lib/curl_setup.h
++++ b/lib/curl_setup.h
+@@ -644,7 +644,8 @@ int netware_init(void);
+ #if defined(USE_GNUTLS) || defined(USE_OPENSSL) || defined(USE_NSS) || \
+     defined(USE_MBEDTLS) || \
+     defined(USE_WOLFSSL) || defined(USE_SCHANNEL) || \
+-    defined(USE_SECTRANSP) || defined(USE_GSKIT) || defined(USE_MESALINK)
++    defined(USE_SECTRANSP) || defined(USE_GSKIT) || defined(USE_MESALINK) || \
++    defined(USE_BEARSSL)
+ #define USE_SSL    /* SSL support has been enabled */
+ #endif
+ 
+diff --git a/lib/vtls/bearssl.c b/lib/vtls/bearssl.c
+new file mode 100644
+index 000000000..c16d32c9e
+--- /dev/null
++++ b/lib/vtls/bearssl.c
+@@ -0,0 +1,690 @@
++/***************************************************************************
++ *                                  _   _ ____  _
++ *  Project                     ___| | | |  _ \| |
++ *                             / __| | | | |_) | |
++ *                            | (__| |_| |  _ <| |___
++ *                             \___|\___/|_| \_\_____|
++ *
++ * Copyright (C) 2019, Michael Forney, <mforney@mforney.org>
++ *
++ * This software is licensed as described in the file COPYING, which
++ * you should have received as part of this distribution. The terms
++ * are also available at https://curl.haxx.se/docs/copyright.html.
++ *
++ * You may opt to use, copy, modify, merge, publish, distribute and/or sell
++ * copies of the Software, and permit persons to whom the Software is
++ * furnished to do so, under the terms of the COPYING file.
++ *
++ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
++ * KIND, either express or implied.
++ *
++ ***************************************************************************/
++#include "curl_setup.h"
++
++#ifdef USE_BEARSSL
++
++#include <bearssl.h>
++
++#include "bearssl.h"
++#include "urldata.h"
++#include "sendf.h"
++#include "vtls.h"
++#include "connect.h"
++#include "select.h"
++#include "curl_printf.h"
++#include "curl_memory.h"
++
++struct ssl_backend_data {
++  br_ssl_client_context ctx;
++  br_x509_minimal_context x509;
++  unsigned char buf[BR_SSL_BUFSIZE_BIDI];
++  br_x509_trust_anchor *anchors;
++  size_t anchors_len;
++};
++
++#define BACKEND connssl->backend
++
++struct cafile_parser {
++  CURLcode err;
++  bool in_cert;
++  br_x509_decoder_context xc;
++  /* array of trust anchors loaded from CAfile */
++  br_x509_trust_anchor *anchors;
++  size_t anchors_len;
++  /* buffer for DN data */
++  unsigned char dn[1024];
++  size_t dn_len;
++};
++
++static void append_dn(void *ctx, const void *buf, size_t len)
++{
++  struct cafile_parser *ca = ctx;
++
++  if(ca->err != CURLE_OK || !ca->in_cert)
++    return;
++  if(sizeof(ca->dn) - ca->dn_len < len) {
++    ca->err = CURLE_FAILED_INIT;
++    return;
++  }
++  memcpy(ca->dn + ca->dn_len, buf, len);
++  ca->dn_len += len;
++}
++
++static void x509_push(void *ctx, const void *buf, size_t len)
++{
++  struct cafile_parser *ca = ctx;
++
++  if(ca->in_cert)
++    br_x509_decoder_push(&ca->xc, buf, len);
++}
++
++static CURLcode load_cafile(const char *path, br_x509_trust_anchor **anchors,
++                            size_t *anchors_len)
++{
++  struct cafile_parser ca;
++  br_pem_decoder_context pc;
++  br_x509_trust_anchor *ta;
++  size_t ta_size;
++  br_x509_trust_anchor *new_anchors;
++  size_t new_anchors_len;
++  br_x509_pkey *pkey;
++  FILE *fp;
++  unsigned char buf[BUFSIZ], *p;
++  const char *name;
++  size_t n, i, pushed;
++
++  fp = fopen(path, "rb");
++  if(!fp)
++    return CURLE_SSL_CACERT_BADFILE;
++
++  ca.err = CURLE_OK;
++  ca.in_cert = FALSE;
++  ca.anchors = NULL;
++  ca.anchors_len = 0;
++  br_pem_decoder_init(&pc);
++  br_pem_decoder_setdest(&pc, x509_push, &ca);
++  for(;;) {
++    n = fread(buf, 1, sizeof(buf), fp);
++    if(n == 0)
++      break;
++    p = buf;
++    while(n) {
++      pushed = br_pem_decoder_push(&pc, p, n);
++      if(ca.err)
++        goto fail;
++      p += pushed;
++      n -= pushed;
++
++      switch(br_pem_decoder_event(&pc)) {
++      case 0:
++        break;
++      case BR_PEM_BEGIN_OBJ:
++        name = br_pem_decoder_name(&pc);
++        if(strcmp(name, "CERTIFICATE") && strcmp(name, "X509 CERTIFICATE"))
++          break;
++        br_x509_decoder_init(&ca.xc, append_dn, &ca);
++        if(ca.anchors_len == SIZE_MAX / sizeof(ca.anchors[0])) {
++          ca.err = CURLE_OUT_OF_MEMORY;
++          goto fail;
++        }
++        new_anchors_len = ca.anchors_len + 1;
++        new_anchors = realloc(ca.anchors,
++                              new_anchors_len * sizeof(ca.anchors[0]));
++        if(!new_anchors) {
++          ca.err = CURLE_OUT_OF_MEMORY;
++          goto fail;
++        }
++        ca.anchors = new_anchors;
++        ca.anchors_len = new_anchors_len;
++        ca.in_cert = TRUE;
++        ca.dn_len = 0;
++        ta = &ca.anchors[ca.anchors_len - 1];
++        ta->dn.data = NULL;
++        break;
++      case BR_PEM_END_OBJ:
++        if(!ca.in_cert)
++          break;
++        ca.in_cert = FALSE;
++        if(br_x509_decoder_last_error(&ca.xc)) {
++          ca.err = CURLE_SSL_CACERT_BADFILE;
++          goto fail;
++        }
++        ta->flags = 0;
++        if(br_x509_decoder_isCA(&ca.xc))
++          ta->flags |= BR_X509_TA_CA;
++        pkey = br_x509_decoder_get_pkey(&ca.xc);
++        if(!pkey) {
++          ca.err = CURLE_SSL_CACERT_BADFILE;
++          goto fail;
++        }
++        ta->pkey = *pkey;
++
++        /* calculate space needed for trust anchor data */
++        ta_size = ca.dn_len;
++        switch(pkey->key_type) {
++        case BR_KEYTYPE_RSA:
++          ta_size += pkey->key.rsa.nlen + pkey->key.rsa.elen;
++          break;
++        case BR_KEYTYPE_EC:
++          ta_size += pkey->key.ec.qlen;
++          break;
++        default:
++          ca.err = CURLE_FAILED_INIT;
++          goto fail;
++        }
++
++        /* fill in trust anchor DN and public key data */
++        ta->dn.data = malloc(ta_size);
++        if(!ta->dn.data) {
++          ca.err = CURLE_OUT_OF_MEMORY;
++          goto fail;
++        }
++        memcpy(ta->dn.data, ca.dn, ca.dn_len);
++        ta->dn.len = ca.dn_len;
++        switch(pkey->key_type) {
++        case BR_KEYTYPE_RSA:
++          ta->pkey.key.rsa.n = ta->dn.data + ta->dn.len;
++          memcpy(ta->pkey.key.rsa.n, pkey->key.rsa.n, pkey->key.rsa.nlen);
++          ta->pkey.key.rsa.e = ta->pkey.key.rsa.n + ta->pkey.key.rsa.nlen;
++          memcpy(ta->pkey.key.rsa.e, pkey->key.rsa.e, pkey->key.rsa.elen);
++          break;
++        case BR_KEYTYPE_EC:
++          ta->pkey.key.ec.q = ta->dn.data + ta->dn.len;
++          memcpy(ta->pkey.key.ec.q, pkey->key.ec.q, pkey->key.ec.qlen);
++          break;
++        }
++        break;
++      default:
++        ca.err = CURLE_SSL_CACERT_BADFILE;
++        goto fail;
++      }
++    }
++  }
++  if(ferror(fp))
++    ca.err = CURLE_READ_ERROR;
++
++fail:
++  fclose(fp);
++  if(ca.err == CURLE_OK) {
++    *anchors = ca.anchors;
++    *anchors_len = ca.anchors_len;
++  }
++  else {
++    for(i = 0; i < ca.anchors_len; ++i)
++      free(ca.anchors[i].dn.data);
++    free(ca.anchors);
++  }
++
++  return ca.err;
++}
++
++static CURLcode bearssl_connect_step1(struct connectdata *conn, int sockindex)
++{
++  struct Curl_easy *data = conn->data;
++  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
++  const char * const ssl_cafile = SSL_CONN_CONFIG(CAfile);
++  const char * const hostname = SSL_IS_PROXY() ? conn->http_proxy.host.name :
++    conn->host.name;
++  CURLcode ret;
++  unsigned version_min, version_max;
++
++  switch(SSL_CONN_CONFIG(version)) {
++  case CURL_SSLVERSION_SSLv2:
++    failf(data, "BearSSL does not support SSLv2");
++    return CURLE_SSL_CONNECT_ERROR;
++  case CURL_SSLVERSION_SSLv3:
++    failf(data, "BearSSL does not support SSLv3");
++    return CURLE_SSL_CONNECT_ERROR;
++  case CURL_SSLVERSION_TLSv1_0:
++    version_min = BR_TLS10;
++    version_max = BR_TLS10;
++    break;
++  case CURL_SSLVERSION_TLSv1_1:
++    version_min = BR_TLS11;
++    version_max = BR_TLS11;
++    break;
++  case CURL_SSLVERSION_TLSv1_2:
++    version_min = BR_TLS12;
++    version_max = BR_TLS12;
++    break;
++  case CURL_SSLVERSION_DEFAULT:
++  case CURL_SSLVERSION_TLSv1:
++    version_min = BR_TLS10;
++    version_max = BR_TLS12;
++    break;
++  default:
++    failf(data, "BearSSL: unknown CURLOP_SSLVERSION");
++    return CURLE_SSL_CONNECT_ERROR;
++  }
++
++  if(ssl_cafile) {
++    ret = load_cafile(ssl_cafile, &BACKEND->anchors, &BACKEND->anchors_len);
++    if(ret != CURLE_OK)
++      return ret;
++  }
++
++  /* initialize SSL context */
++  br_ssl_client_init_full(&BACKEND->ctx, &BACKEND->x509, BACKEND->anchors,
++                          BACKEND->anchors_len);
++  br_ssl_engine_set_versions(&BACKEND->ctx.eng, version_min, version_max);
++  br_ssl_engine_set_buffer(&BACKEND->ctx.eng, BACKEND->buf,
++                           sizeof(BACKEND->buf), 1);
++  br_ssl_client_reset(&BACKEND->ctx, hostname, 0);
++
++  if(SSL_SET_OPTION(primary.sessionid)) {
++    void *session;
++
++    Curl_ssl_sessionid_lock(conn);
++    if(!Curl_ssl_getsessionid(conn, &session, NULL, sockindex)) {
++      br_ssl_engine_set_session_parameters(&BACKEND->ctx.eng, session);
++      infof(data, "BearSSL: re-using session ID\n");
++    }
++    Curl_ssl_sessionid_unlock(conn);
++  }
++
++  connssl->connecting_state = ssl_connect_2;
++
++  return CURLE_OK;
++}
++
++static CURLcode connect_step2(struct connectdata *conn, int sockindex)
++{
++  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
++  curl_socket_t sockfd = conn->sock[sockindex];
++  unsigned state;
++  unsigned char *buf;
++  size_t len;
++  ssize_t ret;
++
++  for(;;) {
++    state = br_ssl_engine_current_state(&BACKEND->ctx.eng);
++    if(state & BR_SSL_CLOSED) {
++      return CURLE_SSL_CONNECT_ERROR;
++    }
++    if(state & (BR_SSL_SENDAPP | BR_SSL_RECVAPP)) {
++      connssl->connecting_state = ssl_connect_done;
++      return CURLE_OK;
++    }
++    if(state & BR_SSL_SENDREC) {
++      buf = br_ssl_engine_sendrec_buf(&BACKEND->ctx.eng, &len);
++      ret = write(sockfd, buf, len);
++      if(ret == -1 && errno == EAGAIN) {
++        connssl->connecting_state = ssl_connect_2_writing;
++        return CURLE_OK;
++      }
++      if(ret <= 0)
++        return CURLE_WRITE_ERROR;
++      br_ssl_engine_sendrec_ack(&BACKEND->ctx.eng, ret);
++    }
++    else if(state & BR_SSL_RECVREC) {
++      buf = br_ssl_engine_recvrec_buf(&BACKEND->ctx.eng, &len);
++      ret = read(sockfd, buf, len);
++      if(ret == -1) {
++        if(errno == EAGAIN) {
++          connssl->connecting_state = ssl_connect_2_reading;
++          return CURLE_OK;
++        }
++        return CURLE_READ_ERROR;
++      }
++      if(ret == 0)
++        return CURLE_SSL_CONNECT_ERROR;
++      br_ssl_engine_recvrec_ack(&BACKEND->ctx.eng, ret);
++    }
++  }
++}
++
++static CURLcode connect_step3(struct connectdata *conn, int sockindex)
++{
++  struct Curl_easy *data = conn->data;
++  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
++  CURLcode ret;
++
++  DEBUGASSERT(ssl_connect_3 == conssl->connecting_state);
++
++  if(SSL_SET_OPTION(primary.sessionid)) {
++    bool incache;
++    void *oldsession;
++    br_ssl_session_parameters *session;
++
++    session = malloc(sizeof(*session));
++    if(!session)
++      return CURLE_OUT_OF_MEMORY;
++    br_ssl_engine_get_session_parameters(&BACKEND->ctx.eng, session);
++    Curl_ssl_sessionid_lock(conn);
++    incache = !(Curl_ssl_getsessionid(conn, &oldsession, NULL, sockindex));
++    if(incache)
++      Curl_ssl_delsessionid(conn, oldsession);
++    ret = Curl_ssl_addsessionid(conn, session, 0, sockindex);
++    Curl_ssl_sessionid_unlock(conn);
++    if(ret) {
++      free(session);
++      return CURLE_OUT_OF_MEMORY;
++    }
++  }
++
++  connssl->connecting_state = ssl_connect_done;
++
++  return CURLE_OK;
++}
++
++static ssize_t bearssl_send(struct connectdata *conn, int sockindex,
++                            const void *buf, size_t len, CURLcode *err)
++{
++  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
++  unsigned state;
++  unsigned char *rec, *app;
++  size_t reclen, applen;
++  ssize_t ret;
++
++  applen = 0;
++  for(;;) {
++    state = br_ssl_engine_current_state(&BACKEND->ctx.eng);
++    if(state & BR_SSL_SENDREC) {
++      rec = br_ssl_engine_sendrec_buf(&BACKEND->ctx.eng, &reclen);
++      ret = write(conn->sock[sockindex], rec, reclen);
++      if(ret == -1) {
++        *err = errno == EAGAIN ? CURLE_AGAIN : CURLE_SEND_ERROR;
++        return -1;
++      }
++      br_ssl_engine_sendrec_ack(&BACKEND->ctx.eng, ret);
++    }
++    else if(state & BR_SSL_SENDAPP && applen == 0) {
++      app = br_ssl_engine_sendapp_buf(&BACKEND->ctx.eng, &applen);
++      if(applen > len)
++        applen = len;
++      memcpy(app, buf, applen);
++      br_ssl_engine_sendapp_ack(&BACKEND->ctx.eng, applen);
++      br_ssl_engine_flush(&BACKEND->ctx.eng, 0);
++    }
++    else if(state & BR_SSL_CLOSED || applen == 0) {
++      *err = CURLE_SEND_ERROR;
++      return -1;
++    }
++    else
++      break;
++  }
++
++  return applen;
++}
++
++static ssize_t bearssl_recv(struct connectdata *conn, int sockindex,
++                            char *buf, size_t len, CURLcode *err)
++{
++  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
++  unsigned state;
++  unsigned char *rec, *app;
++  size_t reclen, applen;
++  ssize_t ret;
++
++  for(;;) {
++    state = br_ssl_engine_current_state(&BACKEND->ctx.eng);
++    if(state & BR_SSL_RECVREC) {
++      rec = br_ssl_engine_recvrec_buf(&BACKEND->ctx.eng, &reclen);
++      errno = 0;
++      ret = read(conn->sock[sockindex], rec, reclen);
++      if(ret <= 0) {
++        *err = errno == EAGAIN ? CURLE_AGAIN : CURLE_RECV_ERROR;
++        return -1;
++      }
++      br_ssl_engine_recvrec_ack(&BACKEND->ctx.eng, ret);
++    }
++    else if(state & BR_SSL_RECVAPP) {
++      app = br_ssl_engine_recvapp_buf(&BACKEND->ctx.eng, &applen);
++      if(applen > len)
++        applen = len;
++      memcpy(buf, app, applen);
++      br_ssl_engine_recvapp_ack(&BACKEND->ctx.eng, applen);
++      break;
++    }
++    else {
++      *err = CURLE_RECV_ERROR;
++      return -1;
++    }
++  }
++
++  return applen;
++}
++
++static CURLcode bearssl_connect_common(struct connectdata *conn,
++                                       int sockindex,
++                                       bool nonblocking,
++                                       bool *done)
++{
++  CURLcode ret;
++  struct Curl_easy *data = conn->data;
++  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
++  curl_socket_t sockfd = conn->sock[sockindex];
++  time_t timeout_ms;
++  int what;
++
++  /* check if the connection has already been established */
++  if(ssl_connection_complete == connssl->state) {
++    *done = TRUE;
++    return CURLE_OK;
++  }
++
++  if(ssl_connect_1 == connssl->connecting_state) {
++    ret = bearssl_connect_step1(conn, sockindex);
++    if(ret)
++      return ret;
++  }
++
++  while(ssl_connect_2 == connssl->connecting_state ||
++        ssl_connect_2_reading == connssl->connecting_state ||
++        ssl_connect_2_writing == connssl->connecting_state) {
++    /* check allowed time left */
++    timeout_ms = Curl_timeleft(data, NULL, TRUE);
++
++    if(timeout_ms < 0) {
++      /* no need to continue if time already is up */
++      failf(data, "SSL connection timeout");
++      return CURLE_OPERATION_TIMEDOUT;
++    }
++
++    /* if ssl is expecting something, check if it's available. */
++    if(ssl_connect_2_reading == connssl->connecting_state ||
++       ssl_connect_2_writing == connssl->connecting_state) {
++
++      curl_socket_t writefd = ssl_connect_2_writing ==
++        connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
++      curl_socket_t readfd = ssl_connect_2_reading ==
++        connssl->connecting_state?sockfd:CURL_SOCKET_BAD;
++
++      what = Curl_socket_check(readfd, CURL_SOCKET_BAD, writefd,
++                               nonblocking?0:timeout_ms);
++      if(what < 0) {
++        /* fatal error */
++        failf(data, "select/poll on SSL socket, errno: %d", SOCKERRNO);
++        return CURLE_SSL_CONNECT_ERROR;
++      }
++      else if(0 == what) {
++        if(nonblocking) {
++          *done = FALSE;
++          return CURLE_OK;
++        }
++        else {
++          /* timeout */
++          failf(data, "SSL connection timeout");
++          return CURLE_OPERATION_TIMEDOUT;
++        }
++      }
++      /* socket is readable or writable */
++    }
++
++    /* Run transaction, and return to the caller if it failed or if this
++     * connection is done nonblocking and this loop would execute again. This
++     * permits the owner of a multi handle to abort a connection attempt
++     * before step2 has completed while ensuring that a client using select()
++     * or epoll() will always have a valid fdset to wait on.
++     */
++    ret = connect_step2(conn, sockindex);
++    if(ret || (nonblocking &&
++               (ssl_connect_2 == connssl->connecting_state ||
++                ssl_connect_2_reading == connssl->connecting_state ||
++                ssl_connect_2_writing == connssl->connecting_state)))
++      return ret;
++  }
++
++  if(ssl_connect_3 == connssl->connecting_state) {
++    ret = connect_step3(conn, sockindex);
++    if(ret)
++      return ret;
++  }
++
++  if(ssl_connect_done == connssl->connecting_state) {
++    connssl->state = ssl_connection_complete;
++    conn->recv[sockindex] = bearssl_recv;
++    conn->send[sockindex] = bearssl_send;
++    *done = TRUE;
++  }
++  else
++    *done = FALSE;
++
++  /* Reset our connect state machine */
++  connssl->connecting_state = ssl_connect_1;
++
++  return CURLE_OK;
++}
++
++static size_t Curl_bearssl_version(char *buffer, size_t size)
++{
++  return msnprintf(buffer, size, "BearSSL");
++}
++
++static bool Curl_bearssl_data_pending(const struct connectdata *conn,
++                                      int connindex)
++{
++  const struct ssl_connect_data *connssl = &conn->ssl[connindex];
++
++  return br_ssl_engine_current_state(&BACKEND->ctx.eng) & BR_SSL_RECVAPP;
++}
++
++static CURLcode Curl_bearssl_random(struct Curl_easy *data UNUSED_PARAM,
++                                    unsigned char *entropy, size_t length)
++{
++  static br_hmac_drbg_context ctx;
++  static bool seeded = FALSE;
++
++  if(!seeded) {
++    br_prng_seeder seeder;
++
++    br_hmac_drbg_init(&ctx, &br_sha256_vtable, NULL, 0);
++    seeder = br_prng_seeder_system(NULL);
++    if(!seeder || !seeder(&ctx.vtable))
++      return CURLE_FAILED_INIT;
++    seeded = TRUE;
++  }
++  br_hmac_drbg_generate(&ctx, entropy, length);
++
++  return CURLE_OK;
++}
++
++static CURLcode Curl_bearssl_connect(struct connectdata *conn, int sockindex)
++{
++  CURLcode ret;
++  bool done = FALSE;
++
++  ret = bearssl_connect_common(conn, sockindex, FALSE, &done);
++  if(ret)
++    return ret;
++
++  DEBUGASSERT(done);
++
++  return CURLE_OK;
++}
++
++static CURLcode Curl_bearssl_connect_nonblocking(struct connectdata *conn,
++                                                 int sockindex, bool *done)
++{
++  return bearssl_connect_common(conn, sockindex, TRUE, done);
++}
++
++static void *Curl_bearssl_get_internals(struct ssl_connect_data *connssl,
++                                        CURLINFO info UNUSED_PARAM)
++{
++  return &BACKEND->ctx;
++}
++
++static void Curl_bearssl_close(struct connectdata *conn, int sockindex)
++{
++  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
++  unsigned char *buf;
++  size_t len, i;
++  ssize_t ret;
++
++  if(connssl->use) {
++    br_ssl_engine_close(&BACKEND->ctx.eng);
++    while(br_ssl_engine_current_state(&BACKEND->ctx.eng) & BR_SSL_SENDREC) {
++      buf = br_ssl_engine_sendrec_buf(&BACKEND->ctx.eng, &len);
++      ret = write(conn->sock[sockindex], buf, len);
++      if(ret < 0)
++        break;
++      br_ssl_engine_sendrec_ack(&BACKEND->ctx.eng, ret);
++    }
++    for(i = 0; i < BACKEND->anchors_len; ++i)
++      free(BACKEND->anchors[i].dn.data);
++    free(BACKEND->anchors);
++  }
++}
++
++static void Curl_bearssl_session_free(void *ptr)
++{
++  free(ptr);
++}
++
++static CURLcode Curl_bearssl_md5sum(unsigned char *input,
++                                    size_t inputlen,
++                                    unsigned char *md5sum,
++                                    size_t md5len UNUSED_PARAM)
++{
++  br_md5_context ctx;
++
++  br_md5_init(&ctx);
++  br_md5_update(&ctx, input, inputlen);
++  br_md5_out(&ctx, md5sum);
++  return CURLE_OK;
++}
++
++static CURLcode Curl_bearssl_sha256sum(const unsigned char *input,
++                                       size_t inputlen,
++                                       unsigned char *sha256sum,
++                                       size_t sha256len UNUSED_PARAM)
++{
++  br_sha256_context ctx;
++
++  br_sha256_init(&ctx);
++  br_sha256_update(&ctx, input, inputlen);
++  br_sha256_out(&ctx, sha256sum);
++  return CURLE_OK;
++}
++
++const struct Curl_ssl Curl_ssl_bearssl = {
++  { CURLSSLBACKEND_BEARSSL, "bearssl" },
++
++  0,
++
++  sizeof(struct ssl_backend_data),
++
++  Curl_none_init,
++  Curl_none_cleanup,
++  Curl_bearssl_version,
++  Curl_none_check_cxn,
++  Curl_none_shutdown,
++  Curl_bearssl_data_pending,
++  Curl_bearssl_random,
++  Curl_none_cert_status_request,
++  Curl_bearssl_connect,
++  Curl_bearssl_connect_nonblocking,
++  Curl_bearssl_get_internals,
++  Curl_bearssl_close,
++  Curl_none_close_all,
++  Curl_bearssl_session_free,
++  Curl_none_set_engine,
++  Curl_none_set_engine_default,
++  Curl_none_engines_list,
++  Curl_none_false_start,
++  Curl_bearssl_md5sum,
++  Curl_bearssl_sha256sum
++};
++
++#endif /* USE_BEARSSL */
+diff --git a/lib/vtls/bearssl.h b/lib/vtls/bearssl.h
+new file mode 100644
+index 000000000..5f94922b9
+--- /dev/null
++++ b/lib/vtls/bearssl.h
+@@ -0,0 +1,32 @@
++#ifndef HEADER_CURL_BEARSSL_H
++#define HEADER_CURL_BEARSSL_H
++/***************************************************************************
++ *                                  _   _ ____  _
++ *  Project                     ___| | | |  _ \| |
++ *                             / __| | | | |_) | |
++ *                            | (__| |_| |  _ <| |___
++ *                             \___|\___/|_| \_\_____|
++ *
++ * Copyright (C) 2019, Michael Forney, <mforney@mforney.org>
++ *
++ * This software is licensed as described in the file COPYING, which
++ * you should have received as part of this distribution. The terms
++ * are also available at https://curl.haxx.se/docs/copyright.html.
++ *
++ * You may opt to use, copy, modify, merge, publish, distribute and/or sell
++ * copies of the Software, and permit persons to whom the Software is
++ * furnished to do so, under the terms of the COPYING file.
++ *
++ * This software is distributed on an "AS IS" basis, WITHOUT WARRANTY OF ANY
++ * KIND, either express or implied.
++ *
++ ***************************************************************************/
++
++#include "curl_setup.h"
++
++#ifdef USE_BEARSSL
++
++extern const struct Curl_ssl Curl_ssl_bearssl;
++
++#endif /* USE_BEARSSL */
++#endif /* HEADER_CURL_BEARSSL_H */
+diff --git a/lib/vtls/vtls.c b/lib/vtls/vtls.c
+index e6d756225..894fd8a43 100644
+--- a/lib/vtls/vtls.c
++++ b/lib/vtls/vtls.c
+@@ -517,7 +517,7 @@ void Curl_ssl_close_all(struct Curl_easy *data)
+ 
+ #if defined(USE_OPENSSL) || defined(USE_GNUTLS) || defined(USE_SCHANNEL) || \
+   defined(USE_SECTRANSP) || defined(USE_POLARSSL) || defined(USE_NSS) || \
+-  defined(USE_MBEDTLS) || defined(USE_WOLFSSL)
++  defined(USE_MBEDTLS) || defined(USE_WOLFSSL) || defined(USE_BEARSSL)
+ int Curl_ssl_getsock(struct connectdata *conn, curl_socket_t *socks)
+ {
+   struct ssl_connect_data *connssl = &conn->ssl[FIRSTSOCKET];
+@@ -1189,6 +1189,8 @@ const struct Curl_ssl *Curl_ssl =
+   &Curl_ssl_schannel;
+ #elif defined(USE_MESALINK)
+   &Curl_ssl_mesalink;
++#elif defined(USE_BEARSSL)
++  &Curl_ssl_bearssl;
+ #else
+ #error "Missing struct Curl_ssl for selected SSL backend"
+ #endif
+diff --git a/lib/vtls/vtls.h b/lib/vtls/vtls.h
+index 61d8416c2..976cc4360 100644
+--- a/lib/vtls/vtls.h
++++ b/lib/vtls/vtls.h
+@@ -108,6 +108,7 @@ CURLcode Curl_none_md5sum(unsigned char *input, size_t inputlen,
+ #include "sectransp.h"      /* SecureTransport (Darwin) version */
+ #include "mbedtls.h"        /* mbedTLS versions */
+ #include "mesalink.h"       /* MesaLink versions */
++#include "bearssl.h"        /* BearSSL versions */
+ 
+ #ifndef MAX_PINNED_PUBKEY_SIZE
+ #define MAX_PINNED_PUBKEY_SIZE 1048576 /* 1MB */
+-- 
+2.24.0
+

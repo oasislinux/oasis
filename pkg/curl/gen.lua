@@ -7,7 +7,7 @@ cflags{
 	'-I $outdir/include',
 	'-I $srcdir/lib',
 	'-I $srcdir/src',
-	'-I $builddir/pkg/libressl/include',
+	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/zlib/include',
 }
 
@@ -32,7 +32,7 @@ pkg.hdrs = copy('$outdir/include/curl', '$srcdir/include/curl', {
 pkg.deps = {
 	'$outdir/curl_config.h',
 	'$dir/headers',
-	'pkg/libressl/headers',
+	'pkg/bearssl/headers',
 	'pkg/zlib/headers',
 }
 
@@ -69,15 +69,13 @@ lib('libcurl.a', [[
 			polarssl.c polarssl_threadlock.c
 			wolfssl.c schannel.c schannel_verify.c
 			sectransp.c gskit.c mbedtls.c mesalink.c
+			bearssl.c
 		)
 		vquic/(ngtcp2.c quiche.c)
 		vssh/(libssh2.c libssh.c)
 	)
-	$builddir/pkg/(
-		libressl/libssl.a.d
-		libressl/libcrypto.a.d
-		zlib/libz.a
-	)
+	$builddir/pkg/bearssl/libbearssl.a
+	$builddir/pkg/zlib/libz.a
 ]])
 
 build('cc', '$outdir/tool_hugehelp.c.o', {

@@ -7,11 +7,10 @@ Generated with
 		--disable-pop3 \
 		--disable-smb \
 		--disable-smtp \
-		--with-ca-fallback \
-		--without-ca-bundle \
-		CPPFLAGS='-I/src/oasis/out/pkg/libressl/include -I/src/oasis/out/pkg/zlib/include' \
-		LDFLAGS='-L/src/oasis/out/pkg/openbsd -L/src/oasis/out/pkg/libressl -L/src/oasis/out/pkg/zlib' \
-		LIBS='-lbsd'
+		--with-ca-bundle=/etc/ssl/cert.pem \
+		--with-bearssl \
+		CPPFLAGS='-I/src/oasis/out/pkg/bearssl/include -I/src/oasis/out/pkg/zlib/include' \
+		LDFLAGS='-L/src/oasis/out/pkg/bearssl -L/src/oasis/out/pkg/zlib' \
 
 There are a number of non-standard definitions, but they don't seem to be
 architecture-specific except for

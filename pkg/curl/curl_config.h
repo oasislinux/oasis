@@ -1,6 +1,6 @@
 /* #undef CURLDEBUG */
-/* #undef CURL_CA_BUNDLE */
-#define CURL_CA_FALLBACK 1
+#define CURL_CA_BUNDLE "/etc/ssl/cert.pem"
+/* #undef CURL_CA_FALLBACK */
 /* #undef CURL_CA_PATH */
 /* #undef CURL_DEFAULT_SSL_BACKEND */
 /* #undef CURL_DISABLE_COOKIES */
@@ -135,13 +135,13 @@
 /* #undef HAVE_LIBBROTLIDEC */
 #define HAVE_LIBGEN_H 1
 /* #undef HAVE_LIBIDN2 */
-#define HAVE_LIBRESSL 1
+/* #undef HAVE_LIBRESSL */
 /* #undef HAVE_LIBRTMP_RTMP_H */
 /* #undef HAVE_LIBSSH */
 /* #undef HAVE_LIBSSH2 */
 /* #undef HAVE_LIBSSH2_H */
 /* #undef HAVE_LIBSSH_LIBSSH_H */
-#define HAVE_LIBSSL 1
+/* #undef HAVE_LIBSSL */
 #define HAVE_LIBZ 1
 #define HAVE_LINUX_TCP_H 1
 #define HAVE_LL 1
@@ -163,14 +163,14 @@
 /* #undef HAVE_NGTCP2_NGTCP2_CRYPTO_H */
 /* #undef HAVE_NGTCP2_NGTCP2_H */
 /* #undef HAVE_OLD_GSSMIT */
-#define HAVE_OPENSSL_CRYPTO_H 1
-#define HAVE_OPENSSL_ERR_H 1
-#define HAVE_OPENSSL_PEM_H 1
-#define HAVE_OPENSSL_RSA_H 1
+/* #undef HAVE_OPENSSL_CRYPTO_H */
+/* #undef HAVE_OPENSSL_ERR_H */
+/* #undef HAVE_OPENSSL_PEM_H */
+/* #undef HAVE_OPENSSL_RSA_H */
 /* #undef HAVE_OPENSSL_SRP */
-#define HAVE_OPENSSL_SSL_H 1
-#define HAVE_OPENSSL_VERSION 1
-#define HAVE_OPENSSL_X509_H 1
+/* #undef HAVE_OPENSSL_SSL_H */
+/* #undef HAVE_OPENSSL_VERSION */
+/* #undef HAVE_OPENSSL_X509_H */
 /* #undef HAVE_PEM_H */
 #define HAVE_PIPE 1
 /* #undef HAVE_PK11_CREATEMANAGEDGENERICOBJECT */
@@ -283,7 +283,7 @@
 #define PACKAGE_TARNAME "curl"
 #define PACKAGE_URL ""
 #define PACKAGE_VERSION "-"
-#define RANDOM_FILE "/dev/urandom"
+/* #undef RANDOM_FILE */
 #define RECV_TYPE_ARG1 int
 #define RECV_TYPE_ARG2 void *
 #define RECV_TYPE_ARG3 size_t
@@ -315,6 +315,7 @@
 /* #undef USE_ALTSVC */
 /* #undef USE_AMISSL */
 /* #undef USE_ARES */
+#define USE_BEARSSL 1
 /* #undef USE_ESNI */
 /* #undef USE_GNUTLS */
 /* #undef USE_GNUTLS_NETTLE */
@@ -332,7 +333,7 @@
 /* #undef USE_NGTCP2_CRYPTO_OPENSSL */
 /* #undef USE_NSS */
 /* #undef USE_OPENLDAP */
-#define USE_OPENSSL 1
+/* #undef USE_OPENSSL */
 /* #undef USE_QUICHE */
 /* #undef USE_SCHANNEL */
 /* #undef USE_SECTRANSP */
