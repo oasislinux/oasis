@@ -4,6 +4,7 @@ return {
 		'bc',
 		'byacc',
 		'bzip2',
+		'cacert',
 		'curl',
 		'e2fsprogs',
 		'git',
