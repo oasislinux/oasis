@@ -7,6 +7,11 @@ cflags{
 	'-I pkg/openbsd/include',
 }
 
+pkg.hdrs = copy('$outdir/include', '$srcdir/src', {
+	'fido.h',
+	'fido/err.h',
+	'fido/param.h',
+})
 pkg.deps = {
 	'pkg/libcbor/headers',
 	'pkg/libressl/headers',
@@ -42,10 +47,5 @@ lib('libfido2.a', [[
 	)
 	$builddir/pkg/libcbor/libcbor.a
 ]])
-
-lib('libsk-libfido2.a', {
-	'tools/sk-libfido2.c',
-	'libfido2.a.d',
-})
 
 fetch 'git'

@@ -10,12 +10,14 @@ cflags{
 	'-I $dir',
 	'-I $srcdir',
 	'-I pkg/openbsd/include',
+	'-I $builddir/pkg/libfido2/include',
 	'-I $builddir/pkg/libressl/include',
 	'-I $builddir/pkg/zlib/include',
 	'-idirafter $srcdir/openbsd-compat',
 }
 
 pkg.deps = {
+	'pkg/libfido2/headers',
 	'pkg/libressl/headers',
 	'pkg/zlib/headers',
 }
@@ -69,19 +71,19 @@ lib('libssh.a', [[
 	readpass.c ttymodes.c xmalloc.c addrmatch.c
 	atomicio.c dispatch.c mac.c misc.c utf8.c
 	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-ecdsa-sk.c
-	ssh-rsa.c dh.c
+	ssh-ed25519-sk.c ssh-rsa.c dh.c
 	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c
 	ssh-pkcs11.c smult_curve25519_ref.c
 	poly1305.c chacha.c cipher-chachapoly.c
-	ssh-ed25519.c ssh-sk.c digest-openssl.c digest-libc.c hmac.c
-	sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c
+	ssh-ed25519.c ssh-sk.c sk-usbhid.c digest-openssl.c digest-libc.c
+	hmac.c sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c
 	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c
 	kexgexc.c kexgexs.c
 	sntrup4591761.c kexsntrup4591761x25519.c kexgen.c
 	sftp-realpath.c platform-pledge.c platform-tracing.c platform-misc.c
 	libopenbsd-compat.a
 	$builddir/pkg/(libressl/libcrypto.a.d zlib/libz.a)
-	$builddir/pkg/(libfido2/libsk-libfido2.a.d)
+	$builddir/pkg/(libfido2/libfido2.a.d)
 ]])
 
 exe('ssh', [[

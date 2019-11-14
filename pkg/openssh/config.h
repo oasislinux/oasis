@@ -55,6 +55,7 @@
 #define DISABLE_WTMPX 1
 /* #undef ENABLE_PKCS11 */
 #define ENABLE_SK /**/
+#define ENABLE_SK_INTERNAL /**/
 /* #undef FFLUSH_NULL_BUG */
 /* #undef FILESYSTEM_NO_BACKSLASH */
 /* #undef FSID_HAS_VAL */

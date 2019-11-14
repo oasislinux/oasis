@@ -4,10 +4,12 @@
 Generated with
 
 	./configure \
+		--disable-pkcs11 \
 		--disable-wtmp \
+		--enable-security-key \
 		--without-pie \
-		CPPFLAGS='-I/src/oasis/out/pkg/zlib/include' \
-		LDFLAGS='-L/src/oasis/out/pkg/libressl -L/src/oasis/out/pkg/openbsd -L/src/oasis/out/pkg/zlib' \
+		CPPFLAGS='-I/src/oasis/pkg/openbsd/include -I/src/oasis/out/pkg/libfido2/include -I/src/oasis/out/pkg/zlib/include' \
+		LDFLAGS='-L/src/oasis/out/pkg/libressl -L/src/oasis/out/pkg/openbsd -L/src/oasis/out/pkg/libfido2 -L/src/oasis/out/pkg/libcbor -L/src/oasis/out/pkg/zlib' \
 		LIBS='-lcrypto -lbsd'
 
 Several changes were made:
