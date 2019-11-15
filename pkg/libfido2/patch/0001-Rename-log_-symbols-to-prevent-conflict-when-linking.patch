@@ -1,41 +1,27 @@
-From 448eaf9f2d065bcf76c0c9e253a24f743032ddba Mon Sep 17 00:00:00 2001
+From 1f79356d6010871a2c4d1818414fa2b21836d865 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 3 Nov 2019 11:37:52 -0800
 Subject: [PATCH] Rename log_* symbols to prevent conflict when linking
  statically
 
 ---
- src/extern.h | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ src/extern.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/src/extern.h b/src/extern.h
-index 2f69094..a6c757d 100644
+index 2f69094..d42ab87 100644
 --- a/src/extern.h
 +++ b/src/extern.h
-@@ -92,14 +92,17 @@ int rx_cbor_status(fido_dev_t *, int);
+@@ -91,6 +91,9 @@ int rx_cbor_status(fido_dev_t *, int);
+ #define log_debug(...)	do { /* nothing */ } while (0)
  #define log_xxd(...)	do { /* nothing */ } while (0)
  #else
- #ifdef __GNUC__
--void log_init(void);
--void log_debug(const char *, ...) __attribute__((__format__ (printf, 1, 2)));
--void log_xxd(const void *, size_t);
-+void fido_log_init(void);
-+void fido_log_debug(const char *, ...) __attribute__((__format__ (printf, 1, 2)));
-+void fido_log_xxd(const void *, size_t);
- #else
--void log_init(void);
--void log_debug(const char *, ...);
--void log_xxd(const void *, size_t);
-+void fido_log_init(void);
-+void fido_log_debug(const char *, ...);
-+void fido_log_xxd(const void *, size_t);
- #endif /* __GNUC__ */
 +#define log_init	fido_log_init
 +#define log_debug	fido_log_debug
 +#define log_xxd		fido_log_xxd
- #endif /* FIDO_NO_DIAGNOSTIC */
- 
- /* u2f */
+ #ifdef __GNUC__
+ void log_init(void);
+ void log_debug(const char *, ...) __attribute__((__format__ (printf, 1, 2)));
 -- 
-2.23.0
+2.24.0
 
