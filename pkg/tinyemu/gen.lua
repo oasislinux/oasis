@@ -5,13 +5,13 @@ cflags{
 	'-D CONFIG_SLIRP',
 	'-D CONFIG_X86EMU',
 	[[-D 'CONFIG_VERSION="2019-02-10"']],
+	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/curl/include',
-	'-I $builddir/pkg/libressl/include',
 }
 
 pkg.deps = {
+	'pkg/bearssl/headers',
 	'pkg/curl/headers',
-	'pkg/libressl/headers',
 }
 
 build('cc', '$outdir/riscv_cpu32.o', '$srcdir/riscv_cpu.c', {cflags='$cflags -DMAX_XLEN=32'})
@@ -28,8 +28,8 @@ exe('temu', [[
 	fs_disk.c fs_net.c fs_wget.c fs_utils.c block_net.c
 	riscv_machine.c softfp.c riscv_cpu32.o riscv_cpu64.o
 	x86_cpu.c x86_machine.c ide.c ps2.c vmmouse.c pckbd.c vga.c
+	$builddir/pkg/bearssl/libbearssl.a
 	$builddir/pkg/curl/libcurl.a.d
-	$builddir/pkg/libressl/libcrypto.a.d
 ]])
 file('bin/temu', '755', '$outdir/temu')
 

@@ -1,0 +1,143 @@
+From d08311dfe9776fcb5e1b5ca3a4efe0402ad704be Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 15 Nov 2019 21:47:49 -0800
+Subject: [PATCH] Use BearSSL for HMAC-SHA256 and AES-CBC
+
+---
+ fs_net.c  |  4 ++--
+ fs_wget.c | 45 +++++++++++++++++++++++++++++++++++++--------
+ fs_wget.h |  5 ++---
+ 3 files changed, 41 insertions(+), 13 deletions(-)
+
+diff --git a/fs_net.c b/fs_net.c
+index c7c7484..18c8407 100644
+--- a/fs_net.c
++++ b/fs_net.c
+@@ -2556,7 +2556,7 @@ static int fs_cmd_xhr(FSDevice *fs, FSFile *f,
+     s->fd = fd;
+     s->post_fd = post_fd;
+     if (aes_key_len != 0) {
+-        AES_set_decrypt_key(aes_key, FS_KEY_LEN * 8, &s->aes_state);
++        br_aes_big_cbcdec_init(&s->aes_state.c_big, aes_key, FS_KEY_LEN);
+         paes_state = &s->aes_state;
+     } else {
+         paes_state = NULL;
+@@ -2646,7 +2646,7 @@ static int fs_cmd_set_base_url(FSDevice *fs, const char *p)
+     if (aes_key_len != 0) {
+         if (aes_key_len != FS_KEY_LEN)
+             goto fail;
+-        AES_set_decrypt_key(aes_key, FS_KEY_LEN * 8, &aes_state);
++        br_aes_big_cbcdec_init(&aes_state.c_big, aes_key, FS_KEY_LEN);
+         paes_state = &aes_state;
+     } else {
+         paes_state = NULL;
+diff --git a/fs_wget.c b/fs_wget.c
+index b4857b0..5a36dbc 100644
+--- a/fs_wget.c
++++ b/fs_wget.c
+@@ -327,6 +327,8 @@ XHRState *fs_wget(const char *url, const char *user, const char *password,
+ /***********************************************/
+ /* file decryption */
+ 
++#define AES_BLOCK_SIZE br_aes_big_BLOCK_SIZE
++
+ #define ENCRYPTED_FILE_HEADER_SIZE (4 + AES_BLOCK_SIZE)
+ 
+ #define DEC_BUF_SIZE (256 * AES_BLOCK_SIZE)
+@@ -379,8 +381,7 @@ int decrypt_file(DecryptFileState *s, const uint8_t *data,
+             if (s->dec_buf_pos >= DEC_BUF_SIZE) {
+                 /* keep one block in case it is the padding */
+                 len = s->dec_buf_pos - AES_BLOCK_SIZE;
+-                AES_cbc_encrypt(s->dec_buf, s->dec_buf, len,
+-                                s->aes_state, s->iv, FALSE);
++                br_aes_big_cbcdec_run(&s->aes_state->c_big, s->iv, s->dec_buf, len);
+                 ret = s->write_cb(s->opaque, s->dec_buf, len);
+                 if (ret < 0)
+                     return ret;
+@@ -409,8 +410,7 @@ int decrypt_file_flush(DecryptFileState *s)
+     if (len == 0 || 
+         (len % AES_BLOCK_SIZE) != 0)
+         return -1;
+-    AES_cbc_encrypt(s->dec_buf, s->dec_buf, len,
+-                    s->aes_state, s->iv, FALSE);
++    br_aes_big_cbcdec_run(&s->aes_state->c_big, s->iv, s->dec_buf, len);
+     pad_len = s->dec_buf[s->dec_buf_pos - 1];
+     if (pad_len < 1 || pad_len > AES_BLOCK_SIZE)
+         return -1;
+@@ -532,6 +532,8 @@ void fs_wget_file2(FSDevice *fs, FSFile *f, const char *url,
+ /***********************************************/
+ /* PBKDF2 */
+ 
++#define SALT_LEN_MAX 32
++
+ #ifdef USE_BUILTIN_CRYPTO
+ 
+ #define HMAC_BLOCK_SIZE 64
+@@ -575,8 +577,6 @@ void hmac_sha256_final(HMAC_SHA256_CTX *s, uint8_t *out)
+     SHA256(s->K, HMAC_BLOCK_SIZE + SHA256_DIGEST_LENGTH, out);
+ }
+ 
+-#define SALT_LEN_MAX 32
+-
+ void pbkdf2_hmac_sha256(const uint8_t *pwd, int pwd_len,
+                         const uint8_t *salt, int salt_len,
+                         int iter, int key_len, uint8_t *out)
+@@ -618,8 +618,37 @@ void pbkdf2_hmac_sha256(const uint8_t *pwd, int pwd_len,
+                         const uint8_t *salt, int salt_len,
+                         int iter, int key_len, uint8_t *out)
+ {
+-    PKCS5_PBKDF2_HMAC((const char *)pwd, pwd_len, salt, salt_len,
+-                      iter, EVP_sha256(), key_len, out);
++    uint8_t F[br_sha256_SIZE], U[SALT_LEN_MAX + 4];
++    br_hmac_key_context kc;
++    br_hmac_context ctx;
++    int it, U_len, j, l;
++    uint32_t i;
++
++    assert(salt_len <= SALT_LEN_MAX);
++    i = 1;
++    br_hmac_key_init(&kc, &br_sha256_vtable, pwd, pwd_len);
++    while (key_len > 0) {
++        memset(F, 0, br_sha256_SIZE);
++        memcpy(U, salt, salt_len);
++        U[salt_len] = i >> 24;
++        U[salt_len + 1] = i >> 16;
++        U[salt_len + 2] = i >> 8;
++        U[salt_len + 3] = i;
++        U_len = salt_len + 4;
++        for(it = 0; it < iter; it++) {
++            br_hmac_init(&ctx, &kc, 0);
++            br_hmac_update(&ctx, U, U_len);
++            br_hmac_out(&ctx, U);
++            for(j = 0; j < br_sha256_SIZE; j++)
++                F[j] ^= U[j];
++            U_len = br_sha256_SIZE;
++        }
++        l = min_int(key_len, br_sha256_SIZE);
++        memcpy(out, F, l);
++        out += l;
++        key_len -= l;
++        i++;
++    }
+ }
+ 
+ #endif /* !USE_BUILTIN_CRYPTO */
+diff --git a/fs_wget.h b/fs_wget.h
+index 35b6a4b..952bb69 100644
+--- a/fs_wget.h
++++ b/fs_wget.h
+@@ -29,9 +29,8 @@
+ #include "aes.h"
+ #include "sha256.h"
+ #else
+-#include <openssl/aes.h>
+-#include <openssl/sha.h>
+-#include <openssl/evp.h>
++#include <bearssl.h>
++typedef br_aes_gen_cbcdec_keys AES_KEY;
+ #endif
+ #ifdef _WIN32
+ #include <winsock2.h>
+-- 
+2.24.0
+
