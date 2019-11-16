@@ -2,12 +2,12 @@ cflags{
 	'-include $dir/config.h',
 	'-I $srcdir/src/utils',
 	'-I $srcdir/src',
-	'-I $builddir/pkg/libressl/include',
+	'-I $buildidr/pkg/bearssl/include',
 	'-I $builddir/pkg/libnl/include',
 }
 
 pkg.deps = {
-	'pkg/libressl/headers',
+	'pkg/bearssl/headers',
 	'pkg/libnl/headers',
 }
 
@@ -26,8 +26,15 @@ exe('bin/wpa_supplicant', [[
 		wpa_common.c
 	)
 	src/crypto/(
-		crypto_openssl.c
+		aes-internal-dec.c
+		aes-internal-enc.c
+		aes-internal.c
+		aes-unwrap.c
+		aes-wrap.c
+		crypto_bearssl.c
 		random.c
+		rc4.c
+		sha1-pbkdf2.c
 		sha1-prf.c
 		sha256-prf.c
 		tls_none.c
@@ -73,10 +80,8 @@ exe('bin/wpa_supplicant', [[
 		wpas_glue.c
 	)
 	libcommon.a
-	$builddir/pkg/(
-		libressl/libcrypto.a.d
-		libnl/(libnl-3.a libnl-genl-3.a)
-	)
+	$builddir/pkg/bearssl/libbearssl.a
+	$builddir/pkg/libnl/(libnl-3.a libnl-genl-3.a)
 ]])
 file('bin/wpa_supplicant', '755', '$outdir/bin/wpa_supplicant')
 

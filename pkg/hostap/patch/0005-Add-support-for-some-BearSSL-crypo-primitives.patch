@@ -1,0 +1,98 @@
+From f7dc64ef991c146a491d0ed0a92d2a5890383143 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 15 Nov 2019 20:19:37 -0800
+Subject: [PATCH] Add support for some BearSSL crypo primitives
+
+---
+ src/crypto/crypto_bearssl.c | 79 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
+ create mode 100644 src/crypto/crypto_bearssl.c
+
+diff --git a/src/crypto/crypto_bearssl.c b/src/crypto/crypto_bearssl.c
+new file mode 100644
+index 000000000..bc29f9693
+--- /dev/null
++++ b/src/crypto/crypto_bearssl.c
+@@ -0,0 +1,79 @@
++/*
++ * Wrapper functions for BearSSL crypto
++ * Copyright (c) 2019, Michael Forney <mforney@mforney.org>
++ *
++ * This software may be distributed under the terms of the BSD license.
++ * See README for more details.
++ */
++
++#include "includes.h"
++#include <bearssl.h>
++
++#include "common.h"
++#include "md5.h"
++#include "crypto.h"
++
++int digest_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *out,
++                  const br_hash_class *hash)
++{
++	br_hash_compat_context ctx;
++	size_t i;
++
++	hash->init(&ctx.vtable);
++	for (i = 0; i < num_elem; ++i)
++		hash->update(&ctx.vtable, addr[i], len[i]);
++	hash->out(&ctx.vtable, out);
++
++	return 0;
++}
++
++int sha1_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *out)
++{
++	return digest_vector(num_elem, addr, len, out, &br_sha1_vtable);
++}
++
++int sha256_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *out)
++{
++	return digest_vector(num_elem, addr, len, out, &br_sha256_vtable);
++}
++
++static int hmac_vector(const u8 *key, size_t key_len, size_t num_elem,
++                       const u8 *addr[], const size_t *len, u8 *mac,
++                       const br_hash_class *type)
++{
++	br_hmac_key_context kc;
++	br_hmac_context ctx;
++	size_t i;
++
++	br_hmac_key_init(&kc, type, key, key_len);
++	br_hmac_init(&ctx, &kc, 0);
++	for (i = 0; i < num_elem; ++i)
++		br_hmac_update(&ctx, addr[i], len[i]);
++	br_hmac_out(&ctx, mac);
++
++	return 0;
++}
++
++int hmac_sha256_vector(const u8 *key, size_t key_len, size_t num_elem,
++                       const u8 *addr[], const size_t *len, u8 *mac)
++{
++	return hmac_vector(key, key_len, num_elem, addr, len, mac, &br_sha256_vtable);
++}
++
++int hmac_sha1_vector(const u8 *key, size_t key_len, size_t num_elem,
++                     const u8 *addr[], const size_t *len, u8 *mac)
++{
++	return hmac_vector(key, key_len, num_elem, addr, len, mac, &br_sha1_vtable);
++}
++
++int hmac_sha1(const u8 *key, size_t key_len, const u8 *data, size_t data_len,
++	       u8 *mac)
++{
++	return hmac_sha1_vector(key, key_len, 1, &data, &data_len, mac);
++}
++
++int hmac_md5(const u8 *key, size_t key_len, const u8 *data, size_t data_len,
++             u8 *mac)
++{
++	return hmac_vector(key, key_len, 1, &data, &data_len, mac, &br_md5_vtable);
++}
+-- 
+2.24.0
+
