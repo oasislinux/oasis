@@ -26,7 +26,6 @@ exe('bin/wpa_supplicant', [[
 		wpa_common.c
 	)
 	src/crypto/(
-		aes-omac1.c
 		crypto_openssl.c
 		random.c
 		sha1-prf.c
@@ -49,7 +48,6 @@ exe('bin/wpa_supplicant', [[
 	src/rsn_supp/(
 		pmksa_cache.c
 		preauth.c
-		tdls.c
 		wpa.c
 		wpa_ie.c
 	)
