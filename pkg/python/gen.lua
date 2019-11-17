@@ -209,6 +209,10 @@ exe('python', {'Programs/python.c', 'libpython.a', expand{'$builddir/pkg/', libs
 file('bin/python3', '755', '$outdir/python')
 sym('bin/python', 'python3')
 
+build('copy', '$outdir/python3.1', '$srcdir/Misc/python.man')
+man{'$outdir/python3.1'}
+sym('share/man/man1/python.1.gz', 'python3.1.gz')
+
 for f in iterlines('pylibs.txt') do
 	file('lib/python3.8/'..f, '644', '$srcdir/Lib/'..f)
 end
