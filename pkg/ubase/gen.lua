@@ -76,6 +76,7 @@ local tools = {
 	{'umount', 8},
 	{'unshare', 1},
 	{'uptime', 1},
+	{'vmstat'},
 	{'vtallow', 1},
 	{'watch', 1},
 	{'who', 1},
