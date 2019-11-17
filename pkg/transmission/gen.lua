@@ -32,9 +32,9 @@ end)
 
 cflags{
 	'-D __TRANSMISSION__',
+	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/curl/include',
 	'-I $builddir/pkg/libevent/include',
-	'-I $builddir/pkg/libressl/include',
 	'-I $builddir/pkg/zlib/include',
 	'-I $dir',
 	'-I $srcdir',
@@ -48,10 +48,9 @@ cflags{
 }
 
 pkg.deps = {
+	'pkg/bearssl/headers',
 	'pkg/curl/headers',
 	'pkg/libevent/headers',
-	'pkg/libressl/headers',
-	'pkg/libressl/headers',
 	'pkg/libutp/fetch',
 	'pkg/openbsd/fetch',
 	'pkg/zlib/headers',
@@ -121,13 +120,13 @@ lib('libtransmission.a', [[
 
 		watchdir-inotify.c
 		file-posix.c
-		crypto-utils-openssl.c
+		crypto-utils-bearssl.c
 	)
 	libb64.a libdht.a libminiupnp.a libnatpmp.a
 	$builddir/pkg/(
+		bearssl/libbearssl.a
 		curl/libcurl.a.d
 		libevent/libevent.a
-		libressl/libcrypto.a.d
 		libutp/libutp.a
 		zlib/libz.a
 	)
