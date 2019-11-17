@@ -369,7 +369,7 @@ function waylandproto(proto, outs, args)
 	end
 	if outs.code then
 		local code = '$outdir/'..outs.code
-		build('waylandproto', code, proto, {type='code'})
+		build('waylandproto', code, proto, {type='public-code'})
 		cc(code, {'pkg/wayland/headers'}, args)
 	end
 end
