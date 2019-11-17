@@ -33,38 +33,39 @@ lib('libfont.a', 'src/(kdfontop.c kdmapop.c loadunimap.c psffontop.c utf8.c)')
 -- i386/x86_64 only: resizecons
 -- ubase: chvt
 
-local function x(cmd, section, subst, srcs)
-	if not srcs then
-		srcs = 'src/'..cmd..'.c'
-	end
-	exe(cmd, {srcs, 'libcommon.a', 'libfont.a', 'libkeymap.a', 'libkbdfile.a'})
-	file('bin/'..cmd, '755', '$outdir/'..cmd)
-	if not section then
-		return
-	end
-	local manpage = string.format('docs/man/man%s/%s.%s', section, cmd, section)
-	if subst then
-		local out = string.format('$outdir/%s.%s', cmd, section)
-		build('sed', out, '$srcdir/'..manpage..'.in', {expr='s,@DATADIR@,/share/kbd,g'})
-		manpage = out
-	end
-	man{manpage}
-end
+local tools = {
+	{'deallocvt',       '1'},
+	{'dumpkeys',        '1', true},
+	{'fgconsole',       '1'},
+	{'getkeycodes',     '8'},
+	{'kbd_mode',        '1'},
+	{'kbdinfo'},
+	{'loadkeys',        '1', true},
+	{'openvt',          '1'},
+	{'psfxtable',       '1'},
+	{'setfont',         '8', true, {'src/setfont.c', 'src/mapscrn.c'}},
+	{'setkeycodes',     '8'},
+	{'setvtrgb',        '8'},
+	{'showconsolefont', '8'},
+	{'showkey',         '1'},
+}
 
-x('deallocvt',       '1')
-x('dumpkeys',        '1', true)
-x('fgconsole',       '1')
-x('getkeycodes',     '8')
-x('kbd_mode',        '1')
-x('kbdinfo')
-x('loadkeys',        '1', true)
-x('openvt',          '1')
-x('psfxtable',       '1')
-x('setfont',         '8', true, {'src/setfont.c', 'src/mapscrn.c'})
-x('setkeycodes',     '8')
-x('setvtrgb',        '8')
-x('showconsolefont', '8')
-x('showkey',         '1')
+for _, tool in ipairs(tools) do
+	local name, sect, subst, srcs = table.unpack(tool)
+	exe(name, {srcs or 'src/'..name..'.c', 'libcommon.a', 'libfont.a', 'libkeymap.a', 'libkbdfile.a'})
+	file('bin/'..name, '755', '$outdir/'..name)
+	if sect then
+		local manpage = string.format('docs/man/man%s/%s.%s', sect, name, sect)
+		if subst then
+			local out = string.format('$outdir/%s.%s', name, sect)
+			build('sed', out, '$srcdir/'..manpage..'.in', {
+				expr='s,@DATADIR@,/share/kbd,g',
+			})
+			manpage = out
+		end
+		man{manpage}
+	end
+end
 
 -- keymap data
 for keymap in iterlines('keymaps.txt') do
