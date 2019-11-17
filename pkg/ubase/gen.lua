@@ -26,67 +26,67 @@ lib('libutil.a', [[libutil/(
 	tty.c
 )]])
 
-function x(cmd, section, mode)
-	if not mode then
-		mode = '755'
-	end
-	file('bin/'..cmd, mode, exe(cmd, {cmd..'.c', 'libutil.a'}))
-	if section then
-		man{cmd..'.'..section}
+local tools = {
+	{'blkdiscard', 8},
+	{'chvt', 1},
+	{'clear', 1},
+	{'ctrlaltdel', 8},
+	{'dd', 1},
+	{'df', 1},
+	{'dmesg', 1},
+	{'eject', 1},
+	{'fallocate', 1},
+	{'free', 1},
+	{'freeramdisk', 8},
+	{'fsfreeze', 8},
+	{'getty', 8},
+	{'halt', 8},
+	{'hwclock', 8},
+	{'id', 1},
+	{'insmod', 8},
+	{'killall5', 8},
+	{'last'},
+	{'lastlog', 8},
+	{'login', 1},
+	{'lsmod', 8},
+	{'lsusb', 8},
+	{'mesg', 1},
+	{'mknod', 1},
+	{'mkswap', 8},
+	{'mount', 8},
+	{'mountpoint', 1},
+	{'nologin', 8},
+	{'pagesize', 1},
+	{'passwd', 1, '4755'},
+	{'pidof', 1},
+	{'pivot_root', 8},
+	{'ps', 1},
+	{'pwdx', 1},
+	{'readahead', 8},
+	{'respawn', 1},
+	{'rmmod', 8},
+	{'stat', 1},
+	{'stty'},
+	{'swaplabel', 8},
+	{'swapoff', 8},
+	{'swapon', 8},
+	{'switch_root', 8},
+	{'sysctl', 8},
+	{'truncate', 1},
+	{'umount', 8},
+	{'unshare', 1},
+	{'uptime', 1},
+	{'vtallow', 1},
+	{'watch', 1},
+	{'who', 1},
+}
+
+for _, tool in ipairs(tools) do
+	local name, sect, mode = table.unpack(tool)
+	file('bin/'..name, mode or '755', exe(name, {name..'.c', 'libutil.a'}))
+	if sect then
+		man{name..'.'..sect}
 	end
 end
-
-x('blkdiscard', 8)
-x('chvt', 1)
-x('clear', 1)
-x('ctrlaltdel', 8)
-x('dd', 1)
-x('df', 1)
-x('dmesg', 1)
-x('eject', 1)
-x('fallocate', 1)
-x('free', 1)
-x('freeramdisk', 8)
-x('fsfreeze', 8)
-x('getty', 8)
-x('halt', 8)
-x('hwclock', 8)
-x('id', 1)
-x('insmod', 8)
-x('killall5', 8)
-x('last')
-x('lastlog', 8)
-x('login', 1)
-x('lsmod', 8)
-x('lsusb', 8)
-x('mesg', 1)
-x('mknod', 1)
-x('mkswap', 8)
-x('mount', 8)
-x('mountpoint', 1)
-x('nologin', 8)
-x('pagesize', 1)
-x('passwd', 1, '4755')
-x('pidof', 1)
-x('pivot_root', 8)
-x('ps', 1)
-x('pwdx', 1)
-x('readahead', 8)
-x('respawn', 1)
-x('rmmod', 8)
-x('stat', 1)
-x('stty')
-x('swaplabel', 8)
-x('swapoff', 8)
-x('swapon', 8)
-x('switch_root', 8)
-x('sysctl', 8)
-x('truncate', 1)
-x('umount', 8)
-x('unshare', 1)
-x('uptime', 1)
-x('vtallow', 1)
-x('watch', 1)
-x('who', 1)
 
 fetch 'git'
