@@ -67,7 +67,7 @@ lib('libutf.a', [[libutf/(
 	utftorunestr.c
 )]])
 
-rule('getconf', '$srcdir/getconf.sh >$out.tmp && mv $out.tmp $out')
+rule('getconf', '$srcdir/getconf.sh >$out')
 build('getconf', '$outdir/getconf.h', {'|', '$srcdir/getconf.sh'})
 
 local cmds = {

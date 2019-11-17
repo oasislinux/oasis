@@ -12,7 +12,7 @@ pkg.hdrs = {
 	install=true,
 }
 
-rule('m4', 'm4 -D SRCDIR=$srcdir/libelf $in >$out.tmp && mv $out.tmp $out')
+rule('m4', 'm4 -D SRCDIR=$srcdir/libelf $in >$out')
 build('m4', '$outdir/libelf_convert.c', {'$srcdir/libelf/libelf_convert.m4', '|', '$srcdir/libelf/elf_types.m4'})
 build('m4', '$outdir/libelf_fsize.c', {'$srcdir/libelf/libelf_fsize.m4', '|', '$srcdir/libelf/elf_types.m4'})
 build('m4', '$outdir/libelf_msize.c', {'$srcdir/libelf/libelf_msize.m4', '|', '$srcdir/libelf/elf_types.m4'})

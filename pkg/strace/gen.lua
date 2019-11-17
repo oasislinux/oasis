@@ -36,7 +36,7 @@ sub('tools.ninja', function()
 			'|', '$outdir/ioctl_iocdef.h', '$outdir/ioctls_all'..i..'.h',
 		}, {cflags=string.format([[$cflags -D 'IOCTLSORT_INC="ioctls_all%d.h"']], i)})
 		exe('ioctlsort'..i, {'ioctlsort'..i..'.c.o'})
-		rule('ioctlsort'..i, '$outdir/ioctlsort'..i..' >$out.tmp && mv $out.tmp $out')
+		rule('ioctlsort'..i, '$outdir/ioctlsort'..i..' >$out')
 		build('ioctlsort'..i, '$outdir/ioctlent'..i..'.h', {'|', '$outdir/ioctlsort'..i})
 	end
 end)

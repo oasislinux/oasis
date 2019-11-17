@@ -61,7 +61,7 @@ sub('tools.ninja', function()
 	toolchain 'host'
 	exe('gen_crc32ctable', {'lib/ext2fs/gen_crc32ctable.c'})
 end)
-rule('gen_crc32ctable', '$outdir/gen_crc32ctable >$out.tmp && mv $out.tmp $out')
+rule('gen_crc32ctable', '$outdir/gen_crc32ctable >$out')
 build('gen_crc32ctable', '$outdir/internal/crc32c_table.h', {'|', '$outdir/gen_crc32ctable'})
 
 pkg.hdrs = {

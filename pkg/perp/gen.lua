@@ -10,13 +10,13 @@ sub('tools.ninja', function()
 	exe('mksysstr', {'lasagna/sysstr/mksysstr.c'})
 end)
 
-rule('outvec', '$outdir/mk_outvec >$out.tmp && mv $out.tmp $out')
+rule('outvec', '$outdir/mk_outvec >$out')
 build('outvec', '$outdir/outvec_STDOUT.h', {'|', '$outdir/mk_outvec'})
 
-rule('rlimit', '$outdir/mk_rlimit >$out.tmp && mv $out.tmp $out')
+rule('rlimit', '$outdir/mk_rlimit >$out')
 build('rlimit', '$outdir/rlimit_defs.c.in', {'|', '$outdir/mk_rlimit'})
 
-rule('sysstr', '$outdir/mksysstr $type >$out.tmp && mv $out.tmp $out')
+rule('sysstr', '$outdir/mksysstr $type >$out')
 build('sysstr', '$outdir/sysstr_errno.c.in', {'|', '$outdir/mksysstr'}, {type='errno'})
 build('sysstr', '$outdir/sysstr_signo.c.in', {'|', '$outdir/mksysstr'}, {type='signo'})
 

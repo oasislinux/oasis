@@ -7,7 +7,7 @@ cflags{
 	'-I $builddir/pkg/zlib/include',
 }
 
-rule('cmdlist', 'wd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$wd/$in >$$wd/$out.tmp && mv $$wd/$out.tmp $$wd/$out')
+rule('cmdlist', 'wd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$wd/$in >$$wd/$out')
 build('cmdlist', '$outdir/command-list.h', {
 	'$srcdir/command-list.txt', '|', expand{'$srcdir/Documentation/', lines('commands.txt')},
 })
@@ -438,7 +438,7 @@ local scripts = {
 	{'sh-i18n', '644'},
 }
 
-rule('sh_gen', 'sed -f $dir/sh_gen.sed $in >$out.tmp && mv $out.tmp $out')
+rule('sh_gen', 'sed -f $dir/sh_gen.sed $in >$out')
 for _, script in ipairs(scripts) do
 	local name, mode = table.unpack(script)
 	build('sh_gen', '$outdir/git-'..name, {'$srcdir/git-'..name..'.sh', '|', '$dir/sh_gen.sed'})

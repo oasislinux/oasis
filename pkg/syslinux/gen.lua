@@ -20,7 +20,7 @@ sub('tools.ninja', function()
 	exe('bin2c', {'bin2c.c'})
 end)
 
-rule('bin2c', '$outdir/bin2c $args <$in >$out.tmp && mv $out.tmp $out')
+rule('bin2c', '$outdir/bin2c $args <$in >$out')
 function bin2c(bin, args)
 	local name = args[1]
 	build('bin2c', '$outdir/'..name..'.c', {

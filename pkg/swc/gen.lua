@@ -39,7 +39,7 @@ sub('tools.ninja', function()
 	exe('convert_font', {'cursor/convert_font.c'})
 end)
 
-rule('convert_font', '$outdir/convert_font $in $out.tmp 2>/dev/null && mv $out.tmp $out')
+rule('convert_font', '$outdir/convert_font $in $out 2>/dev/null')
 build('convert_font', '$outdir/cursor/cursor_data.h', {'$srcdir/cursor/cursor.pcf', '|', '$outdir/convert_font'})
 
 pkg.deps = {

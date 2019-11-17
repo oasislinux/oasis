@@ -46,7 +46,7 @@ build('awk', '$outdir/include/libavutil/avconfig.h', {'$dir/options.h', '|', '$d
 	expr='-f $dir/avconfig.awk',
 })
 
-rule('genlist', 'lua5.2 $dir/list.lua $dir/options.h $type $var <$in >$out.tmp && mv $out.tmp $out')
+rule('genlist', 'lua5.2 $dir/list.lua $dir/options.h $type $var <$in >$out')
 local function genlist(out, src, type, var)
 	build('genlist', out, {src, '|', '$dir/list.lua', '$dir/options.h'}, {type=type, var=var})
 	table.insert(pkg.deps, out)
@@ -360,7 +360,7 @@ file('bin/ffprobe', '755', '$outdir/ffprobe')
 exe('ffmpeg', {paths[[fftools/(ffmpeg.c ffmpeg_opt.c ffmpeg_filter.c ffmpeg_hw.c cmdutils.c.o)]], libs})
 file('bin/ffmpeg', '755', '$outdir/ffmpeg')
 
-rule('texi2mdoc', [[texi2mdoc -d 'November 7, 2018' -I $outdir $in >$out.tmp && mv $out.tmp $out]])
+rule('texi2mdoc', [[texi2mdoc -d 'November 7, 2018' -I $outdir $in >$out]])
 build('texi2mdoc', '$outdir/ffprobe.1', {'$srcdir/doc/ffprobe.texi', '|', '$outdir/config.texi'})
 build('texi2mdoc', '$outdir/ffmpeg.1', {'$srcdir/doc/ffmpeg.texi', '|', '$outdir/config.texi'})
 man{'$outdir/ffprobe.1', '$outdir/ffmpeg.1'}

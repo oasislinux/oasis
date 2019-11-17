@@ -29,7 +29,7 @@ sub('tools.ninja', function()
 	exe('hexdump', {'scripts/hexdump.c'})
 end)
 
-rule('hexdump', '$outdir/hexdump -s $out.tmp $in && mv $out.tmp $out')
+rule('hexdump', '$outdir/hexdump -s $out $in')
 local fonts = lines('fonts.txt')
 for _, font in ipairs(fonts) do
 	build('hexdump', '$outdir/'..font..'.c', {'$srcdir/resources/fonts/'..font, '|', '$outdir/hexdump'})

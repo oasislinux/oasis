@@ -51,7 +51,7 @@ sources = table.keys(sources)
 
 cflags{'-D Py_BUILD_CORE'}
 
-rule('makesetup', 'lua5.2 $dir/makesetup.lua $dir/modules.lua <$in >$out.tmp && mv $out.tmp $out')
+rule('makesetup', 'lua5.2 $dir/makesetup.lua $dir/modules.lua <$in >$out')
 build('makesetup', '$outdir/config.c', {'$srcdir/Modules/config.c.in', '|', '$dir/makesetup.lua', '$dir/modules.lua'})
 
 cc('Modules/getbuildinfo.c', nil, {

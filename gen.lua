@@ -1,4 +1,4 @@
-set('ninja_required_version', '1.7')
+set('ninja_required_version', '1.8')
 
 set('builddir', config.builddir)
 set('outdir', '$builddir')

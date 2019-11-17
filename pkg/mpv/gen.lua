@@ -39,7 +39,7 @@ build('copy', '$outdir/video/out/wayland/presentation-time.h', '$builddir/pkg/wa
 build('copy', '$outdir/video/out/wayland/xdg-decoration-v1.h', '$builddir/pkg/wayland-protocols/include/xdg-decoration-unstable-v1-client-protocol.h')
 build('copy', '$outdir/video/out/wayland/xdg-shell.h', '$builddir/pkg/wayland-protocols/include/xdg-shell-client-protocol.h')
 
-rule('file2string', '$outdir/file2string $in >$out.tmp && mv $out.tmp $out')
+rule('file2string', '$outdir/file2string $in >$out')
 local function file2string(out, inp)
 	build('file2string', '$outdir/'..out, {'$srcdir/'..inp, '|', '$outdir/file2string'})
 	table.insert(pkg.deps, '$outdir/'..out)

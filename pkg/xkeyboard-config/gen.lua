@@ -117,7 +117,7 @@ for f in iterpaths(data) do
 	file('share/xkb/'..f, '644', '$srcdir/'..f)
 end
 
-rule('merge', 'HDR=$srcdir/rules/HDR ./$srcdir/rules/merge.sh $out.tmp $in && mv $out.tmp $out')
+rule('merge', 'HDR=$srcdir/rules/HDR ./$srcdir/rules/merge.sh $out $in')
 function merge(out, srcs)
 	build('merge', '$outdir/'..out, {
 		expand{'$srcdir/rules/', paths(srcs)},

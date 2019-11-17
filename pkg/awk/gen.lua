@@ -16,7 +16,7 @@ sub('tools.ninja', function()
 	exe('maketab', {'maketab.c'})
 end)
 
-rule('maketab', '$outdir/maketab $in >$out.tmp && mv $out.tmp $out')
+rule('maketab', '$outdir/maketab $in >$out')
 build('maketab', '$outdir/proctab.c', {'$outdir/ytab.h', '|', '$outdir/maketab'})
 
 exe('awk', [[

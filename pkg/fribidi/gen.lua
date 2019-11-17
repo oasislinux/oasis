@@ -30,7 +30,7 @@ end)
 
 set('compression', '2')
 
-rule('gentool', '$outdir/$tool $args $in >$out.tmp && mv $out.tmp $out')
+rule('gentool', '$outdir/$tool $args $in >$out')
 local function gentool(tool, out, srcs, args)
 	build('gentool', '$outdir/'..out, {expand{'$srcdir/gen.tab/unidata/', srcs}, '|', '$outdir/gen-'..tool}, {
 		tool='gen-'..tool,

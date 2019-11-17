@@ -19,7 +19,7 @@ end)
 build('sed', '$outdir/curses.head', {'$srcdir/include/curses.h.in', '|', '$dir/subst.sed'}, {
 	expr='-f $dir/subst.sed',
 })
-rule('mkkeydefs', '{ cat $outdir/curses.head && sh $srcdir/include/MKkey_defs.sh $in && cat $srcdir/include/curses.wide $srcdir/include/curses.tail; } >$out.tmp && mv $out.tmp $out')
+rule('mkkeydefs', '{ cat $outdir/curses.head && sh $srcdir/include/MKkey_defs.sh $in && cat $srcdir/include/curses.wide $srcdir/include/curses.tail; } >$out')
 build('mkkeydefs', '$outdir/include/curses.h', {'$srcdir/include/Caps', '|',
 	'$outdir/curses.head',
 	'$srcdir/include/curses.wide',
@@ -27,19 +27,19 @@ build('mkkeydefs', '$outdir/include/curses.h', {'$srcdir/include/Caps', '|',
 	'$srcdir/include/MKkey_defs.sh',
 })
 
-rule('mkhashsize', 'sh $srcdir/include/MKhashsize.sh $in >$out.tmp && mv $out.tmp $out')
+rule('mkhashsize', 'sh $srcdir/include/MKhashsize.sh $in >$out')
 build('mkhashsize', '$outdir/hashsize.h', {'$srcdir/include/Caps', '|', '$srcdir/include/MKhashsize.sh'})
 
-rule('mkkeyslist', 'sh $srcdir/ncurses/tinfo/MKkeys_list.sh $in | LC_ALL=C sort >$out.tmp && mv $out.tmp $out')
+rule('mkkeyslist', 'sh $srcdir/ncurses/tinfo/MKkeys_list.sh $in | LC_ALL=C sort >$out')
 build('mkkeyslist', '$outdir/keys.list', {'$srcdir/include/Caps', '|', '$srcdir/ncurses/tinfo/MKkeys_list.sh'})
 
-rule('mkkeys', '$outdir/make_keys $in >$out.tmp && mv $out.tmp $out')
+rule('mkkeys', '$outdir/make_keys $in >$out')
 build('mkkeys', '$outdir/init_keytry.h', {'$outdir/keys.list', '|', '$outdir/make_keys'})
 
-rule('mkdefs', 'sh $srcdir/include/MKncurses_def.sh $in >$out.tmp && mv $out.tmp $out')
+rule('mkdefs', 'sh $srcdir/include/MKncurses_def.sh $in >$out')
 build('mkdefs', '$outdir/ncurses_def.h', {'$srcdir/include/ncurses_defs', '|', '$srcdir/include/MKncurses_def.sh'})
 
-rule('mkparam', '$srcdir/include/MKparametrized.sh $in >$out.tmp && mv $out.tmp $out')
+rule('mkparam', '$srcdir/include/MKparametrized.sh $in >$out')
 build('mkparam', '$outdir/parametrized.h', {'$srcdir/include/Caps', '|', '$srcdir/include/MKparametrized.sh'})
 
 build('sed', '$outdir/MKterm.h.awk', {'$srcdir/include/MKterm.h.awk.in', '|', '$dir/subst.sed'}, {
@@ -52,21 +52,21 @@ for _, f in ipairs{'ncurses_dll.h', 'termcap.h', 'unctrl.h'} do
 	})
 end
 
-rule('mkterm', 'awk -f $outdir/MKterm.h.awk $in >$out.tmp && mv $out.tmp $out')
+rule('mkterm', 'awk -f $outdir/MKterm.h.awk $in >$out')
 build('mkterm', '$outdir/include/term.h', {'$srcdir/include/Caps', '|', '$outdir/MKterm.h.awk'})
 
 build('awk', '$outdir/codes.c', {'$srcdir/include/Caps', '|', '$srcdir/ncurses/tinfo/MKcodes.awk'}, {
 	expr='-f $srcdir/ncurses/tinfo/MKcodes.awk bigstrings=1',
 })
 
-rule('mkcaptab', '(cd $outdir && $$OLDPWD/$srcdir/ncurses/tinfo/MKcaptab.sh awk 1 $$OLDPWD/$srcdir/ncurses/tinfo/MKcaptab.awk $$OLDPWD/$in) >$out.tmp && mv $out.tmp $out')
+rule('mkcaptab', '(cd $outdir && $$OLDPWD/$srcdir/ncurses/tinfo/MKcaptab.sh awk 1 $$OLDPWD/$srcdir/ncurses/tinfo/MKcaptab.awk $$OLDPWD/$in) >$out')
 build('mkcaptab', '$outdir/comp_captab.c', {'$srcdir/include/Caps', '|',
 	'$outdir/make_hash',
 	'$srcdir/tinfo/MKcaptab.awk',
 	'$srcdir/tinfo/MKcaptab.sh',
 })
 
-rule('mkfallback', 'sh $srcdir/ncurses/tinfo/MKfallback.sh /dev/null /dev/null /dev/null >$out.tmp && mv $out.tmp $out')
+rule('mkfallback', 'sh $srcdir/ncurses/tinfo/MKfallback.sh /dev/null /dev/null /dev/null >$out')
 build('mkfallback', '$outdir/fallback.c', {'|', '$srcdir/ncurses/tinfo/MKfallback.sh'})
 
 build('awk', '$outdir/lib_keyname.c', '$outdir/keys.list', {
@@ -77,7 +77,7 @@ build('awk', '$outdir/names.c', {'$srcdir/include/Caps', '|', '$srcdir/ncurses/t
 	expr='-f $srcdir/ncurses/tinfo/MKnames.awk bigstrings=1',
 })
 
-rule('mktermsort', 'sh $srcdir/progs/MKtermsort.sh awk $in >$out.tmp && mv $out.tmp $out')
+rule('mktermsort', 'sh $srcdir/progs/MKtermsort.sh awk $in >$out')
 build('mktermsort', '$outdir/termsort.c', {'$srcdir/include/Caps', '|', '$srcdir/progs/MKtermsort.sh'})
 
 build('awk', '$outdir/unctrl.c', {'/dev/null', '|', '$srcdir/ncurses/base/MKunctrl.awk'}, {
