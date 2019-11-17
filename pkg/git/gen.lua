@@ -391,52 +391,59 @@ for name in iterstrings(syms) do
 	sym('libexec/git-core/git-'..name, '../../bin/git')
 end
 
-local function x(name, srcs)
+local programs = {
+	-- src/Makefile:/^PROGRAM_OBJS./+=
+	{'credential-store'},
+	{'daemon'},
+	{'fast-import'},
+	{'http-backend'},
+	{'imap-send', {'imap-send.c', 'http.c.o', '$builddir/pkg/curl/libcurl.a.d'}},
+	{'sh-i18n--envsubst'},
+	{'shell'},
+	-- git-remote-testsvn is intentionally omitted
+
+	{'remote-http', {'remote-curl.c', 'http.c.o', 'http-walker.c', '$builddir/pkg/curl/libcurl.a.d'}},
+}
+
+for _, prog in ipairs(programs) do
+	local name, srcs = table.unpack(prog)
 	exe('git-'..name, {srcs or name..'.c', 'common-main.c.o', 'libgit.a.d'})
 	file('libexec/git-core/git-'..name, '755', '$outdir/git-'..name)
 end
 
--- src/Makefile:/^PROGRAM_OBJS./+=
-x('credential-store')
-x('daemon')
-x('fast-import')
-x('http-backend')
-x('imap-send', {'imap-send.c', 'http.c.o', '$builddir/pkg/curl/libcurl.a.d'})
-x('sh-i18n--envsubst')
-x('shell')
--- git-remote-testsvn is intentionally omitted.
-
-x('remote-http', {'remote-curl.c', 'http.c.o', 'http-walker.c', '$builddir/pkg/curl/libcurl.a.d'})
 for _, remote in ipairs{'https', 'ftp', 'ftps'} do
 	sym('libexec/git-core/git-remote-'..remote, 'git-remote-http')
 end
 
+local scripts = {
+	-- src/Makefile:/^SCRIPT_SH.\+=
+	{'bisect', '755'},
+	{'difftool--helper', '755'},
+	{'filter-branch', '755'},
+	{'merge-octopus', '755'},
+	{'merge-one-file', '755'},
+	{'merge-resolve', '755'},
+	{'mergetool', '755'},
+	{'quiltimport', '755'},
+	{'legacy-stash', '755'},
+	{'request-pull', '755'},
+	{'submodule', '755'},
+	{'web--browse', '755'},
+
+	-- src/Makefile:/^SCRIPT_LIB.\+=
+	{'mergetool--lib', '644'},
+	{'parse-remote', '644'},
+	{'rebase--preserve-merges', '644'},
+	{'sh-setup', '644'},
+	{'sh-i18n', '644'},
+}
+
 rule('sh_gen', 'sed -f $dir/sh_gen.sed $in >$out.tmp && mv $out.tmp $out')
-local function x(name, mode)
+for _, script in ipairs(scripts) do
+	local name, mode = table.unpack(script)
 	build('sh_gen', '$outdir/git-'..name, {'$srcdir/git-'..name..'.sh', '|', '$dir/sh_gen.sed'})
 	file('libexec/git-core/git-'..name, mode, '$outdir/git-'..name)
 end
-
--- src/Makefile:/^SCRIPT_SH.\+=
-x('bisect', '755')
-x('difftool--helper', '755')
-x('filter-branch', '755')
-x('merge-octopus', '755')
-x('merge-one-file', '755')
-x('merge-resolve', '755')
-x('mergetool', '755')
-x('quiltimport', '755')
-x('legacy-stash', '755')
-x('request-pull', '755')
-x('submodule', '755')
-x('web--browse', '755')
-
--- src/Makefile:/^SCRIPT_LIB.\+=
-x('mergetool--lib', '644')
-x('parse-remote', '644')
-x('rebase--preserve-merges', '644')
-x('sh-setup', '644')
-x('sh-i18n', '644')
 
 for _, name in ipairs{'git-shell', 'git-upload-pack'} do
 	sym('bin/'..name, '../libexec/git-core/'..name)
