@@ -7,15 +7,19 @@ cflags{
 
 pkg.deps = {'pkg/alsa-lib/headers'}
 
-local function x(name, srcs)
+local tools = {
+	{'amixer', {'amixer/amixer.c', 'alsamixer/volume_mapping.c'}},
+	{'aplay', {'aplay/aplay.c'}},
+}
+
+for _, tool in ipairs(tools) do
+	local name, srcs = table.unpack(tool)
 	local out = 'bin/'..name
 	exe(out, {srcs, '$builddir/pkg/alsa-lib/libasound.a'})
 	file(out, '755', '$outdir/'..out)
 	man{name..'/'..name..'.1'}
 end
 
-x('amixer', {'amixer/amixer.c', 'alsamixer/volume_mapping.c'})
-x('aplay', {'aplay/aplay.c'})
 sym('bin/arecord', 'aplay')
 sym('share/man/man1/arecord.1.gz', 'aplay.1.gz')
 
