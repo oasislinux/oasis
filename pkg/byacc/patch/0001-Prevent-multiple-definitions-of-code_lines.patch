@@ -2,6 +2,7 @@ From 71ddf61cc892a771d15d95937f1f13a9ce17e98b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Nov 2019 18:20:04 -0800
 Subject: [PATCH] Prevent multiple definitions of `code_lines`
+Upstream: Yes, applied by maintainer
 
 ---
  defs.h | 2 +-

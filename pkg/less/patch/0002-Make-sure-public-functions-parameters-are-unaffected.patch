@@ -3,6 +3,7 @@ From: Michael Forney <mforney@mforney.org>
 Date: Fri, 5 Jul 2019 21:50:22 -0700
 Subject: [PATCH] Make sure public functions parameters are unaffected by
  argument promotion
+Upstream: 2436151e2c5c2f30e0071bcf0edaf376ba13c268
 
 In order for a prototype declaration and non-prototype function
 definition to be compatible, the promoted type of the non-prototype

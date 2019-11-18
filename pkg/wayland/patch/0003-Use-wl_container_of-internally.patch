@@ -2,6 +2,7 @@ From 1ad3dc70e7961e7bf1d27a9572644a5153fc8e2d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 1 Jun 2019 15:11:48 -0700
 Subject: [PATCH] Use wl_container_of internally
+Upstream: 55d044810ca32ae24499d2c6aee6084d7e31d576
 
 ---
  src/event-loop.c        | 4 ++--

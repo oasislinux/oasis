@@ -2,6 +2,7 @@ From b60ba776eb8969d7631a6fecafd5040d7331a050 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Wed, 13 Jun 2018 09:41:01 -0400
 Subject: [PATCH] remove extra decl
+Upstream: 99b578501643377e0b1994b2a068b790d189d5ad
 
 Signed-off-by: Peter Jones <pjones@redhat.com>
 ---

@@ -2,6 +2,7 @@ From 5c87a344bc528c1878708c5e497f0e8e1742b7d4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 5 Jul 2019 22:05:36 -0700
 Subject: [PATCH] Remove ';' after function definition
+Upstream: f0475cce07567696a7cb9ac4da2119ce09195c1d
 
 The STR_TO_TYPE_FUNC macro expands to a function definition, so the ';'
 is treated as an empty top-level declaration, which is not valid in ISO C.

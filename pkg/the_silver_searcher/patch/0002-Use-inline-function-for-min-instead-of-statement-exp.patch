@@ -2,6 +2,7 @@ From dc1be161f9155e92367714b38f6a45d05d4f90cd Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 Jun 2019 20:58:46 -0700
 Subject: [PATCH] Use inline function for min instead of statement expression
+Upstream: https://github.com/ggreer/the_silver_searcher/pull/1324
 
 ---
  src/zfile.c | 9 +++++----

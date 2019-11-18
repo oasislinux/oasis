@@ -2,6 +2,7 @@ From 159e026212ba551981dc522690901b9291b8e235 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 01:49:32 -0700
 Subject: [PATCH] Prevent duplicate definitions of global variables
+Upstream: https://github.com/ggreer/the_silver_searcher/pull/1324
 
 Multiple external definitions of an object is invalid in ISO C[0].
 

@@ -2,6 +2,7 @@ From 76adb32c89184406278fd51a3fe138314b134a12 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 Jun 2019 20:58:00 -0700
 Subject: [PATCH] Remove `;` after function definition
+Upstream: https://github.com/ggreer/the_silver_searcher/pull/1324
 
 ---
  src/ignore.c | 2 +-

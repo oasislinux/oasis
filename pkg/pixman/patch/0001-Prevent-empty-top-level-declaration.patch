@@ -2,6 +2,7 @@ From 66f8839181d4cf81efc9beb8bd85cb8263795b56 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 11 Jul 2019 00:12:19 -0700
 Subject: [PATCH] Prevent empty top-level declaration
+Upstream: https://lists.freedesktop.org/archives/pixman/2019-November/004896.html
 
 The expansion of PIXMAN_DEFINE_THREAD_LOCAL(...) may end in a
 function definition, so the following semicolon is considered an

@@ -4,6 +4,7 @@ Date: Tue, 13 Nov 2018 08:45:29 +0000
 Subject: [PATCH] Add the -d option to specify the .Dd date, and fall back to
  the mtime before resorting to the current time. Patch from Michael Forney
  <mforney at mforney dot org> with minimal tweaks by me.
+Upstream: Yes, main.c@1.72 util.c@1.35
 
 While here, fix the date format, "%F" is wrong for mdoc(7).
 Change it to "%B %e, %Y" which isn't perfect due to the

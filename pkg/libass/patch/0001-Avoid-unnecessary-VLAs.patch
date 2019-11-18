@@ -2,6 +2,7 @@ From 4988f2d5bf0ecb941320cfe2cde517c860b792a0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 22:59:39 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
+Upstream: Equivalent patches applied upstream (891ada89c9 and c80f332798)
 
 ---
  libass/ass_outline.c | 4 ++--

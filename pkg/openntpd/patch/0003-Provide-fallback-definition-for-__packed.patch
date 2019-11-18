@@ -2,6 +2,7 @@ From 1a01dd331508160aeda3563dbbb6f62aa60c2156 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 20 Jun 2019 13:52:22 -0700
 Subject: [PATCH] Provide fallback definition for __packed
+Upstream: https://github.com/openntpd-portable/openntpd-portable/pull/56
 
 Otherwise, systems that don't support it will treat it as a name for a
 global `struct ntp_msg` variable.

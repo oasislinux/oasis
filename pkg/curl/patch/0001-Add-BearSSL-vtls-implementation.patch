@@ -2,6 +2,7 @@ From 7500502be5490e60f62ecc8be8e96f1f23405684 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 7 Nov 2019 20:17:18 -0800
 Subject: [PATCH] Add BearSSL vtls implementation
+Upstream: https://github.com/curl/curl/pull/4597
 
 ---
  CMake/FindBearSSL.cmake           |   9 +
