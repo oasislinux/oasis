@@ -339,7 +339,7 @@ function ar(out, files)
 		end
 	end
 	build('ar', out, objs)
-	build('lines', out..'.d', deps)
+	build('rsp', out..'.d', deps)
 end
 
 function lib(out, srcs, deps)

@@ -91,7 +91,9 @@ function gen(dir)
 		build('empty', '$outdir/root.perms')
 	end
 	if next(pkg.inputs.index) then
-		build('cat', '$outdir/root.index', pkg.inputs.index)
+		build('cat', '$outdir/root.index', pkg.inputs.index, {
+			description='	INDEX	$outdir/root.index',
+		})
 	else
 		build('empty', '$outdir/root.index')
 	end

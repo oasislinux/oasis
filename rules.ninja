@@ -7,31 +7,36 @@ rule cc
   command = $cc -MMD -MF $out.d $cflags -c -o $out $in
   depfile = $out.d
   deps = gcc
-  description = CC $out
+  description = 	CC	$out
 
 rule cpp
   command = $cc -MMD -MF $out.d $cflags -E -P -o $out $in
   depfile = $out.d
   deps = gcc
-  description = CPP $out
+  description = 	CPP	$out
 
 rule as
   command = $as $asflags -o $out $in
+  description = 	AS	$out
 
 rule link
   command = $cc $ldflags -o $out $in $ldlibs
+  description = 	LINK	$out
 
 rule ar
   command = rm -f $out && $ar crs $out $in
+  description = 	AR	$out
 
 rule ld
   command = $ld -o $out $in
+  description = 	LD	$out
 
 rule objcopy
   command = $objcopy $objcopyflags $in $out
 
-rule lines
+rule rsp
   command = ln -f $rspfile $out
+  description = 	RSP	$out
   rspfile = $out.tmp
   rspfile_content = $in_newline
 
@@ -58,27 +63,34 @@ rule touch
 
 rule empty
   command = >$out
+  description = 	EMPTY	$out
 
 rule copy
   command = ln -f $in $out
+  description = 	COPY	$out
 
 rule cat
   command = cat $in >$out
 
 rule mergeperms
   command = sort -k 2 -m $in >$out
+  description = 	PERMS	$out
 
 rule gzip
   command = gzip -c -9 -n <$in >$out
+  description = 	GZIP	$out
 
 rule yacc
   command = yacc $yaccflags $in
+  description = 	YACC	$out
 
 rule sed
   command = sed $expr $in >$out
+  description = 	SED	$out
 
 rule awk
   command = awk $expr $in >$out
+  description = 	AWK	$out
 
 rule grep
   command = grep $expr $in >$out
@@ -91,9 +103,11 @@ rule waylandproto
 
 rule githash
   command = sh ./scripts/hash.sh $repo $args $in >$out
+  description = 	HASH	$args
 
 rule gittree
   command = sh ./scripts/tree.sh $repo $repo_tag $in $out
+  description = 	TREE	$out
   restat = 1
 
 rule gitcommit
@@ -107,18 +121,21 @@ rule gitinit
 
 rule fetchcurl
   command = sh ./scripts/fetch-curl.sh $dir && touch $out
+  description = 	FETCH	$dir
   restat = 1
   generator = 1
   pool = console
 
 rule fetchgit
   command = sh ./scripts/fetch-git.sh $dir && touch $out
+  description = 	FETCH	$dir
   restat = 1
   generator = 1
   pool = console
 
 rule fetchlocal
   command = sh ./$dir/fetch.sh $dir && touch $out
+  description = 	FETCH	$dir
   restat = 1
   generator = 1
   pool = console
