@@ -2,7 +2,7 @@ cflags{
 	'-include $dir/config.h',
 	'-I $srcdir/src/utils',
 	'-I $srcdir/src',
-	'-I $buildidr/pkg/bearssl/include',
+	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/libnl/include',
 }
 
