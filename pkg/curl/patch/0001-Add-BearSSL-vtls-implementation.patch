@@ -1,4 +1,4 @@
-From 7500502be5490e60f62ecc8be8e96f1f23405684 Mon Sep 17 00:00:00 2001
+From 70ce89a54fca01be671f5210630ab289fdb648a6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 7 Nov 2019 20:17:18 -0800
 Subject: [PATCH] Add BearSSL vtls implementation
@@ -8,7 +8,7 @@ Upstream: https://github.com/curl/curl/pull/4597
  CMake/FindBearSSL.cmake           |   9 +
  CMakeLists.txt                    |  11 +
  Makefile.am                       |   4 +-
- configure.ac                      |  98 ++++-
+ configure.ac                      |  98 +++-
  docs/FAQ                          |   6 +-
  docs/INSTALL.md                   |   1 +
  docs/LICENSE-MIXING.md            |   5 +
@@ -18,11 +18,11 @@ Upstream: https://github.com/curl/curl/pull/4597
  lib/Makefile.inc                  |   5 +-
  lib/curl_config.h.cmake           |   3 +
  lib/curl_setup.h                  |   3 +-
- lib/vtls/bearssl.c                | 690 ++++++++++++++++++++++++++++++
+ lib/vtls/bearssl.c                | 870 ++++++++++++++++++++++++++++++
  lib/vtls/bearssl.h                |  32 ++
  lib/vtls/vtls.c                   |   4 +-
  lib/vtls/vtls.h                   |   1 +
- 17 files changed, 865 insertions(+), 14 deletions(-)
+ 17 files changed, 1045 insertions(+), 14 deletions(-)
  create mode 100644 CMake/FindBearSSL.cmake
  create mode 100644 lib/vtls/bearssl.c
  create mode 100644 lib/vtls/bearssl.h
@@ -101,7 +101,7 @@ index 3116e1053..b98d5ee71 100644
  VC6_LIBTMPL = projects/Windows/VC6/lib/libcurl.tmpl
  VC6_LIBDSP = projects/Windows/VC6/lib/libcurl.dsp.dist
 diff --git a/configure.ac b/configure.ac
-index cb8f4943e..de081a5df 100755
+index cb8f4943e..11fa05803 100755
 --- a/configure.ac
 +++ b/configure.ac
 @@ -156,7 +156,7 @@ AC_SUBST(PKGADD_VENDOR)
@@ -172,7 +172,7 @@ index cb8f4943e..de081a5df 100755
 +
 +      AC_CHECK_LIB(bearssl, br_ssl_client_init_full,
 +       [
-+       AC_DEFINE(USE_MBEDTLS, 1, [if BearSSL is enabled])
++       AC_DEFINE(USE_BEARSSL, 1, [if BearSSL is enabled])
 +       AC_SUBST(USE_BEARSSL, [1])
 +       BEARSSL_ENABLED=1
 +       USE_BEARSSL="yes"
@@ -360,10 +360,10 @@ index 13af8cdec..b4ba92931 100644
  
 diff --git a/lib/vtls/bearssl.c b/lib/vtls/bearssl.c
 new file mode 100644
-index 000000000..c16d32c9e
+index 000000000..14ba2fa44
 --- /dev/null
 +++ b/lib/vtls/bearssl.c
-@@ -0,0 +1,690 @@
+@@ -0,0 +1,870 @@
 +/***************************************************************************
 + *                                  _   _ ____  _
 + *  Project                     ___| | | |  _ \| |
@@ -394,18 +394,28 @@ index 000000000..c16d32c9e
 +#include "bearssl.h"
 +#include "urldata.h"
 +#include "sendf.h"
++#include "inet_pton.h"
 +#include "vtls.h"
 +#include "connect.h"
 +#include "select.h"
++#include "multiif.h"
 +#include "curl_printf.h"
 +#include "curl_memory.h"
 +
++struct x509_context {
++  const br_x509_class *vtable;
++  br_x509_minimal_context minimal;
++  bool verifyhost;
++  bool verifypeer;
++};
++
 +struct ssl_backend_data {
 +  br_ssl_client_context ctx;
-+  br_x509_minimal_context x509;
++  struct x509_context x509;
 +  unsigned char buf[BR_SSL_BUFSIZE_BIDI];
 +  br_x509_trust_anchor *anchors;
 +  size_t anchors_len;
++  const char *protocols[2];
 +};
 +
 +#define BACKEND connssl->backend
@@ -584,15 +594,86 @@ index 000000000..c16d32c9e
 +  return ca.err;
 +}
 +
++static void x509_start_chain(const br_x509_class **ctx,
++                             const char *server_name)
++{
++  struct x509_context *x509 = (struct x509_context *)ctx;
++
++  if(!x509->verifyhost)
++    server_name = NULL;
++  x509->minimal.vtable->start_chain(&x509->minimal.vtable, server_name);
++}
++
++static void x509_start_cert(const br_x509_class **ctx, uint32_t length)
++{
++  struct x509_context *x509 = (struct x509_context *)ctx;
++
++  x509->minimal.vtable->start_cert(&x509->minimal.vtable, length);
++}
++
++static void x509_append(const br_x509_class **ctx, const unsigned char *buf,
++                        size_t len)
++{
++  struct x509_context *x509 = (struct x509_context *)ctx;
++
++  x509->minimal.vtable->append(&x509->minimal.vtable, buf, len);
++}
++
++static void x509_end_cert(const br_x509_class **ctx)
++{
++  struct x509_context *x509 = (struct x509_context *)ctx;
++
++  x509->minimal.vtable->end_cert(&x509->minimal.vtable);
++}
++
++static unsigned x509_end_chain(const br_x509_class **ctx)
++{
++  struct x509_context *x509 = (struct x509_context *)ctx;
++  unsigned err;
++
++  err = x509->minimal.vtable->end_chain(&x509->minimal.vtable);
++  if(err && !x509->verifypeer) {
++    /* ignore any X.509 errors */
++    err = BR_ERR_OK;
++  }
++
++  return err;
++}
++
++static const br_x509_pkey *x509_get_pkey(const br_x509_class *const *ctx,
++                                         unsigned *usages)
++{
++  struct x509_context *x509 = (struct x509_context *)ctx;
++
++  return x509->minimal.vtable->get_pkey(&x509->minimal.vtable, usages);
++}
++
++static const br_x509_class x509_vtable = {
++  sizeof(struct x509_context),
++  x509_start_chain,
++  x509_start_cert,
++  x509_append,
++  x509_end_cert,
++  x509_end_chain,
++  x509_get_pkey
++};
++
 +static CURLcode bearssl_connect_step1(struct connectdata *conn, int sockindex)
 +{
 +  struct Curl_easy *data = conn->data;
 +  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
 +  const char * const ssl_cafile = SSL_CONN_CONFIG(CAfile);
-+  const char * const hostname = SSL_IS_PROXY() ? conn->http_proxy.host.name :
++  const char *hostname = SSL_IS_PROXY() ? conn->http_proxy.host.name :
 +    conn->host.name;
++  const bool verifypeer = SSL_CONN_CONFIG(verifypeer);
++  const bool verifyhost = SSL_CONN_CONFIG(verifyhost);
 +  CURLcode ret;
 +  unsigned version_min, version_max;
++#ifdef ENABLE_IPV6
++  struct in6_addr addr;
++#else
++  struct in_addr addr;
++#endif
 +
 +  switch(SSL_CONN_CONFIG(version)) {
 +  case CURL_SSLVERSION_SSLv2:
@@ -619,23 +700,35 @@ index 000000000..c16d32c9e
 +    version_max = BR_TLS12;
 +    break;
 +  default:
-+    failf(data, "BearSSL: unknown CURLOP_SSLVERSION");
++    failf(data, "BearSSL: unknown CURLOPT_SSLVERSION");
 +    return CURLE_SSL_CONNECT_ERROR;
 +  }
 +
 +  if(ssl_cafile) {
 +    ret = load_cafile(ssl_cafile, &BACKEND->anchors, &BACKEND->anchors_len);
-+    if(ret != CURLE_OK)
-+      return ret;
++    if(ret != CURLE_OK) {
++      if(verifypeer) {
++        failf(data, "error setting certificate verify locations:\n"
++              "  CAfile: %s\n", ssl_cafile);
++        return ret;
++      }
++      infof(data, "error setting certificate verify locations,"
++            " continuing anyway:\n");
++    }
 +  }
 +
 +  /* initialize SSL context */
-+  br_ssl_client_init_full(&BACKEND->ctx, &BACKEND->x509, BACKEND->anchors,
-+                          BACKEND->anchors_len);
++  br_ssl_client_init_full(&BACKEND->ctx, &BACKEND->x509.minimal,
++                          BACKEND->anchors, BACKEND->anchors_len);
 +  br_ssl_engine_set_versions(&BACKEND->ctx.eng, version_min, version_max);
 +  br_ssl_engine_set_buffer(&BACKEND->ctx.eng, BACKEND->buf,
 +                           sizeof(BACKEND->buf), 1);
-+  br_ssl_client_reset(&BACKEND->ctx, hostname, 0);
++
++  /* initialize X.509 context */
++  BACKEND->x509.vtable = &x509_vtable;
++  BACKEND->x509.verifypeer = verifypeer;
++  BACKEND->x509.verifyhost = verifyhost;
++  br_ssl_engine_set_x509(&BACKEND->ctx.eng, &BACKEND->x509.vtable);
 +
 +  if(SSL_SET_OPTION(primary.sessionid)) {
 +    void *session;
@@ -648,45 +741,103 @@ index 000000000..c16d32c9e
 +    Curl_ssl_sessionid_unlock(conn);
 +  }
 +
++  if(conn->bits.tls_enable_alpn) {
++    int cur = 0;
++
++    /* NOTE: when adding more protocols here, increase the size of the
++     * protocols array in `struct ssl_backend_data`.
++     */
++
++#ifdef USE_NGHTTP2
++    if(data->set.httpversion >= CURL_HTTP_VERSION_2 &&
++       (!SSL_IS_PROXY() || !conn->bits.tunnel_proxy)) {
++      BACKEND->protocols[cur++] = NGHTTP2_PROTO_VERSION_ID;
++      infof(data, "ALPN, offering %s\n", NGHTTP2_PROTO_VERSION_ID);
++    }
++#endif
++
++    BACKEND->protocols[cur++] = ALPN_HTTP_1_1;
++    infof(data, "ALPN, offering %s\n", ALPN_HTTP_1_1);
++
++    br_ssl_engine_set_protocol_names(&BACKEND->ctx.eng,
++                                     BACKEND->protocols, cur);
++  }
++
++  if((1 == Curl_inet_pton(AF_INET, hostname, &addr))
++#ifdef ENABLE_IPV6
++      || (1 == Curl_inet_pton(AF_INET6, hostname, &addr))
++#endif
++     ) {
++    if(verifyhost) {
++      failf(data, "BearSSL: "
++            "host verification of IP address is not supported");
++      return CURLE_PEER_FAILED_VERIFICATION;
++    }
++    hostname = NULL;
++  }
++
++  br_ssl_client_reset(&BACKEND->ctx, hostname, 0);
++
 +  connssl->connecting_state = ssl_connect_2;
 +
 +  return CURLE_OK;
 +}
 +
-+static CURLcode connect_step2(struct connectdata *conn, int sockindex)
++static CURLcode bearssl_connect_step2(struct connectdata *conn, int sockindex)
 +{
++  struct Curl_easy *data = conn->data;
 +  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
 +  curl_socket_t sockfd = conn->sock[sockindex];
 +  unsigned state;
 +  unsigned char *buf;
 +  size_t len;
 +  ssize_t ret;
++  int err;
 +
 +  for(;;) {
 +    state = br_ssl_engine_current_state(&BACKEND->ctx.eng);
 +    if(state & BR_SSL_CLOSED) {
++      err = br_ssl_engine_last_error(&BACKEND->ctx.eng);
++      switch(err) {
++      case BR_ERR_X509_EXPIRED:
++        failf(data, "SSL: X.509 verification: "
++              "certificate is expired or not yet valid");
++        return CURLE_PEER_FAILED_VERIFICATION;
++      case BR_ERR_X509_BAD_SERVER_NAME:
++        failf(data, "SSL: X.509 verification: "
++              "expected server name was not found in the chain");
++        return CURLE_PEER_FAILED_VERIFICATION;
++      case BR_ERR_X509_NOT_TRUSTED:
++        failf(data, "SSL: X.509 verification: "
++              "chain could not be linked to a trust anchor");
++        return CURLE_PEER_FAILED_VERIFICATION;
++      }
++      /* X.509 errors are documented to have the range 32..63 */
++      if(err >= 32 && err < 64)
++        return CURLE_PEER_FAILED_VERIFICATION;
 +      return CURLE_SSL_CONNECT_ERROR;
 +    }
 +    if(state & (BR_SSL_SENDAPP | BR_SSL_RECVAPP)) {
-+      connssl->connecting_state = ssl_connect_done;
++      connssl->connecting_state = ssl_connect_3;
 +      return CURLE_OK;
 +    }
 +    if(state & BR_SSL_SENDREC) {
 +      buf = br_ssl_engine_sendrec_buf(&BACKEND->ctx.eng, &len);
-+      ret = write(sockfd, buf, len);
-+      if(ret == -1 && errno == EAGAIN) {
-+        connssl->connecting_state = ssl_connect_2_writing;
-+        return CURLE_OK;
++      ret = swrite(sockfd, buf, len);
++      if(ret == -1) {
++        if(SOCKERRNO == EAGAIN || SOCKERRNO == EWOULDBLOCK) {
++          connssl->connecting_state = ssl_connect_2_writing;
++          return CURLE_OK;
++        }
++        return CURLE_SEND_ERROR;
 +      }
-+      if(ret <= 0)
-+        return CURLE_WRITE_ERROR;
 +      br_ssl_engine_sendrec_ack(&BACKEND->ctx.eng, ret);
 +    }
 +    else if(state & BR_SSL_RECVREC) {
 +      buf = br_ssl_engine_recvrec_buf(&BACKEND->ctx.eng, &len);
-+      ret = read(sockfd, buf, len);
++      ret = sread(sockfd, buf, len);
 +      if(ret == -1) {
-+        if(errno == EAGAIN) {
++        if(SOCKERRNO == EAGAIN || SOCKERRNO == EWOULDBLOCK) {
 +          connssl->connecting_state = ssl_connect_2_reading;
 +          return CURLE_OK;
 +        }
@@ -699,13 +850,36 @@ index 000000000..c16d32c9e
 +  }
 +}
 +
-+static CURLcode connect_step3(struct connectdata *conn, int sockindex)
++static CURLcode bearssl_connect_step3(struct connectdata *conn, int sockindex)
 +{
 +  struct Curl_easy *data = conn->data;
 +  struct ssl_connect_data *connssl = &conn->ssl[sockindex];
 +  CURLcode ret;
 +
-+  DEBUGASSERT(ssl_connect_3 == conssl->connecting_state);
++  DEBUGASSERT(ssl_connect_3 == connssl->connecting_state);
++
++  if(conn->bits.tls_enable_alpn) {
++    const char *protocol;
++
++    protocol = br_ssl_engine_get_selected_protocol(&BACKEND->ctx.eng);
++    if(protocol) {
++      infof(data, "ALPN, server accepted to use %s\n", protocol);
++
++#ifdef USE_NGHTTP2
++      if(!strcmp(protocol, NGHTTP2_PROTO_VERSION_ID))
++        conn->negnpn = CURL_HTTP_VERSION_2;
++      else
++#endif
++      if(!strcmp(protocol, ALPN_HTTP_1_1))
++        conn->negnpn = CURL_HTTP_VERSION_1_1;
++      else
++        infof(data, "ALPN, unrecognized protocol %s\n", protocol);
++      Curl_multiuse_state(conn, conn->negnpn == CURL_HTTP_VERSION_2 ?
++                          BUNDLE_MULTIPLEX : BUNDLE_NO_MULTIUSE);
++    }
++    else
++      infof(data, "ALPN, server did not agree to a protocol\n");
++  }
 +
 +  if(SSL_SET_OPTION(primary.sessionid)) {
 +    bool incache;
@@ -747,9 +921,12 @@ index 000000000..c16d32c9e
 +    state = br_ssl_engine_current_state(&BACKEND->ctx.eng);
 +    if(state & BR_SSL_SENDREC) {
 +      rec = br_ssl_engine_sendrec_buf(&BACKEND->ctx.eng, &reclen);
-+      ret = write(conn->sock[sockindex], rec, reclen);
++      ret = swrite(conn->sock[sockindex], rec, reclen);
 +      if(ret == -1) {
-+        *err = errno == EAGAIN ? CURLE_AGAIN : CURLE_SEND_ERROR;
++        if(SOCKERRNO == EAGAIN || SOCKERRNO == EWOULDBLOCK)
++          *err = CURLE_AGAIN;
++        else
++          *err = CURLE_SEND_ERROR;
 +        return -1;
 +      }
 +      br_ssl_engine_sendrec_ack(&BACKEND->ctx.eng, ret);
@@ -786,10 +963,13 @@ index 000000000..c16d32c9e
 +    state = br_ssl_engine_current_state(&BACKEND->ctx.eng);
 +    if(state & BR_SSL_RECVREC) {
 +      rec = br_ssl_engine_recvrec_buf(&BACKEND->ctx.eng, &reclen);
-+      errno = 0;
-+      ret = read(conn->sock[sockindex], rec, reclen);
++      ret = sread(conn->sock[sockindex], rec, reclen);
++      if(ret == -1 && (SOCKERRNO == EAGAIN || SOCKERRNO == EWOULDBLOCK)) {
++        *err = CURLE_AGAIN;
++        return -1;
++      }
 +      if(ret <= 0) {
-+        *err = errno == EAGAIN ? CURLE_AGAIN : CURLE_RECV_ERROR;
++        *err = CURLE_RECV_ERROR;
 +        return -1;
 +      }
 +      br_ssl_engine_recvrec_ack(&BACKEND->ctx.eng, ret);
@@ -883,7 +1063,7 @@ index 000000000..c16d32c9e
 +     * before step2 has completed while ensuring that a client using select()
 +     * or epoll() will always have a valid fdset to wait on.
 +     */
-+    ret = connect_step2(conn, sockindex);
++    ret = bearssl_connect_step2(conn, sockindex);
 +    if(ret || (nonblocking &&
 +               (ssl_connect_2 == connssl->connecting_state ||
 +                ssl_connect_2_reading == connssl->connecting_state ||
@@ -892,7 +1072,7 @@ index 000000000..c16d32c9e
 +  }
 +
 +  if(ssl_connect_3 == connssl->connecting_state) {
-+    ret = connect_step3(conn, sockindex);
++    ret = bearssl_connect_step3(conn, sockindex);
 +    if(ret)
 +      return ret;
 +  }
@@ -978,11 +1158,11 @@ index 000000000..c16d32c9e
 +  size_t len, i;
 +  ssize_t ret;
 +
-+  if(connssl->use) {
++  if(connssl->connecting_state == ssl_connect_done) {
 +    br_ssl_engine_close(&BACKEND->ctx.eng);
 +    while(br_ssl_engine_current_state(&BACKEND->ctx.eng) & BR_SSL_SENDREC) {
 +      buf = br_ssl_engine_sendrec_buf(&BACKEND->ctx.eng, &len);
-+      ret = write(conn->sock[sockindex], buf, len);
++      ret = swrite(conn->sock[sockindex], buf, len);
 +      if(ret < 0)
 +        break;
 +      br_ssl_engine_sendrec_ack(&BACKEND->ctx.eng, ret);
