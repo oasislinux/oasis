@@ -1,4 +1,4 @@
-From 2e1668fb21b47ce0805ac39bd31a9e37aee3248f Mon Sep 17 00:00:00 2001
+From 3a6643cacac89dd0c2b6587bb0508b627954c62a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 1 Nov 2019 19:39:45 -0700
 Subject: [PATCH] hid_linux: Use sysfs instead of libudev
@@ -8,7 +8,7 @@ Subject: [PATCH] hid_linux: Use sysfs instead of libudev
  1 file changed, 38 insertions(+), 64 deletions(-)
 
 diff --git a/src/hid_linux.c b/src/hid_linux.c
-index 9d55453..3af396e 100644
+index c7cabc9..4a57e1c 100644
 --- a/src/hid_linux.c
 +++ b/src/hid_linux.c
 @@ -9,8 +9,8 @@
