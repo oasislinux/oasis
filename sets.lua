@@ -62,6 +62,7 @@ return {
 		'msmtp',
 		'nginx',
 		'nsd',
+		'pounce',
 		'sshfs',
 		'transmission',
 	},

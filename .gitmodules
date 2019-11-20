@@ -216,6 +216,9 @@
 	path = pkg/pixman/src
 	url = https://anongit.freedesktop.org/git/pixman.git
 	ignore = all
+[submodule "pkg/pounce/src"]
+	path = pkg/pounce/src
+	url = https://code.causal.agency/june/pounce.git
 [submodule "pkg/qbe/src"]
 	path = pkg/qbe/src
 	url = git://c9x.me/qbe.git
