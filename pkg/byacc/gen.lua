@@ -1,7 +1,7 @@
 cflags{
 	'-Wall', '-pedantic',
 	'-D HAVE_CONFIG_H',
-	'-D YYPATCH=20191103',
+	'-D YYPATCH=20191119',
 	'-I $dir',
 }
 
