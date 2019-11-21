@@ -673,5 +673,4 @@
 #endif
 /* #undef malloc */
 /* #undef realloc */
-/* #undef realpath */
 /* #undef socklen_t */
