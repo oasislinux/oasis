@@ -66,6 +66,7 @@
 #define HAVE_MEMORY_H 1
 #define HAVE_MEMSET 1
 #define HAVE_MMAP 1
+#define HAVE_MMSGHDR 1
 /* #undef HAVE_MUNMAP */
 #define HAVE_NETDB_H 1
 #define HAVE_NETINET_IN_H 1
@@ -151,10 +152,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.2.2"
+#define PACKAGE_STRING "NSD 4.2.3"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.2.2"
+#define PACKAGE_VERSION "4.2.3"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
