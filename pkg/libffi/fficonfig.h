@@ -10,11 +10,10 @@
 /* #undef FFI_NO_STRUCTS */
 #define HAVE_ALLOCA 1
 #define HAVE_ALLOCA_H 1
-#define HAVE_AS_ASCII_PSEUDO_OP 1
 #define HAVE_AS_CFI_PSEUDO_OP 1
 /* #undef HAVE_AS_REGISTER_PSEUDO_OP */
+/* #undef HAVE_AS_S390_ZARCH */
 /* #undef HAVE_AS_SPARC_UA_PCREL */
-#define HAVE_AS_STRING_PSEUDO_OP 1
 #define HAVE_AS_X86_64_UNWIND_SECTION_TYPE 1
 #define HAVE_AS_X86_PCREL 1
 #define HAVE_DLFCN_H 1
@@ -38,15 +37,15 @@
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_UNISTD_H 1
+#define LIBFFI_GNU_SYMBOL_VERSIONING 1
 #define LT_OBJDIR ".libs/"
-/* #undef NO_MINUS_C_MINUS_O */
 #define PACKAGE "libffi"
-#define PACKAGE_BUGREPORT "http://github.com/atgreen/libffi/issues"
+#define PACKAGE_BUGREPORT "http://github.com/libffi/libffi/issues"
 #define PACKAGE_NAME "libffi"
-#define PACKAGE_STRING "libffi 3.2.1"
+#define PACKAGE_STRING "libffi 3.3"
 #define PACKAGE_TARNAME "libffi"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "3.2.1"
+#define PACKAGE_VERSION "3.3"
 #define SIZEOF_DOUBLE 8
 #define SIZEOF_LONG_DOUBLE 16
 #define SIZEOF_SIZE_T 8
@@ -54,7 +53,7 @@
 #define STDC_HEADERS 1
 /* #undef SYMBOL_UNDERSCORE */
 /* #undef USING_PURIFY */
-#define VERSION "3.2.1"
+#define VERSION "3.3"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
@@ -67,7 +66,11 @@
 /* #undef size_t */
 #ifdef HAVE_HIDDEN_VISIBILITY_ATTRIBUTE
 #ifdef LIBFFI_ASM
+#ifdef __APPLE__
+#define FFI_HIDDEN(name) .private_extern name
+#else
 #define FFI_HIDDEN(name) .hidden name
+#endif
 #else
 #define FFI_HIDDEN __attribute__ ((visibility ("hidden")))
 #endif

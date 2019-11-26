@@ -1,4 +1,4 @@
-From 0e209181497d1bd3db35c390fdf05ae58e3d81eb Mon Sep 17 00:00:00 2001
+From 68b09c2e546bb3ea3ad43904e5b499729ee3bee8 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 13 Aug 2019 22:27:49 +0000
 Subject: [PATCH] Use generic padding instead of 128-bit integers
@@ -8,10 +8,10 @@ Subject: [PATCH] Use generic padding instead of 128-bit integers
  1 file changed, 1 insertion(+), 13 deletions(-)
 
 diff --git a/src/x86/ffi64.c b/src/x86/ffi64.c
-index 5a5e043..fb9ab13 100644
+index dec331c..a48c74d 100644
 --- a/src/x86/ffi64.c
 +++ b/src/x86/ffi64.c
-@@ -38,23 +38,11 @@
+@@ -40,23 +40,11 @@
  #define MAX_GPR_REGS 6
  #define MAX_SSE_REGS 8
  
@@ -37,5 +37,5 @@ index 5a5e043..fb9ab13 100644
  
  struct register_args
 -- 
-2.22.0
+2.24.0
 

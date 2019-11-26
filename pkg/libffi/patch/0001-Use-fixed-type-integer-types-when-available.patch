@@ -1,4 +1,4 @@
-From 8aee4bf7573a7d52c0e3a84e03a964222e13f4c2 Mon Sep 17 00:00:00 2001
+From a53acabb2bade1d1934cc3a44f0174689255cf8a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 13 Aug 2019 22:20:39 +0000
 Subject: [PATCH] Use fixed-type integer types when available
@@ -9,10 +9,10 @@ This avoids the use of gcc attributes to select the integer width.
  1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/include/ffi_common.h b/include/ffi_common.h
-index 37f5a9e..56145f4 100644
+index 76b9dd6..cfec340 100644
 --- a/include/ffi_common.h
 +++ b/include/ffi_common.h
-@@ -91,7 +91,17 @@ typedef struct
+@@ -112,7 +112,17 @@ typedef struct
  } extended_cif;
  
  /* Terse sized type definitions.  */
@@ -32,5 +32,5 @@ index 37f5a9e..56145f4 100644
  typedef signed char   SINT8;
  typedef unsigned short UINT16;
 -- 
-2.22.0
+2.24.0
 
