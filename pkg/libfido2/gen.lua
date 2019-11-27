@@ -1,5 +1,7 @@
 cflags{
+	'-std=c99', '-Wall',
 	'-include $dir/config.h',
+	'-D _DEFAULT_SOURCE',
 	'-D _FIDO_INTERNAL',
 	'-I $builddir/pkg/libcbor/include',
 	'-I $builddir/pkg/libressl/include',
