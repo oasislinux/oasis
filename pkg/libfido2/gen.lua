@@ -1,6 +1,6 @@
 cflags{
 	'-std=c99', '-Wall',
-	'-include $dir/config.h',
+	'-include $outdir/config.h',
 	'-D _DEFAULT_SOURCE',
 	'-D _FIDO_INTERNAL',
 	'-I $builddir/pkg/libcbor/include',
@@ -15,9 +15,15 @@ pkg.hdrs = copy('$outdir/include', '$srcdir/src', {
 	'fido/param.h',
 })
 pkg.deps = {
+	'$outdir/config.h',
 	'pkg/libcbor/headers',
 	'pkg/libressl/headers',
 }
+
+build('cat', '$outdir/config.h', {
+	'$builddir/probe/HAVE__THREAD_LOCAL',
+	'$dir/config.h',
+})
 
 lib('libfido2.a', [[
 	src/(

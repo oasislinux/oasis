@@ -1,4 +1,6 @@
-#define TLS _Thread_local
+#ifdef HAVE__THREAD_LOCAL
+# define TLS _Thread_local
+#endif
 #define HAS_DEV_URANDOM
 #define HAVE_ENDIAN_H
 #define HAVE_ERR_H
