@@ -1,0 +1,41 @@
+From 5240c76168f9de8683673892e61dea548eda584e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 26 Nov 2019 19:30:28 -0800
+Subject: [PATCH] remove unused packed.h
+
+---
+ src/packed.h | 22 ----------------------
+ 1 file changed, 22 deletions(-)
+ delete mode 100644 src/packed.h
+
+diff --git a/src/packed.h b/src/packed.h
+deleted file mode 100644
+index 3857c22..0000000
+--- a/src/packed.h
++++ /dev/null
+@@ -1,22 +0,0 @@
+-/*
+- * Copyright (c) 2018 Yubico AB. All rights reserved.
+- * Use of this source code is governed by a BSD-style
+- * license that can be found in the LICENSE file.
+- */
+-
+-#ifndef _PACKED_H
+-#define _PACKED_H
+-
+-#if defined(__GNUC__)
+-#define PACKED_TYPE(type, def)	\
+-	typedef def __attribute__ ((__packed__)) type;
+-#elif defined(_MSC_VER)
+-#define PACKED_TYPE(type, def)	\
+-	__pragma(pack(push, 1))	\
+-	typedef def type;	\
+-	__pragma(pack(pop))
+-#else
+-#error "please provide a way to define packed types on your platform"
+-#endif
+-
+-#endif /* !_PACKED_H */
+-- 
+2.24.0
+

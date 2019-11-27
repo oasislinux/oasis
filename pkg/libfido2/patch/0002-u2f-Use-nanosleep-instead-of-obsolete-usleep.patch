@@ -1,0 +1,78 @@
+From 676714b7c421195115b87b51dfa24d3522703da3 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 26 Nov 2019 13:06:58 -0800
+Subject: [PATCH] u2f: Use nanosleep instead of obsolete usleep
+
+usleep was declared obsolete in POSIX.1-2001 and removed in
+POSIX.1-2008.
+---
+ src/u2f.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
+
+diff --git a/src/u2f.c b/src/u2f.c
+index 3f2d9aa..22c6ac9 100644
+--- a/src/u2f.c
++++ b/src/u2f.c
+@@ -15,15 +15,22 @@
+ #include "fido.h"
+ #include "fido/es256.h"
+ 
+-#if defined(_MSC_VER)
+ static int
+-usleep(unsigned int usec)
++sleep_msec(unsigned int msec)
+ {
+-	Sleep(usec / 1000);
++#if defined(_MSC_VER)
++	Sleep(msec);
+ 
+ 	return (0);
+-}
++#else
++	struct timespec ts = {
++		.tv_sec = msec / 1000,
++		.tv_nsec = (msec % 1000) * 1000000,
++	};
++
++	return nanosleep(&ts, NULL);
+ #endif
++}
+ 
+ static int
+ sig_get(fido_blob_t *sig, const unsigned char **buf, size_t *len)
+@@ -161,8 +168,8 @@ send_dummy_register(fido_dev_t *dev, int ms)
+ 			r = FIDO_ERR_RX;
+ 			goto fail;
+ 		}
+-		if (usleep((ms == -1 ? 100 : ms) * 1000) < 0) {
+-			fido_log_debug("%s: usleep", __func__);
++		if (sleep_msec(ms == -1 ? 100 : ms) < 0) {
++			fido_log_debug("%s: sleep_msec", __func__);
+ 			r = FIDO_ERR_RX;
+ 			goto fail;
+ 		}
+@@ -338,8 +345,8 @@ do_auth(fido_dev_t *dev, const fido_blob_t *cdh, const char *rp_id,
+ 			r = FIDO_ERR_RX;
+ 			goto fail;
+ 		}
+-		if (usleep((ms == -1 ? 100 : ms) * 1000) < 0) {
+-			fido_log_debug("%s: usleep", __func__);
++		if (sleep_msec(ms == -1 ? 100 : ms) < 0) {
++			fido_log_debug("%s: sleep_msec", __func__);
+ 			r = FIDO_ERR_RX;
+ 			goto fail;
+ 		}
+@@ -646,8 +653,8 @@ u2f_register(fido_dev_t *dev, fido_cred_t *cred, int ms)
+ 			r = FIDO_ERR_RX;
+ 			goto fail;
+ 		}
+-		if (usleep((ms == -1 ? 100 : ms) * 1000) < 0) {
+-			fido_log_debug("%s: usleep", __func__);
++		if (sleep_msec(ms == -1 ? 100 : ms) < 0) {
++			fido_log_debug("%s: sleep_msec", __func__);
+ 			r = FIDO_ERR_RX;
+ 			goto fail;
+ 		}
+-- 
+2.24.0
+
