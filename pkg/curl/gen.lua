@@ -1,4 +1,6 @@
 cflags{
+	'-std=c99', '-Wall', '-Wpedantic',
+	'-D _DEFAULT_SOURCE',
 	'-D HAVE_CONFIG_H',
 	'-D BUILDING_LIBCURL',
 	'-D CURL_STATICLIB',
