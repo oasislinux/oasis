@@ -1,9 +1,10 @@
-From 70ce89a54fca01be671f5210630ab289fdb648a6 Mon Sep 17 00:00:00 2001
+From cb6d971e3a913c93edcdebbfdf7840c200175c31 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 7 Nov 2019 20:17:18 -0800
-Subject: [PATCH] Add BearSSL vtls implementation
-Upstream: https://github.com/curl/curl/pull/4597
+Subject: [PATCH] TLS: add BearSSL vtls implementation
+Upstream: 9b879160df01e7ddbb4770904391d3b74114302b
 
+Closes #4597
 ---
  CMake/FindBearSSL.cmake           |   9 +
  CMakeLists.txt                    |  11 +
@@ -18,11 +19,11 @@ Upstream: https://github.com/curl/curl/pull/4597
  lib/Makefile.inc                  |   5 +-
  lib/curl_config.h.cmake           |   3 +
  lib/curl_setup.h                  |   3 +-
- lib/vtls/bearssl.c                | 870 ++++++++++++++++++++++++++++++
+ lib/vtls/bearssl.c                | 874 ++++++++++++++++++++++++++++++
  lib/vtls/bearssl.h                |  32 ++
  lib/vtls/vtls.c                   |   4 +-
  lib/vtls/vtls.h                   |   1 +
- 17 files changed, 1045 insertions(+), 14 deletions(-)
+ 17 files changed, 1049 insertions(+), 14 deletions(-)
  create mode 100644 CMake/FindBearSSL.cmake
  create mode 100644 lib/vtls/bearssl.c
  create mode 100644 lib/vtls/bearssl.h
@@ -360,10 +361,10 @@ index 13af8cdec..b4ba92931 100644
  
 diff --git a/lib/vtls/bearssl.c b/lib/vtls/bearssl.c
 new file mode 100644
-index 000000000..14ba2fa44
+index 000000000..51694c48d
 --- /dev/null
 +++ b/lib/vtls/bearssl.c
-@@ -0,0 +1,870 @@
+@@ -0,0 +1,874 @@
 +/***************************************************************************
 + *                                  _   _ ____  _
 + *  Project                     ___| | | |  _ \| |
@@ -416,6 +417,8 @@ index 000000000..14ba2fa44
 +  br_x509_trust_anchor *anchors;
 +  size_t anchors_len;
 +  const char *protocols[2];
++  /* SSL client context is active */
++  bool active;
 +};
 +
 +#define BACKEND connssl->backend
@@ -776,7 +779,9 @@ index 000000000..14ba2fa44
 +    hostname = NULL;
 +  }
 +
-+  br_ssl_client_reset(&BACKEND->ctx, hostname, 0);
++  if(!br_ssl_client_reset(&BACKEND->ctx, hostname, 0))
++    return CURLE_FAILED_INIT;
++  BACKEND->active = TRUE;
 +
 +  connssl->connecting_state = ssl_connect_2;
 +
@@ -1158,7 +1163,7 @@ index 000000000..14ba2fa44
 +  size_t len, i;
 +  ssize_t ret;
 +
-+  if(connssl->connecting_state == ssl_connect_done) {
++  if(BACKEND->active) {
 +    br_ssl_engine_close(&BACKEND->ctx.eng);
 +    while(br_ssl_engine_current_state(&BACKEND->ctx.eng) & BR_SSL_SENDREC) {
 +      buf = br_ssl_engine_sendrec_buf(&BACKEND->ctx.eng, &len);
@@ -1167,10 +1172,10 @@ index 000000000..14ba2fa44
 +        break;
 +      br_ssl_engine_sendrec_ack(&BACKEND->ctx.eng, ret);
 +    }
-+    for(i = 0; i < BACKEND->anchors_len; ++i)
-+      free(BACKEND->anchors[i].dn.data);
-+    free(BACKEND->anchors);
 +  }
++  for(i = 0; i < BACKEND->anchors_len; ++i)
++    free(BACKEND->anchors[i].dn.data);
++  free(BACKEND->anchors);
 +}
 +
 +static void Curl_bearssl_session_free(void *ptr)
