@@ -22,7 +22,6 @@ youtube_dl/extractor/abcnews.py
 youtube_dl/extractor/abcotvs.py
 youtube_dl/extractor/academicearth.py
 youtube_dl/extractor/acast.py
-youtube_dl/extractor/addanime.py
 youtube_dl/extractor/adn.py
 youtube_dl/extractor/adobeconnect.py
 youtube_dl/extractor/adobepass.py
@@ -130,7 +129,6 @@ youtube_dl/extractor/clyp.py
 youtube_dl/extractor/cmt.py
 youtube_dl/extractor/cnbc.py
 youtube_dl/extractor/cnn.py
-youtube_dl/extractor/comcarcoff.py
 youtube_dl/extractor/comedycentral.py
 youtube_dl/extractor/common.py
 youtube_dl/extractor/commonmistakes.py
@@ -151,7 +149,6 @@ youtube_dl/extractor/curiositystream.py
 youtube_dl/extractor/cwtv.py
 youtube_dl/extractor/dailymail.py
 youtube_dl/extractor/dailymotion.py
-youtube_dl/extractor/daisuki.py
 youtube_dl/extractor/daum.py
 youtube_dl/extractor/dbtv.py
 youtube_dl/extractor/dctp.py
@@ -314,6 +311,7 @@ youtube_dl/extractor/keezmovies.py
 youtube_dl/extractor/ketnet.py
 youtube_dl/extractor/khanacademy.py
 youtube_dl/extractor/kickstarter.py
+youtube_dl/extractor/kinja.py
 youtube_dl/extractor/kinopoisk.py
 youtube_dl/extractor/konserthusetplay.py
 youtube_dl/extractor/kontrtube.py
@@ -370,7 +368,6 @@ youtube_dl/extractor/mgoon.py
 youtube_dl/extractor/mgtv.py
 youtube_dl/extractor/miaopai.py
 youtube_dl/extractor/microsoftvirtualacademy.py
-youtube_dl/extractor/minhateca.py
 youtube_dl/extractor/ministrygrid.py
 youtube_dl/extractor/minoto.py
 youtube_dl/extractor/miomio.py
@@ -514,7 +511,6 @@ youtube_dl/extractor/rentv.py
 youtube_dl/extractor/restudy.py
 youtube_dl/extractor/reuters.py
 youtube_dl/extractor/reverbnation.py
-youtube_dl/extractor/revision3.py
 youtube_dl/extractor/rice.py
 youtube_dl/extractor/rmcdecouverte.py
 youtube_dl/extractor/ro220.py
