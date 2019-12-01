@@ -28,27 +28,6 @@ lib('libbsd.a', [[
 ]])
 file('lib/libbsd.a', '644', '$outdir/libbsd.a')
 
--- acme-client
-sub('acme-client.ninja', function()
-	cflags{
-		'-D _GNU_SOURCE',  -- for memmem
-		'-I $builddir/pkg/libressl/include',
-	}
-
-	yacc('usr.sbin/acme-client/parse', 'usr.sbin/acme-client/parse.y')
-	cc('$outdir/usr.sbin/acme-client/parse.tab.c', nil, {cflags='$cflags -I $srcdir/usr.sbin/acme-client'})
-	exe('acme-client', [[
-		usr.sbin/acme-client/(
-			acctproc.c base64.c certproc.c chngproc.c dbg.c dnsproc.c
-			fileproc.c http.c jsmn.c json.c keyproc.c main.c netproc.c
-			parse.tab.c.o revokeproc.c key.c util.c
-		)
-		$builddir/pkg/libressl/libtls.a.d
-	]], {'pkg/libressl/headers'})
-	file('bin/acme-client', '755', '$outdir/acme-client')
-	man{'usr.sbin/acme-client/acme-client.1', 'usr.sbin/acme-client/acme-client.conf.5'}
-end)
-
 -- diff
 exe('diff', 'usr.bin/diff/(diff.c diffdir.c diffreg.c xmalloc.c) libbsd.a')
 file('bin/diff', '755', '$outdir/diff')

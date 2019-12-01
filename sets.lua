@@ -57,6 +57,7 @@ return {
 		'youtube-dl',
 	},
 	net={
+		'acme-client',
 		'hostap',
 		'ii',
 		'msmtp',
