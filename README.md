@@ -76,5 +76,10 @@ up from the following:
 * util-linux (fdisk, losetup)
 * [xz](http://tukaani.org/xz/)
 
+## Contact
+
+Feel free to contact me with any questions over email (address in commit
+log), or IRC at #oasislinux on Freenode.
+
 [wiki]: https://github.com/michaelforney/oasis/wiki
 [packages]: https://github.com/michaelforney/oasis/tree/master/pkg
