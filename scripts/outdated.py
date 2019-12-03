@@ -40,8 +40,11 @@ for line in p.stdout:
 	if fields[1] != 'tree' or fields[3] in skip:
 		continue
 	name = fields[3]
-	with open('pkg/{}/ver'.format(name), 'r') as f:
-		oldver = f.read().rsplit(maxsplit=1)[0]
+	try:
+		with open('pkg/{}/ver'.format(name), 'r') as f:
+			oldver = f.read().rsplit(maxsplit=1)[0]
+	except FileNotFoundError:
+		continue
 	proj = names.get(name, name)
 	with urllib.request.urlopen('https://repology.org/api/v1/project/{}'.format(proj)) as response:
 		pkgs = json.loads(response.read())
