@@ -353,8 +353,4 @@ exe('openssl', [[apps/openssl/(
 file('bin/openssl', '755', '$outdir/openssl')
 man{'apps/openssl/openssl.1'}
 
-exe('nc', [[apps/nc/(netcat.c atomicio.c socks.c) libtls.a.d]])
-file('bin/nc', '755', '$outdir/nc')
-man{'apps/nc/nc.1'}
-
 fetch 'curl'

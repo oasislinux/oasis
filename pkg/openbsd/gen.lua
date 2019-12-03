@@ -45,6 +45,18 @@ man{'usr.bin/doas/doas.1', 'usr.bin/doas/doas.conf.5'}
 file('bin/fmt', '755', exe('fmt', {'usr.bin/fmt/fmt.c', 'libbsd.a'}))
 man{'usr.bin/fmt/fmt.1'}
 
+-- nc
+sub('nc.ninja', function()
+	cflags{'-I $builddir/pkg/libressl/include'}
+	exe('nc', [[
+		usr.bin/nc/(netcat.c atomicio.c socks.c)
+		$builddir/pkg/libressl/libtls.a.d
+		libbsd.a
+	]], {'pkg/libressl/headers'})
+	file('bin/nc', '755', '$outdir/nc')
+	man{'usr.bin/nc/nc.1'}
+end)
+
 -- m4
 yacc('usr.bin/m4/parser', 'usr.bin/m4/parser.y')
 cc('usr.bin/m4/tokenizer.c', {'$outdir/usr.bin/m4/parser.tab.h'}, {cflags='$cflags -I $outdir/usr.bin/m4'})
