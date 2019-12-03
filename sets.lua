@@ -10,7 +10,6 @@ return {
 		'git',
 		'iproute2',
 		'kbd',
-		'libressl',
 		'loksh',
 		'lua',
 		'mandoc',
