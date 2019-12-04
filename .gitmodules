@@ -130,6 +130,9 @@
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng
+[submodule "pkg/libtls-bearssl/src"]
+	path = pkg/libtls-bearssl/src
+	url = https://git.sr.ht/~mcf/libtls-bearssl
 [submodule "pkg/libutp/src"]
 	path = pkg/libutp/src
 	url = https://github.com/oasislinux/libutp.git
