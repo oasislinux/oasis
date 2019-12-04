@@ -47,12 +47,12 @@ man{'usr.bin/fmt/fmt.1'}
 
 -- nc
 sub('nc.ninja', function()
-	cflags{'-I $builddir/pkg/libressl/include'}
+	cflags{'-I $builddir/pkg/libtls-bearssl/include'}
 	exe('nc', [[
 		usr.bin/nc/(netcat.c atomicio.c socks.c)
-		$builddir/pkg/libressl/libtls.a.d
+		$builddir/pkg/libtls-bearssl/libtls.a.d
 		libbsd.a
-	]], {'pkg/libressl/headers'})
+	]], {'pkg/libtls-bearssl/headers'})
 	file('bin/nc', '755', '$outdir/nc')
 	man{'usr.bin/nc/nc.1'}
 end)
