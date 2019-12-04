@@ -4,7 +4,11 @@ cflags{
 	'-I $srcdir/src',
 	'-I $srcdir/include',
 	'-I pkg/openbsd/include',
-	'-I $builddir/pkg/libressl/include',
+	'-I $builddir/pkg/libtls-bearssl/include',
+}
+
+pkg.deps = {
+	'pkg/libtls-bearssl/headers',
 }
 
 yacc('parse', '$srcdir/src/parse.y')
@@ -34,11 +38,9 @@ exe('ntpd', [[
 		setproctitle.c
 	)
 	$outdir/parse.tab.c
-	$builddir/pkg/(
-		libressl/(libcrypto.a.d libtls.a.d)
-		openbsd/libbsd.a.d
-	)
-]], {'pkg/libressl/headers'})
+	$builddir/pkg/libtls-bearssl/libtls.a.d
+	$builddir/pkg/openbsd/libbsd.a
+]])
 file('bin/ntpd', '755', '$outdir/ntpd')
 sym('bin/ntpctl', 'ntpd')
 man{'src/ntpd.conf.5', 'src/ntpd.8', 'src/ntpctl.8'}
