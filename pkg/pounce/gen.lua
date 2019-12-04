@@ -1,7 +1,7 @@
 cflags{
 	'-std=c11', '-Wall', '-Wextra', '-Wpedantic',
 	'-D _GNU_SOURCE',
-	'-I $builddir/pkg/libressl/include',
+	'-I $builddir/pkg/libtls-bearssl/include',
 }
 
 exe('pounce', {
@@ -12,7 +12,7 @@ exe('pounce', {
 	'ring.c',
 	'server.c',
 	'state.c',
-	'$builddir/pkg/libressl/libtls.a.d',
+	'$builddir/pkg/libtls-bearssl/libtls.a.d',
 })
 file('bin/pounce', '755', '$outdir/pounce')
 man{'pounce.1'}
