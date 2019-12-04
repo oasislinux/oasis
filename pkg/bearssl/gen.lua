@@ -47,11 +47,15 @@ lib('libbearssl.a', [[src/(
 	ec/ec_c25519_i31.c
 	ec/ec_c25519_m15.c
 	ec/ec_c25519_m31.c
+	ec/ec_c25519_m62.c
+	ec/ec_c25519_m64.c
 	ec/ec_curve25519.c
 	ec/ec_default.c
 	ec/ec_keygen.c
 	ec/ec_p256_m15.c
 	ec/ec_p256_m31.c
+	ec/ec_p256_m62.c
+	ec/ec_p256_m64.c
 	ec/ec_prime_i15.c
 	ec/ec_prime_i31.c
 	ec/ec_pubkey.c
@@ -145,6 +149,7 @@ lib('libbearssl.a', [[src/(
 	int/i32_tmont.c
 	int/i62_modpow2.c
 	kdf/hkdf.c
+	kdf/shake.c
 	mac/hmac.c
 	mac/hmac_ct.c
 	rand/aesctr_drbg.c
@@ -158,6 +163,8 @@ lib('libbearssl.a', [[src/(
 	rsa/rsa_default_pkcs1_vrfy.c
 	rsa/rsa_default_priv.c
 	rsa/rsa_default_privexp.c
+	rsa/rsa_default_pss_sign.c
+	rsa/rsa_default_pss_vrfy.c
 	rsa/rsa_default_pub.c
 	rsa/rsa_default_pubexp.c
 	rsa/rsa_i15_keygen.c
@@ -168,6 +175,8 @@ lib('libbearssl.a', [[src/(
 	rsa/rsa_i15_pkcs1_vrfy.c
 	rsa/rsa_i15_priv.c
 	rsa/rsa_i15_privexp.c
+	rsa/rsa_i15_pss_sign.c
+	rsa/rsa_i15_pss_vrfy.c
 	rsa/rsa_i15_pub.c
 	rsa/rsa_i15_pubexp.c
 	rsa/rsa_i31_keygen.c
@@ -179,6 +188,8 @@ lib('libbearssl.a', [[src/(
 	rsa/rsa_i31_pkcs1_vrfy.c
 	rsa/rsa_i31_priv.c
 	rsa/rsa_i31_privexp.c
+	rsa/rsa_i31_pss_sign.c
+	rsa/rsa_i31_pss_vrfy.c
 	rsa/rsa_i31_pub.c
 	rsa/rsa_i31_pubexp.c
 	rsa/rsa_i32_oaep_decrypt.c
@@ -186,6 +197,8 @@ lib('libbearssl.a', [[src/(
 	rsa/rsa_i32_pkcs1_sign.c
 	rsa/rsa_i32_pkcs1_vrfy.c
 	rsa/rsa_i32_priv.c
+	rsa/rsa_i32_pss_sign.c
+	rsa/rsa_i32_pss_vrfy.c
 	rsa/rsa_i32_pub.c
 	rsa/rsa_i62_keygen.c
 	rsa/rsa_i62_oaep_decrypt.c
@@ -193,11 +206,15 @@ lib('libbearssl.a', [[src/(
 	rsa/rsa_i62_pkcs1_sign.c
 	rsa/rsa_i62_pkcs1_vrfy.c
 	rsa/rsa_i62_priv.c
+	rsa/rsa_i62_pss_sign.c
+	rsa/rsa_i62_pss_vrfy.c
 	rsa/rsa_i62_pub.c
 	rsa/rsa_oaep_pad.c
 	rsa/rsa_oaep_unpad.c
 	rsa/rsa_pkcs1_sig_pad.c
 	rsa/rsa_pkcs1_sig_unpad.c
+	rsa/rsa_pss_sig_pad.c
+	rsa/rsa_pss_sig_unpad.c
 	rsa/rsa_ssl_decrypt.c
 	ssl/prf.c
 	ssl/prf_md5sha1.c
