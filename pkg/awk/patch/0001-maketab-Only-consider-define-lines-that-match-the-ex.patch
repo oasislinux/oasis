@@ -1,4 +1,4 @@
-From 0833af4476b889fa0696ddfddfc79d7de0b8d3ee Mon Sep 17 00:00:00 2001
+From 16228e926b5718cb0012371e8351156ef1da75c9 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 10 Dec 2016 19:57:39 -0800
 Subject: [PATCH] maketab: Only consider #define lines that match the expected
@@ -9,18 +9,18 @@ Subject: [PATCH] maketab: Only consider #define lines that match the expected
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/maketab.c b/maketab.c
-index dbe3d24..0076daf 100644
+index c3ce5c6..9981422 100644
 --- a/maketab.c
 +++ b/maketab.c
-@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
- 	i = 0;
+@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
  	while (fgets(buf, sizeof buf, fp) != NULL) {
- 		n = sscanf(buf, "%1c %s %s %d", &c, def, name, &tok);
+ 		// 199 is sizeof(def) - 1
+ 		n = sscanf(buf, "%1c %199s %199s %d", &c, def, name, &tok);
 -		if (c != '#' || (n != 4 && strcmp(def,"define") != 0))	/* not a valid #define */
 +		if (c != '#' || n != 4 || strcmp(def,"define") != 0)	/* not a valid #define */
  			continue;
  		if (strcmp(name, "YYSTYPE_IS_DECLARED") == 0)
  			continue;
 -- 
-2.20.1
+2.24.0
 
