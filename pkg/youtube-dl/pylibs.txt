@@ -582,7 +582,6 @@ youtube_dl/extractor/stanfordoc.py
 youtube_dl/extractor/steam.py
 youtube_dl/extractor/stitcher.py
 youtube_dl/extractor/streamable.py
-youtube_dl/extractor/streamango.py
 youtube_dl/extractor/streamcloud.py
 youtube_dl/extractor/streamcz.py
 youtube_dl/extractor/streetvoice.py
