@@ -1,0 +1,41 @@
+From 8bb168cfe8640134c5c654fdda91632c6f131aa9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 21 Aug 2018 15:52:34 -0700
+Subject: [PATCH] Use timingsafe_memcmp if available
+
+---
+ configure.ac | 2 +-
+ tsig.c       | 4 +++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 806d8fba..b8e498f3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -628,7 +628,7 @@ AC_CHECK_SIZEOF(void*)
+ AC_CHECK_SIZEOF(off_t)
+ AC_CHECK_FUNCS([arc4random arc4random_uniform])
+ AC_SEARCH_LIBS([setusercontext],[util],[AC_CHECK_HEADERS([login_cap.h])])
+-AC_CHECK_FUNCS([tzset alarm chroot dup2 endpwent gethostname memset memcpy pwrite socket strcasecmp strchr strdup strerror strncasecmp strtol writev getaddrinfo getnameinfo freeaddrinfo gai_strerror sigaction sigprocmask strptime strftime localtime_r setusercontext glob initgroups setresuid setreuid setresgid setregid getpwnam mmap ppoll clock_gettime accept4])
++AC_CHECK_FUNCS([tzset alarm chroot dup2 endpwent gethostname memset memcpy pwrite socket strcasecmp strchr strdup strerror strncasecmp strtol writev getaddrinfo getnameinfo freeaddrinfo gai_strerror sigaction sigprocmask strptime strftime localtime_r setusercontext glob initgroups setresuid setreuid setresgid setregid getpwnam mmap ppoll clock_gettime accept4 timingsafe_memcmp])
+ 
+ AC_CHECK_TYPE([struct mmsghdr], AC_DEFINE(HAVE_MMSGHDR, 1, [If sys/socket.h has a struct mmsghdr.]), [], [
+ AC_INCLUDES_DEFAULT
+diff --git a/tsig.c b/tsig.c
+index 91ca99b9..8c63ecfa 100644
+--- a/tsig.c
++++ b/tsig.c
+@@ -19,7 +19,9 @@
+ #include "query.h"
+ #include "rbtree.h"
+ 
+-#if !defined(HAVE_SSL) || !defined(HAVE_CRYPTO_MEMCMP)
++#if defined(HAVE_TIMINGSAFE_MEMCMP)
++#define CRYPTO_memcmp timingsafe_memcmp
++#elif !defined(HAVE_SSL) || !defined(HAVE_CRYPTO_MEMCMP)
+ /* we need fixed time compare */
+ #define CRYPTO_memcmp memcmp_fixedtime
+ int memcmp_fixedtime(const void *s1, const void *s2, size_t n)
+-- 
+2.24.0
+

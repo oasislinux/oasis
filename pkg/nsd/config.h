@@ -22,10 +22,12 @@
 #define HAVE_CHOWN 1
 #define HAVE_CHROOT 1
 #define HAVE_CLOCK_GETTIME 1
+/* #undef HAVE_CRYPTO_MEMCMP */
 #define HAVE_CTIME_R_PROTO 1
 /* #undef HAVE_DECL_SSL_CTX_SET_ECDH_AUTO */
 /* #undef HAVE_DECL_SSL_CTX_SET_TMP_ECDH */
 #define HAVE_DUP2 1
+/* #undef HAVE_EC_KEY_NEW_BY_CURVE_NAME */
 #define HAVE_ENDIAN_H 1
 #define HAVE_ENDPWENT 1
 /* #undef HAVE_ERR_LOAD_CRYPTO_STRINGS */
@@ -128,6 +130,7 @@
 #define HAVE_SYS_WAIT_H 1
 /* #undef HAVE_TCPD_H */
 #define HAVE_TIME_H 1
+#define HAVE_TIMINGSAFE_MEMCMP 1
 #define HAVE_TZSET 1
 #define HAVE_UNISTD_H 1
 /* #undef HAVE_VA_LIST_DOUBLE_DEF */
@@ -152,10 +155,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.2.3"
+#define PACKAGE_STRING "NSD 4.2.4"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.2.3"
+#define PACKAGE_VERSION "4.2.4"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
