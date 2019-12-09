@@ -1,4 +1,4 @@
-From 4d573929d68366371d23f0ed191cb6ad6207051b Mon Sep 17 00:00:00 2001
+From 9683c1affbd5b5a59e995bbb130cbc7b63699231 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,10 +20,10 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/bpf.c b/bpf.c
-index e335bb74..8e3b2f3b 100644
+index 9b6fb488..92c38a16 100644
 --- a/bpf.c
 +++ b/bpf.c
-@@ -42,7 +42,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
+@@ -43,7 +43,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
  #define BEGIN_BPF_CMD_DECODER(bpf_cmd)					\
  	static DECL_BPF_CMD_DECODER(decode_ ## bpf_cmd)			\
  	{								\
@@ -32,7 +32,7 @@ index e335bb74..8e3b2f3b 100644
  		const size_t attr_size = bpf_cmd ## _struct_size;	\
  		const unsigned int len = MIN(size, attr_size);		\
  		memcpy(&attr, data, len);				\
-@@ -149,7 +149,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
+@@ -150,7 +150,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
  	if (abbrev(tcp)) {
  		printaddr(addr);
  	} else {
@@ -81,10 +81,10 @@ index 3cb54bb3..bc03dae8 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/strace.c b/strace.c
-index b52a3db3..2dd50005 100644
+index 86ca3c35..810f5f4e 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -2664,7 +2664,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -2707,7 +2707,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -147,10 +147,10 @@ index d7ed269a..eed3e996 100644
  	const struct itimerval itv = {
  		.it_interval.tv_usec = 222222,
 diff --git a/tests/nanosleep.c b/tests/nanosleep.c
-index c7ebf496..26c2bca7 100644
+index d55b395c..e41b6b1f 100644
 --- a/tests/nanosleep.c
 +++ b/tests/nanosleep.c
-@@ -34,7 +34,7 @@ main(void)
+@@ -53,7 +53,7 @@ main(void)
  		.ts = { .tv_sec = 0xc0de2, .tv_nsec = 0xc0de3 },
  		.pad = { 0xdeadbeef, 0xbadc0ded }
  	};
@@ -160,10 +160,10 @@ index c7ebf496..26c2bca7 100644
  	const struct itimerval itv = { .it_value.tv_usec = 111111 };
  
 diff --git a/tests/restart_syscall.c b/tests/restart_syscall.c
-index 9a8f7e3a..10ea7d6f 100644
+index e8f27f1d..5a6922bb 100644
 --- a/tests/restart_syscall.c
 +++ b/tests/restart_syscall.c
-@@ -24,7 +24,7 @@ main(void)
+@@ -27,7 +27,7 @@ main(void)
  	 */
  	error_msg_and_skip("x32 is broken");
  #else
@@ -171,7 +171,7 @@ index 9a8f7e3a..10ea7d6f 100644
 +	const sigset_t set = {0};
  	const struct sigaction act = { .sa_handler = SIG_IGN };
  	const struct itimerval itv = { .it_value.tv_usec = 111111 };
- 	struct timespec req = { .tv_nsec = 222222222 }, rem;
+ 	struct timespec req = { .tv_nsec = 222222222 };
 diff --git a/tests/setrlimit.c b/tests/setrlimit.c
 index 886cf65a..89ed1077 100644
 --- a/tests/setrlimit.c
@@ -225,5 +225,5 @@ index 8c87b7c4..c37736b7 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.23.0
+2.24.0
 
