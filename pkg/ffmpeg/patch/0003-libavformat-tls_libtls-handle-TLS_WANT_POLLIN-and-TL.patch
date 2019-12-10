@@ -1,0 +1,43 @@
+From 1ea65b2fd8798766d6965378b0484ecf1cf72e6a Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 9 Dec 2019 16:36:57 -0800
+Subject: [PATCH] libavformat/tls_libtls: handle TLS_WANT_POLLIN and
+ TLS_WANT_POLLOUT return values
+
+These values may be returned by libtls (even in the case of blocking
+file descriptors) when we need to read/write more TLS record data in
+order to read/write application data.
+
+The URLProtocol documentation says AVERROR(EAGAIN) should be returned
+in these cases.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ libavformat/tls_libtls.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libavformat/tls_libtls.c b/libavformat/tls_libtls.c
+index ba83b56ffe..286454e452 100644
+--- a/libavformat/tls_libtls.c
++++ b/libavformat/tls_libtls.c
+@@ -159,6 +159,8 @@ static int ff_tls_read(URLContext *h, uint8_t *buf, int size)
+         return ret;
+     else if (ret == 0)
+         return AVERROR_EOF;
++    else if (ret == TLS_WANT_POLLIN || ret == TLS_WANT_POLLOUT)
++        return AVERROR(EAGAIN);
+     av_log(h, AV_LOG_ERROR, "%s\n", tls_error(p->ctx));
+     return AVERROR(EIO);
+ }
+@@ -172,6 +174,8 @@ static int ff_tls_write(URLContext *h, const uint8_t *buf, int size)
+         return ret;
+     else if (ret == 0)
+         return AVERROR_EOF;
++    else if (ret == TLS_WANT_POLLIN || ret == TLS_WANT_POLLOUT)
++        return AVERROR(EAGAIN);
+     av_log(h, AV_LOG_ERROR, "%s\n", tls_error(p->ctx));
+     return AVERROR(EIO);
+ }
+-- 
+2.24.0
+
