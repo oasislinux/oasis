@@ -8,7 +8,7 @@ cflags{
 	'-I $outdir/internal',
 	'-I $srcdir',
 	'-I $builddir/pkg/alsa-lib/include',
-	'-I $builddir/pkg/libressl/include',
+	'-I $builddir/pkg/libtls-bearssl/include',
 	'-I $builddir/pkg/zlib/include',
 }
 nasmflags{
@@ -32,7 +32,7 @@ pkg.deps = {
 	'$outdir/config.asm',
 	'$dir/headers',
 	'pkg/alsa-lib/headers',
-	'pkg/libressl/headers',
+	'pkg/libtls-bearssl/headers',
 	'pkg/zlib/headers',
 }
 
@@ -202,7 +202,7 @@ lib('libavformat.a', {
 	sources.libavformat,
 	'libavcodec.a.d',
 	'libavutil.a',
-	'$builddir/pkg/libressl/libssl.a.d',
+	'$builddir/pkg/libtls-bearssl/libtls.a.d',
 	'$builddir/pkg/zlib/libz.a',
 })
 
