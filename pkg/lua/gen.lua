@@ -1,6 +1,6 @@
 cflags{
-	'-Wall',
-	'-Wextra',
+	'-std=c99', '-Wall', '-Wextra', '-Wpedantic', '-Wno-implicit-fallthrough',
+	'-D _DEFAULT_SOURCE',
 	'-D LUA_USE_POSIX',
 }
 
