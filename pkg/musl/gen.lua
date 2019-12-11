@@ -7,8 +7,32 @@ cflags{
 	'-I $outdir',
 	'-I $srcdir/src/include',
 	'-I $srcdir/src/internal',
-	'-I $srcdir/include',
 	'-I $outdir/include',
+}
+
+local basefiles = load('base.lua')
+local archfiles = load(arch..'.lua')
+
+local bits = {}
+for _, hdr in ipairs(archfiles.bits) do
+	archfiles.bits[hdr] = true
+end
+for _, hdr in ipairs(basefiles.bits) do
+	if not archfiles.bits[hdr] then
+		table.insert(bits, hdr)
+	end
+end
+
+pkg.hdrs = {
+	copy('$outdir/include', '$srcdir/include', basefiles.hdrs),
+	copy('$outdir/include/bits', '$srcdir/arch/'..arch..'/bits', archfiles.bits),
+	copy('$outdir/include/bits', '$srcdir/arch/generic/bits', bits),
+	'$outdir/include/bits/alltypes.h',
+	'$outdir/include/bits/syscall.h',
+}
+pkg.deps = {
+	'$dir/headers',
+	'$outdir/version.h',
 }
 
 build('sed', '$outdir/include/bits/alltypes.h', {
@@ -23,15 +47,6 @@ build('sed', '$outdir/include/bits/syscall.h', {'$srcdir/arch/'..arch..'/bits/sy
 
 build('awk', '$outdir/version.h', '$dir/ver', {expr=[['{printf "#define VERSION \"%s\"\n", $$1}']]})
 
-pkg.deps = {
-	'$outdir/include/bits/alltypes.h',
-	'$outdir/include/bits/syscall.h',
-	'$outdir/version.h',
-}
-
-local basefiles = load('base.lua')
-local archfiles = load(arch..'.lua')
-
 local srcmap, srcs = {}, {}
 for src in iterstrings{basefiles.srcs, archfiles.srcs} do
 	srcmap[src:match('(.*)%.'):gsub('/'..arch..'/', '/', 1)] = src
@@ -42,6 +57,16 @@ end
 
 lib('libc.a', srcs)
 build('cc', '$outdir/crt1.o', '$srcdir/crt/crt1.c')
+build('cc', '$outdir/crti.o', '$srcdir/crt/crti.c')
+build('cc', '$outdir/crtn.o', '$srcdir/crt/crtn.c')
 build('cc', '$outdir/rcrt1.o', '$srcdir/crt/rcrt1.c', {cflags='$cflags -fPIC'})
+
+phony('startfiles', {
+	'$outdir/libc.a',
+	'$outdir/crt1.o',
+	'$outdir/crti.o',
+	'$outdir/crtn.o',
+	'$outdir/rcrt1.o',
+})
 
 fetch 'git'
