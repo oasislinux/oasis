@@ -7,7 +7,7 @@ cflags{
 
 pkg.hdrs = copy('$outdir/include', '$srcdir', {'tls.h'})
 pkg.deps = {
-	'pkg/libressl/headers',
+	'pkg/bearssl/headers',
 }
 
 lib('libtls.a', {
