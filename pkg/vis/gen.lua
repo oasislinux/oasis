@@ -15,8 +15,8 @@ cflags{
 	[[-D 'VIS_PATH="/share/vis"']],
 	'-D NDEBUG',
 	'-I $outdir',
-	'-I pkg/libtermkey/src',
-	'-I pkg/lua/src/src',
+	'-I $basedir/pkg/libtermkey/src',
+	'-I $basedir/pkg/lua/src/src',
 	'-I $builddir/pkg/ncurses/include',
 }
 

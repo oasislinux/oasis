@@ -17,8 +17,8 @@ cflags{
 	'-D SHARE_JPEG',
 	'-I $srcdir/include',
 	'-I $outdir',
-	'-I pkg/freetype/src/include',
-	'-I pkg/jbig2dec/src',
+	'-I $basedir/pkg/freetype/src/include',
+	'-I $basedir/pkg/jbig2dec/src',
 	'-I $builddir/pkg/libjpeg-turbo/include',
 	'-I $builddir/pkg/zlib/include',
 }
@@ -81,7 +81,7 @@ cc('platform/x11/wl_main.c', {
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/wayland/include',
 	'-I $builddir/pkg/wayland-protocols/include',
-	'-I pkg/libxkbcommon/src',
+	'-I $basedir/pkg/libxkbcommon/src',
 }})
 exe('bin/mupdf', [[
 	platform/x11/(pdfapp.c wl_main.c.o)

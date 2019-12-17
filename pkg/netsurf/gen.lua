@@ -43,10 +43,10 @@ cflags{
 	'-I $dir/libparserutils/src/include',
 	'-I $dir/libsvgtiny/src/include',
 	'-I $dir/libwapcaplet/src/include',
-	'-I pkg/freetype/src/include',
-	'-I pkg/libxkbcommon/src',
-	'-I pkg/openbsd/include',
-	'-I pkg/utf8proc/src',
+	'-I $basedir/pkg/freetype/src/include',
+	'-I $basedir/pkg/libxkbcommon/src',
+	'-I $basedir/pkg/openbsd/include',
+	'-I $basedir/pkg/utf8proc/src',
 }
 
 pkg.deps = {

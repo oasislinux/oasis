@@ -3,7 +3,7 @@ cflags{
 	'-D EMACS',
 	'-D SMALL',
 	'-D VI',
-	'-I pkg/openbsd/include',
+	'-I $basedir/pkg/openbsd/include',
 	'-idirafter $srcdir',  -- for vis.h
 }
 

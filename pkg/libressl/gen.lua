@@ -15,7 +15,7 @@ cflags{
 	'-I $srcdir/crypto/ecdsa',
 	'-I $srcdir/crypto/evp',
 	'-I $srcdir/crypto/modes',
-	'-I pkg/openbsd/include',
+	'-I $basedir/pkg/openbsd/include',
 }
 
 pkg.hdrs = {

@@ -1,7 +1,7 @@
 cflags{
 	'-D FUSE_USE_VERSION=31',
 	'-I $dir',
-	'-I pkg/fuse/src/include',
+	'-I $basedir/pkg/fuse/src/include',
 }
 
 exe('sshfs', {

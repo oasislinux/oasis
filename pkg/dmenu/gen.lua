@@ -1,8 +1,8 @@
 cflags{
 	[[-D 'VERSION="4.6"']],
 	'-I $dir',
-	'-I pkg/fontconfig/src',
-	'-I pkg/libxkbcommon/src',
+	'-I $basedir/pkg/fontconfig/src',
+	'-I $basedir/pkg/libxkbcommon/src',
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/swc/include',
 	'-I $builddir/pkg/wayland/include',

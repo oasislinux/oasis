@@ -2,9 +2,9 @@ cflags{
 	'-I $outdir',
 	'-I $srcdir/src',
 	'-I $srcdir/include',
-	'-I pkg/netsurf/libdom/src/include',
-	'-I pkg/netsurf/libparserutils/src/include',
-	'-I pkg/netsurf/libwapcaplet/src/include',
+	'-I $basedir/pkg/netsurf/libdom/src/include',
+	'-I $basedir/pkg/netsurf/libparserutils/src/include',
+	'-I $basedir/pkg/netsurf/libwapcaplet/src/include',
 }
 
 build('awk', '$outdir/entities.inc', {'$srcdir/build/Entities', '|', '$dir/entities.awk'}, {

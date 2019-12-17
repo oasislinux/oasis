@@ -3,7 +3,7 @@ cflags{
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir',
-	'-I pkg/freetype/src/include',
+	'-I $basedir/pkg/freetype/src/include',
 	'-I $builddir/pkg/expat/include',
 	'-I $builddir/pkg/util-linux/include',
 }

@@ -1,6 +1,6 @@
 cflags{
 	'-I $dir',
-	'-I pkg/freetype/src/include',
+	'-I $basedir/pkg/freetype/src/include',
 	'-I $builddir/pkg/fribidi/include',
 }
 nasmflags{

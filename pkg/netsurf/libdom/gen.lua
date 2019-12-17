@@ -1,9 +1,9 @@
 cflags{
 	'-I $srcdir/include',
 	'-I $srcdir/src',
-	'-I pkg/netsurf/libhubbub/src/include',
-	'-I pkg/netsurf/libparserutils/src/include',
-	'-I pkg/netsurf/libwapcaplet/src/include',
+	'-I $basedir/pkg/netsurf/libhubbub/src/include',
+	'-I $basedir/pkg/netsurf/libparserutils/src/include',
+	'-I $basedir/pkg/netsurf/libwapcaplet/src/include',
 	'-I $builddir/pkg/expat/include',
 }
 

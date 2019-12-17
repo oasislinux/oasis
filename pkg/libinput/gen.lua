@@ -2,8 +2,8 @@ cflags{
 	'-std=c11', '-Wall',
 	'-I $dir',
 	'-I $srcdir/include',
-	'-I pkg/libevdev/src',
-	'-I pkg/mtdev/src/include',
+	'-I $basedir/pkg/libevdev/src',
+	'-I $basedir/pkg/mtdev/src/include',
 }
 
 pkg.deps = {

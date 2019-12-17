@@ -1,7 +1,7 @@
 cflags{
 	'-include $dir/config.h',
 	'-I $srcdir',
-	'-I pkg/bzip2/src',
+	'-I $basedir/pkg/bzip2/src',
 }
 
 exe('unzip', [[

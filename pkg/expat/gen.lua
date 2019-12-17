@@ -1,7 +1,7 @@
 cflags{
 	'-D HAVE_EXPAT_CONFIG_H',
 	'-I $dir',
-	'-I pkg/openbsd/include',
+	'-I $basedir/pkg/openbsd/include',
 }
 
 lib('libexpat.a', [[

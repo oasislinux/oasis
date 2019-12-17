@@ -14,7 +14,7 @@ cflags{
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir',
-	'-I pkg/ffmpeg/src',
+	'-I $basedir/pkg/ffmpeg/src',
 	'-I $builddir/pkg/ffmpeg/include',
 	'-I $builddir/pkg/zlib/include',
 }
@@ -128,8 +128,8 @@ if options['HAVE_ALSA'] then
 end
 if options['HAVE_DRM'] then
 	cflags{
-		'-I pkg/libdrm/src',
-		'-I pkg/libdrm/src/include/drm',
+		'-I $basedir/pkg/libdrm/src',
+		'-I $basedir/pkg/libdrm/src/include/drm',
 	}
 	table.insert(libs, 'libdrm/libdrm.a')
 	table.insert(pkg.deps, 'pkg/libdrm/fetch')
@@ -140,14 +140,14 @@ if options['HAVE_LIBASS'] then
 	table.insert(pkg.deps, 'pkg/libass/headers')
 end
 if options['HAVE_LUA'] then
-	cflags{'-I pkg/lua/src/src'}
+	cflags{'-I $basedir/pkg/lua/src/src'}
 	table.insert(libs, 'lua/liblua.a')
 	table.insert(pkg.deps, 'pkg/lua/fetch')
 end
 if options['HAVE_WAYLAND'] then
 	cflags{
 		'-I $builddir/pkg/wayland/include',
-		'-I pkg/libxkbcommon/src',
+		'-I $basedir/pkg/libxkbcommon/src',
 	}
 	table.insert(libs, {
 		'wayland/libwayland-client.a.d',

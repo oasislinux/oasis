@@ -2,10 +2,10 @@ cflags{
 	'-D WITH_WAYLAND_SHM',
 	'-D WITH_WAYLAND_DRM',
 	'-I $outdir',
-	'-I pkg/fontconfig/src',
-	'-I pkg/freetype/src/include',
-	'-I pkg/libdrm/src',
-	'-I pkg/libdrm/src/include/drm',
+	'-I $basedir/pkg/fontconfig/src',
+	'-I $basedir/pkg/freetype/src/include',
+	'-I $basedir/pkg/libdrm/src',
+	'-I $basedir/pkg/libdrm/src/include/drm',
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/wayland/include',
 }
@@ -38,12 +38,12 @@ local libs = {
 }
 
 if config.video_drivers and config.video_drivers['intel'] then
-	cflags{'-D WITH_DRM_INTEL', '-I pkg/libdrm/src/intel'}
+	cflags{'-D WITH_DRM_INTEL', '-I $basedir/pkg/libdrm/src/intel'}
 	table.insert(srcs, {'intel.c', 'intel/batch.c'})
 	table.insert(libs, 'libdrm/libdrm_intel.a.d')
 end
 if config.video_drivers and config.video_drivers['nouveau'] then
-	cflags{'-D WITH_DRM_NOUVEAU', '-I pkg/libdrm/src/nouveau'}
+	cflags{'-D WITH_DRM_NOUVEAU', '-I $basedir/pkg/libdrm/src/nouveau'}
 	table.insert(srcs, 'nouveau.c')
 	table.insert(libs, 'libdrm/libdrm_nouveau.a')
 end

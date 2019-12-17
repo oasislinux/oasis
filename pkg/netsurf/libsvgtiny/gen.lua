@@ -2,8 +2,8 @@ cflags{
 	'-I $dir',
 	'-I $srcdir/include',
 	'-I $srcdir/src',
-	'-I pkg/netsurf/libdom/src/include',
-	'-I pkg/netsurf/libwapcaplet/src/include',
+	'-I $basedir/pkg/netsurf/libdom/src/include',
+	'-I $basedir/pkg/netsurf/libwapcaplet/src/include',
 	'-I $builddir/pkg/netsurf/libdom/include',
 }
 

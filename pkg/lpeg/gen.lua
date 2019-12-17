@@ -1,7 +1,7 @@
 cflags{
 	'-std=c99',
 	'-D NDEBUG',
-	'-I pkg/lua/src/src',
+	'-I $basedir/pkg/lua/src/src',
 }
 
 lib('liblpeg.a', {
