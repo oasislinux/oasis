@@ -7,7 +7,7 @@ cflags{
 	'-I $builddir/pkg/zlib/include',
 }
 
-rule('cmdlist', 'wd=$$PWD && cd $srcdir && ./generate-cmdlist.sh $$wd/$in >$$wd/$out')
+rule('cmdlist', 'cd $srcdir && ./generate-cmdlist.sh $$OLDPWD/$in >$$OLDPWD/$out')
 build('cmdlist', '$outdir/command-list.h', {
 	'$srcdir/command-list.txt', '|', expand{'$srcdir/Documentation/', lines('commands.txt')},
 })
