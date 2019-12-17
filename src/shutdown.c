@@ -12,7 +12,7 @@
 #include <unistd.h>
 
 static noreturn void
-usage()
+usage(void)
 {
 	fprintf(stderr, "usage: shutdown [-hpr]\n");
 	exit(2);

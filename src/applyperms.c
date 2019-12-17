@@ -388,7 +388,7 @@ applyspecial(void)
 }
 
 static void
-usage()
+usage(void)
 {
 	fprintf(stderr, "usage: %s [[old] new] | %s -d dir\n", prog, prog);
 	exit(2);
