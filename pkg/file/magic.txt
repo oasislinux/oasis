@@ -90,6 +90,7 @@ finger
 flash
 flif
 fonts
+forth
 fortran
 frame
 freebsd
@@ -101,6 +102,7 @@ gconv
 geo
 geos
 gimp
+git
 glibc
 gnome
 gnu
@@ -170,6 +172,7 @@ mkid
 mlssa
 mmdf
 modem
+modulefile
 motorola
 mozilla
 msdos
@@ -193,6 +196,8 @@ ocaml
 octave
 ole2compounddocs
 olf
+openfst
+opentimestamps
 os2
 os400
 os9
@@ -213,6 +218,7 @@ pgp
 pkgadd
 plan9
 plus5
+pmem
 polyml
 printer
 project
@@ -229,6 +235,7 @@ rinex
 rpi
 rpm
 rpmsg
+rst
 rtf
 ruby
 sc
@@ -249,6 +256,7 @@ smalltalk
 smile
 sniffer
 softquad
+sosi
 spec
 spectrum
 sql

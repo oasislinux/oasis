@@ -1,8 +1,10 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 #define BUILTIN_ELF 1
+/* #undef BZLIBSUPPORT */
 #define ELFCORE 1
 #define HAVE_ASCTIME_R 1
 #define HAVE_ASPRINTF 1
+/* #undef HAVE_BZLIB_H */
 #define HAVE_CTIME_R 1
 #define HAVE_DAYLIGHT 1
 #define HAVE_DECL_DAYLIGHT 1
@@ -22,10 +24,13 @@
 #define HAVE_GMTIME_R 1
 #define HAVE_INTPTR_T 1
 #define HAVE_INTTYPES_H 1
+/* #undef HAVE_LIBBZ2 */
 /* #undef HAVE_LIBGNURX */
+/* #undef HAVE_LIBLZMA */
 /* #undef HAVE_LIBSECCOMP */
 #define HAVE_LIBZ 1
 #define HAVE_LOCALTIME_R 1
+/* #undef HAVE_LZMA_H */
 #define HAVE_MBRTOWC 1
 #define HAVE_MBSTATE_T 1
 #define HAVE_MEMMEM 1
@@ -69,7 +74,6 @@
 #define HAVE_VASPRINTF 1
 #define HAVE_VFORK 1
 /* #undef HAVE_VFORK_H */
-#define HAVE_VISIBILITY 1
 #define HAVE_WCHAR_H 1
 #define HAVE_WCTYPE_H 1
 #define HAVE_WCWIDTH 1
@@ -79,14 +83,14 @@
 #define HAVE_ZLIB_H 1
 #define LT_OBJDIR ".libs/"
 /* #undef MAJOR_IN_MKDEV */
-/* #undef MAJOR_IN_SYSMACROS */
+#define MAJOR_IN_SYSMACROS 1
 #define PACKAGE "file"
 #define PACKAGE_BUGREPORT "christos@astron.com"
 #define PACKAGE_NAME "file"
-#define PACKAGE_STRING "file 5.37"
+#define PACKAGE_STRING "file 5.38"
 #define PACKAGE_TARNAME "file"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "5.37"
+#define PACKAGE_VERSION "5.38"
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
 #ifndef _ALL_SOURCE
@@ -104,7 +108,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.37"
+#define VERSION "5.38"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
@@ -114,6 +118,7 @@
 /* #  undef WORDS_BIGENDIAN */
 # endif
 #endif
+/* #undef XZLIBSUPPORT */
 #define ZLIBSUPPORT 1
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
@@ -127,7 +132,6 @@
 /* #undef _UINT32_T */
 /* #undef _UINT64_T */
 /* #undef _UINT8_T */
-/* #undef const */
 /* #undef int32_t */
 /* #undef int64_t */
 /* #undef intptr_t */
