@@ -12,6 +12,7 @@ audio/fmt-conversion.c
 audio/format.c
 audio/out/ao.c
 audio/out/ao_alsa.c alsa
+audio/out/ao_audiotrack.c android
 audio/out/ao_audiounit.m audiounit
 audio/out/ao_coreaudio.c coreaudio
 audio/out/ao_coreaudio_chmap.c coreaudio || audiounit
@@ -86,6 +87,7 @@ input/sdl_gamepad.c sdl2-gamepad
 misc/bstr.c
 misc/charset_conv.c
 misc/dispatch.c
+misc/jni.c android
 misc/json.c
 misc/natural_sort.c
 misc/node.c
@@ -145,6 +147,15 @@ sub/osd_dummy.c dummy-osd
 sub/osd_libass.c libass-osd
 sub/sd_ass.c libass
 sub/sd_lavc.c
+test/chmap.c tests
+test/gl_video.c tests
+test/img_format.c tests
+test/json.c tests
+test/linked_list.c tests
+test/scale_sws.c tests
+test/scale_test.c tests
+test/scale_zimg.c tests && zimg
+test/tests.c tests
 video/csputils.c
 video/d3d.c d3d-hwaccel
 video/decode/vd_lavc.c
@@ -152,6 +163,7 @@ video/filter/refqueue.c
 video/filter/vf_d3d11vpp.c d3d-hwaccel
 video/filter/vf_fingerprint.c zimg
 video/filter/vf_format.c
+video/filter/vf_gpu.c egl-helpers && gl && egl
 video/filter/vf_sub.c
 video/filter/vf_vapoursynth.c vapoursynth
 video/filter/vf_vavpp.c vaapi
@@ -275,7 +287,6 @@ osdep/timer.c
 osdep/polldev.c posix
 osdep/android/posix-spawn.c android
 osdep/android/strnlen.c android
-osdep/ar/HIDRemote.m apple-remote
 osdep/glob-win.c glob-win32
 osdep/macosx_application.m cocoa
 osdep/macosx_events.m cocoa

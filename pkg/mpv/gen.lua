@@ -48,7 +48,7 @@ end
 file2string('input/input_conf.h', 'etc/input.conf')
 file2string('player/builtin_conf.inc', 'etc/builtin.conf')
 file2string('sub/osd_font.h', 'sub/osd_font.otf')
-for _, f in ipairs{'defaults', 'assdraw', 'options', 'osc', 'ytdl_hook', 'stats'} do
+for _, f in ipairs{'defaults', 'assdraw', 'options', 'osc', 'ytdl_hook', 'stats', 'console'} do
 	file2string('player/lua/'..f..'.inc', 'player/lua/'..f..'.lua')
 end
 

@@ -238,6 +238,12 @@ used, broken on the terminal).
 Show/toggle an overlay displaying statistics about the currently playing
 file such as codec, framerate, number of dropped frames and so on. See
 \fI\%STATS\fP for more information.
+.TP
+.B del
+Cycles visibility between never / auto (mouse\-move) / always
+.TP
+.B \(ga
+Show the console. (ESC closes it again. See \fI\%CONSOLE\fP\&.)
 .UNINDENT
 .sp
 (The following keys are valid only when using a video output that supports the
@@ -287,10 +293,19 @@ in the mpv git repository.
 .SS Mouse Control
 .INDENT 0.0
 .TP
-.B button 3 and button 4
-Seek backward/forward 1 minute.
+.B Left double click
+Toggle fullscreen on/off.
 .TP
-.B button 5 and button 6
+.B Right click
+Toggle pause on/off.
+.TP
+.B Forward/Back button
+Skip to next/previous entry in playlist.
+.TP
+.B Wheel up/down
+Seek forward/backward 10 seconds.
+.TP
+.B Wheel left/right
 Decrease/increase volume.
 .UNINDENT
 .SH USAGE
@@ -572,11 +587,19 @@ file\-local options. The option \fB\-\-a\fP is never reset here.
 .SS List Options
 .sp
 Some options which store lists of option values can have action suffixes. For
-example, you can set a \fB,\fP\-separated list of filters with \fB\-\-vf\fP, but the
-option also allows you to append filters with \fB\-\-vf\-append\fP\&.
+example, the \fB\-\-display\-tags\fP option takes a \fB,\fP\-separated list of tags, but
+the option also allows you to append a single tag with \fB\-\-display\-tags\-append\fP,
+and the tag name can for example contain a literal \fB,\fP without the need for
+escaping.
+.SS String list and path list options
 .sp
-Options for filenames do not use \fB,\fP as separator, but \fB:\fP (Unix) or \fB;\fP
-(Windows).
+String lists are separated by \fB,\fP\&. The strings are not parsed or interpreted
+by the option system itself. However, most
+.sp
+Path or file list options use \fB:\fP (Unix) or \fB;\fP (Windows) as separator,
+instead of \fB,\fP\&.
+.sp
+They support the following operations:
 .TS
 center;
 |l|l|.
@@ -588,89 +611,189 @@ Meaning
 T}
 _
 T{
-\-add
+\-set
 T}	T{
-Append 1 or more items (may become alias for \-append)
+Set a list of items (using the list separator, interprets escapes)
 T}
 _
 T{
 \-append
 T}	T{
-Append single item (avoids need for escaping)
+Append single item (does not interpret escapes)
 T}
 _
 T{
-\-clr
+\-add
 T}	T{
-Clear the option
-T}
-_
-T{
-\-del
-T}	T{
-Delete an existing item by integer index
+Append 1 or more items (same syntax as \-set)
 T}
 _
 T{
 \-pre
 T}	T{
-Prepend 1 or more items
+Prepend 1 or more items (same syntax as \-set)
 T}
 _
 T{
-\-set
+\-clr
 T}	T{
-Set a list of items
+Clear the option (remove all items)
+T}
+_
+T{
+\-remove
+T}	T{
+Delete item if present (does not interpret escapes)
+T}
+_
+T{
+\-del
+T}	T{
+Delete 1 or more items by integer index (deprecated)
 T}
 _
 T{
 \-toggle
 T}	T{
-Append an item, or remove if if it already exists
+Append an item, or remove if if it already exists (no escapes)
 T}
 _
 .TE
 .sp
-Although some operations allow specifying multiple \fB,\fP\-separated items, using
-this is strongly discouraged and deprecated, except for \fB\-set\fP\&.
+\fB\-append\fP is meant as a simple way to append a single item without having
+to escape the argument (you may still need to escape on the shell level).
+.SS Key/value list options
 .sp
-Without suffix, the action taken is normally \fB\-set\fP\&.
+A key/value list is a list of key/value string pairs. In programming languages,
+this type of data structure is often called a map or a dictionary. The order
+normally does not matter, although in some cases the order might matter.
+.sp
+They support the following operations:
+.TS
+center;
+|l|l|.
+_
+T{
+Suffix
+T}	T{
+Meaning
+T}
+_
+T{
+\-set
+T}	T{
+Set a list of items (using \fB,\fP as separator)
+T}
+_
+T{
+\-append
+T}	T{
+Append a single item (escapes for the key, no escapes for the value)
+T}
+_
+T{
+\-add
+T}	T{
+Append 1 or more items (same syntax as \-set)
+T}
+_
+T{
+\-remove
+T}	T{
+Delete item by key if present (does not interpret escapes)
+T}
+_
+.TE
+.sp
+Keys are unique within the list. If an already present key is set, the existing
+key is removed before the new value is appended.
+.SS Filter options
+.sp
+This is a very complex option type for the \fB\-\-af\fP and \fB\-\-vf\fP options only.
+They often require complicated escaping. See \fI\%VIDEO FILTERS\fP for details. They
+support the following operations:
+.TS
+center;
+|l|l|.
+_
+T{
+Suffix
+T}	T{
+Meaning
+T}
+_
+T{
+\-set
+T}	T{
+Set a list of filters (using \fB,\fP as separator)
+T}
+_
+T{
+\-append
+T}	T{
+Append single filter
+T}
+_
+T{
+\-add
+T}	T{
+Append 1 or more filters (same syntax as \-set)
+T}
+_
+T{
+\-pre
+T}	T{
+Prepend 1 or more filters (same syntax as \-set)
+T}
+_
+T{
+\-clr
+T}	T{
+Clear the option (remove all filters)
+T}
+_
+T{
+\-remove
+T}	T{
+Delete filter if present
+T}
+_
+T{
+\-del
+T}	T{
+Delete 1 or more filters by integer index or filter label (deprecated)
+T}
+_
+T{
+\-toggle
+T}	T{
+Append a filter, or remove if if it already exists
+T}
+_
+T{
+\-help
+T}	T{
+Pseudo operation that prints a help text to the terminal
+T}
+_
+.TE
+.SS General
+.sp
+Without suffix, the operation used is normally \fB\-set\fP\&.
+.sp
+Although some operations allow specifying multiple items, using this is strongly
+discouraged and deprecated, except for \fB\-set\fP\&. There is a chance that
+operations like \fB\-add\fP and \fB\-pre\fP will work like \fB\-append\fP and accept a
+single, unescaped item only (so the \fB,\fP separator will not be interpreted and
+is passed on as part of the value).
 .sp
 Some options (like \fB\-\-sub\-file\fP, \fB\-\-audio\-file\fP, \fB\-\-glsl\-shader\fP) are
 aliases for the proper option with \fB\-append\fP action. For example,
 \fB\-\-sub\-file\fP is an alias for \fB\-\-sub\-files\-append\fP\&.
 .sp
-Some options only support a subset of the above.
-.sp
 Options of this type can be changed at runtime using the \fBchange\-list\fP
-command, which takes the suffix as separate operation parameter.
-.SS Playing DVDs
-.sp
-DVDs can be played with the \fBdvd://[title]\fP syntax. The optional
-title specifier is a number which selects between separate video
-streams on the DVD. If no title is given (\fBdvd://\fP) then the longest
-title is selected automatically by the library. This is usually what
-you want. mpv does not support DVD menus.
-.sp
-DVDs which have been copied on to a hard drive or other mounted
-filesystem (by e.g. the \fBdvdbackup\fP tool) are accommodated by
-specifying the path to the local copy: \fB\-\-dvd\-device=PATH\fP\&.
-Alternatively, running \fBmpv PATH\fP should auto\-detect a DVD directory
-tree and play the longest title.
-.sp
-\fBNOTE:\fP
-.INDENT 0.0
-.INDENT 3.5
-DVD subtitles
-.sp
-DVDs use image\-based subtitles. Image subtitles are implemented as
-a bitmap video stream which can be superimposed over the main
-movie. mpv\(aqs subtitle styling and positioning options and keyboard
-shortcuts generally do not work with image\-based subtitles.
-Exceptions include options like \fB\-\-stretch\-dvd\-subs\fP and
-\fB\-\-stretch\-image\-subs\-to\-screen\fP\&.
-.UNINDENT
-.UNINDENT
+command, which takes the suffix (without the \fB\-\fP) as separate operation
+parameter.
 .SH CONFIGURATION FILES
 .SS Location and Syntax
 .sp
@@ -824,12 +947,8 @@ Some profiles are loaded automatically. The following example demonstrates this:
 .sp
 .nf
 .ft C
-[protocol.dvd]
-profile\-desc="profile for dvd:// streams"
-alang=en
-
-[extension.flv]
-profile\-desc="profile for .flv files"
+[extension.mkv]
+profile\-desc="profile for .mkv files"
 vf=flip
 .ft P
 .fi
@@ -844,6 +963,55 @@ and \fBextension\fP for the extension of the path of the currently played file
 (\fInot\fP the file format).
 .sp
 This feature is very limited, and there are no other auto profiles.
+.SH USING MPV FROM OTHER PROGRAMS OR SCRIPTS
+.sp
+There are three choices for using mpv from other programs or scripts:
+.INDENT 0.0
+.INDENT 3.5
+.INDENT 0.0
+.IP 1. 3
+Calling it as UNIX process. If you do this, \fIdo not parse terminal output\fP\&.
+The terminal output is intended for humans, and may change any time. In
+addition, terminal behavior itself may change any time. Compatibility
+cannot be guaranteed.
+.sp
+Your code should work even if you pass \fB\-\-no\-terminal\fP\&. Do not attempt
+to simulate user input by sending terminal control codes to mpv\(aqs stdin.
+If you need interactive control, using \fB\-\-input\-ipc\-server\fP is
+recommended. This gives you access to the \fI\%JSON IPC\fP  over unix domain
+sockets (or named pipes on Windows).
+.sp
+Depending on what you do, passing \fB\-\-no\-config\fP or \fB\-\-config\-dir\fP may
+be a good idea to avoid conflicts with the normal mpv user configuration
+intended for CLI playback.
+.sp
+Using \fB\-\-input\-ipc\-server\fP is also suitable for purposes like remote
+control (however, the IPC protocol itself is not "secure" and not
+intended to be so).
+.IP 2. 3
+Using libmpv. This is generally recommended when mpv is used as playback
+backend for a completely different application. The provided C API is
+very close to CLI mechanisms and the scripting API.
+.sp
+Note that even though libmpv has different defaults, it can be configured
+to work exactly like the CLI player (except command line parsing is
+unavailable).
+.sp
+See \fI\%EMBEDDING INTO OTHER PROGRAMS (LIBMPV)\fP\&.
+.IP 3. 3
+As a user script (\fI\%LUA SCRIPTING\fP, \fI\%JAVASCRIPT\fP, \fI\%C PLUGINS\fP). This is
+recommended when the goal is to "enhance" the CLI player. Scripts get
+access to the entire client API of mpv.
+.sp
+This is the standard way to create third\-party extensions for the player.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+All these access the client API, which is the sum of the various mechanisms
+provided by the player core, as documented here: \fI\%OPTIONS\fP,
+\fI\%List of Input Commands\fP, \fI\%Properties\fP, \fI\%List of events\fP (also see C API),
+\fI\%Hooks\fP\&.
 .SH TAKING SCREENSHOTS
 .sp
 Screenshots of the currently played file can be taken using the \(aqscreenshot\(aq
@@ -986,10 +1154,10 @@ can also prefix it with \fBlavf://\fP or \fBffmpeg://\fP\&.
 \fBytdl://...\fP
 .INDENT 0.0
 .INDENT 3.5
-By default, the youtube\-dl hook script (enabled by default for mpv CLI)
-only looks at http URLs. Prefixing an URL with \fBytdl://\fP forces it to
-be always processed by the script. This can also be used to invoke special
-youtube\-dl functionality like playing a video by ID or invoking search.
+By default, the youtube\-dl hook script only looks at http(s) URLs. Prefixing
+an URL with \fBytdl://\fP forces it to be always processed by the script. This
+can also be used to invoke special youtube\-dl functionality like playing a
+video by ID or invoking search.
 .sp
 Keep in mind that you can\(aqt pass youtube\-dl command line options by this,
 and you have to use \fB\-\-ytdl\-raw\-options\fP instead.
@@ -1025,38 +1193,15 @@ the available playlists on loading.
 .UNINDENT
 .UNINDENT
 .sp
-\fBdvd://[title|[starttitle]\-endtitle][/device]\fP \fB\-\-dvd\-device=PATH\fP
+\fBdvd://[title][/device]\fP \fB\-\-dvd\-device=PATH\fP
 .INDENT 0.0
 .INDENT 3.5
 Play a DVD. DVD menus are not supported. If no title is given, the longest
-title is auto\-selected.
+title is auto\-selected. Without \fB\-\-dvd\-device\fP, it will probably try
+to open an actual optical drive, if available and implemented for the OS.
 .sp
 \fBdvdnav://\fP is an old alias for \fBdvd://\fP and does exactly the same
 thing.
-.UNINDENT
-.UNINDENT
-.sp
-\fBdvdread://...:\fP
-.INDENT 0.0
-.INDENT 3.5
-Play a DVD using the old libdvdread code. This is what MPlayer and
-older mpv versions used for \fBdvd://\fP\&. Use is discouraged. It\(aqs
-provided only for compatibility and for transition, and to work
-around outstanding dvdnav bugs (see "DVD library choices" above).
-.UNINDENT
-.UNINDENT
-.sp
-\fBtv://[channel][/input_id]\fP \fB\-\-tv\-...\fP
-.INDENT 0.0
-.INDENT 3.5
-Analogue TV via V4L. Also useful for webcams. (Linux only.)
-.UNINDENT
-.UNINDENT
-.sp
-\fBpvr://\fP \fB\-\-pvr\-...\fP
-.INDENT 0.0
-.INDENT 3.5
-PVR. (Linux only.)
 .UNINDENT
 .UNINDENT
 .sp
@@ -1095,10 +1240,27 @@ string after the \fB//\fP directly to libavformat.
 This is intended for using libavdevice inputs. \fBtype\fP is the libavdevice
 demuxer name, and \fBoptions\fP is the (pseudo\-)filename passed to the
 demuxer.
+.INDENT 0.0
+.INDENT 3.5
+.IP "Example"
+.INDENT 0.0
+.INDENT 3.5
 .sp
-For example, \fBmpv av://lavfi:mandelbrot\fP makes use of the libavfilter
-wrapper included in libavdevice, and will use the \fBmandelbrot\fP source
-filter to generate input data.
+.nf
+.ft C
+mpv av://v4l2:/dev/video0 \-\-profile=low\-latency \-\-untimed
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+This plays video from the first v4l input with nearly the lowest latency
+possible. It\(aqs a good replacement for the removed \fBtv://\fP input.
+Using \fB\-\-untimed\fP is a hack to output a captured frame immediately,
+instead of respecting the input framerate. (There may be better ways to
+handle this in the future.)
+.UNINDENT
+.UNINDENT
 .sp
 \fBavdevice://\fP is an alias.
 .UNINDENT
@@ -1238,6 +1400,8 @@ Specify a priority list of audio languages to use. Different container
 formats employ different language codes. DVDs use ISO 639\-1 two\-letter
 language codes, Matroska, MPEG\-TS and NUT use ISO 639\-2 three\-letter
 language codes, while OGM uses a free\-form identifier. See also \fB\-\-aid\fP\&.
+.sp
+This is a string list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Examples"
@@ -1257,6 +1421,8 @@ Specify a priority list of subtitle languages to use. Different container
 formats employ different language codes. DVDs use ISO 639\-1 two letter
 language codes, Matroska uses ISO 639\-2 three letter language codes while
 OGM uses a free\-form identifier. See also \fB\-\-sid\fP\&.
+.sp
+This is a string list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Examples"
@@ -1273,6 +1439,8 @@ subtitles.
 .TP
 .B \fB\-\-vlang=<...>\fP
 Equivalent to \fB\-\-alang\fP and \fB\-\-slang\fP, for video tracks.
+.sp
+This is a string list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-aid=<ID|auto|no>\fP
 Select audio track. \fBauto\fP selects the default, \fBno\fP disables audio.
@@ -1985,11 +2153,15 @@ configuration subdirectory (usually \fB~/.config/mpv/scripts/\fP).
 .B \fB\-\-script=<filename>\fP, \fB\-\-scripts=file1.lua:file2.lua:...\fP
 Load a Lua script. The second option allows you to load multiple scripts by
 separating them with the path separator (\fB:\fP on Unix, \fB;\fP on Windows).
+.sp
+\fB\-\-scripts\fP is a path list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-script\-opts=key1=value1,key2=value2,...\fP
 Set options for scripts. A script can query an option by key. If an
 option is used and what semantics the option value has depends entirely on
 the loaded scripts. Values not claimed by any scripts are ignored.
+.sp
+This is a key/value list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-merge\-files\fP
 Pretend that all files passed to mpv are concatenated into a single, big
@@ -1999,6 +2171,13 @@ file. This uses timeline/EDL support internally.
 Do not restore playback position from the \fBwatch_later\fP configuration
 subdirectory (usually \fB~/.config/mpv/watch_later/\fP).
 See \fBquit\-watch\-later\fP input command.
+.TP
+.B \fB\-\-resume\-playback\-check\-mtime\fP
+Only restore the playback position from the \fBwatch_later\fP configuration
+subdirectory (usually \fB~/.config/mpv/watch_later/\fP) if the file\(aqs
+modification time is the same as at the time of saving. This may prevent
+skipping forward in files with the same name which have different content.
+(Default: \fBno\fP)
 .TP
 .B \fB\-\-profile=<profile1,profile2,...>\fP
 Use the given profile(s), \fB\-\-profile=help\fP displays a list of the
@@ -2022,6 +2201,8 @@ will only be reset if it is explicitly set in the config file or the
 command line.
 .sp
 The special name \fBall\fP resets as many options as possible.
+.sp
+This is a string list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Examples"
@@ -2057,7 +2238,8 @@ Ignore path (i.e. use filename only) when using watch later feature.
 (Default: disabled)
 .TP
 .B \fB\-\-show\-profile=<profile>\fP
-Show the description and content of a profile.
+Show the description and content of a profile. Lists all profiles if no
+parameter is provided.
 .TP
 .B \fB\-\-use\-filedir\-conf\fP
 Look for a file\-specific configuration file in the same directory as the
@@ -2131,6 +2313,8 @@ This is useful for geo\-restricted URLs. After youtube\-dl parsing, some
 URLs also require a proxy for playback, so this can pass that proxy
 information to mpv. Take note that SOCKS proxies aren\(aqt supported and
 https URLs also bypass the proxy. This is a limitation in FFmpeg.
+.sp
+This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Example"
@@ -2151,6 +2335,12 @@ https URLs also bypass the proxy. This is a limitation in FFmpeg.
 Enable the builtin script that shows useful playback information on a key
 binding (default: yes). By default, the \fBi\fP key is used (\fBI\fP to make
 the overlay permanent).
+.TP
+.B \fB\-\-load\-osd\-console=<yes|no>\fP
+Enable the builtin script that shows a console on a key binding and lets
+you enter commands (default: yes). By default,. The \fB\'\fP key is used to
+show the console, and \fBESC\fP to hide it again. (This is based on  a user
+script called \fBrepl.lua\fP\&.)
 .TP
 .B \fB\-\-player\-operation\-mode=<cplayer|pseudo\-gui>\fP
 For enabling "pseudo GUI mode", which means that the defaults for some
@@ -2198,28 +2388,44 @@ The argument selects the drop methods, and can be one of the following:
 .INDENT 7.0
 .TP
 .B <no>
-Disable any framedropping.
+Disable any frame dropping. Not recommended, for testing only.
 .TP
 .B <vo>
 Drop late frames on video output (default). This still decodes and
-filters all frames, but doesn\(aqt render them on the VO. It tries to query
-the display FPS (X11 only, not correct on multi\-monitor systems), or
-assumes infinite display FPS if that fails. Drops are indicated in
-the terminal status line as \fBDropped:\fP field. If the decoder is too slow,
-in theory all frames would have to be dropped (because all frames are
-too late) \- to avoid this, frame dropping stops if the effective
-framerate is below 10 FPS.
+filters all frames, but doesn\(aqt render them on the VO. Drops are
+indicated in the terminal status line as \fBDropped:\fP field.
+.sp
+In audio sync. mode, this drops frames that are outdated at the time of
+display. If the decoder is too slow, in theory all frames would have to
+be dropped (because all frames are too late) \- to avoid this, frame
+dropping stops  if the effective framerate is below 10 FPS.
+.sp
+In display\-sync. modes (see \fB\-\-video\-sync\fP), this affects only how
+A/V drops or repeats frames. If this mode is disabled, A/V desync will
+in theory not affect video scheduling anymore (much like the
+\fBdisplay\-resample\-desync\fP mode). However, even if disabled, frames
+will still be skipped (i.e. dropped) according to the ratio between
+video and display frequencies.
+.sp
+This is the recommended mode, and the default.
 .TP
 .B <decoder>
 Old, decoder\-based framedrop mode. (This is the same as \fB\-\-framedrop=yes\fP
 in mpv 0.5.x and before.) This tells the decoder to skip frames (unless
 they are needed to decode future frames). May help with slow systems,
 but can produce unwatchable choppy output, or even freeze the display
-completely. Not recommended.
+completely.
+.sp
+This uses a heuristic which may not make sense, and in  general cannot
+achieve good results, because the decoder\(aqs frame dropping cannot be
+controlled in a predictable manner. Not recommended.
+.sp
+Even if you want to use this, prefer \fBdecoder+vo\fP for better results.
+.sp
 The \fB\-\-vd\-lavc\-framedrop\fP option controls what frames to drop.
 .TP
 .B <decoder+vo>
-Enable both modes. Not recommended.
+Enable both modes. Not recommended. Better than just \fBdecoder\fP mode.
 .UNINDENT
 .sp
 \fBNOTE:\fP
@@ -2252,7 +2458,7 @@ frame, so if this is not done, there is some likeliness that the VO has
 to drop some frames if rendering the first frame takes longer than needed.
 .UNINDENT
 .TP
-.B \fB\-\-display\-fps=<fps>\fP
+.B \fB\-\-override\-display\-fps=<fps>\fP
 Set the display FPS used with the \fB\-\-video\-sync=display\-*\fP modes. By
 default, a detected value is used. Keep in mind that setting an incorrect
 value (even if slightly incorrect) can ruin video playback. On multi\-monitor
@@ -2262,10 +2468,68 @@ monitor.
 Set this option only if you have reason to believe the automatically
 determined value is wrong.
 .TP
+.B \fB\-\-display\-fps=<fps>\fP
+Deprecated alias for \fB\-\-override\-display\-fps\fP\&.
+.TP
 .B \fB\-\-hwdec=<api>\fP
 Specify the hardware video decoding API that should be used if possible.
 Whether hardware decoding is actually done depends on the video codec. If
 hardware decoding is not possible, mpv will fall back on software decoding.
+.sp
+Hardware decoding is not enabled by default, because it is typically an
+additional source of errors. It is worth using only if your CPU is too
+slow to decode a specific video.
+.sp
+\fBNOTE:\fP
+.INDENT 7.0
+.INDENT 3.5
+Use the \fBCtrl+h\fP shortcut to toggle hardware decoding at runtime. It
+toggles this option between \fBauto\fP and \fBno\fP\&.
+.sp
+Always enabling HW decoding by putting it into the config file is
+discouraged. If you use the Ubuntu package, delete \fB/etc/mpv/mpv.conf\fP,
+as the package tries to enable HW decoding by default by setting
+\fBhwdec=vaapi\fP (which is less than ideal, and may even cause
+sub\-optimal wrappers to be used). Or at least change it to
+\fBhwdec=auto\-safe\fP\&.
+.UNINDENT
+.UNINDENT
+.sp
+Use one of the auto modes if you want to enable hardware decoding.
+Explicitly selecting the mode is mostly meant for testing and debugging.
+It\(aqs a bad idea to put explicit selection into the config file if you
+want thing to just keep working after updates and so on.
+.sp
+\fBNOTE:\fP
+.INDENT 7.0
+.INDENT 3.5
+Even if enabled, hardware decoding is still only white\-listed for some
+codecs. See \fB\-\-hwdec\-codecs\fP to enable hardware decoding in more cases.
+.UNINDENT
+.UNINDENT
+.INDENT 7.0
+.INDENT 3.5
+.IP "Which method to choose?"
+.INDENT 0.0
+.IP \(bu 2
+If you only want to enable hardware decoding at runtime, don\(aqt set the
+parameter, or put \fBhwdec=no\fP into your \fBmpv.conf\fP (relevant on
+distros which force\-enable it by default, such as on Ubuntu). Use the
+\fBCtrl+h\fP default binding to enable it at runtime.
+.IP \(bu 2
+If you\(aqre not sure, but want hardware decoding always enabled by
+default, put \fBhwdec=auto\-safe\fP into your \fBmpv.conf\fP, and
+acknowledge that this use case is not "really" supported and may cause
+problems.
+.IP \(bu 2
+If you want to test available hardware decoding methods, pass
+\fB\-\-hwdec=auto \-\-hwdec\-codecs=all\fP and look at the terminal output.
+.IP \(bu 2
+If you\(aqre a developer, or want to perform elaborate tests, you may
+need any of the other possible option values.
+.UNINDENT
+.UNINDENT
+.UNINDENT
 .sp
 \fB<api>\fP can be one of the following:
 .INDENT 7.0
@@ -2274,17 +2538,19 @@ hardware decoding is not possible, mpv will fall back on software decoding.
 always use software decoding (default)
 .TP
 .B auto
-enable best hw decoder (see below)
+forcibly enable any hw decoder found (see below)
 .TP
 .B yes
 exactly the same as \fBauto\fP
+.TP
+.B auto\-safe
+enable any whitelisted hw decoder (see below)
 .TP
 .B auto\-copy
 enable best hw decoder with copy\-back (see below)
 .TP
 .B vdpau
-requires \fB\-\-vo=gpu\fP with \fB\-\-gpu\-context=x11\fP,
-or \fB\-\-vo=vdpau\fP (Linux only)
+requires \fB\-\-vo=gpu\fP with X11, or \fB\-\-vo=vdpau\fP (Linux only)
 .TP
 .B vdpau\-copy
 copies video back into system RAM (Linux with some GPUs only)
@@ -2297,7 +2563,7 @@ copies video back into system RAM (Linux with some GPUs only)
 .TP
 .B videotoolbox
 requires \fB\-\-vo=gpu\fP (OS X 10.8 and up),
-or \fB\-\-vo=opengl\-cb\fP (iOS 9.0 and up)
+or \fB\-\-vo=libmpv\fP (iOS 9.0 and up)
 .TP
 .B videotoolbox\-copy
 copies video back into system RAM (OS X 10.8 or iOS 9.0 and up)
@@ -2355,47 +2621,31 @@ never be enabled. Also note that if the first found method doesn\(aqt actually
 work, it will always fall back to software decoding, instead of trying the
 next method (might matter on some Linux systems).
 .sp
+\fBauto\-safe\fP is similar to \fBauto\fP, but allows only whitelisted methods
+that are considered "safe". This is supposed to be a reasonable way to
+enable hardware decdoding by default in a config file (even though you
+shouldn\(aqt do that anyway; prefer runtime enabling with \fBCtrl+h\fP). Unlike
+\fBauto\fP, this will not try to enable unknown or known\-to\-be\-bad methods. In
+addition, this may disable hardware decoding in other situations when it\(aqs
+known to cause problems, but currently this mechanism is quite primitive.
+(As an example for something that still causes problems: certain
+combinations of HEVC and Intel chips on Windows tend to cause mpv to crash,
+most likely due to driver bugs.)
+.sp
+\fBauto\-copy\-safe\fP selects the union of methods selected with \fBauto\-safe\fP
+and \fBauto\-copy\fP\&.
+.sp
 \fBauto\-copy\fP selects only modes that copy the video data back to system
 memory after decoding. This selects modes like \fBvaapi\-copy\fP (and so on).
-If none of these work, hardware decoding is disabled. This mode is always
-guaranteed to incur no additional loss compared to software decoding, and
-will allow CPU processing with video filters.
+If none of these work, hardware decoding is disabled. This mode is usually
+guaranteed to incur no additional quality loss compared to software
+decoding (assuming modern codecs and an error free video stream), and will
+allow CPU processing with video filters. This mode works with all video
+filters and VOs.
 .sp
-The \fBvaapi\fP mode, if used with \fB\-\-vo=gpu\fP, requires Mesa 11 and most
-likely works with Intel GPUs only. It also requires the opengl EGL backend.
-.sp
-The \fBcuda\fP and \fBcuda\-copy\fP modes provides deinterlacing in the decoder
-which is useful as there is no other deinterlacing mechanism in the gpu
-output path. To use this deinterlacing you must pass the option:
-\fBvd\-lavc\-o=deint=[weave|bob|adaptive]\fP\&.
-Pass \fBweave\fP (or leave the option unset) to not attempt any
-deinterlacing. \fBcuda\fP should always be preferred unless the \fBgpu\fP
-vo is not being used or filters are required.
-.sp
-\fBnvdec\fP is a newer implementation of CUVID/CUDA decoding, which uses the
-FFmpeg decoders for file parsing. Experimental, is known not to correctly
-check whether decoding is supported by the hardware at all. Deinterlacing
-is not supported. Since this uses FFmpeg\(aqs codec parsers, it is expected
-that this generally causes fewer issues than \fBcuda\fP\&.
-.sp
-Most video filters will not work with hardware decoding as they are
-primarily implemented on the CPU. Some exceptions are \fBvdpaupp\fP,
-\fBvdpaurb\fP and \fBvavpp\fP\&. See \fI\%VIDEO FILTERS\fP for more details.
-.sp
-The \fB\&...\-copy\fP modes (e.g. \fBdxva2\-copy\fP) allow you to use hardware
-decoding with any VO, backend or filter. Because these copy the decoded
-video back to system RAM, they\(aqre likely less efficient than the direct
-modes (like e.g. \fBdxva2\fP), and probably not more efficient than software
-decoding except for some codecs (e.g. HEVC).
-.sp
-\fBNOTE:\fP
-.INDENT 7.0
-.INDENT 3.5
-When using this switch, hardware decoding is still only done for some
-codecs. See \fB\-\-hwdec\-codecs\fP to enable hardware decoding for more
-codecs.
-.UNINDENT
-.UNINDENT
+Because these copy the decoded video back to system RAM, they\(aqre often less
+less efficient than the direct modes, and may not help too much over
+software decoding.
 .sp
 \fBNOTE:\fP
 .INDENT 7.0
@@ -2404,6 +2654,25 @@ Most non\-copy methods only work with the OpenGL GPU backend. Currently,
 only the \fBnvdec\fP and \fBcuda\fP methods work with Vulkan.
 .UNINDENT
 .UNINDENT
+.sp
+The \fBvaapi\fP mode, if used with \fB\-\-vo=gpu\fP, requires Mesa 11 and most
+likely works with Intel and AMD GPUs only. It also requires the opengl EGL
+backend.
+.sp
+The \fBcuda\fP and \fBcuda\-copy\fP modes provides deinterlacing in the decoder
+which is useful as there is no other deinterlacing mechanism in the gpu
+output path. To use this deinterlacing you must pass the option:
+\fBvd\-lavc\-o=deint=[weave|bob|adaptive]\fP\&.
+Pass \fBweave\fP (or leave the option unset) to not attempt any
+deinterlacing. \fBcuda\fP should always be preferred over \fBcuda\-copy\fP unless
+the \fBgpu\fP vo is not being used or filters are required. Using \fBnvdec\fP
+should be preferred on Nvidia hardware.
+.sp
+\fBnvdec\fP is a newer implementation of CUVID/CUDA decoding, which uses the
+FFmpeg decoders for file parsing. Experimental, is known not to correctly
+check whether decoding is supported by the hardware at all. Deinterlacing
+is not supported. Since this uses FFmpeg\(aqs codec parsers, it is expected
+that this generally causes fewer issues than \fBcuda\fP\&.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Quality reduction with hardware decoding"
@@ -2472,13 +2741,13 @@ the first thing you should try is disabling it.
 This option is for troubleshooting hwdec interop issues. Since it\(aqs a
 debugging option, its semantics may change at any time.
 .sp
-This is useful for the \fBgpu\fP and \fBopengl\-cb\fP VOs for selecting which
+This is useful for the \fBgpu\fP and \fBlibmpv\fP VOs for selecting which
 hwdec interop context to use exactly. Effectively it also can be used
 to block loading of certain backends.
 .sp
 If set to \fBauto\fP (default), the behavior depends on the VO: for \fBgpu\fP,
 it does nothing, and the interop context is loaded on demand (when the
-decoder probes for \fB\-\-hwdec\fP support). For \fBopengl\-cb\fP, which has
+decoder probes for \fB\-\-hwdec\fP support). For \fBlibmpv\fP, which has
 has no on\-demand loading, this is equivalent to \fBall\fP\&.
 .sp
 The empty string is equivalent to \fBauto\fP\&.
@@ -2791,6 +3060,11 @@ detected or reported profiles are somehow incorrect.
 Fallback to software decoding if the hardware\-accelerated decoder fails
 (default: 3). If this is a number, then fallback will be triggered if
 N frames fail to decode in a row. 1 is equivalent to \fByes\fP\&.
+.sp
+Setting this to a higher number might break the playback start fallback: if
+a fallback happens, parts of the file will be skipped, approximately by to
+the number of packets that could not be decoded. Values below an unspecified
+count will not have this problem, because mpv retains the packets.
 .TP
 .B \fB\-\-vd\-lavc\-dr=<yes|no>\fP
 Enable direct rendering (default: yes). If this is set to \fByes\fP, the
@@ -2829,6 +3103,8 @@ welcome. A full list of AVOptions can be found in the FFmpeg manual.
 Some options which used to be direct options can be set with this
 mechanism, like \fBbug\fP, \fBgray\fP, \fBidct\fP, \fBec\fP, \fBvismv\fP,
 \fBskip_top\fP (was \fBst\fP), \fBskip_bottom\fP (was \fBsb\fP), \fBdebug\fP\&.
+.sp
+This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Example"
@@ -3123,6 +3399,8 @@ machine and use that, up to the maximum of 16 (default: 1).
 Pass AVOptions to libavcodec decoder. Note, a patch to make the o=
 unneeded and pass all unknown options through the AVOption system is
 welcome. A full list of AVOptions can be found in the FFmpeg manual.
+.sp
+This is a key/value list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-ad\-spdif\-dtshd=<yes|no>\fP, \fB\-\-dtshd\fP, \fB\-\-no\-dtshd\fP
 If DTS is passed through, use DTS\-HD.
@@ -3234,7 +3512,7 @@ This option has no influence on files with normal video tracks.
 .B \fB\-\-audio\-files=<files>\fP
 Play audio from an external file while viewing a video.
 .sp
-This is a list option. See \fI\%List Options\fP for details.
+This is a path list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-audio\-file=<file>\fP
 CLI/config file only alias for \fB\-\-audio\-files\-append\fP\&. Each use of this
@@ -3333,6 +3611,8 @@ directories.
 .TP
 .B \fB\-\-audio\-file\-paths=<path1:path2:...>\fP
 Equivalent to \fB\-\-sub\-file\-paths\fP option, but for auto\-loaded audio files.
+.sp
+This is a path list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-audio\-client\-name=<name>\fP
 The application name the player reports to the audio API. Can be useful
@@ -3410,7 +3690,7 @@ two subtitles at once: use \fB\-\-sid\fP to select the first subtitle index,
 and \fB\-\-secondary\-sid\fP to select the second index. (The index is printed
 on the terminal output after the \fB\-\-sid=\fP in the list of streams.)
 .sp
-\fB\-\-sub\-files\fP is a list option (see \fI\%List Options\fP  for details), and
+\fB\-\-sub\-files\fP is a path list option (see \fI\%List Options\fP  for details), and
 can take multiple file names separated by \fB:\fP (Unix) or \fB;\fP (Windows),
 while  \fB\-\-sub\-file\fP takes a single filename, but can be used multiple
 times to add multiple files. Technically, \fB\-\-sub\-file\fP is a CLI/config
@@ -3516,6 +3796,8 @@ loaded assuming a framerate of 23.976 at 25 FPS.
 .TP
 .B \fB\-\-sub\-ass\-force\-style=<[Style.]Param=Value[,...]>\fP
 Override some style or script info parameters.
+.sp
+This is a string list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Examples"
@@ -3889,7 +4171,7 @@ the \fBsub\fP configuration subdirectory (usually \fB~/.config/mpv/sub/\fP)
 .UNINDENT
 .UNINDENT
 .sp
-This is a list option. See \fI\%List Options\fP for details.
+This is a path list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-sub\-visibility\fP, \fB\-\-no\-sub\-visibility\fP
 Can be used to disable display of subtitles, but still select and decode
@@ -4155,8 +4437,8 @@ Fullscreen playback.
 .B \fB\-\-fs\-screen=<all|current|0\-32>\fP
 In multi\-monitor configurations (i.e. a single desktop that spans across
 multiple displays), this option tells mpv which screen to go fullscreen to.
-If \fBdefault\fP is provided mpv will fallback on using the behavior
-depending on what the user provided with the \fBscreen\fP option.
+If \fBcurrent\fP is used mpv will fallback on what the user provided with
+the \fBscreen\fP option.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Note (X11)"
@@ -4470,6 +4752,23 @@ they override this option).
 For example, \fB\-\-window\-scale=0.5\fP would show the window at half the
 video size.
 .TP
+.B \fB\-\-window\-minimized=<yes|no>\fP
+Whether the video window is minimized or not. Setting this will minimize,
+or unminimze, the video window if the current VO supports it. Note that
+some VOs may support minimization while not supporting unminimization
+(eg: Wayland).
+.sp
+Whether this option and \fB\-\-window\-maximized\fP work on program start or
+at runtime, and whether they\(aqre (at runtime) updated to reflect the actual
+window state, heavily depends on the VO and the windowing system. Some VOs
+simply do not implement them or parts of them, while other VOs may be
+restricted by the windowing systems (especially Wayland).
+.TP
+.B \fB\-\-window\-maximized=<yes|no>\fP
+Whether the video window is maximized or not. Setting this will maximize,
+or unmaximize, the video window if the current VO supports it. See
+\fB\-\-window\-minimized\fP for further remarks.
+.TP
 .B \fB\-\-cursor\-autohide=<number|no|always>\fP
 Make mouse cursor automatically hide after given number of milliseconds.
 \fBno\fP will disable cursor autohide. \fBalways\fP means the cursor will stay
@@ -4528,7 +4827,7 @@ See also \fB\-\-monitorpixelaspect\fP and \fB\-\-video\-aspect\-override\fP\&.
 .UNINDENT
 .TP
 .B \fB\-\-hidpi\-window\-scale\fP, \fB\-\-no\-hidpi\-window\-scale\fP
-(OS X and X11 only)
+(OS X, X11, and Wayland only)
 Scale the window size according to the backing scale factor (default: yes).
 On regular HiDPI resolutions the window opens with double the size but appears
 as having the same size as on none\-HiDPI resolutions. This is the default OS X
@@ -4786,6 +5085,8 @@ Note, a patch to make the \fIo=\fP unneeded and pass all unknown options
 through the AVOption system is welcome. A full list of AVOptions can
 be found in the FFmpeg manual. Note that some options may conflict
 with mpv options.
+.sp
+This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Example"
@@ -4820,6 +5121,18 @@ seeking API can\(aqt deal with this either; it\(aqs likely that if this option
 breaks this even more, while if it\(aqs disabled, you can at least seek within
 the first song in the stream. Well, you won\(aqt get anything useful either
 way if the seek is outside of mpv\(aqs cache.
+.TP
+.B \fB\-\-demuxer\-lavf\-propagate\-opts=<yes|no>\fP
+Propagate FFmpeg\-level options to recursively opened connections (default:
+yes). This is needed because FFmpeg will apply these settings to nested
+AVIO contexts automatically. On the other hand, this could break in certain
+situations \- it\(aqs the FFmpeg API, you just can\(aqt win.
+.sp
+This affects in particular the \fB\-\-timeout\fP option and anything passed
+with \fB\-\-demuxer\-lavf\-o\fP\&.
+.sp
+If this option is deemed unnecessary at some point in the future, it will
+be removed without notice.
 .TP
 .B \fB\-\-demuxer\-mkv\-subtitle\-preroll=<yes|index|no>\fP, \fB\-\-mkv\-subtitle\-preroll\fP
 Try harder to show embedded soft subtitles when seeking somewhere. Normally,
@@ -5108,6 +5421,8 @@ work (key bindings that normally quit will be shown on OSD only, just
 like any other binding). See \fI\%INPUT.CONF\fP\&.
 .TP
 .B \fB\-\-input\-file=<filename>\fP
+Deprecated. Use \fB\-\-input\-ipc\-server\fP\&.
+.sp
 Read commands from the given file. Mostly useful with a FIFO. Since
 mpv 0.7.0 also understands JSON commands (see \fI\%JSON IPC\fP), but you can\(aqt
 get replies or events. Use \fB\-\-input\-ipc\-server\fP for something
@@ -5146,12 +5461,8 @@ Windows.
 .sp
 See \fI\%JSON IPC\fP for details.
 .TP
-.B \fB\-\-input\-appleremote=<yes|no>\fP
-(OS X only)
-Enable/disable Apple Remote support. Enabled by default (except for libmpv).
-.TP
 .B \fB\-\-input\-gamepad=<yes|no>\fP
-Enable/disable SDL2 Gamepad support. Enabled by default (except for libmpv).
+Enable/disable SDL2 Gamepad support. Disabled by default.
 .TP
 .B \fB\-\-input\-cursor\fP, \fB\-\-no\-input\-cursor\fP
 Permit mpv to receive pointer events reported by the video output
@@ -5629,6 +5940,21 @@ Software scaler chroma horizontal shifting. See \fB\-\-sws\-scaler\fP\&.
 .B \fB\-\-sws\-cvs=<v>\fP
 Software scaler chroma vertical shifting. See \fB\-\-sws\-scaler\fP\&.
 .TP
+.B \fB\-\-sws\-bitexact=<yes|no>\fP
+Unknown functionality (default: no). Consult libswscale source code. The
+primary purpose of this, as far as libswscale API goes), is to produce
+exactly the same output for the same input on all platforms (output has the
+same "bits" everywhere, thus "bitexact"). Typically disables optimizations.
+.TP
+.B \fB\-\-sws\-fast=<yes|no>\fP
+Allow optimizations that help with performance, but reduce quality (default:
+no).
+.sp
+VOs like \fBdrm\fP and \fBx11\fP will benefit a lot from using \fB\-\-sws\-fast\fP\&.
+You may need to set other options, like \fB\-\-sws\-scaler\fP\&. The builtin
+\fBsws\-fast\fP profile sets this option and some others to gain performance
+for reduced quality.
+.TP
 .B \fB\-\-sws\-allow\-zimg=<yes|no>\fP
 Allow using zimg (if the component using the internal swscale wrapper
 explicitly allows so). In this case, zimg \fImay\fP be used, if the internal
@@ -5642,10 +5968,32 @@ If the internal component using the swscale wrapper hooks up logging
 correctly, a verbose priority log message will indicate whether zimg is
 being used.
 .sp
-Currently, barely anything uses this.
+Most things which need software conversion can make use of this.
 .TP
-.B \fB\-\-zimg\-\-scaler=<point|bilinear|bicubic|spline16|lanczos>\fP
-Zimg luma scaler to use (default: bilinear).
+.B \fB\-\-zimg\-scaler=<point|bilinear|bicubic|spline16|spline36|lanczos>\fP
+Zimg luma scaler to use (default: lanczos).
+.TP
+.B \fB\-\-zimg\-scaler\-param\-a=<default|float>\fP, \fB\-\-zimg\-scaler\-param\-b=<default|float>\fP
+Set scaler parameters. By default, these are set to the special string
+\fBdefault\fP, which maps to a scaler\-specific default value. Ignored if the
+scaler is not tunable.
+.INDENT 7.0
+.TP
+.B \fBlanczos\fP
+\fB\-\-zimg\-scaler\-param\-a\fP is the number of taps.
+.TP
+.B \fBbicubic\fP
+a and b are the bicubic b and c parameters.
+.UNINDENT
+.TP
+.B \fB\-\-zimg\-scaler\-chroma=...\fP
+Same as \fB\-\-zimg\-scaler\fP, for for chroma interpolation (default: bilinear).
+.TP
+.B \fB\-\-zimg\-scaler\-chroma\-param\-a\fP, \fB\-\-zimg\-scaler\-chroma\-param\-b\fP
+Same as \fB\-\-zimg\-scaler\-param\-a\fP / \fB\-\-zimg\-scaler\-param\-b\fP, for chroma.
+.TP
+.B \fB\-\-zimg\-dither=<no|ordered|random|error\-diffusion>\fP
+Dithering (default: random).
 .TP
 .B \fB\-\-zimg\-fast=<yes|no>\fP
 Allow optimizations that help with performance, but reduce quality (default:
@@ -5698,6 +6046,8 @@ For testing/debugging only. Can be removed or changed any time.
 .B \fB\-\-audio\-swresample\-o=<string>\fP
 Set AVOptions on the SwrContext or AVAudioResampleContext. These should
 be documented by FFmpeg or Libav.
+.sp
+This is a key/value list option. See \fI\%List Options\fP for details.
 .UNINDENT
 .SS Terminal
 .INDENT 0.0
@@ -5969,6 +6319,38 @@ use.
 .UNINDENT
 .sp
 Currently, this is used for \fB\-\-cache\-on\-disk\fP only.
+.TP
+.B \fB\-\-stream\-buffer\-size=<bytesize>\fP
+Size of the low level stream byte buffer (default: 128KB). This is used as
+buffer between demuxer and low level I/O (e.g. sockets). Generally, this
+can be very small, and the main purpose is similar to the internal buffer
+FILE in the C standard library will have.
+.sp
+Half of the buffer is always used for guaranteed seek back, which is
+important for unseekable input.
+.sp
+There are known cases where this can help performance to set a large buffer:
+.INDENT 7.0
+.INDENT 3.5
+.INDENT 0.0
+.IP 1. 3
+mp4 files. libavformat may trigger many small seeks in both
+directions, depending on how the file was muxed.
+.IP 2. 3
+Certain network filesystems, which do not have a cache, and where
+small reads can be inefficient.
+.UNINDENT
+.UNINDENT
+.UNINDENT
+.sp
+In other cases, setting this to a large value can reduce performance.
+.sp
+Usually, read accesses are at half the buffer size, but it may happen that
+accesses are done alternating with smaller and larger sizes (this is due to
+the internal ring buffer wrap\-around).
+.sp
+See \fB\-\-list\-options\fP for defaults and value range. \fB<bytesize>\fP options
+accept suffixes such as \fBKiB\fP and \fBMiB\fP\&.
 .UNINDENT
 .SS Network
 .INDENT 0.0
@@ -5985,6 +6367,8 @@ format.
 .TP
 .B \fB\-\-http\-header\-fields=<field1,field2>\fP
 Set custom HTTP fields when accessing HTTP stream.
+.sp
+This is a string list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Example"
@@ -6046,9 +6430,10 @@ A file containing the private key for the certificate.
 Specify a referrer path or URL for HTTP requests.
 .TP
 .B \fB\-\-network\-timeout=<seconds>\fP
-Specify the network timeout in seconds. This affects at least HTTP. The
-special value 0 (default) uses the FFmpeg/Libav defaults. If a protocol
-is used which does not support timeouts, this option is silently ignored.
+Specify the network timeout in seconds (default: 60 seconds). This affects
+at least HTTP. The special value 0 uses the FFmpeg/Libav defaults. If a
+protocol is used which does not support timeouts, this option is silently
+ignored.
 .sp
 \fBWARNING:\fP
 .INDENT 7.0
@@ -6058,8 +6443,10 @@ regarding its internal timeout option. Not only does the RTSP timeout
 option accept different units (seconds instead of microseconds, causing
 mpv to pass it huge values), it will also overflow FFmpeg internal
 calculations. The worst is that merely setting the option will put RTSP
-into listening mode, which breaks any client uses. Do not use this
-option with RTSP URLs.
+into listening mode, which breaks any client uses. At time of this
+writing, the fix was not made effective yet. For this reason, this
+option is ignored (or should be ignored) on RTSP URLs. You can still
+set the timeout option directly with \fB\-\-demuxer\-lavf\-o\fP\&.
 .UNINDENT
 .UNINDENT
 .TP
@@ -6198,7 +6585,7 @@ for further remarks.
 .SS GPU renderer options
 .sp
 The following video options are currently all specific to \fB\-\-vo=gpu\fP and
-\fB\-\-vo=opengl\-cb\fP only, which are the only VOs that implement them.
+\fB\-\-vo=libmpv\fP only, which are the only VOs that implement them.
 .INDENT 0.0
 .TP
 .B \fB\-\-scale=<filter>\fP
@@ -6553,7 +6940,7 @@ and drivers, this only works reliably when in fullscreen mode. It may also
 require driver\-specific hacks if using multiple monitors, to ensure mpv
 syncs to the right one. Compositing window managers can also lead to bad
 results, as can missing or incorrect display FPS information (see
-\fB\-\-display\-fps\fP).
+\fB\-\-override\-display\-fps\fP).
 .TP
 .B \fB\-\-vulkan\-swap\-mode=<mode>\fP
 Controls the presentation mode of the vulkan swapchain. This is similar
@@ -6597,8 +6984,8 @@ waiting for pipeline bubbles and memory operations. Not beneficial on all
 GPUs. It\(aqs worth noting that if async compute is enabled, and the device
 supports more compute queues than graphics queues (bound by the restrictions
 set by \fB\-\-vulkan\-queue\-count\fP), mpv will internally try and prefer the
-use of compute shaders over fragment shaders wherever possible. Not enabled
-by default, since it seems to cause issues with some drivers.
+use of compute shaders over fragment shaders wherever possible. Enabled by
+default, although Nvidia users may want to disable it.
 .TP
 .B \fB\-\-d3d11\-warp=<yes|no|auto>\fP
 Use WARP (Windows Advanced Rasterization Platform) with the D3D11 GPU
@@ -6652,6 +7039,22 @@ utilize the rgba8 output format.
 .UNINDENT
 .UNINDENT
 .TP
+.B \fB\-\-d3d11\-output\-csp=<auto|srgb|linear|pq|bt.2020>\fP
+Select a specific D3D11 output color space to utilize for D3D11 rendering.
+"auto" is the default, which will select the color space of the desktop
+on which the swap chain is located.
+.sp
+Values other than "srgb" and "pq" have had issues in testing, so they
+are mostly available for manual testing.
+.sp
+\fBNOTE:\fP
+.INDENT 7.0
+.INDENT 3.5
+Swap chain color space configuration is only available from an API
+available from Windows 10. Thus on older systems it will not work.
+.UNINDENT
+.UNINDENT
+.TP
 .B \fB\-\-d3d11va\-zero\-copy=<yes|no>\fP
 By default, when using hardware decoding with \fB\-\-gpu\-api=d3d11\fP, the
 video image will be copied (GPU\-to\-GPU) from the decoder surface to a
@@ -6664,7 +7067,7 @@ drivers support it.)
 .sp
 Currently only relevant for \fB\-\-gpu\-api=d3d11\fP\&.
 .TP
-.B \fB\-\-wayland\-frame\-wait\-offset=<\-100..3000>\fP
+.B \fB\-\-wayland\-frame\-wait\-offset=<\-500..3000>\fP
 Control the amount of offset (in microseconds) to add to wayland\(aqs frame wait
 (default 1000). The wayland context assumes that if frame callback or presentation
 feedback isn\(aqt received within a certain amount of time then the video is being
@@ -6701,11 +7104,15 @@ It may be removed in the future.
 .UNINDENT
 .UNINDENT
 .TP
-.B \fB\-\-glsl\-shaders=<file\-list>\fP
+.B \fB\-\-glsl\-shader=<file>\fP, \fB\-\-glsl\-shaders=<file\-list>\fP
 Custom GLSL hooks. These are a flexible way to add custom fragment shaders,
 which can be injected at almost arbitrary points in the rendering pipeline,
-and access all previous intermediate textures. Each use of the option will
-add another file to the internal list of shaders (see \fI\%List Options\fP).
+and access all previous intermediate textures.
+.sp
+Each use of the \fB\-\-glsl\-shader\fP option will add another file to the
+internal list of shaders, while \fB\-\-glsl\-shaders\fP takes a list of files,
+and overwrites the internal list with it. The latter is a path list option
+(see \fI\%List Options\fP for details).
 .INDENT 7.0
 .INDENT 3.5
 .IP "Warning"
@@ -7276,7 +7683,7 @@ autoprobe order).
 auto\-select (default)
 .TP
 .B cocoa
-Cocoa/OS X (deprecated, use \-\-vo=opengl\-cb instead)
+Cocoa/OS X (deprecated, use \-\-vo=libmpv instead)
 .TP
 .B win
 Win32/WGL
@@ -7317,12 +7724,6 @@ X11/EGL
 .TP
 .B android
 Android/EGL. Requires \fB\-\-wid\fP be set to an \fBandroid.view.Surface\fP\&.
-.TP
-.B vdpauglx
-Use vdpau presentation with GLX as backing. Experimental use only.
-Using this will have no advantage (other than additional bugs or
-performance problems), and is for doing experiments only. Will not
-be used automatically.
 .UNINDENT
 .TP
 .B \fB\-\-gpu\-api=<type>\fP
@@ -7877,6 +8278,8 @@ is no general globbing). Just passing \fB*\fP essentially filtering.
 .sp
 The default includes a common list of tags, call mpv with \fB\-\-list\-options\fP
 to see it.
+.sp
+This is a string list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-mc=<seconds/frame>\fP
 Maximum A\-V sync correction per frame (in seconds)
@@ -8050,6 +8453,8 @@ options are silently ignored. (They are mentioned in the terminal output
 in verbose mode, i.e. \fB\-\-v\fP\&. In general we can\(aqt print errors, because
 other options such as e.g. user agent are not available with all protocols,
 and printing errors for unknown options would end up being too noisy.)
+.sp
+This is a key/value list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-vo\-mmcss\-profile=<name>\fP
 (Windows only.)
@@ -8086,7 +8491,7 @@ does not cause default stream selection over the "proper" file. This makes
 it slightly less intrusive. (In mpv 0.28.0 and before, this was not quite
 strictly enforced.)
 .sp
-This is a list option. See \fI\%List Options\fP for details.
+This is a path list option. See \fI\%List Options\fP for details.
 .TP
 .B \fB\-\-external\-file=<file>\fP
 CLI/config file only alias for \fB\-\-external\-files\-append\fP\&. Each use of this
@@ -8209,6 +8614,35 @@ A libavfilter source\-only filter (Conways\(aq Life Game).
 .sp
 See the FFmpeg libavfilter documentation for details on the available
 filters.
+.TP
+.B \fB\-\-metadata\-codepage=<codepage>\fP
+Codepage for various input metadata (default: \fButf\-8\fP). This affects how
+file tags, chapter titles, etc. are interpreted. You can for example set
+this to \fBauto\fP to enable autodetection of the codepage. (This is not the
+default because non\-UTF\-8 codepages are an obscure fringe use\-case.)
+.sp
+See \fB\-\-sub\-codepage\fP option on how codepages are specified and further
+details regarding autodetection and codepage conversion. (The underlying
+code is the same.)
+.sp
+Conversion is not applied to metadata that is updated at runtime.
+.UNINDENT
+.SS Debugging
+.INDENT 0.0
+.TP
+.B \fB\-\-unittest=<name>\fP
+Run an internal unit test. There are multiple, and the name specifies which.
+.sp
+The special value \fBall\-simple\fP runs all tests which do not need further
+setup (other arguments and such). Some tests may need additional arguments
+to do anything useful.
+.sp
+On success, the player binary exits with exit status 0, otherwise it returns
+with an undefined non\-0 exit status (it may crash or abort itself on test
+failures).
+.sp
+This is only enabled if built with \fB\-\-enable\-tests\fP, and should normally
+be enabled and used by developers only.
 .UNINDENT
 .SH AUDIO OUTPUT DRIVERS
 .sp
@@ -8605,6 +9039,9 @@ the display refresh rate.
 Shared memory video output driver without hardware acceleration that works
 whenever X11 is present.
 .sp
+Since mpv 0.30.0, you may need to use \fB\-\-profile=sw\-fast\fP to get decent
+performance.
+.sp
 \fBNOTE:\fP
 .INDENT 7.0
 .INDENT 3.5
@@ -8992,6 +9429,9 @@ This driver is a joke.
 Color Unicode art video output driver that works on a text console.
 Depends on support of true color by modern terminals to display the images
 at full color range. On Windows it requires an ansi terminal such as mintty.
+.sp
+Since mpv 0.30.0, you may need to use \fB\-\-profile=sw\-fast\fP to get decent
+performance.
 .INDENT 7.0
 .TP
 .B \fB\-\-vo\-tct\-algo=<algo>\fP
@@ -9113,6 +9553,9 @@ Should be used when one doesn\(aqt want to install full\-blown graphical
 environment (e.g. no X). Does not support hardware acceleration (if you
 need this, check the \fBdrm\fP backend for \fBgpu\fP VO).
 .sp
+Since mpv 0.30.0, you may need to use \fB\-\-profile=sw\-fast\fP to get decent
+performance.
+.sp
 The following global options are supported by this video output:
 .INDENT 7.0
 .TP
@@ -9229,6 +9672,9 @@ To use hardware decoding with \fB\-\-vo=gpu\fP instead, use
 .B \fBwlshm\fP (Wayland only)
 Shared memory video output driver without hardware acceleration that works
 whenever Wayland is present.
+.sp
+Since mpv 0.30.0, you may need to use \fB\-\-profile=sw\-fast\fP to get decent
+performance.
 .sp
 \fBNOTE:\fP
 .INDENT 7.0
@@ -9624,6 +10070,9 @@ Video filters are managed in lists. There are a few commands to manage the
 filter list.
 .INDENT 0.0
 .TP
+.B \fB\-\-vf\-append=filter\fP
+Appends the filter given as arguments to the filter list.
+.TP
 .B \fB\-\-vf\-add=filter\fP
 Appends the filter given as arguments to the filter list. (Passing multiple
 filters is currently still possible, but deprecated.)
@@ -9632,12 +10081,24 @@ filters is currently still possible, but deprecated.)
 Prepends the filters given as arguments to the filter list. (Passing
 multiple filters is currently still possible, but deprecated.)
 .TP
+.B \fB\-\-vf\-remove=filter\fP
+Deletes the filter from the list. The filter can be either given the way it
+was added (filter name and its full argument list), or by label (prefixed
+with \fB@\fP). Matching of filters works as follows: if either of the compared
+filters has a label set, only the labels are compared. If none of the
+filters have a label, the filter name, arguments, and argument order are
+compared. (Passing multiple filters is currently still possible, but
+deprecated.)
+.TP
+.B \fB\-vf\-toggle=filter\fP
+Add the given filter to the list if it was not present yet, or remove it
+from the list if it was present. Matching of filters works as described in
+\fB\-\-vf\-remove\fP\&.
+.TP
 .B \fB\-\-vf\-del=filter\fP
-Deletes the filter. The filter can even given the way it was added (filter
-name and its full argument list), by label (prefixed with \fB@\fP), or as
-index number. Index numbers start at 0, negative numbers address the end of
-the list (\-1 is the last). (Passing multiple filters is currently still
-possible, but deprecated.)
+Sort of like \fB\-\-vf\-remove\fP, but also accepts an index number. Index
+numbers start at 0, negative numbers address the end of the list (\-1 is the
+last). Deprecated.
 .TP
 .B \fB\-\-vf\-clr\fP
 Completely empties the filter list.
@@ -10451,6 +10912,55 @@ Print computed fingerprints the the terminal (default: no). This is
 mostly for testing and such. Scripts should use \fBvf\-metadata\fP to
 read information from this filter instead.
 .UNINDENT
+.TP
+.B \fBgpu=...\fP
+Convert video to RGB using the OpenGL renderer normally used with
+\fB\-\-vo=gpu\fP\&. This requires that the EGL implementation supports off\-screen
+rendering on the default display. (This is the case with Mesa.)
+.sp
+Sub\-options:
+.INDENT 7.0
+.TP
+.B \fBw=<pixels>\fP, \fBh=<pixels>\fP
+Size of the output in pixels (default: 0). If not positive, this will
+use the size of the first filtered input frame.
+.UNINDENT
+.sp
+\fBWARNING:\fP
+.INDENT 7.0
+.INDENT 3.5
+This is highly experimental. Performance is bad, and it will not work
+everywhere in the first place. Some features are not supported.
+.UNINDENT
+.UNINDENT
+.sp
+\fBWARNING:\fP
+.INDENT 7.0
+.INDENT 3.5
+This does not do OSD rendering. If you see OSD, then it has been
+rendered by the VO backend. (Subtitles are rendered by the \fBgpu\fP
+filter, if possible.)
+.UNINDENT
+.UNINDENT
+.sp
+\fBWARNING:\fP
+.INDENT 7.0
+.INDENT 3.5
+If you use this with encoding mode, keep in mind that encoding mode will
+convert the RGB filter\(aqs output back to yuv420p in software, using the
+configured software scaler. Using \fBzimg\fP might improve this, but in
+any case it might go against your goals when using this filter.
+.UNINDENT
+.UNINDENT
+.sp
+\fBWARNING:\fP
+.INDENT 7.0
+.INDENT 3.5
+Do not use this with \fB\-\-vo=gpu\fP\&. It will apply filtering twice, since
+most \fB\-\-vo=gpu\fP options are unconditionally applied to the \fBgpu\fP
+filter. There is no mechanism in mpv to prevent this.
+.UNINDENT
+.UNINDENT
 .UNINDENT
 .SH ENCODING
 .sp
@@ -10469,8 +10979,7 @@ list of supported formats.
 Specifies the output format options for libavformat.
 See \fB\-\-ofopts=help\fP for a full list of supported options.
 .sp
-Options are managed in lists. There are a few commands to manage the
-options list.
+This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .TP
 .B \fB\-\-ofopts\-add=<options1[,options2,...]>\fP
@@ -10502,8 +11011,7 @@ selects 128 kbps MP3 encoding.
 .UNINDENT
 .UNINDENT
 .sp
-Options are managed in lists. There are a few commands to manage the
-options list.
+This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .TP
 .B \fB\-\-oacopts\-add=<options1[,options2,...]>\fP
@@ -10542,8 +11050,7 @@ selects VBR quality factor 23 for H.264 encoding.
 .UNINDENT
 .UNINDENT
 .sp
-Options are managed in lists. There are a few commands to manage the
-options list.
+This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .TP
 .B \fB\-\-ovcopts\-add=<options1[,options2,...]>\fP
@@ -10572,6 +11079,8 @@ Specifies metadata to include in the output file.
 Supported keys vary between output formats. For example, Matroska (MKV) and
 FLAC allow almost arbitrary keys, while support in MP4 and MP3 is more
 limited.
+.sp
+This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Example"
@@ -10586,6 +11095,8 @@ adds a title and a comment to the output file.
 .B \fB\-\-oremove\-metadata=<metadata\-tag[,metadata\-tag,...]>\fP
 Specifies metadata to exclude from the output file when copying from the
 input file.
+.sp
+This is a string list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Example"
@@ -10672,6 +11183,8 @@ mpv \-\-input\-test \-\-force\-window \-\-idle
 .sp
 (Only closing the window will make \fBmpv\fP exit, pressing normal keys will
 merely display the binding, even if mapped to quit.)
+.sp
+Also see \fI\%Key names\fP\&.
 .SS input.conf syntax
 .sp
 \fB[Shift+][Ctrl+][Alt+][Meta+]<key> [{<section>}] <command> ( ; <command> )*\fP
@@ -10711,6 +11224,80 @@ If \fBa\fP or \fBa\-b\fP or \fBb\fP are already bound, this will run the first c
 that matches, and the multi\-key command will never be called. Intermediate keys
 can be remapped to \fBignore\fP in order to avoid this issue. The maximum number
 of (non\-modifier) keys for combinations is currently 4.
+.SS Key names
+.sp
+All mouse and keyboard input is to converted to mpv\-specific key names. Key
+names are either special symbolic identifiers representing a physical key, or a
+text key names, which are unicode code points encoded as UTF\-8. These are what
+keyboard input would normally produce, for example \fBa\fP for the A key. As a
+consequence, mpv uses input translated by the current OS keyboard layout, rather
+than physical scan codes.
+.sp
+Currently there is the hardcoded assumption that every text key can be
+represented as a single unicode code point (in NFKC form).
+.sp
+All key names can be combined with the modifiers \fBShift\fP, \fBCtrl\fP, \fBAlt\fP,
+\fBMeta\fP\&. They must be prefixed to the actual key name, where each modifier
+is followed by a \fB+\fP (for example \fBctrl+q\fP).
+.sp
+Symbolic key names and modifier names are case\-insensitive. Unicode key names
+are case\-sensitive because input bindings typically respect the shift key.
+.sp
+Another type of key names are hexadecimal key names, that serve as fallback
+for special keys that are neither unicode, nor have a special mpv defined name.
+They will break as soon as mpv adds proper names for them, but can enable you
+to use a key at all if that does not happen.
+.sp
+All symbolic names are listed by \fB\-\-input\-keylist\fP\&. \fB\-\-input\-test\fP is a
+special mode that prints all input on the OSD.
+.sp
+Comments on some symbolic names:
+.INDENT 0.0
+.TP
+.B \fBKP*\fP
+Keypad names. Behavior varies by backend (whether they implement this, and
+on how they treat numlock), but typically, mpv tries to map keys on the
+keypad to separate names, even if they produce the same text as normal keys.
+.TP
+.B \fBMOUSE_BTN*\fP, \fBMBTN*\fP
+Various mouse buttons.
+.sp
+Depending on backend, the mouse wheel might also be represented as a button.
+In addition, \fBMOUSE_BTN3\fP to \fBMOUSE_BTN6\fP are deprecated aliases for
+\fBWHEEL_UP\fP, \fBWHEEL_DOWN\fP, \fBWHEEL_LEFT\fP, \fBWHEEL_RIGHT\fP\&.
+.sp
+\fBMBTN*\fP are aliases for \fBMOUSE_BTN*\fP\&.
+.TP
+.B \fBWHEEL_*\fP
+Mouse wheels (typically).
+.TP
+.B \fBAXIS_*\fP
+Deprecated aliases for \fBWHEEL_*\fP\&.
+.TP
+.B \fB*_DBL\fP
+Mouse button double clicks.
+.TP
+.B \fBMOUSE_MOVE\fP, \fBMOUSE_ENTER\fP, \fBMOUSE_LEAVE\fP
+Emitted by mouse move events. Enter/leave happens when the mouse enters or
+leave the mpv window (or the current mouse region, using the deprecated
+mouse region input section mechanism).
+.TP
+.B \fBCLOSE_WIN\fP
+Pseudo key emitted when closing the mpv window using the OS window manager
+(for example, by clicking the close button in the window title bar).
+.TP
+.B \fBGAMEPAD_*\fP
+Keys emitted by the SDL gamepad backend.
+.TP
+.B \fBUNMAPPED\fP
+Pseudo\-key that matches any unmapped key. (You should probably avoid this
+if possible, because it might change behavior or get removed in the future.)
+.TP
+.B \fBANY_UNICODE\fP
+Pseudo\-key that matches any key that produces text. (You should probably
+avoid this if possible, because it might change behavior or get removed in
+the future.)
+.UNINDENT
 .SS Flat command syntax
 .sp
 This is the syntax used in input.conf, and referred to "input.conf syntax" in
@@ -11332,6 +11919,10 @@ Change audio filter chain. See \fBvf\fP command.
 .B \fBvf <operation> <value>\fP
 Change video filter chain.
 .sp
+The semantics are exactly the same as with option parsing (see
+\fI\%VIDEO FILTERS\fP). As such the text below is a redundant and incomplete
+summary.
+.sp
 The first argument decides what happens:
 .INDENT 7.0
 .TP
@@ -11356,7 +11947,7 @@ Remove the given filters from the video chain. Unlike in the other
 cases, the second parameter is a comma separated list of filter names
 or integer indexes. \fB0\fP would denote the first filter. Negative
 indexes start from the last filter, and \fB\-1\fP denotes the last
-filter.
+filter. Deprecated.
 .TP
 .B <clr>
 Remove all filters. Note that like the other sub\-commands, this does
@@ -11426,6 +12017,8 @@ reverse. The only advantage is that you don\(aqt need to reverse the value
 list yourself when adding a second key binding for cycling backwards.
 .TP
 .B \fBenable\-section <name> [<flags>]\fP
+This command is deprecated, except for mpv\-internal uses.
+.sp
 Enable all key bindings in the named input section.
 .sp
 The enabled input sections form a stack. Bindings in sections on the top of
@@ -11452,9 +12045,13 @@ Same.
 .UNINDENT
 .TP
 .B \fBdisable\-section <name>\fP
+This command is deprecated, except for mpv\-internal uses.
+.sp
 Disable the named input section. Undoes \fBenable\-section\fP\&.
 .TP
 .B \fBdefine\-section <name> <contents> [<flags>]\fP
+This command is deprecated, except for mpv\-internal uses.
+.sp
 Create a named input section, or replace the contents of an already existing
 input section. The \fBcontents\fP parameter uses the same syntax as the
 \fBinput.conf\fP file (except that using the section syntax in it is not
@@ -11559,6 +12156,90 @@ to see how to handle this correctly.
 Remove an overlay added with \fBoverlay\-add\fP and the same ID. Does nothing
 if no overlay with this ID exists.
 .TP
+.B \fBosd\-overlay\fP
+Add/update/remove an OSD overlay.
+.sp
+(Although this sounds similar to \fBoverlay\-add\fP, \fBosd\-overlay\fP is for
+text overlays, while \fBoverlay\-add\fP is for bitmaps. Maybe \fBoverlay\-add\fP
+will be merged into \fBosd\-overlay\fP to remove this oddity.)
+.sp
+You can use this to add text overlays in ASS format. ASS has advanced
+positioning and rendering tags, which can be used to render almost any kind
+of vector graphics.
+.sp
+This command accepts the following parameters:
+.INDENT 7.0
+.TP
+.B \fBid\fP
+Arbitrary integer that identifies the overlay. Multiple overlays can be
+added by calling this command with different \fBid\fP parameters. Calling
+this command with the same \fBid\fP replaces the previously set overlay.
+.sp
+There is a separate namespace for each libmpv client (i.e. IPC
+connection, script), so IDs can be made up and assigned by the API user
+without conflicting with other API users.
+.sp
+If the libmpv client is destroyed, all overlays associated with it are
+also deleted. In particular, connecting via \fB\-\-input\-ipc\-server\fP,
+adding an overlay, and disconnecting will remove the overlay immediately
+again.
+.TP
+.B \fBformat\fP
+String that gives the type of the overlay. Accepts the following values:
+.INDENT 7.0
+.TP
+.B \fBass\-events\fP
+The \fBdata\fP parameter is a string. The string is split on the
+newline character. Every line is turned into the \fBText\fP part of
+a \fBDialogue\fP ASS event. Timing is unused (but behavior of timing
+dependent ASS tags may change in future mpv versions).
+.sp
+Note that it\(aqs better to put multiple lines into \fBdata\fP, instead
+of adding multiple OSD overlays.
+.sp
+This provides 2 ASS \fBStyles\fP\&. \fBOSD\fP contains the text style as
+defined by the current \fB\-\-osd\-...\fP options. \fBDefault\fP is
+similar, and contains style that \fBOSD\fP would have if all options
+were set to the default.
+.sp
+In addition, the \fBres_x\fP and \fBres_y\fP options specify the value
+of the ASS \fBPlayResX\fP and \fBPlayResY\fP header fields. If \fBres_y\fP
+is set to 0, \fBPlayResY\fP is initialized to an arbitrary default
+value (but note that the default for this command is 720, not 0).
+If \fBres_x\fP is set to 0, \fBPlayResX\fP is set based on \fBres_y\fP
+such that a virtual ASS pixel has a square pixel aspect ratio.
+.TP
+.B \fBnone\fP
+Special value that causes the overlay to be removed. Most parameters
+other than \fBid\fP and \fBformat\fP are mostly ignored.
+.UNINDENT
+.TP
+.B \fBdata\fP
+String defining the overlay contents according to the \fBformat\fP
+parameter.
+.TP
+.B \fBres_x\fP, \fBres_y\fP
+Used if \fBformat\fP is set to \fBass\-events\fP (see description there).
+Optional, defaults to 0/720.
+.TP
+.B \fBz\fP
+The Z order of the overlay. Optional, defaults to 0.
+.sp
+Note that Z order between different overlays of different formats is
+static, and cannot be changed (currently, this means that bitmap
+overlays added by \fBoverlay\-add\fP are always on top of the ASS overlays
+added by \fBosd\-overlay\fP). In addition, the builtin OSD components are
+always below any of the custom OSD. (This includes subtitles of any kind
+as well as text rendered by \fBshow\-text\fP\&.)
+.sp
+It\(aqs possible that future mpv versions will randomly change how Z order
+between different OSD formats and builtin OSD is handled.
+.UNINDENT
+.sp
+Note: always use named arguments (\fBmpv_command_node()\fP). Scripts should
+use the \fBmp.create_osd_overlay()\fP helper instead of invoking this command
+directly.
+.TP
 .B \fBscript\-message [<arg1> [<arg2> [...]]]\fP
 Send a message to all clients, and pass it the following list of arguments.
 What this message means, how many arguments it takes, and what the arguments
@@ -11598,9 +12279,15 @@ The name of the binding (as established above).
 The key state as string (see below).
 .IP 4. 3
 The key name (since mpv 0.15.0).
+.IP 5. 3
+The text the key would produce, or empty string if not applicable.
 .UNINDENT
 .sp
-The key state consists of 2 letters:
+The 5th argument is only set if no modifiers are present (using the shift
+key with a letter is normally not emitted as having a modifier, and results
+in upper case text instead, but some backends may mess up).
+.sp
+The key state consists of 2 characters:
 .INDENT 7.0
 .IP 1. 3
 One of \fBd\fP (key was pressed down), \fBu\fP (was released), \fBr\fP (key
@@ -11610,6 +12297,9 @@ binding), \fBp\fP (key was pressed; happens if up/down can\(aqt be tracked).
 Whether the event originates from the mouse, either \fBm\fP (mouse button)
 or \fB\-\fP (something else).
 .UNINDENT
+.sp
+Future versions can add more arguments and more key state characters to
+support more input peculiarities.
 .TP
 .B \fBab\-loop\fP
 Cycle through A\-B loop states. The first command will set the \fBA\fP point
@@ -12189,6 +12879,18 @@ Current chapter number. The number of the first chapter is 0.
 .B \fBedition\fP (RW)
 Current MKV edition number. Setting this property to a different value will
 restart playback. The number of the first edition is 0.
+.sp
+Before mpv 0.31.0, this showed the actual edition selected at runtime, if
+you didn\(aqt set the option or property manually. With mpv 0.31.0 and later,
+this strictly returns the user\-set option or property value, and the
+\fBcurrent\-edition\fP property was added to return the runtime selected
+edition (this matters with \fB\-\-edition=auto\fP, the default).
+.TP
+.B \fBcurrent\-edition\fP
+Currently selected edition. This property is unavailable if no file is
+loaded, or the file has no editions. (Matroska files make a difference
+between having no editions and a single edition, which will be reflected by
+the property, although in practice it does not matter.)
 .TP
 .B \fBchapters\fP
 Number of chapters.
@@ -12726,9 +13428,20 @@ values contained in \fBdwidth\fP and \fBdheight\fP multiplied with the value
 set with this property. Setting \fB1\fP will resize to original video size
 (or to be exact, the size the video filters output). \fB2\fP will set the
 double size, \fB0.5\fP halves the size.
+.sp
+See \fBcurrent\-window\-scale\fP for the value derived from the actual window
+size.
+.sp
+Since mpv 0.31.0, this always returns the previously set value (or the
+default value), instead of the value implied by the actual window size.
+Before mpv 0.31.0, this returned what \fBcurrent\-window\-scale\fP returns now,
+after the window was created.
 .TP
-.B \fBwindow\-minimized\fP
-Return whether the video window is minimized or not.
+.B \fBcurrent\-window\-scale\fP
+The \fBwindow\-scale\fP value calculated from the current window size. This
+has the same value as \fBwindow\-scale\fP if the window size was not changed
+since setting the option, and the window size was not restricted in other
+ways. The property is unavailable if no video is active.
 .TP
 .B \fBdisplay\-names\fP
 Names of the displays that the mpv window covers. On X11, these
@@ -12739,12 +13452,17 @@ window (as determined by the MonitorFromWindow API.) On macOS these are the
 Display Product Names as used in the System Information and only one display
 name is returned since a window can only be on one screen.
 .TP
-.B \fBdisplay\-fps\fP (RW)
+.B \fBdisplay\-fps\fP
 The refresh rate of the current display. Currently, this is the lowest FPS
 of any display covered by the video, as retrieved by the underlying system
 APIs (e.g. xrandr on X11). It is not the measured FPS. It\(aqs not necessarily
 available on all platforms. Note that any of the listed facts may change
 any time without a warning.
+.sp
+Writing to this property is deprecated. It has the same effect as writing to
+\fBoverride\-display\-fps\fP\&. Since mpv 0.31.0, this property is unavailable
+if no display FPS was reported (e.g. if no video is active), while in older
+versions, it returned the \fB\-\-display\-fps\fP option value.
 .TP
 .B \fBestimated\-display\-fps\fP
 Only available if display\-sync mode (as selected by \fB\-\-video\-sync\fP) is
@@ -12753,6 +13471,12 @@ measured by system time.
 .TP
 .B \fBvsync\-jitter\fP
 Estimated deviation factor of the vsync duration.
+.TP
+.B \fBdisplay\-hidpi\-scale\fP
+The HiDPI scale factor as reported by the windowing backend. If no VO is
+active, or if the VO does not report a value, this property is unavailable.
+It may be saner to report an absolute DPI, however, this is the way HiDPI
+support is implemented on most OS APIs. See also \fB\-\-hidpi\-window\-scale\fP\&.
 .TP
 .B \fBvideo\-aspect\fP (RW)
 Deprecated. This is tied to \fB\-\-video\-aspect\-override\fP, but always
@@ -12862,7 +13586,11 @@ within tracks of the same type (sub/audio/video), but otherwise not.
 String describing the media type. One of \fBaudio\fP, \fBvideo\fP, \fBsub\fP\&.
 .TP
 .B \fBtrack\-list/N/src\-id\fP
-Track ID as used in the source file. Not always available.
+Track ID as used in the source file. Not always available. (It is
+missing if the format has no native ID, if the track is a pseudo\-track
+that does not exist in this way in the actual file, or if the format
+is handled by libavformat, and the format was not whitelisted as having
+track IDs.)
 .TP
 .B \fBtrack\-list/N/title\fP
 Track title as it is stored in the file. Not always available.
@@ -13260,6 +13988,28 @@ Current video output driver (name as used with \fB\-\-vo\fP).
 .B \fBcurrent\-ao\fP
 Current audio output driver (name as used with \fB\-\-ao\fP).
 .TP
+.B \fBshared\-script\-properties\fP (RW)
+This is a key/value map of arbitrary strings shared between scripts for
+general use. The player itself does not use any data in it (although some
+builtin scripts may). The property is not preserved across player restarts.
+.sp
+This is very primitive, inefficient, and annoying to use. It\(aqs a makeshift
+solution which could go away any time (for example, when a better solution
+becomes available). This is also why this property has an annoying name. You
+should avoid using it, unless you absolutely have to.
+.sp
+Lua scripting has helpers starting with \fButils.shared_script_property_\fP\&.
+They are undocumented because you should not use this property. If you still
+think you must, you should use the helpers instead of the property directly.
+.sp
+You are supposed to use the \fBchange\-list\fP command to modify the contents.
+Reading, modifying, and writing the property manually could data loss if two
+scripts update different keys at the same time due to lack of
+synchronization. The Lua helpers take care of this.
+.sp
+(There is no way to ensure synchronization if two scripts try to update the
+same key at the same time.)
+.TP
 .B \fBworking\-directory\fP
 Return the working directory of the mpv process. Can be useful for JSON IPC
 users, because the command line player usually works with relative paths.
@@ -13402,6 +14152,58 @@ an array of options for each profile. Each option has a name and a value,
 with the value currently always being a string. Note that the options array
 is not a map, as order matters and duplicate entries are possible. Recursive
 profiles are not expanded, and show up as special \fBprofile\fP options.
+.TP
+.B \fBcommand\-list\fP
+Return the list of input commands. This returns an array of maps, where
+each map node represents a command. This map currently only has a single
+entry: \fBname\fP for the name of the command. (This property is supposed to
+be a replacement for \fB\-\-input\-cmdlist\fP\&. The option dumps some more
+information, but it\(aqs a valid feature request to extend this property if
+needed.)
+.TP
+.B \fBinput\-bindings\fP
+Return list of current input key bindings. This returns an array of maps,
+where each map node represents a binding for a single key/command. This map
+has the following entries:
+.INDENT 7.0
+.TP
+.B \fBkey\fP
+The key name. This is normalized and may look slightly different from
+how it was specified in the source (e.g. in input.conf).
+.TP
+.B \fBcmd\fP
+The command mapped to the key. (Currently, this is exactly the same
+string as specified in the source, other than stripping whitespace and
+comments. It\(aqs possible that it will be normalized in the future.)
+.TP
+.B \fBis_weak\fP
+If set to true, any existing and active user bindings will take priority.
+.TP
+.B \fBowner\fP
+If this entry exists, the name of the script (or similar) which added
+this binding.
+.TP
+.B \fBsection\fP
+Name of the section this binding is part of. This is a rarely used
+mechanism. This entry may be removed or change meaning in the future.
+.TP
+.B \fBpriority\fP
+A number. Bindings with a higher value are preferred over bindings
+with a lower value. If the value is negative, this binding is inactive
+and will not be triggered by input. Note that mpv does not use this
+value internally, and matching of bindings may work slightly differently
+in some cases. In addition, this value is dynamic and can change around
+at runtime.
+.TP
+.B \fBcomment\fP
+If available, the comment following the command on the same line. (For
+example, the input.conf entry \fBf cycle bla # toggle bla\fP would
+result in an entry with \fBcomment = "toggle bla", cmd = "cycle bla"\fP\&.)
+.UNINDENT
+.sp
+This property is read\-only, and change notification is not supported.
+Currently, there is no mechanism to change key bindings at runtime, other
+than scripts adding or removing their own bindings.
 .UNINDENT
 .SS Inconsistencies between options and properties
 .sp
@@ -13410,54 +14212,31 @@ caveats with some properties (due to historical reasons):
 .INDENT 0.0
 .TP
 .B \fBvid\fP, \fBaid\fP, \fBsid\fP
-While playback is active, you can set existing tracks only. (The option
-allows setting any track ID, and which tracks to enable is chosen at
-loading time.)
+While playback is active, these result the actually active tracks. For
+example, if you set \fBaid=5\fP, and the currently played file contains no
+audio track with ID 5, the \fBaid\fP property will return \fBno\fP\&.
 .sp
-Option changes at runtime are affected by this as well.
+Before mpv 0.31.0, you could set existing tracks at runtime only.
 .TP
 .B \fBdisplay\-fps\fP
-If a VO is created, this will return either the actual display FPS, or
-an invalid value, instead of the option value.
+This inconsistent behavior is deprecated. Post\-deprecation, the reported
+value and the option value are cleanly separated (\fBoverride\-display\-fps\fP
+for the option value).
 .TP
 .B \fBvf\fP, \fBaf\fP
 If you set the properties during playback, and the filter chain fails to
-reinitialize, the new value will be rejected. Setting the option or
-setting the property outside of playback will always succeed/fail in the
-same way. Also, there are no \fBvf\-add\fP etc. properties, but you can use
-the \fBvf\fP/\fBaf\fP group of commands to achieve the same.
+reinitialize, the option will be set, but the runtime filter chain does not
+change. On the other hand, the next video to be played will fail, because
+the initial filter chain cannot be created.
 .sp
-Option changes at runtime are affected by this as well.
-.TP
-.B \fBedition\fP
-While a file is loaded, the property will always return the effective
-edition, and setting the \fBauto\fP value will show somewhat strange behavior
-(the property eventually switching to whatever is the default edition).
+This behavior changed in mpv 0.31.0. Before this, the new value was rejected
+\fIiff\fP video (for \fBvf\fP) or audio (for \fBaf\fP) was active. If playback was
+not active, the behavior was the same as the current behavior.
 .TP
 .B \fBplaylist\fP
 The property is read\-only and returns the current internal playlist. The
 option is for loading playlist during command line parsing. For client API
 uses, you should use the \fBloadlist\fP command instead.
-.TP
-.B \fBwindow\-scale\fP
-Might verify the set value when setting while a window is created.
-.TP
-.B \fBaudio\-file\fP, \fBsub\-file\fP, \fBexternal\-file\fP
-These options/properties are actually lists of filenames. To make the
-command\-line interface easier, each \fB\-\-audio\-file=...\fP option appends
-the full string to the internal list. However, when used as properties,
-every time you set the property as a string the internal list will be
-replaced with a single entry containing the string you set. \fB,\fP or other
-separators are never used. You have to use \fBMPV_FORMAT_NODE_ARRAY\fP (or
-corresponding API, e.g. \fBmp.set_property_native()\fP with a table in Lua)
-to set multiple entries.
-.sp
-Strictly speaking, option access via API (e.g. \fBmpv_set_option_string()\fP)
-has the same problem, and it\(aqs only a difference between CLI/API.
-.TP
-.B \fBplaylist\-pos\fP, \fBchapter\fP
-These properties behave different from the deprecated options with the same
-names.
 .TP
 .B \fBprofile\fP, \fBinclude\fP
 These are write\-only, and will perform actions as they are written to,
@@ -14089,8 +14868,10 @@ the osc may overwrite the \fB\-\-video\-margin\-ratio\-*\fP options, even if the
 user has set them. (It will not overwrite them if all of them are set to
 default values.)
 .sp
-Currently, this is supported for the \fBbottombar\fP layout only. The other
-layouts do not change if this option is set.
+Currently, this is supported for the \fBbottombar\fP and \fBtopbar\fP layout
+only. The other layouts do not change if this option is set. Separately,
+if window controls are present (see below), they will be affected
+regardless of which osc layout is in use.
 .sp
 The border is static and appears even if the OSC is configured to appear
 only on mouse interaction. If the OSC is invisible, the border is simply
@@ -14099,6 +14880,36 @@ filled with the background color (black by default).
 This currently still makes the OSC overlap with subtitles (if the
 \fB\-\-sub\-use\-margins\fP option is set to \fByes\fP, the default). This may be
 fixed later.
+.sp
+This does not work correctly with video outputs like \fB\-\-vo=xv\fP, which
+render OSD into the unscaled video.
+.TP
+.B \fBwindowcontrols\fP
+Default: auto (Show window controls if there is no window border)
+.sp
+Whether to show window management controls over the video, and if so,
+which side of the window to place them. This may be desirable when the
+window has no decorations, either because they have been explicitly
+disabled (\fBborder=no\fP) or because the current platform doesn\(aqt support
+them (eg: gnome\-shell with wayland).
+.sp
+The set of window controls is fixed, offering \fBminimize\fP, \fBmaximize\fP,
+and \fBquit\fP\&. Not all platforms implement \fBminimize\fP and \fBmaximize\fP,
+but \fBquit\fP will always work.
+.TP
+.B \fBwindowcontrols_alignment\fP
+Default: right
+.sp
+If window controls are shown, indicates which side should they be aligned
+to.
+.sp
+Supports \fBleft\fP and \fBright\fP which will place the controls on those
+respective sides.
+.TP
+.B \fBgreenandgrumpy\fP
+Default: no
+.sp
+Set to \fByes\fP to reduce festivity (i.e. disable santa hat in December.)
 .UNINDENT
 .SS Script Commands
 .sp
@@ -14182,6 +14993,12 @@ T}	T{
 Show frame timings
 T}
 _
+T{
+3
+T}	T{
+Input cache stats
+T}
+_
 .TE
 .SS Font
 .sp
@@ -14209,6 +15026,9 @@ Default: 1
 .TP
 .B \fBkey_page_2\fP
 Default: 2
+.TP
+.B \fBkey_page_3\fP
+Default: 3
 .sp
 Key bindings for page switching while stats are displayed.
 .TP
@@ -14331,6 +15151,112 @@ e script\-binding stats/display\-page\-2
 .ft P
 .fi
 .UNINDENT
+.UNINDENT
+.SH CONSOLE
+.sp
+The console is a REPL for mpv input commands. It is displayed on the video
+window. It also shows log messages. It can be disabled entirely using the
+\fB\-\-load\-osd\-console=no\fP option.
+.SS Keybindings
+.INDENT 0.0
+.TP
+.B \(ga
+Show the console.
+.TP
+.B ESC
+Hide the console.
+.TP
+.B ENTER
+Run the typed command.
+.TP
+.B Shift+ENTER
+Type a literal newline character.
+.TP
+.B Ctrl+LEFT and Ctrl+RIGHT
+Move cursor to previous/next word.
+.TP
+.B UP and DOWN
+Navigate command history.
+.TP
+.B PGUP
+Go to the first command in the history.
+.TP
+.B PGDN
+Stop navigating command history.
+.TP
+.B INSERT
+Toggle insert mode.
+.TP
+.B Shift+INSERT
+Paste text (uses the primary selection on X11.)
+.TP
+.B TAB
+Complete the command or property name at the cursor.
+.TP
+.B Ctrl+C
+Clear current line.
+.TP
+.B Ctrl+K.
+Delete text from the cursor to the end of the line.
+.TP
+.B Ctrl+L
+Clear all log messages from the console.
+.TP
+.B Ctrl+U
+Delete text from the cursor to the beginning of the line.
+.TP
+.B Ctrl+V
+Paste text (uses the clipboard on X11.)
+.TP
+.B Ctrl+W
+Delete text from the cursor to the beginning of the current word.
+.UNINDENT
+.SS Commands
+.INDENT 0.0
+.TP
+.B \fBscript\-message\-to console type <text>\fP
+Show the console and pre\-fill it with the provided text.
+.UNINDENT
+.SS Known issues
+.INDENT 0.0
+.IP \(bu 2
+Pasting text is slow on Windows
+.IP \(bu 2
+Non\-ASCII keyboard input has restrictions
+.IP \(bu 2
+The cursor keys move between Unicode code\-points, not grapheme clusters
+.UNINDENT
+.SS Configuration
+.sp
+This script can be customized through a config file \fBscript\-opts/console.conf\fP
+placed in mpv\(aqs user directory and through the \fB\-\-script\-opts\fP command\-line
+option. The configuration syntax is described in \fI\%ON SCREEN CONTROLLER\fP\&.
+.sp
+Key bindings can be changed in a standard way, see for example stats.lua
+documentation.
+.SS Configurable Options
+.INDENT 0.0
+.TP
+.B \fBscale\fP
+Default: 1
+.sp
+All drawing is scaled by this value, including the text borders and the
+cursor.
+.sp
+If the VO backend in use has HiDPI scale reporting implemented, the option
+value is scaled with the reported HiDPI scale.
+.TP
+.B \fBfont\fP
+Default: unset (picks a hardcoded font depending on detected platform)
+.sp
+Set the font used for the REPL and the console. This probably doesn\(aqt
+have to be a monospaced font.
+.TP
+.B \fBfont_size\fP
+Default: 16
+.sp
+Set the font size used for the REPL and the console. This will be
+multiplied by "scale."
 .UNINDENT
 .SH LUA SCRIPTING
 .sp
@@ -14579,7 +15505,9 @@ command, and the name of the key binding (see below for
 an example). The name should be unique across other bindings in the same
 script \- if not, the previous binding with the same name will be
 overwritten. You can omit the name, in which case a random name is generated
-internally.
+internally. (Omitting works as follows: either pass \fBnil\fP for \fBname\fP,
+or pass the \fBfn\fP argument in place of the name. The latter is not
+recommended and is handled for compatibility only.)
 .sp
 The last argument is used for optional flags. This is a table, which can
 have the following entries:
@@ -14593,11 +15521,26 @@ If set to \fBtrue\fP, enables key repeat for this specific binding.
 .B \fBcomplex\fP
 If set to \fBtrue\fP, then \fBfn\fP is called on both key up and down
 events (as well as key repeat, if enabled), with the first
-argument being a table. This table has an \fBevent\fP entry, which
-is set to one of the strings \fBdown\fP, \fBrepeat\fP, \fBup\fP or
-\fBpress\fP (the latter if key up/down can\(aqt be tracked). It further
-has an \fBis_mouse\fP entry, which tells whether the event was caused
-by a mouse button.
+argument being a table. This table has the following entries (and
+may contain undocumented ones):
+.INDENT 7.0
+.TP
+.B \fBevent\fP
+Set to one of the strings \fBdown\fP, \fBrepeat\fP, \fBup\fP or
+\fBpress\fP (the latter if key up/down can\(aqt be tracked).
+.TP
+.B \fBis_mouse\fP
+Boolean Whether the event was caused by a mouse button.
+.TP
+.B \fBkey_name\fP
+The name of they key that triggered this, or \fBnil\fP if invoked
+artificially. If the key name is unknown, it\(aqs an empty string.
+.TP
+.B \fBkey_text\fP
+Text if triggered by a text key, otherwise \fBnil\fP\&. See
+description of \fBscript\-binding\fP command for details (this
+field is equivalent to the 5th argument).
+.UNINDENT
 .UNINDENT
 .UNINDENT
 .UNINDENT
@@ -14704,6 +15647,10 @@ example \fBstring\fP, \fBfn\fP is roughly called as in
 If possible, change events are coalesced. If a property is changed a bunch
 of times in a row, only the last change triggers the change function. (The
 exact behavior depends on timing and other things.)
+.sp
+If a property is unavailable, or on error, the value argument to \fBfn\fP is
+\fBnil\fP\&. (The \fBobserve_property()\fP call always succeeds, even if a
+property does not exist.)
 .sp
 In some cases the function is not called even if the property changes.
 This depends on the property, and it\(aqs a valid feature request to ask for
@@ -14891,6 +15838,49 @@ Used by \fBmp.add_key_binding\fP, so be careful about name collisions.
 .B \fBmp.unregister_script_message(name)\fP
 Undo a previous registration with \fBmp.register_script_message\fP\&. Does
 nothing if the \fBname\fP wasn\(aqt registered.
+.TP
+.B \fBmp.create_osd_overlay(format)\fP
+Create an OSD overlay. This is a very thin wrapper around the \fBosd\-overlay\fP
+command. The function returns a table, which mostly contains fields that
+will be passed to \fBosd\-overlay\fP\&. The \fBformat\fP parameter is used to
+initialize the \fBformat\fP field. The \fBdata\fP field contains the text to
+be used as overlay. For details, see the \fBosd\-overlay\fP command.
+.sp
+In addition, it provides the following methods:
+.INDENT 7.0
+.TP
+.B \fBupdate()\fP
+Commit the OSD overlay to the screen, or in other words, run the
+\fBosd\-overlay\fP command with the current fields of the overlay table.
+.TP
+.B \fBremove()\fP
+Remove the overlay from the screen. A \fBupdate()\fP call will add it
+again.
+.UNINDENT
+.sp
+Example:
+.INDENT 7.0
+.INDENT 3.5
+.sp
+.nf
+.ft C
+ov = mp.create_osd_overlay("ass\-events")
+ov.data = "{\e\ean5}{\e\eb1}hello world!"
+ov:update()
+.ft P
+.fi
+.UNINDENT
+.UNINDENT
+.sp
+The advantage of using this wrapper (as opposed to running \fBosd\-overlay\fP
+directly) is that the \fBid\fP field is allocated automatically.
+.TP
+.B \fBmp.get_osd_size()\fP
+Returns a tuple of \fBosd_width, osd_height, osd_par\fP\&. The first two give
+the size of the OSD in pixels (for video ouputs like \fB\-\-vo=xv\fP, this may
+be "scaled" pixels). The third is the display pixel aspect ratio.
+.sp
+May return invalid/nonsense values if OSD is not initialized yet.
 .UNINDENT
 .SS mp.msg functions
 .sp
@@ -14922,14 +15912,27 @@ the read_options function. The function will overwrite the default values
 with values found in the config\-file and the command\-line (in that order).
 .INDENT 0.0
 .TP
-.B \fBoptions.read_options(table [, identifier])\fP
+.B \fBoptions.read_options(table [, identifier [, on_update]])\fP
 A \fBtable\fP with key\-value pairs. The type of the default values is
 important for converting the values read from the config file or
 command\-line back. Do not use \fBnil\fP as a default value!
 .sp
 The \fBidentifier\fP is used to identify the config\-file and the command\-line
 options. These needs to unique to avoid collisions with other scripts.
-Defaults to \fBmp.get_script_name()\fP\&.
+Defaults to \fBmp.get_script_name()\fP if the parameter is \fBnil\fP or missing.
+.sp
+The \fBon_update\fP parameter enables run\-time updates of all matching option
+values via the \fBscript\-opts\fP option/property. If any of the matching
+options changes, the values in the \fBtable\fP (which was originally passed to
+the function) are changed, and \fBon_update(list)\fP is called. \fBlist\fP is
+a table where each updated option has a \fBlist[option_name] = true\fP entry.
+There is no initial \fBon_update()\fP call. This never re\-reads the config file.
+\fBscript\-opts\fP is always applied on the original config file, ignoring
+previous \fBscript\-opts\fP values (for example, if an option is removed from
+\fBscript\-opts\fP at runtime, the option will have the value in the config
+file). \fBtable\fP entries are only written for option values whose values
+effectively change (this is important if the script changes \fBtable\fP
+entries independently).
 .UNINDENT
 .sp
 Example implementation:
@@ -15464,6 +16467,10 @@ success, \fBfn\fP is called always a\-sync, \fBerror\fP is empty string on succe
 .sp
 \fBmp.unregister_script_message(name)\fP
 .sp
+\fBmp.create_osd_overlay(format)\fP
+.sp
+\fBmp.get_osd_size()\fP  (returned object has properties: width, height, aspect)
+.sp
 \fBmp.msg.log(level, ...)\fP
 .sp
 \fBmp.msg.fatal(...)\fP
@@ -15498,7 +16505,8 @@ success, \fBfn\fP is called always a\-sync, \fBerror\fP is empty string on succe
 .sp
 \fBmp.add_hook(type, priority, fn)\fP
 .sp
-\fBmp.options.read_options(obj [, identifier])\fP (types: string/boolean/number)
+\fBmp.options.read_options(obj [, identifier [, on_update]])\fP (types:
+string/boolean/number)
 .SS Additional utilities
 .INDENT 0.0
 .TP
@@ -15551,6 +16559,9 @@ Note: please remove added key bindings before calling \fBexit()\fP\&.
 Compiles the JS code \fBcontent_str\fP as file name \fBfname\fP (without loading
 anything from the filesystem), and returns it as a function. Very similar
 to a \fBFunction\fP constructor, but shows at stack traces as \fBfname\fP\&.
+.TP
+.B \fBmp.module_paths\fP
+Global modules search paths array for the \fBrequire\fP function (see below).
 .UNINDENT
 .SS Timers (global)
 .sp
@@ -15587,9 +16598,11 @@ to use \fBsetTimeout(fn)\fP as a one\-time idle observer.
 .SS CommonJS modules and \fBrequire(id)\fP
 .sp
 CommonJS Modules are a standard system where scripts can export common functions
-for use by other scripts. A module is a script which adds properties (functions,
-etc) to its invisible \fBexports\fP object, which another script can access by
-loading it with \fBrequire(module\-id)\fP \- which returns that \fBexports\fP object.
+for use by other scripts. Specifically, a module is a script which adds
+properties (functions, etc) to its pre\-existing \fBexports\fP object, which
+another script can access with \fBrequire(module\-id)\fP\&. This runs the module and
+returns its \fBexports\fP object. Further calls to \fBrequire\fP for the same module
+will return its cached \fBexports\fP object without running the module again.
 .sp
 Modules and \fBrequire\fP are supported, standard compliant, and generally similar
 to node.js. However, most node.js modules won\(aqt run due to missing modules such
@@ -15602,10 +16615,16 @@ will load the file \fB\&./foo.js\fP and return its \fBexports\fP object.
 An id is relative (to the script which \fBrequire\fP\(aqd it) if it starts with
 \fB\&./\fP or \fB\&../\fP\&. Otherwise, it\(aqs considered a "top\-level id" (CommonJS term).
 .sp
-Top level id is evaluated as absolute filesystem path if possible (e.g. \fB/x/y\fP
-or \fB~/x\fP). Otherwise, it\(aqs searched at \fBscripts/modules.js/\fP in mpv config
-dirs \- in normal config search order. E.g. \fBrequire("x")\fP is searched as file
-\fBx.js\fP at those dirs, and id \fBfoo/x\fP is searched as file \fBfoo/x.js\fP\&.
+Top level id is evaluated as absolute filesystem path if possible, e.g. \fB/x/y\fP
+or \fB~/x\fP\&. Otherwise, it\(aqs considered a global module id and searched at
+\fBscripts/modules.js/\fP in mpv config dirs \- in normal config search order. E.g.
+\fBrequire("x")\fP is searched as file \fBx.js\fP at those dirs, and id \fBfoo/x\fP is
+searched as file \fBx.js\fP inside dir \fBfoo\fP at those dirs.
+.sp
+Search paths for global module id\(aqs are at the array \fBmp.module_paths\fP, which
+is searched in order. Initially it contains one item: \fB~~/scripts/modules.js\fP
+such that it behaves as described above. Modifying it will affect future
+\fBrequire\fP calls with global module id\(aqs which are not already loaded/cached.
 .sp
 No \fBglobal\fP variable, but a module\(aqs \fBthis\fP at its top lexical scope is the
 global object \- also in strict mode. If you have a module which needs \fBglobal\fP
@@ -16209,7 +17228,11 @@ This is an integer, and the resulting verbosity corresponds to the number
 of \fB\-\-v\fP options passed to the command line.
 .TP
 .B \fBMPV_LEAK_REPORT\fP
-If set to \fB1\fP, enable internal talloc leak reporting.
+If set to \fB1\fP, enable internal talloc leak reporting. If set to another
+value, disable leak reporting. If unset, use the default, which normally is
+\fB0\fP\&. If mpv was built with \fB\-\-enable\-ta\-leak\-report\fP, the default is
+\fB1\fP\&. If leak reporting was disabled at compile time (\fBNDEBUG\fP in
+custom \fBCFLAGS\fP), this environment variable is ignored.
 .TP
 .B \fBLADSPA_PATH\fP
 Specifies the search path for LADSPA plugins. If it is unset, fully
