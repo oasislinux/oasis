@@ -121,6 +121,9 @@
 [submodule "pkg/libjpeg-turbo/src"]
 	path = pkg/libjpeg-turbo/src
 	url = https://github.com/libjpeg-turbo/libjpeg-turbo
+[submodule "pkg/libliftoff/src"]
+	path = pkg/libliftoff/src
+	url = https://github.com/emersion/libliftoff.git
 [submodule "pkg/libnl/src"]
 	path = pkg/libnl/src
 	url = https://github.com/thom311/libnl
