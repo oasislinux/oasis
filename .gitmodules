@@ -228,7 +228,7 @@
 	ignore = all
 [submodule "pkg/pounce/src"]
 	path = pkg/pounce/src
-	url = https://code.causal.agency/june/pounce.git
+	url = https://git.causal.agency/pounce
 [submodule "pkg/qbe/src"]
 	path = pkg/qbe/src
 	url = git://c9x.me/qbe.git
