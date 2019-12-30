@@ -172,6 +172,9 @@
 [submodule "pkg/musl/src"]
 	path = pkg/musl/src
 	url = git://git.musl-libc.org/musl
+[submodule "pkg/ncompress/src"]
+	path = pkg/ncompress/src
+	url = https://github.com/vapier/ncompress.git
 [submodule "pkg/netsurf/src"]
 	path = pkg/netsurf/src
 	url = https://github.com/michaelforney/netsurf
