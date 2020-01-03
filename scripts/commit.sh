@@ -1,5 +1,10 @@
 set -e
 
+if [ "$#" != 4 ] ; then
+	echo 'usage: commit.sh repo branch tag out' >&2
+	exit 2
+fi
+
 repo=$1
 branch=$2
 tag=$3

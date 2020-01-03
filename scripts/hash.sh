@@ -1,5 +1,10 @@
 set -e
 
+if [ "$#" != 4 ] ; then
+	echo 'usage: hash.sh repo mode name file' >&2
+	exit 2
+fi
+
 repo=$1
 mode=$2
 name=$3
