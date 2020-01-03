@@ -14,7 +14,6 @@ pkg.deps = {
 lib('libinput.a', [[
 	src/(
 		libinput.c
-		libinput-util.c
 		evdev.c
 		evdev-debounce.c
 		evdev-fallback.c
@@ -41,6 +40,11 @@ lib('libinput.a', [[
 		path-seat.c
 		quirks.c
 		timer.c
+
+		util-list.c
+		util-ratelimit.c
+		util-strings.c
+		util-prop-parsers.c
 	)
 	$builddir/pkg/(
 		libevdev/libevdev.a
@@ -60,6 +64,7 @@ local quirks = {
 	'30-vendor-ibm.quirks',
 	'30-vendor-kensington.quirks',
 	'30-vendor-logitech.quirks',
+	'30-vendor-madcatz.quirks',
 	'30-vendor-microsoft.quirks',
 	'30-vendor-razer.quirks',
 	'30-vendor-synaptics.quirks',
