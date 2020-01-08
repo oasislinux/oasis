@@ -42,6 +42,7 @@ return {
 	},
 	devel={
 		'cproc',
+		'flex',
 		'make',
 		'man-pages-posix',
 		'nasm',
