@@ -249,6 +249,9 @@
 [submodule "pkg/sinit/src"]
 	path = pkg/sinit/src
 	url = git://git.suckless.org/sinit
+[submodule "pkg/squashfs-tools/src"]
+	path = pkg/squashfs-tools/src
+	url = https://github.com/plougher/squashfs-tools.git
 [submodule "pkg/sshfs/src"]
 	path = pkg/sshfs/src
 	url = https://github.com/libfuse/sshfs
