@@ -35,6 +35,7 @@ return {
 		'less',
 		'ncurses',
 		'python',
+		'squashfs-tools',
 		'the_silver_searcher',
 		'unzip',
 		'vis',
