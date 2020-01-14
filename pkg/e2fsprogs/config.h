@@ -108,7 +108,7 @@
 #define HAVE_NET_IF_H 1
 #define HAVE_NEWLOCALE 1
 #define HAVE_OPEN64 1
-/* #undef HAVE_OPTRESET */
+#define HAVE_OPTRESET 1
 #define HAVE_PATHCONF 1
 #define HAVE_PATHS_H 1
 #define HAVE_POSIX_FADVISE 1
@@ -126,7 +126,7 @@
 #define HAVE_PWRITE64 1
 #define HAVE_RECLEN_DIRENT 1
 /* #undef HAVE_SA_LEN */
-/* #undef HAVE_SECURE_GETENV */
+#define HAVE_SECURE_GETENV 1
 #define HAVE_SEMAPHORE_H 1
 /* #undef HAVE_SEM_INIT */
 #define HAVE_SETENV 1

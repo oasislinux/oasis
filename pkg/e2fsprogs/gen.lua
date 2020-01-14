@@ -1,4 +1,4 @@
-set('version', '1.45.2')
+set('version', '1.45.5')
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $outdir',
@@ -18,8 +18,8 @@ build('cat', '$outdir/config.h', {
 
 set('subst', {
 	'-e s,@E2FSPROGS_VERSION@,$version,',
-	'-e s,@E2FSPROGS_MONTH@,May,',
-	'-e s,@E2FSPROGS_YEAR@,2019,',
+	'-e s,@E2FSPROGS_MONTH@,Jan,',
+	'-e s,@E2FSPROGS_YEAR@,2020,',
 	'-e s,@JDEV@,,',
 })
 
