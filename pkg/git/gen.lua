@@ -22,6 +22,8 @@ cc('compat/regex/regex.c', nil, {cflags='$cflags -DGAWK -DNO_MBSUPPORT'})
 -- src/Makefile:/^LIB_OBJS.\+=
 lib('libgit.a', [[
 	abspath.c
+	add-interactive.c
+	add-patch.c
 	advice.c
 	alias.c
 	alloc.c
@@ -351,6 +353,7 @@ local builtins = {
 	'show-branch',
 	'show-index',
 	'show-ref',
+	'sparse-checkout',
 	'stash',
 	'stripspace',
 	'submodule--helper',

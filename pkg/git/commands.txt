@@ -111,6 +111,7 @@ git-replace.txt
 git-request-pull.txt
 git-rerere.txt
 git-reset.txt
+git-restore.txt
 git-rev-list.txt
 git-rev-parse.txt
 git-revert.txt
@@ -126,12 +127,14 @@ git-show-branch.txt
 git-show-index.txt
 git-show-ref.txt
 git-show.txt
+git-sparse-checkout.txt
 git-stage.txt
 git-stash.txt
 git-status.txt
 git-stripspace.txt
 git-submodule.txt
 git-svn.txt
+git-switch.txt
 git-symbolic-ref.txt
 git-tag.txt
 git-tools.txt
@@ -194,6 +197,7 @@ config/credential.txt
 config/diff.txt
 config/difftool.txt
 config/fastimport.txt
+config/feature.txt
 config/fetch.txt
 config/filter.txt
 config/fmt-merge-msg.txt
