@@ -279,6 +279,7 @@ youtube_dl/extractor/hungama.py
 youtube_dl/extractor/hypem.py
 youtube_dl/extractor/ign.py
 youtube_dl/extractor/imdb.py
+youtube_dl/extractor/imggaming.py
 youtube_dl/extractor/imgur.py
 youtube_dl/extractor/ina.py
 youtube_dl/extractor/inc.py
@@ -314,7 +315,6 @@ youtube_dl/extractor/kickstarter.py
 youtube_dl/extractor/kinja.py
 youtube_dl/extractor/kinopoisk.py
 youtube_dl/extractor/konserthusetplay.py
-youtube_dl/extractor/kontrtube.py
 youtube_dl/extractor/krasview.py
 youtube_dl/extractor/ku6.py
 youtube_dl/extractor/kusi.py
@@ -388,7 +388,6 @@ youtube_dl/extractor/movingimage.py
 youtube_dl/extractor/msn.py
 youtube_dl/extractor/mtv.py
 youtube_dl/extractor/muenchentv.py
-youtube_dl/extractor/musicplayon.py
 youtube_dl/extractor/mwave.py
 youtube_dl/extractor/mychannels.py
 youtube_dl/extractor/myspace.py
@@ -451,7 +450,6 @@ youtube_dl/extractor/ora.py
 youtube_dl/extractor/orf.py
 youtube_dl/extractor/outsidetv.py
 youtube_dl/extractor/packtpub.py
-youtube_dl/extractor/pandatv.py
 youtube_dl/extractor/pandoratv.py
 youtube_dl/extractor/parliamentliveuk.py
 youtube_dl/extractor/patreon.py
@@ -704,7 +702,6 @@ youtube_dl/extractor/videa.py
 youtube_dl/extractor/videodetective.py
 youtube_dl/extractor/videofyme.py
 youtube_dl/extractor/videomore.py
-youtube_dl/extractor/videopremium.py
 youtube_dl/extractor/videopress.py
 youtube_dl/extractor/vidio.py
 youtube_dl/extractor/vidlii.py
