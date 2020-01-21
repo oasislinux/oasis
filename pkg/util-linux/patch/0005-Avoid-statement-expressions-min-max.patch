@@ -1,4 +1,4 @@
-From cdb8be2758e0b8082d86bd38daec78c1efb6383f Mon Sep 17 00:00:00 2001
+From 2b467498acfe9f1de27503a7ce94307755a997f5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 17:13:45 -0700
 Subject: [PATCH] Avoid statement expressions min/max
@@ -14,10 +14,10 @@ Subject: [PATCH] Avoid statement expressions min/max
  7 files changed, 23 insertions(+), 27 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
-index ec3f545ad..0b96ff1c0 100644
+index 7f3a8b173..7201b18af 100644
 --- a/include/c.h
 +++ b/include/c.h
-@@ -124,21 +124,17 @@
+@@ -126,21 +126,17 @@
  # define FALSE 0
  #endif
  
@@ -63,7 +63,7 @@ index 8fdab9ee9..bb31e7583 100644
      }
  #ifdef HAVE_WIDECHAR
 diff --git a/libfdisk/src/alignment.c b/libfdisk/src/alignment.c
-index 426fa938c..964c66668 100644
+index 4ae5ff08f..931ec8b9a 100644
 --- a/libfdisk/src/alignment.c
 +++ b/libfdisk/src/alignment.c
 @@ -38,7 +38,7 @@
@@ -103,10 +103,10 @@ index 426fa938c..964c66668 100644
  		cxt->grain = cxt->user_grain < granularity ? granularity : cxt->user_grain;
  		DBG(CXT, ul_debugobj(cxt, "new grain: %lu", cxt->grain));
 diff --git a/libfdisk/src/context.c b/libfdisk/src/context.c
-index 56ebb6c1e..879ca53f3 100644
+index 743a6bc1d..0434840ab 100644
 --- a/libfdisk/src/context.c
 +++ b/libfdisk/src/context.c
-@@ -829,7 +829,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
+@@ -890,7 +890,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
  	/* the current layout */
  	fdisk_get_partitions(cxt, &tb);
  	/* maximal number of partitions */
@@ -116,10 +116,10 @@ index 56ebb6c1e..879ca53f3 100644
  	while (fdisk_diff_tables(org, tb, &itr, &pa, &change) == 0) {
  		if (change == FDISK_DIFF_UNCHANGED)
 diff --git a/libfdisk/src/gpt.c b/libfdisk/src/gpt.c
-index 64a9cd7b3..497e9f00b 100644
+index a2a346faa..54984bf32 100644
 --- a/libfdisk/src/gpt.c
 +++ b/libfdisk/src/gpt.c
-@@ -557,7 +557,7 @@ static int gpt_mknew_pmbr(struct fdisk_context *cxt)
+@@ -421,7 +421,7 @@ static int gpt_mknew_pmbr(struct fdisk_context *cxt)
  	pmbr->partition_record[0].end_track    = 0xFF;
  	pmbr->partition_record[0].starting_lba = cpu_to_le32(1);
  	pmbr->partition_record[0].size_in_lba  =
@@ -128,8 +128,8 @@ index 64a9cd7b3..497e9f00b 100644
  
  	return 0;
  }
-@@ -903,7 +903,7 @@ static int valid_pmbr(struct fdisk_context *cxt)
- 			/* Note that gpt_write_pmbr() overwrites PMBR, but we want to keep it valid already 
+@@ -770,7 +770,7 @@ static int valid_pmbr(struct fdisk_context *cxt)
+ 			/* Note that gpt_write_pmbr() overwrites PMBR, but we want to keep it valid already
  			 * in memory too to disable warnings when valid_pmbr() called next time */
  			pmbr->partition_record[part].size_in_lba  =
 -				cpu_to_le32((uint32_t) min( cxt->total_sectors - 1ULL, 0xFFFFFFFFULL) );
@@ -138,7 +138,7 @@ index 64a9cd7b3..497e9f00b 100644
  		}
  	}
 diff --git a/libsmartcols/src/calculate.c b/libsmartcols/src/calculate.c
-index 9426ebb05..da1ffa8fc 100644
+index a0c0dc4b9..ad48f619c 100644
 --- a/libsmartcols/src/calculate.c
 +++ b/libsmartcols/src/calculate.c
 @@ -55,7 +55,7 @@ static int count_cell_width(struct libscols_table *tb,
@@ -186,5 +186,5 @@ index 4b42938f6..81fe76000 100644
  	}
  
 -- 
-2.20.1
+2.25.0
 

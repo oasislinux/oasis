@@ -1,4 +1,4 @@
-From 8dac421210d9f0b49ac39287ace471a45faab352 Mon Sep 17 00:00:00 2001
+From 56273e92326b26a326c73e47b3d5929bbce9ac03 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 22:48:57 -0700
 Subject: [PATCH] Avoid initialization of flexible array in struct
@@ -8,7 +8,7 @@ Subject: [PATCH] Avoid initialization of flexible array in struct
  1 file changed, 9 insertions(+), 9 deletions(-)
 
 diff --git a/disk-utils/fdisk-menu.c b/disk-utils/fdisk-menu.c
-index cd104e20b..58abb16a6 100644
+index 71355f684..fb5b2e253 100644
 --- a/disk-utils/fdisk-menu.c
 +++ b/disk-utils/fdisk-menu.c
 @@ -37,7 +37,7 @@ struct menu {
@@ -20,7 +20,7 @@ index cd104e20b..58abb16a6 100644
  };
  
  struct menu_context {
-@@ -93,7 +93,7 @@ DECLARE_MENU_CB(generic_menu_cb);
+@@ -92,7 +92,7 @@ DECLARE_MENU_CB(generic_menu_cb);
  /* Generic menu */
  static const struct menu menu_generic = {
  	.callback	= generic_menu_cb,
@@ -29,7 +29,7 @@ index cd104e20b..58abb16a6 100644
  		MENU_BSEP(N_("Generic")),
  		MENU_ENT  ('d', N_("delete a partition")),
  		MENU_ENT  ('F', N_("list free unpartitioned space")),
-@@ -133,7 +133,7 @@ static const struct menu menu_createlabel = {
+@@ -134,7 +134,7 @@ static const struct menu menu_createlabel = {
  	.callback = createlabel_menu_cb,
  	.exclude = FDISK_DISKLABEL_BSD,
  	.nonested = 1,
@@ -38,7 +38,7 @@ index cd104e20b..58abb16a6 100644
  		MENU_SEP(N_("Create a new label")),
  		MENU_ENT('g', N_("create a new empty GPT partition table")),
  		MENU_ENT('G', N_("create a new empty SGI (IRIX) partition table")),
-@@ -150,7 +150,7 @@ static const struct menu menu_createlabel = {
+@@ -151,7 +151,7 @@ static const struct menu menu_createlabel = {
  static const struct menu menu_geo = {
  	.callback = geo_menu_cb,
  	.exclude = FDISK_DISKLABEL_GPT | FDISK_DISKLABEL_BSD,
@@ -47,7 +47,7 @@ index cd104e20b..58abb16a6 100644
  		MENU_XSEP(N_("Geometry (for the current label)")),
  		MENU_XENT('c', N_("change number of cylinders")),
  		MENU_XENT('h', N_("change number of heads")),
-@@ -162,7 +162,7 @@ static const struct menu menu_geo = {
+@@ -163,7 +163,7 @@ static const struct menu menu_geo = {
  static const struct menu menu_gpt = {
  	.callback = gpt_menu_cb,
  	.label = FDISK_DISKLABEL_GPT,
@@ -56,7 +56,7 @@ index cd104e20b..58abb16a6 100644
  		MENU_BSEP(N_("GPT")),
  		MENU_XENT('i', N_("change disk GUID")),
  		MENU_XENT('n', N_("change partition name")),
-@@ -183,7 +183,7 @@ static const struct menu menu_gpt = {
+@@ -184,7 +184,7 @@ static const struct menu menu_gpt = {
  static const struct menu menu_sun = {
  	.callback = sun_menu_cb,
  	.label = FDISK_DISKLABEL_SUN,
@@ -65,7 +65,7 @@ index cd104e20b..58abb16a6 100644
  		MENU_BSEP(N_("Sun")),
  		MENU_ENT('a', N_("toggle the read-only flag")),
  		MENU_ENT('c', N_("toggle the mountable flag")),
-@@ -200,7 +200,7 @@ static const struct menu menu_sun = {
+@@ -201,7 +201,7 @@ static const struct menu menu_sun = {
  static const struct menu menu_sgi = {
  	.callback = sgi_menu_cb,
  	.label = FDISK_DISKLABEL_SGI,
@@ -74,7 +74,7 @@ index cd104e20b..58abb16a6 100644
  		MENU_SEP(N_("SGI")),
  		MENU_ENT('a', N_("select bootable partition")),
  		MENU_ENT('b', N_("edit bootfile entry")),
-@@ -213,7 +213,7 @@ static const struct menu menu_sgi = {
+@@ -214,7 +214,7 @@ static const struct menu menu_sgi = {
  static const struct menu menu_dos = {
  	.callback = dos_menu_cb,
  	.label = FDISK_DISKLABEL_DOS,
@@ -83,7 +83,7 @@ index cd104e20b..58abb16a6 100644
  		MENU_BSEP(N_("DOS (MBR)")),
  		MENU_ENT('a', N_("toggle a bootable flag")),
  		MENU_ENT('b', N_("edit nested BSD disklabel")),
-@@ -231,7 +231,7 @@ static const struct menu menu_dos = {
+@@ -232,7 +232,7 @@ static const struct menu menu_dos = {
  static const struct menu menu_bsd = {
  	.callback = bsd_menu_cb,
  	.label = FDISK_DISKLABEL_BSD,
@@ -93,5 +93,5 @@ index cd104e20b..58abb16a6 100644
  		MENU_ENT('e', N_("edit drive data")),
  		MENU_ENT('i', N_("install bootstrap")),
 -- 
-2.22.0
+2.25.0
 

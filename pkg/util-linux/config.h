@@ -15,6 +15,7 @@
 #define HAVE_CLEARENV 1
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_CPU_SET_T 1
+/* #undef HAVE_CRYPTSETUP */
 #define HAVE_CRYPT_H 1
 /* #undef HAVE_DCGETTEXT */
 #define HAVE_DECL_CPU_ALLOC 1
@@ -34,6 +35,7 @@
 #define HAVE_EXPLICIT_BZERO 1
 /* #undef HAVE_FALLOCATE */
 #define HAVE_FCNTL_H 1
+#define HAVE_FMEMOPEN 1
 #define HAVE_FPURGE 1
 #define HAVE_FSEEKO 1
 #define HAVE_FSTATAT 1
@@ -83,6 +85,7 @@
 #define HAVE_LINUX_BLKPG_H 1
 #define HAVE_LINUX_BLKZONED_H 1
 #define HAVE_LINUX_BTRFS_H 1
+#define HAVE_LINUX_CAPABILITY_H 1
 #define HAVE_LINUX_CDROM_H 1
 /* #undef HAVE_LINUX_COMPILER_H */
 #define HAVE_LINUX_FALLOC_H 1
@@ -121,11 +124,14 @@
 #define HAVE_PATHS_H 1
 /* #undef HAVE_PCRE */
 #define HAVE_PERSONALITY 1
+/* #undef HAVE_PIDFD_OPEN */
+/* #undef HAVE_PIDFD_SEND_SIGNAL */
 #define HAVE_POSIX_FADVISE 1
 /* #undef HAVE_POSIX_FALLOCATE */
 #define HAVE_PRCTL 1
 /* #undef HAVE_PRLIMIT */
 #define HAVE_PROGRAM_INVOCATION_SHORT_NAME 1
+#define HAVE_PTY 1
 #define HAVE_PTY_H 1
 /* #undef HAVE_QSORT_R */
 #define HAVE_REBOOT 1
@@ -137,7 +143,7 @@
 #define HAVE_SCANF_MS_MODIFIER 1
 /* #undef HAVE_SCHED_SETATTR */
 #define HAVE_SCHED_SETSCHEDULER 1
-/* #undef HAVE_SECURE_GETENV */
+#define HAVE_SECURE_GETENV 1
 /* #undef HAVE_SECURITY_GET_INITIAL_CONTEXT */
 /* #undef HAVE_SECURITY_OPENPAM_H */
 /* #undef HAVE_SECURITY_PAM_APPL_H */
@@ -225,11 +231,11 @@
 #define HAVE___FPURGE 1
 #define HAVE___PROGNAME 1
 /* #undef HAVE___SECURE_GETENV */
-#define LIBBLKID_DATE "14-Jun-2019"
-#define LIBBLKID_VERSION "2.34.0"
-#define LIBFDISK_VERSION "2.34.0"
-#define LIBMOUNT_VERSION "2.34.0"
-#define LIBSMARTCOLS_VERSION "2.34.0"
+#define LIBBLKID_DATE "21-Jan-2020"
+#define LIBBLKID_VERSION "2.35.0"
+#define LIBFDISK_VERSION "2.35.0"
+#define LIBMOUNT_VERSION "2.35.0"
+#define LIBSMARTCOLS_VERSION "2.35.0"
 /* #undef LOGIN_CHOWN_VCS */
 /* #undef LOGIN_STAT_MAIL */
 #define LT_OBJDIR ".libs/"
@@ -239,15 +245,17 @@
 #define PACKAGE "util-linux"
 #define PACKAGE_BUGREPORT "kzak@redhat.com"
 #define PACKAGE_NAME "util-linux"
-#define PACKAGE_STRING "util-linux 2.34"
+#define PACKAGE_STRING "util-linux 2.35"
 #define PACKAGE_TARNAME "util-linux"
 #define PACKAGE_URL "http://www.kernel.org/pub/linux/utils/util-linux/"
-#define PACKAGE_VERSION "2.34"
+#define PACKAGE_VERSION "2.35"
 #define PG_BELL 1
 #define STDC_HEADERS 1
 /* #undef SYS_fallocate */
 /* #undef SYS_ioprio_get */
 /* #undef SYS_ioprio_set */
+/* #undef SYS_pidfd_open */
+/* #undef SYS_pidfd_send_signal */
 /* #undef SYS_pivot_root */
 /* #undef SYS_prlimit64 */
 /* #undef SYS_sched_getaffinity */
@@ -258,6 +266,7 @@
 /* #undef SYS_unshare */
 /* #undef TM_IN_SYS_TIME */
 #define USE_COLORS_BY_DEFAULT 1
+/* #undef USE_HWCLOCK_CMOS */
 /* #undef USE_LIBMOUNT_SUPPORT_MTAB */
 #define USE_LIBMOUNT_SUPPORT_NAMESPACES 1
 #define USE_PLYMOUTH_SUPPORT 1
@@ -279,7 +288,7 @@
 #endif
 #define USE_TTY_GROUP 1
 /* #undef USE_USRDIR_PATHS_ONLY */
-#define VERSION "2.34"
+#define VERSION "2.35"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

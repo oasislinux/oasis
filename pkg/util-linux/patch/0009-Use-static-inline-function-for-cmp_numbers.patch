@@ -1,4 +1,4 @@
-From 324b036444402fd2f008c1bfe979ea4281827313 Mon Sep 17 00:00:00 2001
+From 57af96ed8831118d42647b5dafcdf4f296877074 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 25 Jun 2019 00:13:43 -0700
 Subject: [PATCH] Use static inline function for cmp_numbers
@@ -10,10 +10,10 @@ uintmax_t.
  1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
-index 0b96ff1c0..9787ec341 100644
+index 7201b18af..549f1fa24 100644
 --- a/include/c.h
 +++ b/include/c.h
-@@ -136,13 +136,11 @@ umin(uintmax_t x, uintmax_t y)
+@@ -138,13 +138,11 @@ umin(uintmax_t x, uintmax_t y)
  	return x < y ? x : y;
  }
  
@@ -33,5 +33,5 @@ index 0b96ff1c0..9787ec341 100644
  #ifndef offsetof
  #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
 -- 
-2.22.0
+2.25.0
 

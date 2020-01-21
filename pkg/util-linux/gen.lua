@@ -1,4 +1,4 @@
-set('version', '2.34.0')
+set('version', '2.35.0')
 cflags{
 	'-include $dir/config.h',
 	'-I $outdir',
@@ -56,6 +56,7 @@ lib('libcommon.a', [[
 		sha1.c
 		signames.c
 
+		caputils.c
 		linux_version.c
 		loopdev.c
 
