@@ -1,13 +1,13 @@
-From 5c37bf6dce675e30d17cc41181fc81a650cfff61 Mon Sep 17 00:00:00 2001
+From 0876c7e4aaae19f5bd64129eee11687363a9d3b0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 26 Oct 2019 02:05:31 -0700
 Subject: [PATCH] Track generated xkbcomp parser
 
 ---
  src/xkbcomp/.gitignore |    2 -
- src/xkbcomp/parser.c   | 3401 ++++++++++++++++++++++++++++++++++++++++
- src/xkbcomp/parser.h   |  160 ++
- 3 files changed, 3561 insertions(+), 2 deletions(-)
+ src/xkbcomp/parser.c   | 3411 ++++++++++++++++++++++++++++++++++++++++
+ src/xkbcomp/parser.h   |  164 ++
+ 3 files changed, 3575 insertions(+), 2 deletions(-)
  delete mode 100644 src/xkbcomp/.gitignore
  create mode 100644 src/xkbcomp/parser.c
  create mode 100644 src/xkbcomp/parser.h
@@ -22,11 +22,11 @@ index d7814e4..0000000
 -parser.h
 diff --git a/src/xkbcomp/parser.c b/src/xkbcomp/parser.c
 new file mode 100644
-index 0000000..ce49e55
+index 0000000..7c38928
 --- /dev/null
 +++ b/src/xkbcomp/parser.c
-@@ -0,0 +1,3401 @@
-+/* A Bison parser, made by GNU Bison 3.4.1.  */
+@@ -0,0 +1,3411 @@
++/* A Bison parser, made by GNU Bison 3.4.2.  */
 +
 +/* Bison implementation for Yacc-like parsers in C
 +
@@ -76,7 +76,7 @@ index 0000000..ce49e55
 +#define YYBISON 1
 +
 +/* Bison version.  */
-+#define YYBISON_VERSION "3.4.1"
++#define YYBISON_VERSION "3.4.2"
 +
 +/* Skeleton name.  */
 +#define YYSKELETON_NAME "yacc.c"
@@ -101,6 +101,8 @@ index 0000000..ce49e55
 +
 +/* First part of user prologue.  */
 +#line 33 "../src/xkbcomp/parser.y"
++
++#include "config.h"
 +
 +#include "xkbcomp/xkbcomp-priv.h"
 +#include "xkbcomp/ast-build.h"
@@ -152,7 +154,7 @@ index 0000000..ce49e55
 +
 +#define param_scanner param->scanner
 +
-+#line 128 "xkbcommon@sha/parser.c"
++#line 130 "xkbcommon@sha/parser.c"
 +
 +# ifndef YY_NULLPTR
 +#  if defined __cplusplus
@@ -261,9 +263,8 @@ index 0000000..ce49e55
 +#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 +union YYSTYPE
 +{
-+#line 162 "../src/xkbcomp/parser.y"
++#line 164 "../src/xkbcomp/parser.y"
 +
-+        int              ival;
 +        int64_t          num;
 +        enum xkb_file_type file_type;
 +        char            *str;
@@ -272,9 +273,13 @@ index 0000000..ce49e55
 +        enum xkb_map_flags mapFlags;
 +        xkb_keysym_t    keysym;
 +        ParseCommon     *any;
++        struct { ParseCommon *head; ParseCommon *last; } anyList;
 +        ExprDef         *expr;
++        struct { ExprDef *head; ExprDef *last; } exprList;
 +        VarDef          *var;
++        struct { VarDef *head; VarDef *last; } varList;
 +        VModDef         *vmod;
++        struct { VModDef *head; VModDef *last; } vmodList;
 +        InterpDef       *interp;
 +        KeyTypeDef      *keyType;
 +        SymbolsDef      *syms;
@@ -286,8 +291,9 @@ index 0000000..ce49e55
 +        KeyAliasDef     *keyAlias;
 +        void            *geom;
 +        XkbFile         *file;
++        struct { XkbFile *head; XkbFile *last; } fileList;
 +
-+#line 263 "xkbcommon@sha/parser.c"
++#line 269 "xkbcommon@sha/parser.c"
 +
 +};
 +typedef union YYSTYPE YYSTYPE;
@@ -591,25 +597,25 @@ index 0000000..ce49e55
 +  /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 +static const yytype_uint16 yyrline[] =
 +{
-+       0,   241,   241,   243,   245,   249,   255,   256,   257,   260,
-+     268,   272,   280,   281,   282,   283,   284,   287,   288,   291,
-+     292,   295,   296,   297,   298,   299,   300,   301,   302,   305,
-+     307,   310,   315,   320,   325,   330,   335,   340,   345,   350,
-+     355,   360,   365,   366,   367,   368,   375,   377,   379,   383,
-+     387,   391,   395,   398,   402,   404,   408,   414,   416,   420,
-+     423,   427,   433,   439,   442,   444,   447,   448,   449,   450,
-+     451,   454,   456,   460,   464,   468,   472,   474,   478,   480,
-+     484,   488,   489,   492,   494,   496,   498,   500,   504,   505,
-+     508,   509,   513,   514,   517,   519,   523,   527,   528,   531,
-+     534,   536,   540,   542,   544,   548,   550,   554,   558,   562,
-+     563,   564,   565,   568,   569,   572,   574,   576,   578,   580,
-+     582,   584,   586,   588,   590,   592,   596,   597,   600,   601,
-+     602,   603,   604,   614,   615,   618,   621,   625,   627,   629,
-+     631,   633,   635,   639,   641,   643,   645,   647,   649,   651,
-+     653,   657,   660,   664,   668,   670,   672,   674,   678,   680,
-+     682,   684,   688,   689,   692,   694,   696,   698,   702,   706,
-+     712,   713,   733,   734,   737,   738,   741,   744,   747,   750,
-+     751,   754,   757,   758,   761
++       0,   254,   254,   256,   258,   262,   268,   269,   270,   273,
++     275,   279,   287,   288,   289,   290,   291,   294,   295,   298,
++     299,   302,   303,   304,   305,   306,   307,   308,   309,   312,
++     327,   337,   340,   346,   351,   356,   361,   366,   371,   376,
++     381,   386,   391,   392,   393,   394,   401,   403,   405,   409,
++     413,   417,   421,   423,   427,   429,   433,   439,   441,   445,
++     447,   451,   457,   463,   465,   467,   470,   471,   472,   473,
++     474,   477,   479,   483,   487,   491,   495,   497,   501,   503,
++     507,   511,   512,   515,   517,   519,   521,   523,   527,   528,
++     531,   532,   536,   537,   540,   542,   546,   550,   551,   554,
++     557,   559,   563,   565,   567,   571,   573,   577,   581,   585,
++     586,   587,   588,   591,   592,   595,   597,   599,   601,   603,
++     605,   607,   609,   611,   613,   615,   619,   620,   623,   624,
++     625,   626,   627,   637,   638,   641,   643,   647,   649,   651,
++     653,   655,   657,   661,   663,   665,   667,   669,   671,   673,
++     675,   679,   681,   685,   689,   691,   693,   695,   699,   701,
++     703,   705,   709,   710,   713,   715,   717,   719,   723,   727,
++     733,   734,   754,   755,   758,   759,   762,   765,   768,   771,
++     772,   775,   778,   779,   782
 +};
 +#endif
 +
@@ -720,11 +726,11 @@ index 0000000..ce49e55
 +      18,     4,    21,    22,    23,    24,    25,    26,    27,    28,
 +       0,     2,     3,     0,    17,    20,     1,     6,    12,    13,
 +      15,    14,    16,     7,     8,   183,   183,    19,   184,     0,
-+     182,     0,    18,    30,    18,    10,     0,   127,     0,     9,
++     182,     0,    18,    31,    18,    10,     0,   127,     0,     9,
 +     128,   130,   129,   131,   132,     0,    29,     0,   126,     5,
 +      11,     0,   117,   116,   115,   118,     0,   119,   120,   121,
 +     122,   123,   124,   125,   110,   111,   112,     0,     0,   179,
-+       0,   180,    31,    34,    35,    32,    33,    36,    37,    39,
++       0,   180,    32,    34,    35,    30,    33,    36,    37,    39,
 +      38,    40,    41,    42,    43,    44,     0,   154,   114,     0,
 +     113,    45,     0,    53,    54,   181,     0,   170,   177,   169,
 +       0,    58,   171,     0,     0,     0,     0,     0,     0,     0,
@@ -984,7 +990,7 @@ index 0000000..ce49e55
 +       0,    65,    66,    66,    66,    67,    68,    68,    68,    69,
 +      69,    70,    71,    71,    71,    71,    71,    72,    72,    73,
 +      73,    74,    74,    74,    74,    74,    74,    74,    74,    75,
-+      75,    76,    76,    76,    76,    76,    76,    76,    76,    76,
++      75,    75,    76,    76,    76,    76,    76,    76,    76,    76,
 +      76,    76,    76,    76,    76,    76,    77,    77,    77,    78,
 +      79,    80,    81,    81,    82,    82,    83,    84,    84,    85,
 +      85,    86,    87,    88,    88,    88,    89,    89,    89,    89,
@@ -1008,7 +1014,7 @@ index 0000000..ce49e55
 +       0,     2,     1,     1,     1,     7,     1,     1,     1,     2,
 +       1,     7,     1,     1,     1,     1,     1,     1,     0,     2,
 +       1,     1,     1,     1,     1,     1,     1,     1,     1,     2,
-+       0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
++       3,     0,     2,     2,     2,     2,     2,     2,     2,     2,
 +       2,     2,     2,     2,     2,     2,     4,     2,     3,     4,
 +       5,     3,     3,     1,     1,     3,     6,     3,     1,     2,
 +       1,     6,     6,     3,     1,     0,     3,     3,     1,     2,
@@ -1110,7 +1116,9 @@ index 0000000..ce49e55
 +  if (yytype < YYNTOKENS)
 +    YYPRINT (yyo, yytoknum[yytype], *yyvaluep);
 +# endif
++  YY_IGNORE_MAYBE_UNINITIALIZED_BEGIN
 +  YYUSE (yytype);
++  YY_IGNORE_MAYBE_UNINITIALIZED_END
 +}
 +
 +
@@ -1454,249 +1462,249 @@ index 0000000..ce49e55
 +  switch (yytype)
 +    {
 +    case 52: /* STRING  */
-+#line 225 "../src/xkbcomp/parser.y"
++#line 238 "../src/xkbcomp/parser.y"
 +      { free(((*yyvaluep).str)); }
-+#line 1432 "xkbcommon@sha/parser.c"
++#line 1440 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 55: /* IDENT  */
-+#line 225 "../src/xkbcomp/parser.y"
++#line 238 "../src/xkbcomp/parser.y"
 +      { free(((*yyvaluep).str)); }
-+#line 1438 "xkbcommon@sha/parser.c"
++#line 1446 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 66: /* XkbFile  */
-+#line 224 "../src/xkbcomp/parser.y"
++#line 236 "../src/xkbcomp/parser.y"
 +      { if (!param->rtrn) FreeXkbFile(((*yyvaluep).file)); }
-+#line 1444 "xkbcommon@sha/parser.c"
++#line 1452 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 67: /* XkbCompositeMap  */
-+#line 224 "../src/xkbcomp/parser.y"
++#line 236 "../src/xkbcomp/parser.y"
 +      { if (!param->rtrn) FreeXkbFile(((*yyvaluep).file)); }
-+#line 1450 "xkbcommon@sha/parser.c"
++#line 1458 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 69: /* XkbMapConfigList  */
-+#line 224 "../src/xkbcomp/parser.y"
-+      { if (!param->rtrn) FreeXkbFile(((*yyvaluep).file)); }
-+#line 1456 "xkbcommon@sha/parser.c"
++#line 237 "../src/xkbcomp/parser.y"
++      { FreeXkbFile(((*yyvaluep).fileList).head); }
++#line 1464 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 70: /* XkbMapConfig  */
-+#line 224 "../src/xkbcomp/parser.y"
++#line 236 "../src/xkbcomp/parser.y"
 +      { if (!param->rtrn) FreeXkbFile(((*yyvaluep).file)); }
-+#line 1462 "xkbcommon@sha/parser.c"
++#line 1470 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 75: /* DeclList  */
-+#line 219 "../src/xkbcomp/parser.y"
-+      { FreeStmt((ParseCommon *) ((*yyvaluep).any)); }
-+#line 1468 "xkbcommon@sha/parser.c"
++#line 232 "../src/xkbcomp/parser.y"
++      { FreeStmt((ParseCommon *) ((*yyvaluep).anyList).head); }
++#line 1476 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 76: /* Decl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).any)); }
-+#line 1474 "xkbcommon@sha/parser.c"
++#line 1482 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 77: /* VarDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).var)); }
-+#line 1480 "xkbcommon@sha/parser.c"
++#line 1488 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 78: /* KeyNameDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).keyCode)); }
-+#line 1486 "xkbcommon@sha/parser.c"
++#line 1494 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 79: /* KeyAliasDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).keyAlias)); }
-+#line 1492 "xkbcommon@sha/parser.c"
++#line 1500 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 80: /* VModDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
-+      { FreeStmt((ParseCommon *) ((*yyvaluep).vmod)); }
-+#line 1498 "xkbcommon@sha/parser.c"
++#line 232 "../src/xkbcomp/parser.y"
++      { FreeStmt((ParseCommon *) ((*yyvaluep).vmodList).head); }
++#line 1506 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 81: /* VModDefList  */
-+#line 219 "../src/xkbcomp/parser.y"
-+      { FreeStmt((ParseCommon *) ((*yyvaluep).vmod)); }
-+#line 1504 "xkbcommon@sha/parser.c"
++#line 232 "../src/xkbcomp/parser.y"
++      { FreeStmt((ParseCommon *) ((*yyvaluep).vmodList).head); }
++#line 1512 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 82: /* VModDef  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).vmod)); }
-+#line 1510 "xkbcommon@sha/parser.c"
++#line 1518 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 83: /* InterpretDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).interp)); }
-+#line 1516 "xkbcommon@sha/parser.c"
++#line 1524 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 84: /* InterpretMatch  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).interp)); }
-+#line 1522 "xkbcommon@sha/parser.c"
++#line 1530 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 85: /* VarDeclList  */
-+#line 219 "../src/xkbcomp/parser.y"
-+      { FreeStmt((ParseCommon *) ((*yyvaluep).var)); }
-+#line 1528 "xkbcommon@sha/parser.c"
++#line 232 "../src/xkbcomp/parser.y"
++      { FreeStmt((ParseCommon *) ((*yyvaluep).varList).head); }
++#line 1536 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 86: /* KeyTypeDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).keyType)); }
-+#line 1534 "xkbcommon@sha/parser.c"
++#line 1542 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 87: /* SymbolsDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).syms)); }
-+#line 1540 "xkbcommon@sha/parser.c"
++#line 1548 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 88: /* SymbolsBody  */
-+#line 219 "../src/xkbcomp/parser.y"
-+      { FreeStmt((ParseCommon *) ((*yyvaluep).var)); }
-+#line 1546 "xkbcommon@sha/parser.c"
++#line 232 "../src/xkbcomp/parser.y"
++      { FreeStmt((ParseCommon *) ((*yyvaluep).varList).head); }
++#line 1554 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 89: /* SymbolsVarDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).var)); }
-+#line 1552 "xkbcommon@sha/parser.c"
++#line 1560 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 90: /* ArrayInit  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1558 "xkbcommon@sha/parser.c"
++#line 1566 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 91: /* GroupCompatDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).groupCompat)); }
-+#line 1564 "xkbcommon@sha/parser.c"
++#line 1572 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 92: /* ModMapDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).modMask)); }
-+#line 1570 "xkbcommon@sha/parser.c"
++#line 1578 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 93: /* LedMapDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).ledMap)); }
-+#line 1576 "xkbcommon@sha/parser.c"
++#line 1584 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 94: /* LedNameDecl  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).ledName)); }
-+#line 1582 "xkbcommon@sha/parser.c"
++#line 1590 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 108: /* CoordList  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1588 "xkbcommon@sha/parser.c"
++#line 1596 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 109: /* Coord  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1594 "xkbcommon@sha/parser.c"
++#line 1602 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 116: /* OptExprList  */
-+#line 219 "../src/xkbcomp/parser.y"
-+      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1600 "xkbcommon@sha/parser.c"
++#line 232 "../src/xkbcomp/parser.y"
++      { FreeStmt((ParseCommon *) ((*yyvaluep).exprList).head); }
++#line 1608 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 117: /* ExprList  */
-+#line 219 "../src/xkbcomp/parser.y"
-+      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1606 "xkbcommon@sha/parser.c"
++#line 232 "../src/xkbcomp/parser.y"
++      { FreeStmt((ParseCommon *) ((*yyvaluep).exprList).head); }
++#line 1614 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 118: /* Expr  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1612 "xkbcommon@sha/parser.c"
++#line 1620 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 119: /* Term  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1618 "xkbcommon@sha/parser.c"
++#line 1626 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 120: /* ActionList  */
-+#line 219 "../src/xkbcomp/parser.y"
-+      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1624 "xkbcommon@sha/parser.c"
++#line 232 "../src/xkbcomp/parser.y"
++      { FreeStmt((ParseCommon *) ((*yyvaluep).exprList).head); }
++#line 1632 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 121: /* Action  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1630 "xkbcommon@sha/parser.c"
++#line 1638 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 122: /* Lhs  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1636 "xkbcommon@sha/parser.c"
++#line 1644 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 123: /* Terminal  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1642 "xkbcommon@sha/parser.c"
++#line 1650 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 124: /* OptKeySymList  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1648 "xkbcommon@sha/parser.c"
++#line 1656 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 125: /* KeySymList  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1654 "xkbcommon@sha/parser.c"
++#line 1662 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 126: /* KeySyms  */
-+#line 219 "../src/xkbcomp/parser.y"
++#line 229 "../src/xkbcomp/parser.y"
 +      { FreeStmt((ParseCommon *) ((*yyvaluep).expr)); }
-+#line 1660 "xkbcommon@sha/parser.c"
++#line 1668 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 135: /* OptMapName  */
-+#line 225 "../src/xkbcomp/parser.y"
++#line 238 "../src/xkbcomp/parser.y"
 +      { free(((*yyvaluep).str)); }
-+#line 1666 "xkbcommon@sha/parser.c"
++#line 1674 "xkbcommon@sha/parser.c"
 +        break;
 +
 +    case 136: /* MapName  */
-+#line 225 "../src/xkbcomp/parser.y"
++#line 238 "../src/xkbcomp/parser.y"
 +      { free(((*yyvaluep).str)); }
-+#line 1672 "xkbcommon@sha/parser.c"
++#line 1680 "xkbcommon@sha/parser.c"
 +        break;
 +
 +      default:
@@ -1964,834 +1972,838 @@ index 0000000..ce49e55
 +  switch (yyn)
 +    {
 +  case 2:
-+#line 242 "../src/xkbcomp/parser.y"
++#line 255 "../src/xkbcomp/parser.y"
 +    { (yyval.file) = param->rtrn = (yyvsp[0].file); param->more_maps = !!param->rtrn; }
-+#line 1942 "xkbcommon@sha/parser.c"
++#line 1950 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 3:
-+#line 244 "../src/xkbcomp/parser.y"
++#line 257 "../src/xkbcomp/parser.y"
 +    { (yyval.file) = param->rtrn = (yyvsp[0].file); param->more_maps = !!param->rtrn; YYACCEPT; }
-+#line 1948 "xkbcommon@sha/parser.c"
++#line 1956 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 4:
-+#line 246 "../src/xkbcomp/parser.y"
++#line 259 "../src/xkbcomp/parser.y"
 +    { (yyval.file) = param->rtrn = NULL; param->more_maps = false; }
-+#line 1954 "xkbcommon@sha/parser.c"
++#line 1962 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 5:
-+#line 252 "../src/xkbcomp/parser.y"
-+    { (yyval.file) = XkbFileCreate((yyvsp[-5].file_type), (yyvsp[-4].str), (ParseCommon *) (yyvsp[-2].file), (yyvsp[-6].mapFlags)); }
-+#line 1960 "xkbcommon@sha/parser.c"
++#line 265 "../src/xkbcomp/parser.y"
++    { (yyval.file) = XkbFileCreate((yyvsp[-5].file_type), (yyvsp[-4].str), (ParseCommon *) (yyvsp[-2].fileList).head, (yyvsp[-6].mapFlags)); }
++#line 1968 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 6:
-+#line 255 "../src/xkbcomp/parser.y"
++#line 268 "../src/xkbcomp/parser.y"
 +    { (yyval.file_type) = FILE_TYPE_KEYMAP; }
-+#line 1966 "xkbcommon@sha/parser.c"
++#line 1974 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 7:
-+#line 256 "../src/xkbcomp/parser.y"
++#line 269 "../src/xkbcomp/parser.y"
 +    { (yyval.file_type) = FILE_TYPE_KEYMAP; }
-+#line 1972 "xkbcommon@sha/parser.c"
++#line 1980 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 8:
-+#line 257 "../src/xkbcomp/parser.y"
++#line 270 "../src/xkbcomp/parser.y"
 +    { (yyval.file_type) = FILE_TYPE_KEYMAP; }
-+#line 1978 "xkbcommon@sha/parser.c"
++#line 1986 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 9:
-+#line 261 "../src/xkbcomp/parser.y"
-+    {
-+                            if (!(yyvsp[0].file))
-+                                (yyval.file) = (yyvsp[-1].file);
-+                            else
-+                                (yyval.file) = (XkbFile *) AppendStmt((ParseCommon *) (yyvsp[-1].file),
-+                                                            (ParseCommon *) (yyvsp[0].file));
-+                        }
-+#line 1990 "xkbcommon@sha/parser.c"
++#line 274 "../src/xkbcomp/parser.y"
++    { (yyval.fileList).head = (yyvsp[-1].fileList).head; (yyval.fileList).last->common.next = &(yyvsp[0].file)->common; (yyval.fileList).last = (yyvsp[0].file); }
++#line 1992 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 10:
-+#line 269 "../src/xkbcomp/parser.y"
-+    { (yyval.file) = (yyvsp[0].file); }
-+#line 1996 "xkbcommon@sha/parser.c"
++#line 276 "../src/xkbcomp/parser.y"
++    { (yyval.fileList).head = (yyval.fileList).last = (yyvsp[0].file); }
++#line 1998 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 11:
-+#line 275 "../src/xkbcomp/parser.y"
++#line 282 "../src/xkbcomp/parser.y"
 +    {
-+                            (yyval.file) = XkbFileCreate((yyvsp[-5].file_type), (yyvsp[-4].str), (yyvsp[-2].any), (yyvsp[-6].mapFlags));
++                            (yyval.file) = XkbFileCreate((yyvsp[-5].file_type), (yyvsp[-4].str), (yyvsp[-2].anyList).head, (yyvsp[-6].mapFlags));
 +                        }
-+#line 2004 "xkbcommon@sha/parser.c"
++#line 2006 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 12:
-+#line 280 "../src/xkbcomp/parser.y"
++#line 287 "../src/xkbcomp/parser.y"
 +    { (yyval.file_type) = FILE_TYPE_KEYCODES; }
-+#line 2010 "xkbcommon@sha/parser.c"
++#line 2012 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 13:
-+#line 281 "../src/xkbcomp/parser.y"
++#line 288 "../src/xkbcomp/parser.y"
 +    { (yyval.file_type) = FILE_TYPE_TYPES; }
-+#line 2016 "xkbcommon@sha/parser.c"
++#line 2018 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 14:
-+#line 282 "../src/xkbcomp/parser.y"
++#line 289 "../src/xkbcomp/parser.y"
 +    { (yyval.file_type) = FILE_TYPE_COMPAT; }
-+#line 2022 "xkbcommon@sha/parser.c"
++#line 2024 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 15:
-+#line 283 "../src/xkbcomp/parser.y"
++#line 290 "../src/xkbcomp/parser.y"
 +    { (yyval.file_type) = FILE_TYPE_SYMBOLS; }
-+#line 2028 "xkbcommon@sha/parser.c"
++#line 2030 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 16:
-+#line 284 "../src/xkbcomp/parser.y"
++#line 291 "../src/xkbcomp/parser.y"
 +    { (yyval.file_type) = FILE_TYPE_GEOMETRY; }
-+#line 2034 "xkbcommon@sha/parser.c"
++#line 2036 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 17:
-+#line 287 "../src/xkbcomp/parser.y"
++#line 294 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = (yyvsp[0].mapFlags); }
-+#line 2040 "xkbcommon@sha/parser.c"
++#line 2042 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 18:
-+#line 288 "../src/xkbcomp/parser.y"
++#line 295 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = 0; }
-+#line 2046 "xkbcommon@sha/parser.c"
++#line 2048 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 19:
-+#line 291 "../src/xkbcomp/parser.y"
++#line 298 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = ((yyvsp[-1].mapFlags) | (yyvsp[0].mapFlags)); }
-+#line 2052 "xkbcommon@sha/parser.c"
++#line 2054 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 20:
-+#line 292 "../src/xkbcomp/parser.y"
++#line 299 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = (yyvsp[0].mapFlags); }
-+#line 2058 "xkbcommon@sha/parser.c"
++#line 2060 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 21:
-+#line 295 "../src/xkbcomp/parser.y"
++#line 302 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = MAP_IS_PARTIAL; }
-+#line 2064 "xkbcommon@sha/parser.c"
++#line 2066 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 22:
-+#line 296 "../src/xkbcomp/parser.y"
++#line 303 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = MAP_IS_DEFAULT; }
-+#line 2070 "xkbcommon@sha/parser.c"
++#line 2072 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 23:
-+#line 297 "../src/xkbcomp/parser.y"
++#line 304 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = MAP_IS_HIDDEN; }
-+#line 2076 "xkbcommon@sha/parser.c"
++#line 2078 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 24:
-+#line 298 "../src/xkbcomp/parser.y"
++#line 305 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = MAP_HAS_ALPHANUMERIC; }
-+#line 2082 "xkbcommon@sha/parser.c"
++#line 2084 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 25:
-+#line 299 "../src/xkbcomp/parser.y"
++#line 306 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = MAP_HAS_MODIFIER; }
-+#line 2088 "xkbcommon@sha/parser.c"
++#line 2090 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 26:
-+#line 300 "../src/xkbcomp/parser.y"
++#line 307 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = MAP_HAS_KEYPAD; }
-+#line 2094 "xkbcommon@sha/parser.c"
++#line 2096 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 27:
-+#line 301 "../src/xkbcomp/parser.y"
++#line 308 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = MAP_HAS_FN; }
-+#line 2100 "xkbcommon@sha/parser.c"
++#line 2102 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 28:
-+#line 302 "../src/xkbcomp/parser.y"
++#line 309 "../src/xkbcomp/parser.y"
 +    { (yyval.mapFlags) = MAP_IS_ALTGR; }
-+#line 2106 "xkbcommon@sha/parser.c"
++#line 2108 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 29:
-+#line 306 "../src/xkbcomp/parser.y"
-+    { (yyval.any) = AppendStmt((yyvsp[-1].any), (yyvsp[0].any)); }
-+#line 2112 "xkbcommon@sha/parser.c"
++#line 313 "../src/xkbcomp/parser.y"
++    {
++                            if ((yyvsp[0].any)) {
++                                if ((yyvsp[-1].anyList).head) {
++                                    (yyval.anyList).head = (yyvsp[-1].anyList).head; (yyvsp[-1].anyList).last->next = (yyvsp[0].any); (yyval.anyList).last = (yyvsp[0].any);
++                                } else {
++                                    (yyval.anyList).head = (yyval.anyList).last = (yyvsp[0].any);
++                                }
++                            }
++                        }
++#line 2122 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 30:
-+#line 307 "../src/xkbcomp/parser.y"
-+    { (yyval.any) = NULL; }
-+#line 2118 "xkbcommon@sha/parser.c"
-+    break;
-+
-+  case 31:
-+#line 311 "../src/xkbcomp/parser.y"
++#line 328 "../src/xkbcomp/parser.y"
 +    {
-+                            (yyvsp[0].var)->merge = (yyvsp[-1].merge);
-+                            (yyval.any) = (ParseCommon *) (yyvsp[0].var);
-+                        }
-+#line 2127 "xkbcommon@sha/parser.c"
-+    break;
-+
-+  case 32:
-+#line 316 "../src/xkbcomp/parser.y"
-+    {
-+                            (yyvsp[0].vmod)->merge = (yyvsp[-1].merge);
-+                            (yyval.any) = (ParseCommon *) (yyvsp[0].vmod);
++                            for (VModDef *vmod = (yyvsp[0].vmodList).head; vmod; vmod = (VModDef *) vmod->common.next)
++                                vmod->merge = (yyvsp[-1].merge);
++                            if ((yyvsp[-2].anyList).head) {
++                                (yyval.anyList).head = (yyvsp[-2].anyList).head; (yyvsp[-2].anyList).last->next = &(yyvsp[0].vmodList).head->common; (yyval.anyList).last = &(yyvsp[0].vmodList).last->common;
++                            } else {
++                                (yyval.anyList).head = &(yyvsp[0].vmodList).head->common; (yyval.anyList).last = &(yyvsp[0].vmodList).last->common;
++                            }
 +                        }
 +#line 2136 "xkbcommon@sha/parser.c"
 +    break;
 +
++  case 31:
++#line 337 "../src/xkbcomp/parser.y"
++    { (yyval.anyList).head = (yyval.anyList).last = NULL; }
++#line 2142 "xkbcommon@sha/parser.c"
++    break;
++
++  case 32:
++#line 341 "../src/xkbcomp/parser.y"
++    {
++                            (yyvsp[0].var)->merge = (yyvsp[-1].merge);
++                            (yyval.any) = (ParseCommon *) (yyvsp[0].var);
++                        }
++#line 2151 "xkbcommon@sha/parser.c"
++    break;
++
 +  case 33:
-+#line 321 "../src/xkbcomp/parser.y"
++#line 347 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].interp)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].interp);
 +                        }
-+#line 2145 "xkbcommon@sha/parser.c"
++#line 2160 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 34:
-+#line 326 "../src/xkbcomp/parser.y"
++#line 352 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].keyCode)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].keyCode);
 +                        }
-+#line 2154 "xkbcommon@sha/parser.c"
++#line 2169 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 35:
-+#line 331 "../src/xkbcomp/parser.y"
++#line 357 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].keyAlias)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].keyAlias);
 +                        }
-+#line 2163 "xkbcommon@sha/parser.c"
++#line 2178 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 36:
-+#line 336 "../src/xkbcomp/parser.y"
++#line 362 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].keyType)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].keyType);
 +                        }
-+#line 2172 "xkbcommon@sha/parser.c"
++#line 2187 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 37:
-+#line 341 "../src/xkbcomp/parser.y"
++#line 367 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].syms)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].syms);
 +                        }
-+#line 2181 "xkbcommon@sha/parser.c"
++#line 2196 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 38:
-+#line 346 "../src/xkbcomp/parser.y"
++#line 372 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].modMask)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].modMask);
 +                        }
-+#line 2190 "xkbcommon@sha/parser.c"
++#line 2205 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 39:
-+#line 351 "../src/xkbcomp/parser.y"
++#line 377 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].groupCompat)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].groupCompat);
 +                        }
-+#line 2199 "xkbcommon@sha/parser.c"
++#line 2214 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 40:
-+#line 356 "../src/xkbcomp/parser.y"
++#line 382 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].ledMap)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].ledMap);
 +                        }
-+#line 2208 "xkbcommon@sha/parser.c"
++#line 2223 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 41:
-+#line 361 "../src/xkbcomp/parser.y"
++#line 387 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyvsp[0].ledName)->merge = (yyvsp[-1].merge);
 +                            (yyval.any) = (ParseCommon *) (yyvsp[0].ledName);
 +                        }
-+#line 2217 "xkbcommon@sha/parser.c"
++#line 2232 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 42:
-+#line 365 "../src/xkbcomp/parser.y"
++#line 391 "../src/xkbcomp/parser.y"
 +    { (yyval.any) = NULL; }
-+#line 2223 "xkbcommon@sha/parser.c"
++#line 2238 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 43:
-+#line 366 "../src/xkbcomp/parser.y"
++#line 392 "../src/xkbcomp/parser.y"
 +    { (yyval.any) = NULL; }
-+#line 2229 "xkbcommon@sha/parser.c"
++#line 2244 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 44:
-+#line 367 "../src/xkbcomp/parser.y"
++#line 393 "../src/xkbcomp/parser.y"
 +    { (yyval.any) = NULL; }
-+#line 2235 "xkbcommon@sha/parser.c"
++#line 2250 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 45:
-+#line 369 "../src/xkbcomp/parser.y"
++#line 395 "../src/xkbcomp/parser.y"
 +    {
 +                            (yyval.any) = (ParseCommon *) IncludeCreate(param->ctx, (yyvsp[0].str), (yyvsp[-1].merge));
 +                            free((yyvsp[0].str));
 +                        }
-+#line 2244 "xkbcommon@sha/parser.c"
++#line 2259 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 46:
-+#line 376 "../src/xkbcomp/parser.y"
++#line 402 "../src/xkbcomp/parser.y"
 +    { (yyval.var) = VarCreate((yyvsp[-3].expr), (yyvsp[-1].expr)); }
-+#line 2250 "xkbcommon@sha/parser.c"
++#line 2265 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 47:
-+#line 378 "../src/xkbcomp/parser.y"
++#line 404 "../src/xkbcomp/parser.y"
 +    { (yyval.var) = BoolVarCreate((yyvsp[-1].atom), true); }
-+#line 2256 "xkbcommon@sha/parser.c"
++#line 2271 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 48:
-+#line 380 "../src/xkbcomp/parser.y"
++#line 406 "../src/xkbcomp/parser.y"
 +    { (yyval.var) = BoolVarCreate((yyvsp[-1].atom), false); }
-+#line 2262 "xkbcommon@sha/parser.c"
++#line 2277 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 49:
-+#line 384 "../src/xkbcomp/parser.y"
++#line 410 "../src/xkbcomp/parser.y"
 +    { (yyval.keyCode) = KeycodeCreate((yyvsp[-3].atom), (yyvsp[-1].num)); }
-+#line 2268 "xkbcommon@sha/parser.c"
++#line 2283 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 50:
-+#line 388 "../src/xkbcomp/parser.y"
++#line 414 "../src/xkbcomp/parser.y"
 +    { (yyval.keyAlias) = KeyAliasCreate((yyvsp[-3].atom), (yyvsp[-1].atom)); }
-+#line 2274 "xkbcommon@sha/parser.c"
++#line 2289 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 51:
-+#line 392 "../src/xkbcomp/parser.y"
-+    { (yyval.vmod) = (yyvsp[-1].vmod); }
-+#line 2280 "xkbcommon@sha/parser.c"
++#line 418 "../src/xkbcomp/parser.y"
++    { (yyval.vmodList) = (yyvsp[-1].vmodList); }
++#line 2295 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 52:
-+#line 396 "../src/xkbcomp/parser.y"
-+    { (yyval.vmod) = (VModDef *) AppendStmt((ParseCommon *) (yyvsp[-2].vmod),
-+                                                      (ParseCommon *) (yyvsp[0].vmod)); }
-+#line 2287 "xkbcommon@sha/parser.c"
++#line 422 "../src/xkbcomp/parser.y"
++    { (yyval.vmodList).head = (yyvsp[-2].vmodList).head; (yyval.vmodList).last->common.next = &(yyvsp[0].vmod)->common; (yyval.vmodList).last = (yyvsp[0].vmod); }
++#line 2301 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 53:
-+#line 399 "../src/xkbcomp/parser.y"
-+    { (yyval.vmod) = (yyvsp[0].vmod); }
-+#line 2293 "xkbcommon@sha/parser.c"
++#line 424 "../src/xkbcomp/parser.y"
++    { (yyval.vmodList).head = (yyval.vmodList).last = (yyvsp[0].vmod); }
++#line 2307 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 54:
-+#line 403 "../src/xkbcomp/parser.y"
++#line 428 "../src/xkbcomp/parser.y"
 +    { (yyval.vmod) = VModCreate((yyvsp[0].atom), NULL); }
-+#line 2299 "xkbcommon@sha/parser.c"
++#line 2313 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 55:
-+#line 405 "../src/xkbcomp/parser.y"
++#line 430 "../src/xkbcomp/parser.y"
 +    { (yyval.vmod) = VModCreate((yyvsp[-2].atom), (yyvsp[0].expr)); }
-+#line 2305 "xkbcommon@sha/parser.c"
++#line 2319 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 56:
-+#line 411 "../src/xkbcomp/parser.y"
-+    { (yyvsp[-4].interp)->def = (yyvsp[-2].var); (yyval.interp) = (yyvsp[-4].interp); }
-+#line 2311 "xkbcommon@sha/parser.c"
++#line 436 "../src/xkbcomp/parser.y"
++    { (yyvsp[-4].interp)->def = (yyvsp[-2].varList).head; (yyval.interp) = (yyvsp[-4].interp); }
++#line 2325 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 57:
-+#line 415 "../src/xkbcomp/parser.y"
++#line 440 "../src/xkbcomp/parser.y"
 +    { (yyval.interp) = InterpCreate((yyvsp[-2].keysym), (yyvsp[0].expr)); }
-+#line 2317 "xkbcommon@sha/parser.c"
++#line 2331 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 58:
-+#line 417 "../src/xkbcomp/parser.y"
++#line 442 "../src/xkbcomp/parser.y"
 +    { (yyval.interp) = InterpCreate((yyvsp[0].keysym), NULL); }
-+#line 2323 "xkbcommon@sha/parser.c"
++#line 2337 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 59:
-+#line 421 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = (VarDef *) AppendStmt((ParseCommon *) (yyvsp[-1].var),
-+                                                     (ParseCommon *) (yyvsp[0].var)); }
-+#line 2330 "xkbcommon@sha/parser.c"
++#line 446 "../src/xkbcomp/parser.y"
++    { (yyval.varList).head = (yyvsp[-1].varList).head; (yyval.varList).last->common.next = &(yyvsp[0].var)->common; (yyval.varList).last = (yyvsp[0].var); }
++#line 2343 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 60:
-+#line 424 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = (yyvsp[0].var); }
-+#line 2336 "xkbcommon@sha/parser.c"
++#line 448 "../src/xkbcomp/parser.y"
++    { (yyval.varList).head = (yyval.varList).last = (yyvsp[0].var); }
++#line 2349 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 61:
-+#line 430 "../src/xkbcomp/parser.y"
-+    { (yyval.keyType) = KeyTypeCreate((yyvsp[-4].atom), (yyvsp[-2].var)); }
-+#line 2342 "xkbcommon@sha/parser.c"
-+    break;
-+
-+  case 62:
-+#line 436 "../src/xkbcomp/parser.y"
-+    { (yyval.syms) = SymbolsCreate((yyvsp[-4].atom), (yyvsp[-2].var)); }
-+#line 2348 "xkbcommon@sha/parser.c"
-+    break;
-+
-+  case 63:
-+#line 440 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = (VarDef *) AppendStmt((ParseCommon *) (yyvsp[-2].var),
-+                                                     (ParseCommon *) (yyvsp[0].var)); }
++#line 454 "../src/xkbcomp/parser.y"
++    { (yyval.keyType) = KeyTypeCreate((yyvsp[-4].atom), (yyvsp[-2].varList).head); }
 +#line 2355 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 64:
-+#line 443 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = (yyvsp[0].var); }
++  case 62:
++#line 460 "../src/xkbcomp/parser.y"
++    { (yyval.syms) = SymbolsCreate((yyvsp[-4].atom), (yyvsp[-2].varList).head); }
 +#line 2361 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 65:
-+#line 444 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = NULL; }
++  case 63:
++#line 464 "../src/xkbcomp/parser.y"
++    { (yyval.varList).head = (yyvsp[-2].varList).head; (yyval.varList).last->common.next = &(yyvsp[0].var)->common; (yyval.varList).last = (yyvsp[0].var); }
 +#line 2367 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 66:
-+#line 447 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = VarCreate((yyvsp[-2].expr), (yyvsp[0].expr)); }
++  case 64:
++#line 466 "../src/xkbcomp/parser.y"
++    { (yyval.varList).head = (yyval.varList).last = (yyvsp[0].var); }
 +#line 2373 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 67:
-+#line 448 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = VarCreate((yyvsp[-2].expr), (yyvsp[0].expr)); }
++  case 65:
++#line 467 "../src/xkbcomp/parser.y"
++    { (yyval.varList).head = (yyval.varList).last = NULL; }
 +#line 2379 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 68:
-+#line 449 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = BoolVarCreate((yyvsp[0].atom), true); }
++  case 66:
++#line 470 "../src/xkbcomp/parser.y"
++    { (yyval.var) = VarCreate((yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2385 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 69:
-+#line 450 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = BoolVarCreate((yyvsp[0].atom), false); }
++  case 67:
++#line 471 "../src/xkbcomp/parser.y"
++    { (yyval.var) = VarCreate((yyvsp[-2].expr), (yyvsp[0].expr)); }
 +#line 2391 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 70:
-+#line 451 "../src/xkbcomp/parser.y"
-+    { (yyval.var) = VarCreate(NULL, (yyvsp[0].expr)); }
++  case 68:
++#line 472 "../src/xkbcomp/parser.y"
++    { (yyval.var) = BoolVarCreate((yyvsp[0].atom), true); }
 +#line 2397 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 71:
-+#line 455 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = (yyvsp[-1].expr); }
++  case 69:
++#line 473 "../src/xkbcomp/parser.y"
++    { (yyval.var) = BoolVarCreate((yyvsp[0].atom), false); }
 +#line 2403 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 72:
-+#line 457 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = ExprCreateUnary(EXPR_ACTION_LIST, EXPR_TYPE_ACTION, (yyvsp[-1].expr)); }
++  case 70:
++#line 474 "../src/xkbcomp/parser.y"
++    { (yyval.var) = VarCreate(NULL, (yyvsp[0].expr)); }
 +#line 2409 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 73:
-+#line 461 "../src/xkbcomp/parser.y"
-+    { (yyval.groupCompat) = GroupCompatCreate((yyvsp[-3].ival), (yyvsp[-1].expr)); }
++  case 71:
++#line 478 "../src/xkbcomp/parser.y"
++    { (yyval.expr) = (yyvsp[-1].expr); }
 +#line 2415 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 74:
-+#line 465 "../src/xkbcomp/parser.y"
-+    { (yyval.modMask) = ModMapCreate((yyvsp[-4].atom), (yyvsp[-2].expr)); }
++  case 72:
++#line 480 "../src/xkbcomp/parser.y"
++    { (yyval.expr) = ExprCreateActionList((yyvsp[-1].exprList).head); }
 +#line 2421 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 75:
-+#line 469 "../src/xkbcomp/parser.y"
-+    { (yyval.ledMap) = LedMapCreate((yyvsp[-4].atom), (yyvsp[-2].var)); }
++  case 73:
++#line 484 "../src/xkbcomp/parser.y"
++    { (yyval.groupCompat) = GroupCompatCreate((yyvsp[-3].num), (yyvsp[-1].expr)); }
 +#line 2427 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 76:
-+#line 473 "../src/xkbcomp/parser.y"
-+    { (yyval.ledName) = LedNameCreate((yyvsp[-3].ival), (yyvsp[-1].expr), false); }
++  case 74:
++#line 488 "../src/xkbcomp/parser.y"
++    { (yyval.modMask) = ModMapCreate((yyvsp[-4].atom), (yyvsp[-2].exprList).head); }
 +#line 2433 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 77:
-+#line 475 "../src/xkbcomp/parser.y"
-+    { (yyval.ledName) = LedNameCreate((yyvsp[-3].ival), (yyvsp[-1].expr), true); }
++  case 75:
++#line 492 "../src/xkbcomp/parser.y"
++    { (yyval.ledMap) = LedMapCreate((yyvsp[-4].atom), (yyvsp[-2].varList).head); }
 +#line 2439 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 78:
-+#line 479 "../src/xkbcomp/parser.y"
-+    { (yyval.geom) = NULL; }
++  case 76:
++#line 496 "../src/xkbcomp/parser.y"
++    { (yyval.ledName) = LedNameCreate((yyvsp[-3].num), (yyvsp[-1].expr), false); }
 +#line 2445 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 79:
-+#line 481 "../src/xkbcomp/parser.y"
-+    { (void) (yyvsp[-2].expr); (yyval.geom) = NULL; }
++  case 77:
++#line 498 "../src/xkbcomp/parser.y"
++    { (yyval.ledName) = LedNameCreate((yyvsp[-3].num), (yyvsp[-1].expr), true); }
 +#line 2451 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 80:
-+#line 485 "../src/xkbcomp/parser.y"
++  case 78:
++#line 502 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2457 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 81:
-+#line 488 "../src/xkbcomp/parser.y"
-+    { (yyval.geom) = NULL;}
++  case 79:
++#line 504 "../src/xkbcomp/parser.y"
++    { (void) (yyvsp[-2].expr); (yyval.geom) = NULL; }
 +#line 2463 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 82:
-+#line 489 "../src/xkbcomp/parser.y"
++  case 80:
++#line 508 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2469 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 83:
-+#line 493 "../src/xkbcomp/parser.y"
-+    { (yyval.geom) = NULL; }
++  case 81:
++#line 511 "../src/xkbcomp/parser.y"
++    { (yyval.geom) = NULL;}
 +#line 2475 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 84:
-+#line 495 "../src/xkbcomp/parser.y"
-+    { FreeStmt((ParseCommon *) (yyvsp[0].var)); (yyval.geom) = NULL; }
++  case 82:
++#line 512 "../src/xkbcomp/parser.y"
++    { (yyval.geom) = NULL; }
 +#line 2481 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 85:
-+#line 497 "../src/xkbcomp/parser.y"
++  case 83:
++#line 516 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2487 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 86:
-+#line 499 "../src/xkbcomp/parser.y"
-+    { FreeStmt((ParseCommon *) (yyvsp[0].ledMap)); (yyval.geom) = NULL; }
++  case 84:
++#line 518 "../src/xkbcomp/parser.y"
++    { FreeStmt((ParseCommon *) (yyvsp[0].var)); (yyval.geom) = NULL; }
 +#line 2493 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 87:
-+#line 501 "../src/xkbcomp/parser.y"
++  case 85:
++#line 520 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2499 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 88:
-+#line 504 "../src/xkbcomp/parser.y"
-+    { (yyval.geom) = NULL;}
++  case 86:
++#line 522 "../src/xkbcomp/parser.y"
++    { FreeStmt((ParseCommon *) (yyvsp[0].ledMap)); (yyval.geom) = NULL; }
 +#line 2505 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 89:
-+#line 505 "../src/xkbcomp/parser.y"
++  case 87:
++#line 524 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2511 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 90:
-+#line 508 "../src/xkbcomp/parser.y"
-+    { (yyval.geom) = NULL; }
++  case 88:
++#line 527 "../src/xkbcomp/parser.y"
++    { (yyval.geom) = NULL;}
 +#line 2517 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 91:
-+#line 510 "../src/xkbcomp/parser.y"
-+    { FreeStmt((ParseCommon *) (yyvsp[0].var)); (yyval.geom) = NULL; }
++  case 89:
++#line 528 "../src/xkbcomp/parser.y"
++    { (yyval.geom) = NULL; }
 +#line 2523 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 92:
-+#line 513 "../src/xkbcomp/parser.y"
++  case 90:
++#line 531 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2529 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 93:
-+#line 514 "../src/xkbcomp/parser.y"
-+    { (yyval.geom) = NULL; }
++  case 91:
++#line 533 "../src/xkbcomp/parser.y"
++    { FreeStmt((ParseCommon *) (yyvsp[0].var)); (yyval.geom) = NULL; }
 +#line 2535 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 94:
-+#line 518 "../src/xkbcomp/parser.y"
++  case 92:
++#line 536 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2541 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 95:
-+#line 520 "../src/xkbcomp/parser.y"
-+    { FreeStmt((ParseCommon *) (yyvsp[-1].expr)); (yyval.geom) = NULL; }
++  case 93:
++#line 537 "../src/xkbcomp/parser.y"
++    { (yyval.geom) = NULL; }
 +#line 2547 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 96:
-+#line 524 "../src/xkbcomp/parser.y"
++  case 94:
++#line 541 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2553 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 97:
-+#line 527 "../src/xkbcomp/parser.y"
-+    { (yyval.geom) = NULL; }
++  case 95:
++#line 543 "../src/xkbcomp/parser.y"
++    { FreeStmt((ParseCommon *) (yyvsp[-1].exprList).head); (yyval.geom) = NULL; }
 +#line 2559 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 98:
-+#line 528 "../src/xkbcomp/parser.y"
++  case 96:
++#line 547 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2565 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 99:
-+#line 531 "../src/xkbcomp/parser.y"
++  case 97:
++#line 550 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2571 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 100:
-+#line 535 "../src/xkbcomp/parser.y"
-+    { (yyval.geom) = NULL;}
++  case 98:
++#line 551 "../src/xkbcomp/parser.y"
++    { (yyval.geom) = NULL; }
 +#line 2577 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 101:
-+#line 537 "../src/xkbcomp/parser.y"
++  case 99:
++#line 554 "../src/xkbcomp/parser.y"
 +    { (yyval.geom) = NULL; }
 +#line 2583 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 102:
-+#line 541 "../src/xkbcomp/parser.y"
-+    { (void) (yyvsp[-1].expr); (yyval.geom) = NULL; }
++  case 100:
++#line 558 "../src/xkbcomp/parser.y"
++    { (yyval.geom) = NULL;}
 +#line 2589 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 103:
-+#line 543 "../src/xkbcomp/parser.y"
-+    { (void) (yyvsp[-1].expr); (yyval.geom) = NULL; }
++  case 101:
++#line 560 "../src/xkbcomp/parser.y"
++    { (yyval.geom) = NULL; }
 +#line 2595 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 104:
-+#line 545 "../src/xkbcomp/parser.y"
-+    { FreeStmt((ParseCommon *) (yyvsp[0].expr)); (yyval.geom) = NULL; }
++  case 102:
++#line 564 "../src/xkbcomp/parser.y"
++    { (void) (yyvsp[-1].expr); (yyval.geom) = NULL; }
 +#line 2601 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 105:
-+#line 549 "../src/xkbcomp/parser.y"
-+    { (void) (yyvsp[-2].expr); (void) (yyvsp[0].expr); (yyval.expr) = NULL; }
++  case 103:
++#line 566 "../src/xkbcomp/parser.y"
++    { (void) (yyvsp[-1].expr); (yyval.geom) = NULL; }
 +#line 2607 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 106:
-+#line 551 "../src/xkbcomp/parser.y"
-+    { (void) (yyvsp[0].expr); (yyval.expr) = NULL; }
++  case 104:
++#line 568 "../src/xkbcomp/parser.y"
++    { FreeStmt((ParseCommon *) (yyvsp[0].expr)); (yyval.geom) = NULL; }
 +#line 2613 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 107:
-+#line 555 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = NULL; }
++  case 105:
++#line 572 "../src/xkbcomp/parser.y"
++    { (void) (yyvsp[-2].expr); (void) (yyvsp[0].expr); (yyval.expr) = NULL; }
 +#line 2619 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 108:
-+#line 559 "../src/xkbcomp/parser.y"
-+    { FreeStmt((ParseCommon *) (yyvsp[-2].var)); (yyval.geom) = NULL; }
++  case 106:
++#line 574 "../src/xkbcomp/parser.y"
++    { (void) (yyvsp[0].expr); (yyval.expr) = NULL; }
 +#line 2625 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 109:
-+#line 562 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = 0; }
++  case 107:
++#line 578 "../src/xkbcomp/parser.y"
++    { (yyval.expr) = NULL; }
 +#line 2631 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 110:
-+#line 563 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = 0; }
++  case 108:
++#line 582 "../src/xkbcomp/parser.y"
++    { FreeStmt((ParseCommon *) (yyvsp[-2].varList).head); (yyval.geom) = NULL; }
 +#line 2637 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 111:
-+#line 564 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = 0; }
++  case 109:
++#line 585 "../src/xkbcomp/parser.y"
++    { (yyval.num) = 0; }
 +#line 2643 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 112:
-+#line 565 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = 0; }
++  case 110:
++#line 586 "../src/xkbcomp/parser.y"
++    { (yyval.num) = 0; }
 +#line 2649 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 113:
-+#line 568 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = (yyvsp[0].atom); }
++  case 111:
++#line 587 "../src/xkbcomp/parser.y"
++    { (yyval.num) = 0; }
 +#line 2655 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 114:
-+#line 569 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = (yyvsp[0].atom); }
++  case 112:
++#line 588 "../src/xkbcomp/parser.y"
++    { (yyval.num) = 0; }
 +#line 2661 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 115:
-+#line 573 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "action"); }
++  case 113:
++#line 591 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = (yyvsp[0].atom); }
 +#line 2667 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 116:
-+#line 575 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "interpret"); }
++  case 114:
++#line 592 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = (yyvsp[0].atom); }
 +#line 2673 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 117:
-+#line 577 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "type"); }
++  case 115:
++#line 596 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "action"); }
 +#line 2679 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 118:
-+#line 579 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "key"); }
++  case 116:
++#line 598 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "interpret"); }
 +#line 2685 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 119:
-+#line 581 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "group"); }
++  case 117:
++#line 600 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "type"); }
 +#line 2691 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 120:
-+#line 583 "../src/xkbcomp/parser.y"
-+    {(yyval.atom) = xkb_atom_intern_literal(param->ctx, "modifier_map");}
++  case 118:
++#line 602 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "key"); }
 +#line 2697 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 121:
-+#line 585 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "indicator"); }
++  case 119:
++#line 604 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "group"); }
 +#line 2703 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 122:
-+#line 587 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "shape"); }
++  case 120:
++#line 606 "../src/xkbcomp/parser.y"
++    {(yyval.atom) = xkb_atom_intern_literal(param->ctx, "modifier_map");}
 +#line 2709 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 123:
-+#line 589 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "row"); }
++  case 121:
++#line 608 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "indicator"); }
 +#line 2715 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 124:
-+#line 591 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "section"); }
++  case 122:
++#line 610 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "shape"); }
 +#line 2721 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 125:
-+#line 593 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "text"); }
++  case 123:
++#line 612 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "row"); }
 +#line 2727 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 126:
-+#line 596 "../src/xkbcomp/parser.y"
-+    { (yyval.merge) = (yyvsp[0].merge); }
++  case 124:
++#line 614 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "section"); }
 +#line 2733 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 127:
-+#line 597 "../src/xkbcomp/parser.y"
-+    { (yyval.merge) = MERGE_DEFAULT; }
++  case 125:
++#line 616 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "text"); }
 +#line 2739 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 128:
-+#line 600 "../src/xkbcomp/parser.y"
-+    { (yyval.merge) = MERGE_DEFAULT; }
++  case 126:
++#line 619 "../src/xkbcomp/parser.y"
++    { (yyval.merge) = (yyvsp[0].merge); }
 +#line 2745 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 129:
-+#line 601 "../src/xkbcomp/parser.y"
-+    { (yyval.merge) = MERGE_AUGMENT; }
++  case 127:
++#line 620 "../src/xkbcomp/parser.y"
++    { (yyval.merge) = MERGE_DEFAULT; }
 +#line 2751 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 130:
-+#line 602 "../src/xkbcomp/parser.y"
-+    { (yyval.merge) = MERGE_OVERRIDE; }
++  case 128:
++#line 623 "../src/xkbcomp/parser.y"
++    { (yyval.merge) = MERGE_DEFAULT; }
 +#line 2757 "xkbcommon@sha/parser.c"
 +    break;
 +
-+  case 131:
-+#line 603 "../src/xkbcomp/parser.y"
-+    { (yyval.merge) = MERGE_REPLACE; }
++  case 129:
++#line 624 "../src/xkbcomp/parser.y"
++    { (yyval.merge) = MERGE_AUGMENT; }
 +#line 2763 "xkbcommon@sha/parser.c"
 +    break;
 +
++  case 130:
++#line 625 "../src/xkbcomp/parser.y"
++    { (yyval.merge) = MERGE_OVERRIDE; }
++#line 2769 "xkbcommon@sha/parser.c"
++    break;
++
++  case 131:
++#line 626 "../src/xkbcomp/parser.y"
++    { (yyval.merge) = MERGE_REPLACE; }
++#line 2775 "xkbcommon@sha/parser.c"
++    break;
++
 +  case 132:
-+#line 605 "../src/xkbcomp/parser.y"
++#line 628 "../src/xkbcomp/parser.y"
 +    {
 +                    /*
 +                     * This used to be MERGE_ALT_FORM. This functionality was
@@ -2799,345 +2811,343 @@ index 0000000..ce49e55
 +                     */
 +                    (yyval.merge) = MERGE_DEFAULT;
 +                }
-+#line 2775 "xkbcommon@sha/parser.c"
-+    break;
-+
-+  case 133:
-+#line 614 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = (yyvsp[0].expr); }
-+#line 2781 "xkbcommon@sha/parser.c"
-+    break;
-+
-+  case 134:
-+#line 615 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = NULL; }
 +#line 2787 "xkbcommon@sha/parser.c"
 +    break;
 +
++  case 133:
++#line 637 "../src/xkbcomp/parser.y"
++    { (yyval.exprList) = (yyvsp[0].exprList); }
++#line 2793 "xkbcommon@sha/parser.c"
++    break;
++
++  case 134:
++#line 638 "../src/xkbcomp/parser.y"
++    { (yyval.exprList).head = (yyval.exprList).last = NULL; }
++#line 2799 "xkbcommon@sha/parser.c"
++    break;
++
 +  case 135:
-+#line 619 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = (ExprDef *) AppendStmt((ParseCommon *) (yyvsp[-2].expr),
-+                                                      (ParseCommon *) (yyvsp[0].expr)); }
-+#line 2794 "xkbcommon@sha/parser.c"
++#line 642 "../src/xkbcomp/parser.y"
++    { (yyval.exprList).head = (yyvsp[-2].exprList).head; (yyval.exprList).last->common.next = &(yyvsp[0].expr)->common; (yyval.exprList).last = (yyvsp[0].expr); }
++#line 2805 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 136:
-+#line 622 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = (yyvsp[0].expr); }
-+#line 2800 "xkbcommon@sha/parser.c"
++#line 644 "../src/xkbcomp/parser.y"
++    { (yyval.exprList).head = (yyval.exprList).last = (yyvsp[0].expr); }
++#line 2811 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 137:
-+#line 626 "../src/xkbcomp/parser.y"
++#line 648 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateBinary(EXPR_DIVIDE, (yyvsp[-2].expr), (yyvsp[0].expr)); }
-+#line 2806 "xkbcommon@sha/parser.c"
++#line 2817 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 138:
-+#line 628 "../src/xkbcomp/parser.y"
++#line 650 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateBinary(EXPR_ADD, (yyvsp[-2].expr), (yyvsp[0].expr)); }
-+#line 2812 "xkbcommon@sha/parser.c"
++#line 2823 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 139:
-+#line 630 "../src/xkbcomp/parser.y"
++#line 652 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateBinary(EXPR_SUBTRACT, (yyvsp[-2].expr), (yyvsp[0].expr)); }
-+#line 2818 "xkbcommon@sha/parser.c"
++#line 2829 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 140:
-+#line 632 "../src/xkbcomp/parser.y"
++#line 654 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateBinary(EXPR_MULTIPLY, (yyvsp[-2].expr), (yyvsp[0].expr)); }
-+#line 2824 "xkbcommon@sha/parser.c"
++#line 2835 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 141:
-+#line 634 "../src/xkbcomp/parser.y"
++#line 656 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateBinary(EXPR_ASSIGN, (yyvsp[-2].expr), (yyvsp[0].expr)); }
-+#line 2830 "xkbcommon@sha/parser.c"
++#line 2841 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 142:
-+#line 636 "../src/xkbcomp/parser.y"
++#line 658 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = (yyvsp[0].expr); }
-+#line 2836 "xkbcommon@sha/parser.c"
++#line 2847 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 143:
-+#line 640 "../src/xkbcomp/parser.y"
++#line 662 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateUnary(EXPR_NEGATE, (yyvsp[0].expr)->expr.value_type, (yyvsp[0].expr)); }
-+#line 2842 "xkbcommon@sha/parser.c"
++#line 2853 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 144:
-+#line 642 "../src/xkbcomp/parser.y"
++#line 664 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateUnary(EXPR_UNARY_PLUS, (yyvsp[0].expr)->expr.value_type, (yyvsp[0].expr)); }
-+#line 2848 "xkbcommon@sha/parser.c"
++#line 2859 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 145:
-+#line 644 "../src/xkbcomp/parser.y"
++#line 666 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateUnary(EXPR_NOT, EXPR_TYPE_BOOLEAN, (yyvsp[0].expr)); }
-+#line 2854 "xkbcommon@sha/parser.c"
++#line 2865 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 146:
-+#line 646 "../src/xkbcomp/parser.y"
++#line 668 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateUnary(EXPR_INVERT, (yyvsp[0].expr)->expr.value_type, (yyvsp[0].expr)); }
-+#line 2860 "xkbcommon@sha/parser.c"
++#line 2871 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 147:
-+#line 648 "../src/xkbcomp/parser.y"
++#line 670 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = (yyvsp[0].expr);  }
-+#line 2866 "xkbcommon@sha/parser.c"
++#line 2877 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 148:
-+#line 650 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = ExprCreateAction((yyvsp[-3].atom), (yyvsp[-1].expr)); }
-+#line 2872 "xkbcommon@sha/parser.c"
++#line 672 "../src/xkbcomp/parser.y"
++    { (yyval.expr) = ExprCreateAction((yyvsp[-3].atom), (yyvsp[-1].exprList).head); }
++#line 2883 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 149:
-+#line 652 "../src/xkbcomp/parser.y"
++#line 674 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = (yyvsp[0].expr);  }
-+#line 2878 "xkbcommon@sha/parser.c"
++#line 2889 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 150:
-+#line 654 "../src/xkbcomp/parser.y"
++#line 676 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = (yyvsp[-1].expr);  }
-+#line 2884 "xkbcommon@sha/parser.c"
++#line 2895 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 151:
-+#line 658 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = (ExprDef *) AppendStmt((ParseCommon *) (yyvsp[-2].expr),
-+                                                      (ParseCommon *) (yyvsp[0].expr)); }
-+#line 2891 "xkbcommon@sha/parser.c"
++#line 680 "../src/xkbcomp/parser.y"
++    { (yyval.exprList).head = (yyvsp[-2].exprList).head; (yyval.exprList).last->common.next = &(yyvsp[0].expr)->common; (yyval.exprList).last = (yyvsp[0].expr); }
++#line 2901 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 152:
-+#line 661 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = (yyvsp[0].expr); }
-+#line 2897 "xkbcommon@sha/parser.c"
++#line 682 "../src/xkbcomp/parser.y"
++    { (yyval.exprList).head = (yyval.exprList).last = (yyvsp[0].expr); }
++#line 2907 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 153:
-+#line 665 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = ExprCreateAction((yyvsp[-3].atom), (yyvsp[-1].expr)); }
-+#line 2903 "xkbcommon@sha/parser.c"
++#line 686 "../src/xkbcomp/parser.y"
++    { (yyval.expr) = ExprCreateAction((yyvsp[-3].atom), (yyvsp[-1].exprList).head); }
++#line 2913 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 154:
-+#line 669 "../src/xkbcomp/parser.y"
++#line 690 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateIdent((yyvsp[0].atom)); }
-+#line 2909 "xkbcommon@sha/parser.c"
++#line 2919 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 155:
-+#line 671 "../src/xkbcomp/parser.y"
++#line 692 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateFieldRef((yyvsp[-2].atom), (yyvsp[0].atom)); }
-+#line 2915 "xkbcommon@sha/parser.c"
++#line 2925 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 156:
-+#line 673 "../src/xkbcomp/parser.y"
++#line 694 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateArrayRef(XKB_ATOM_NONE, (yyvsp[-3].atom), (yyvsp[-1].expr)); }
-+#line 2921 "xkbcommon@sha/parser.c"
++#line 2931 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 157:
-+#line 675 "../src/xkbcomp/parser.y"
++#line 696 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateArrayRef((yyvsp[-5].atom), (yyvsp[-3].atom), (yyvsp[-1].expr)); }
-+#line 2927 "xkbcommon@sha/parser.c"
++#line 2937 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 158:
-+#line 679 "../src/xkbcomp/parser.y"
++#line 700 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateString((yyvsp[0].atom)); }
-+#line 2933 "xkbcommon@sha/parser.c"
++#line 2943 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 159:
-+#line 681 "../src/xkbcomp/parser.y"
-+    { (yyval.expr) = ExprCreateInteger((yyvsp[0].ival)); }
-+#line 2939 "xkbcommon@sha/parser.c"
++#line 702 "../src/xkbcomp/parser.y"
++    { (yyval.expr) = ExprCreateInteger((yyvsp[0].num)); }
++#line 2949 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 160:
-+#line 683 "../src/xkbcomp/parser.y"
++#line 704 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateFloat(/* Discard $1 */); }
-+#line 2945 "xkbcommon@sha/parser.c"
++#line 2955 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 161:
-+#line 685 "../src/xkbcomp/parser.y"
++#line 706 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateKeyName((yyvsp[0].atom)); }
-+#line 2951 "xkbcommon@sha/parser.c"
++#line 2961 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 162:
-+#line 688 "../src/xkbcomp/parser.y"
++#line 709 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = (yyvsp[0].expr); }
-+#line 2957 "xkbcommon@sha/parser.c"
++#line 2967 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 163:
-+#line 689 "../src/xkbcomp/parser.y"
++#line 710 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = NULL; }
-+#line 2963 "xkbcommon@sha/parser.c"
++#line 2973 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 164:
-+#line 693 "../src/xkbcomp/parser.y"
++#line 714 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprAppendKeysymList((yyvsp[-2].expr), (yyvsp[0].keysym)); }
-+#line 2969 "xkbcommon@sha/parser.c"
++#line 2979 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 165:
-+#line 695 "../src/xkbcomp/parser.y"
++#line 716 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprAppendMultiKeysymList((yyvsp[-2].expr), (yyvsp[0].expr)); }
-+#line 2975 "xkbcommon@sha/parser.c"
++#line 2985 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 166:
-+#line 697 "../src/xkbcomp/parser.y"
++#line 718 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateKeysymList((yyvsp[0].keysym)); }
-+#line 2981 "xkbcommon@sha/parser.c"
++#line 2991 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 167:
-+#line 699 "../src/xkbcomp/parser.y"
++#line 720 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = ExprCreateMultiKeysymList((yyvsp[0].expr)); }
-+#line 2987 "xkbcommon@sha/parser.c"
++#line 2997 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 168:
-+#line 703 "../src/xkbcomp/parser.y"
++#line 724 "../src/xkbcomp/parser.y"
 +    { (yyval.expr) = (yyvsp[-1].expr); }
-+#line 2993 "xkbcommon@sha/parser.c"
++#line 3003 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 169:
-+#line 707 "../src/xkbcomp/parser.y"
++#line 728 "../src/xkbcomp/parser.y"
 +    {
 +                            if (!resolve_keysym((yyvsp[0].str), &(yyval.keysym)))
 +                                parser_warn(param, "unrecognized keysym \"%s\"", (yyvsp[0].str));
 +                            free((yyvsp[0].str));
 +                        }
-+#line 3003 "xkbcommon@sha/parser.c"
++#line 3013 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 170:
-+#line 712 "../src/xkbcomp/parser.y"
++#line 733 "../src/xkbcomp/parser.y"
 +    { (yyval.keysym) = XKB_KEY_section; }
-+#line 3009 "xkbcommon@sha/parser.c"
++#line 3019 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 171:
-+#line 714 "../src/xkbcomp/parser.y"
++#line 735 "../src/xkbcomp/parser.y"
 +    {
-+                            if ((yyvsp[0].ival) < 0) {
-+                                parser_warn(param, "unrecognized keysym \"%d\"", (yyvsp[0].ival));
++                            if ((yyvsp[0].num) < 0) {
++                                parser_warn(param, "unrecognized keysym \"%ld\"", (yyvsp[0].num));
 +                                (yyval.keysym) = XKB_KEY_NoSymbol;
 +                            }
-+                            else if ((yyvsp[0].ival) < 10) {      /* XKB_KEY_0 .. XKB_KEY_9 */
-+                                (yyval.keysym) = XKB_KEY_0 + (xkb_keysym_t) (yyvsp[0].ival);
++                            else if ((yyvsp[0].num) < 10) {      /* XKB_KEY_0 .. XKB_KEY_9 */
++                                (yyval.keysym) = XKB_KEY_0 + (xkb_keysym_t) (yyvsp[0].num);
 +                            }
 +                            else {
-+                                char buf[17];
-+                                snprintf(buf, sizeof(buf), "0x%x", (yyvsp[0].ival));
++                                char buf[32];
++                                snprintf(buf, sizeof(buf), "0x%"PRIx64, (yyvsp[0].num));
 +                                if (!resolve_keysym(buf, &(yyval.keysym))) {
 +                                    parser_warn(param, "unrecognized keysym \"%s\"", buf);
 +                                    (yyval.keysym) = XKB_KEY_NoSymbol;
 +                                }
 +                            }
 +                        }
-+#line 3031 "xkbcommon@sha/parser.c"
++#line 3041 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 172:
-+#line 733 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = -(yyvsp[0].ival); }
-+#line 3037 "xkbcommon@sha/parser.c"
++#line 754 "../src/xkbcomp/parser.y"
++    { (yyval.num) = -(yyvsp[0].num); }
++#line 3047 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 173:
-+#line 734 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = (yyvsp[0].ival); }
-+#line 3043 "xkbcommon@sha/parser.c"
++#line 755 "../src/xkbcomp/parser.y"
++    { (yyval.num) = (yyvsp[0].num); }
++#line 3053 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 174:
-+#line 737 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = (yyvsp[0].num); }
-+#line 3049 "xkbcommon@sha/parser.c"
++#line 758 "../src/xkbcomp/parser.y"
++    { (yyval.num) = (yyvsp[0].num); }
++#line 3059 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 175:
-+#line 738 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = (yyvsp[0].num); }
-+#line 3055 "xkbcommon@sha/parser.c"
++#line 759 "../src/xkbcomp/parser.y"
++    { (yyval.num) = (yyvsp[0].num); }
++#line 3065 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 176:
-+#line 741 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = 0; }
-+#line 3061 "xkbcommon@sha/parser.c"
++#line 762 "../src/xkbcomp/parser.y"
++    { (yyval.num) = 0; }
++#line 3071 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 177:
-+#line 744 "../src/xkbcomp/parser.y"
-+    { (yyval.ival) = (yyvsp[0].num); }
-+#line 3067 "xkbcommon@sha/parser.c"
++#line 765 "../src/xkbcomp/parser.y"
++    { (yyval.num) = (yyvsp[0].num); }
++#line 3077 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 178:
-+#line 747 "../src/xkbcomp/parser.y"
++#line 768 "../src/xkbcomp/parser.y"
 +    { (yyval.num) = (yyvsp[0].num); }
-+#line 3073 "xkbcommon@sha/parser.c"
++#line 3083 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 179:
-+#line 750 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_steal(param->ctx, (yyvsp[0].str)); }
-+#line 3079 "xkbcommon@sha/parser.c"
++#line 771 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern(param->ctx, (yyvsp[0].str), strlen((yyvsp[0].str))); free((yyvsp[0].str)); }
++#line 3089 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 180:
-+#line 751 "../src/xkbcomp/parser.y"
++#line 772 "../src/xkbcomp/parser.y"
 +    { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "default"); }
-+#line 3085 "xkbcommon@sha/parser.c"
++#line 3095 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 181:
-+#line 754 "../src/xkbcomp/parser.y"
-+    { (yyval.atom) = xkb_atom_steal(param->ctx, (yyvsp[0].str)); }
-+#line 3091 "xkbcommon@sha/parser.c"
++#line 775 "../src/xkbcomp/parser.y"
++    { (yyval.atom) = xkb_atom_intern(param->ctx, (yyvsp[0].str), strlen((yyvsp[0].str))); free((yyvsp[0].str)); }
++#line 3101 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 182:
-+#line 757 "../src/xkbcomp/parser.y"
++#line 778 "../src/xkbcomp/parser.y"
 +    { (yyval.str) = (yyvsp[0].str); }
-+#line 3097 "xkbcommon@sha/parser.c"
++#line 3107 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 183:
-+#line 758 "../src/xkbcomp/parser.y"
++#line 779 "../src/xkbcomp/parser.y"
 +    { (yyval.str) = NULL; }
-+#line 3103 "xkbcommon@sha/parser.c"
++#line 3113 "xkbcommon@sha/parser.c"
 +    break;
 +
 +  case 184:
-+#line 761 "../src/xkbcomp/parser.y"
++#line 782 "../src/xkbcomp/parser.y"
 +    { (yyval.str) = (yyvsp[0].str); }
-+#line 3109 "xkbcommon@sha/parser.c"
++#line 3119 "xkbcommon@sha/parser.c"
 +    break;
 +
 +
-+#line 3113 "xkbcommon@sha/parser.c"
++#line 3123 "xkbcommon@sha/parser.c"
 +
 +      default: break;
 +    }
@@ -3369,7 +3379,7 @@ index 0000000..ce49e55
 +#endif
 +  return yyresult;
 +}
-+#line 764 "../src/xkbcomp/parser.y"
++#line 785 "../src/xkbcomp/parser.y"
 +
 +
 +XkbFile *
@@ -3429,11 +3439,11 @@ index 0000000..ce49e55
 +}
 diff --git a/src/xkbcomp/parser.h b/src/xkbcomp/parser.h
 new file mode 100644
-index 0000000..a5ba362
+index 0000000..35778ec
 --- /dev/null
 +++ b/src/xkbcomp/parser.h
-@@ -0,0 +1,160 @@
-+/* A Bison parser, made by GNU Bison 3.4.1.  */
+@@ -0,0 +1,164 @@
++/* A Bison parser, made by GNU Bison 3.4.2.  */
 +
 +/* Bison interface for Yacc-like parsers in C
 +
@@ -3554,9 +3564,8 @@ index 0000000..a5ba362
 +#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 +union YYSTYPE
 +{
-+#line 162 "../src/xkbcomp/parser.y"
++#line 164 "../src/xkbcomp/parser.y"
 +
-+        int              ival;
 +        int64_t          num;
 +        enum xkb_file_type file_type;
 +        char            *str;
@@ -3565,9 +3574,13 @@ index 0000000..a5ba362
 +        enum xkb_map_flags mapFlags;
 +        xkb_keysym_t    keysym;
 +        ParseCommon     *any;
++        struct { ParseCommon *head; ParseCommon *last; } anyList;
 +        ExprDef         *expr;
++        struct { ExprDef *head; ExprDef *last; } exprList;
 +        VarDef          *var;
++        struct { VarDef *head; VarDef *last; } varList;
 +        VModDef         *vmod;
++        struct { VModDef *head; VModDef *last; } vmodList;
 +        InterpDef       *interp;
 +        KeyTypeDef      *keyType;
 +        SymbolsDef      *syms;
@@ -3579,8 +3592,9 @@ index 0000000..a5ba362
 +        KeyAliasDef     *keyAlias;
 +        void            *geom;
 +        XkbFile         *file;
++        struct { XkbFile *head; XkbFile *last; } fileList;
 +
-+#line 149 "xkbcommon@sha/parser.h"
++#line 153 "xkbcommon@sha/parser.h"
 +
 +};
 +typedef union YYSTYPE YYSTYPE;
@@ -3594,5 +3608,5 @@ index 0000000..a5ba362
 +
 +#endif /* !YY__XKBCOMMON_XKBCOMMON_SHA_PARSER_H_INCLUDED  */
 -- 
-2.23.0
+2.25.0
 
