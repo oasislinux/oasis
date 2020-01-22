@@ -39,6 +39,6 @@ exe('make', [[
 	libgnu.a
 ]])
 file('bin/make', '755', '$outdir/make')
-man{'make.1'}
+man{'doc/make.1'}
 
 fetch 'curl'
