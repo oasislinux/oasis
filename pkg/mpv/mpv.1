@@ -329,7 +329,7 @@ the \fIXXX\fP option or if \fIXXX\fP is compiled in.
 .SS Legacy option syntax
 .sp
 The \fB\-\-option=value\fP syntax is not strictly enforced, and the alternative
-legacy syntax \fB\-option value\fP and \fB\-\-option value\fP will also work. This is
+legacy syntax \fB\-option value\fP and \fB\-option=value\fP will also work. This is
 mostly  for compatibility with MPlayer. Using these should be avoided. Their
 semantics can change any time in the future.
 .sp
@@ -339,9 +339,15 @@ because \fB\-\-fs\fP is a flag option that requires no parameter. If an option
 changes and its parameter becomes optional, then a command line using the
 alternative syntax will break.
 .sp
-Currently, the parser makes no difference whether an option starts with \fB\-\-\fP
-or a single \fB\-\fP\&. This might also change in the future, and \fB\-\-option value\fP
-might always interpret \fBvalue\fP as filename in order to reduce ambiguities.
+Until mpv 0.31.0, there was no difference whether an option started with \fB\-\-\fP
+or a single \fB\-\fP\&. Newer mpv releases strictly expect that you pass the option
+value after a \fB=\fP\&. For example, before \fBmpv \-\-log\-file f.txt\fP would write
+a log to \fBf.txt\fP, but now this command line fails, as \fB\-\-log\-file\fP expects
+an option value, and \fBf.txt\fP is simply considered a normal file to be played
+(as in \fBmpv f.txt\fP).
+.sp
+The future plan is that \fB\-option value\fP will not work anymore, and options
+with a single \fB\-\fP behave the same as \fB\-\-\fP options.
 .SS Escaping spaces and other special characters
 .sp
 Keep in mind that the shell will partially parse and mangle the arguments you
@@ -2595,16 +2601,16 @@ requires \fB\-\-vo=gpu\fP (Raspberry Pi only \- default if available)
 .B mmal\-copy
 copies video back to system RAM (Raspberry Pi only)
 .TP
-.B cuda
-requires \fB\-\-vo=gpu\fP (Any platform CUDA is available)
-.TP
-.B cuda\-copy
-copies video back to system RAM (Any platform CUDA is available)
-.TP
 .B nvdec
 requires \fB\-\-vo=gpu\fP (Any platform CUDA is available)
 .TP
 .B nvdec\-copy
+copies video back to system RAM (Any platform CUDA is available)
+.TP
+.B cuda
+requires \fB\-\-vo=gpu\fP (Any platform CUDA is available)
+.TP
+.B cuda\-copy
 copies video back to system RAM (Any platform CUDA is available)
 .TP
 .B crystalhd
@@ -2644,35 +2650,33 @@ allow CPU processing with video filters. This mode works with all video
 filters and VOs.
 .sp
 Because these copy the decoded video back to system RAM, they\(aqre often less
-less efficient than the direct modes, and may not help too much over
-software decoding.
+efficient than the direct modes, and may not help too much over software
+decoding.
 .sp
 \fBNOTE:\fP
 .INDENT 7.0
 .INDENT 3.5
 Most non\-copy methods only work with the OpenGL GPU backend. Currently,
-only the \fBnvdec\fP and \fBcuda\fP methods work with Vulkan.
+only the \fBvaapi\fP, \fBnvdec\fP and \fBcuda\fP methods work with Vulkan.
 .UNINDENT
 .UNINDENT
 .sp
-The \fBvaapi\fP mode, if used with \fB\-\-vo=gpu\fP, requires Mesa 11 and most
+The \fBvaapi\fP mode, if used with \fB\-\-vo=gpu\fP, requires Mesa 11, and most
 likely works with Intel and AMD GPUs only. It also requires the opengl EGL
 backend.
 .sp
-The \fBcuda\fP and \fBcuda\-copy\fP modes provides deinterlacing in the decoder
-which is useful as there is no other deinterlacing mechanism in the gpu
-output path. To use this deinterlacing you must pass the option:
+\fBnvdec\fP and \fBnvdec\-copy\fP are the newest, and recommended method to do
+hardware decoding on Nvidia GPUs.
+.sp
+\fBcuda\fP and \fBcuda\-copy\fP are an older implementation of hardware decoding
+on Nvidia GPUs that uses Nvidia\(aqs bitstream parsers rather than FFmpeg\(aqs.
+This can lead to feature deficiencies, such as incorrect playback of HDR
+content, and \fBnvdec\fP/\fBnvdec\-copy\fP should always be preferred unless you
+specifically need Nvidia\(aqs deinterlacing algorithms. To use this
+deinterlacing you must pass the option:
 \fBvd\-lavc\-o=deint=[weave|bob|adaptive]\fP\&.
 Pass \fBweave\fP (or leave the option unset) to not attempt any
-deinterlacing. \fBcuda\fP should always be preferred over \fBcuda\-copy\fP unless
-the \fBgpu\fP vo is not being used or filters are required. Using \fBnvdec\fP
-should be preferred on Nvidia hardware.
-.sp
-\fBnvdec\fP is a newer implementation of CUVID/CUDA decoding, which uses the
-FFmpeg decoders for file parsing. Experimental, is known not to correctly
-check whether decoding is supported by the hardware at all. Deinterlacing
-is not supported. Since this uses FFmpeg\(aqs codec parsers, it is expected
-that this generally causes fewer issues than \fBcuda\fP\&.
+deinterlacing.
 .INDENT 7.0
 .INDENT 3.5
 .IP "Quality reduction with hardware decoding"
@@ -2691,10 +2695,10 @@ chroma scalers instead of the one specified by \fB\-\-cscale\fP\&. In other
 cases, hardware decoding can also reduce the bit depth of the decoded
 image, which can introduce banding or precision loss for 10\-bit files.
 .sp
-\fBvdpau\fP is usually safe, except for 10 bit video. If deinterlacing
-enabled (or the \fBvdpaupp\fP video filter is active in general), it
-forces RGB conversion. The latter currently does not treat certain
-colorspaces like BT.2020 correctly.
+\fBvdpau\fP always does RGB conversion in hardware, which does not
+support newer colorspaces like BT.2020 correctly. However, \fBvdpau\fP
+doesn\(aqt support 10 bit or HDR encodings, so these limitations are
+unlikely to be relevant.
 .sp
 \fBvaapi\fP and \fBd3d11va\fP are safe. Enabling deinterlacing (or simply
 their respective post\-processing filters) will possibly at least reduce
@@ -2710,10 +2714,11 @@ completely ordinary video sources.
 \fBrpi\fP always uses the hardware overlay renderer, even with
 \fB\-\-vo=gpu\fP\&.
 .sp
-\fBcuda\fP should be safe, but it has been reported to corrupt the
-timestamps causing glitched, flashing frames on some files. It can also
-sometimes cause massive framedrops for unknown reasons. Caution is
-advised.
+\fBcuda\fP should usually be safe, but depending on how a file/stream
+has been mixed, it has been reported to corrupt the timestamps causing
+glitched, flashing frames. It can also sometimes cause massive
+framedrops for unknown reasons. Caution is advised, and \fBnvdec\fP
+should always be preferred.
 .sp
 \fBcrystalhd\fP is not safe. It always converts to 4:2:2 YUV, which
 may be lossy, depending on how chroma sub\-sampling is done during
@@ -2793,17 +2798,18 @@ format, with likely no advantages.
 .TP
 .B \fB\-\-cuda\-decode\-device=<auto|0..>\fP
 Choose the GPU device used for decoding when using the \fBcuda\fP or
-\fBnvdec\fP hwdecs with the OpenGL GPU backend.
+\fBnvdec\fP hwdecs with the OpenGL GPU backend, and with the \fBcuda\-copy\fP
+or \fBnvdec\-copy\fP hwdecs in all cases.
 .sp
-By default, the device that is being used to provide \fBgpu\fP output will
-also be used for decoding (and in the vast majority of cases, only one
-GPU will be present).
+For the OpenGL GPU backend, the default device used for decoding is the one
+being used to provide \fBgpu\fP output (and in the vast majority of cases,
+only one GPU will be present).
 .sp
-Note that when using the \fBcuda\-copy\fP or \fBnvdec\-copy\fP hwdec, a
-different option must be passed: \fB\-\-vd\-lavc\-o=gpu=<0..>\fP\&.
+For the \fBcopy\fP hwdecs, the default device will be the first device
+enumerated by the CUDA libraries \- however that is done.
 .sp
-Note that this option is not available with the Vulkan GPU backend. With
-Vulkan, decoding must always happen on the display device.
+For the Vulkan GPU backend, decoding must always happen on the display
+device, and this option has no effect.
 .TP
 .B \fB\-\-vaapi\-device=<device file>\fP
 Choose the DRM device for \fBvaapi\-copy\fP\&. This should be the path to a
@@ -5373,6 +5379,18 @@ is done, playback starts. This intentionally happens before the initial
 seek triggered with \fB\-\-start\fP\&. This does not change any runtime behavior
 after the initial caching. This option is useless if the file cannot be
 cached completely.
+.TP
+.B \fB\-\-rar\-list\-all\-volumes=<yes|no>\fP
+When opening multi\-volume rar files, open all volumes to create a full list
+of contained files (default: no). If disabled, only the archive entries
+whose headers are located within the first volume are listed (and thus
+played when opening a .rar file with mpv). Doing so speeds up opening, and
+the typical idiotic use\-case of playing uncompressed multi\-volume rar files
+that contain a single media file is made faster.
+.sp
+Opening is still slow, because for unknown, idiotic, and unnecessary reasons
+libarchive opens all volumes anyway when playing the main file, even though
+mpv iterated no archive entries yet.
 .UNINDENT
 .SS Input
 .INDENT 0.0
@@ -10982,8 +11000,9 @@ See \fB\-\-ofopts=help\fP for a full list of supported options.
 This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .TP
-.B \fB\-\-ofopts\-add=<options1[,options2,...]>\fP
-Appends the options given as arguments to the options list.
+.B \fB\-\-ofopts\-add=<option>\fP
+Appends the option given as an argument to the options list. (Passing
+multiple options is currently still possible, but deprecated.)
 .TP
 .B \fB\-\-ofopts=""\fP
 Completely empties the options list.
@@ -11014,8 +11033,9 @@ selects 128 kbps MP3 encoding.
 This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .TP
-.B \fB\-\-oacopts\-add=<options1[,options2,...]>\fP
-Appends the options given as arguments to the options list.
+.B \fB\-\-oacopts\-add=<option>\fP
+Appends the option given as an argument to the options list. (Passing
+multiple options is currently still possible, but deprecated.)
 .TP
 .B \fB\-\-oacopts=""\fP
 Completely empties the options list.
@@ -11053,8 +11073,9 @@ selects VBR quality factor 23 for H.264 encoding.
 This is a key/value list option. See \fI\%List Options\fP for details.
 .INDENT 7.0
 .TP
-.B \fB\-\-ovcopts\-add=<options1[,options2,...]>\fP
-Appends the options given as arguments to the options list.
+.B \fB\-\-ovcopts\-add=<option>\fP
+Appends the option given as an argument to the options list. (Passing
+multiple options is currently still possible, but deprecated.)
 .TP
 .B \fB\-\-ovcopts=""\fP
 Completely empties the options list.
@@ -11590,6 +11611,12 @@ will have after moving.)
 .B \fBplaylist\-shuffle\fP
 Shuffle the playlist. This is similar to what is done on start if the
 \fB\-\-shuffle\fP option is used.
+.TP
+.B \fBplaylist\-unshuffle\fP
+Attempt to revert the previous \fBplaylist\-shuffle\fP command. This works
+only once (multiple successive \fBplaylist\-unshuffle\fP commands do nothing).
+May not work correctly if new recursive playlists have been opened since
+a \fBplaylist\-shuffle\fP command.
 .TP
 .B \fBrun <command> [<arg1> [<arg2> [...]]]\fP
 Run the given command. Unlike in MPlayer/mplayer2 and earlier versions of
@@ -13489,9 +13516,42 @@ The read and write components of this option can be split up into
 Last known OSD width (can be 0). This is needed if you want to use the
 \fBoverlay\-add\fP command. It gives you the actual OSD size, which can be
 different from the window size in some cases.
+.sp
+Alias to \fBosd\-dimensions/w\fP and \fBosd\-dimensions/h\fP\&.
 .TP
 .B \fBosd\-par\fP
 Last known OSD display pixel aspect (can be 0).
+.sp
+Alias to \fBosd\-dimensions/osd\-par\fP\&.
+.TP
+.B \fBosd\-dimensions\fP
+Last known OSD dimensions.
+.sp
+Has the following sub\-properties (which can be read as \fBMPV_FORMAT_NODE\fP
+or Lua table with \fBmp.get_property_native\fP):
+.INDENT 7.0
+.TP
+.B \fBw\fP
+Size of the VO window in OSD render units (usually pixels, but may be
+scaled pixels with VOs like \fBxv\fP).
+.TP
+.B \fBh\fP
+Size of the VO window in OSD render units,
+.TP
+.B \fBpar\fP
+Pixel aspect ratio of the OSD (usually 1).
+.TP
+.B \fBaspect\fP
+Display aspect ratio of the VO window. (Computing from the properties
+above.)
+.TP
+.B \fBmt\fP, \fBmb\fP, \fBml\fP, \fBmr\fP
+OSD to video margins (top, bottom, left, right). This describes the
+area into which the video is rendered.
+.UNINDENT
+.sp
+Any of these properties may be unavailable or set to dummy values if the
+VO window is not created or visible.
 .TP
 .B \fBsub\-text\fP
 Return the current subtitle text regardless of sub visibility.
@@ -17391,9 +17451,10 @@ fonts, which is more memory\-efficient.
 .TP
 .B \fB~/.config/mpv/scripts/\fP
 All files in this directory are loaded as if they were passed to the
-\fB\-\-script\fP option. They are loaded in alphabetical order, and sub\-directories
-and files with no \fB\&.lua\fP extension are ignored. The \fB\-\-load\-scripts=no\fP
-option disables loading these files.
+\fB\-\-script\fP option. They are loaded in alphabetical order. Directory entries
+other than files are ignored. Files with unknown extension lead to an
+initialization error. Files with \fB\&.disable\fP extension are ignored. The
+\fB\-\-load\-scripts=no\fP option disables loading these files.
 .TP
 .B \fB~/.config/mpv/watch_later/\fP
 Contains temporary config files needed for resuming playback of files with
