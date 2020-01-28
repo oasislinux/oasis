@@ -1,4 +1,4 @@
-From b570e0f88fc88e276c547f6fce3dca48a620aed3 Mon Sep 17 00:00:00 2001
+From 87e689570abaabf8ffaff0682a4fa4d528fab2ce Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -8,9 +8,10 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  ip/ipfou.c           |  2 +-
  ip/ipila.c           |  2 +-
  ip/ipseg6.c          |  2 +-
+ ip/tcp_metrics.c     |  2 +-
  lib/libnetlink.c     | 12 ++++++------
  lib/utils.c          |  2 +-
- 6 files changed, 12 insertions(+), 12 deletions(-)
+ 7 files changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/include/libnetlink.h b/include/libnetlink.h
 index 8ebdc6d3..ff5d92fa 100644
@@ -73,6 +74,19 @@ index 56a76996..1c3c3bf5 100644
  
  	open_json_object(NULL);
  	switch (ghdr->cmd) {
+diff --git a/ip/tcp_metrics.c b/ip/tcp_metrics.c
+index acbd745a..051ddc63 100644
+--- a/ip/tcp_metrics.c
++++ b/ip/tcp_metrics.c
+@@ -178,7 +178,7 @@ static int process_msg(struct nlmsghdr *n, void *arg)
+ 	if (ghdr->cmd != TCP_METRICS_CMD_GET)
+ 		return 0;
+ 
+-	parse_rtattr(attrs, TCP_METRICS_ATTR_MAX, (void *) ghdr + GENL_HDRLEN,
++	parse_rtattr(attrs, TCP_METRICS_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN),
+ 		     len);
+ 
+ 	if (attrs[TCP_METRICS_ATTR_ADDR_IPV4]) {
 diff --git a/lib/libnetlink.c b/lib/libnetlink.c
 index e02d6294..48b19501 100644
 --- a/lib/libnetlink.c
@@ -126,10 +140,10 @@ index e02d6294..48b19501 100644
  	}
  	memset(tb, 0, sizeof(struct rtattr *) * (max + 1));
 diff --git a/lib/utils.c b/lib/utils.c
-index 95d46ff2..21a87b7c 100644
+index c6f19ce1..d02bc32d 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
-@@ -1523,7 +1523,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
+@@ -1532,7 +1532,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
  
  	len = RTA_PAYLOAD(rta);
  	if (len < size)
@@ -139,5 +153,5 @@ index 95d46ff2..21a87b7c 100644
  		len = size;
  
 -- 
-2.24.0
+2.25.0
 

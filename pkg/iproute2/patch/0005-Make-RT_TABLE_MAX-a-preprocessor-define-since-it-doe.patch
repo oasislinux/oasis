@@ -1,4 +1,4 @@
-From 9393c2b9178288f084e8f46550db2089d8295e42 Mon Sep 17 00:00:00 2001
+From a382de34be20b5627c24f169c590d979b07d3873 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:16:50 -0700
 Subject: [PATCH] Make RT_TABLE_MAX a preprocessor define, since it doesn't fit
@@ -9,10 +9,10 @@ Subject: [PATCH] Make RT_TABLE_MAX a preprocessor define, since it doesn't fit
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/include/uapi/linux/rtnetlink.h b/include/uapi/linux/rtnetlink.h
-index 358e83ee..d993e195 100644
+index 4b93791c..a89cab32 100644
 --- a/include/uapi/linux/rtnetlink.h
 +++ b/include/uapi/linux/rtnetlink.h
-@@ -312,9 +312,10 @@ enum rt_class_t {
+@@ -319,9 +319,10 @@ enum rt_class_t {
  	RT_TABLE_DEFAULT=253,
  	RT_TABLE_MAIN=254,
  	RT_TABLE_LOCAL=255,
@@ -25,5 +25,5 @@ index 358e83ee..d993e195 100644
  /* Routing message attributes */
  
 -- 
-2.23.0
+2.25.0
 

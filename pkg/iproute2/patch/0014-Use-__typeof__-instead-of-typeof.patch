@@ -1,0 +1,86 @@
+From 2a25102281f4863cba9a0f76246006a2dd545cf7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 29 Jan 2020 15:36:37 -0800
+Subject: [PATCH] Use __typeof__ instead of typeof
+
+---
+ include/list.h | 18 +++++++++---------
+ lib/ll_map.c   |  2 +-
+ 2 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/include/list.h b/include/list.h
+index 7108cea7..36d73d96 100644
+--- a/include/list.h
++++ b/include/list.h
+@@ -7,7 +7,7 @@
+ 
+ #ifdef __GNUC__
+ #define container_of(ptr, type, member) ({			\
+-	const typeof( ((type *)0)->member ) *__mptr = (ptr);	\
++	const __typeof__( ((type *)0)->member ) *__mptr = (ptr);\
+ 	(type *)( (char *)__mptr - offsetof(type,member) );})
+ #else
+ #define container_of(ptr, type, member) (			\
+@@ -65,24 +65,24 @@ static inline void list_del(struct list_head *entry)
+ 	list_entry((ptr)->prev, type, member)
+ 
+ #define list_next_entry(pos, member) \
+-	list_entry((pos)->member.next, typeof(*(pos)), member)
++	list_entry((pos)->member.next, __typeof__(*(pos)), member)
+ 
+ #define list_prev_entry(pos, member) \
+-	list_entry((pos)->member.prev, typeof(*(pos)), member)
++	list_entry((pos)->member.prev, __typeof__(*(pos)), member)
+ 
+ #define list_for_each_entry(pos, head, member)				\
+-	for (pos = list_first_entry(head, typeof(*pos), member);	\
++	for (pos = list_first_entry(head, __typeof__(*pos), member);	\
+ 	     &pos->member != (head);					\
+ 	     pos = list_next_entry(pos, member))
+ 
+ #define list_for_each_entry_safe(pos, n, head, member)			\
+-	for (pos = list_first_entry(head, typeof(*pos), member),	\
++	for (pos = list_first_entry(head, __typeof__(*pos), member),	\
+ 		n = list_next_entry(pos, member);			\
+ 	     &pos->member != (head);					\
+ 	     pos = n, n = list_next_entry(n, member))
+ 
+ #define list_for_each_entry_reverse(pos, head, member)			\
+-	for (pos = list_last_entry(head, typeof(*pos), member);		\
++	for (pos = list_last_entry(head, __typeof(*pos)__, member);	\
+ 	     &pos->member != (head);					\
+ 	     pos = list_prev_entry(pos, member))
+ 
+@@ -127,13 +127,13 @@ static inline int list_empty(const struct list_head *head)
+ 	     pos = n)
+ 
+ #define hlist_entry_safe(ptr, type, member) \
+-	({ typeof(ptr) ____ptr = (ptr); \
++	({ __typeof__(ptr) ____ptr = (ptr); \
+ 	   ____ptr ? hlist_entry(____ptr, type, member) : NULL; \
+ 	})
+ 
+ #define hlist_for_each_entry(pos, head, member)				\
+-	for (pos = hlist_entry_safe((head)->first, typeof(*(pos)), member);\
++	for (pos = hlist_entry_safe((head)->first, __typeof__(*(pos)), member);\
+ 	     pos;							\
+-	     pos = hlist_entry_safe((pos)->member.next, typeof(*(pos)), member))
++	     pos = hlist_entry_safe((pos)->member.next, __typeof__(*(pos)), member))
+ 
+ #endif /* __LIST_H__ */
+diff --git a/lib/ll_map.c b/lib/ll_map.c
+index 36320f77..f0a6d494 100644
+--- a/lib/ll_map.c
++++ b/lib/ll_map.c
+@@ -173,7 +173,7 @@ static void ll_altname_entries_update(struct ll_cache *parent_im,
+ 	 * and if it does not fit 1:1, recreate the cached list
+ 	 * from scratch.
+ 	 */
+-	im = list_first_entry(&parent_im->altnames_list, typeof(*im),
++	im = list_first_entry(&parent_im->altnames_list, __typeof__(*im),
+ 			      altnames_list);
+ 	rem = RTA_PAYLOAD(proplist);
+ 	for (i = RTA_DATA(proplist); RTA_OK(i, rem);
+-- 
+2.25.0
+

@@ -1,17 +1,17 @@
-From 6519169b2d0cfee2093b3bfa52321152ba4541a7 Mon Sep 17 00:00:00 2001
+From d575dcbe5b779829881974623d2585481e71c38e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:04 -0700
 Subject: [PATCH] Remove semicolon after function definitions
 
 ---
- lib/json_print.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ lib/json_print.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/lib/json_print.c b/lib/json_print.c
-index 43ea69bb..3d5c28eb 100644
+index 8e7f32dc..8929e4d8 100644
 --- a/lib/json_print.c
 +++ b/lib/json_print.c
-@@ -116,15 +116,15 @@ void close_json_array(enum output_type type, const char *str)
+@@ -138,15 +138,15 @@ void close_json_array(enum output_type type, const char *str)
  			color_fprintf(stdout, color, fmt, value);          \
  		}							\
  	}
@@ -35,7 +35,18 @@ index 43ea69bb..3d5c28eb 100644
 +_PRINT_FUNC(float, double)
  #undef _PRINT_FUNC
  
+ #define _PRINT_NAME_VALUE_FUNC(type_name, type, format_char)		 \
+@@ -158,8 +158,8 @@ _PRINT_FUNC(float, double);
+ 			 "%s %%"#format_char, name);			 \
+ 		print_##type_name(PRINT_ANY, name, format, value);	 \
+ 	}
+-_PRINT_NAME_VALUE_FUNC(uint, unsigned int, u);
+-_PRINT_NAME_VALUE_FUNC(string, const char*, s);
++_PRINT_NAME_VALUE_FUNC(uint, unsigned int, u)
++_PRINT_NAME_VALUE_FUNC(string, const char*, s)
+ #undef _PRINT_NAME_VALUE_FUNC
+ 
  void print_color_string(enum output_type type,
 -- 
-2.23.0
+2.25.0
 
