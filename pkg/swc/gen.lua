@@ -25,8 +25,14 @@ waylandproto('protocol/swc.xml', {
 	code='swc-protocol.c',
 })
 
+waylandproto('protocol/server-decoration.xml', {
+	server='include/server-decoration-server-protocol.h',
+	code='server-decoration-protocol.c',
+})
+
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/libswc', {'swc.h'}),
+	'$outdir/include/server-decoration-server-protocol.h',
 	'$outdir/include/swc-client-protocol.h',
 	'$outdir/include/swc-server-protocol.h',
 }
@@ -66,6 +72,7 @@ lib('libswc.a', [[
 		dmabuf.c
 		drm.c
 		input.c
+		kde_decoration.c
 		keyboard.c
 		launch.c
 		mode.c
@@ -89,13 +96,16 @@ lib('libswc.a', [[
 		view.c
 		wayland_buffer.c
 		window.c
+		xdg_decoration.c
 		xdg_shell.c
 	)
 	launch/protocol.c.o
+	server-decoration-protocol.c.o
 	swc-protocol.c.o
 	$builddir/(
 		pkg/libinput/libinput.a.d
 		pkg/libxkbcommon/libxkbcommon.a
+		pkg/wayland-protocols/xdg-decoration-unstable-v1-protocol.c.o
 		pkg/wayland-protocols/xdg-shell-protocol.c.o
 		pkg/wayland-protocols/linux-dmabuf-unstable-v1-protocol.c.o
 		pkg/wayland/libwayland-server.a.d
