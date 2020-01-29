@@ -23,7 +23,7 @@ pkg.hdrs = {
 	'$outdir/include/pixman-version.h',
 }
 pkg.deps = {
-	'$dir/headers',
+	'$gendir/headers',
 	'$outdir/config.h',
 }
 

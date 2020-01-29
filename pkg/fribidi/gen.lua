@@ -24,7 +24,7 @@ sub('tools.ninja', function()
 		exe('gen-'..t..'-tab', expand{'gen.tab/', {
 			'gen-'..t..'-tab.c',
 			'packtab.c.o',
-		}}, {'$dir/headers'})
+		}}, {'$gendir/headers'})
 	end
 end)
 
@@ -79,7 +79,7 @@ pkg.deps = {
 	'$outdir/mirroring.tab.i',
 	'$outdir/brackets.tab.i',
 	'$outdir/brackets-type.tab.i',
-	'$dir/headers',
+	'$gendir/headers',
 }
 
 lib('libfribidi.a', [[

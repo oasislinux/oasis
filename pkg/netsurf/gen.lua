@@ -52,7 +52,7 @@ cflags{
 pkg.deps = {
 	'$dir/libcss/fetch',
 	'$dir/libdom/fetch',
-	'$dir/libdom/headers',
+	'$gendir/libdom/headers',
 	'$dir/libhubbub/fetch',
 	'$dir/libnsbmp/fetch',
 	'$dir/libnsgif/fetch',

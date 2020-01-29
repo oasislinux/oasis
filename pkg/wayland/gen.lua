@@ -36,7 +36,7 @@ pkg.hdrs = {
 	'$outdir/include/wayland-version.h',
 }
 pkg.deps = {
-	'$dir/headers',
+	'$gendir/headers',
 	'$outdir/include/wayland-version.h',
 	'pkg/libffi/headers',
 }

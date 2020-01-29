@@ -71,7 +71,7 @@ pkg.hdrs = {
 }
 pkg.deps = {
 	'$outdir/config.h',
-	'$dir/headers',
+	'$gendir/headers',
 	'$outdir/internal/blkid/blkid_types.h',
 	'$outdir/internal/support/prof_err.h',
 	'$outdir/internal/crc32c_table.h',

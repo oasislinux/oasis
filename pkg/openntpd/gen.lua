@@ -3,7 +3,7 @@ cflags{
 	'-include $dir/config.h',
 	'-I $srcdir/src',
 	'-I $srcdir/include',
-	'-I pkg/openbsd/include',
+	'-I $basedir/pkg/openbsd/include',
 	'-I $builddir/pkg/libtls-bearssl/include',
 }
 

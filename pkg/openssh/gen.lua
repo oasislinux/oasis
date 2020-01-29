@@ -9,7 +9,7 @@ cflags{
 	archflags[config.target.toolchain:match('[^-]*')] or '-D SANDBOX_RLIMIT=1',
 	'-I $dir',
 	'-I $srcdir',
-	'-I pkg/openbsd/include',
+	'-I $basedir/pkg/openbsd/include',
 	'-I $builddir/pkg/libfido2/include',
 	'-I $builddir/pkg/libressl/include',
 	'-I $builddir/pkg/zlib/include',

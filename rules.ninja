@@ -1,5 +1,5 @@
 rule gen
-  command = lua5.2 setup.lua $dir
+  command = lua5.2 $basedir/setup.lua $gendir
   generator = 1
 
 # toolchain
@@ -52,10 +52,10 @@ rule muse
   command = muse $museflags -o $out $in
 
 rule probe
-  command = sh ./scripts/probe.sh $var $cc $cflags $ldflags -o /dev/null -x c $in >$out
+  command = sh $basedir/scripts/probe.sh $var $cc $cflags $ldflags -o /dev/null -x c $in >$out
 
 rule probesize
-  command = sh ./scripts/probe-size.sh $var $cc $cflags -c -o /dev/null -x c $in >$out
+  command = sh $basedir/scripts/probe-size.sh $var $cc $cflags -c -o /dev/null -x c $in >$out
 
 # misc tools
 rule touch
@@ -102,16 +102,16 @@ rule waylandproto
   command = wayland-scanner $type <$in >$out
 
 rule githash
-  command = sh ./scripts/hash.sh $repo $args $in >$out
+  command = sh $basedir/scripts/hash.sh $repo $args $in >$out
   description = 	HASH	$args
 
 rule gittree
-  command = sh ./scripts/tree.sh $repo $repo_tag $in $out
+  command = sh $basedir/scripts/tree.sh $repo $repo_tag $in $out
   description = 	TREE	$out
   restat = 1
 
 rule gitcommit
-  command = sh ./scripts/commit.sh $repo $repo_branch $repo_tag $out
+  command = sh $basedir/scripts/commit.sh $repo $repo_branch $repo_tag $out
 
 rule gitarchive
   command = git -C $repo archive -o $$PWD/$out $repo_tag
@@ -120,22 +120,22 @@ rule gitinit
   command = git init $repo_flags $repo && touch $out
 
 rule fetchcurl
-  command = sh ./scripts/fetch-curl.sh $dir && touch $out
-  description = 	FETCH	$dir
+  command = cd $basedir && sh $basedir/scripts/fetch-curl.sh $gendir && touch $out
+  description = 	FETCH	$gendir
   restat = 1
   generator = 1
   pool = console
 
 rule fetchgit
-  command = sh ./scripts/fetch-git.sh $dir && touch $out
-  description = 	FETCH	$dir
+  command = cd $basedir && sh $basedir/scripts/fetch-git.sh $gendir && touch $out
+  description = 	FETCH	$gendir
   restat = 1
   generator = 1
   pool = console
 
 rule fetchlocal
-  command = sh ./$dir/fetch.sh $dir && touch $out
-  description = 	FETCH	$dir
+  command = cd $basedir && sh $gendir/fetch.sh $gendir && touch $out
+  description = 	FETCH	$gendir
   restat = 1
   generator = 1
   pool = console

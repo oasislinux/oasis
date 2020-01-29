@@ -36,7 +36,7 @@ pkg.hdrs = {
 	}),
 	'$outdir/include/cbor/configuration.h',
 }
-pkg.deps = {'$dir/headers'}
+pkg.deps = {'$gendir/headers'}
 
 lib('libcbor.a', [[
 	src/cbor.c

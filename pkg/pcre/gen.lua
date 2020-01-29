@@ -38,6 +38,6 @@ lib('libpcre.a', {
 	'pcre_version.c',
 	'pcre_xclass.c',
 	'$outdir/pcre_chartables.c',
-}, {'$dir/headers'})
+}, {'$gendir/headers'})
 
 fetch 'curl'

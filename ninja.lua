@@ -140,7 +140,7 @@ end
 
 function iterlines(file, raw)
 	table.insert(pkg.inputs.gen, '$dir/'..file)
-	file = string.format('%s/%s', pkg.dir, file)
+	file = string.format('%s/%s/%s', basedir, pkg.dir, file)
 	if raw then
 		return io.lines(file)
 	end
@@ -153,7 +153,7 @@ end
 
 function load(file)
 	table.insert(pkg.inputs.gen, '$dir/'..file)
-	return dofile(string.format('%s/%s', pkg.dir, file))
+	return dofile(string.format('%s/%s/%s', basedir, pkg.dir, file))
 end
 
 --
@@ -169,7 +169,7 @@ end
 
 function subninja(file)
 	if not file:hasprefix('$') then
-		file = '$dir/'..file
+		file = '$gendir/'..file
 	end
 	io.write(string.format('subninja %s\n', file))
 end
@@ -231,11 +231,11 @@ end
 function toolchain(name)
 	set('cflags', '$'..name..'_cflags')
 	set('ldflags', '$'..name..'_ldflags')
-	include('toolchain/$'..name..'_toolchain.ninja')
+	include('$basedir/toolchain/$'..name..'_toolchain.ninja')
 end
 
 function phony(name, inputs)
-	build('phony', '$dir/'..name, inputs)
+	build('phony', '$gendir/'..name, inputs)
 end
 
 function cflags(flags)
@@ -253,7 +253,7 @@ function compile(rule, src, deps, args)
 		obj = '$outdir/'..obj
 	end
 	if not deps and pkg.deps then
-		deps = '$dir/deps'
+		deps = '$gendir/deps'
 	end
 	if deps then
 		src = {src, '||', deps}
@@ -314,7 +314,7 @@ function link(out, files, args)
 	end
 	if next(deps) then
 		local rsp = out..'.rsp'
-		build('awk', rsp, {deps, '|', 'scripts/rsp.awk'}, {expr='-f scripts/rsp.awk'})
+		build('awk', rsp, {deps, '|', '$basedir/scripts/rsp.awk'}, {expr='-f $basedir/scripts/rsp.awk'})
 		objs = {objs, '|', rsp}
 		args.ldlibs = '@'..rsp
 	end
@@ -379,9 +379,12 @@ function fetch(method)
 	if method == 'local' then
 		script = '$dir/fetch.sh'
 	else
-		script = 'scripts/fetch-'..method..'.sh'
+		script = '$basedir/scripts/fetch-'..method..'.sh'
 	end
 	build('fetch'..method, '$dir/fetch', {'|', '$dir/ver', script})
+	if basedir ~= '.' then
+		build('phony', '$gendir/fetch', '$dir/fetch')
+	end
 	if next(pkg.inputs.fetch) then
 		build('phony', table.keys(pkg.inputs.fetch), '$dir/fetch')
 	end
@@ -424,7 +427,7 @@ function file(path, mode, src)
 	local out = '$builddir/root.hash/'..path
 	mode = tonumber(mode, 8)
 	local perm = string.format('10%04o %s', mode, path)
-	build('githash', out, {src, '|', 'scripts/hash.sh', '||', '$builddir/root.stamp'}, {
+	build('githash', out, {src, '|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
 		args=perm,
 	})
 	table.insert(pkg.inputs.index, out)
@@ -446,7 +449,7 @@ function sym(path, target)
 		return
 	end
 	local out = '$builddir/root.hash/'..path
-	build('githash', out, {'|', 'scripts/hash.sh', '||', '$builddir/root.stamp'}, {
+	build('githash', out, {'|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
 		args=string.format('120000 %s %s', path, target),
 	})
 	table.insert(pkg.inputs.index, out)

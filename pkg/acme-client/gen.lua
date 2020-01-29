@@ -1,10 +1,10 @@
-set('srcdir', 'pkg/openbsd/src/usr.sbin/acme-client')
+set('srcdir', '$basedir/pkg/openbsd/src/usr.sbin/acme-client')
 cflags{
 	'-D _GNU_SOURCE',  -- for memmem
-	'-I pkg/openbsd/include',
+	'-I $basedir/pkg/openbsd/include',
 	'-I $builddir/pkg/libressl/include',
 	'-I $srcdir',
-	'-idirafter pkg/openbsd/src/sys',
+	'-idirafter $basedir/pkg/openbsd/src/sys',
 }
 
 pkg.deps = {

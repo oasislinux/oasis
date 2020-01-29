@@ -53,8 +53,8 @@ lib('libnl-3.a', [[lib/(
 	addr.c attr.c cache.c cache_mngr.c cache_mngt.c data.c
 	error.c handlers.c msg.c nl.c object.c socket.c utils.c
 	version.c hash.c hashtable.c mpls.c
-)]], {'$dir/headers'})
+)]], {'$gendir/headers'})
 
-lib('libnl-genl-3.a', 'lib/genl/(ctrl.c family.c genl.c mngt.c)', {'$dir/headers'})
+lib('libnl-genl-3.a', 'lib/genl/(ctrl.c family.c genl.c mngt.c)', {'$gendir/headers'})
 
 fetch 'git'

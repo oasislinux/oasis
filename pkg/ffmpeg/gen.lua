@@ -30,7 +30,7 @@ pkg.hdrs = {
 }
 pkg.deps = {
 	'$outdir/config.asm',
-	'$dir/headers',
+	'$gendir/headers',
 	'pkg/alsa-lib/headers',
 	'pkg/libtls-bearssl/headers',
 	'pkg/zlib/headers',
@@ -177,7 +177,7 @@ lib('libavfilter.a', {
 	'libavutil.a',
 })
 
-cc('libavformat/protocols.c', {'$dir/deps', '$outdir/internal/libavformat/protocol_list.c'})
+cc('libavformat/protocols.c', {'$gendir/deps', '$outdir/internal/libavformat/protocol_list.c'})
 lib('libavformat.a', {
 	expand{'libavformat/', {
 		'allformats.c',
@@ -352,7 +352,7 @@ local libs = {
 	'libswscale.a.d',
 }
 
-cc('fftools/cmdutils.c', {'$dir/deps'})
+cc('fftools/cmdutils.c', {'$gendir/deps'})
 
 exe('ffprobe', {paths[[fftools/(ffprobe.c cmdutils.c.o)]], libs})
 file('bin/ffprobe', '755', '$outdir/ffprobe')

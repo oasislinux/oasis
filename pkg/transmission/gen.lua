@@ -6,7 +6,7 @@ sub('libminiupnp.ninja', function()
 	cflags{
 		'-D _GNU_SOURCE',
 		'-I $outdir/miniupnp',
-		'-idirafter pkg/openbsd/src/sys',
+		'-idirafter $basedir/pkg/openbsd/src/sys',
 	}
 
 	build('sed', '$outdir/miniupnp/miniupnpcstrings.h', '$srcdir/third-party/miniupnp/miniupnpcstrings.h.in', {
@@ -43,7 +43,7 @@ cflags{
 	'-I $srcdir/third-party/libnatpmp',
 	'-I $basedir/pkg/libevent/src/include',
 	'-I $basedir/pkg/libutp/src',
-	'-idirafter pkg/openbsd/src/sys',
+	'-idirafter $basedir/pkg/openbsd/src/sys',
 	'-include config.h',
 }
 

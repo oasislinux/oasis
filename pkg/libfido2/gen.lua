@@ -6,7 +6,7 @@ cflags{
 	'-I $builddir/pkg/libcbor/include',
 	'-I $builddir/pkg/libressl/include',
 	'-I $srcdir/src',
-	'-I pkg/openbsd/include',
+	'-I $basedir/pkg/openbsd/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/src', {

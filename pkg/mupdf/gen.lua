@@ -71,7 +71,7 @@ exe('bin/mutool', [[
 file('bin/mutool', '755', '$outdir/bin/mutool')
 
 cc('platform/x11/wl_main.c', {
-	'$dir/deps',
+	'$gendir/deps',
 	'pkg/libxkbcommon/fetch',
 	'pkg/pixman/headers',
 	'pkg/wayland/headers',

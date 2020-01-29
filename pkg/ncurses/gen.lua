@@ -12,8 +12,8 @@ cflags{'$common_cflags'}
 sub('tools.ninja', function()
 	toolchain 'host'
 	cflags{'$common_cflags', '-D USE_BUILD_CC'}
-	exe('make_keys', {'ncurses/tinfo/make_keys.c'}, {'$dir/headers', '$outdir/names.c'})
-	exe('make_hash', {'ncurses/tinfo/make_hash.c'}, {'$dir/headers', '$outdir/hashsize.h'})
+	exe('make_keys', {'ncurses/tinfo/make_keys.c'}, {'$gendir/headers', '$outdir/names.c'})
+	exe('make_hash', {'ncurses/tinfo/make_hash.c'}, {'$gendir/headers', '$outdir/hashsize.h'})
 end)
 
 build('sed', '$outdir/curses.head', {'$srcdir/include/curses.h.in', '|', '$dir/subst.sed'}, {
@@ -93,7 +93,7 @@ pkg.hdrs = {
 	install=true,
 }
 pkg.deps = {
-	'$dir/headers',
+	'$gendir/headers',
 	'$outdir/hashsize.h',
 	'$outdir/init_keytry.h',
 	'$outdir/ncurses_def.h',

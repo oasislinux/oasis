@@ -1,18 +1,20 @@
 #!/bin/lua
 
+basedir = arg[0]:match('(.*)/') or '.'
+
 if not os.execute('test -f config.lua') then
-	os.execute('cp config.def.lua config.lua')
+	os.execute('cp '..basedir..'/config.def.lua config.lua')
 end
 
-dofile 'ninja.lua'
+dofile(basedir..'/ninja.lua')
 config = dofile 'config.lua'
 
 local recurse = not arg[1]
 
 function subgen(dir)
-	local file = '$dir/'..dir..'/local.ninja'
+	local file = '$gendir/'..dir..'/local.ninja'
 	subninja(file)
-	table.insert(pkg.inputs.ninja, '$dir/'..dir..'/ninja')
+	table.insert(pkg.inputs.ninja, '$gendir/'..dir..'/ninja')
 	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
 	table.insert(pkg.inputs.perms, '$outdir/'..dir..'/root.perms')
 	local cmd = string.format('test -f %s/%s/local.ninja', pkg.dir, dir)
@@ -35,29 +37,33 @@ function gen(dir)
 			perms={},
 			index={},
 			gen={
-				'setup.lua',
-				'ninja.lua',
+				'$basedir/ninja.lua',
+				'$basedir/sets.lua',
+				'$basedir/setup.lua',
 				'config.lua',
-				'sets.lua',
 			},
-			ninja={'$dir/local.ninja'},
+			ninja={'$gendir/local.ninja'},
 			fetch={},
 		},
 		perms={},
 	}
+	if not os.execute('mkdir -p '..dir) then
+		error('failed to create '..dir)
+	end
 	local outdir = config.builddir..'/'..dir
 	if not os.execute('mkdir -p '..outdir) then
 		error('failed to create '..outdir)
 	end
 	io.output(dir..'/local.ninja.tmp')
-	set('dir', dir)
+	set('gendir', dir)
 	if dir ~= '.' then
-		set('outdir', '$builddir/$dir')
+		set('dir', '$basedir/$gendir')
+		set('outdir', '$builddir/$gendir')
 		set('srcdir', '$dir/src')
 	end
 	load('gen.lua')
 
-	build('gen', '$dir/local.ninja', {'|', pkg.inputs.gen})
+	build('gen', '$gendir/local.ninja', {'|', pkg.inputs.gen})
 	phony('ninja', pkg.inputs.ninja)
 
 	if pkg.hdrs then
@@ -97,8 +103,12 @@ function gen(dir)
 	else
 		build('empty', '$outdir/root.index')
 	end
+	build('phony', '$dir/root', pkg.inputs.root)
 	io.close()
 	os.rename(dir..'/local.ninja.tmp', dir..'/local.ninja')
+	if dir == '.' then
+		os.execute('ln -sf local.ninja build.ninja')
+	end
 end
 
 gen(arg[1] or '.')

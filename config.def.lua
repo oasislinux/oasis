@@ -1,4 +1,4 @@
-local sets = dofile 'sets.lua'
+local sets = dofile(basedir..'/sets.lua')
 
 return {
 	-- build output directory

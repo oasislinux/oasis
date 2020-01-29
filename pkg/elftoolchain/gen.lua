@@ -3,7 +3,7 @@ cflags{
 	'-I $dir',
 	'-I $srcdir/common',
 	'-I $srcdir/libelf',
-	'-idirafter pkg/openbsd/src/sys',
+	'-idirafter $basedir/pkg/openbsd/src/sys',
 }
 
 pkg.hdrs = {

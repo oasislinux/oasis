@@ -1,7 +1,8 @@
 set('ninja_required_version', '1.8')
 
-set('basedir', '.')
+set('basedir', basedir)
 set('builddir', config.builddir)
+set('dir', '$basedir')
 set('outdir', '$builddir')
 
 set('target_toolchain', config.target.toolchain)
@@ -17,7 +18,7 @@ set('repo_flags', config.repo.flags)
 set('repo_tag', config.repo.tag)
 set('repo_branch', config.repo.branch)
 
-include 'rules.ninja'
+include '$basedir/rules.ninja'
 
 toolchain 'target'
 

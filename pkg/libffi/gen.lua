@@ -23,7 +23,7 @@ pkg.hdrs = {
 lib('libffi.a', [[src/(
 	prep_cif.c types.c raw_api.c java_raw_api.c closures.c
 	x86/(ffi64.c unix64.S ffiw64.c win64.S)
-)]], {'$dir/headers'})
+)]], {'$gendir/headers'})
 file('lib/libffi.a', '644', '$outdir/libffi.a')
 
 fetch 'git'

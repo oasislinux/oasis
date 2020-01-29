@@ -23,7 +23,7 @@ build('sed', '$outdir/file.1', '$srcdir/doc/file.man', {
 })
 
 pkg.hdrs = {'$outdir/include/magic.h'}
-pkg.deps = {'$dir/headers', 'pkg/zlib/headers'}
+pkg.deps = {'$gendir/headers', 'pkg/zlib/headers'}
 
 lib('libmagic.a', [[src/(
 	buffer.c magic.c apprentice.c softmagic.c ascmagic.c

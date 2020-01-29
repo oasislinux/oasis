@@ -9,7 +9,7 @@ build('cat', '$outdir/jconfigint.h', {
 })
 
 pkg.deps = {
-	'$dir/headers',
+	'$gendir/headers',
 	'$outdir/jconfigint.h',
 }
 

@@ -33,7 +33,7 @@ pkg.hdrs = copy('$outdir/include/curl', '$srcdir/include/curl', {
 })
 pkg.deps = {
 	'$outdir/curl_config.h',
-	'$dir/headers',
+	'$gendir/headers',
 	'pkg/bearssl/headers',
 	'pkg/zlib/headers',
 }
@@ -81,7 +81,7 @@ lib('libcurl.a', [[
 ]])
 
 build('cc', '$outdir/tool_hugehelp.c.o', {
-	'$dir/tool_hugehelp.c', '||', '$dir/deps', '$srcdir/src/tool_hugehelp.h',
+	'$dir/tool_hugehelp.c', '||', '$gendir/deps', '$srcdir/src/tool_hugehelp.h',
 })
 
 -- src/src/Makefile.inc:/^CURL_CFILES
