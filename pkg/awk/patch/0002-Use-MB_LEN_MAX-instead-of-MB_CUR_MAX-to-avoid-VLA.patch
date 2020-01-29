@@ -1,0 +1,46 @@
+From 5df71bac0a1ab0eb8d0a73c87d7e9404cd3ea870 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 29 Jan 2020 15:17:41 -0800
+Subject: [PATCH] Use MB_LEN_MAX instead of MB_CUR_MAX to avoid VLA
+Upstream: https://github.com/onetrueawk/awk/pull/70
+
+MB_CUR_MAX is the maximum number of bytes in a multibyte character
+for the current locale, and might not be a constant expression.
+MB_LEN_MAX is the maximum number of bytes in a multibyte character
+for any locale, and always expands to a constant-expression.
+---
+ lib.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/lib.c b/lib.c
+index dbc09c3..be5655b 100644
+--- a/lib.c
++++ b/lib.c
+@@ -29,6 +29,7 @@ THIS SOFTWARE.
+ #include <errno.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
++#include <limits.h>
+ #include "awk.h"
+ #include "ytab.h"
+ 
+@@ -333,14 +334,14 @@ void fldbld(void)	/* create fields from current record */
+ 		*fr = 0;
+ 	} else if ((sep = *inputFS) == 0) {		/* new: FS="" => 1 char/field */
+ 		for (i = 0; *r != '\0'; r += n) {
+-			char buf[MB_CUR_MAX + 1];
++			char buf[MB_LEN_MAX + 1];
+ 
+ 			i++;
+ 			if (i > nfields)
+ 				growfldtab(i);
+ 			if (freeable(fldtab[i]))
+ 				xfree(fldtab[i]->sval);
+-			n = mblen(r, MB_CUR_MAX);
++			n = mblen(r, MB_LEN_MAX);
+ 			if (n < 0)
+ 				n = 1;
+ 			memcpy(buf, r, n);
+-- 
+2.25.0
+
