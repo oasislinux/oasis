@@ -25,6 +25,7 @@ waylandproto('unstable/linux-dmabuf/linux-dmabuf-unstable-v1.xml', {
 
 waylandproto('unstable/xdg-decoration/xdg-decoration-unstable-v1.xml', {
 	client='include/xdg-decoration-unstable-v1-client-protocol.h',
+	server='include/xdg-decoration-unstable-v1-server-protocol.h',
 	code='xdg-decoration-unstable-v1-protocol.c',
 })
 
@@ -37,6 +38,7 @@ pkg.hdrs = {
 	'$outdir/include/linux-dmabuf-unstable-v1-client-protocol.h',
 	'$outdir/include/linux-dmabuf-unstable-v1-server-protocol.h',
 	'$outdir/include/xdg-decoration-unstable-v1-client-protocol.h',
+	'$outdir/include/xdg-decoration-unstable-v1-server-protocol.h',
 }
 
 fetch 'git'
