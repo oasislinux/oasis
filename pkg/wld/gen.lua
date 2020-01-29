@@ -4,8 +4,7 @@ cflags{
 	'-I $outdir',
 	'-I $basedir/pkg/fontconfig/src',
 	'-I $basedir/pkg/freetype/src/include',
-	'-I $basedir/pkg/libdrm/src',
-	'-I $basedir/pkg/libdrm/src/include/drm',
+	'-I $builddir/pkg/libdrm/include',
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/wayland/include',
 }
@@ -58,7 +57,7 @@ pkg.deps = {
 	'$outdir/protocol/wayland-drm-client-protocol.h',
 	'pkg/fontconfig/fetch',
 	'pkg/freetype/fetch',
-	'pkg/libdrm/fetch',
+	'pkg/libdrm/headers',
 	'pkg/pixman/headers',
 	'pkg/wayland/headers',
 }

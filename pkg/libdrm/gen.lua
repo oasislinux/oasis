@@ -13,6 +13,19 @@ cflags{
 	'-I $srcdir/include/drm',
 }
 
+pkg.hdrs = {
+	copy('$outdir/include', '$srcdir', {'xf86drm.h', 'xf86drmMode.h'}),
+	copy('$outdir/include', '$srcdir/amdgpu', {'amdgpu.h'}),
+	copy('$outdir/include', '$srcdir/include/drm', {
+		'drm.h',
+		'drm_fourcc.h',
+		'drm_mode.h',
+		'drm_sarea.h',
+		'i915_drm.h',
+		'amdgpu_drm.h',
+	}),
+}
+
 lib('libdrm.a', {
 	'xf86drm.c',
 	'xf86drmHash.c',

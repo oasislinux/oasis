@@ -127,12 +127,9 @@ if options['HAVE_ALSA'] then
 	table.insert(pkg.deps, 'pkg/alsa-lib/headers')
 end
 if options['HAVE_DRM'] then
-	cflags{
-		'-I $basedir/pkg/libdrm/src',
-		'-I $basedir/pkg/libdrm/src/include/drm',
-	}
+	cflags{'-I $builddir/pkg/libdrm/include'}
 	table.insert(libs, 'libdrm/libdrm.a')
-	table.insert(pkg.deps, 'pkg/libdrm/fetch')
+	table.insert(pkg.deps, 'pkg/libdrm/headers')
 end
 if options['HAVE_LIBASS'] then
 	cflags{'-I $builddir/pkg/libass/include'}

@@ -1,12 +1,11 @@
 cflags{
 	'-std=c99', '-Wall', '-Wpedantic',
-	'-I $basedir/pkg/libdrm/src',
-	'-I $basedir/pkg/libdrm/src/include/drm',
+	'-I $builddir/pkg/libdrm/include',
 	'-I $srcdir/include',
 }
 
 pkg.deps = {
-	'$basedir/pkg/libdrm/fetch',
+	'pkg/libdrm/headers',
 }
 
 lib('libliftoff.a', {
