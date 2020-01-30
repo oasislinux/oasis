@@ -1,0 +1,76 @@
+From f64cfa931a450ffb08cbbdeb6652b424f6bb8187 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 30 Jan 2020 14:12:35 -0800
+Subject: [PATCH] Avoid use of alloca and statement expressions
+
+---
+ include/netlink-private/utils.h | 21 ---------------------
+ lib/genl/mngt.c                 | 13 +++++++++----
+ 2 files changed, 9 insertions(+), 25 deletions(-)
+
+diff --git a/include/netlink-private/utils.h b/include/netlink-private/utils.h
+index 1456797..e26399f 100644
+--- a/include/netlink-private/utils.h
++++ b/include/netlink-private/utils.h
+@@ -93,27 +93,6 @@ extern const char *nl_strerror_l(int err);
+ 
+ /*****************************************************************************/
+ 
+-#define _nl_malloc_maybe_a(alloca_maxlen, bytes, to_free) \
+-	({ \
+-		const size_t _bytes = (bytes); \
+-		__typeof__ (to_free) _to_free = (to_free); \
+-		__typeof__ (*_to_free) _ptr; \
+-		\
+-		_NL_STATIC_ASSERT ((alloca_maxlen) <= 500); \
+-		_nl_assert (_to_free && !*_to_free); \
+-		\
+-		if (_bytes <= (alloca_maxlen)) { \
+-			_ptr = alloca (_bytes); \
+-		} else { \
+-			_ptr = malloc (_bytes); \
+-			*_to_free = _ptr; \
+-		}; \
+-		\
+-		_ptr; \
+-	})
+-
+-/*****************************************************************************/
+-
+ static inline char *
+ _nl_strncpy_trunc(char *dst, const char *src, size_t len)
+ {
+diff --git a/lib/genl/mngt.c b/lib/genl/mngt.c
+index ff50e1d..8f92122 100644
+--- a/lib/genl/mngt.c
++++ b/lib/genl/mngt.c
+@@ -54,7 +54,7 @@ static int cmd_msg_parser(struct sockaddr_nl *who, struct nlmsghdr *nlh,
+ 	int err;
+ 	struct genlmsghdr *ghdr;
+ 	struct genl_cmd *cmd;
+-	struct nlattr **tb;
++	struct nlattr **tb, *tb_local[32];
+ 
+ 	ghdr = genlmsg_hdr(nlh);
+ 
+@@ -64,9 +64,14 @@ static int cmd_msg_parser(struct sockaddr_nl *who, struct nlmsghdr *nlh,
+ 	if (cmd->c_msg_parser == NULL)
+ 		return -NLE_OPNOTSUPP;
+ 
+-	tb = _nl_malloc_maybe_a (300, (((size_t) cmd->c_maxattr) + 1u) * sizeof (struct nlattr *), &tb_free);
+-	if (!tb)
+-		return -NLE_NOMEM;
++	if (cmd->c_maxattr > ARRAY_SIZE(tb_local) - 1) {
++		tb = malloc(((size_t) cmd->c_maxattr + 1u) * sizeof (struct nlattr *));
++		if (!tb)
++			return -NLE_NOMEM;
++		tb_free = tb;
++	} else {
++		tb = tb_local;
++	}
+ 
+ 	err = nlmsg_parse(nlh,
+ 	                  GENL_HDRSIZE(ops->o_hdrsize),
+-- 
+2.25.0
+
