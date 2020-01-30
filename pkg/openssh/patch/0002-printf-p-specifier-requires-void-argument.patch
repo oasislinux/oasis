@@ -1,0 +1,133 @@
+From 7e5f0db8d1f2c7a3da682c716e85430d2d2b4358 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 27 Nov 2019 19:16:26 -0800
+Subject: [PATCH] printf %p specifier requires `void *` argument
+
+---
+ monitor.c           |  4 ++--
+ session.c           |  2 +-
+ ssh-pkcs11-helper.c |  2 +-
+ ssh-pkcs11.c        | 16 +++++++++-------
+ sshbuf-misc.c       |  2 +-
+ 5 files changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/monitor.c b/monitor.c
+index 64eca98d..e021c81c 100644
+--- a/monitor.c
++++ b/monitor.c
+@@ -1166,7 +1166,7 @@ mm_answer_keyallowed(struct ssh *ssh, int sock, struct sshbuf *m)
+ 	    (r = sshbuf_get_u32(m, &pubkey_auth_attempt)) != 0)
+ 		fatal("%s: buffer error: %s", __func__, ssh_err(r));
+ 
+-	debug3("%s: key_from_blob: %p", __func__, key);
++	debug3("%s: key_from_blob: %p", __func__, (void *)key);
+ 
+ 	if (key != NULL && authctxt->valid) {
+ 		/* These should not make it past the privsep child */
+@@ -1434,7 +1434,7 @@ mm_answer_keyverify(struct ssh *ssh, int sock, struct sshbuf *m)
+ 
+ 	ret = sshkey_verify(key, signature, signaturelen, data, datalen,
+ 	    sigalg, ssh->compat, &sig_details);
+-	debug3("%s: %s %p signature %s%s%s", __func__, auth_method, key,
++	debug3("%s: %s %p signature %s%s%s", __func__, auth_method, (void *)key,
+ 	    (ret == 0) ? "verified" : "unverified",
+ 	    (ret != 0) ? ": " : "", (ret != 0) ? ssh_err(ret) : "");
+ 
+diff --git a/session.c b/session.c
+index 80738b92..2b1a5d4e 100644
+--- a/session.c
++++ b/session.c
+@@ -1787,7 +1787,7 @@ session_dump(void)
+ 		    s->used,
+ 		    s->next_unused,
+ 		    s->self,
+-		    s,
++		    (void *)s,
+ 		    s->chanid,
+ 		    (long)s->pid);
+ 	}
+diff --git a/ssh-pkcs11-helper.c b/ssh-pkcs11-helper.c
+index 219ce9b5..1131832c 100644
+--- a/ssh-pkcs11-helper.c
++++ b/ssh-pkcs11-helper.c
+@@ -96,7 +96,7 @@ lookup_key(struct sshkey *k)
+ 	struct pkcs11_keyinfo *ki;
+ 
+ 	TAILQ_FOREACH(ki, &pkcs11_keylist, next) {
+-		debug("check %p %s", ki, ki->providername);
++		debug("check %p %s", (void *)ki, ki->providername);
+ 		if (sshkey_equal(k, ki->key))
+ 			return (ki->key);
+ 	}
+diff --git a/ssh-pkcs11.c b/ssh-pkcs11.c
+index 09f1ea34..89a83b39 100644
+--- a/ssh-pkcs11.c
++++ b/ssh-pkcs11.c
+@@ -112,7 +112,7 @@ pkcs11_provider_finalize(struct pkcs11_provider *p)
+ 	CK_ULONG i;
+ 
+ 	debug("pkcs11_provider_finalize: %p refcount %d valid %d",
+-	    p, p->refcount, p->valid);
++	    (void *)p, p->refcount, p->valid);
+ 	if (!p->valid)
+ 		return;
+ 	for (i = 0; i < p->nslots; i++) {
+@@ -135,10 +135,12 @@ pkcs11_provider_finalize(struct pkcs11_provider *p)
+ static void
+ pkcs11_provider_unref(struct pkcs11_provider *p)
+ {
+-	debug("pkcs11_provider_unref: %p refcount %d", p, p->refcount);
++	debug("pkcs11_provider_unref: %p refcount %d", (void *)p, p->refcount);
+ 	if (--p->refcount <= 0) {
+-		if (p->valid)
+-			error("pkcs11_provider_unref: %p still valid", p);
++		if (p->valid) {
++			error("pkcs11_provider_unref: %p still valid",
++			    (void *)p);
++		}
+ 		free(p->name);
+ 		free(p->slotlist);
+ 		free(p->slotinfo);
+@@ -166,7 +168,7 @@ pkcs11_provider_lookup(char *provider_id)
+ 	struct pkcs11_provider *p;
+ 
+ 	TAILQ_FOREACH(p, &pkcs11_providers, next) {
+-		debug("check %p %s", p, p->name);
++		debug("check %p %s", (void *)p, p->name);
+ 		if (!strcmp(provider_id, p->name))
+ 			return (p);
+ 	}
+@@ -323,7 +325,7 @@ pkcs11_check_obj_bool_attrib(struct pkcs11_key *k11, CK_OBJECT_HANDLE obj,
+ 	}
+ 	*val = flag != 0;
+ 	debug("%s: provider %p slot %lu object %lu: attrib %lu = %d",
+-	    __func__, k11->provider, k11->slotidx, obj, type, *val);
++	    __func__, (void *)k11->provider, k11->slotidx, obj, type, *val);
+ 	return (0);
+ }
+ 
+@@ -415,7 +417,7 @@ pkcs11_rsa_private_encrypt(int flen, const u_char *from, u_char *to, RSA *rsa,
+ 	int			rval = -1;
+ 
+ 	if ((k11 = RSA_get_ex_data(rsa, rsa_idx)) == NULL) {
+-		error("RSA_get_ex_data failed for rsa %p", rsa);
++		error("RSA_get_ex_data failed for rsa %p", (void *)rsa);
+ 		return (-1);
+ 	}
+ 
+diff --git a/sshbuf-misc.c b/sshbuf-misc.c
+index a73f008b..d4714ee1 100644
+--- a/sshbuf-misc.c
++++ b/sshbuf-misc.c
+@@ -65,7 +65,7 @@ sshbuf_dump_data(const void *s, size_t len, FILE *f)
+ void
+ sshbuf_dump(struct sshbuf *buf, FILE *f)
+ {
+-	fprintf(f, "buffer %p len = %zu\n", buf, sshbuf_len(buf));
++	fprintf(f, "buffer %p len = %zu\n", (void *)buf, sshbuf_len(buf));
+ 	sshbuf_dump_data(sshbuf_ptr(buf), sshbuf_len(buf), f);
+ }
+ 
+-- 
+2.25.0
+
