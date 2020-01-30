@@ -1,4 +1,4 @@
-local arch = config.target.toolchain:match('[^-]*')
+local arch = config.target.platform:match('[^-]*')
 local archflags = {
 	x86_64='-D SANDBOX_SECCOMP_FILTER=1 -D SECCOMP_AUDIT_ARCH=AUDIT_ARCH_X86_64',
 	aarch64='-D SANDBOX_SECCOMP_FILTER=1 -D SECCOMP_AUDIT_ARCH=AUDIT_ARCH_AARCH64',
@@ -6,7 +6,7 @@ local archflags = {
 cflags{
 	'-D _XOPEN_SOURCE=600',
 	'-D _DEFAULT_SOURCE',
-	archflags[config.target.toolchain:match('[^-]*')] or '-D SANDBOX_RLIMIT=1',
+	archflags[arch] or '-D SANDBOX_RLIMIT=1',
 	'-I $dir',
 	'-I $srcdir',
 	'-I $basedir/pkg/openbsd/include',

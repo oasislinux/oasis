@@ -24,7 +24,7 @@ cflags{
 }
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	cflags{'-Wall'}
 	exe('hexdump', {'scripts/hexdump.c'})
 end)

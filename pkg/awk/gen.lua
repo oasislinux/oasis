@@ -11,7 +11,7 @@ build('copy', '$outdir/ytab.h', '$outdir/gram.tab.h')
 pkg.deps = {'$outdir/ytab.h'}
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	cflags{'-I $outdir'}
 	exe('maketab', {'maketab.c'})
 end)

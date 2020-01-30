@@ -1,6 +1,0 @@
-ar = ar
-as = as
-cc = cc
-ld = ld
-mc = 6m
-objcopy = objcopy

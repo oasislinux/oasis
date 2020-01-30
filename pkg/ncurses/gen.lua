@@ -10,7 +10,7 @@ set('common_cflags', {
 cflags{'$common_cflags'}
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	cflags{'$common_cflags', '-D USE_BUILD_CC'}
 	exe('make_keys', {'ncurses/tinfo/make_keys.c'}, {'$gendir/headers', '$outdir/names.c'})
 	exe('make_hash', {'ncurses/tinfo/make_hash.c'}, {'$gendir/headers', '$outdir/hashsize.h'})

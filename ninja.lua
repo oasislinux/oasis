@@ -228,10 +228,16 @@ function sub(name, fn)
 	subninja(name)
 end
 
-function toolchain(name)
-	set('cflags', '$'..name..'_cflags')
-	set('ldflags', '$'..name..'_ldflags')
-	include('$basedir/toolchain/$'..name..'_toolchain.ninja')
+function toolchain(tc)
+	set('ar', tc.ar or (tc.platform and tc.platform..'-ar') or 'ar')
+	set('as', tc.as or (tc.platform and tc.platform..'-as') or 'as')
+	set('cc', tc.cc or (tc.platform and tc.platform..'-cc') or 'cc')
+	set('ld', tc.ld or (tc.platform and tc.platform..'-ld') or 'ld')
+	set('objcopy', tc.objcopy or (tc.platform and tc.platform..'-objcopy') or 'objcopy')
+	set('mc', tc.mc or 'false')
+
+	set('cflags', tc.cflags)
+	set('ldflags', tc.ldflags)
 end
 
 function phony(name, inputs)

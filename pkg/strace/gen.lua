@@ -18,7 +18,7 @@ build('sed', '$outdir/ioctl_iocdef.h', '$outdir/ioctl_iocdef.i', {
 })
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	cflags{
 		'-D X86_64=1',
 		'-I $srcdir/linux/x86_64',

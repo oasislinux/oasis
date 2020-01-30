@@ -4,7 +4,7 @@ cflags{
 }
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	exe('mk_outvec', {'lasagna/outvec/mk_outvec.c'})
 	exe('mk_rlimit', {'lasagna/rlimit/mk_rlimit.c'})
 	exe('mksysstr', {'lasagna/sysstr/mksysstr.c'})

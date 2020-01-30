@@ -14,7 +14,7 @@ build('awk', '$outdir/version.h', {'$srcdir/version', '|', '$dir/version.awk'}, 
 })
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	cflags{'-std=c99', '-pedantic', '-Wall', '-Wextra'}
 	set('srcdir', '$dir')
 	exe('bin2c', {'bin2c.c'})

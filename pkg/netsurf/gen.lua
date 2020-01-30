@@ -11,7 +11,7 @@ subgen 'libsvgtiny'
 subgen 'libwapcaplet'
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	exe('convert_image', {'frontends/framebuffer/convert_image.c'}, {'pkg/libpng/headers'}, {
 		ldlibs='-lpng -lz',
 	})

@@ -1,6 +1,0 @@
-ar = x86_64-linux-musl-ar
-as = x86_64-linux-musl-as
-cc = x86_64-linux-musl-cc
-ld = x86_64-linux-musl-ld
-mc = 6m
-objcopy = x86_64-linux-musl-objcopy

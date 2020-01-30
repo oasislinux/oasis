@@ -58,7 +58,7 @@ build('copy', '$outdir/include/ext2fs/ext2_types.h', '$dir/ext2_types.h')
 build('copy', '$outdir/internal/blkid/blkid_types.h', '$dir/blkid_types.h')
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	exe('gen_crc32ctable', {'lib/ext2fs/gen_crc32ctable.c'})
 end)
 rule('gen_crc32ctable', '$outdir/gen_crc32ctable >$out')

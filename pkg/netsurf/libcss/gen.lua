@@ -7,7 +7,7 @@ cflags{
 }
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	exe('gen_prop_parser', {'src/parse/properties/css_property_parser_gen.c'})
 end)
 

@@ -3,7 +3,7 @@ build('awk', '$outdir/version.h', {'$srcdir/VERSION', '|', '$dir/version.awk'}, 
 })
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	set('srcdir', '$dir')
 	exe('file2string', {'file2string.c'})
 end)

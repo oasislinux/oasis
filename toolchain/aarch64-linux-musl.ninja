@@ -1,6 +1,0 @@
-ar = aarch64-linux-musl-ar
-as = aarch64-linux-musl-as
-cc = aarch64-linux-musl-cc
-ld = aarch64-linux-musl-ld
-mc = false
-objcopy = aarch64-linux-musl-objcopy

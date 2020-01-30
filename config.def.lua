@@ -14,7 +14,7 @@ return {
 
 	-- target toolchain and flags
 	target={
-		toolchain='x86_64-linux-musl',
+		platform='x86_64-linux-musl',
 		cflags='-O2 -pipe -fpie',
 		ldflags='-s -static -pie',
 		pie=true
@@ -22,7 +22,6 @@ return {
 
 	-- host toolchain and flags
 	host={
-		toolchain='default',
 		cflags='-pipe',
 		ldflags='',
 	},

@@ -7,7 +7,7 @@ cflags{
 }
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	cflags{
 		'-D HAVE_STRINGIZE',
 		'-D DONT_HAVE_FRIBIDI_CONFIG_H',

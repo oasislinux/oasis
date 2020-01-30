@@ -11,7 +11,7 @@ cflags{
 }
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	cflags{
 		'-std=c99',
 		'-D _GNU_SOURCE',

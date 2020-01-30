@@ -39,7 +39,7 @@ pkg.hdrs = {
 copy('$outdir', '$builddir/pkg/wld/protocol', {'wayland-drm-server-protocol.h'})
 
 sub('tools.ninja', function()
-	toolchain 'host'
+	toolchain(config.host)
 	cflags{'-std=c99', '-D _POSIX_C_SOURCE=200809L'}
 	exe('convert_font', {'cursor/convert_font.c'})
 end)
