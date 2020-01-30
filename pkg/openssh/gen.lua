@@ -136,6 +136,6 @@ file('libexec/sftp-server', '755', '$outdir/sftp-server')
 exe('sftp', {'sftp.c', 'sftp-client.c', 'sftp-common.c.o', 'sftp-glob.c', 'libssh.a.d'})
 file('bin/sftp', '755', '$outdir/sftp')
 
-man{'ssh.1', 'scp.1', 'ssh-add.1', 'ssh-agent.1', 'ssh-keygen.1', 'sshd.8', 'sftp-server.8', 'sftp.1'}
+man{'ssh.1', 'scp.1', 'ssh-add.1', 'ssh-agent.1', 'ssh-keygen.1', 'ssh_config.5', 'sshd.8', 'sftp-server.8', 'sftp.1'}
 
 fetch 'git'
