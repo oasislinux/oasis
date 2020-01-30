@@ -20,8 +20,8 @@ script:
   echo 'return {
   	builddir="out",
   	fs={exclude={}},
-  	target={toolchain="x86_64-linux-musl", cflags="-O2 -pipe", ldflags="-s -static", pie=true},
-  	host={toolchain="default", cflags="-pipe", ldflags=""},
+  	target={platform="x86_64-linux-musl", mc="6m", cflags="-O2 -pipe", ldflags="-s -static", pie=true},
+  	host={cflags="-pipe", ldflags=""},
   	repo={path="$builddir/root.git", flags="--bare", tag="tree", branch="master"},
   	tls="libressl",
   	video_drivers={intel=true, nouveau=true}

@@ -31,8 +31,8 @@ tasks:
     return {
     	builddir='out',
     	fs={{sets[set], exclude={'^include/', '^lib/.*%.a$'}}},
-    	target={toolchain='x86_64-linux-musl', cflags='-O2 -pipe -fpie', ldflags='-s -static -pie', pie=true},
-    	host={toolchain='default', cflags='-pipe', ldflags=''},
+    	target={platform='x86_64-linux-musl', cflags='-O2 -pipe -fpie', ldflags='-s -static -pie', pie=true},
+    	host={cflags='-pipe', ldflags=''},
     	repo={path='$HOME/root-x86_64.git', flags='--bare', tag='tree', branch=set},
     }
     EOF
