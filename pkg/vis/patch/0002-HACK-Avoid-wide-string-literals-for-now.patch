@@ -1,0 +1,27 @@
+From 358e4526a4ed8c5780d4fa43403c5c6e3d92f8bb Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 31 Jan 2020 23:34:52 -0800
+Subject: [PATCH] [HACK] Avoid wide string literals for now
+
+---
+ vis-digraph.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/vis-digraph.c b/vis-digraph.c
+index 35a5a17..0c23387 100644
+--- a/vis-digraph.c
++++ b/vis-digraph.c
+@@ -1962,8 +1962,9 @@ int main(int argc, char *argv[]) {
+ 	setlocale(LC_ALL, "");
+ 
+ 	if (argc == 1) {
++		static const wchar_t fmt[] = {'%', 's', ' ', '%', 'l', 'c', ' ', '%', 's', '\n', '\0'};
+ 		for (const Digraph *d = digraphs; d->name[0]; d++)
+-			wprintf(L"%s %lc %s\n", d->name, d->rune, d->description);
++			wprintf(fmt, d->name, d->rune, d->description);
+ 		return 0;
+ 	}
+ 
+-- 
+2.25.0
+
