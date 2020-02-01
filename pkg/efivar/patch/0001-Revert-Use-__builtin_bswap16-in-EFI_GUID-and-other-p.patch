@@ -1,0 +1,70 @@
+From 44f9caeedfaa265b1ced2b77e232ffc94b610b12 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 31 Jan 2020 13:51:55 -0800
+Subject: [PATCH] Revert "Use __builtin_bswap16() in EFI_GUID and other
+ places."
+
+This reverts commit 8dddb5e8da3cabb5927b839d6faaa42b48b58a87.
+---
+ src/efivar_endian.h         | 24 ++++++++++++------------
+ src/include/efivar/efivar.h |  2 +-
+ 2 files changed, 13 insertions(+), 13 deletions(-)
+
+diff --git a/src/efivar_endian.h b/src/efivar_endian.h
+index b8e6a31..ce37019 100644
+--- a/src/efivar_endian.h
++++ b/src/efivar_endian.h
+@@ -29,12 +29,12 @@
+ #define le16_to_cpu(x) (x)
+ #define le32_to_cpu(x) (x)
+ #define le64_to_cpu(x) ((uint64_t)x)
+-#define cpu_to_be16(x) __builtin_bswap16(x)
+-#define cpu_to_be32(x) __builtin_bswap32(x)
+-#define cpu_to_be64(x) ((uint64_t)__builtin_bswap64(x))
+-#define be16_to_cpu(x) __builtin_bswap16(x)
+-#define be32_to_cpu(x) __builtin_bswap32(x)
+-#define be64_to_cpu(x) ((uint64_t)__builtin_bswap64(x))
++#define cpu_to_be16(x) __bswap_16(x)
++#define cpu_to_be32(x) __bswap_32(x)
++#define cpu_to_be64(x) ((uint64_t)__bswap_64(x))
++#define be16_to_cpu(x) __bswap_16(x)
++#define be32_to_cpu(x) __bswap_32(x)
++#define be64_to_cpu(x) ((uint64_t)__bswap_64(x))
+ #else
+ #define cpu_to_be16(x) (x)
+ #define cpu_to_be32(x) (x)
+@@ -42,12 +42,12 @@
+ #define be16_to_cpu(x) (x)
+ #define be32_to_cpu(x) (x)
+ #define be64_to_cpu(x) ((uint64_t)x)
+-#define cpu_to_le16(x) __builtin_bswap16(x)
+-#define cpu_to_le32(x) __builtin_bswap32(x)
+-#define cpu_to_le64(x) ((uint64_t)__builtin_bswap64(x))
+-#define le16_to_cpu(x) __builtin_bswap16(x)
+-#define le32_to_cpu(x) __builtin_bswap32(x)
+-#define le64_to_cpu(x) ((uint64_t)__builtin_bswap64(x))
++#define cpu_to_le16(x) __bswap_16(x)
++#define cpu_to_le32(x) __bswap_32(x)
++#define cpu_to_le64(x) ((uint64_t)__bswap_64(x))
++#define le16_to_cpu(x) __bswap_16(x)
++#define le32_to_cpu(x) __bswap_32(x)
++#define le64_to_cpu(x) ((uint64_t)__bswap_64(x))
+ #endif
+ 
+ #endif /* _EFIVAR_ENDIAN_H */
+diff --git a/src/include/efivar/efivar.h b/src/include/efivar/efivar.h
+index 316891c..32d8a29 100644
+--- a/src/include/efivar/efivar.h
++++ b/src/include/efivar/efivar.h
+@@ -63,7 +63,7 @@ typedef struct {
+ 
+ #if BYTE_ORDER == LITTLE_ENDIAN
+ #define EFI_GUID(a,b,c,d,e0,e1,e2,e3,e4,e5) \
+-((efi_guid_t) {(a), (b), (c), __builtin_bswap16(d), { (e0), (e1), (e2), (e3), (e4), (e5) }})
++((efi_guid_t) {(a), (b), (c), bswap_16(d), { (e0), (e1), (e2), (e3), (e4), (e5) }})
+ #else
+ #define EFI_GUID(a,b,c,d,e0,e1,e2,e3,e4,e5) \
+ ((efi_guid_t) {(a), (b), (c), (d), { (e0), (e1), (e2), (e3), (e4), (e5) }})
+-- 
+2.25.0
+
