@@ -2,6 +2,7 @@ From 2c63dd5278059b4513a265299915c4237e5b0178 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 17:14:18 -0700
 Subject: [PATCH] Avoid initializer index range
+Upstream: https://gitlab.freedesktop.org/libevdev/libevdev/merge_requests/11
 
 ---
  libevdev/libevdev.c          | 2 +-

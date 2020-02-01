@@ -2,6 +2,7 @@ From 2502b02e69ad84e1e8e96fa1683968e72bbd0501 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 17:05:30 -0700
 Subject: [PATCH] Avoid statement expressions
+Upstream: https://gitlab.freedesktop.org/libevdev/libevdev/merge_requests/11
 
 ---
  libevdev/libevdev-int.h  |  3 ++-
