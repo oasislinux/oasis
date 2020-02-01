@@ -2,7 +2,7 @@ local data = [[
 	compat/(
 		accessx basic caps complete
 		iso9995
-		japan ledcaps
+		japan ledcaps ledcompose
 		lednum ledscroll level5
 		misc mousekeys
 		olpc pc pc98 xfree86
@@ -117,90 +117,40 @@ for f in iterpaths(data) do
 	file('share/xkb/'..f, '644', '$srcdir/'..f)
 end
 
-rule('merge', 'HDR=$srcdir/rules/HDR ./$srcdir/rules/merge.sh $out $in')
-function merge(out, srcs)
-	build('merge', '$outdir/'..out, {
-		expand{'$srcdir/rules/', paths(srcs)},
-		'|', '$srcdir/rules/HDR', '$srcdir/rules/merge.sh',
-	})
-	file('share/xkb/rules/'..out, '644', '$outdir/'..out)
+local function parts(ruleset)
+	return expand{'$srcdir/rules/', {
+		'base.hdr.part', 'base.lists.part',
+		ruleset..'.lists.base.part',
+		ruleset..'.m_k.part',
+		'base.l1_k.part',
+		'base.l_k.part',
+		'base.ml_g.part',
+		'base.m_g.part',
+		'base.mlv_s.part',
+		'base.ml_s.part',
+		'base.ml1_s.part',
+		'base.ml2_s.part',
+		'base.ml3_s.part',
+		'base.ml4_s.part',
+		ruleset..'.m_s.part',
+		ruleset..'.ml_s1.part',
+		'base.ml_c.part',
+		'base.ml1_c.part',
+		'base.m_t.part',
+		'base.l1o_s.part',
+		'base.l2o_s.part',
+		'base.l3o_s.part',
+		'base.l4o_s.part',
+		'base.o_s.part',
+		'base.o_c.part',
+		'base.o_t.part',
+	}}
 end
 
-merge('base', [[
-	base.hdr.part base.lists.part
-	base.lists.base.part
-	HDR base.m_k.part
-	HDR base.l1_k.part
-	HDR base.l_k.part
-	HDR
-	HDR base.ml_g.part
-	HDR base.m_g.part
-	HDR base.mlv_s.part
-	HDR base.ml_s.part
-	HDR base.ml1_s.part
-	HDR
-	HDR base.ml2_s.part
-	HDR base.ml3_s.part
-	HDR base.ml4_s.part
-	HDR
-	HDR
-	HDR
-	HDR base.m_s.part
-	HDR base.ml_s1.part
-	HDR
-	HDR
-	HDR
-	HDR
-	HDR
-	HDR base.ml_c.part
-	HDR base.ml1_c.part
-	HDR base.m_t.part
-	HDR
-	HDR base.l1o_s.part
-	HDR base.l2o_s.part
-	HDR base.l3o_s.part
-	HDR base.l4o_s.part
-	HDR base.o_s.part
-	HDR base.o_c.part
-	HDR base.o_t.part
-]])
-merge('evdev', [[
-	base.hdr.part base.lists.part
-	evdev.lists.part
-	HDR evdev.m_k.part
-	HDR base.l1_k.part
-	HDR base.l_k.part
-	HDR
-	HDR base.ml_g.part
-	HDR base.m_g.part
-	HDR base.mlv_s.part
-	HDR base.ml_s.part
-	HDR base.ml1_s.part
-	HDR
-	HDR base.ml2_s.part
-	HDR base.ml3_s.part
-	HDR base.ml4_s.part
-	HDR
-	HDR
-	HDR
-	HDR evdev.m_s.part
-	HDR
-	HDR
-	HDR
-	HDR
-	HDR
-	HDR
-	HDR base.ml_c.part
-	HDR base.ml1_c.part
-	HDR base.m_t.part
-	HDR
-	HDR base.l1o_s.part
-	HDR base.l2o_s.part
-	HDR base.l3o_s.part
-	HDR base.l4o_s.part
-	HDR base.o_s.part
-	HDR base.o_c.part
-	HDR base.o_t.part
-]])
+build('cat', '$outdir/base', parts('base'))
+file('share/xkb/rules/base', '644', '$outdir/base')
+
+build('cat', '$outdir/evdev', parts('evdev'))
+file('share/xkb/rules/evdev', '644', '$outdir/evdev')
 
 fetch 'git'
