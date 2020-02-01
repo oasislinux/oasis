@@ -247,6 +247,7 @@
 [submodule "pkg/squashfs-tools/src"]
 	path = pkg/squashfs-tools/src
 	url = https://github.com/plougher/squashfs-tools.git
+	ignore = all
 [submodule "pkg/sshfs/src"]
 	path = pkg/sshfs/src
 	url = https://github.com/libfuse/sshfs

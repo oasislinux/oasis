@@ -1,0 +1,109 @@
+From 7668bc8b07dec7eeb8f2682e50ae5c740c25c704 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 30 Jan 2020 11:38:23 -0800
+Subject: [PATCH] Avoid pointer arithmetic with `void *`
+
+`void *` is a pointer to an incomplete type, so cannot be used in
+pointer arithmetic.
+---
+ squashfs-tools/action.c     |  2 +-
+ squashfs-tools/mksquashfs.c | 10 +++++-----
+ squashfs-tools/unsquashfs.c |  6 +++---
+ 3 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/squashfs-tools/action.c b/squashfs-tools/action.c
+index 4b06ccb..b107470 100644
+--- a/squashfs-tools/action.c
++++ b/squashfs-tools/action.c
+@@ -950,7 +950,7 @@ void *get_frag_action(void *fragment)
+ 	if (fragment == &def_fragment)
+ 		action = &fragment_spec[0] - 1;
+ 	else 
+-		action = fragment - offsetof(struct action, data);
++		action = (struct action *)((char *)fragment - offsetof(struct action, data));
+ 
+ 	if (++action == spec_list_end)
+ 		return NULL;
+diff --git a/squashfs-tools/mksquashfs.c b/squashfs-tools/mksquashfs.c
+index a45b77f..d9e7b01 100644
+--- a/squashfs-tools/mksquashfs.c
++++ b/squashfs-tools/mksquashfs.c
+@@ -516,7 +516,7 @@ int read_bytes(int fd, void *buff, int bytes)
+ 	int res, count;
+ 
+ 	for(count = 0; count < bytes; count += res) {
+-		res = read(fd, buff + count, bytes - count);
++		res = read(fd, (char *)buff + count, bytes - count);
+ 		if(res < 1) {
+ 			if(res == 0)
+ 				goto bytes_read;
+@@ -563,7 +563,7 @@ int write_bytes(int fd, void *buff, int bytes)
+ 	int res, count;
+ 
+ 	for(count = 0; count < bytes; count += res) {
+-		res = write(fd, buff + count, bytes - count);
++		res = write(fd, (char *)buff + count, bytes - count);
+ 		if(res == -1) {
+ 			if(errno != EINTR) {
+ 				ERROR("Write failed because %s\n",
+@@ -889,7 +889,7 @@ int create_inode(squashfs_inode *i_no, struct dir_info *dir_info,
+ 	struct stat *buf = &dir_ent->inode->buf;
+ 	union squashfs_inode_header inode_header;
+ 	struct squashfs_base_inode_header *base = &inode_header.base;
+-	void *inode;
++	char *inode;
+ 	char *filename = pathname(dir_ent);
+ 	int nlink = dir_ent->inode->nlink;
+ 	int xattr = read_xattrs(dir_ent);
+@@ -982,7 +982,7 @@ int create_inode(squashfs_inode *i_no, struct dir_info *dir_info,
+ 	}
+ 	else if(type == SQUASHFS_LDIR_TYPE) {
+ 		int i;
+-		unsigned char *p;
++		char *p;
+ 		struct squashfs_ldir_inode_header *dir = &inode_header.ldir;
+ 		struct cached_dir_index *index = dir_in->index;
+ 		unsigned int i_count = dir_in->i_count;
+@@ -1680,7 +1680,7 @@ long long generic_write_table(int length, void *buffer, int length2,
+ 	for(i = 0; i < meta_blocks; i++) {
+ 		int avail_bytes = length > SQUASHFS_METADATA_SIZE ?
+ 			SQUASHFS_METADATA_SIZE : length;
+-		c_byte = mangle(cbuffer + BLOCK_OFFSET, buffer + i *
++		c_byte = mangle(cbuffer + BLOCK_OFFSET, (char *)buffer + i *
+ 			SQUASHFS_METADATA_SIZE , avail_bytes,
+ 			SQUASHFS_METADATA_SIZE, uncompressed, 0);
+ 		SQUASHFS_SWAP_SHORTS(&c_byte, cbuffer, 1);
+diff --git a/squashfs-tools/unsquashfs.c b/squashfs-tools/unsquashfs.c
+index 727f1d5..5e8b2cb 100644
+--- a/squashfs-tools/unsquashfs.c
++++ b/squashfs-tools/unsquashfs.c
+@@ -640,7 +640,7 @@ int read_fs_bytes(int fd, long long byte, int bytes, void *buff)
+ 	}
+ 
+ 	for(count = 0; count < bytes; count += res) {
+-		res = read(fd, buff + count, bytes - count);
++		res = read(fd, (char *)buff + count, bytes - count);
+ 		if(res < 1) {
+ 			if(res == 0) {
+ 				ERROR("Read on filesystem failed because "
+@@ -748,7 +748,7 @@ void *read_inode_table(long long start, long long end)
+ 	int res;
+ 	long long size = 0;
+ 	long long bytes = 0;
+-	void *inode_table = NULL;
++	char *inode_table = NULL;
+ 
+ 	TRACE("read_inode_table: start %lld, end %lld\n", start, end);
+ 
+@@ -1226,7 +1226,7 @@ void *read_directory_table(long long start, long long end)
+ 	int res;
+ 	long long bytes = 0;
+ 	long long size = 0;
+-	void *directory_table = malloc(1);
++	char *directory_table = malloc(1);
+ 
+ 	TRACE("read_directory_table: start %lld, end %lld\n", start, end);
+ 
+-- 
+2.25.0
+

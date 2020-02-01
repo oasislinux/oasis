@@ -1,0 +1,53 @@
+From 4f371cd8042d8b574a49d07c5bca1417e08d366c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 30 Jan 2020 11:40:49 -0800
+Subject: [PATCH] Don't omit second operand to conditional operator
+
+This is a GNU C extension, and not valid in ISO C.
+---
+ squashfs-tools/action.c     | 5 ++++-
+ squashfs-tools/mksquashfs.c | 4 ++--
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/squashfs-tools/action.c b/squashfs-tools/action.c
+index b107470..38438dc 100644
+--- a/squashfs-tools/action.c
++++ b/squashfs-tools/action.c
+@@ -632,8 +632,11 @@ char *_expr_log(char *string, int cmnd)
+ 		break;
+ 	}
+ 
++	size = strlen(string);
++
+ 	/* if string is empty append '\0' */
+-	size = strlen(string) ? : 1; 
++	if (size == 0)
++		size = 1;
+ 
+ 	if(alloc_size - cur_size < size) {
+ 		/* buffer too small, expand */
+diff --git a/squashfs-tools/mksquashfs.c b/squashfs-tools/mksquashfs.c
+index d9e7b01..a5d0e69 100644
+--- a/squashfs-tools/mksquashfs.c
++++ b/squashfs-tools/mksquashfs.c
+@@ -773,7 +773,7 @@ char *_pathname(struct dir_ent *dir_ent, char *pathname, int *size)
+ 	for(;;) {
+ 		int res = snprintf(pathname, *size, "%s/%s", 
+ 			dir_ent->our_dir->pathname,
+-			dir_ent->source_name ? : dir_ent->name);
++			dir_ent->source_name ? dir_ent->source_name : dir_ent->name);
+ 
+ 		if(res < 0)
+ 			BAD_ERROR("snprintf failed in pathname\n");
+@@ -3154,7 +3154,7 @@ static inline struct inode_info *lookup_inode(struct stat *buf)
+ static inline void alloc_inode_no(struct inode_info *inode, unsigned int use_this)
+ {
+ 	if (inode->inode_number == 0) {
+-		inode->inode_number = use_this ? : inode_no ++;
++		inode->inode_number = use_this ? use_this : inode_no ++;
+ 		if((inode->buf.st_mode & S_IFMT) == S_IFREG)
+ 			progress_bar_size((inode->buf.st_size + block_size - 1)
+ 								 >> block_log);
+-- 
+2.25.0
+
