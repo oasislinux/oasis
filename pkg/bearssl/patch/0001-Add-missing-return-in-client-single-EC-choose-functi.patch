@@ -1,0 +1,25 @@
+From a5c3ea02385205858128e414873a0150cd8bceda Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 31 Jan 2020 15:11:32 -0800
+Subject: [PATCH] Add missing return in client single EC choose function
+
+Otherwise, static ECDH is never selected.
+---
+ src/ssl/ssl_ccert_single_ec.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/ssl/ssl_ccert_single_ec.c b/src/ssl/ssl_ccert_single_ec.c
+index 93ebcde..2e1e54f 100644
+--- a/src/ssl/ssl_ccert_single_ec.c
++++ b/src/ssl/ssl_ccert_single_ec.c
+@@ -69,6 +69,7 @@ cc_choose(const br_ssl_client_certificate_class **pctx,
+ 			choices->hash_id = -1;
+ 			choices->chain = zc->chain;
+ 			choices->chain_len = zc->chain_len;
++			return;
+ 		}
+ 	}
+ 
+-- 
+2.25.0
+
