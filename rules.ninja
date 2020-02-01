@@ -120,21 +120,21 @@ rule gitinit
   command = git init $repo_flags $repo && touch $out
 
 rule fetchcurl
-  command = cd $basedir && sh $basedir/scripts/fetch-curl.sh $gendir && touch $out
+  command = cd $basedir && sh scripts/fetch-curl.sh $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir
   restat = 1
   generator = 1
   pool = console
 
 rule fetchgit
-  command = cd $basedir && sh $basedir/scripts/fetch-git.sh $gendir && touch $out
+  command = cd $basedir && sh scripts/fetch-git.sh $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir
   restat = 1
   generator = 1
   pool = console
 
 rule fetchlocal
-  command = cd $basedir && sh $gendir/fetch.sh $gendir && touch $out
+  command = cd $basedir && sh $gendir/fetch.sh $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir
   restat = 1
   generator = 1
