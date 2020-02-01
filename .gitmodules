@@ -20,7 +20,6 @@
 [submodule "pkg/blind/src"]
 	path = pkg/blind/src
 	url = git://git.suckless.org/blind
-	ignore = all
 [submodule "pkg/bzip2/src"]
 	path = pkg/bzip2/src
 	url = git://sourceware.org/git/bzip2.git
