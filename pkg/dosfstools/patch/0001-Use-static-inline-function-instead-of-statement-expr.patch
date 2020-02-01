@@ -2,6 +2,7 @@ From 825f4980d59f780e906fc2d6b55fe6646df1b415 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 4 Jun 2019 10:40:53 -0700
 Subject: [PATCH] Use static inline function instead of statement expression
+Upstream: 91978a272e4fe465c3a754a7342b496ff9e49211
 
 ---
  src/lfn.c | 22 +++++++++++-----------
