@@ -37,7 +37,9 @@ lexers/dsv.lua
 lexers/eiffel.lua
 lexers/elixir.lua
 lexers/erlang.lua
+lexers/fantom.lua
 lexers/faust.lua
+lexers/fennel.lua
 lexers/fish.lua
 lexers/forth.lua
 lexers/fortran.lua
