@@ -1,14 +1,31 @@
-From 0c4077c28a50eff8a39b2e6d99df5575f67619b4 Mon Sep 17 00:00:00 2001
+From 15b2616e6f1f03c10db8ac48371c63f1200e2390 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
 
 ---
+ open.c  | 5 +++--
  prctl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
+diff --git a/open.c b/open.c
+index 8ac6de83..6b94453f 100644
+--- a/open.c
++++ b/open.c
+@@ -72,8 +72,9 @@ sprint_open_modes(unsigned int flags)
+ 	}
+ 	*p = '\0';
+ 
+-	return sprintflags_ex(outstr, open_mode_flags, flags, sep,
+-			      XLAT_STYLE_ABBREV) ?: outstr;
++	str = sprintflags_ex(outstr, open_mode_flags, flags, sep,
++			     XLAT_STYLE_ABBREV);
++	return str ? str : outstr;
+ }
+ 
+ void
 diff --git a/prctl.c b/prctl.c
-index 814abc2a..9db14d55 100644
+index 2e918be8..67769ca9 100644
 --- a/prctl.c
 +++ b/prctl.c
 @@ -76,7 +76,7 @@ sprint_sve_val(kernel_ulong_t arg)
@@ -21,5 +38,5 @@ index 814abc2a..9db14d55 100644
  	return out;
  }
 -- 
-2.22.0
+2.25.0
 

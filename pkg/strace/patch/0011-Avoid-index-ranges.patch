@@ -1,0 +1,62 @@
+From bdcfe1c3c72cd0d31d6c6505287cb551738241e3 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 30 Jan 2020 22:32:50 -0800
+Subject: [PATCH] Avoid index ranges
+
+The change in print_mac.c is not functionally the same, but we
+ignore this for now.
+---
+ print_mac.c | 4 +---
+ util.c      | 8 ++++----
+ 2 files changed, 5 insertions(+), 7 deletions(-)
+
+diff --git a/print_mac.c b/print_mac.c
+index e851f307..435b1510 100644
+--- a/print_mac.c
++++ b/print_mac.c
+@@ -17,8 +17,6 @@
+ DIAG_PUSH_IGNORE_OVERRIDE_INIT
+ 
+ static uint8_t hwaddr_sizes[] = {
+-	[0 ... ARPHRD_IEEE802_TR] = 255,
+-
+ 	[ARPHRD_NETROM]     =  7 /* AX25_ADDR_LEN */,
+ 	[ARPHRD_ETHER]      =  6 /* ETH_ALEN */,
+ 	/* ARPHRD_EETHER - no actual devices in Linux */
+@@ -126,7 +124,7 @@ print_mac_addr(const char *prefix, const uint8_t addr[], size_t size)
+ const char *
+ sprint_hwaddr(const uint8_t hwaddr[], size_t size, uint32_t devtype)
+ {
+-	uint8_t sz = (devtype < ARRAY_SIZE(hwaddr_sizes))
++	uint8_t sz = (devtype < ARRAY_SIZE(hwaddr_sizes) && hwaddr_sizes[devtype])
+ 			? hwaddr_sizes[devtype] : 255;
+ 
+ 	return sprint_mac_addr(hwaddr, MIN(size, sz));
+diff --git a/util.c b/util.c
+index 55bce30a..23a1f5da 100644
+--- a/util.c
++++ b/util.c
+@@ -1105,16 +1105,16 @@ dumpstr(struct tcb *const tcp, const kernel_ulong_t addr,
+ 		? 1 + ilog2_klong(len - 1) / HEX_BIT : DUMPSTR_OFFS_MIN_CHARS;
+ 	kernel_ulong_t i = 0;
+ 	const unsigned char *src;
++	char outbuf[DUMPSTR_WIDTH_CHARS + 1];
++
++	memset(outbuf, ' ', DUMPSTR_WIDTH_CHARS);
++	outbuf[DUMPSTR_WIDTH_CHARS] = '\0';
+ 
+ 	while (i < len) {
+ 		/*
+ 		 * It is important to overwrite all the byte values, as we
+ 		 * re-use the buffer in order to avoid its re-initialisation.
+ 		 */
+-		static char outbuf[] = {
+-			[0 ... DUMPSTR_WIDTH_CHARS - 1] = ' ',
+-			'\0'
+-		};
+ 		char *dst = outbuf;
+ 
+ 		/* Fetching data from tracee.  */
+-- 
+2.25.0
+
