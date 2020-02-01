@@ -1,0 +1,29 @@
+From 3eda39fac98550990abb9f83d986619d173f9605 Mon Sep 17 00:00:00 2001
+From: Mark Adler <madler@alumni.caltech.edu>
+Date: Fri, 31 Jan 2020 22:05:56 -0800
+Subject: [PATCH] Fix bug in undefer_input() that misplaced the input state.
+
+    Fix bug in undefer_input() that misplaced the input state.
+---
+ fileio.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fileio.c b/fileio.c
+index c10ff63..6290824 100644
+--- a/fileio.c
++++ b/fileio.c
+@@ -532,8 +532,10 @@ void undefer_input(__G)
+          * This condition was checked when G.incnt_leftover was set > 0 in
+          * defer_leftover_input(), and it is NOT allowed to touch G.csize
+          * before calling undefer_input() when (G.incnt_leftover > 0)
+-         * (single exception: see read_byte()'s  "G.csize <= 0" handling) !!
++         * (single exception: see readbyte()'s  "G.csize <= 0" handling) !!
+          */
++        if (G.csize < 0L)
++            G.csize = 0L;
+         G.incnt = G.incnt_leftover + (int)G.csize;
+         G.inptr = G.inptr_leftover - (int)G.csize;
+         G.incnt_leftover = 0;
+-- 
+2.25.0
+
