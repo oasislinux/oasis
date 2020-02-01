@@ -1,7 +1,7 @@
 cflags{
 	'-Wall',
 	'-I $dir',
-	'-I pkg/openbsd/include',
+	'-I $basedir/pkg/openbsd/include',
 }
 
 lib('libcommon.a', [[
