@@ -163,7 +163,7 @@
 	ignore = all
 [submodule "pkg/mtdev/src"]
 	path = pkg/mtdev/src
-	url = https://github.com/rydberg/mtdev
+	url = http://bitmath.org/git/mtdev.git
 	ignore = all
 [submodule "pkg/mupdf/src"]
 	path = pkg/mupdf/src

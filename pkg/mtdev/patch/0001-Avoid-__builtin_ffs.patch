@@ -1,4 +1,4 @@
-From 365d628a9c944989cab0bfa6ae39d1df0ec5a905 Mon Sep 17 00:00:00 2001
+From 09e21bb5d6714687705dc8f2d00a09b3ff3b2436 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 7 Jun 2019 11:55:26 -0700
 Subject: [PATCH] Avoid __builtin_ffs
@@ -27,10 +27,10 @@ index 80a3d6e..3c77f48 100644
  /* robust system ioctl calls */
  #define SYSCALL(call) while (((call) == -1) && (errno == EINTR))
 diff --git a/src/core.c b/src/core.c
-index 87ef420..f5b6272 100644
+index 0d91c0b..20ce0c6 100644
 --- a/src/core.c
 +++ b/src/core.c
-@@ -298,7 +298,7 @@ static void apply_typeA_changes(struct mtdev_state *state,
+@@ -304,7 +304,7 @@ static void apply_typeA_changes(struct mtdev_state *state,
  			break;
  		}
  		if (id != MT_ID_NULL) {
@@ -40,5 +40,5 @@ index 87ef420..f5b6272 100644
  			SETBIT(used, slot);
  			CLEARBIT(unused, slot);
 -- 
-2.20.1
+2.25.0
 
