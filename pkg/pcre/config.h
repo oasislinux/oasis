@@ -63,7 +63,9 @@
 #define POSIX_MALLOC_THRESHOLD 10
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define STDC_HEADERS 1
+#ifdef __GNUC__
 #define SUPPORT_JIT /**/
+#endif
 /* #undef SUPPORT_LIBBZ2 */
 /* #undef SUPPORT_LIBEDIT */
 /* #undef SUPPORT_LIBREADLINE */
