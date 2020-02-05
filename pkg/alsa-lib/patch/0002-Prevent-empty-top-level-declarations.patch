@@ -1,4 +1,4 @@
-From 9f5659f63cc20ee045c7f1ff9c4422a2277ecebe Mon Sep 17 00:00:00 2001
+From 7960b0c2489d4e8de398a52bb4d0f7bfc6142eb6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 18:15:11 -0700
 Subject: [PATCH] Prevent empty top-level declarations
@@ -83,10 +83,10 @@ index bba9a9d4..26fde696 100644
  #endif
  
 diff --git a/src/conf.c b/src/conf.c
-index 558114ad..d6b8097e 100644
+index ffdbdd1a..3beeb58c 100644
 --- a/src/conf.c
 +++ b/src/conf.c
-@@ -3786,7 +3786,7 @@ int snd_config_hook_load(snd_config_t *root, snd_config_t *config, snd_config_t
+@@ -3868,7 +3868,7 @@ int snd_config_hook_load(snd_config_t *root, snd_config_t *config, snd_config_t
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -95,7 +95,7 @@ index 558114ad..d6b8097e 100644
  #endif
  
  #ifndef DOC_HIDDEN
-@@ -3854,7 +3854,7 @@ int snd_config_hook_load_for_all_cards(snd_config_t *root, snd_config_t *config,
+@@ -3936,7 +3936,7 @@ int snd_config_hook_load_for_all_cards(snd_config_t *root, snd_config_t *config,
  	return 0;
  }
  #ifndef DOC_HIDDEN
@@ -900,5 +900,5 @@ index dad228c8..7fc7cf4d 100644
 -SND_DLSYM_BUILD_VERSION(_snd_timer_query_hw_open, SND_TIMER_QUERY_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_timer_query_hw_open, SND_TIMER_QUERY_DLSYM_VERSION)
 -- 
-2.24.0
+2.25.0
 
