@@ -1,4 +1,4 @@
-cflags{'-std=c99', '-Wall', '-Wextra'}
+cflags{'-std=c99', '-Wall', '-Wextra', '-Wpedantic'}
 
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/src', {'monocypher.h'}),
