@@ -2,6 +2,7 @@ From 7668bc8b07dec7eeb8f2682e50ae5c740c25c704 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 30 Jan 2020 11:38:23 -0800
 Subject: [PATCH] Avoid pointer arithmetic with `void *`
+Upstream: https://github.com/plougher/squashfs-tools/pull/86
 
 `void *` is a pointer to an incomplete type, so cannot be used in
 pointer arithmetic.

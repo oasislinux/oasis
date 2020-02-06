@@ -2,6 +2,7 @@ From ecde6ced1a7d7649510c5428646e2a96477f6c6f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 23:17:47 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
+Upstream: https://github.com/NLnetLabs/nsd/pull/60
 
 The pointer operand to the binary `+` operator must be to a complete
 object type.

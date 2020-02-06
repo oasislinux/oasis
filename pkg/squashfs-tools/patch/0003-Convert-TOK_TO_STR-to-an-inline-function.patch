@@ -2,6 +2,7 @@ From 5bab68afaeaab209cde2ddb8767f0aa3f5b30e9f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 31 Jan 2020 17:59:06 -0800
 Subject: [PATCH] Convert TOK_TO_STR to an inline function
+Upstream: https://github.com/plougher/squashfs-tools/pull/86
 
 This avoids the use of statement expressions, which are a GNU C
 extension.

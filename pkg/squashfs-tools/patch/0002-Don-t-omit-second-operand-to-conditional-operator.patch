@@ -2,6 +2,7 @@ From 4f371cd8042d8b574a49d07c5bca1417e08d366c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 30 Jan 2020 11:40:49 -0800
 Subject: [PATCH] Don't omit second operand to conditional operator
+Upstream: https://github.com/plougher/squashfs-tools/pull/86
 
 This is a GNU C extension, and not valid in ISO C.
 ---
