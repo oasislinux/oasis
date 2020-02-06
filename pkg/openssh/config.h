@@ -122,6 +122,7 @@
 /* #undef HAVE_DECL_LOGINRESTRICTIONS */
 /* #undef HAVE_DECL_LOGINSUCCESS */
 #define HAVE_DECL_MAXSYMLINKS 1
+#define HAVE_DECL_MEMMEM 0
 #define HAVE_DECL_NFDBITS 1
 #define HAVE_DECL_OFFSETOF 1
 #define HAVE_DECL_O_NONBLOCK 1
@@ -177,7 +178,6 @@
 #define HAVE_EVP_MD_CTX_INIT 1
 #define HAVE_EVP_MD_CTX_NEW 1
 #define HAVE_EVP_PKEY_GET0_RSA 1
-#define HAVE_EVP_RIPEMD160 1
 #define HAVE_EVP_SHA256 1
 #define HAVE_EVP_SHA384 1
 #define HAVE_EVP_SHA512 1
@@ -630,6 +630,7 @@
 /* #undef SUPERUSER_PATH */
 /* #undef SYSLOG_R_SAFE_IN_SIGHAND */
 #define SYS_RDOMAIN_LINUX 1
+#define TIME_WITH_SYS_TIME 1
 /* #undef UNIXWARE_LONG_PASSWORDS */
 #define USER_PATH "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 /* #undef USE_AFS */
@@ -651,6 +652,7 @@
 /* #undef WITH_IRIX_PROJECT */
 #define WITH_OPENSSL 1
 /* #undef WITH_SELINUX */
+#define WITH_ZLIB 1
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

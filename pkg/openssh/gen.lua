@@ -27,10 +27,10 @@ lib('libopenbsd-compat.a', [[openbsd-compat/(
 	dirname.c explicit_bzero.c fmt_scaled.c freezero.c getcwd.c
 	getgrouplist.c getopt_long.c getrrsetbyname.c glob.c inet_aton.c
 	inet_ntoa.c inet_ntop.c md5.c memmem.c mktemp.c pwcache.c
-	readpassphrase.c reallocarray.c recallocarray.c rmd160.c rresvport.c
-	setenv.c setproctitle.c sha1.c sha2.c sigact.c strcasestr.c strlcat.c
-	strlcpy.c strmode.c strndup.c strnlen.c strptime.c strsep.c strtoll.c
-	strtonum.c strtoull.c strtoul.c timingsafe_bcmp.c vis.c
+	readpassphrase.c reallocarray.c recallocarray.c rresvport.c setenv.c
+	setproctitle.c sha1.c sha2.c sigact.c strcasestr.c strlcat.c strlcpy.c
+	strmode.c strndup.c strnlen.c strptime.c strsep.c strtoll.c strtonum.c
+	strtoull.c strtoul.c timingsafe_bcmp.c vis.c
 
 	arc4random.c bsd-asprintf.c bsd-closefrom.c bsd-cygwin_util.c bsd-err.c
 	bsd-flock.c bsd-getpagesize.c bsd-getpeereid.c bsd-malloc.c bsd-misc.c
@@ -75,12 +75,16 @@ lib('libssh.a', [[
 	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c
 	ssh-pkcs11.c smult_curve25519_ref.c
 	poly1305.c chacha.c cipher-chachapoly.c
-	ssh-ed25519.c ssh-sk.c sk-usbhid.c digest-openssl.c digest-libc.c
+	ssh-ed25519.c digest-openssl.c digest-libc.c
 	hmac.c sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c
 	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c
 	kexgexc.c kexgexs.c
 	sntrup4591761.c kexsntrup4591761x25519.c kexgen.c
 	sftp-realpath.c platform-pledge.c platform-tracing.c platform-misc.c
+	sshbuf-io.c
+
+	ssh-sk-client.c
+
 	libopenbsd-compat.a
 	$builddir/pkg/(libressl/libcrypto.a.d zlib/libz.a)
 	$builddir/pkg/(libfido2/libfido2.a.d)
@@ -127,7 +131,7 @@ file('bin/ssh-agent', '755', '$outdir/ssh-agent')
 exe('ssh-keygen', {'ssh-keygen.c', 'sshsig.c', 'libssh.a.d'})
 file('bin/ssh-keygen', '755', '$outdir/ssh-keygen')
 
-exe('ssh-sk-helper', {'ssh-sk-helper.c', 'libssh.a.d'})
+exe('ssh-sk-helper', {'ssh-sk-helper.c', 'ssh-sk.c', 'sk-usbhid.c', 'libssh.a.d'})
 file('libexec/ssh-sk-helper', '755', '$outdir/ssh-sk-helper')
 
 exe('sftp-server', {'sftp-common.c.o', 'sftp-server.c.o', 'sftp-server-main.c', 'libssh.a.d'})

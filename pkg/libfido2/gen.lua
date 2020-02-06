@@ -11,6 +11,7 @@ cflags{
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/src', {
 	'fido.h',
+	'fido/credman.h',
 	'fido/err.h',
 	'fido/param.h',
 })
