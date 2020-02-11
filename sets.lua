@@ -42,6 +42,7 @@ return {
 		'zstd',
 	},
 	devel={
+		'binutils',
 		'cproc',
 		'flex',
 		'make',

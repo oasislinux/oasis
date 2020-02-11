@@ -1,0 +1,10 @@
+/bfd.ninja
+/binutils-2.34.tar.xz
+/binutils.ninja
+/gas.ninja
+/ld.ninja
+/ld/ldemul-list.h
+/libctf.ninja
+/libiberty.ninja
+/opcodes.ninja
+/src
