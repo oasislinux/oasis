@@ -7,6 +7,7 @@ cflags{
 }
 
 sub('tools.ninja', function()
+	toolchain(config.host)
 	exe('strgen', {'gen/strgen.c'})
 	rule('strgen', [[$outdir/strgen $in $out $name $header '$label' '$define' $removetabs]])
 	build('strgen', '$outdir/bc_help.c', {'$srcdir/gen/bc_help.txt', '|', '$outdir/strgen'}, {
