@@ -15,6 +15,7 @@ cflags{
 
 pkg.deps = {
 	'pkg/zlib/headers',
+	'$outdir/bfd/bfd.h',
 }
 
 sub('libiberty.ninja', function()
@@ -82,7 +83,7 @@ sub('bfd.ninja', function()
 	cflags{
 		'-I $dir/bfd',
 		'-I $outdir/bfd',
-		'-I $srcdir/bfd', -- ?
+		'-I $srcdir/bfd',
 	}
 	build('sed', '$outdir/bfd/bfd.h', '$srcdir/bfd/bfd-in2.h', {expr={
 		'-e s,@supports_plugins@,0,',
@@ -148,7 +149,6 @@ sub('bfd.ninja', function()
 	end
 	local deps = {
 		'$gendir/deps',
-		'$outdir/bfd/bfd.h',
 		'$outdir/bfd/targmatch.h',
 		'$outdir/bfd/elf32-target.h',
 		'$outdir/bfd/elf64-target.h',
@@ -263,7 +263,6 @@ sub('gas.ninja', function()
 		'$outdir/gas/targ-cpu.h',
 		'$outdir/gas/targ-env.h',
 		'$outdir/gas/obj-format.h',
-		'$outdir/bfd/bfd.h',
 		'$outdir/bfd/bfdver.h',
 	}
 	-- src/gas/Makefile.am:/^GAS_CFILES
