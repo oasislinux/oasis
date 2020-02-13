@@ -47,6 +47,7 @@ return {
 		'flex',
 		'make',
 		'man-pages-posix',
+		'musl',
 		'nasm',
 		'qbe',
 		'strace',
