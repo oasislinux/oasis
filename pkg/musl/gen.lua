@@ -1,7 +1,8 @@
 local arch = 'x86_64'
 cflags{
-	'-D _XOPEN_SOURCE=700',
+	'-fPIC',
 	'-nostdinc',
+	'-D _XOPEN_SOURCE=700',
 	'-I $srcdir/arch/'..arch,
 	'-I $srcdir/arch/generic',
 	'-I $outdir',
@@ -29,6 +30,7 @@ pkg.hdrs = {
 	copy('$outdir/include/bits', '$srcdir/arch/generic/bits', bits),
 	'$outdir/include/bits/alltypes.h',
 	'$outdir/include/bits/syscall.h',
+	install=true,
 }
 pkg.deps = {
 	'$dir/headers',
@@ -56,17 +58,15 @@ for _, src in pairs(srcmap) do
 end
 
 lib('libc.a', srcs)
-build('cc', '$outdir/crt1.o', '$srcdir/crt/crt1.c')
-build('cc', '$outdir/crti.o', '$srcdir/crt/crti.c')
-build('cc', '$outdir/crtn.o', '$srcdir/crt/crtn.c')
-build('cc', '$outdir/rcrt1.o', '$srcdir/crt/rcrt1.c', {cflags='$cflags -fPIC'})
+file('lib/libc.a', '644', '$outdir/libc.a')
 
-phony('startfiles', {
-	'$outdir/libc.a',
-	'$outdir/crt1.o',
-	'$outdir/crti.o',
-	'$outdir/crtn.o',
-	'$outdir/rcrt1.o',
-})
+local startfiles = {'$outdir/libc.a'}
+for _, obj in ipairs{'crt1.o', 'crti.o', 'crtn.o', 'rcrt1.o'} do
+	local out = '$outdir/'..obj
+	build('cc', out, '$srcdir/crt/'..obj:gsub('%.o$', '.c'))
+	file('lib/'..obj, '644', out)
+	table.insert(startfiles, out)
+end
+phony('startfiles', startfiles)
 
 fetch 'git'
