@@ -68,6 +68,11 @@ file('lib/libc.so', '755', '$outdir/libc.so')
 sym('lib/ld-musl-'..arch..'.so.1', 'libc.so')
 sym('bin/ldd', '../lib/libc.so')
 
+for _, lib in ipairs{'libm.a', 'librt.a', 'libpthread.a', 'libcrypt.a', 'libutil.a', 'libxnet.a', 'libresolv.a', 'libdl.a'} do
+	ar(lib, {})
+	file('lib/'..lib, '644', '$outdir/'..lib)
+end
+
 local startfiles = {'$outdir/libc.a'}
 for _, obj in ipairs{'crt1.o', 'crti.o', 'crtn.o', 'rcrt1.o'} do
 	local out = '$outdir/'..obj
