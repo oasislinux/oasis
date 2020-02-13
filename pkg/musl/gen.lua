@@ -1,7 +1,25 @@
 local arch = config.target.platform:match('[^-]*')
-cflags{
-	'-fPIC',
+set('cflags_auto', {
+	'-fomit-frame-pointer',
+	'-fno-unwind-tables',
+	'-fno-asynchronous-unwind-tables',
+	'-ffunction-sections',
+	'-fdata-sections',
+})
+set('cflags_c99fse', {
+	'-std=c99',
 	'-nostdinc',
+	'-ffreestanding',
+	'-fexcess-precision=standard',
+	'-frounding-math',
+	'-Wa,--noexecstack',
+})
+set('cflags_nossp', '-fno-stack-protector')
+set('cflags_memops', '-fno-tree-loop-distribute-patterns')
+cflags{
+	'$cflags_auto',
+	'$cflags_c99fse',
+	'-fPIC',
 	'-D _XOPEN_SOURCE=700',
 	'-I $srcdir/arch/'..arch,
 	'-I $srcdir/arch/generic',
@@ -10,6 +28,16 @@ cflags{
 	'-I $srcdir/src/internal',
 	'-I $outdir/include',
 }
+set('ldflags', {
+	'$ldflags',
+	'-Wl,--sort-section,alignment',
+	'-Wl,--sort-common',
+	'-Wl,--gc-sections',
+	'-Wl,--hash-style=both',
+	'-Wl,--no-undefined',
+	'-Wl,--exclude-libs=ALL',
+	'-Wl,--dynamic-list=$srcdir/dynamic.list',
+})
 
 local basefiles = load('base.lua')
 local archfiles = load(arch..'.lua')
@@ -49,19 +77,31 @@ build('sed', '$outdir/include/bits/syscall.h', {'$srcdir/arch/'..arch..'/bits/sy
 
 build('awk', '$outdir/version.h', '$dir/ver', {expr=[['{printf "#define VERSION \"%s\"\n", $$1}']]})
 
-local srcmap, srcs = {}, {}
+local srcs, objs = {}, {}
 for src in iterstrings{basefiles.srcs, archfiles.srcs} do
-	srcmap[src:match('(.*)%.'):gsub('/'..arch..'/', '/', 1)] = src
+	srcs[src:match('(.*)%.'):gsub('/'..arch..'/', '/', 1)] = src
 end
-for _, src in pairs(srcmap) do
-	table.insert(srcs, src)
+local specialcflags = {
+	-- src/Makefile:/^MEMOPS_OBJS
+	-- src/Makefile:/^NOSSP_OBJS
+	__init_tls='$cflags $cflags_nossp',
+	__libc_start_main='$cflags $cflags_nossp',
+	__set_thread_area='$cflags $cflags_nossp',
+	__stack_chk_fail='$cflags $cflags_nossp',
+	memcpy='$cflags $cflags_memops $cflags_nossp',
+	memmove='$cflags $cflags_memops',
+	memset='$cflags $cflags_memops $cflags_nossp',
+	memcmp='$cflags $cflags_memops',
+}
+for _, src in pairs(srcs) do
+	table.insert(objs, cc(src, nil, {cflags=specialcflags[src:match('([^/]*)%.[^/.]*$')]}))
 end
-table.sort(srcs)
+table.sort(objs)
 
-local objs = objects(srcs)
 ar('libc.a', objs)
 file('lib/libc.a', '644', '$outdir/libc.a')
 exe('libc.so', {'ldso/dlstart.c', 'ldso/dynlink.c', objs}, nil, {
+	cflags='$cflags $cflags_nossp',
 	ldflags='$ldflags -nostdlib -shared -Wl,-e,_dlstart',
 	ldlibs='-lgcc',
 })
@@ -77,7 +117,7 @@ end
 local startfiles = {'$outdir/libc.a'}
 for _, obj in ipairs{'crt1.o', 'crti.o', 'crtn.o', 'rcrt1.o', 'Scrt1.o'} do
 	local out = '$outdir/'..obj
-	build('cc', out, '$srcdir/crt/'..obj:gsub('%.o$', '.c'))
+	build('cc', out, '$srcdir/crt/'..obj:gsub('%.o$', '.c'), {cflags='$cflags -D CRT $cflags_nossp'})
 	file('lib/'..obj, '644', out)
 	table.insert(startfiles, out)
 end
