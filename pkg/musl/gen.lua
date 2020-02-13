@@ -75,7 +75,7 @@ for _, lib in ipairs{'libm.a', 'librt.a', 'libpthread.a', 'libcrypt.a', 'libutil
 end
 
 local startfiles = {'$outdir/libc.a'}
-for _, obj in ipairs{'crt1.o', 'crti.o', 'crtn.o', 'rcrt1.o'} do
+for _, obj in ipairs{'crt1.o', 'crti.o', 'crtn.o', 'rcrt1.o', 'Scrt1.o'} do
 	local out = '$outdir/'..obj
 	build('cc', out, '$srcdir/crt/'..obj:gsub('%.o$', '.c'))
 	file('lib/'..obj, '644', out)
