@@ -1,4 +1,4 @@
-local arch = 'x86_64'
+local arch = config.target.platform:match('[^-]*')
 cflags{
 	'-fPIC',
 	'-nostdinc',
