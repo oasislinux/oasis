@@ -56,6 +56,7 @@ end
 for _, src in pairs(srcmap) do
 	table.insert(srcs, src)
 end
+table.sort(srcs)
 
 local objs = objects(srcs)
 ar('libc.a', objs)
