@@ -230,15 +230,18 @@ sub('binutils.ninja', function()
 	exe('bin/strip', [[binutils/(objcopy.c.o is-strip.c) libbu.a libbfd.a.d]])
 	exe('bin/nm', [[binutils/nm.c libbu.a libbfd.a.d]])
 	exe('bin/objdump', [[binutils/(objdump.c.o dwarf.c.o prdbg.c) libbu.a libbfd.a.d libopcodes.a libctf.a.d]])
-	exe('bin/ar', [[
+
+	local arobjs = objects[[
 		binutils/(
-			arparse.c arlex.c ar.c not-ranlib.c arsup.c binemul.c
+			arparse.c arlex.c ar.c arsup.c binemul.c
 			emul_vanilla.c
 		)
 		libbu.a libbfd.a.d
-	]])
+	]]
+	exe('bin/ar', {arobjs, 'binutils/not-ranlib.c'})
+	exe('bin/ranlib', {arobjs, 'binutils/is-ranlib.c'})
 
-	for _, tool in ipairs{'size', 'objcopy', 'strings', 'readelf', 'elfedit', 'strip', 'nm', 'objdump', 'ar'} do
+	for _, tool in ipairs{'size', 'objcopy', 'strings', 'readelf', 'elfedit', 'strip', 'nm', 'objdump', 'ar', 'ranlib'} do
 		file('bin/'..tool, '755', '$outdir/bin/'..tool)
 		sym(string.format('bin/%s-%s', config.target.platform, tool), tool)
 	end
