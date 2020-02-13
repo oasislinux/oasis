@@ -57,8 +57,16 @@ for _, src in pairs(srcmap) do
 	table.insert(srcs, src)
 end
 
-lib('libc.a', srcs)
+local objs = objects(srcs)
+ar('libc.a', objs)
 file('lib/libc.a', '644', '$outdir/libc.a')
+exe('libc.so', {'ldso/dlstart.c', 'ldso/dynlink.c', objs}, nil, {
+	ldflags='$ldflags -nostdlib -shared -Wl,-e,_dlstart',
+	ldlibs='-lgcc',
+})
+file('lib/libc.so', '755', '$outdir/libc.so')
+sym('lib/ld-musl-'..arch..'.so.1', 'libc.so')
+sym('bin/ldd', '../lib/libc.so')
 
 local startfiles = {'$outdir/libc.a'}
 for _, obj in ipairs{'crt1.o', 'crti.o', 'crtn.o', 'rcrt1.o'} do
