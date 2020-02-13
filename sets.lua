@@ -45,6 +45,7 @@ return {
 		'binutils',
 		'cproc',
 		'flex',
+		'linux-headers',
 		'make',
 		'man-pages-posix',
 		'musl',
