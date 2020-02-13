@@ -124,6 +124,7 @@ return {
 		'$outdir/comp_captab.c',
 		'ncurses/tinfo/comp_error.c',
 		'ncurses/tinfo/comp_hash.c',
+		'$outdir/comp_userdefs.c',
 		'ncurses/tinfo/db_iterator.c',
 		'ncurses/tinfo/doalloc.c',
 		'ncurses/tinfo/entries.c',

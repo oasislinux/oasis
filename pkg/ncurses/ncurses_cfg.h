@@ -1,8 +1,8 @@
 #ifndef NC_CONFIG_H
 #define NC_CONFIG_H
 #define PACKAGE "ncurses"
-#define NCURSES_VERSION "6.0"
-#define NCURSES_PATCHDATE 20180127
+#define NCURSES_VERSION "6.2"
+#define NCURSES_PATCHDATE 20200212
 #define SYSTEM_NAME "linux-musl"
 #if 0
 #include <stdlib.h>
@@ -41,6 +41,17 @@
 #define NEED_WCHAR_H 1
 #define HAVE_FSEEKO 1
 #define RGB_PATH "/usr/lib64/X11/rgb.txt"
+#define STDC_HEADERS 1
+#define HAVE_SYS_TYPES_H 1
+#define HAVE_SYS_STAT_H 1
+#define HAVE_STDLIB_H 1
+#define HAVE_STRING_H 1
+#define HAVE_MEMORY_H 1
+#define HAVE_STRINGS_H 1
+#define HAVE_INTTYPES_H 1
+#define HAVE_STDINT_H 1
+#define HAVE_UNISTD_H 1
+#define SIZEOF_SIGNED_CHAR 1
 #define NCURSES_EXT_FUNCS 1
 #define HAVE_ASSUME_DEFAULT_COLORS 1
 #define HAVE_CURSES_VERSION 1
@@ -61,17 +72,6 @@
 #define HAVE_RESET_COLOR_PAIRS 1
 #define NCURSES_EXT_PUTWIN 1
 #define NCURSES_NO_PADDING 1
-#define STDC_HEADERS 1
-#define HAVE_SYS_TYPES_H 1
-#define HAVE_SYS_STAT_H 1
-#define HAVE_STDLIB_H 1
-#define HAVE_STRING_H 1
-#define HAVE_MEMORY_H 1
-#define HAVE_STRINGS_H 1
-#define HAVE_INTTYPES_H 1
-#define HAVE_STDINT_H 1
-#define HAVE_UNISTD_H 1
-#define SIZEOF_SIGNED_CHAR 1
 #define USE_SIGWINCH 1
 #define NCURSES_WRAP_PREFIX "_nc_"
 #define USE_ASSUMED_COLOR 1
@@ -105,6 +105,11 @@
 #define HAVE_UNISTD_H 1
 #define HAVE_GETOPT_H 1
 #define HAVE_GETOPT_HEADER 1
+#define DECL_ENVIRON 1
+#define HAVE_ENVIRON 1
+#define HAVE_PUTENV 1
+#define HAVE_SETENV 1
+#define HAVE_STRDUP 1
 #define HAVE_SYS_TIME_SELECT 1
 #define SIG_ATOMIC_T volatile sig_atomic_t
 #define HAVE_GETCWD 1
@@ -112,6 +117,7 @@
 #define HAVE_GETEUID 1
 #define HAVE_GETOPT 1
 #define HAVE_ISSETUGID 1
+#define HAVE_LOCALECONV 1
 #define HAVE_POLL 1
 #define HAVE_PUTENV 1
 #define HAVE_REMOVE 1
@@ -123,8 +129,8 @@
 #define HAVE_SIGACTION 1
 #define HAVE_STRDUP 1
 #define HAVE_STRSTR 1
+#define HAVE_SYSCONF 1
 #define HAVE_TCGETPGRP 1
-#define HAVE_TDESTROY 1
 #define HAVE_TIMES 1
 #define HAVE_TSEARCH 1
 #define HAVE_VSNPRINTF 1
@@ -132,11 +138,11 @@
 #define HAVE_NANOSLEEP 1
 #define HAVE_TERMIOS_H 1
 #define HAVE_UNISTD_H 1
+#define HAVE_SYS_IOCTL_H 1
 #define HAVE_TCGETATTR 1
 #define HAVE_VSSCANF 1
 #define HAVE_UNISTD_H 1
 #define HAVE_MKSTEMP 1
-#define SETVBUF_REVERSED 1
 #define HAVE_SIZECHANGE 1
 #define HAVE_WORKING_POLL 1
 #define HAVE_VA_COPY 1
@@ -145,6 +151,7 @@
 #define HAVE_VFORK 1
 #define HAVE_WORKING_VFORK 1
 #define HAVE_WORKING_FORK 1
+#define USE_FOPEN_BIN_R 1
 #define USE_OPENPTY_HEADER <pty.h>
 #define USE_XTERM_PTY 1
 #define HAVE_TYPEINFO 1
@@ -160,7 +167,7 @@
 #define HAVE_FORM_H 1
 #define HAVE_LIBFORM 1
 #define NCURSES_PATHSEP ':'
-#define NCURSES_VERSION_STRING "6.1.20180127"
+#define NCURSES_VERSION_STRING "6.2.20200212"
 #define NCURSES_OSPEED_COMPAT 1
 #define HAVE_CURSES_DATA_BOOLNAMES 1
 #include <ncurses_def.h>
