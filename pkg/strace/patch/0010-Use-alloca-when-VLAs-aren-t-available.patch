@@ -1,4 +1,4 @@
-From 6d1a94be837a58a3151e6063537ad75a77541738 Mon Sep 17 00:00:00 2001
+From d611486eb337e97b15886059a1b55319bd02d3e1 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 30 Jan 2020 21:57:34 -0800
 Subject: [PATCH] Use alloca when VLAs aren't available
@@ -8,10 +8,10 @@ Subject: [PATCH] Use alloca when VLAs aren't available
  1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/evdev.c b/evdev.c
-index 72addff6..bc6257ad 100644
+index 573f18f4..27eb8a38 100644
 --- a/evdev.c
 +++ b/evdev.c
-@@ -237,9 +237,13 @@ decode_bitset(struct tcb *const tcp, const kernel_ulong_t arg,
+@@ -198,9 +198,13 @@ decode_bitset(struct tcb *const tcp, const kernel_ulong_t arg,
  		return RVAL_IOCTL_DECODED;
  	}
  
@@ -26,7 +26,7 @@ index 72addff6..bc6257ad 100644
  		return RVAL_IOCTL_DECODED;
  
  	if (xlat_verbose(xlat_verbosity) != XLAT_STYLE_RAW) {
-@@ -296,9 +300,13 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
+@@ -255,9 +259,13 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
  		return RVAL_IOCTL_DECODED;
  	}
  
@@ -41,7 +41,7 @@ index 72addff6..bc6257ad 100644
  		return RVAL_IOCTL_DECODED;
  
  	tprints("{code=");
-@@ -307,7 +315,7 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
+@@ -266,7 +274,7 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
  	tprints(", values=[");
  
  	unsigned int i;

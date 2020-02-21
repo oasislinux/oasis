@@ -1,4 +1,4 @@
-From 9683c1affbd5b5a59e995bbb130cbc7b63699231 Mon Sep 17 00:00:00 2001
+From 9d1dae59f853865a5c1f00e4b6eacbef0a8b2476 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/bpf.c b/bpf.c
-index 9b6fb488..92c38a16 100644
+index b42cf29d..5befe454 100644
 --- a/bpf.c
 +++ b/bpf.c
 @@ -43,7 +43,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -81,10 +81,10 @@ index 3cb54bb3..bc03dae8 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/strace.c b/strace.c
-index 86ca3c35..810f5f4e 100644
+index e8bbf0ed..8ef16338 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -2707,7 +2707,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -2837,7 +2837,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -160,10 +160,10 @@ index d55b395c..e41b6b1f 100644
  	const struct itimerval itv = { .it_value.tv_usec = 111111 };
  
 diff --git a/tests/restart_syscall.c b/tests/restart_syscall.c
-index e8f27f1d..5a6922bb 100644
+index a42d3b9b..3e48b1c1 100644
 --- a/tests/restart_syscall.c
 +++ b/tests/restart_syscall.c
-@@ -27,7 +27,7 @@ main(void)
+@@ -26,7 +26,7 @@ main(void)
  	 */
  	error_msg_and_skip("x32 is broken");
  #else
@@ -171,7 +171,7 @@ index e8f27f1d..5a6922bb 100644
 +	const sigset_t set = {0};
  	const struct sigaction act = { .sa_handler = SIG_IGN };
  	const struct itimerval itv = { .it_value.tv_usec = 111111 };
- 	struct timespec req = { .tv_nsec = 222222222 };
+ 	const struct timespec req = { .tv_nsec = 222222222 };
 diff --git a/tests/setrlimit.c b/tests/setrlimit.c
 index 886cf65a..89ed1077 100644
 --- a/tests/setrlimit.c
@@ -225,5 +225,5 @@ index 8c87b7c4..c37736b7 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.24.0
+2.25.0
 

@@ -1,13 +1,14 @@
-From 7ac1f99173c3a5c994bfe4c063d38da4a086002c Mon Sep 17 00:00:00 2001
+From 1e79756600fe0550411083a8315cfe78e52a65c7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
 
 ---
  netlink_smc_diag.c | 4 ++--
+ print_timespec.h   | 6 ++++--
  sockaddr.c         | 2 +-
  ucopy.c            | 6 +++---
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ 4 files changed, 10 insertions(+), 8 deletions(-)
 
 diff --git a/netlink_smc_diag.c b/netlink_smc_diag.c
 index 16815fde..09a748a8 100644
@@ -31,8 +32,34 @@ index 16815fde..09a748a8 100644
  			PRINT_FIELD_XVAL("", msg, diag_state,
  					 smc_states, "SMC_???");
  			PRINT_FIELD_XVAL(", ", msg, diag_fallback,
+diff --git a/print_timespec.h b/print_timespec.h
+index 0f0e296d..4449f857 100644
+--- a/print_timespec.h
++++ b/print_timespec.h
+@@ -67,6 +67,8 @@ bool
+ PRINT_TIMESPEC_ARRAY_DATA_SIZE(const void *arg, const unsigned int nmemb,
+ 			       const size_t size)
+ {
++	const char *ts = arg;
++
+ 	if (nmemb > size / sizeof(TIMESPEC_T)) {
+ 		tprints("?");
+ 		return false;
+@@ -74,10 +76,10 @@ PRINT_TIMESPEC_ARRAY_DATA_SIZE(const void *arg, const unsigned int nmemb,
+ 
+ 	tprints("[");
+ 
+-	for (unsigned int i = 0; i < nmemb; i++, arg += sizeof(TIMESPEC_T)) {
++	for (unsigned int i = 0; i < nmemb; i++, ts += sizeof(TIMESPEC_T)) {
+ 		if (i)
+ 			tprints(", ");
+-		print_unaligned_timespec_t(arg);
++		print_unaligned_timespec_t(ts);
+ 	}
+ 
+ 	tprints("]");
 diff --git a/sockaddr.c b/sockaddr.c
-index c67d60e9..0e6360f0 100644
+index b6b9aa7d..948fa517 100644
 --- a/sockaddr.c
 +++ b/sockaddr.c
 @@ -475,7 +475,7 @@ print_sockaddr_data_ll(const void *const buf, const int addrlen)
@@ -71,5 +98,5 @@ index 21f55e28..cee9f2e0 100644
  		len -= m;
  	}
 -- 
-2.23.0
+2.25.1
 
