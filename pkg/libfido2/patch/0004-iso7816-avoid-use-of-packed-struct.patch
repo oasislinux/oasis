@@ -1,4 +1,4 @@
-From b688eb258efa9c07c1deb807ed441bd04cb4e30a Mon Sep 17 00:00:00 2001
+From 690f731a76b027e1bd4009620524e4c4810b3a28 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 26 Nov 2019 18:58:05 -0800
 Subject: [PATCH] iso7816: avoid use of packed struct
@@ -9,7 +9,7 @@ Subject: [PATCH] iso7816: avoid use of packed struct
  2 files changed, 33 insertions(+), 39 deletions(-)
 
 diff --git a/src/iso7816.c b/src/iso7816.c
-index e2ea281..3453df0 100644
+index a3fd280..dac5733 100644
 --- a/src/iso7816.c
 +++ b/src/iso7816.c
 @@ -7,24 +7,40 @@
@@ -40,8 +40,8 @@ index e2ea281..3453df0 100644
 -	size_t		 alloc_len;
 +	size_t		 max_len;
  
--	alloc_len = sizeof(iso7816_apdu_t) + payload_len;
-+	max_len = DATA + payload_len;
+-	alloc_len = sizeof(iso7816_apdu_t) + payload_len + 2; /* le1 le2 */
++	max_len = DATA + payload_len + 2; /* le1 le2 */;
  
 -	if ((apdu = calloc(1, alloc_len)) == NULL)
 +	if ((apdu = calloc(1, sizeof(*apdu) + max_len)) == NULL)
@@ -137,5 +137,5 @@ index 426cd97..fecfecc 100644
  const unsigned char *iso7816_ptr(const iso7816_apdu_t *);
  int iso7816_add(iso7816_apdu_t *, const void *, size_t);
 -- 
-2.24.0
+2.25.1
 

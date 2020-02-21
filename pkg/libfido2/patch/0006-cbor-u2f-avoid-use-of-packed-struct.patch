@@ -1,10 +1,8 @@
-From d95bfdbcaadd92fbe04df8b3134be1886377e7a2 Mon Sep 17 00:00:00 2001
+From fa78eaaf9629f94fbe26bc9cc1ad49d3a4afb6c8 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 26 Nov 2019 19:30:10 -0800
 Subject: [PATCH] cbor, u2f: avoid use of packed struct
 
-This also fixes a bug on big-endian systems where the credential
-ID length is placed in the wrong byte.
 ---
  src/cbor.c  | 14 +++++++++--
  src/types.h | 14 ++---------
@@ -80,7 +78,7 @@ index af72710..af1874a 100644
  typedef struct fido_attcred {
  	unsigned char aaguid[16]; /* credential's aaguid */
 diff --git a/src/u2f.c b/src/u2f.c
-index 22c6ac9..6db32c5 100644
+index 1512986..6db32c5 100644
 --- a/src/u2f.c
 +++ b/src/u2f.c
 @@ -15,6 +15,29 @@
@@ -193,12 +191,12 @@ index 22c6ac9..6db32c5 100644
 +	    CTAP_AUTHDATA_USER_PRESENT);
  
 -	memset(&attcred_raw.aaguid, 0, sizeof(attcred_raw.aaguid));
--	attcred_raw.id_len = (uint16_t)(kh_len << 8); /* XXX */
+-	attcred_raw.id_len = htobe16(kh_len);
 +	/* big-endian, so second byte is LSB */
 +	attcred_raw[ATTCRED_CREDENTIAL_ID_LENGTH + 1] = kh_len;
  
  	len = authdata_blob.len = sizeof(authdata) + sizeof(attcred_raw) +
  	    kh_len + pk_blob.len;
 -- 
-2.24.0
+2.25.1
 
