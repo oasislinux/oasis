@@ -22,3 +22,7 @@ xzcat "$archive" | ${PAXREAD:-pax -r} -s ',^[^/]*,src,' \
 	'linux-*/arch/*/syscalls' \
 	'linux-*/include/uapi' \
 	'linux-*/scripts/unifdef.c'
+
+if [ -d patch ] ; then
+	git apply -v --whitespace=nowarn --directory "$dir/src" patch/*
+fi

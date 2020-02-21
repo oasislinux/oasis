@@ -1,0 +1,32 @@
+From 0043f6d3073da1b4adc0cdfd9bf1768a58034353 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 17 Jun 2019 20:11:17 -0700
+Subject: [PATCH] Only use inline asm in headers on GNU-compatible compilers
+
+---
+ arch/x86/include/uapi/asm/swab.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/x86/include/uapi/asm/swab.h b/arch/x86/include/uapi/asm/swab.h
+index cd3fd8ddbe9a..2074e5d7d94d 100644
+--- a/arch/x86/include/uapi/asm/swab.h
++++ b/arch/x86/include/uapi/asm/swab.h
+@@ -5,6 +5,8 @@
+ #include <linux/types.h>
+ #include <linux/compiler.h>
+ 
++#ifdef __GNUC__
++
+ static inline __attribute_const__ __u32 __arch_swab32(__u32 val)
+ {
+ 	asm("bswapl %0" : "=r" (val) : "0" (val));
+@@ -34,4 +36,6 @@ static inline __attribute_const__ __u64 __arch_swab64(__u64 val)
+ }
+ #define __arch_swab64 __arch_swab64
+ 
++#endif /* __GNUC__ */
++
+ #endif /* _ASM_X86_SWAB_H */
+-- 
+2.25.0
+
