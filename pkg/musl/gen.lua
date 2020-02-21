@@ -61,7 +61,7 @@ pkg.hdrs = {
 	install=true,
 }
 pkg.deps = {
-	'$dir/headers',
+	'$gendir/headers',
 	'$outdir/version.h',
 }
 
@@ -117,7 +117,7 @@ end
 local startfiles = {'$outdir/libc.a'}
 for _, obj in ipairs{'crt1.o', 'crti.o', 'crtn.o', 'rcrt1.o', 'Scrt1.o'} do
 	local out = '$outdir/'..obj
-	build('cc', out, '$srcdir/crt/'..obj:gsub('%.o$', '.c'), {cflags='$cflags -D CRT $cflags_nossp'})
+	build('cc', out, {'$srcdir/crt/'..obj:gsub('%.o$', '.c'), '|', '$gendir/deps'}, {cflags='$cflags -D CRT $cflags_nossp'})
 	file('lib/'..obj, '644', out)
 	table.insert(startfiles, out)
 end
