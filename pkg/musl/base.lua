@@ -1514,6 +1514,7 @@ return {
 	},
 	bits={
 		-- <cd src/arch/generic/bits && printf "\t\t'%s',\n" *.h
+		'dirent.h',
 		'errno.h',
 		'fcntl.h',
 		'fenv.h',
@@ -1524,6 +1525,7 @@ return {
 		'ipc.h',
 		'ipcstat.h',
 		'kd.h',
+		'limits.h',
 		'link.h',
 		'mman.h',
 		'msg.h',

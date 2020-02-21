@@ -49,7 +49,6 @@ return {
 	},
 	bits={
 		-- <cd src/arch/x86_64/bits && printf "\t\t'%s',\n" *.h
-		'endian.h',
 		'fcntl.h',
 		'fenv.h',
 		'float.h',
@@ -62,7 +61,6 @@ return {
 		'sem.h',
 		'setjmp.h',
 		'signal.h',
-		'socket.h',
 		'stat.h',
 		'stdint.h',
 		'user.h',

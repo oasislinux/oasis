@@ -170,7 +170,6 @@
 [submodule "pkg/musl/src"]
 	path = pkg/musl/src
 	url = git://git.musl-libc.org/musl
-	ignore = all
 [submodule "pkg/ncompress/src"]
 	path = pkg/ncompress/src
 	url = https://github.com/vapier/ncompress.git
@@ -315,3 +314,6 @@
 	path = pkg/zstd/src
 	url = https://github.com/facebook/zstd
 	ignore = all
+[submodule "pkg/gpsd/src"]
+	path = pkg/gpsd/src
+	url = https://gitlab.com/gpsd/gpsd.git
