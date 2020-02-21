@@ -9,7 +9,6 @@
 [submodule "pkg/awk/src"]
 	path = pkg/awk/src
 	url = https://github.com/onetrueawk/awk
-	ignore = all
 [submodule "pkg/bc/src"]
 	path = pkg/bc/src
 	url = https://github.com/gavinhoward/bc
