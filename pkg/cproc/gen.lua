@@ -1,6 +1,5 @@
 cflags{
-	'-std=c11', '-pedantic',
-	'-Wall', '-Wno-switch', '-Wno-parentheses',
+	'-std=c11', '-Wall', '-Wpedantic', '-Wno-switch', '-Wno-parentheses',
 	'-I $dir',
 }
 

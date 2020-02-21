@@ -1,6 +1,5 @@
 cflags{
-	'-std=c99', '-pedantic',
-	'-Wall', '-Wno-maybe-uninitialized',
+	'-std=c99', '-Wall', '-Wpedantic', '-Wno-maybe-uninitialized',
 	'-D _DEFAULT_SOURCE',
 	'-D _BSD_SOURCE',
 	'-D _XOPEN_SOURCE=700',

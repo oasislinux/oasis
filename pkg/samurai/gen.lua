@@ -1,4 +1,4 @@
-cflags{'-Wall', '-Wextra', '-std=c99', '-pedantic'}
+cflags{'-std=c99', '-Wall', '-Wextra', '-Wpedantic'}
 
 exe('samu', {
 	'build.c',

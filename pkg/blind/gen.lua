@@ -1,5 +1,5 @@
 cflags{
-	'-std=c99', '-Wall', '-pedantic',
+	'-std=c99', '-Wall', '-Wpedantic',
 	'-D _DEFAULT_SOURCE',
 	'-D HAVE_PRCTL',
 	'-D HAVE_EPOLL',

@@ -1,5 +1,5 @@
 cflags{
-	'-std=c99', '-pedantic', '-Wall', '-Wextra',
+	'-std=c99', '-Wpedantic', '-Wall', '-Wextra',
 	'-D _DEFAULT_SOURCE',
 	'-I $builddir/pkg/libjpeg-turbo/include',
 	'-I $builddir/pkg/libpng/include',

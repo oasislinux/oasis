@@ -1,5 +1,5 @@
 cflags{
-	'-Wall', '-Wextra', '-std=c99', '-pedantic',
+	'-std=c99', '-Wall', '-Wextra', '-Wpedantic',
 	'-I $dir',
 }
 

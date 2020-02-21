@@ -1,5 +1,5 @@
 cflags{
-	'-Wall', '-Wextra', '-pedantic', '-std=c99',
+	'-std=c99', '-Wall', '-Wextra', '-Wpedantic',
 	'-D _BSD_SOURCE',
 }
 

@@ -1,5 +1,5 @@
 cflags{
-	'-Wall', '-Wextra', '-pedantic',
+	'-Wall', '-Wextra', '-Wpedantic',
 	'-D ZSTD_LEGACY_SUPPORT=0',
 	'-D ZSTD_MULTITHREAD',
 	'-D XXH_NAMESPACE=ZSTD_',

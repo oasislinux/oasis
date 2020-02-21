@@ -1,5 +1,5 @@
 cflags{
-	'-Wall', '-pedantic',
+	'-Wall', '-Wpedantic',
 	'-D HAVE_ENDIAN_H',
 	'-I $outdir/include',
 }

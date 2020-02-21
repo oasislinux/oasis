@@ -1,5 +1,5 @@
 cflags{
-	'-pedantic',
+	'-Wpedantic',
 	'-D PREFIX=',
 }
 

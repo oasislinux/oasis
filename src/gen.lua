@@ -1,7 +1,6 @@
 set('srcdir', '$dir')
 cflags{
-	'-Wall', '-Wextra', '-Wno-unused-parameter', '-pedantic',
-	'-std=c11',
+	'-std=c11', '-Wall', '-Wextra', '-Wpedantic', '-Wno-unused-parameter',
 }
 
 cc('devd.c', 'pkg/linux-headers/headers', {cflags='$cflags -I $builddir/pkg/linux-headers/include'})

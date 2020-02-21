@@ -1,6 +1,5 @@
 cflags{
-	'-std=c99', '-pedantic',
-	'-Wall', '-Wno-maybe-uninitialized', '-Wno-overflow',
+	'-std=c99', '-Wall', '-Wpedantic', '-Wno-maybe-uninitialized', '-Wno-overflow',
 	'-D _GNU_SOURCE',
 	'-D _XOPEN_SOURCE=700',
 	'-I $dir',
