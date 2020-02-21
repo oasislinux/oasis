@@ -5,6 +5,7 @@ cflags{
 	'-I $basedir/pkg/fontconfig/src',
 	'-I $basedir/pkg/freetype/src/include',
 	'-I $builddir/pkg/libdrm/include',
+	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/wayland/include',
 }
@@ -58,6 +59,7 @@ pkg.deps = {
 	'pkg/fontconfig/fetch',
 	'pkg/freetype/fetch',
 	'pkg/libdrm/headers',
+	'pkg/linux-headers/headers',
 	'pkg/pixman/headers',
 	'pkg/wayland/headers',
 }

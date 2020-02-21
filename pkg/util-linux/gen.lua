@@ -4,6 +4,7 @@ cflags{
 	'-I $outdir',
 	'-I $srcdir/include',
 	'-I $srcdir/libuuid/src',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
 build('cat', '$outdir/config.h', {
@@ -28,6 +29,7 @@ pkg.deps = {
 	'$outdir/config.h',
 	'$outdir/libsmartcols.h',
 	'$outdir/libfdisk.h',
+	'pkg/linux-headers/headers',
 }
 
 lib('libcommon.a', [[

@@ -7,11 +7,13 @@ cflags{
 	[[-D 'CONFIG_VERSION="2019-02-10"']],
 	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/curl/include',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {
 	'pkg/bearssl/headers',
 	'pkg/curl/headers',
+	'pkg/linux-headers/headers',
 }
 
 build('cc', '$outdir/riscv_cpu32.o', '$srcdir/riscv_cpu.c', {cflags='$cflags -DMAX_XLEN=32'})

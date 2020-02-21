@@ -10,6 +10,7 @@ cflags{
 	'-I $srcdir/lib',
 	'-I $srcdir/src',
 	'-I $builddir/pkg/bearssl/include',
+	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/zlib/include',
 }
 
@@ -35,6 +36,7 @@ pkg.deps = {
 	'$outdir/curl_config.h',
 	'$gendir/headers',
 	'pkg/bearssl/headers',
+	'pkg/linux-headers/headers',
 	'pkg/zlib/headers',
 }
 

@@ -3,6 +3,11 @@ cflags{
 	'-include $dir/config.h',
 	'-I $dir',
 	'-I $srcdir/src/blkdev',
+	'-I $builddir/pkg/linux-headers/include',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 exe('mkfs.fat', [[src/(mkfs.fat.c device_info.c blkdev/(blkdev.c linux_version.c))]])

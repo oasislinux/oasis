@@ -11,6 +11,7 @@ cflags{
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/include/drm',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
 pkg.hdrs = {
@@ -24,6 +25,10 @@ pkg.hdrs = {
 		'i915_drm.h',
 		'amdgpu_drm.h',
 	}),
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 lib('libdrm.a', {

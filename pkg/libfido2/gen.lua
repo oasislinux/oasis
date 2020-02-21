@@ -5,6 +5,7 @@ cflags{
 	'-D _FIDO_INTERNAL',
 	'-I $builddir/pkg/libcbor/include',
 	'-I $builddir/pkg/libressl/include',
+	'-I $builddir/pkg/linux-headers/include',
 	'-I $srcdir/src',
 	'-I $basedir/pkg/openbsd/include',
 }
@@ -19,6 +20,7 @@ pkg.deps = {
 	'$outdir/config.h',
 	'pkg/libcbor/headers',
 	'pkg/libressl/headers',
+	'pkg/linux-headers/headers',
 }
 
 build('cat', '$outdir/config.h', {

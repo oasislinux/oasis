@@ -1,4 +1,11 @@
-cflags{'-I $srcdir/include'}
+cflags{
+	'-I $srcdir/include',
+	'-I $builddir/pkg/linux-headers/include',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
+}
 
 lib('libmtdev.a', {
 	'src/caps.c',

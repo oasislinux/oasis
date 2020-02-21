@@ -5,6 +5,11 @@ cflags{
 	'-I $srcdir/linux',
 	'-I $srcdir',
 	'-I $outdir',
+	'-I $builddir/pkg/linux-headers/include',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 build('cat', '$outdir/config.h', {

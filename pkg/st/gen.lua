@@ -3,6 +3,7 @@ cflags{
 	'-I $dir',
 	'-I $basedir/pkg/fontconfig/src',
 	'-I $basedir/pkg/libxkbcommon/src',
+	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/wayland/include',
 	'-I $builddir/pkg/wayland-protocols/include',
@@ -12,6 +13,7 @@ cflags{
 pkg.deps = {
 	'pkg/fontconfig/fetch',
 	'pkg/libxkbcommon/fetch',
+	'pkg/linux-headers/headers',
 	'pkg/pixman/headers',
 	'pkg/wayland/headers',
 	'pkg/wayland-protocols/headers',

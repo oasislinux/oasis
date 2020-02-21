@@ -8,6 +8,7 @@ cflags{
 	'-include $dir/compat.h',
 	'-I $outdir/include',
 	'-I $srcdir/src/include',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
 sub('tools.ninja', function()
@@ -40,7 +41,10 @@ pkg.hdrs = {
 	}),
 	'$outdir/include/efivar/efivar-guids.h',
 }
-pkg.deps = {'$outdir/include/efivar/efivar-guids.h'}
+pkg.deps = {
+	'$outdir/include/efivar/efivar-guids.h',
+	'pkg/linux-headers/headers',
+}
 
 lib('libefiboot.a', [[
 	src/(

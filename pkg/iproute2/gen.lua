@@ -6,6 +6,11 @@ cflags{
 	'-I $srcdir/include',
 	'-I $srcdir/include/uapi',
 	'-I $srcdir/misc',
+	'-I $builddir/pkg/linux-headers/include',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 lib('libnetlink.a', [[lib/(

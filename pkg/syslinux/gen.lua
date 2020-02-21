@@ -7,6 +7,12 @@ cflags{
 	-- BSD pax/tar transforms symlink targets as well as filenames,
 	-- trashing the libinstaller/advconst.h symlink.
 	'-I $srcdir/com32/include/syslinux',
+
+	'-I $builddir/pkg/linux-headers/include',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 build('awk', '$outdir/version.h', {'$srcdir/version', '|', '$dir/version.awk'}, {

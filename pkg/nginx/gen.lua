@@ -3,9 +3,10 @@ cflags{
 	'-I $srcdir/src/core',
 	'-I $srcdir/src/event',
 	'-I $srcdir/src/os/unix',
+	'-I $builddir/pkg/linux-headers/include',
 }
 local libs = {}
-pkg.deps = {}
+pkg.deps = {'pkg/linux-headers/headers'}
 
 local modules = {}
 for line in iterlines('modules.txt') do

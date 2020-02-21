@@ -16,6 +16,7 @@ cflags{
 	'-I $srcdir',
 	'-I $basedir/pkg/ffmpeg/src',
 	'-I $builddir/pkg/ffmpeg/include',
+	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/zlib/include',
 }
 local libs = {
@@ -31,6 +32,7 @@ local libs = {
 pkg.deps = {
 	'$outdir/version.h',
 	'pkg/ffmpeg/headers',
+	'pkg/linux-headers/headers',
 	'pkg/zlib/headers',
 }
 

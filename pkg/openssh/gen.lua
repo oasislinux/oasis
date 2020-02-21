@@ -12,6 +12,7 @@ cflags{
 	'-I $basedir/pkg/openbsd/include',
 	'-I $builddir/pkg/libfido2/include',
 	'-I $builddir/pkg/libressl/include',
+	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/zlib/include',
 	'-idirafter $srcdir/openbsd-compat',
 }
@@ -19,6 +20,7 @@ cflags{
 pkg.deps = {
 	'pkg/libfido2/headers',
 	'pkg/libressl/headers',
+	'pkg/linux-headers/headers',
 	'pkg/zlib/headers',
 }
 

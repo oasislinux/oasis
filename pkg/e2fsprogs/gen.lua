@@ -6,6 +6,7 @@ cflags{
 	'-I $outdir/internal',
 	'-I $outdir/internal/support',
 	'-I $srcdir/lib',
+	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/util-linux/include',
 }
 
@@ -75,6 +76,7 @@ pkg.deps = {
 	'$outdir/internal/blkid/blkid_types.h',
 	'$outdir/internal/support/prof_err.h',
 	'$outdir/internal/crc32c_table.h',
+	'pkg/linux-headers/headers',
 	'pkg/util-linux/headers',
 }
 

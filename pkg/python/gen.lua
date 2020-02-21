@@ -3,9 +3,10 @@ cflags{
 	'-I $dir',
 	'-I $srcdir/Include',
 	'-I $srcdir/Include/internal',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
-pkg.deps = {}
+pkg.deps = {'pkg/linux-headers/headers'}
 local libs = {}
 local modules = load 'modules.lua'
 

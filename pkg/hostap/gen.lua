@@ -4,11 +4,13 @@ cflags{
 	'-I $srcdir/src',
 	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/libnl/include',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {
 	'pkg/bearssl/headers',
 	'pkg/libnl/headers',
+	'pkg/linux-headers/headers',
 }
 
 lib('libcommon.a', 'src/utils/(common.c eloop.c os_unix.c wpabuf.c wpa_debug.c)')

@@ -2,10 +2,15 @@ cflags{
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir/include',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
 pkg.hdrs = copy('$outdir/include/libevdev', '$srcdir/libevdev', {'libevdev.h'})
 pkg.hdrs.install = true
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
+}
 
 build('awk', '$outdir/event-names.h', {
 	'$srcdir/include/linux/input.h',

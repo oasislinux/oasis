@@ -3,6 +3,7 @@ cflags{
 	'-I $dir',
 	'-I $dir/alsa',
 	'-I $srcdir/include',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
 build('cat', '$outdir/config.h', {
@@ -36,7 +37,10 @@ pkg.hdrs = {
 	}),
 	copy('$outdir/include/alsa', '$dir/alsa', {'asoundlib.h', 'version.h'}),
 }
-pkg.deps = {'$outdir/config.h'}
+pkg.deps = {
+	'$outdir/config.h',
+	'pkg/linux-headers/headers',
+}
 
 cc('src/pcm/pcm.c')
 build('objcopy', '$outdir/src/pcm/pcm.nowarn.c.o', '$outdir/src/pcm/pcm.c.o', {

@@ -5,6 +5,7 @@ cflags{
 	'-I $outdir/include',
 	'-I $srcdir/include',
 	'-I $srcdir/include/linux-private',
+	'-I $builddir/pkg/linux-headers/include',
 }
 
 build('sed', '$outdir/include/netlink/version.h', '$srcdir/include/netlink/version.h.in', {
@@ -49,11 +50,16 @@ pkg.hdrs = {
 	'$outdir/include/netlink/version.h',
 }
 
+pkg.deps = {
+	'$gendir/headers',
+	'pkg/linux-headers/headers',
+}
+
 lib('libnl-3.a', [[lib/(
 	addr.c attr.c cache.c cache_mngr.c cache_mngt.c data.c
 	error.c handlers.c msg.c nl.c object.c socket.c utils.c
 	version.c hash.c hashtable.c mpls.c
-)]], {'$gendir/headers'})
+)]])
 
 lib('libnl-genl-3.a', 'lib/genl/(ctrl.c family.c genl.c mngt.c)', {'$gendir/headers'})
 
