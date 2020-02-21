@@ -14,9 +14,10 @@
 /* #undef HAVE_DCGETTEXT */
 /* #undef HAVE_FORM_H */
 /* #undef HAVE_GETTEXT */
-#define HAVE_ICONV 1
+/* #undef HAVE_ICONV */
 /* #undef HAVE_INTTYPES_H */
 #define HAVE_LIBASOUND 1
+/* #undef HAVE_LIBATOPOLOGY */
 /* #undef HAVE_LIBFFTW3F */
 #define HAVE_LIBM 1
 #define HAVE_LIBPTHREAD 1
@@ -38,14 +39,14 @@
 #define PACKAGE "alsa-utils"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "alsa-utils"
-#define PACKAGE_STRING "alsa-utils 1.2.1"
+#define PACKAGE_STRING "alsa-utils 1.2.2"
 #define PACKAGE_TARNAME "alsa-utils"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.2.1"
+#define PACKAGE_VERSION "1.2.2"
 #define SOUNDSDIR "/share/sounds/alsa"
 #define STDC_HEADERS 1
 #define TIME_WITH_SYS_TIME 1
-#define VERSION "1.2.1"
+#define VERSION "1.2.2"
 /* #undef WITH_FFADO */
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
