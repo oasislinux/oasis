@@ -300,7 +300,6 @@ youtube_dl/extractor/jamendo.py
 youtube_dl/extractor/jeuxvideo.py
 youtube_dl/extractor/joj.py
 youtube_dl/extractor/jove.py
-youtube_dl/extractor/jpopsukitv.py
 youtube_dl/extractor/jwplatform.py
 youtube_dl/extractor/kakao.py
 youtube_dl/extractor/kaltura.py
@@ -477,6 +476,7 @@ youtube_dl/extractor/pluralsight.py
 youtube_dl/extractor/podomatic.py
 youtube_dl/extractor/pokemon.py
 youtube_dl/extractor/polskieradio.py
+youtube_dl/extractor/popcorntimes.py
 youtube_dl/extractor/popcorntv.py
 youtube_dl/extractor/porn91.py
 youtube_dl/extractor/porncom.py

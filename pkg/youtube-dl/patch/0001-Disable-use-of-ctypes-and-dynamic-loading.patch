@@ -1,4 +1,4 @@
-From 1fad1a21da2bcfe36218aa3c1edccf58334dcb2f Mon Sep 17 00:00:00 2001
+From 79ea93edab9702a91618287500f683f271be8200 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -9,7 +9,7 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  2 files changed, 11 insertions(+), 190 deletions(-)
 
 diff --git a/youtube_dl/compat.py b/youtube_dl/compat.py
-index c75ab131b..5af6cdd36 100644
+index d1b86bd13..46c935797 100644
 --- a/youtube_dl/compat.py
 +++ b/youtube_dl/compat.py
 @@ -4,7 +4,6 @@ from __future__ import unicode_literals
@@ -20,7 +20,7 @@ index c75ab131b..5af6cdd36 100644
  import email
  import getpass
  import io
-@@ -2949,24 +2948,6 @@ else:
+@@ -2960,24 +2959,6 @@ else:
      compat_b64decode = base64.b64decode
  
  
@@ -45,7 +45,7 @@ index c75ab131b..5af6cdd36 100644
  __all__ = [
      'compat_HTMLParseError',
      'compat_HTMLParser',
-@@ -2977,7 +2958,6 @@ __all__ = [
+@@ -2988,7 +2969,6 @@ __all__ = [
      'compat_chr',
      'compat_cookiejar',
      'compat_cookies',
