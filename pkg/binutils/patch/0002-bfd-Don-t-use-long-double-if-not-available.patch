@@ -1,0 +1,48 @@
+From 7ae72f3ab19b802de9cc290d2f8aa0cb8bead54b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 19 May 2019 13:48:45 -0700
+Subject: [PATCH] bfd: Don't use long double if not available
+
+---
+ bfd/bfd.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/bfd/bfd.c b/bfd/bfd.c
+index b1050626b6..b3d0b67fac 100644
+--- a/bfd/bfd.c
++++ b/bfd/bfd.c
+@@ -854,7 +854,9 @@ union _bfd_doprnt_args
+   long l;
+   long long ll;
+   double d;
++#if defined (__GNUC__) || defined (HAVE_LONG_DOUBLE)
+   long double ld;
++#endif
+   void *p;
+   enum
+   {
+@@ -863,7 +865,9 @@ union _bfd_doprnt_args
+     Long,
+     LongLong,
+     Double,
++#if defined (__GNUC__) || defined (HAVE_LONG_DOUBLE)
+     LongDouble,
++#endif
+     Ptr
+   } type;
+ };
+@@ -1339,9 +1343,11 @@ error_handler_internal (const char *fmt, va_list ap)
+ 	case Double:
+ 	  args[i].d = va_arg (ap, double);
+ 	  break;
++#if defined (__GNUC__) || defined (HAVE_LONG_DOUBLE)
+ 	case LongDouble:
+ 	  args[i].ld = va_arg (ap, long double);
+ 	  break;
++#endif
+ 	case Ptr:
+ 	  args[i].p = va_arg (ap, void *);
+ 	  break;
+-- 
+2.25.1
+

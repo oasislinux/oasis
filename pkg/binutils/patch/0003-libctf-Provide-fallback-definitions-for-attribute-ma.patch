@@ -1,0 +1,44 @@
+From 503a200be10dbed6f057eb0a69e2c176ffec3fa5 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 19 Nov 2019 19:20:02 -0800
+Subject: [PATCH] libctf: Provide fallback definitions for attribute macros
+
+---
+ libctf/ChangeLog  | 5 +++++
+ libctf/ctf-impl.h | 7 +++++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/libctf/ChangeLog b/libctf/ChangeLog
+index 93462c7e45..b472cf4d64 100644
+--- a/libctf/ChangeLog
++++ b/libctf/ChangeLog
+@@ -1,3 +1,8 @@
++2019-11-19  Michael Forney  <mforney@mforney.org>
++
++	* ctf-impl.h: Provide fallback for _libctf_printflike_,
++	_libctf_unlikely_, _libctf_unused_, and _libctf_malloc_ macros.
++
+ 2020-02-01  Nick Clifton  <nickc@redhat.com>
+ 
+ 	Binutils 2.34 release.
+diff --git a/libctf/ctf-impl.h b/libctf/ctf-impl.h
+index 267801d12d..dd9a4f1c7c 100644
+--- a/libctf/ctf-impl.h
++++ b/libctf/ctf-impl.h
+@@ -59,6 +59,13 @@ extern "C"
+ #define _libctf_unused_ __attribute__ ((__unused__))
+ #define _libctf_malloc_ __attribute__((__malloc__))
+ 
++#else
++
++#define _libctf_printflike_(string_index,first_to_check)
++#define _libctf_unlikely_(x) (x)
++#define _libctf_unused_
++#define _libctf_malloc_
++
+ #endif
+ 
+ /* libctf in-memory state.  */
+-- 
+2.25.1
+

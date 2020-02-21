@@ -58,6 +58,7 @@
 #define HAVE_MMAP 1
 /* #undef HAVE_ON_EXIT */
 #define HAVE_PIPE2 1
+#define HAVE_POSIX_SPAWN 1
 /* #undef HAVE_PROCESS_H */
 #define HAVE_PSIGNAL 1
 /* #undef HAVE_PSTAT_GETDYNAMIC */
@@ -75,6 +76,7 @@
 #define HAVE_SNPRINTF 1
 /* #undef HAVE_SPAWNVE */
 /* #undef HAVE_SPAWNVPE */
+#define HAVE_SPAWN_H 1
 #define HAVE_STDINT_H 1
 #define HAVE_STDIO_EXT_H 1
 #define HAVE_STDLIB_H 1
