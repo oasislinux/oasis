@@ -61,6 +61,6 @@ lib('libnl-3.a', [[lib/(
 	version.c hash.c hashtable.c mpls.c
 )]])
 
-lib('libnl-genl-3.a', 'lib/genl/(ctrl.c family.c genl.c mngt.c)', {'$gendir/headers'})
+lib('libnl-genl-3.a', 'lib/genl/(ctrl.c family.c genl.c mngt.c)')
 
 fetch 'git'
