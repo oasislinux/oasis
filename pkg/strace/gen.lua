@@ -8,10 +8,6 @@ cflags{
 	'-I $builddir/pkg/linux-headers/include',
 }
 
-pkg.deps = {
-	'pkg/linux-headers/headers',
-}
-
 build('cat', '$outdir/config.h', {
 	'$builddir/probe/HAVE___BUILTIN_POPCOUNT',
 	'$dir/config.h',
@@ -349,6 +345,7 @@ pkg.deps = {
 	'$outdir/scno.h',
 	'$outdir/sen.h',
 	'$outdir/sys_func.h',
+	'pkg/linux-headers/headers',
 }
 
 lib('libstrace.a', libsrcs, {'$outdir/printers.h'})
