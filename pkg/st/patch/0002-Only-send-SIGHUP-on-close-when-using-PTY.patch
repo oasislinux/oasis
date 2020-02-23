@@ -1,0 +1,31 @@
+From f33156065dd67520085f307ec90258e62a537571 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 22 Feb 2020 17:17:01 -0800
+Subject: [PATCH] Only send SIGHUP on close when using PTY
+
+Otherwise, pid is at its default value (0), so SIGHUP gets sent to
+the entire process group.
+---
+ st.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/st.c b/st.c
+index 4feb1f9..220b29d 100644
+--- a/st.c
++++ b/st.c
+@@ -4324,8 +4324,10 @@ toplevelconfigure(void *data, struct xdg_toplevel *toplevel, int32_t w, int32_t
+ void
+ toplevelclose(void *data, struct xdg_toplevel *toplevel)
+ {
+-	/* Send SIGHUP to shell */
+-	kill(pid, SIGHUP);
++	if (pid) {
++		/* Send SIGHUP to shell */
++		kill(pid, SIGHUP);
++	}
+ 	exit(0);
+ }
+ 
+-- 
+2.25.1
+
