@@ -50,6 +50,9 @@
 [submodule "pkg/expat/src"]
 	path = pkg/expat/src
 	url = https://github.com/libexpat/libexpat
+[submodule "pkg/f2fs-tools/src"]
+	path = pkg/f2fs-tools/src
+	url = https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git
 [submodule "pkg/farbfeld/src"]
 	path = pkg/farbfeld/src
 	url = git://git.suckless.org/farbfeld
