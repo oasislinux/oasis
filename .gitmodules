@@ -320,6 +320,3 @@
 	path = pkg/zstd/src
 	url = https://github.com/facebook/zstd
 	ignore = all
-[submodule "pkg/gpsd/src"]
-	path = pkg/gpsd/src
-	url = https://gitlab.com/gpsd/gpsd.git
