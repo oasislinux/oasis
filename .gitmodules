@@ -6,6 +6,9 @@
 	path = pkg/alsa-utils/src
 	url = https://github.com/alsa-project/alsa-utils.git
 	ignore = all
+[submodule "pkg/atinout/src"]
+	path = pkg/atinout/src
+	url = https://git.code.sf.net/p/atinout/code
 [submodule "pkg/awk/src"]
 	path = pkg/awk/src
 	url = https://github.com/onetrueawk/awk
