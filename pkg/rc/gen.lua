@@ -24,6 +24,8 @@ exe('rc', {
 	'prompt-null.c',
 })
 file('bin/rc', '755', '$outdir/rc')
+man{'rc.1'}
+
 file('lib/rcmain', '644', '$srcdir/rcmain.unix')
 
 fetch 'git'
