@@ -76,6 +76,8 @@ local function pathsgen(s, i)
 	local first = not i
 	while true do
 		i = s:find('%g', i)
+		local _, j, arch = s:find('^@([^%s()]*)%s*%g?', i)
+		if arch then i = j end
 		if not i or s:sub(i, i) == ')' then
 			break
 		end
@@ -110,7 +112,9 @@ local function pathsgen(s, i)
 				break
 			end
 		end
-		expandgen(parts)
+		if not arch or arch == config.target.platform:match('[^-]*') then
+			expandgen(parts)
+		end
 		if not c or c == ')' then
 			break
 		end
