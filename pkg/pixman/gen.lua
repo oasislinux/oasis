@@ -27,45 +27,45 @@ pkg.deps = {
 	'$outdir/config.h',
 }
 
--- processor-specific features
-cflags{'-D USE_SSE2=1', '-D USE_SSSE3=1', '-D USE_X86_MMX=1'}
+-- x86_64
 cc('pixman/pixman-mmx.c', nil, {cflags='$cflags -mmmx -Winline'})
 cc('pixman/pixman-sse2.c', nil, {cflags='$cflags -msse2 -Winline'})
 cc('pixman/pixman-ssse3.c', nil, {cflags='$cflags -mssse3 -Winline'})
-local cpuobjs = {'pixman-mmx.c.o', 'pixman-sse2.c.o', 'pixman-ssse3.c.o'}
 
-lib('libpixman.a', expand{'pixman/', {
-	'pixman.c',
-	'pixman-access.c',
-	'pixman-access-accessors.c',
-	'pixman-bits-image.c',
-	'pixman-combine32.c',
-	'pixman-combine-float.c',
-	'pixman-conical-gradient.c',
-	'pixman-filter.c',
-	'pixman-x86.c',
-	'pixman-mips.c',
-	'pixman-arm.c',
-	'pixman-ppc.c',
-	'pixman-edge.c',
-	'pixman-edge-accessors.c',
-	'pixman-fast-path.c',
-	'pixman-glyph.c',
-	'pixman-general.c',
-	'pixman-gradient-walker.c',
-	'pixman-image.c',
-	'pixman-implementation.c',
-	'pixman-linear-gradient.c',
-	'pixman-matrix.c',
-	'pixman-noop.c',
-	'pixman-radial-gradient.c',
-	'pixman-region16.c',
-	'pixman-region32.c',
-	'pixman-solid-fill.c',
-	'pixman-timer.c',
-	'pixman-trap.c',
-	'pixman-utils.c',
-	cpuobjs,
-}})
+lib('libpixman.a', [[
+	pixman/(
+		pixman.c
+		pixman-access.c
+		pixman-access-accessors.c
+		pixman-bits-image.c
+		pixman-combine32.c
+		pixman-combine-float.c
+		pixman-conical-gradient.c
+		pixman-filter.c
+		pixman-x86.c
+		pixman-mips.c
+		pixman-arm.c
+		pixman-ppc.c
+		pixman-edge.c
+		pixman-edge-accessors.c
+		pixman-fast-path.c
+		pixman-glyph.c
+		pixman-general.c
+		pixman-gradient-walker.c
+		pixman-image.c
+		pixman-implementation.c
+		pixman-linear-gradient.c
+		pixman-matrix.c
+		pixman-noop.c
+		pixman-radial-gradient.c
+		pixman-region16.c
+		pixman-region32.c
+		pixman-solid-fill.c
+		pixman-timer.c
+		pixman-trap.c
+		pixman-utils.c
+		@x86_64(pixman-mmx.c.o pixman-sse2.c.o pixman-ssse3.c.o)
+	)
+]])
 
 fetch 'git'

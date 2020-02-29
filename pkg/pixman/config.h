@@ -67,3 +67,9 @@
 /* #undef inline */
 #endif
 /* #undef sqrtf */
+
+#ifdef __x86_64__
+# define USE_SSE2 1
+# define USE_SSE3 1
+# define USE_X86_MMX 1
+#endif
