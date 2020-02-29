@@ -30,7 +30,8 @@ lib('libpng.a', [[
 	png.c pngerror.c
 	pngget.c pngmem.c pngpread.c pngread.c pngrio.c pngrtran.c pngrutil.c
 	pngset.c pngtrans.c pngwio.c pngwrite.c pngwtran.c pngwutil.c
-	intel/(intel_init.c filter_sse2_intrinsics.c)
+	@aarch64 arm/(arm_init.c filter_neon.S filter_neon_intrinsics.c palette_neon_intrinsics.c)
+	@x86_64 intel/(intel_init.c filter_sse2_intrinsics.c)
 	$builddir/pkg/zlib/libz.a
 ]])
 file('lib/libpng.a', '644', '$outdir/libpng.a')
