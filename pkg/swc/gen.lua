@@ -114,7 +114,7 @@ lib('libswc.a', [[
 	)
 ]])
 
-exe('swc-launch', {'launch/launch.c', 'launch/protocol.c.o', '$builddir/pkg/libdrm/libdrm.a'})
+exe('swc-launch', {'launch/launch.c', 'launch/devmajor-linux.c', 'launch/protocol.c.o', '$builddir/pkg/libdrm/libdrm.a'})
 file('bin/swc-launch', '4755', '$outdir/swc-launch')
 
 fetch 'git'
