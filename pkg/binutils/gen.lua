@@ -327,16 +327,13 @@ sub('ld.ninja', function()
 		'-I $outdir/bfd',
 		'-I $srcdir/bfd',
 	}
-	local f = io.open(pkg.dir..'/ld/ldemul-list.h', 'w')
-	for _, emul in ipairs(emuls) do
-		f:write(string.format('extern ld_emulation_xfer_type ld_%s_emulation;\n', emul))
-	end
-	f:write('#define EMULATION_LIST ')
-	for _, emul in ipairs(emuls) do
-		f:write(string.format('&ld_%s_emulation, ', emul))
-	end
-	f:write('0\n')
-	f:close()
+	local deps = {
+		'$gendir/deps',
+		'$outdir/ld/ldemul-list.h',
+	}
+
+	rule('ldemul', 'sh $dir/ldemul.sh $emuls >$out')
+	build('ldemul', '$outdir/ld/ldemul-list.h', {'|', '$dir/ldemul.sh'}, {emuls=emuls})
 
 	build('copy', '$outdir/ld/stringify.sed', '$srcdir/ld/emultempl/astring.sed')
 	rule('genscripts', string.format([[cd $outdir/ld && LIB_PATH= sh $$OLDPWD/$srcdir/ld/genscripts.sh $$OLDPWD/$srcdir/ld /lib '' '' %s %s %s '' /lib '%s' /lib no yes $emul %s]], config.target.platform, config.target.platform, config.target.platform, table.concat(emuls, ' '), config.target.platform))
@@ -369,7 +366,7 @@ sub('ld.ninja', function()
 			libctf.a.d
 		]],
 		srcs,
-	})
+	}, deps)
 	file('bin/ld', '755', '$outdir/bin/ld')
 	sym(string.format('bin/%s-ld', config.target.platform), 'ld')
 	man{'ld/ld.1'}
