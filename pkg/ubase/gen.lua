@@ -50,7 +50,6 @@ local tools = {
 	{'lsmod', 8},
 	{'lsusb', 8},
 	{'mesg', 1},
-	{'mknod', 1},
 	{'mkswap', 8},
 	{'mount', 8},
 	{'mountpoint', 1},
