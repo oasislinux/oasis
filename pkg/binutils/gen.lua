@@ -10,12 +10,15 @@ local emuls = {
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $srcdir/include',
+	'-I $outdir/bfd',
+	'-I $srcdir/bfd',
 	'-I $builddir/pkg/zlib/include',
 }
 
 pkg.deps = {
 	'pkg/zlib/headers',
 	'$outdir/bfd/bfd.h',
+	'$outdir/bfd/bfd_stdint.h',
 }
 
 sub('libiberty.ninja', function()
@@ -61,8 +64,6 @@ sub('libctf.ninja', function()
 	cflags{
 		'-I $dir/libctf',
 		'-I $srcdir/libctf',
-		'-I $srcdir/bfd',
-		'-I $outdir/bfd',
 	}
 	-- src/libctf/Makefile.am:/^libctf_nobfd_la_SOURCES
 	lib('libctf.a', [[
@@ -80,11 +81,7 @@ sub('libctf.ninja', function()
 end)
 
 sub('bfd.ninja', function()
-	cflags{
-		'-I $dir/bfd',
-		'-I $outdir/bfd',
-		'-I $srcdir/bfd',
-	}
+	cflags{'-I $dir/bfd'}
 	build('sed', '$outdir/bfd/bfd.h', '$srcdir/bfd/bfd-in2.h', {expr={
 		'-e s,@supports_plugins@,0,',
 		'-e s,@wordsize@,64,',
@@ -103,6 +100,7 @@ sub('bfd.ninja', function()
 		[[-e 's,@bfd_version_package@,"(GNU Binutils) ",']],
 		[[-e 's,@report_bugs_to@,"<http://www.sourceware.org/bugzilla/>",']],
 	}})
+	build('printf', '$outdir/bfd/bfd_stdint.h', nil, {args=[['#include <stdint.h>\n']]})
 	build('sed', '$outdir/bfd/targmatch.h', {'$srcdir/bfd/config.bfd', '|', '$srcdir/bfd/targmatch.sed'}, {
 		expr='-f $srcdir/bfd/targmatch.sed',
 	})
@@ -184,9 +182,7 @@ sub('bfd.ninja', function()
 end)
 
 sub('opcodes.ninja', function()
-	cflags{
-		'-I $dir/opcodes',
-	}
+	cflags{'-I $dir/opcodes'}
 	local srcs = {}
 	for arch, archsrcs in pairs(load 'arch.lua') do
 		if selarchs[arch] then
@@ -207,9 +203,6 @@ sub('binutils.ninja', function()
 		'-D bin_dummy_emulation=bin_vanilla_emulation',
 		'-I $dir/binutils',
 		'-I $srcdir/binutils',
-		'-I $dir/bfd',
-		'-I $outdir/bfd',
-		'-I $srcdir/bfd',
 	}
 	lib('libbu.a', [[
 		binutils/(
@@ -252,11 +245,8 @@ sub('gas.ninja', function()
 		'-I $dir/gas',
 		'-I $outdir/gas',
 		'-I $srcdir/gas',
-		'-I $dir/bfd',
 		'-I $srcdir/gas/config',
 		'-I $srcdir',
-		'-I $outdir/bfd',
-		'-I $srcdir/bfd',
 	}
 	build('copy', '$outdir/gas/targ-cpu.h', '$srcdir/gas/config/tc-i386.h')
 	build('copy', '$outdir/gas/targ-env.h', '$srcdir/gas/config/te-linux.h')
@@ -323,9 +313,6 @@ sub('ld.ninja', function()
 		'-I $dir/ld',
 		'-I $outdir/ld',
 		'-I $srcdir/ld',
-		'-I $dir/bfd',
-		'-I $outdir/bfd',
-		'-I $srcdir/bfd',
 	}
 	local deps = {
 		'$gendir/deps',

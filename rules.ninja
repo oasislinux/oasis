@@ -95,6 +95,9 @@ rule awk
 rule grep
   command = grep $expr $in >$out
 
+rule printf
+  command = printf $args >$out
+
 rule tic
   command = tic $ticflags $in
 
