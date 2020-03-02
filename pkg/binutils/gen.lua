@@ -204,32 +204,34 @@ sub('binutils.ninja', function()
 		'-I $dir/binutils',
 		'-I $srcdir/binutils',
 	}
-	lib('libbu.a', [[
+	lib('libcommon.a', [[
 		binutils/(
 			bucomm.c version.c filemode.c rename.c
 			elfcomm.c
 			rddbg.c debug.c stabs.c rdcoff.c wrstabs.c
+			dwarf.c
 		)
+		libbfd.a.d
+		libctf.a.d
+		libiberty.a
 	]])
 
-	cc('binutils/objcopy.c')
-	cc('binutils/dwarf.c')
 	cc('binutils/objdump.c', nil, {cflags='$cflags -D OBJDUMP_PRIVATE_VECTORS='})
-	exe('bin/size', [[binutils/size.c libbu.a libbfd.a.d]])
-	exe('bin/objcopy', [[binutils/(objcopy.c.o not-strip.c) libbu.a libbfd.a.d]])
-	exe('bin/strings', [[binutils/strings.c libbu.a libbfd.a.d]])
-	exe('bin/readelf', [[binutils/(readelf.c unwind-ia64.c dwarf.c.o) libbu.a libctf.a.d]])
-	exe('bin/elfedit', [[binutils/elfedit.c libbu.a libbfd.a.d]])
-	exe('bin/strip', [[binutils/(objcopy.c.o is-strip.c) libbu.a libbfd.a.d]])
-	exe('bin/nm', [[binutils/nm.c libbu.a libbfd.a.d]])
-	exe('bin/objdump', [[binutils/(objdump.c.o dwarf.c.o prdbg.c) libbu.a libbfd.a.d libopcodes.a libctf.a.d]])
+	exe('bin/size',    [[binutils/size.c                    libcommon.a.d]])
+	exe('bin/objcopy', [[binutils/(objcopy.c not-strip.c)   libcommon.a.d]])
+	exe('bin/strings', [[binutils/strings.c                 libcommon.a.d]])
+	exe('bin/readelf', [[binutils/(readelf.c unwind-ia64.c) libcommon.a.d]])
+	exe('bin/elfedit', [[binutils/elfedit.c                 libcommon.a.d]])
+	exe('bin/strip',   [[binutils/(objcopy.c.o is-strip.c)  libcommon.a.d]])
+	exe('bin/nm',      [[binutils/nm.c                      libcommon.a.d]])
+	exe('bin/objdump', [[binutils/(objdump.c.o prdbg.c)     libcommon.a.d libopcodes.a]])
 
 	local arobjs = objects[[
 		binutils/(
 			arparse.c arlex.c ar.c arsup.c binemul.c
 			emul_vanilla.c
 		)
-		libbu.a libbfd.a.d
+		libcommon.a.d
 	]]
 	exe('bin/ar', {arobjs, 'binutils/not-ranlib.c'})
 	exe('bin/ranlib', {arobjs, 'binutils/is-ranlib.c'})
