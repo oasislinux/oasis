@@ -45,7 +45,7 @@
 #define HAVE_CONFSTR 1
 /* #undef HAVE_CONIO_H */
 #define HAVE_COPYSIGN 1
-/* #undef HAVE_COPY_FILE_RANGE */
+#define HAVE_COPY_FILE_RANGE 1
 #define HAVE_CRYPT_H 1
 #define HAVE_CRYPT_R 1
 #define HAVE_CTERMID 1
