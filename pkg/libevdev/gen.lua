@@ -12,11 +12,12 @@ pkg.deps = {
 	'pkg/linux-headers/headers',
 }
 
-build('awk', '$outdir/event-names.h', {
+rule('eventnames', 'lua5.2 $dir/eventnames.lua $in >$out')
+build('eventnames', '$outdir/event-names.h', {
 	'$srcdir/include/linux/input.h',
 	'$srcdir/include/linux/input-event-codes.h',
-	'|', '$dir/eventnames.awk',
-}, {expr='-f $dir/eventnames.awk'})
+	'|', '$dir/eventnames.lua',
+})
 lib('libevdev.a', {'libevdev/libevdev.c', 'libevdev/libevdev-names.c'}, {'$outdir/event-names.h'})
 file('lib/libevdev.a', '644', '$outdir/libevdev.a')
 
