@@ -142,6 +142,7 @@
 /* #undef HAVE_LIBSSH2_H */
 /* #undef HAVE_LIBSSH_LIBSSH_H */
 /* #undef HAVE_LIBSSL */
+/* #undef HAVE_LIBWOLFSSH */
 #define HAVE_LIBZ 1
 #define HAVE_LINUX_TCP_H 1
 #define HAVE_LL 1
@@ -259,6 +260,7 @@
 /* #undef HAVE_WINLDAP_H */
 /* #undef HAVE_WINSOCK2_H */
 /* #undef HAVE_WINSOCK_H */
+/* #undef HAVE_WOLFSSH_SSH_H */
 /* #undef HAVE_WOLFSSLV3_CLIENT_METHOD */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_WOLFSSL_USEALPN */
@@ -346,6 +348,7 @@
 /* #undef USE_WIN32_LDAP */
 /* #undef USE_WIN32_SMALL_FILES */
 /* #undef USE_WINDOWS_SSPI */
+/* #undef USE_WOLFSSH */
 /* #undef USE_WOLFSSL */
 #define VERSION "-"
 /* #undef WANT_IDN_PROTOTYPES */

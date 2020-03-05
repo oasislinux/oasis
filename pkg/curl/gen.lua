@@ -61,7 +61,7 @@ lib('libcurl.a', [[
 		curl_multibyte.c hostcheck.c conncache.c dotdot.c
 		x509asn1.c http2.c smb.c curl_endian.c curl_des.c system_win32.c
 		mime.c sha256.c setopt.c curl_path.c curl_ctype.c curl_range.c psl.c
-		doh.c urlapi.c curl_get_line.c altsvc.c socketpair.c
+		doh.c urlapi.c curl_get_line.c altsvc.c socketpair.c rename.c
 		vauth/(
 			vauth.c cleartext.c cram.c
 			digest.c digest_sspi.c krb5_gssapi.c
@@ -70,10 +70,9 @@ lib('libcurl.a', [[
 		)
 		vtls/(
 			openssl.c gtls.c vtls.c nss.c
-			polarssl.c polarssl_threadlock.c
-			wolfssl.c schannel.c schannel_verify.c
-			sectransp.c gskit.c mbedtls.c mesalink.c
-			bearssl.c
+			mbedtls_threadlock.c wolfssl.c schannel.c
+			schannel_verify.c sectransp.c gskit.c mbedtls.c
+			mesalink.c bearssl.c
 		)
 		vquic/(ngtcp2.c quiche.c)
 		vssh/(libssh2.c libssh.c)
