@@ -8,9 +8,10 @@ Generated with
 		--disable-smb \
 		--disable-smtp \
 		--with-ca-bundle=/etc/ssl/cert.pem \
+		--without-ssl \
 		--with-bearssl \
 		CPPFLAGS='-I/src/oasis/out/pkg/bearssl/include -I/src/oasis/out/pkg/zlib/include' \
-		LDFLAGS='-L/src/oasis/out/pkg/bearssl -L/src/oasis/out/pkg/zlib' \
+		LDFLAGS='-L/src/oasis/out/pkg/bearssl -L/src/oasis/out/pkg/zlib'
 
 There are a number of non-standard definitions, but they don't seem to be
 architecture-specific except for
