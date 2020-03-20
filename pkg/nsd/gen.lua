@@ -1,6 +1,7 @@
 cflags{
 	'-Wall',
 	'-I $dir',
+	'-I $srcdir',
 	'-I $basedir/pkg/openbsd/include',
 }
 
@@ -8,7 +9,8 @@ lib('libcommon.a', [[
 	answer.c axfr.c buffer.c configlexer.c configparser.c dname.c dns.c
 	edns.c iterated_hash.c lookup3.c namedb.c nsec3.c options.c packet.c
 	query.c rbtree.c radtree.c rdata.c region-allocator.c rrl.c tsig.c
-	tsig-openssl.c udb.c udbradtree.c udbzone.c util.c
+	tsig-openssl.c udb.c udbradtree.c udbzone.c util.c bitset.c popen3.c
+	compat/(cpuset.c setproctitle.c)
 	$builddir/pkg/openbsd/libbsd.a
 ]])
 

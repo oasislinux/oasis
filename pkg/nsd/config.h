@@ -22,6 +22,9 @@
 #define HAVE_CHOWN 1
 #define HAVE_CHROOT 1
 #define HAVE_CLOCK_GETTIME 1
+/* #undef HAVE_CPUID_T */
+/* #undef HAVE_CPUSET_T */
+#define HAVE_CPU_SET_T 1
 /* #undef HAVE_CRYPTO_MEMCMP */
 #define HAVE_CTIME_R_PROTO 1
 /* #undef HAVE_DECL_SSL_CTX_SET_ECDH_AUTO */
@@ -48,6 +51,7 @@
 #define HAVE_GETHOSTNAME 1
 #define HAVE_GETNAMEINFO 1
 #define HAVE_GETPWNAM 1
+#define HAVE_GETRANDOM 1
 #define HAVE_GLOB 1
 #define HAVE_GLOB_H 1
 #define HAVE_GRP_H 1
@@ -85,7 +89,9 @@
 #define HAVE_PWRITE 1
 #define HAVE_REALLOCARRAY 1
 /* #undef HAVE_RECVMMSG */
+#define HAVE_SCHED_H 1
 /* #undef HAVE_SENDMMSG */
+/* #undef HAVE_SETPROCTITLE */
 #define HAVE_SETREGID 1
 #define HAVE_SETRESGID 1
 #define HAVE_SETRESUID 1
@@ -120,8 +126,10 @@
 #define HAVE_STRUCT_TIMESPEC 1
 /* #undef HAVE_SYSLOG_H */
 /* #undef HAVE_SYS_BITYPES_H */
+/* #undef HAVE_SYS_CPUSET_H */
 /* #undef HAVE_SYS_MMAN_H */
 #define HAVE_SYS_PARAM_H 1
+#define HAVE_SYS_RANDOM_H 1
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_SOCKET_H 1
 #define HAVE_SYS_STAT_H 1
@@ -155,10 +163,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.2.4"
+#define PACKAGE_STRING "NSD 4.3.0"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.2.4"
+#define PACKAGE_VERSION "4.3.0"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
@@ -368,6 +376,16 @@ char *strptime(const char *s, const char *format, struct tm *tm);
 #define STRPTIME_WORKS 1
 char *nsd_strptime(const char *s, const char *format, struct tm *tm); 
 #define strptime(a,b,c) nsd_strptime((a),(b),(c))
+#endif
+#if (HAVE_CPU_SET_T || HAVE_CPUSET_T)
+#include "compat/cpuset.h"
+#endif
+#ifndef HAVE_SETPROCTITLE
+#ifdef __linux__
+#define HAVE_SETPROCTITLE 1
+#include <stdarg.h>
+void setproctitle(char *fmt, ...);
+#endif
 #endif
 #ifdef MEMCMP_IS_BROKEN
 #include "compat/memcmp.h"
