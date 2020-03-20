@@ -29,9 +29,13 @@ tasks:
     cat >config.lua <<EOF
     local sets = dofile 'sets.lua'
     local set = os.getenv('SET')
+    local spec = {sets[set]}
+    if set ~= 'devel' then
+    	spec.exclude = {'^include/', '^lib/.*%.a$'}
+    end
     return {
     	builddir='out',
-    	fs={{sets[set], exclude={'^include/', '^lib/.*%.a$'}}},
+    	fs={spec},
     	target={platform='x86_64-linux-musl', cflags='-O2 -pipe', ldflags='-s -static'},
     	host={cflags='-pipe', ldflags=''},
     	repo={path='$HOME/root-x86_64.git', flags='--bare', tag='tree', branch=set},
