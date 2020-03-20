@@ -16,6 +16,7 @@ build('cat', '$outdir/config.h', {
 	'$dir/config.h',
 	'$builddir/probe/HAVE_IMMINTRIN_H',
 	'$builddir/probe/HAVE__MM_MOVEMASK_EPI8',
+	'$builddir/probe/HAVE___BUILTIN_ASSUME_ALIGNED',
 	'$builddir/probe/SIZEOF_SIZE_T',
 })
 pkg.deps = {'$outdir/config.h'}

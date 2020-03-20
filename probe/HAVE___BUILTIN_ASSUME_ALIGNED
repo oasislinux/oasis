@@ -1,0 +1,4 @@
+void *x;
+int main(void) {
+	return __builtin_assume_aligned(x, 8) == x;
+}

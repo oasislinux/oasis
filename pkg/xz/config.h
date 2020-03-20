@@ -9,6 +9,7 @@
 /* #undef HAVE_CC_SHA256_CTX */
 /* #undef HAVE_CC_SHA256_INIT */
 /* #undef HAVE_CFLOCALECOPYCURRENT */
+/* #undef HAVE_CFLOCALECOPYPREFERREDLANGUAGES */
 /* #undef HAVE_CFPREFERENCESCOPYAPPVALUE */
 #define HAVE_CHECK_CRC32 1
 #define HAVE_CHECK_CRC64 1
@@ -46,7 +47,7 @@
 #define HAVE_GETOPT_H 1
 #define HAVE_GETOPT_LONG 1
 /* #undef HAVE_GETTEXT */
-#define HAVE_ICONV 1
+/* #undef HAVE_ICONV */
 /* probe HAVE_IMMINTRIN_H */
 #define HAVE_INTTYPES_H 1
 #define HAVE_LIMITS_H 1
@@ -94,6 +95,8 @@
 #define HAVE__BOOL 1
 /* #undef HAVE__FUTIME */
 /* probe HAVE__MM_MOVEMASK_EPI8 */
+/* probe HAVE___BUILTIN_ASSUME_ALIGNED */
+/* #undef HAVE___BUILTIN_BSWAPXX */
 #define LT_OBJDIR ".libs/"
 #define MYTHREAD_POSIX 1
 /* #undef MYTHREAD_VISTA */
@@ -102,10 +105,10 @@
 #define PACKAGE "xz"
 #define PACKAGE_BUGREPORT "lasse.collin@tukaani.org"
 #define PACKAGE_NAME "XZ Utils"
-#define PACKAGE_STRING "XZ Utils 5.2.4"
+#define PACKAGE_STRING "XZ Utils 5.2.5"
 #define PACKAGE_TARNAME "xz"
 #define PACKAGE_URL "https://tukaani.org/xz/"
-#define PACKAGE_VERSION "5.2.4"
+#define PACKAGE_VERSION "5.2.5"
 /* #undef PTHREAD_CREATE_JOINABLE */
 /* probe SIZEOF_SIZE_T */
 #define STDC_HEADERS 1
@@ -122,6 +125,7 @@
 #define TUKLIB_PHYSMEM_SYSCONF 1
 /* #undef TUKLIB_PHYSMEM_SYSCTL */
 /* #undef TUKLIB_PHYSMEM_SYSINFO */
+/* #undef TUKLIB_USE_UNSAFE_TYPE_PUNNING */
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
@@ -137,7 +141,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.2.4"
+#define VERSION "5.2.5"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
