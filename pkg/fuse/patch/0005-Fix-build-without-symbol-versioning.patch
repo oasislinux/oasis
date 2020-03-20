@@ -1,4 +1,4 @@
-From 538003675a63f2bcf3caeff368cca1b46ba38013 Mon Sep 17 00:00:00 2001
+From 39bf781c0bf997fe434103b5a1f01765e9bc88e4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 00:52:16 -0700
 Subject: [PATCH] Fix build without symbol versioning
@@ -8,10 +8,10 @@ Subject: [PATCH] Fix build without symbol versioning
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/include/fuse.h b/include/fuse.h
-index 883f6e5..a5324cc 100644
+index a92d5ee..d8e923d 100644
 --- a/include/fuse.h
 +++ b/include/fuse.h
-@@ -913,7 +913,11 @@ void fuse_lib_help(struct fuse_args *args);
+@@ -919,7 +919,11 @@ void fuse_lib_help(struct fuse_args *args);
   *            `struct fuse_operations.init` handler.
   * @return the created FUSE handle
   */
@@ -25,5 +25,5 @@ index 883f6e5..a5324cc 100644
  			 size_t op_size, void *private_data);
  #define fuse_new(args, op, size, data) fuse_new_30(args, op, size, data)
 -- 
-2.24.0
+2.25.1
 

@@ -1,6 +1,6 @@
 #define FUSERMOUNT_DIR "/bin"
 #define FUSE_CONF "/etc/fuse.conf"
-#define FUSE_USE_VERSION 34
+#define FUSE_USE_VERSION 35
 #define IGNORE_MTAB
 
 #undef HAVE_COPY_FILE_RANGE
@@ -19,4 +19,4 @@
 #undef HAVE_STRUCT_STAT_ST_ATIMESPEC
 #define HAVE_UTIMENSAT
 #define HAVE_VMSPLICE
-#define PACKAGE_VERSION "3.9.0"
+#define PACKAGE_VERSION "3.9.1"
