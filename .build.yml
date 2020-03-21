@@ -13,7 +13,6 @@ sources:
 secrets:
 - 0d338ffe-699f-4e82-85a0-3a4407172bed
 environment:
-  PATH: /home/build/x86_64-linux-musl-cross/bin:/home/build/oasis/out/pkg/texi2mdoc:/usr/sbin:/usr/bin:/sbin:/bin
   PAXREAD: bsdtar -x -f -
   GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
   SETS: core desktop devel extra media net
@@ -25,26 +24,37 @@ tasks:
     curl -LO http://musl.cc/x86_64-linux-musl-cross.tgz
     tar xzf x86_64-linux-musl-cross.tgz
 - build: |
+    PATH=$HOME/x86_64-linux-musl-cross/bin:$HOME/bin:$PATH
     cd oasis
     cat >config.lua <<EOF
+    return {
+    	builddir='out',
+    	fs=dofile 'fs.lua',
+    	target={platform='x86_64-linux-musl', cflags='-O2 -pipe', ldflags='-s -static', mc='6m'},
+    	host={cflags='-pipe', ldflags=''},
+    	repo={path='$HOME/root-x86_64.git', flags='--bare', tag='tree', branch=os.getenv('SET')},
+    }
+    EOF
+    # build everything
+    echo 'return {exclude={}}' >fs.lua
+    lua5.2 setup.lua
+    ninja out/pkg/texi2mdoc/texi2mdoc out/pkg/mc/bin/6m out/pkg/mc/bin/muse
+    mkdir $HOME/bin
+    cp out/pkg/texi2mdoc/texi2mdoc out/pkg/mc/bin/6m out/pkg/mc/bin/muse $HOME/bin
+    ninja
+    # build individual sets
+    cat >fs.lua <<EOF
     local sets = dofile 'sets.lua'
     local set = os.getenv('SET')
     local spec = {sets[set]}
     if set ~= 'devel' then
     	spec.exclude = {'^include/', '^lib/.*%.a$'}
     end
-    return {
-    	builddir='out',
-    	fs={spec},
-    	target={platform='x86_64-linux-musl', cflags='-O2 -pipe', ldflags='-s -static'},
-    	host={cflags='-pipe', ldflags=''},
-    	repo={path='$HOME/root-x86_64.git', flags='--bare', tag='tree', branch=set},
-    }
+    return {spec}
     EOF
     export SET
     for SET in $SETS ; do
         lua5.2 setup.lua
-        ninja out/pkg/texi2mdoc/texi2mdoc
         ninja commit
     done
 - deploy: |

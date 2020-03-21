@@ -1,6 +1,6 @@
 # oasis
 
-[![Build Status](https://travis-ci.org/michaelforney/oasis.svg?branch=master)](https://travis-ci.org/michaelforney/oasis)
+[![builds.sr.ht status](https://builds.sr.ht/~mcf/oasis.svg)](https://builds.sr.ht/~mcf/oasis)
 
 oasis is a small linux system
 
