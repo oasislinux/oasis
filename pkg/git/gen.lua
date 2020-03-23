@@ -154,6 +154,7 @@ lib('libgit.a', [[
 	range-diff.c
 	reachable.c
 	read-cache.c
+	rebase.c
 	rebase-interactive.c
 	ref-filter.c
 	reflog-walk.c
