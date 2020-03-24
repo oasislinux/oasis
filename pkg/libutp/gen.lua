@@ -1,6 +1,5 @@
 cflags{
-	'-Wall',
-	'-D POSIX',
+	'-std=c99', '-Wall', '-Wpedantic',
 	'-I $srcdir',
 }
 
