@@ -1,0 +1,45 @@
+From 639eeb5958345cbe9db6a53dd2429a0d5157e0fd Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 29 Mar 2020 13:07:39 -0700
+Subject: [PATCH] Use patched bearssl method to retrieve validity period
+
+---
+ tls_conninfo.c | 22 ++++++++++++++++++----
+ 1 file changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/tls_conninfo.c b/tls_conninfo.c
+index d3a6844..1c7c686 100644
+--- a/tls_conninfo.c
++++ b/tls_conninfo.c
+@@ -164,10 +164,24 @@ static int
+ tls_get_peer_cert_times(struct tls *ctx, time_t *notbefore,
+     time_t *notafter)
+ {
+-	/* XXX: BearSSL has no way to get certificate notBefore and
+-	 * notAfter */
+-	*notbefore = -1;
+-	*notafter = -1;
++	br_x509_decoder_context xc;
++	uint32_t notbefore_days, notbefore_seconds;
++	uint32_t notafter_days, notafter_seconds;
++	int err;
++
++	br_x509_decoder_init(&xc, NULL, NULL);
++	br_x509_decoder_push(&xc, ctx->peer_chain[0].data, ctx->peer_chain[0].data_len);
++
++	if ((err = br_x509_decoder_last_error(&xc)) != 0) {
++		tls_set_errorx(ctx, "%s", bearssl_strerror(err));
++		return (-1);
++	}
++
++	br_x509_decoder_get_notbefore(&xc, &notbefore_days, &notbefore_seconds);
++	br_x509_decoder_get_notafter(&xc, &notafter_days, &notafter_seconds);
++
++	*notbefore = 86400LL * (notbefore_days - 719528) + notbefore_seconds;
++	*notafter = 86400LL * (notafter_days - 719528) + notafter_seconds;
+ 
+ 	return (0);
+ }
+-- 
+2.26.0
+
