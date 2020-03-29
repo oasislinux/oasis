@@ -1,0 +1,60 @@
+From 31fdee5b9d8fc63c850222768dcd097e43da0116 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 26 Mar 2020 14:17:19 -0700
+Subject: [PATCH] Add functions to retrieve certificate validity period from
+ br_x509_decoder.
+
+---
+ inc/bearssl_x509.h | 36 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+
+diff --git a/inc/bearssl_x509.h b/inc/bearssl_x509.h
+index 49d2fba..9d43e15 100644
+--- a/inc/bearssl_x509.h
++++ b/inc/bearssl_x509.h
+@@ -1045,6 +1045,42 @@ br_x509_decoder_last_error(br_x509_decoder_context *ctx)
+ 	return 0;
+ }
+ 
++/**
++ * \brief Get the time when the certificate becomes valid.
++ *
++ * The time is represented the same as in `br_x509_minimal_set_time()`.
++ * These values should not be read before decoding completed successfully.
++ *
++ * \param ctx      X.509 decoder context.
++ * \param days     receives the days since January 1st, 0 AD.
++ * \param seconds  receives the seconds since midnight (0 to 86400).
++ */
++static inline void
++br_x509_decoder_get_notbefore(br_x509_decoder_context *ctx,
++	uint32_t *days, uint32_t *seconds)
++{
++	*days = ctx->notbefore_days;
++	*seconds = ctx->notbefore_seconds;
++}
++
++/**
++ * \brief Get the time when the certificate is no longer valid.
++ *
++ * The time is represented the same as in `br_x509_minimal_set_time()`.
++ * These values should not be read before decoding completed successfully.
++ *
++ * \param ctx      X.509 decoder context.
++ * \param days     receives the days since January 1st, 0 AD.
++ * \param seconds  receives the seconds since midnight (0 to 86400).
++ */
++static inline void
++br_x509_decoder_get_notafter(br_x509_decoder_context *ctx,
++	uint32_t *days, uint32_t *seconds)
++{
++	*days = ctx->notafter_days;
++	*seconds = ctx->notafter_seconds;
++}
++
+ /**
+  * \brief Get the "isCA" flag from an X.509 decoder context.
+  *
+-- 
+2.26.0
+
