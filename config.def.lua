@@ -16,7 +16,7 @@ return {
 	target={
 		platform='x86_64-linux-musl',
 		cflags='-O2 -pipe -fpie',
-		ldflags='-s -static -pie',
+		ldflags='-s -static-pie',
 		pie=true
 	},
 
