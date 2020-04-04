@@ -26,7 +26,7 @@
 /* #undef NEED_GETOPT_H */
 /* #undef NO_LEAKS */
 #define STDC_HEADERS 1
-#define SYSTEM_NAME "linux-gnu"
+#define SYSTEM_NAME "linux-musl"
 /* #undef USE_DBMALLOC */
 /* #undef USE_DMALLOC */
 /* #undef USE_VALGRIND */
