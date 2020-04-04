@@ -1,4 +1,4 @@
-From 769314ef7dc3fdfb57d714d2edd874763d7f23a7 Mon Sep 17 00:00:00 2001
+From 73e1cde9f80294c730b02c1eb217a4bc82d0168b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:14:23 -0700
 Subject: [PATCH] Don't return expression in function returning void
@@ -28,10 +28,10 @@ index 4a490bc8..0d52bfac 100644
  	else if (mode == XDP_ATTACHED_DRV)
  		fprintf(fp, "xdp");
 diff --git a/ip/ipxfrm.c b/ip/ipxfrm.c
-index 32f56093..55d38d65 100644
+index fec206ab..92afb7f8 100644
 --- a/ip/ipxfrm.c
 +++ b/ip/ipxfrm.c
-@@ -541,7 +541,7 @@ static void __xfrm_algo_print(struct xfrm_algo *algo, int type, int len,
+@@ -542,7 +542,7 @@ static void __xfrm_algo_print(struct xfrm_algo *algo, int type, int len,
  static inline void xfrm_algo_print(struct xfrm_algo *algo, int type, int len,
  				   FILE *fp, const char *prefix, bool nokeys)
  {
@@ -41,5 +41,5 @@ index 32f56093..55d38d65 100644
  
  static void xfrm_aead_print(struct xfrm_algo_aead *algo, int len,
 -- 
-2.20.1
+2.26.0
 

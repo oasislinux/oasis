@@ -1,4 +1,4 @@
-From 87e689570abaabf8ffaff0682a4fa4d528fab2ce Mon Sep 17 00:00:00 2001
+From d580bcc2f406db4980013e665441258fd42a4c2a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -14,7 +14,7 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  7 files changed, 13 insertions(+), 13 deletions(-)
 
 diff --git a/include/libnetlink.h b/include/libnetlink.h
-index 8ebdc6d3..ff5d92fa 100644
+index e27516f7..253d2141 100644
 --- a/include/libnetlink.h
 +++ b/include/libnetlink.h
 @@ -169,7 +169,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
@@ -26,7 +26,7 @@ index 8ebdc6d3..ff5d92fa 100644
  				    RTA_ALIGN((rta)->rta_len)))
  
  #define parse_rtattr_nested(tb, max, rta) \
-@@ -232,7 +232,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
+@@ -233,7 +233,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
  		   void *jarg);
  
  #define NLMSG_TAIL(nmsg) \
@@ -153,5 +153,5 @@ index c6f19ce1..d02bc32d 100644
  		len = size;
  
 -- 
-2.25.0
+2.26.0
 

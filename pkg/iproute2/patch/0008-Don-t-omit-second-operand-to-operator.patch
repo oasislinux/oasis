@@ -1,4 +1,4 @@
-From 57c889b40e09a793f342cc6af04e217592dc1669 Mon Sep 17 00:00:00 2001
+From 9c2f01584da75c3004075d0d25ea21ccbb9db277 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:40 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -13,7 +13,7 @@ Subject: [PATCH] Don't omit second operand to '?' operator
  6 files changed, 33 insertions(+), 15 deletions(-)
 
 diff --git a/ip/iproute_lwtunnel.c b/ip/iproute_lwtunnel.c
-index 60f34a32..b47a65aa 100644
+index 0d7d7149..1125c795 100644
 --- a/ip/iproute_lwtunnel.c
 +++ b/ip/iproute_lwtunnel.c
 @@ -185,7 +185,7 @@ static const char *format_action_type(int action)
@@ -108,7 +108,7 @@ index d02bc32d..49b5b1ec 100644
  		return hz;
  	return HZ;
 diff --git a/misc/ss.c b/misc/ss.c
-index 01a2cda5..e68a3316 100644
+index 23980695..bc6b4a8b 100644
 --- a/misc/ss.c
 +++ b/misc/ss.c
 @@ -483,7 +483,9 @@ static FILE *generic_proc_open(const char *env, const char *name)
@@ -142,7 +142,7 @@ index 01a2cda5..e68a3316 100644
  	/* If show_users & show_proc_ctx set only do this once */
  	if (user_ent_hash_build_init != 0)
  		return;
-@@ -2195,7 +2201,10 @@ void *parse_hostcond(char *addr, bool is_port)
+@@ -2206,7 +2212,10 @@ void *parse_hostcond(char *addr, bool is_port)
  	} else if (addr[0] == '*') {
  		port = addr+1;
  	} else {
@@ -154,7 +154,7 @@ index 01a2cda5..e68a3316 100644
  	}
  
  	if (is_port)
-@@ -3717,9 +3726,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
+@@ -3728,9 +3737,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
  
  	sock_state_print(s);
  
@@ -166,7 +166,7 @@ index 01a2cda5..e68a3316 100644
  			int_to_str(s->rport, port_name), NULL);
  
  	proc_ctx_print(s);
-@@ -3922,7 +3931,7 @@ static int unix_show(struct filter *f)
+@@ -3933,7 +3942,7 @@ static int unix_show(struct filter *f)
  			if (!p)
  				u->peer_name = "?";
  			else
@@ -175,7 +175,7 @@ index 01a2cda5..e68a3316 100644
  		}
  
  		if (f->f) {
-@@ -4406,9 +4415,10 @@ static int netlink_show_one(struct filter *f,
+@@ -4417,9 +4426,10 @@ static int netlink_show_one(struct filter *f,
  			strncpy(procname, "kernel", 7);
  		} else if (pid > 0) {
  			FILE *fp;
@@ -187,7 +187,7 @@ index 01a2cda5..e68a3316 100644
  			if ((fp = fopen(procname, "r")) != NULL) {
  				if (fscanf(fp, "%*d (%[^)])", procname) == 1) {
  					snprintf(procname+strlen(procname),
-@@ -4451,7 +4461,7 @@ static int netlink_show_one(struct filter *f,
+@@ -4462,7 +4472,7 @@ static int netlink_show_one(struct filter *f,
  		else if (pid > 0)
  			getpidcon(pid, &pid_context);
  
@@ -197,5 +197,5 @@ index 01a2cda5..e68a3316 100644
  	}
  
 -- 
-2.25.0
+2.26.0
 
