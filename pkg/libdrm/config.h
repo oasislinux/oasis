@@ -1,4 +1,4 @@
-#define HAVE_ALLOCA_H
+#define HAVE_ALLOCA_H 1
 #define HAVE_CAIRO 0
 #define HAVE_EXYNOS 0
 #define HAVE_FREEDRENO_KGSL 0
@@ -6,8 +6,8 @@
 #define HAVE_LIB_ATOMIC_OPS 0
 #define HAVE_OPEN_MEMSTREAM 1
 #define HAVE_RADEON 0
-#define HAVE_SYS_SELECT_H
-#undef HAVE_SYS_SYSCTL_H
+#define HAVE_SYS_SELECT_H 1
+#define HAVE_SYS_SYSCTL_H 0
 #define HAVE_VALGRIND 0
 #define HAVE_VC4 0
 #define HAVE_VISIBILITY 1
