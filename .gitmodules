@@ -42,6 +42,7 @@
 [submodule "pkg/e2fsprogs/src"]
 	path = pkg/e2fsprogs/src
 	url = https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git
+	ignore = all
 [submodule "pkg/efibootmgr/src"]
 	path = pkg/efibootmgr/src
 	url = https://github.com/rhinstaller/efibootmgr
