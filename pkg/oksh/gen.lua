@@ -3,6 +3,7 @@ cflags{
 	'-D EMACS',
 	'-D SMALL',
 	'-D VI',
+	'-I $dir',
 }
 
 exe('ksh', [[
