@@ -153,9 +153,6 @@
 	path = pkg/libxkbcommon/src
 	url = https://github.com/xkbcommon/libxkbcommon.git
 	ignore = all
-[submodule "pkg/loksh/src"]
-	path = pkg/loksh/src
-	url = https://github.com/dimkr/loksh
 [submodule "pkg/mc/src"]
 	path = pkg/mc/src
 	url = https://github.com/oridb/mc
@@ -219,6 +216,10 @@
 [submodule "pkg/nginx/src"]
 	path = pkg/nginx/src
 	url = https://github.com/nginx/nginx
+[submodule "pkg/oksh/src"]
+	path = pkg/oksh/src
+	url = https://github.com/ibara/oksh.git
+	ignore = all
 [submodule "pkg/openssh/src"]
 	path = pkg/openssh/src
 	url = https://github.com/openssh/openssh-portable
