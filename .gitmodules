@@ -14,7 +14,7 @@
 	url = https://github.com/onetrueawk/awk
 [submodule "pkg/bc/src"]
 	path = pkg/bc/src
-	url = https://github.com/gavinhoward/bc
+	url = https://git.yzena.com/gavin/bc.git
 [submodule "pkg/bearssl/src"]
 	path = pkg/bearssl/src
 	url = https://www.bearssl.org/git/BearSSL
