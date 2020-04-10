@@ -1,4 +1,4 @@
-From 9d1dae59f853865a5c1f00e4b6eacbef0a8b2476 Mon Sep 17 00:00:00 2001
+From 6785ecc1baea8f396b6a90a62cee94522a9744cc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/bpf.c b/bpf.c
-index b42cf29d..5befe454 100644
+index 0a47766e..a2bebb82 100644
 --- a/bpf.c
 +++ b/bpf.c
 @@ -43,7 +43,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -55,18 +55,18 @@ index a58fa921..d5f2dc1d 100644
  	if (len > (int) sizeof(filter))
  		len = sizeof(filter);
 diff --git a/sched.c b/sched.c
-index 417ff742..ab21fa67 100644
+index 788ef39b..2e5775d5 100644
 --- a/sched.c
 +++ b/sched.c
-@@ -92,7 +92,7 @@ static void
+@@ -94,7 +94,7 @@ static void
  print_sched_attr(struct tcb *const tcp, const kernel_ulong_t addr,
  		 unsigned int usize)
  {
 -	struct sched_attr attr = {};
 +	struct sched_attr attr = {0};
  	unsigned int size;
+ 	bool is_set = false;
  
- 	if (usize) {
 diff --git a/signal.c b/signal.c
 index 3cb54bb3..bc03dae8 100644
 --- a/signal.c
@@ -81,10 +81,10 @@ index 3cb54bb3..bc03dae8 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/strace.c b/strace.c
-index e8bbf0ed..8ef16338 100644
+index 19f25be5..f46b25d4 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -2837,7 +2837,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -3205,7 +3205,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -134,10 +134,10 @@ index c94926d1..dedb8754 100644
  	ioctl(-1, BTRFS_IOC_SPACE_INFO, NULL);
  	printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n",
 diff --git a/tests/clock_nanosleep.c b/tests/clock_nanosleep.c
-index d7ed269a..eed3e996 100644
+index 854fdb3f..0de48963 100644
 --- a/tests/clock_nanosleep.c
 +++ b/tests/clock_nanosleep.c
-@@ -36,7 +36,7 @@ main(void)
+@@ -39,7 +39,7 @@ main(void)
  		.ts = { .tv_sec = 0xc0de2, .tv_nsec = 0xc0de3 },
  		.pad = { 0xdeadbeef, 0xbadc0ded }
  	};
@@ -212,10 +212,10 @@ index 29b0cadd..89faf508 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 diff --git a/tests/waitid.c b/tests/waitid.c
-index 8c87b7c4..c37736b7 100644
+index f6738e18..d9ce1105 100644
 --- a/tests/waitid.c
 +++ b/tests/waitid.c
-@@ -130,7 +130,7 @@ do_waitid(const unsigned int idtype,
+@@ -202,7 +202,7 @@ do_waitid(const unsigned int idtype,
  	  const unsigned int options,
  	  const struct rusage *const rusage)
  {
@@ -225,5 +225,5 @@ index 8c87b7c4..c37736b7 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.25.0
+2.26.0
 

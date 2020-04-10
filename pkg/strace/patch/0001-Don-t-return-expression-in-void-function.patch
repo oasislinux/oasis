@@ -1,4 +1,4 @@
-From 29761222c4b0a5688c21a99ae4b8241bb0209ce5 Mon Sep 17 00:00:00 2001
+From 16cb24454fc4a2aa3971507c96a7c985fe39a041 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 5 Jul 2019 20:52:24 -0700
 Subject: [PATCH] Don't return expression in void function
@@ -8,10 +8,10 @@ Subject: [PATCH] Don't return expression in void function
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/defs.h b/defs.h
-index 06bf1248..12c5b92f 100644
+index 0968bc35..961b84fe 100644
 --- a/defs.h
 +++ b/defs.h
-@@ -667,7 +667,7 @@ extern bool pathtrace_match_set(struct tcb *, struct path_set *);
+@@ -676,7 +676,7 @@ extern bool pathtrace_match_set(struct tcb *, struct path_set *);
  static inline void
  pathtrace_select(const char *path)
  {
@@ -21,5 +21,5 @@ index 06bf1248..12c5b92f 100644
  
  static inline bool
 -- 
-2.23.0
+2.26.0
 

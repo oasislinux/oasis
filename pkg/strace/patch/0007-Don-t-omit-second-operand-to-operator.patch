@@ -1,18 +1,19 @@
-From 15b2616e6f1f03c10db8ac48371c63f1200e2390 Mon Sep 17 00:00:00 2001
+From 7ba3679ddf2c76b6ec0a86ee84e316d2ed06cf7b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
 
 ---
- open.c  | 5 +++--
- prctl.c | 2 +-
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ open.c   | 5 +++--
+ prctl.c  | 2 +-
+ strace.c | 6 +++---
+ 3 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/open.c b/open.c
-index 8ac6de83..6b94453f 100644
+index 690453ed..1960ea1c 100644
 --- a/open.c
 +++ b/open.c
-@@ -72,8 +72,9 @@ sprint_open_modes(unsigned int flags)
+@@ -77,8 +77,9 @@ sprint_open_modes64(uint64_t flags)
  	}
  	*p = '\0';
  
@@ -23,9 +24,9 @@ index 8ac6de83..6b94453f 100644
 +	return str ? str : outstr;
  }
  
- void
+ const char *
 diff --git a/prctl.c b/prctl.c
-index 2e918be8..67769ca9 100644
+index b904fa34..1366a89e 100644
 --- a/prctl.c
 +++ b/prctl.c
 @@ -76,7 +76,7 @@ sprint_sve_val(kernel_ulong_t arg)
@@ -37,6 +38,32 @@ index 2e918be8..67769ca9 100644
  
  	return out;
  }
+diff --git a/strace.c b/strace.c
+index f46b25d4..7b03bc27 100644
+--- a/strace.c
++++ b/strace.c
+@@ -2097,7 +2097,7 @@ init(int argc, char *argv[])
+ 			break;
+ 		case GETOPT_TS:
+ 			tflag_long_set = true;
+-			if (parse_ts_arg(optarg ?: tflag_str))
++			if (parse_ts_arg(optarg ? optarg : tflag_str))
+ 				error_opt_arg(c, lopt, optarg);
+ 			break;
+ 		case 'T':
+@@ -2194,10 +2194,10 @@ init(int argc, char *argv[])
+ 			qualify_kvm(optarg);
+ 			break;
+ 		case GETOPT_QUAL_QUIET:
+-			qualify_quiet(optarg ?: qflag_qual);
++			qualify_quiet(optarg ? optarg : qflag_qual);
+ 			break;
+ 		case GETOPT_QUAL_DECODE_FD:
+-			qualify_decode_fd(optarg ?: yflag_qual);
++			qualify_decode_fd(optarg ? optarg : yflag_qual);
+ 			break;
+ 		default:
+ 			error_msg_and_help(NULL);
 -- 
-2.25.0
+2.26.0
 

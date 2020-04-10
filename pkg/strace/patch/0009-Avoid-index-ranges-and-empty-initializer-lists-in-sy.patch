@@ -1,4 +1,4 @@
-From 7b74b40431f95aeb4b6d6d75e7e3bcd84f04dd54 Mon Sep 17 00:00:00 2001
+From 81f20af07b260c251a55f95d39da1b2acdc6e21d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 22:29:34 -0700
 Subject: [PATCH] Avoid index ranges and empty initializer lists in syscallent
@@ -19,10 +19,10 @@ Subject: [PATCH] Avoid index ranges and empty initializer lists in syscallent
  linux/s390x/syscallent.h       | 78 +++++++++++++++++-----------------
  linux/sh/syscallent.h          | 12 +++---
  linux/sh64/syscallent.h        | 22 ++++++----
- linux/sparc/syscallent.h       |  6 +--
- linux/sparc64/syscallent.h     | 38 ++++++++---------
+ linux/sparc/syscallent.h       |  4 +-
+ linux/sparc64/syscallent.h     | 36 ++++++++--------
  linux/xtensa/syscallent.h      | 32 +++++++-------
- 17 files changed, 175 insertions(+), 169 deletions(-)
+ 17 files changed, 173 insertions(+), 167 deletions(-)
 
 diff --git a/linux/alpha/syscallent.h b/linux/alpha/syscallent.h
 index ee8a8f9e..9e124d94 100644
@@ -273,7 +273,7 @@ index c934ffbe..fc42e467 100644
  [287] = { 4,	0,		SEN(request_key),		"request_key"		},
  [288] = { 5,	0,		SEN(keyctl),			"keyctl"		},
 diff --git a/linux/mips/syscallent-compat.h b/linux/mips/syscallent-compat.h
-index 690cc823..26faaabd 100644
+index 97d64500..dfd7e7ca 100644
 --- a/linux/mips/syscallent-compat.h
 +++ b/linux/mips/syscallent-compat.h
 @@ -69,13 +69,13 @@
@@ -985,7 +985,7 @@ index 9a48cf0e..7607ceb7 100644
  [323] = { 4,	TD|TF,		SEN(openat),			"openat"		},
  [324] = { 3,	TD|TF,		SEN(mkdirat),			"mkdirat"		},
 diff --git a/linux/sparc/syscallent.h b/linux/sparc/syscallent.h
-index 6acce0c8..99513f92 100644
+index b5603041..83a53e06 100644
 --- a/linux/sparc/syscallent.h
 +++ b/linux/sparc/syscallent.h
 @@ -57,7 +57,7 @@
@@ -1006,17 +1006,8 @@ index 6acce0c8..99513f92 100644
  [165] = { 4,	TF,		SEN(quotactl),			"quotactl"		},
  [166] = { 1,	0,		SEN(set_tid_address),		"set_tid_address"	},
  [167] = { 5,	TF,		SEN(mount),			"mount"			},
-@@ -272,7 +272,7 @@
- [264] = { 1,	0,		SEN(timer_getoverrun),		"timer_getoverrun"	},
- [265] = { 1,	0,		SEN(timer_delete),		"timer_delete"		},
- [266] = { 3,	0,		SEN(timer_create),		"timer_create"		},
--[267] = { },
-+/* [267] - unused */
- [268] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
- [269] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
- [270] = { 3,	0,		SEN(io_submit),			"io_submit"		},
 diff --git a/linux/sparc64/syscallent.h b/linux/sparc64/syscallent.h
-index e7f25646..e00b1098 100644
+index e498afeb..edc9384a 100644
 --- a/linux/sparc64/syscallent.h
 +++ b/linux/sparc64/syscallent.h
 @@ -36,10 +36,10 @@
@@ -1126,15 +1117,6 @@ index e7f25646..e00b1098 100644
  [232] = { 6,	TD,		SEN(splice),			"splice"		},
  [233] = { 1,	0,		SEN(stime),			"stime"			},
  [234] = { 3,	TF|TSF|TSFA,	SEN(statfs64),			"statfs64"		},
-@@ -270,7 +270,7 @@
- [264] = { 1,	0,		SEN(timer_getoverrun),		"timer_getoverrun"	},
- [265] = { 1,	0,		SEN(timer_delete),		"timer_delete"		},
- [266] = { 3,	0,		SEN(timer_create),		"timer_create"		},
--[267] = { },
-+/* [267] - unused */
- [268] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
- [269] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
- [270] = { 3,	0,		SEN(io_submit),			"io_submit"		},
 diff --git a/linux/xtensa/syscallent.h b/linux/xtensa/syscallent.h
 index d4823484..571dd0eb 100644
 --- a/linux/xtensa/syscallent.h
@@ -1261,5 +1243,5 @@ index d4823484..571dd0eb 100644
  [321] = { 6,	TD|TF,		SEN(fanotify_mark),		"fanotify_mark"		},
  [322] = { 6,	0,		SEN(process_vm_readv),		"process_vm_readv"	},
 -- 
-2.25.0
+2.26.0
 

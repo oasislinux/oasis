@@ -1,7 +1,8 @@
 diff --git a/xlat/btrfs_features_compat.h b/xlat/btrfs_features_compat.h
---- a/xlat/btrfs_features_compat.h	Thu Nov 28 14:53:27 2019
-+++ b/xlat/btrfs_features_compat.h	Thu Jan 30 21:12:47 2020
-@@ -13,13 +13,14 @@
+index d74af3154..70331b1d7 100644
+--- a/xlat/btrfs_features_compat.h
++++ b/xlat/btrfs_features_compat.h
+@@ -13,13 +13,14 @@ extern const struct xlat btrfs_features_compat[];
  # else
  
  static const struct xlat_data btrfs_features_compat_xdata[] = {
@@ -15,16 +16,17 @@ diff --git a/xlat/btrfs_features_compat.h b/xlat/btrfs_features_compat.h
 - .size = ARRAY_SIZE(btrfs_features_compat_xdata),
 + .size = ARRAY_SIZE(btrfs_features_compat_xdata) - 1,
   .type = XT_NORMAL,
- } };
- 
+  .flags_mask = 0
+   ,
 diff --git a/xlat/mq_attr_flags.h b/xlat/mq_attr_flags.h
---- a/xlat/mq_attr_flags.h	Thu Nov 28 14:53:27 2019
-+++ b/xlat/mq_attr_flags.h	Thu Jan 30 21:03:53 2020
-@@ -16,13 +16,14 @@
- #if defined(O_NONBLOCK) || (defined(HAVE_DECL_O_NONBLOCK) && HAVE_DECL_O_NONBLOCK)
-   XLAT(O_NONBLOCK),
+index 9dfbe94d8..84ec9cd3c 100644
+--- a/xlat/mq_attr_flags.h
++++ b/xlat/mq_attr_flags.h
+@@ -18,13 +18,14 @@ static const struct xlat_data mq_attr_flags_xdata[] = {
+  #define XLAT_VAL_0 ((unsigned) (O_NONBLOCK))
+  #define XLAT_STR_0 STRINGIFY(O_NONBLOCK)
  #endif
-+  {0}
++  {0},
  };
  #  if !(defined HAVE_M32_MPERS || defined HAVE_MX32_MPERS)
  static
@@ -34,14 +36,15 @@ diff --git a/xlat/mq_attr_flags.h b/xlat/mq_attr_flags.h
 - .size = ARRAY_SIZE(mq_attr_flags_xdata),
 + .size = ARRAY_SIZE(mq_attr_flags_xdata) - 1,
   .type = XT_NORMAL,
- } };
- 
+  .flags_mask = 0
+ #  ifdef XLAT_VAL_0
 diff --git a/xlat/sigprof_codes.h b/xlat/sigprof_codes.h
---- a/xlat/sigprof_codes.h	Thu Nov 28 14:53:27 2019
-+++ b/xlat/sigprof_codes.h	Thu Jan 30 21:04:28 2020
-@@ -16,13 +16,14 @@
- #if defined(PROF_SIG) || (defined(HAVE_DECL_PROF_SIG) && HAVE_DECL_PROF_SIG)
-   XLAT(PROF_SIG),
+index 65614dc28..a173d59b7 100644
+--- a/xlat/sigprof_codes.h
++++ b/xlat/sigprof_codes.h
+@@ -18,13 +18,14 @@ static const struct xlat_data sigprof_codes_xdata[] = {
+  #define XLAT_VAL_0 ((unsigned) (PROF_SIG))
+  #define XLAT_STR_0 STRINGIFY(PROF_SIG)
  #endif
 +  {0}
  };
@@ -53,14 +56,15 @@ diff --git a/xlat/sigprof_codes.h b/xlat/sigprof_codes.h
 - .size = ARRAY_SIZE(sigprof_codes_xdata),
 + .size = ARRAY_SIZE(sigprof_codes_xdata) - 1,
   .type = XT_NORMAL,
- } };
- 
+  .flags_mask = 0
+ #  ifdef XLAT_VAL_0
 diff --git a/xlat/sock_ipx_options.h b/xlat/sock_ipx_options.h
---- a/xlat/sock_ipx_options.h	Thu Nov 28 14:53:27 2019
-+++ b/xlat/sock_ipx_options.h	Thu Jan 30 20:29:04 2020
-@@ -16,11 +16,12 @@
- #if defined(IPX_TYPE) || (defined(HAVE_DECL_IPX_TYPE) && HAVE_DECL_IPX_TYPE)
-   XLAT(IPX_TYPE),
+index 166d010dc..527089bc0 100644
+--- a/xlat/sock_ipx_options.h
++++ b/xlat/sock_ipx_options.h
+@@ -18,11 +18,12 @@ static const struct xlat_data sock_ipx_options_xdata[] = {
+  #define XLAT_VAL_0 ((unsigned) (IPX_TYPE))
+  #define XLAT_STR_0 STRINGIFY(IPX_TYPE)
  #endif
 +  {0}
  };
@@ -70,5 +74,5 @@ diff --git a/xlat/sock_ipx_options.h b/xlat/sock_ipx_options.h
 - .size = ARRAY_SIZE(sock_ipx_options_xdata),
 + .size = ARRAY_SIZE(sock_ipx_options_xdata) - 1,
   .type = XT_NORMAL,
- } };
- 
+  .flags_mask = 0
+ #  ifdef XLAT_VAL_0

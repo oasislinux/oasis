@@ -1,15 +1,30 @@
-From b915ef95a47e0b85988e4091366001f8f3927912 Mon Sep 17 00:00:00 2001
+From 7ffe2fa8fa0a4d5dea1c0755a74d9cba5522a361 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:58:46 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
 
 ---
+ count.c       | 2 +-
  desc.c        | 7 ++++---
+ nlattr.c      | 2 +-
  socketutils.c | 4 ++--
  syscall.c     | 2 +-
  util.c        | 5 ++---
- 4 files changed, 9 insertions(+), 9 deletions(-)
+ 6 files changed, 11 insertions(+), 11 deletions(-)
 
+diff --git a/count.c b/count.c
+index a397eba2..89682ae9 100644
+--- a/count.c
++++ b/count.c
+@@ -414,7 +414,7 @@ call_summary_pers(FILE *outf)
+ 		fprintf(outf, column_fmts[i], (val_), cwidths[c]); \
+ 		break
+ 
+-	const char *column_fmts[last_column + 1];
++	const char *column_fmts[ARRAY_SIZE(columns)];
+ 	for (size_t i = 0; i <= last_column; ++i) {
+ 		const size_t c = columns[i];
+ 
 diff --git a/desc.c b/desc.c
 index 92e6fe16..8f705d70 100644
 --- a/desc.c
@@ -41,8 +56,21 @@ index 92e6fe16..8f705d70 100644
  			tprints("{");
  			/* NB: kernel requires data[1] == NSIG_BYTES */
  			print_sigset_addr_len(tcp, data[0], data[1]);
+diff --git a/nlattr.c b/nlattr.c
+index 7f13642c..247ba2d5 100644
+--- a/nlattr.c
++++ b/nlattr.c
+@@ -341,7 +341,7 @@ decode_nla_hwaddr(struct tcb *const tcp,
+ 	if (len > MAX_ADDR_LEN)
+ 		return false;
+ 
+-	uint8_t buf[len];
++	uint8_t buf[MAX_ADDR_LEN];
+ 	const uintptr_t arphrd = (uintptr_t) opaque_data;
+ 
+ 	if (!umoven_or_printaddr(tcp, addr, len, buf)) {
 diff --git a/socketutils.c b/socketutils.c
-index d6191187..6ce9bc30 100644
+index be459714..819abc92 100644
 --- a/socketutils.c
 +++ b/socketutils.c
 @@ -144,7 +144,7 @@ inet_parse_response(const void *const data, const int data_len,
@@ -64,10 +92,10 @@ index d6191187..6ce9bc30 100644
  		if (!inet_ntop(diag_msg->idiag_family, diag_msg->id.idiag_dst,
  			       dst_buf, text_size))
 diff --git a/syscall.c b/syscall.c
-index fadd3b55..ea63216c 100644
+index fd7a3d84..d8a37a07 100644
 --- a/syscall.c
 +++ b/syscall.c
-@@ -293,7 +293,7 @@ decode_socket_subcall(struct tcb *tcp)
+@@ -295,7 +295,7 @@ decode_socket_subcall(struct tcb *tcp)
  
  	const kernel_ulong_t scno = SYS_socket_subcall + call;
  	const unsigned int nargs = sysent[scno].nargs;
@@ -77,10 +105,10 @@ index fadd3b55..ea63216c 100644
  	if (umoven(tcp, tcp->u_arg[1], nargs * current_wordsize, buf) < 0)
  		return;
 diff --git a/util.c b/util.c
-index 3c630e9e..671a5c10 100644
+index 5874e86d..522e772e 100644
 --- a/util.c
 +++ b/util.c
-@@ -449,8 +449,7 @@ enum sock_proto
+@@ -481,8 +481,7 @@ enum sock_proto
  getfdproto(struct tcb *tcp, int fd)
  {
  #ifdef HAVE_SYS_XATTR_H
@@ -90,7 +118,7 @@ index 3c630e9e..671a5c10 100644
  	ssize_t r;
  	char path[sizeof("/proc/%u/fd/%u") + 2 * sizeof(int)*3];
  
-@@ -458,7 +457,7 @@ getfdproto(struct tcb *tcp, int fd)
+@@ -490,7 +489,7 @@ getfdproto(struct tcb *tcp, int fd)
  		return SOCK_PROTO_UNKNOWN;
  
  	xsprintf(path, "/proc/%u/fd/%u", tcp->pid, fd);
@@ -100,5 +128,5 @@ index 3c630e9e..671a5c10 100644
  		return SOCK_PROTO_UNKNOWN;
  	else {
 -- 
-2.23.0
+2.26.0
 

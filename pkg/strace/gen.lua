@@ -222,6 +222,7 @@ local srcs = {
 	'perf.c',
 	'perf_ioctl.c',
 	'personality.c',
+	'pidfd_getfd.c',
 	'pidfd_open.c',
 	'pkeys.c',
 	'poll.c',
