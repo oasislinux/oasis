@@ -144,6 +144,11 @@ lib('libcrypto.a', [[crypto/(
 	cast/(c_skey.c c_ecb.c c_enc.c c_cfb64.c c_ofb64.c)
 	chacha/chacha.c
 	cmac/(cmac.c cm_ameth.c cm_pmeth.c)
+	cms/(
+		cms_asn1.c cms_att.c cms_cd.c cms_dd.c cms_enc.c cms_env.c cms_err.c
+		cms_ess.c cms_io.c cms_kari.c cms_lib.c cms_pwri.c cms_sd.c
+		cms_smime.c
+	)
 	comp/(comp_lib.c comp_err.c c_rle.c c_zlib.c)
 	conf/(
 		conf_err.c conf_lib.c conf_api.c conf_def.c conf_mod.c
@@ -291,7 +296,6 @@ lib('libssl.a', [[ssl/(
 	bs_cbs.c
 	d1_both.c
 	d1_clnt.c
-	d1_enc.c
 	d1_lib.c
 	d1_pkt.c
 	d1_srtp.c
@@ -308,6 +312,7 @@ lib('libssl.a', [[ssl/(
 	ssl_clnt.c
 	ssl_err.c
 	ssl_init.c
+	ssl_kex.c
 	ssl_lib.c
 	ssl_methods.c
 	ssl_packet.c
@@ -325,12 +330,16 @@ lib('libssl.a', [[ssl/(
 	t1_lib.c
 	tls13_buffer.c
 	tls13_client.c
+	tls13_error.c
 	tls13_handshake.c
 	tls13_handshake_msg.c
 	tls13_key_schedule.c
+	tls13_key_share.c
+	tls13_legacy.c
 	tls13_lib.c
 	tls13_record.c
 	tls13_record_layer.c
+	tls13_server.c
 ) libcrypto.a.d]])
 file('lib/libssl.a', '644', '$outdir/libssl.a')
 
@@ -342,7 +351,7 @@ lib('libtls.a', [[tls/(
 file('lib/libtls.a', '644', '$outdir/libtls.a')
 
 exe('openssl', [[apps/openssl/(
-	apps.c apps_posix.c asn1pars.c ca.c certhash.c ciphers.c crl.c
+	apps.c apps_posix.c asn1pars.c ca.c certhash.c ciphers.c cms.c crl.c
 	crl2p7.c dgst.c dh.c dhparam.c dsa.c dsaparam.c ec.c ecparam.c enc.c
 	errstr.c gendh.c gendsa.c genpkey.c genrsa.c nseq.c ocsp.c
 	openssl.c passwd.c pkcs12.c pkcs7.c pkcs8.c pkey.c pkeyparam.c
