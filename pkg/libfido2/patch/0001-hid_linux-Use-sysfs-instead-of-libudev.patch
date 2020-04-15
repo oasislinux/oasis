@@ -1,4 +1,4 @@
-From e1f35c6377491e56e2c93391e9e68f2bd180fd8f Mon Sep 17 00:00:00 2001
+From eec0c3a3cf1528185c8e1bdcf94733e27d5d8d51 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 1 Nov 2019 19:39:45 -0700
 Subject: [PATCH] hid_linux: Use sysfs instead of libudev
@@ -9,10 +9,10 @@ Subject: [PATCH] hid_linux: Use sysfs instead of libudev
  2 files changed, 39 insertions(+), 66 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 9481c46..402220e 100644
+index 0bb2e87..5262ca8 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -91,8 +91,6 @@ else()
+@@ -100,8 +100,6 @@ else()
  	endif()
  
  	if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
@@ -20,9 +20,9 @@ index 9481c46..402220e 100644
 -		set(UDEV_NAME "udev")
  		# Define be32toh().
  		add_definitions(-D_GNU_SOURCE)
- 	elseif(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+ 		# If using hidapi, use hidapi-hidraw.
 diff --git a/src/hid_linux.c b/src/hid_linux.c
-index c7cabc9..db8cbc4 100644
+index 99c5afb..fa30ab2 100644
 --- a/src/hid_linux.c
 +++ b/src/hid_linux.c
 @@ -9,8 +9,9 @@
@@ -35,7 +35,7 @@ index c7cabc9..db8cbc4 100644
 +#include <stdio.h>
  #include <string.h>
  #include <unistd.h>
- 
+ #include <errno.h>
 @@ -147,23 +148,20 @@ is_fido(const char *path)
  }
  
@@ -153,7 +153,7 @@ index c7cabc9..db8cbc4 100644
 +}
 +
  int
- fido_dev_info_manifest(fido_dev_info_t *devlist, size_t ilen, size_t *olen)
+ fido_hid_manifest(fido_dev_info_t *devlist, size_t ilen, size_t *olen)
  {
 -	struct udev		*udev = NULL;
 -	struct udev_enumerate	*udev_enum = NULL;
@@ -165,7 +165,7 @@ index c7cabc9..db8cbc4 100644
  
  	*olen = 0;
  
-@@ -256,29 +238,22 @@ fido_dev_info_manifest(fido_dev_info_t *devlist, size_t ilen, size_t *olen)
+@@ -256,17 +238,11 @@ fido_hid_manifest(fido_dev_info_t *devlist, size_t ilen, size_t *olen)
  	if (devlist == NULL)
  		return (FIDO_ERR_INVALID_ARGUMENT);
  
@@ -184,6 +184,10 @@ index c7cabc9..db8cbc4 100644
 -		if (copy_info(&devlist[*olen], udev, udev_entry) == 0) {
 +	for (i = 0; i < n; ++i) {
 +		if (copy_info(&devlist[*olen], entries[i]->d_name) == 0) {
+ 			devlist[*olen].io = (fido_dev_io_t) {
+ 				fido_hid_open,
+ 				fido_hid_close,
+@@ -276,15 +252,14 @@ fido_hid_manifest(fido_dev_info_t *devlist, size_t ilen, size_t *olen)
  			if (++(*olen) == ilen)
  				break;
  		}
@@ -204,5 +208,5 @@ index c7cabc9..db8cbc4 100644
  }
  
 -- 
-2.26.0
+2.26.1
 

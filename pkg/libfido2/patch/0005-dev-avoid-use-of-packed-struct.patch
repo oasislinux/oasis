@@ -1,28 +1,31 @@
-From 38ddc101ebcf864112f646026e149a6b0cc7f44a Mon Sep 17 00:00:00 2001
+From 99d08a98c903a38ce4ca2f689feb871c1ef01a26 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 26 Nov 2019 19:02:46 -0800
 Subject: [PATCH] dev: avoid use of packed struct
 
 ---
- src/dev.c   | 13 +++++++++++--
- src/types.h |  5 ++---
- 2 files changed, 13 insertions(+), 5 deletions(-)
+ src/dev.c        | 15 ++++++++++++---
+ src/fido/types.h |  5 ++---
+ 2 files changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/src/dev.c b/src/dev.c
-index d0efac7..d24f707 100644
+index 51b9935..6049cc6 100644
 --- a/src/dev.c
 +++ b/src/dev.c
-@@ -102,19 +102,28 @@ fido_dev_open_tx(fido_dev_t *dev, const char *path)
- static int
+@@ -145,21 +145,30 @@ static int
  fido_dev_open_rx(fido_dev_t *dev, int ms)
  {
-+	uint8_t		data[17];
- 	const uint8_t	cmd = CTAP_FRAME_INIT | CTAP_CMD_INIT;
- 	int		n;
+ 	fido_cbor_info_t	*info = NULL;
++	uint8_t			 data[17];
+ 	int			 reply_len;
+ 	int			 r;
  
--	if ((n = fido_rx(dev, cmd, &dev->attr, sizeof(dev->attr), ms)) < 0) {
-+	if ((n = fido_rx(dev, cmd, data, sizeof(data), ms)) < 0) {
+-	if ((reply_len = fido_rx(dev, CTAP_CMD_INIT, &dev->attr,
+-	    sizeof(dev->attr), ms)) < 0) {
++	if ((reply_len = fido_rx(dev, CTAP_CMD_INIT, data,
++	    sizeof(data), ms)) < 0) {
  		fido_log_debug("%s: fido_rx", __func__);
+ 		r = FIDO_ERR_RX;
  		goto fail;
  	}
  
@@ -38,17 +41,17 @@ index d0efac7..d24f707 100644
  	dev->attr.nonce = dev->nonce;
  #endif
  
--	if ((size_t)n != sizeof(dev->attr) || dev->attr.nonce != dev->nonce) {
-+	if ((size_t)n != sizeof(data) || dev->attr.nonce != dev->nonce) {
+-	if ((size_t)reply_len != sizeof(dev->attr) ||
++	if ((size_t)reply_len != sizeof(data) ||
+ 	    dev->attr.nonce != dev->nonce) {
  		fido_log_debug("%s: invalid nonce", __func__);
- 		goto fail;
- 	}
-diff --git a/src/types.h b/src/types.h
-index 42ed1b7..af72710 100644
---- a/src/types.h
-+++ b/src/types.h
-@@ -148,9 +148,8 @@ typedef struct fido_dev_info {
- 	char    *product;      /* product string */
+ 		r = FIDO_ERR_RX;
+diff --git a/src/fido/types.h b/src/fido/types.h
+index 5df5e36..a8ce2ec 100644
+--- a/src/fido/types.h
++++ b/src/fido/types.h
+@@ -194,9 +194,8 @@ typedef struct fido_dev_info {
+ 	fido_dev_transport_t  transport;    /* transport functions */
  } fido_dev_info_t;
  
 -PACKED_TYPE(fido_ctap_info_t,
@@ -58,7 +61,7 @@ index 42ed1b7..af72710 100644
  	uint64_t nonce;    /* echoed nonce */
  	uint32_t cid;      /* channel id */
  	uint8_t  protocol; /* ctaphid protocol id */
-@@ -158,7 +157,7 @@ struct fido_ctap_info {
+@@ -204,7 +203,7 @@ struct fido_ctap_info {
  	uint8_t  minor;    /* minor version number */
  	uint8_t  build;    /* build version number */
  	uint8_t  flags;    /* capabilities flags; see FIDO_CAP_* */
@@ -66,7 +69,7 @@ index 42ed1b7..af72710 100644
 +} fido_ctap_info_t;
  
  typedef struct fido_dev {
- 	uint64_t          nonce;     /* issued nonce */
+ 	uint64_t              nonce;     /* issued nonce */
 -- 
-2.24.0
+2.26.1
 

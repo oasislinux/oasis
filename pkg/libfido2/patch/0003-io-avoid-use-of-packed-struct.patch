@@ -1,14 +1,14 @@
-From d72b3ec7c3a4afbc72c50379a65d5c4f2f7c5684 Mon Sep 17 00:00:00 2001
+From 4c52200f4480b8f0491d79df9934918762376d81 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 26 Nov 2019 18:52:13 -0800
 Subject: [PATCH] io: avoid use of packed struct
 
 ---
- src/io.c | 128 +++++++++++++++++++++++++++----------------------------
- 1 file changed, 62 insertions(+), 66 deletions(-)
+ src/io.c | 143 ++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 67 insertions(+), 76 deletions(-)
 
 diff --git a/src/io.c b/src/io.c
-index aa88720..caff99d 100644
+index af2f49a..9e6af3d 100644
 --- a/src/io.c
 +++ b/src/io.c
 @@ -9,25 +9,19 @@
@@ -50,40 +50,9 @@ index aa88720..caff99d 100644
  
  #ifndef MIN
  #define MIN(x, y) ((x) > (y) ? (y) : (x))
-@@ -36,22 +30,19 @@ struct frame {
- static size_t
- tx_preamble(fido_dev_t *d,  uint8_t cmd, const void *buf, size_t count)
- {
--	struct frame	*fp;
--	unsigned char	pkt[sizeof(*fp) + 1];
--	int		n;
-+	uint8_t	pkt[1 + CTAP_RPT_SIZE] = {0};
-+	int	n;
- 
- 	if (d->io.write == NULL || (cmd & 0x80) == 0)
- 		return (0);
- 
--	memset(&pkt, 0, sizeof(pkt));
--	fp = (struct frame *)(pkt + 1);
--	fp->cid = d->cid;
--	fp->body.init.cmd = 0x80 | cmd;
--	fp->body.init.bcnth = (count >> 8) & 0xff;
--	fp->body.init.bcntl = count & 0xff;
--	count = MIN(count, sizeof(fp->body.init.data));
-+	memcpy(&pkt[1], &d->cid, 4);
-+	pkt[1 + INIT_CMD] = 0x80 | cmd;
-+	pkt[1 + INIT_BCNTH] = (count >> 8) & 0xff;
-+	pkt[1 + INIT_BCNTL] = count & 0xff;
-+	count = MIN(count, CTAP_RPT_SIZE - INIT_DATA);
- 	if (count)
--		memcpy(&fp->body.init.data, buf, count);
-+		memcpy(&pkt[1 + INIT_DATA], buf, count);
- 
- 	n = d->io.write(d->io_handle, pkt, sizeof(pkt));
- 	if (n < 0 || (size_t)n != sizeof(pkt))
-@@ -63,19 +54,16 @@ tx_preamble(fido_dev_t *d,  uint8_t cmd, const void *buf, size_t count)
- static size_t
- tx_frame(fido_dev_t *d, int seq, const void *buf, size_t count)
+@@ -36,14 +30,11 @@ struct frame {
+ static int
+ tx_empty(fido_dev_t *d, uint8_t cmd)
  {
 -	struct frame	*fp;
 -	unsigned char	 pkt[sizeof(*fp) + 1];
@@ -91,23 +60,67 @@ index aa88720..caff99d 100644
 +	uint8_t	pkt[1 + CTAP_RPT_SIZE] = {0};
 +	int	n;
  
- 	if (d->io.write == NULL || seq < 0 || seq > UINT8_MAX)
- 		return (0);
+-	memset(&pkt, 0, sizeof(pkt));
+-	fp = (struct frame *)(pkt + 1);
+-	fp->cid = d->cid;
+-	fp->body.init.cmd = CTAP_FRAME_INIT | cmd;
++	memcpy(pkt + 1 + CID, &d->cid, 4);
++	pkt[1 + INIT_CMD] = CTAP_FRAME_INIT | cmd;
+ 
+ 	n = d->io.write(d->io_handle, pkt, sizeof(pkt));
+ 	if (n < 0 || (size_t)n != sizeof(pkt))
+@@ -55,18 +46,15 @@ tx_empty(fido_dev_t *d, uint8_t cmd)
+ static size_t
+ tx_preamble(fido_dev_t *d, uint8_t cmd, const void *buf, size_t count)
+ {
+-	struct frame	*fp;
+-	unsigned char	 pkt[sizeof(*fp) + 1];
+-	int		 n;
+-
+-	memset(&pkt, 0, sizeof(pkt));
+-	fp = (struct frame *)(pkt + 1);
+-	fp->cid = d->cid;
+-	fp->body.init.cmd = CTAP_FRAME_INIT | cmd;
+-	fp->body.init.bcnth = (count >> 8) & 0xff;
+-	fp->body.init.bcntl = count & 0xff;
+-	count = MIN(count, sizeof(fp->body.init.data));
+-	memcpy(&fp->body.init.data, buf, count);
++	uint8_t	pkt[1 + CTAP_RPT_SIZE] = {0};
++	int	n;
++
++	memcpy(pkt + 1 + CID, &d->cid, 4);
++	pkt[1 + INIT_CMD] = CTAP_FRAME_INIT | cmd;
++	pkt[1 + INIT_BCNTH] = (count >> 8) & 0xff;
++	pkt[1 + INIT_BCNTL] = count & 0xff;
++	count = MIN(count, CTAP_RPT_SIZE - INIT_DATA);
++	memcpy(pkt + 1 + INIT_DATA, buf, count);
+ 
+ 	n = d->io.write(d->io_handle, pkt, sizeof(pkt));
+ 	if (n < 0 || (size_t)n != sizeof(pkt))
+@@ -78,16 +66,13 @@ tx_preamble(fido_dev_t *d, uint8_t cmd, const void *buf, size_t count)
+ static size_t
+ tx_frame(fido_dev_t *d, uint8_t seq, const void *buf, size_t count)
+ {
+-	struct frame	*fp;
+-	unsigned char	 pkt[sizeof(*fp) + 1];
+-	int		 n;
++	uint8_t	pkt[1 + CTAP_RPT_SIZE] = {0};
++	int	n;
  
 -	memset(&pkt, 0, sizeof(pkt));
 -	fp = (struct frame *)(pkt + 1);
 -	fp->cid = d->cid;
--	fp->body.cont.seq = (uint8_t)seq;
+-	fp->body.cont.seq = seq;
 -	count = MIN(count, sizeof(fp->body.cont.data));
 -	memcpy(&fp->body.cont.data, buf, count);
-+	memcpy(&pkt[1], &d->cid, 4);
++	memcpy(pkt + 1 + CID, &d->cid, 4);
 +	pkt[1 + CONT_SEQ] = seq;
 +	count = MIN(count, CTAP_RPT_SIZE - CONT_DATA);
-+	memcpy(&pkt[1 + CONT_DATA], buf, count);
++	memcpy(pkt + 1 + CONT_DATA, buf, count);
  
  	n = d->io.write(d->io_handle, pkt, sizeof(pkt));
  	if (n < 0 || (size_t)n != sizeof(pkt))
-@@ -123,31 +111,34 @@ fido_tx(fido_dev_t *d, uint8_t cmd, const void *buf, size_t count)
+@@ -142,39 +127,42 @@ fido_tx(fido_dev_t *d, uint8_t cmd, const void *buf, size_t count)
  }
  
  static int
@@ -115,9 +128,6 @@ index aa88720..caff99d 100644
 +rx_frame(fido_dev_t *d, uint8_t *fp, int ms)
  {
  	int n;
- 
- 	if (d->io.read == NULL)
- 		return (-1);
  
 -	n = d->io.read(d->io_handle, (unsigned char *)fp, sizeof(*fp), ms);
 -	if (n < 0 || (size_t)n != sizeof(*fp))
@@ -129,8 +139,8 @@ index aa88720..caff99d 100644
  }
  
  static int
--rx_preamble(fido_dev_t *d, struct frame *fp, int ms)
-+rx_preamble(fido_dev_t *d, uint8_t *fp, int ms)
+-rx_preamble(fido_dev_t *d, uint8_t cmd, struct frame *fp, int ms)
++rx_preamble(fido_dev_t *d, uint8_t cmd, uint8_t *fp, int ms)
  {
 +	uint32_t cid;
 +
@@ -147,79 +157,71 @@ index aa88720..caff99d 100644
 +	} while (cid == d->cid &&
 +	    fp[INIT_CMD] == (CTAP_FRAME_INIT | CTAP_KEEPALIVE));
  
- 	return (0);
- }
-@@ -155,7 +146,8 @@ rx_preamble(fido_dev_t *d, struct frame *fp, int ms)
- int
- fido_rx(fido_dev_t *d, uint8_t cmd, void *buf, size_t count, int ms)
- {
--	struct frame	f;
-+	uint8_t		f[CTAP_RPT_SIZE];
-+	uint32_t	cid;
- 	uint16_t	r;
- 	uint16_t	flen;
- 	int		seq;
-@@ -166,7 +158,7 @@ fido_rx(fido_dev_t *d, uint8_t cmd, void *buf, size_t count, int ms)
+ 	fido_log_debug("%s: initiation frame at %p", __func__, (void *)fp);
+-	fido_log_xxd(fp, sizeof(*fp));
++	fido_log_xxd(fp, CTAP_RPT_SIZE);
+ 
+ #ifdef FIDO_FUZZ
+-	fp->body.init.cmd = (CTAP_FRAME_INIT | cmd);
++	fp[INIT_CMD] = (CTAP_FRAME_INIT | cmd);
+ #endif
+ 
+-	if (fp->cid != d->cid || fp->body.init.cmd != (CTAP_FRAME_INIT | cmd)) {
++	if (cid != d->cid || fp[INIT_CMD] != (CTAP_FRAME_INIT | cmd)) {
+ 		fido_log_debug("%s: cid (0x%x, 0x%x), cmd (0x%02x, 0x%02x)",
+-		    __func__, fp->cid, d->cid, fp->body.init.cmd, cmd);
++		    __func__, cid, d->cid, fp[INIT_CMD], cmd);
  		return (-1);
  	}
  
--	if (rx_preamble(d, &f, ms) < 0) {
-+	if (rx_preamble(d, f, ms) < 0) {
+@@ -184,15 +172,16 @@ rx_preamble(fido_dev_t *d, uint8_t cmd, struct frame *fp, int ms)
+ static int
+ rx(fido_dev_t *d, uint8_t cmd, unsigned char *buf, size_t count, int ms)
+ {
+-	struct frame f;
+-	uint16_t r, payload_len;
++	uint8_t		f[CTAP_RPT_SIZE];
++	uint32_t	cid;
++	uint16_t	r, payload_len;
+ 
+-	if (rx_preamble(d, cmd, &f, ms) < 0) {
++	if (rx_preamble(d, cmd, f, ms) < 0) {
  		fido_log_debug("%s: rx_preamble", __func__);
  		return (-1);
  	}
-@@ -175,34 +167,36 @@ fido_rx(fido_dev_t *d, uint8_t cmd, void *buf, size_t count, int ms)
- 	    (void *)&f, sizeof(f));
- 	fido_log_xxd(&f, sizeof(f));
  
-+	memcpy(&cid, &f[CID], 4);
-+
- #ifdef FIDO_FUZZ
--	f.cid = d->cid;
--	f.body.init.cmd = cmd;
-+	cid = d->cid;
-+	f[INIT_CMD] = cmd;
- #endif
+-	payload_len = (f.body.init.bcnth << 8) | f.body.init.bcntl;
++	payload_len = (f[INIT_BCNTH] << 8) | f[INIT_BCNTL];
+ 	fido_log_debug("%s: payload_len=%zu", __func__, (size_t)payload_len);
  
--	if (f.cid != d->cid || f.body.init.cmd != cmd) {
-+	if (cid != d->cid || f[INIT_CMD] != cmd) {
- 		fido_log_debug("%s: cid (0x%x, 0x%x), cmd (0x%02x, 0x%02x)",
--		    __func__, f.cid, d->cid, f.body.init.cmd, cmd);
-+		    __func__, cid, d->cid, f[INIT_CMD], cmd);
+ 	if (count < (size_t)payload_len) {
+@@ -200,16 +189,16 @@ rx(fido_dev_t *d, uint8_t cmd, unsigned char *buf, size_t count, int ms)
  		return (-1);
  	}
  
--	flen = (f.body.init.bcnth << 8) | f.body.init.bcntl;
-+	flen = (f[INIT_BCNTH] << 8) | f[INIT_BCNTL];
- 	if (count < (size_t)flen) {
- 		fido_log_debug("%s: count < flen (%zu, %zu)", __func__, count,
- 		    (size_t)flen);
- 		return (-1);
- 	}
--	if (flen < sizeof(f.body.init.data)) {
--		memcpy(buf, f.body.init.data, flen);
-+	if (flen < CTAP_RPT_SIZE - INIT_DATA) {
-+		memcpy(buf, &f[INIT_DATA], flen);
- 		return (flen);
+-	if (payload_len < sizeof(f.body.init.data)) {
+-		memcpy(buf, f.body.init.data, payload_len);
++	if (payload_len < CTAP_RPT_SIZE - INIT_DATA) {
++		memcpy(buf, f + INIT_DATA, payload_len);
+ 		return (payload_len);
  	}
  
 -	memcpy(buf, f.body.init.data, sizeof(f.body.init.data));
 -	r = sizeof(f.body.init.data);
-+	memcpy(buf, &f[INIT_DATA], CTAP_RPT_SIZE - INIT_DATA);
++	memcpy(buf, f + INIT_DATA, CTAP_RPT_SIZE - INIT_DATA);
 +	r = CTAP_RPT_SIZE - INIT_DATA;
- 	seq = 0;
  
- 	while ((size_t)r < flen) {
+ 	for (int seq = 0; (size_t)r < payload_len; seq++) {
 -		if (rx_frame(d, &f, ms) < 0) {
 +		if (rx_frame(d, f, ms) < 0) {
  			fido_log_debug("%s: rx_frame", __func__);
  			return (-1);
  		}
-@@ -211,24 +205,26 @@ fido_rx(fido_dev_t *d, uint8_t cmd, void *buf, size_t count, int ms)
- 		    __func__, (void *)&f, sizeof(f));
+@@ -218,23 +207,25 @@ rx(fido_dev_t *d, uint8_t cmd, unsigned char *buf, size_t count, int ms)
+ 		    (void *)&f);
  		fido_log_xxd(&f, sizeof(f));
  
-+		memcpy(&cid, &f[CID], 4);
++		memcpy(&cid, f + CID, 4);
 +
  #ifdef FIDO_FUZZ
 -		f.cid = d->cid;
@@ -228,28 +230,28 @@ index aa88720..caff99d 100644
 +		f[CONT_SEQ] = seq;
  #endif
  
--		if (f.cid != d->cid || f.body.cont.seq != seq++) {
-+		if (cid != d->cid || f[CONT_SEQ] != seq++) {
+-		if (f.cid != d->cid || f.body.cont.seq != seq) {
++		if (cid != d->cid || f[CONT_SEQ] != seq) {
  			fido_log_debug("%s: cid (0x%x, 0x%x), seq (%d, %d)",
 -			    __func__, f.cid, d->cid, f.body.cont.seq, seq);
 +			    __func__, cid, d->cid, f[CONT_SEQ], seq);
  			return (-1);
  		}
  
- 		uint8_t *p = (uint8_t *)buf + r;
- 
--		if ((size_t)(flen - r) > sizeof(f.body.cont.data)) {
--			memcpy(p, f.body.cont.data, sizeof(f.body.cont.data));
+-		if ((size_t)(payload_len - r) > sizeof(f.body.cont.data)) {
+-			memcpy(buf + r, f.body.cont.data,
+-			    sizeof(f.body.cont.data));
 -			r += sizeof(f.body.cont.data);
-+		if ((size_t)(flen - r) > CTAP_RPT_SIZE - CONT_DATA) {
-+			memcpy(p, &f[CONT_DATA], CTAP_RPT_SIZE - CONT_DATA);
++		if ((size_t)(payload_len - r) > CTAP_RPT_SIZE - CONT_DATA) {
++			memcpy(buf + r, f + CONT_DATA,
++			    CTAP_RPT_SIZE - CONT_DATA);
 +			r += CTAP_RPT_SIZE - CONT_DATA;
  		} else {
--			memcpy(p, f.body.cont.data, flen - r);
-+			memcpy(p, &f[CONT_DATA], flen - r);
- 			r += (flen - r); /* break */
+-			memcpy(buf + r, f.body.cont.data, payload_len - r);
++			memcpy(buf + r, f + CONT_DATA, payload_len - r);
+ 			r += (payload_len - r); /* break */
  		}
  	}
 -- 
-2.24.0
+2.26.1
 

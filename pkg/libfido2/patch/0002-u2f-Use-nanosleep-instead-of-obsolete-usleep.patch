@@ -1,4 +1,4 @@
-From 15ed617dd5a1773e318d88dce692767571275d59 Mon Sep 17 00:00:00 2001
+From 18e294353b75c7f7006c633b000e780bdb89f0f7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 26 Nov 2019 13:06:58 -0800
 Subject: [PATCH] u2f: Use nanosleep instead of obsolete usleep
@@ -10,7 +10,7 @@ POSIX.1-2008.
  1 file changed, 18 insertions(+), 10 deletions(-)
 
 diff --git a/src/u2f.c b/src/u2f.c
-index 82b289f..80fd14d 100644
+index 19a959d..3b01f61 100644
 --- a/src/u2f.c
 +++ b/src/u2f.c
 @@ -11,19 +11,27 @@
@@ -45,7 +45,7 @@ index 82b289f..80fd14d 100644
  
  static int
  sig_get(fido_blob_t *sig, const unsigned char **buf, size_t *len)
-@@ -161,8 +169,8 @@ send_dummy_register(fido_dev_t *dev, int ms)
+@@ -160,8 +168,8 @@ send_dummy_register(fido_dev_t *dev, int ms)
  			r = FIDO_ERR_RX;
  			goto fail;
  		}
@@ -56,7 +56,7 @@ index 82b289f..80fd14d 100644
  			r = FIDO_ERR_RX;
  			goto fail;
  		}
-@@ -338,8 +346,8 @@ do_auth(fido_dev_t *dev, const fido_blob_t *cdh, const char *rp_id,
+@@ -336,8 +344,8 @@ do_auth(fido_dev_t *dev, const fido_blob_t *cdh, const char *rp_id,
  			r = FIDO_ERR_RX;
  			goto fail;
  		}
@@ -67,7 +67,7 @@ index 82b289f..80fd14d 100644
  			r = FIDO_ERR_RX;
  			goto fail;
  		}
-@@ -646,8 +654,8 @@ u2f_register(fido_dev_t *dev, fido_cred_t *cred, int ms)
+@@ -643,8 +651,8 @@ u2f_register(fido_dev_t *dev, fido_cred_t *cred, int ms)
  			r = FIDO_ERR_RX;
  			goto fail;
  		}
@@ -79,5 +79,5 @@ index 82b289f..80fd14d 100644
  			goto fail;
  		}
 -- 
-2.26.0
+2.26.1
 

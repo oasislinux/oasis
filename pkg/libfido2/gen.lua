@@ -15,6 +15,7 @@ pkg.hdrs = copy('$outdir/include', '$srcdir/src', {
 	'fido/credman.h',
 	'fido/err.h',
 	'fido/param.h',
+	'fido/types.h',
 })
 pkg.deps = {
 	'$outdir/config.h',

@@ -1,29 +1,29 @@
-From 4f9ada2c0e453adf51c66afe11ce29cf5e41000f Mon Sep 17 00:00:00 2001
+From 6d0970678ad7ea140dc895722714ea9851017e0b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Nov 2019 23:46:22 -0800
 Subject: [PATCH] port to BearSSL
 
 ---
- CMakeLists.txt     |  32 +++---
+ CMakeLists.txt     |  42 +++----
  src/CMakeLists.txt |   4 +-
  src/aes256.c       |  61 +++++------
- src/assert.c       | 135 +++++++++----------------
- src/cbor.c         |  98 +++++++-----------
- src/cred.c         |  94 ++++++++---------
+ src/assert.c       | 135 ++++++++---------------
+ src/cbor.c         |  98 ++++++-----------
+ src/cred.c         |  81 ++++++--------
  src/credman.c      |  16 +--
- src/ecdh.c         |  55 ++++------
- src/eddsa.c        |  84 ---------------
- src/es256.c        | 247 +++++++--------------------------------------
+ src/ecdh.c         |  55 +++-------
+ src/eddsa.c        |  92 ----------------
+ src/es256.c        | 268 +++++++--------------------------------------
  src/fido.h         |   3 -
  src/fido/eddsa.h   |  22 ----
  src/fido/es256.h   |   5 -
  src/fido/rs256.h   |   4 -
- src/rs256.c        | 117 +--------------------
- src/u2f.c          | 109 ++++++++++----------
- 16 files changed, 286 insertions(+), 800 deletions(-)
+ src/rs256.c        | 117 +-------------------
+ src/u2f.c          | 109 +++++++++---------
+ 16 files changed, 280 insertions(+), 832 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 402220e..bdabd3a 100644
+index 5262ca8..67da04e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -52,13 +52,13 @@ endif()
@@ -43,32 +43,42 @@ index 402220e..bdabd3a 100644
  	set(MSVC_DISABLED_WARNINGS_LIST
  		"C4200" # nonstandard extension used: zero-sized array in
  			# struct/union;
-@@ -79,15 +79,19 @@ if(MSVC)
+@@ -79,24 +79,20 @@ if(MSVC)
  else()
  	include(FindPkgConfig)
  	pkg_search_module(CBOR libcbor)
--	pkg_search_module(CRYPTO libcrypto REQUIRED)
+-	pkg_search_module(CRYPTO libcrypto)
+ 
+-	# XXX workaround libcbor's missing .pc file
+-	if(NOT CBOR_FOUND)
+-		check_include_files(cbor.h HAVE_CBOR_H)
+-		if(NOT HAVE_CBOR_H)
+-			message(FATAL_ERROR "could not find cbor header files")
+-		endif()
+-		set(CBOR_LIBRARIES "cbor")
 +	find_library(BEARSSL_LIBRARIES bearssl)
 +	find_path(BEARSSL_INCLUDE_DIRS bearssl.h)
 +	if(NOT BEARSSL_LIBRARIES OR NOT BEARSSL_INCLUDE_DIRS)
 +		message(FATAL_ERROR "could not find BearSSL")
-+	endif()
+ 	endif()
  
- 	# XXX workaround libcbor's missing .pc file
- 	if(NOT CBOR_FOUND)
--		check_include_files(cbor.h HAVE_CBOR_H)
--		if(NOT HAVE_CBOR_H)
--			message(FATAL_ERROR "could not find cbor header files")
+-	# XXX workaround libcrypto's missing .pc file
+-	if(NOT CRYPTO_FOUND)
+-		check_include_files(openssl/opensslv.h HAVE_OPENSSLV_H)
+-		if(NOT HAVE_OPENSSLV_H)
+-			message(FATAL_ERROR "could not find crypto header files")
++	# XXX workaround libcbor's missing .pc file
++	if(NOT CBOR_FOUND)
 +		find_library(CBOR_LIBRARIES cbor)
 +		find_path(CBOR_INCLUDE_DIRS cbor.h)
 +		if(NOT CBOR_LIBRARIES OR NOT CBOR_INCLUDE_DIRS)
 +			message(FATAL_ERROR "could not find libcbor")
  		endif()
--		set(CBOR_LIBRARIES "cbor")
+-		set(CRYPTO_LIBRARIES "crypto")
  	endif()
  
  	if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-@@ -325,10 +329,9 @@ endif()
+@@ -369,10 +365,9 @@ endif()
  
  include_directories(${CMAKE_SOURCE_DIR}/src)
  include_directories(${CBOR_INCLUDE_DIRS})
@@ -80,7 +90,7 @@ index 402220e..bdabd3a 100644
  
  message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER}")
  message(STATUS "CMAKE_C_COMPILER_ID: ${CMAKE_C_COMPILER_ID}")
-@@ -338,9 +341,8 @@ message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
+@@ -382,9 +377,8 @@ message(STATUS "CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
  message(STATUS "CBOR_INCLUDE_DIRS: ${CBOR_INCLUDE_DIRS}")
  message(STATUS "CBOR_LIBRARY_DIRS: ${CBOR_LIBRARY_DIRS}")
  message(STATUS "CBOR_LIBRARIES: ${CBOR_LIBRARIES}")
@@ -90,9 +100,9 @@ index 402220e..bdabd3a 100644
 +message(STATUS "BEARSSL_INCLUDE_DIRS: ${BEARSSL_INCLUDE_DIRS}")
 +message(STATUS "BEARSSL_LIBRARIES: ${BEARSSL_LIBRARIES}")
  message(STATUS "BASE_LIBRARIES: ${BASE_LIBRARIES}")
+ message(STATUS "HIDAPI_LIBRARIES: ${HIDAPI_LIBRARIES}")
  message(STATUS "VERSION: ${FIDO_VERSION}")
- message(STATUS "LIB_VERSION: ${LIB_VERSION}")
-@@ -361,8 +363,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+@@ -407,8 +401,8 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
  endif()
  
  subdirs(src)
@@ -104,25 +114,25 @@ index 402220e..bdabd3a 100644
  
  if(NOT WIN32)
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 926e7f2..69ab5e0 100644
+index 3cf62e8..1d66728 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -55,7 +55,7 @@ list(APPEND COMPAT_SOURCES
+@@ -61,7 +61,7 @@ list(APPEND COMPAT_SOURCES
  
  # static library
  add_library(fido2 STATIC ${FIDO_SOURCES} ${COMPAT_SOURCES})
 -target_link_libraries(fido2 ${CBOR_LIBRARIES} ${CRYPTO_LIBRARIES}
 +target_link_libraries(fido2 ${CBOR_LIBRARIES} ${BEARSSL_LIBRARIES}
- 	${UDEV_LIBRARIES} ${BASE_LIBRARIES})
+ 	${UDEV_LIBRARIES} ${BASE_LIBRARIES} ${HIDAPI_LIBRARIES})
  if(WIN32)
  	if (MINGW)
-@@ -73,7 +73,7 @@ install(TARGETS fido2 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+@@ -79,7 +79,7 @@ install(TARGETS fido2 ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
  
  # dynamic library
  add_library(fido2_shared SHARED ${FIDO_SOURCES} ${COMPAT_SOURCES})
 -target_link_libraries(fido2_shared ${CBOR_LIBRARIES} ${CRYPTO_LIBRARIES}
 +target_link_libraries(fido2_shared ${CBOR_LIBRARIES} ${BEARSSL_LIBRARIES}
- 	${UDEV_LIBRARIES} ${BASE_LIBRARIES})
+ 	${UDEV_LIBRARIES} ${BASE_LIBRARIES} ${HIDAPI_LIBRARIES})
  if(WIN32)
  	if (MINGW)
 diff --git a/src/aes256.c b/src/aes256.c
@@ -242,7 +252,7 @@ index 767cdb2..baacc0a 100644
  		free(out->ptr);
  		out->ptr = NULL;
 diff --git a/src/assert.c b/src/assert.c
-index a21b308..fd60037 100644
+index b71d00e..cccc3e1 100644
 --- a/src/assert.c
 +++ b/src/assert.c
 @@ -4,10 +4,7 @@
@@ -257,7 +267,7 @@ index a21b308..fd60037 100644
  
  #include <string.h>
  #include "fido.h"
-@@ -371,7 +368,7 @@ get_signed_hash(int cose_alg, fido_blob_t *dgst, const fido_blob_t *clientdata,
+@@ -370,7 +367,7 @@ fido_get_signed_hash(int cose_alg, fido_blob_t *dgst, const fido_blob_t *clientd
  	unsigned char		*authdata_ptr = NULL;
  	size_t			 authdata_len;
  	struct cbor_load_result	 cbor;
@@ -266,7 +276,7 @@ index a21b308..fd60037 100644
  	int			 ok = -1;
  
  	if ((item = cbor_load(authdata_cbor->ptr, authdata_cbor->len,
-@@ -385,14 +382,15 @@ get_signed_hash(int cose_alg, fido_blob_t *dgst, const fido_blob_t *clientdata,
+@@ -384,14 +381,15 @@ fido_get_signed_hash(int cose_alg, fido_blob_t *dgst, const fido_blob_t *clientd
  	authdata_len = cbor_bytestring_length(item);
  
  	if (cose_alg != COSE_EDDSA) {
@@ -287,7 +297,7 @@ index a21b308..fd60037 100644
  	} else {
  		if (SIZE_MAX - authdata_len < clientdata->len ||
  		    dgst->len < authdata_len + clientdata->len) {
-@@ -417,34 +415,25 @@ int
+@@ -416,34 +414,25 @@ int
  fido_verify_sig_es256(const fido_blob_t *dgst, const es256_pk_t *pk,
      const fido_blob_t *sig)
  {
@@ -334,7 +344,7 @@ index a21b308..fd60037 100644
  	return (ok);
  }
  
-@@ -452,34 +441,37 @@ int
+@@ -451,34 +440,37 @@ int
  fido_verify_sig_rs256(const fido_blob_t *dgst, const rs256_pk_t *pk,
      const fido_blob_t *sig)
  {
@@ -390,7 +400,7 @@ index a21b308..fd60037 100644
  	return (ok);
  }
  
-@@ -487,47 +479,12 @@ int
+@@ -486,47 +478,12 @@ int
  fido_verify_sig_eddsa(const fido_blob_t *dgst, const eddsa_pk_t *pk,
      const fido_blob_t *sig)
  {
@@ -444,7 +454,7 @@ index a21b308..fd60037 100644
  
  int
 diff --git a/src/cbor.c b/src/cbor.c
-index e60e5e3..22d2f8a 100644
+index 2b3c150..dfe3ddf 100644
 --- a/src/cbor.c
 +++ b/src/cbor.c
 @@ -4,9 +4,7 @@
@@ -458,7 +468,7 @@ index e60e5e3..22d2f8a 100644
  
  #include <string.h>
  #include "fido.h"
-@@ -590,14 +588,16 @@ cbor_encode_assert_options(fido_opt_t up, fido_opt_t uv)
+@@ -629,14 +627,16 @@ cbor_encode_assert_options(fido_opt_t up, fido_opt_t uv)
  cbor_item_t *
  cbor_encode_pin_auth(const fido_blob_t *hmac_key, const fido_blob_t *data)
  {
@@ -482,7 +492,7 @@ index e60e5e3..22d2f8a 100644
  
  	return (cbor_build_bytestring(dgst, 16));
  }
-@@ -626,17 +626,16 @@ cbor_encode_pin_enc(const fido_blob_t *key, const fido_blob_t *pin)
+@@ -665,17 +665,16 @@ cbor_encode_pin_enc(const fido_blob_t *key, const fido_blob_t *pin)
  static int
  sha256(const unsigned char *data, size_t data_len, fido_blob_t *digest)
  {
@@ -507,7 +517,7 @@ index e60e5e3..22d2f8a 100644
  
  	return (0);
  }
-@@ -645,15 +644,10 @@ cbor_item_t *
+@@ -684,15 +683,10 @@ cbor_item_t *
  cbor_encode_change_pin_auth(const fido_blob_t *key, const fido_blob_t *new_pin,
      const fido_blob_t *pin)
  {
@@ -526,7 +536,7 @@ index e60e5e3..22d2f8a 100644
  	fido_blob_t	*npe = NULL; /* new pin, encrypted */
  	fido_blob_t	*ph = NULL;  /* pin hash */
  	fido_blob_t	*phe = NULL; /* pin hash, encrypted */
-@@ -681,28 +675,13 @@ cbor_encode_change_pin_auth(const fido_blob_t *key, const fido_blob_t *new_pin,
+@@ -720,28 +714,13 @@ cbor_encode_change_pin_auth(const fido_blob_t *key, const fido_blob_t *new_pin,
  		goto fail;
  	}
  
@@ -562,7 +572,7 @@ index e60e5e3..22d2f8a 100644
  
  	if ((item = cbor_build_bytestring(dgst, 16)) == NULL) {
  		fido_log_debug("%s: cbor_build_bytestring", __func__);
-@@ -715,11 +694,6 @@ fail:
+@@ -754,11 +733,6 @@ fail:
  	fido_blob_free(&ph);
  	fido_blob_free(&phe);
  
@@ -574,7 +584,7 @@ index e60e5e3..22d2f8a 100644
  	if (ok < 0) {
  		if (item != NULL) {
  			cbor_decref(&item);
-@@ -733,9 +707,9 @@ fail:
+@@ -772,9 +746,9 @@ fail:
  cbor_item_t *
  cbor_encode_set_pin_auth(const fido_blob_t *key, const fido_blob_t *pin)
  {
@@ -587,7 +597,7 @@ index e60e5e3..22d2f8a 100644
  	cbor_item_t	*item = NULL;
  	fido_blob_t	*pe = NULL;
  
-@@ -747,12 +721,12 @@ cbor_encode_set_pin_auth(const fido_blob_t *key, const fido_blob_t *pin)
+@@ -786,12 +760,12 @@ cbor_encode_set_pin_auth(const fido_blob_t *key, const fido_blob_t *pin)
  		goto fail;
  	}
  
@@ -607,7 +617,7 @@ index e60e5e3..22d2f8a 100644
  	item = cbor_build_bytestring(dgst, 16);
  fail:
 diff --git a/src/cred.c b/src/cred.c
-index c4e1edb..77d1615 100644
+index 4ecbba8..a3d5898 100644
 --- a/src/cred.c
 +++ b/src/cred.c
 @@ -4,10 +4,7 @@
@@ -622,7 +632,7 @@ index c4e1edb..77d1615 100644
  
  #include <string.h>
  #include "fido.h"
-@@ -193,18 +190,17 @@ check_extensions(int authdata_ext, int ext)
+@@ -188,18 +185,17 @@ check_extensions(const fido_cred_ext_t *authdata_ext, const fido_cred_ext_t *ext
  int
  fido_check_rp_id(const char *id, const unsigned char *obtained_hash)
  {
@@ -647,35 +657,7 @@ index c4e1edb..77d1615 100644
  }
  
  static int
-@@ -215,7 +211,7 @@ get_signed_hash_packed(fido_blob_t *dgst, const fido_blob_t *clientdata,
- 	unsigned char		*authdata_ptr = NULL;
- 	size_t			 authdata_len;
- 	struct cbor_load_result	 cbor;
--	SHA256_CTX		 ctx;
-+	br_sha256_context	 ctx;
- 	int			 ok = -1;
- 
- 	if ((item = cbor_load(authdata_cbor->ptr, authdata_cbor->len,
-@@ -233,13 +229,14 @@ get_signed_hash_packed(fido_blob_t *dgst, const fido_blob_t *clientdata,
- 	authdata_ptr = cbor_bytestring_handle(item);
- 	authdata_len = cbor_bytestring_length(item);
- 
--	if (dgst->len != SHA256_DIGEST_LENGTH || SHA256_Init(&ctx) == 0 ||
--	    SHA256_Update(&ctx, authdata_ptr, authdata_len) == 0 ||
--	    SHA256_Update(&ctx, clientdata->ptr, clientdata->len) == 0 ||
--	    SHA256_Final(dgst->ptr, &ctx) == 0) {
-+	if (dgst->len != br_sha256_SIZE) {
- 		fido_log_debug("%s: sha256", __func__);
- 		goto fail;
- 	}
-+	br_sha256_init(&ctx);
-+	br_sha256_update(&ctx, authdata_ptr, authdata_len);
-+	br_sha256_update(&ctx, clientdata->ptr, clientdata->len);
-+	br_sha256_out(&ctx, dgst->ptr);
- 
- 	ok = 0;
- fail:
-@@ -256,21 +253,23 @@ get_signed_hash_u2f(fido_blob_t *dgst, const unsigned char *rp_id,
+@@ -209,21 +205,23 @@ get_signed_hash_u2f(fido_blob_t *dgst, const unsigned char *rp_id,
  {
  	const uint8_t		zero = 0;
  	const uint8_t		four = 4; /* uncompressed point */
@@ -710,7 +692,7 @@ index c4e1edb..77d1615 100644
  	return (0);
  }
  
-@@ -278,42 +277,29 @@ static int
+@@ -231,42 +229,29 @@ static int
  verify_sig(const fido_blob_t *dgst, const fido_blob_t *x5c,
      const fido_blob_t *sig)
  {
@@ -765,7 +747,7 @@ index c4e1edb..77d1615 100644
  
  	return (ok);
  }
-@@ -321,7 +307,7 @@ fail:
+@@ -274,7 +259,7 @@ fail:
  int
  fido_cred_verify(const fido_cred_t *cred)
  {
@@ -774,17 +756,8 @@ index c4e1edb..77d1615 100644
  	fido_blob_t	dgst;
  	int		r;
  
-@@ -395,7 +381,7 @@ out:
- int
- fido_cred_verify_self(const fido_cred_t *cred)
- {
--	unsigned char	buf[SHA256_DIGEST_LENGTH];
-+	unsigned char	buf[br_sha256_SIZE];
- 	fido_blob_t	dgst;
- 	int		ok = -1;
- 	int		r;
 diff --git a/src/credman.c b/src/credman.c
-index 76327e5..6b8eeed 100644
+index a382185..a6557d3 100644
 --- a/src/credman.c
 +++ b/src/credman.c
 @@ -4,7 +4,7 @@
@@ -913,10 +886,10 @@ index 7f25c7b..7576ae4 100644
  }
  
 diff --git a/src/eddsa.c b/src/eddsa.c
-index 92a0222..252e7ec 100644
+index 44a5563..252e7ec 100644
 --- a/src/eddsa.c
 +++ b/src/eddsa.c
-@@ -4,67 +4,10 @@
+@@ -4,75 +4,10 @@
   * license that can be found in the LICENSE file.
   */
  
@@ -939,6 +912,8 @@ index 92a0222..252e7ec 100644
 -	(void)key;
 -	(void)keylen;
 -
+-	fido_log_debug("%s: unimplemented", __func__);
+-
 -	return (NULL);
 -}
 -
@@ -949,6 +924,8 @@ index 92a0222..252e7ec 100644
 -	(void)pkey;
 -	(void)pub;
 -	(void)len;
+-
+-	fido_log_debug("%s: unimplemented", __func__);
 -
 -	return (0);
 -}
@@ -963,6 +940,8 @@ index 92a0222..252e7ec 100644
 -	(void)tbs;
 -	(void)tbslen;
 -
+-	fido_log_debug("%s: unimplemented", __func__);
+-
 -	return (0);
 -}
 -#endif /* LIBRESSL_VERSION_NUMBER || OPENSSL_VERSION_NUMBER < 0x10101000L */
@@ -971,6 +950,8 @@ index 92a0222..252e7ec 100644
 -EVP_MD_CTX *
 -EVP_MD_CTX_new(void)
 -{
+-	fido_log_debug("%s: unimplemented", __func__);
+-
 -	return (NULL);
 -}
 -
@@ -984,7 +965,7 @@ index 92a0222..252e7ec 100644
  static int
  decode_coord(const cbor_item_t *item, void *xy, size_t xy_len)
  {
-@@ -140,30 +83,3 @@ eddsa_pk_from_ptr(eddsa_pk_t *pk, const void *ptr, size_t len)
+@@ -148,30 +83,3 @@ eddsa_pk_from_ptr(eddsa_pk_t *pk, const void *ptr, size_t len)
  
  	return (FIDO_OK);
  }
@@ -1016,7 +997,7 @@ index 92a0222..252e7ec 100644
 -	return (FIDO_OK);
 -}
 diff --git a/src/es256.c b/src/es256.c
-index c8fd9f4..4b04a6b 100644
+index 020ecaa..49ffd82 100644
 --- a/src/es256.c
 +++ b/src/es256.c
 @@ -4,10 +4,7 @@
@@ -1031,7 +1012,7 @@ index c8fd9f4..4b04a6b 100644
  
  #include <string.h>
  #include "fido.h"
-@@ -203,232 +200,64 @@ es256_pk_set_y(es256_pk_t *pk, const unsigned char *y)
+@@ -208,253 +205,64 @@ es256_pk_set_y(es256_pk_t *pk, const unsigned char *y)
  int
  es256_sk_create(es256_sk_t *key)
  {
@@ -1094,8 +1075,12 @@ index c8fd9f4..4b04a6b 100644
 -	const int	 nid = NID_X9_62_prime256v1;
 -	int		 ok = -1;
 -
--	if ((bnctx = BN_CTX_new()) == NULL ||
--	    (x = BN_CTX_get(bnctx)) == NULL ||
+-	if ((bnctx = BN_CTX_new()) == NULL)
+-		goto fail;
+-
+-	BN_CTX_start(bnctx);
+-
+-	if ((x = BN_CTX_get(bnctx)) == NULL ||
 -	    (y = BN_CTX_get(bnctx)) == NULL)
 -		goto fail;
 -
@@ -1144,12 +1129,16 @@ index c8fd9f4..4b04a6b 100644
  
  	ok = 0;
  fail:
--	if (bnctx != NULL)
+-	if (bnctx != NULL) {
+-		BN_CTX_end(bnctx);
 -		BN_CTX_free(bnctx);
+-	}
+-
 -	if (ec != NULL)
 -		EC_KEY_free(ec);
 -	if (q != NULL)
 -		EC_POINT_free(q);
+-
 -	if (ok < 0 && pkey != NULL) {
 -		EVP_PKEY_free(pkey);
 -		pkey = NULL;
@@ -1161,7 +1150,7 @@ index c8fd9f4..4b04a6b 100644
 -int
 -es256_pk_from_EC_KEY(es256_pk_t *pk, const EC_KEY *ec)
 -{
--	BN_CTX		*ctx = NULL;
+-	BN_CTX		*bnctx = NULL;
 -	BIGNUM		*x = NULL;
 -	BIGNUM		*y = NULL;
 -	const EC_POINT	*q = NULL;
@@ -1170,15 +1159,17 @@ index c8fd9f4..4b04a6b 100644
 -	int		 n;
 -
 -	if ((q = EC_KEY_get0_public_key(ec)) == NULL ||
--	    (g = EC_KEY_get0_group(ec)) == NULL)
+-	    (g = EC_KEY_get0_group(ec)) == NULL ||
+-	    (bnctx = BN_CTX_new()) == NULL)
 -		goto fail;
 -
--	if ((ctx = BN_CTX_new()) == NULL ||
--	    (x = BN_CTX_get(ctx)) == NULL ||
--	    (y = BN_CTX_get(ctx)) == NULL)
+-	BN_CTX_start(bnctx);
+-
+-	if ((x = BN_CTX_get(bnctx)) == NULL ||
+-	    (y = BN_CTX_get(bnctx)) == NULL)
 -		goto fail;
 -
--	if (EC_POINT_get_affine_coordinates_GFp(g, q, x, y, ctx) == 0 ||
+-	if (EC_POINT_get_affine_coordinates_GFp(g, q, x, y, bnctx) == 0 ||
 -	    (n = BN_num_bytes(x)) < 0 || (size_t)n > sizeof(pk->x) ||
 -	    (n = BN_num_bytes(y)) < 0 || (size_t)n > sizeof(pk->y)) {
 -		fido_log_debug("%s: EC_POINT_get_affine_coordinates_GFp",
@@ -1194,8 +1185,10 @@ index c8fd9f4..4b04a6b 100644
 -
 -	ok = FIDO_OK;
 -fail:
--	if (ctx != NULL)
--		BN_CTX_free(ctx);
+-	if (bnctx != NULL) {
+-		BN_CTX_end(bnctx);
+-		BN_CTX_free(bnctx);
+-	}
 -
  	return (ok);
  }
@@ -1210,7 +1203,12 @@ index c8fd9f4..4b04a6b 100644
 -	const int	 nid = NID_X9_62_prime256v1;
 -	int		 ok = -1;
 -
--	if ((bnctx = BN_CTX_new()) == NULL || (d = BN_CTX_get(bnctx)) == NULL ||
+-	if ((bnctx = BN_CTX_new()) == NULL)
+-		goto fail;
+-
+-	BN_CTX_start(bnctx);
+-
+-	if ((d = BN_CTX_get(bnctx)) == NULL ||
 -	    BN_bin2bn(k->d, sizeof(k->d), d) == NULL) {
 -		fido_log_debug("%s: BN_bin2bn", __func__);
 -		goto fail;
@@ -1232,10 +1230,14 @@ index c8fd9f4..4b04a6b 100644
 -
 -	ok = 0;
 -fail:
--	if (bnctx != NULL)
+-	if (bnctx != NULL) {
+-		BN_CTX_end(bnctx);
 -		BN_CTX_free(bnctx);
+-	}
+-
 -	if (ec != NULL)
 -		EC_KEY_free(ec);
+-
 -	if (ok < 0 && pkey != NULL) {
 -		EVP_PKEY_free(pkey);
 -		pkey = NULL;
@@ -1302,7 +1304,7 @@ index c8fd9f4..4b04a6b 100644
  	return (ok);
  }
 diff --git a/src/fido.h b/src/fido.h
-index f85a41a..7d3d71e 100644
+index e41de89..cd613e4 100644
 --- a/src/fido.h
 +++ b/src/fido.h
 @@ -7,9 +7,6 @@
@@ -1316,10 +1318,10 @@ index f85a41a..7d3d71e 100644
  #include <stdint.h>
  #include <stdlib.h>
 diff --git a/src/fido/eddsa.h b/src/fido/eddsa.h
-index 9de272d..d85d05a 100644
+index 4a81017..15e24a6 100644
 --- a/src/fido/eddsa.h
 +++ b/src/fido/eddsa.h
-@@ -7,34 +7,12 @@
+@@ -7,8 +7,6 @@
  #ifndef _FIDO_EDDSA_H
  #define _FIDO_EDDSA_H
  
@@ -1327,6 +1329,8 @@ index 9de272d..d85d05a 100644
 -
  #include <stdint.h>
  #include <stdlib.h>
+ 
+@@ -24,29 +22,9 @@ extern "C" {
  
  eddsa_pk_t *eddsa_pk_new(void);
  void eddsa_pk_free(eddsa_pk_t **);
@@ -1353,12 +1357,14 @@ index 9de272d..d85d05a 100644
 -
 -#endif /* _FIDO_INTERNAL */
 -
- #endif /* !_FIDO_EDDSA_H */
+ #ifdef __cplusplus
+ } /* extern "C" */
+ #endif /* __cplusplus */
 diff --git a/src/fido/es256.h b/src/fido/es256.h
-index d3d13dd..5ed7be1 100644
+index 80f4db3..d0c5b24 100644
 --- a/src/fido/es256.h
 +++ b/src/fido/es256.h
-@@ -7,22 +7,17 @@
+@@ -7,8 +7,6 @@
  #ifndef _FIDO_ES256_H
  #define _FIDO_ES256_H
  
@@ -1366,6 +1372,8 @@ index d3d13dd..5ed7be1 100644
 -
  #include <stdint.h>
  #include <stdlib.h>
+ 
+@@ -24,15 +22,12 @@ extern "C" {
  
  es256_pk_t *es256_pk_new(void);
  void es256_pk_free(es256_pk_t **);
@@ -1382,10 +1390,10 @@ index d3d13dd..5ed7be1 100644
  int es256_derive_pk(const es256_sk_t *, es256_pk_t *);
  int es256_sk_create(es256_sk_t *);
 diff --git a/src/fido/rs256.h b/src/fido/rs256.h
-index d2fa162..eb84e89 100644
+index 2b08d59..15c456e 100644
 --- a/src/fido/rs256.h
 +++ b/src/fido/rs256.h
-@@ -7,16 +7,12 @@
+@@ -7,8 +7,6 @@
  #ifndef _FIDO_RS256_H
  #define _FIDO_RS256_H
  
@@ -1394,6 +1402,8 @@ index d2fa162..eb84e89 100644
  #include <stdint.h>
  #include <stdlib.h>
  
+@@ -24,9 +22,7 @@ extern "C" {
+ 
  rs256_pk_t *rs256_pk_new(void);
  void rs256_pk_free(rs256_pk_t **);
 -EVP_PKEY *rs256_pk_to_EVP_PKEY(const rs256_pk_t *);
@@ -1401,7 +1411,7 @@ index d2fa162..eb84e89 100644
 -int rs256_pk_from_RSA(rs256_pk_t *, const RSA *);
  int rs256_pk_from_ptr(rs256_pk_t *, const void *, size_t);
  
- #endif /* !_FIDO_RS256_H */
+ #ifdef __cplusplus
 diff --git a/src/rs256.c b/src/rs256.c
 index 9f30163..c9da648 100644
 --- a/src/rs256.c
@@ -1540,7 +1550,7 @@ index 9f30163..c9da648 100644
 -	return (FIDO_OK);
 -}
 diff --git a/src/u2f.c b/src/u2f.c
-index e02b611..56f93f1 100644
+index 848d2fb..aa73881 100644
 --- a/src/u2f.c
 +++ b/src/u2f.c
 @@ -4,8 +4,7 @@
@@ -1629,18 +1639,18 @@ index e02b611..56f93f1 100644
  
  	authdata[AUTHDATA_FLAGS] = flags; /* XXX translate? */
  	memcpy(&authdata[AUTHDATA_SIGN_COUNT], &sigcount, 4);
-@@ -159,8 +166,8 @@ send_dummy_register(fido_dev_t *dev, int ms)
+@@ -158,8 +165,8 @@ static int
+ send_dummy_register(fido_dev_t *dev, int ms)
  {
- 	const uint8_t	 cmd = CTAP_FRAME_INIT | CTAP_CMD_MSG;
  	iso7816_apdu_t	*apdu = NULL;
 -	unsigned char	 challenge[SHA256_DIGEST_LENGTH];
 -	unsigned char	 application[SHA256_DIGEST_LENGTH];
 +	unsigned char	 challenge[br_sha256_SIZE];
 +	unsigned char	 application[br_sha256_SIZE];
- 	unsigned char	 reply[2048];
+ 	unsigned char	 reply[FIDO_MAXMSG];
  	int		 r;
  
-@@ -173,7 +180,7 @@ send_dummy_register(fido_dev_t *dev, int ms)
+@@ -172,7 +179,7 @@ send_dummy_register(fido_dev_t *dev, int ms)
  	memset(&application, 0xff, sizeof(application));
  
  	if ((apdu = iso7816_new(U2F_CMD_REGISTER, 0, 2 *
@@ -1649,21 +1659,20 @@ index e02b611..56f93f1 100644
  	    iso7816_add(apdu, &challenge, sizeof(challenge)) < 0 ||
  	    iso7816_add(apdu, &application, sizeof(application)) < 0) {
  		fido_log_debug("%s: iso7816", __func__);
-@@ -211,10 +218,11 @@ static int
+@@ -210,9 +217,10 @@ static int
  key_lookup(fido_dev_t *dev, const char *rp_id, const fido_blob_t *key_id,
      int *found, int ms)
  {
 +	br_sha256_context ctx;
- 	const uint8_t	 cmd = CTAP_FRAME_INIT | CTAP_CMD_MSG;
  	iso7816_apdu_t	*apdu = NULL;
 -	unsigned char	 challenge[SHA256_DIGEST_LENGTH];
 -	unsigned char	 rp_id_hash[SHA256_DIGEST_LENGTH];
 +	unsigned char	 challenge[br_sha256_SIZE];
 +	unsigned char	 rp_id_hash[br_sha256_SIZE];
- 	unsigned char	 reply[8];
+ 	unsigned char	 reply[FIDO_MAXMSG];
  	uint8_t		 key_id_len;
  	int		 r;
-@@ -229,17 +237,14 @@ key_lookup(fido_dev_t *dev, const char *rp_id, const fido_blob_t *key_id,
+@@ -227,17 +235,14 @@ key_lookup(fido_dev_t *dev, const char *rp_id, const fido_blob_t *key_id,
  	memset(&challenge, 0xff, sizeof(challenge));
  	memset(&rp_id_hash, 0, sizeof(rp_id_hash));
  
@@ -1685,19 +1694,18 @@ index e02b611..56f93f1 100644
  	    iso7816_add(apdu, &challenge, sizeof(challenge)) < 0 ||
  	    iso7816_add(apdu, &rp_id_hash, sizeof(rp_id_hash)) < 0 ||
  	    iso7816_add(apdu, &key_id_len, sizeof(key_id_len)) < 0 ||
-@@ -317,9 +322,10 @@ static int
+@@ -316,8 +321,9 @@ static int
  do_auth(fido_dev_t *dev, const fido_blob_t *cdh, const char *rp_id,
      const fido_blob_t *key_id, fido_blob_t *sig, fido_blob_t *ad, int ms)
  {
 +	br_sha256_context ctx;
- 	const uint8_t	 cmd = CTAP_FRAME_INIT | CTAP_CMD_MSG;
  	iso7816_apdu_t	*apdu = NULL;
 -	unsigned char	 rp_id_hash[SHA256_DIGEST_LENGTH];
 +	unsigned char	 rp_id_hash[br_sha256_SIZE];
- 	unsigned char	 reply[128];
+ 	unsigned char	 reply[FIDO_MAXMSG];
  	int		 reply_len;
  	uint8_t		 key_id_len;
-@@ -329,7 +335,7 @@ do_auth(fido_dev_t *dev, const fido_blob_t *cdh, const char *rp_id,
+@@ -327,7 +333,7 @@ do_auth(fido_dev_t *dev, const fido_blob_t *cdh, const char *rp_id,
  	ms = 0; /* XXX */
  #endif
  
@@ -1706,7 +1714,7 @@ index e02b611..56f93f1 100644
  	    rp_id == NULL) {
  		r = FIDO_ERR_INVALID_ARGUMENT;
  		goto fail;
-@@ -337,17 +343,14 @@ do_auth(fido_dev_t *dev, const fido_blob_t *cdh, const char *rp_id,
+@@ -335,17 +341,14 @@ do_auth(fido_dev_t *dev, const fido_blob_t *cdh, const char *rp_id,
  
  	memset(&rp_id_hash, 0, sizeof(rp_id_hash));
  
@@ -1728,7 +1736,7 @@ index e02b611..56f93f1 100644
  	    iso7816_add(apdu, cdh->ptr, cdh->len) < 0 ||
  	    iso7816_add(apdu, &rp_id_hash, sizeof(rp_id_hash)) < 0 ||
  	    iso7816_add(apdu, &key_id_len, sizeof(key_id_len)) < 0 ||
-@@ -436,6 +439,7 @@ static int
+@@ -434,6 +437,7 @@ static int
  encode_cred_authdata(const char *rp_id, const uint8_t *kh, uint8_t kh_len,
      const uint8_t *pubkey, size_t pubkey_len, fido_blob_t *out)
  {
@@ -1736,7 +1744,7 @@ index e02b611..56f93f1 100644
  	uint8_t		 authdata[AUTHDATA_BASE_SIZE] = {0};
  	unsigned char	*rp_id_hash;
  	uint8_t		 attcred_raw[ATTCRED_BASE_SIZE] = {0};
-@@ -463,11 +467,9 @@ encode_cred_authdata(const char *rp_id, const uint8_t *kh, uint8_t kh_len,
+@@ -461,11 +465,9 @@ encode_cred_authdata(const char *rp_id, const uint8_t *kh, uint8_t kh_len,
  
  	rp_id_hash = (unsigned char *)&authdata[AUTHDATA_RP_ID_HASH];
  
@@ -1751,19 +1759,18 @@ index e02b611..56f93f1 100644
  
  	authdata[AUTHDATA_FLAGS] = (CTAP_AUTHDATA_ATT_CRED |
  	    CTAP_AUTHDATA_USER_PRESENT);
-@@ -609,9 +611,10 @@ fail:
+@@ -607,8 +609,9 @@ fail:
  int
  u2f_register(fido_dev_t *dev, fido_cred_t *cred, int ms)
  {
 +	br_sha256_context ctx;
- 	const uint8_t	 cmd = CTAP_FRAME_INIT | CTAP_CMD_MSG;
  	iso7816_apdu_t	*apdu = NULL;
 -	unsigned char	 rp_id_hash[SHA256_DIGEST_LENGTH];
 +	unsigned char	 rp_id_hash[br_sha256_SIZE];
- 	unsigned char	 reply[2048];
+ 	unsigned char	 reply[FIDO_MAXMSG];
  	int		 reply_len;
  	int		 found;
-@@ -628,7 +631,7 @@ u2f_register(fido_dev_t *dev, fido_cred_t *cred, int ms)
+@@ -625,7 +628,7 @@ u2f_register(fido_dev_t *dev, fido_cred_t *cred, int ms)
  	}
  
  	if (cred->type != COSE_ES256 || cred->cdh.ptr == NULL ||
@@ -1772,7 +1779,7 @@ index e02b611..56f93f1 100644
  		fido_log_debug("%s: type=%d, cdh=(%p,%zu)" , __func__,
  		    cred->type, (void *)cred->cdh.ptr, cred->cdh.len);
  		return (FIDO_ERR_INVALID_ARGUMENT);
-@@ -652,14 +655,12 @@ u2f_register(fido_dev_t *dev, fido_cred_t *cred, int ms)
+@@ -649,14 +652,12 @@ u2f_register(fido_dev_t *dev, fido_cred_t *cred, int ms)
  
  	memset(&rp_id_hash, 0, sizeof(rp_id_hash));
  
@@ -1792,5 +1799,5 @@ index e02b611..56f93f1 100644
  	    iso7816_add(apdu, rp_id_hash, sizeof(rp_id_hash)) < 0) {
  		fido_log_debug("%s: iso7816", __func__);
 -- 
-2.26.0
+2.26.1
 
