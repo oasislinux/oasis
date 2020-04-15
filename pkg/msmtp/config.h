@@ -39,11 +39,11 @@
 #define PACKAGE "msmtp"
 #define PACKAGE_BUGREPORT "marlam@marlam.de"
 #define PACKAGE_NAME "msmtp"
-#define PACKAGE_STRING "msmtp 1.8.7"
+#define PACKAGE_STRING "msmtp 1.8.8"
 #define PACKAGE_TARNAME "msmtp"
 #define PACKAGE_URL "https://marlam.de/msmtp"
-#define PACKAGE_VERSION "1.8.7"
-#define PLATFORM "x86_64-pc-linux-gnu"
+#define PACKAGE_VERSION "1.8.8"
+#define PLATFORM "x86_64-pc-linux-musl"
 #define STDC_HEADERS 1
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
@@ -60,7 +60,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.8.7"
+#define VERSION "1.8.8"
 #if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
 #define W32_NATIVE 1
 #endif
