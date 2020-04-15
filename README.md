@@ -55,6 +55,7 @@ up from the following:
 * [openbsd](http://openbsd.org/)
 	- pax, fmt, diff, patch, doas
 * [awk](http://github.com/onetrueawk/awk/)
+* [bearssl](http://bearssl.org/)
 * [byacc](https://invisible-island.net/byacc/byacc.html)
 * [bzip2](http://bzip.org/)
 * [bc](https://github.com/gavinhoward/bc)
@@ -63,7 +64,6 @@ up from the following:
 * [git](https://git-scm.com/)
 * [iproute2](http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2)
 * [kbd](http://kbd-project.org/)
-* [libressl](http://www.libressl.org/)
 * [lua](https://www.lua.org/)
 * [mandoc](http://mandoc.bsd.lv/)
 * [samurai](https://github.com/michaelforney/samurai) (ninja-compatible build tool)
