@@ -1,0 +1,24 @@
+From 0314faf20f9a19100250cbe7d40f6b34be42862b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 14 Apr 2020 22:54:17 -0700
+Subject: [PATCH] Add missing include for NID_X9_62_prime256v1
+
+---
+ sk-usbhid.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sk-usbhid.c b/sk-usbhid.c
+index ad83054a..92483c3a 100644
+--- a/sk-usbhid.c
++++ b/sk-usbhid.c
+@@ -31,6 +31,7 @@
+ #include <openssl/bn.h>
+ #include <openssl/ec.h>
+ #include <openssl/ecdsa.h>
++#include <openssl/evp.h>
+ #endif /* WITH_OPENSSL */
+ 
+ #include <fido.h>
+-- 
+2.26.1
+
