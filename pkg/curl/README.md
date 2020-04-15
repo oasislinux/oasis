@@ -6,7 +6,6 @@ Generated with
 	./configure \
 		--disable-pop3 \
 		--disable-smb \
-		--disable-smtp \
 		--with-ca-bundle=/etc/ssl/cert.pem \
 		--without-ssl \
 		--with-bearssl \
