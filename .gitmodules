@@ -160,9 +160,6 @@
 [submodule "pkg/mc/src"]
 	path = pkg/mc/src
 	url = https://github.com/oridb/mc
-[submodule "pkg/monocypher/src"]
-	path = pkg/monocypher/src
-	url = https://github.com/LoupVaillant/Monocypher
 [submodule "pkg/mpv/src"]
 	path = pkg/mpv/src
 	url = https://github.com/mpv-player/mpv
