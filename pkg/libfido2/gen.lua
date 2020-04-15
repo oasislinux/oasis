@@ -3,8 +3,8 @@ cflags{
 	'-include $outdir/config.h',
 	'-D _DEFAULT_SOURCE',
 	'-D _FIDO_INTERNAL',
+	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/libcbor/include',
-	'-I $builddir/pkg/libressl/include',
 	'-I $builddir/pkg/linux-headers/include',
 	'-I $srcdir/src',
 	'-I $basedir/pkg/openbsd/include',
@@ -18,8 +18,8 @@ pkg.hdrs = copy('$outdir/include', '$srcdir/src', {
 })
 pkg.deps = {
 	'$outdir/config.h',
+	'pkg/bearssl/headers',
 	'pkg/libcbor/headers',
-	'pkg/libressl/headers',
 	'pkg/linux-headers/headers',
 }
 
@@ -56,6 +56,7 @@ lib('libfido2.a', [[
 
 		hid_linux.c
 	)
+	$builddir/pkg/bearssl/libbearssl.a
 	$builddir/pkg/libcbor/libcbor.a
 ]])
 
