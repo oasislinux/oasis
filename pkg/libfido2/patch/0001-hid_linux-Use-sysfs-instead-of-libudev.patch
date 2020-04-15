@@ -1,27 +1,42 @@
-From 3a6643cacac89dd0c2b6587bb0508b627954c62a Mon Sep 17 00:00:00 2001
+From e1f35c6377491e56e2c93391e9e68f2bd180fd8f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 1 Nov 2019 19:39:45 -0700
 Subject: [PATCH] hid_linux: Use sysfs instead of libudev
 
 ---
- src/hid_linux.c | 102 ++++++++++++++++++------------------------------
- 1 file changed, 38 insertions(+), 64 deletions(-)
+ CMakeLists.txt  |   2 -
+ src/hid_linux.c | 103 ++++++++++++++++++------------------------------
+ 2 files changed, 39 insertions(+), 66 deletions(-)
 
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 9481c46..402220e 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -91,8 +91,6 @@ else()
+ 	endif()
+ 
+ 	if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+-		pkg_search_module(UDEV libudev REQUIRED)
+-		set(UDEV_NAME "udev")
+ 		# Define be32toh().
+ 		add_definitions(-D_GNU_SOURCE)
+ 	elseif(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
 diff --git a/src/hid_linux.c b/src/hid_linux.c
-index c7cabc9..4a57e1c 100644
+index c7cabc9..db8cbc4 100644
 --- a/src/hid_linux.c
 +++ b/src/hid_linux.c
-@@ -9,8 +9,8 @@
+@@ -9,8 +9,9 @@
  #include <sys/ioctl.h>
  #include <linux/hidraw.h>
  
 +#include <dirent.h>
  #include <fcntl.h>
 -#include <libudev.h>
++#include <stdio.h>
  #include <string.h>
  #include <unistd.h>
  
-@@ -147,23 +147,20 @@ is_fido(const char *path)
+@@ -147,23 +148,20 @@ is_fido(const char *path)
  }
  
  static int
@@ -52,7 +67,7 @@ index c7cabc9..4a57e1c 100644
  		if (strncmp(p, "HID_ID=", 7) == 0) {
  			if (sscanf(p + 7, "%*x:%hx:%hx", &x, &y) == 2) {
  				*vendor_id = (int16_t)x;
-@@ -174,50 +171,34 @@ parse_uevent(struct udev_device *dev, int16_t *vendor_id, int16_t *product_id)
+@@ -174,50 +172,34 @@ parse_uevent(struct udev_device *dev, int16_t *vendor_id, int16_t *product_id)
  		}
  	}
  
@@ -117,7 +132,7 @@ index c7cabc9..4a57e1c 100644
  
  	if (di->path == NULL ||
  	    di->manufacturer == NULL ||
-@@ -226,9 +207,6 @@ copy_info(fido_dev_info_t *di, struct udev *udev,
+@@ -226,9 +208,6 @@ copy_info(fido_dev_info_t *di, struct udev *udev,
  
  	ok = 0;
  fail:
@@ -127,7 +142,7 @@ index c7cabc9..4a57e1c 100644
  	if (ok < 0) {
  		free(di->path);
  		free(di->manufacturer);
-@@ -239,14 +217,17 @@ fail:
+@@ -239,14 +218,17 @@ fail:
  	return (ok);
  }
  
@@ -150,7 +165,7 @@ index c7cabc9..4a57e1c 100644
  
  	*olen = 0;
  
-@@ -256,29 +237,22 @@ fido_dev_info_manifest(fido_dev_info_t *devlist, size_t ilen, size_t *olen)
+@@ -256,29 +238,22 @@ fido_dev_info_manifest(fido_dev_info_t *devlist, size_t ilen, size_t *olen)
  	if (devlist == NULL)
  		return (FIDO_ERR_INVALID_ARGUMENT);
  
@@ -189,5 +204,5 @@ index c7cabc9..4a57e1c 100644
  }
  
 -- 
-2.24.0
+2.26.0
 

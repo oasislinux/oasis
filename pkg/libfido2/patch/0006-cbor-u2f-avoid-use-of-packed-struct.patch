@@ -1,4 +1,4 @@
-From fa78eaaf9629f94fbe26bc9cc1ad49d3a4afb6c8 Mon Sep 17 00:00:00 2001
+From 93cf0396ef7619635d2de1ae40a6382b2317f66f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 26 Nov 2019 19:30:10 -0800
 Subject: [PATCH] cbor, u2f: avoid use of packed struct
@@ -78,10 +78,10 @@ index af72710..af1874a 100644
  typedef struct fido_attcred {
  	unsigned char aaguid[16]; /* credential's aaguid */
 diff --git a/src/u2f.c b/src/u2f.c
-index 1512986..6db32c5 100644
+index 80fd14d..e02b611 100644
 --- a/src/u2f.c
 +++ b/src/u2f.c
-@@ -15,6 +15,29 @@
+@@ -16,6 +16,29 @@
  #include "fido.h"
  #include "fido/es256.h"
  
@@ -111,7 +111,7 @@ index 1512986..6db32c5 100644
  static int
  sleep_msec(unsigned int msec)
  {
-@@ -95,23 +118,24 @@ static int
+@@ -96,23 +119,24 @@ static int
  authdata_fake(const char *rp_id, uint8_t flags, uint32_t sigcount,
      fido_blob_t *fake_cbor_ad)
  {
@@ -143,7 +143,7 @@ index 1512986..6db32c5 100644
  		fido_log_debug("%s: cbor_build_bytestring", __func__);
  		return (-1);
  	}
-@@ -411,18 +435,18 @@ static int
+@@ -412,18 +436,18 @@ static int
  encode_cred_authdata(const char *rp_id, const uint8_t *kh, uint8_t kh_len,
      const uint8_t *pubkey, size_t pubkey_len, fido_blob_t *out)
  {
@@ -172,7 +172,7 @@ index 1512986..6db32c5 100644
  	memset(&authdata_blob, 0, sizeof(authdata_blob));
  	memset(out, 0, sizeof(*out));
  
-@@ -436,17 +460,19 @@ encode_cred_authdata(const char *rp_id, const uint8_t *kh, uint8_t kh_len,
+@@ -437,17 +461,19 @@ encode_cred_authdata(const char *rp_id, const uint8_t *kh, uint8_t kh_len,
  		goto fail;
  	}
  
@@ -198,5 +198,5 @@ index 1512986..6db32c5 100644
  	len = authdata_blob.len = sizeof(authdata) + sizeof(attcred_raw) +
  	    kh_len + pk_blob.len;
 -- 
-2.25.1
+2.26.0
 
