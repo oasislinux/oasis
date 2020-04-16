@@ -1,0 +1,24 @@
+From b204244b9e678064b7b519e049030bb0aeb029ed Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 15 Apr 2020 20:10:16 -0700
+Subject: [PATCH] Fix build with old bison versions
+
+---
+ src/parse.y | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/parse.y b/src/parse.y
+index eb7e9b9..7ae236b 100644
+--- a/src/parse.y
++++ b/src/parse.y
+@@ -79,6 +79,7 @@ typedef struct {
+ 	} v;
+ 	int lineno;
+ } YYSTYPE;
++#define YYSTYPE_IS_DECLARED 1
+ 
+ %}
+ 
+-- 
+2.26.1
+
