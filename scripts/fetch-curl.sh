@@ -25,16 +25,16 @@ fi
 while read -r checksum archive ; do
 	case $archive in
 	*.tar.gz|*.tgz)
-		tool=zcat ;;
+		tool=gzip ;;
 	*.tar.bz2)
-		tool=bzcat ;;
+		tool=bzip2 ;;
 	*.tar.xz)
-		tool=xzcat ;;
+		tool=xz ;;
 	*)
 		tool=
 	esac
 	if [ -n "$tool" ] ; then
-		"$tool" "$archive" | $PAXREAD -s ',^[^/]*,src,' '*/*'
+		"$tool" -d -c "$archive" | $PAXREAD -s ',^[^/]*,src,' '*/*'
 	fi
 done <sha256
 

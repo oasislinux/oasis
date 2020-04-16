@@ -19,7 +19,7 @@ fi
 
 read -r _ archive <sha256
 
-xzcat "$archive" | $PAXREAD -s ',^[^/]*,src,' \
+xz -d -c "$archive" | $PAXREAD -s ',^[^/]*,src,' \
 	'linux-*/Makefile' \
 	'linux-*/arch/*/include/uapi' \
 	'linux-*/arch/*/syscalls' \

@@ -17,7 +17,7 @@ if ! $SHA256SUM -c sha256 2>/dev/null ; then
         $SHA256SUM -c sha256
 fi
 
-zcat src.tar.gz | $PAXREAD -s ',^,src/,' \
+gzip -d -c src.tar.gz | $PAXREAD -s ',^,src/,' \
 	'bin/pax/*' \
 	'include/*' \
 	'lib/libc/*' \
@@ -32,6 +32,6 @@ zcat src.tar.gz | $PAXREAD -s ',^,src/,' \
 	'usr.bin/rsync/*' \
 	'usr.bin/yacc/*' \
 	'usr.sbin/acme-client/*'
-zcat sys.tar.gz | $PAXREAD -s ',^,src/,' 'sys/sys/*'
+gzip -d -c sys.tar.gz | $PAXREAD -s ',^,src/,' 'sys/sys/*'
 
 git apply -v --whitespace=nowarn --directory "$dir/src" patch/*

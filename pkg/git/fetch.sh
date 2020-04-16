@@ -18,4 +18,4 @@ if ! $SHA256SUM -c sha256 2>/dev/null ; then
 fi
 
 read -r checksum archive <sha256
-xzcat "$archive" | $PAXREAD -s ',^\.,src/man,'
+xz -d -c "$archive" | $PAXREAD -s ',^\.,src/man,'
