@@ -1,3 +1,6 @@
+: ${SHA256SUM:=sha256sum}
+: ${PAXREAD:=pax -r}
+
 set -e
 
 if [ "$#" != 1 ] ; then
@@ -14,9 +17,9 @@ if [ -e src ] ; then
 	rm -rf src
 fi
 
-if ! sha256sum -c sha256 2>/dev/null ; then
+if ! $SHA256SUM -c sha256 2>/dev/null ; then
 	curl -L -K url -O
-	sha256sum -c sha256
+	$SHA256SUM -c sha256
 fi
 
 while read -r checksum archive ; do
@@ -31,7 +34,7 @@ while read -r checksum archive ; do
 		tool=
 	esac
 	if [ -n "$tool" ] ; then
-		"$tool" "$archive" | ${PAXREAD:-pax -r} -s ',^[^/]*,src,' '*/*'
+		"$tool" "$archive" | $PAXREAD -s ',^[^/]*,src,' '*/*'
 	fi
 done <sha256
 

@@ -1,3 +1,6 @@
+: ${SHA256SUM:=sha256sum}
+: ${PAXREAD:=pax -r}
+
 set -e
 
 (. ./scripts/fetch-git.sh "$@")
@@ -9,10 +12,10 @@ if [ -e src/man ] ; then
 	rm -rf src/man
 fi
 
-if ! sha256sum -c sha256 2>/dev/null ; then
+if ! $SHA256SUM -c sha256 2>/dev/null ; then
 	curl -L -O -K url
-	sha256sum -c sha256
+	$SHA256SUM -c sha256
 fi
 
 read -r checksum archive <sha256
-xzcat "$archive" | ${PAXREAD:-pax -r} -s ',^\.,src/man,'
+xzcat "$archive" | $PAXREAD -s ',^\.,src/man,'

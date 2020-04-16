@@ -1,3 +1,6 @@
+: ${SHA256SUM:=sha256sum}
+: ${PAXREAD:=pax -r}
+
 set -e
 
 dir=$1
@@ -9,12 +12,12 @@ if [ -e src ] ; then
         rm -rf src
 fi
 
-if ! sha256sum -c sha256 2>/dev/null ; then
+if ! $SHA256SUM -c sha256 2>/dev/null ; then
         curl -L -K url -O
-        sha256sum -c sha256
+        $SHA256SUM -c sha256
 fi
 
-zcat src.tar.gz | ${PAXREAD:-pax -r} -s ',^,src/,' \
+zcat src.tar.gz | $PAXREAD -s ',^,src/,' \
 	'bin/pax/*' \
 	'include/*' \
 	'lib/libc/*' \
@@ -29,6 +32,6 @@ zcat src.tar.gz | ${PAXREAD:-pax -r} -s ',^,src/,' \
 	'usr.bin/rsync/*' \
 	'usr.bin/yacc/*' \
 	'usr.sbin/acme-client/*'
-zcat sys.tar.gz | ${PAXREAD:-pax -r} -s ',^,src/,' 'sys/sys/*'
+zcat sys.tar.gz | $PAXREAD -s ',^,src/,' 'sys/sys/*'
 
 git apply -v --whitespace=nowarn --directory "$dir/src" patch/*

@@ -1,3 +1,6 @@
+: ${SHA256SUM:=sha256sum}
+: ${PAXREAD:=pax -r}
+
 set -e
 
 dir=$1
@@ -9,14 +12,14 @@ if [ -e src ] ; then
         rm -rf src
 fi
 
-if ! sha256sum -c sha256 2>/dev/null ; then
+if ! $SHA256SUM -c sha256 2>/dev/null ; then
         curl -L -K url -O
-        sha256sum -c sha256
+        $SHA256SUM -c sha256
 fi
 
 read -r _ archive <sha256
 
-xzcat "$archive" | ${PAXREAD:-pax -r} -s ',^[^/]*,src,' \
+xzcat "$archive" | $PAXREAD -s ',^[^/]*,src,' \
 	'linux-*/Makefile' \
 	'linux-*/arch/*/include/uapi' \
 	'linux-*/arch/*/syscalls' \
