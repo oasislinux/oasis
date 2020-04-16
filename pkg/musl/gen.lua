@@ -72,7 +72,7 @@ build('sed', '$outdir/include/bits/alltypes.h', {
 }, {expr='-f $srcdir/tools/mkalltypes.sed'})
 
 build('sed', '$outdir/include/bits/syscall.h', {'$srcdir/arch/'..arch..'/bits/syscall.h.in'}, {
-	expr='-n -e ps,__NR_,SYS_,p',
+	expr=[[-n -e 'p;s,__NR_,SYS_,p']],
 })
 
 build('awk', '$outdir/version.h', '$dir/ver', {expr=[['{printf "#define VERSION \"%s\"\n", $$1}']]})
