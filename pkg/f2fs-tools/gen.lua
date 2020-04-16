@@ -30,3 +30,5 @@ exe('fsck.f2fs', [[
 ]])
 file('bin/fsck.f2fs', '755', '$outdir/fsck.f2fs')
 man{'man/fsck.f2fs.8'}
+
+fetch 'git'
