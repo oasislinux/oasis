@@ -1,5 +1,5 @@
-: ${SHA256SUM:=sha256sum}
-: ${PAXREAD:=pax -r}
+: "${SHA256SUM:=sha256sum}"
+: "${PAXREAD:=pax -r}"
 
 set -e
 
@@ -22,7 +22,7 @@ if ! $SHA256SUM -c sha256 2>/dev/null ; then
 	$SHA256SUM -c sha256
 fi
 
-while read -r checksum archive ; do
+while read -r _ archive ; do
 	case $archive in
 	*.tar.gz|*.tgz)
 		tool=gzip ;;

@@ -1,5 +1,5 @@
-: ${SHA256SUM:=sha256sum}
-: ${PAXREAD:=pax -r}
+: "${SHA256SUM:=sha256sum}"
+: "${PAXREAD:=pax -r}"
 
 set -e
 

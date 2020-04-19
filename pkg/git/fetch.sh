@@ -1,9 +1,9 @@
-: ${SHA256SUM:=sha256sum}
-: ${PAXREAD:=pax -r}
+: "${SHA256SUM:=sha256sum}"
+: "${PAXREAD:=pax -r}"
 
 set -e
 
-(. ./scripts/fetch-git.sh "$@")
+sh scripts/fetch-git.sh "$@"
 
 cd "$1"
 shift
@@ -17,5 +17,5 @@ if ! $SHA256SUM -c sha256 2>/dev/null ; then
 	$SHA256SUM -c sha256
 fi
 
-read -r checksum archive <sha256
+read -r _ archive <sha256
 gzip -d -c "$archive" | $PAXREAD -s ',^\.,src/man,'
