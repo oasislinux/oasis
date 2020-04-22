@@ -223,8 +223,7 @@
 	ignore = all
 [submodule "pkg/openssh/src"]
 	path = pkg/openssh/src
-	url = https://github.com/openssh/openssh-portable
-	ignore = all
+	url = https://github.com/oasislinux/openssh.git
 [submodule "pkg/pigz/src"]
 	path = pkg/pigz/src
 	url = https://github.com/madler/pigz

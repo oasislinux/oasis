@@ -10,16 +10,16 @@ cflags{
 	'-I $dir',
 	'-I $srcdir',
 	'-I $basedir/pkg/openbsd/include',
+	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/libfido2/include',
-	'-I $builddir/pkg/libressl/include',
 	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/zlib/include',
 	'-idirafter $srcdir/openbsd-compat',
 }
 
 pkg.deps = {
+	'pkg/bearssl/headers',
 	'pkg/libfido2/headers',
-	'pkg/libressl/headers',
 	'pkg/linux-headers/headers',
 	'pkg/zlib/headers',
 }
@@ -38,8 +38,8 @@ lib('libopenbsd-compat.a', [[openbsd-compat/(
 	bsd-flock.c bsd-getpagesize.c bsd-getpeereid.c bsd-malloc.c bsd-misc.c
 	bsd-nextstep.c bsd-openpty.c bsd-poll.c bsd-setres_id.c bsd-signal.c
 	bsd-snprintf.c bsd-statvfs.c bsd-waitpid.c fake-rfc2553.c
-	getrrsetbyname-ldns.c kludge-fd_set.c openssl-compat.c
-	libressl-api-compat.c xcrypt.c
+	getrrsetbyname-ldns.c kludge-fd_set.c
+	xcrypt.c
 
 	port-aix.c port-irix.c port-linux.c port-solaris.c port-net.c port-uw.c
 )]])
@@ -53,7 +53,6 @@ lib('libssh.a', [[
 	sshkey.c
 	sshbuf-getput-basic.c
 	sshbuf-misc.c
-	sshbuf-getput-crypto.c
 	krl.c
 	bitmap.c
 
@@ -67,17 +66,17 @@ lib('libssh.a', [[
 
 	authfd.c authfile.c
 	canohost.c channels.c cipher.c cipher-aes.c cipher-aesctr.c
-	cipher-ctr.c cleanup.c
+	cleanup.c
 	compat.c fatal.c hostfile.c
 	log.c match.c moduli.c nchan.c packet.c
 	readpass.c ttymodes.c xmalloc.c addrmatch.c
 	atomicio.c dispatch.c mac.c misc.c utf8.c
-	monitor_fdpass.c rijndael.c ssh-dss.c ssh-ecdsa.c ssh-ecdsa-sk.c
+	monitor_fdpass.c rijndael.c ssh-ecdsa.c ssh-ecdsa-sk.c
 	ssh-ed25519-sk.c ssh-rsa.c dh.c
 	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c
 	ssh-pkcs11.c smult_curve25519_ref.c
-	poly1305.c chacha.c cipher-chachapoly.c
-	ssh-ed25519.c digest-openssl.c digest-libc.c
+	poly1305.c chacha.c cipher-chachapoly.c cipher-chachapoly-bearssl.c
+	ssh-ed25519.c digest-bearssl.c digest-libc.c
 	hmac.c sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c
 	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c
 	kexgexc.c kexgexs.c
@@ -88,8 +87,9 @@ lib('libssh.a', [[
 	ssh-sk-client.c
 
 	libopenbsd-compat.a
-	$builddir/pkg/(libressl/libcrypto.a.d zlib/libz.a)
-	$builddir/pkg/(libfido2/libfido2.a.d)
+	$builddir/pkg/bearssl/libbearssl.a
+	$builddir/pkg/libfido2/libfido2.a.d
+	$builddir/pkg/zlib/libz.a
 ]])
 
 exe('ssh', [[
