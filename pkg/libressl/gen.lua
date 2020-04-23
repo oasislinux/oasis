@@ -19,7 +19,6 @@ cflags{
 }
 
 pkg.hdrs = {
-	copy('$outdir/include', '$srcdir/include', {'tls.h'}),
 	copy('$outdir/include/openssl', '$srcdir/include/openssl', {
 		'aes.h',
 		'asn1.h',
@@ -342,13 +341,6 @@ lib('libssl.a', [[ssl/(
 	tls13_server.c
 ) libcrypto.a.d]])
 file('lib/libssl.a', '644', '$outdir/libssl.a')
-
--- src/tls/Makefile.am
-lib('libtls.a', [[tls/(
-	tls.c tls_bio_cb.c tls_client.c tls_config.c tls_conninfo.c
-	tls_keypair.c tls_peer.c tls_server.c tls_util.c tls_ocsp.c tls_verify.c
-) libssl.a.d libcrypto.a.d]])
-file('lib/libtls.a', '644', '$outdir/libtls.a')
 
 exe('openssl', [[apps/openssl/(
 	apps.c apps_posix.c asn1pars.c ca.c certhash.c ciphers.c cms.c crl.c
