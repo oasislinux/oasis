@@ -33,10 +33,10 @@
 #define PACKAGE "pixman"
 #define PACKAGE_BUGREPORT "pixman@lists.freedesktop.org"
 #define PACKAGE_NAME "pixman"
-#define PACKAGE_STRING "pixman 0.38.4"
+#define PACKAGE_STRING "pixman 0.40.0"
 #define PACKAGE_TARNAME "pixman"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "0.38.4"
+#define PACKAGE_VERSION "0.40.0"
 /* #undef PIXMAN_GNUPLOT */
 /* #undef PIXMAN_TIMERS */
 #define SIZEOF_LONG 8
@@ -53,7 +53,7 @@
 /* #undef USE_MIPS_DSPR2 */
 /* #undef USE_OPENMP */
 /* #undef USE_VMX */
-#define VERSION "0.38.4"
+#define VERSION "0.40.0"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

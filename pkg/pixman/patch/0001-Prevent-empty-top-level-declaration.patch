@@ -1,4 +1,4 @@
-From 66f8839181d4cf81efc9beb8bd85cb8263795b56 Mon Sep 17 00:00:00 2001
+From 76c1b0d85878fb3eb6cba54b5a67ad3df095bad7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 11 Jul 2019 00:12:19 -0700
 Subject: [PATCH] Prevent empty top-level declaration
@@ -13,10 +13,10 @@ empty top-level declaration, which is not allowed in ISO C.
  2 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/pixman/pixman-compiler.h b/pixman/pixman-compiler.h
-index 2489adc..e96d81e 100644
+index a02aa49..6394156 100644
 --- a/pixman/pixman-compiler.h
 +++ b/pixman/pixman-compiler.h
-@@ -107,14 +107,14 @@
+@@ -109,14 +109,14 @@
  #if defined(PIXMAN_NO_TLS)
  
  #   define PIXMAN_DEFINE_THREAD_LOCAL(type, name)			\
@@ -33,7 +33,7 @@ index 2489adc..e96d81e 100644
  #   define PIXMAN_GET_THREAD_LOCAL(name)				\
      (&name)
  
-@@ -174,7 +174,7 @@
+@@ -176,7 +176,7 @@
  #elif defined(_MSC_VER)
  
  #   define PIXMAN_DEFINE_THREAD_LOCAL(type, name)			\
@@ -56,5 +56,5 @@ index 2c7de4c..5a2cbfe 100644
  static void
  dummy_composite_rect (pixman_implementation_t *imp,
 -- 
-2.22.0
+2.26.2
 
