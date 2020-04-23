@@ -133,6 +133,9 @@ file('bin/ssh-agent', '755', '$outdir/ssh-agent')
 exe('ssh-keygen', {'ssh-keygen.c', 'sshsig.c', 'libssh.a.d'})
 file('bin/ssh-keygen', '755', '$outdir/ssh-keygen')
 
+exe('ssh-keyscan', {'ssh-keyscan.c', 'libssh.a.d'})
+file('bin/ssh-keyscan', '755', '$outdir/ssh-keyscan')
+
 exe('ssh-sk-helper', {'ssh-sk-helper.c', 'ssh-sk.c', 'sk-usbhid.c', 'libssh.a.d'})
 file('libexec/ssh-sk-helper', '755', '$outdir/ssh-sk-helper')
 
@@ -142,6 +145,17 @@ file('libexec/sftp-server', '755', '$outdir/sftp-server')
 exe('sftp', {'sftp.c', 'sftp-client.c', 'sftp-common.c.o', 'sftp-glob.c', 'libssh.a.d'})
 file('bin/sftp', '755', '$outdir/sftp')
 
-man{'ssh.1', 'scp.1', 'ssh-add.1', 'ssh-agent.1', 'ssh-keygen.1', 'ssh_config.5', 'sshd.8', 'sftp-server.8', 'sftp.1'}
+man{
+	'ssh.1',
+	'scp.1',
+	'ssh-add.1',
+	'ssh-agent.1',
+	'ssh-keygen.1',
+	'ssh-keyscan.1',
+	'ssh_config.5',
+	'sshd.8',
+	'sftp-server.8',
+	'sftp.1',
+}
 
 fetch 'git'
