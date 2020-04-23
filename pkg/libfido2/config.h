@@ -1,3 +1,6 @@
+#define _FIDO_MAJOR 1
+#define _FIDO_MINOR 4
+#define _FIDO_PATCH 0
 #ifdef HAVE__THREAD_LOCAL
 # define TLS _Thread_local
 #endif

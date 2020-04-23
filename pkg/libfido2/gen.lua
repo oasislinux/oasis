@@ -59,6 +59,35 @@ lib('libfido2.a', [[
 	)
 	$builddir/pkg/bearssl/libbearssl.a
 	$builddir/pkg/libcbor/libcbor.a
+	$builddir/pkg/openbsd/libbsd.a
 ]])
+
+lib('libcommon.a', [[tools/(base64.c util.c)]])
+
+exe('fido2-cred', [[
+	tools/(
+		fido2-cred.c
+		cred_make.c
+		cred_verify.c
+	)
+	libcommon.a
+	libfido2.a.d
+]])
+file('bin/fido2-cred', '755', '$outdir/fido2-cred')
+man{'man/fido2-cred.1'}
+
+exe('fido2-token', [[
+	tools/(
+		fido2-token.c
+		bio.c
+		credman.c
+		pin.c
+		token.c
+	)
+	libcommon.a
+	libfido2.a.d
+]])
+file('bin/fido2-token', '755', '$outdir/fido2-token')
+man{'man/fido2-token.1'}
 
 fetch 'git'
