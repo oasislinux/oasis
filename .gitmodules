@@ -122,7 +122,7 @@
 	ignore = all
 [submodule "pkg/libfido2/src"]
 	path = pkg/libfido2/src
-	url = https://github.com/Yubico/libfido2.git
+	url = https://github.com/oasislinux/libfido2.git
 	ignore = all
 [submodule "pkg/libgpiod/src"]
 	path = pkg/libgpiod/src
