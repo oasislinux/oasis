@@ -22,6 +22,7 @@ http_header_filter
 http_chunked_filter
 http_range_header_filter
 http_gzip_filter
+http_postpone_filter
 http_headers_filter
 
 http_copy_filter
