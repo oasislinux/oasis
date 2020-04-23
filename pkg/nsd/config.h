@@ -3,6 +3,7 @@
 /* #undef CHROOTDIR */
 #define CONFIGDIR "/etc/nsd"
 #define CONFIGFILE "/etc/nsd/nsd.conf"
+#define CPU_OR_THREE_ARGS 1
 /* #undef DARWIN_BROKEN_SETREUID */
 #define DBFILE "/var/db/nsd/nsd.db"
 /* #undef DNSTAP_SOCKET_PATH */
@@ -27,6 +28,7 @@
 #define HAVE_CPU_SET_T 1
 /* #undef HAVE_CRYPTO_MEMCMP */
 #define HAVE_CTIME_R_PROTO 1
+#define HAVE_DECL_REALLOCARRAY 1
 /* #undef HAVE_DECL_SSL_CTX_SET_ECDH_AUTO */
 /* #undef HAVE_DECL_SSL_CTX_SET_TMP_ECDH */
 #define HAVE_DUP2 1
@@ -90,6 +92,7 @@
 #define HAVE_REALLOCARRAY 1
 /* #undef HAVE_RECVMMSG */
 #define HAVE_SCHED_H 1
+#define HAVE_SCHED_SETAFFINITY 1
 /* #undef HAVE_SENDMMSG */
 /* #undef HAVE_SETPROCTITLE */
 #define HAVE_SETREGID 1
@@ -124,6 +127,7 @@
 /* #undef HAVE_STRUCT_STAT_ST_MTIMENSEC */
 #define HAVE_STRUCT_STAT_ST_MTIM_TV_NSEC 1
 #define HAVE_STRUCT_TIMESPEC 1
+#define HAVE_SYSCONF 1
 /* #undef HAVE_SYSLOG_H */
 /* #undef HAVE_SYS_BITYPES_H */
 /* #undef HAVE_SYS_CPUSET_H */
@@ -163,14 +167,15 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.3.0"
+#define PACKAGE_STRING "NSD 4.3.1"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.3.0"
+#define PACKAGE_VERSION "4.3.1"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
 /* #undef RATELIMIT_DEFAULT_OFF */
+/* #undef REALLOCARRAY_NEEDS_DEFINES */
 #define RETSIGTYPE void
 /* #undef ROOT_SERVER */
 #define SIZEOF_OFF_T 8
@@ -269,7 +274,7 @@
 #  endif
 #  ifndef __EXTENSIONS__
 #    define __EXTENSIONS__ 1
-#  endif 
+#  endif
 #  ifndef _STDC_C99
 #    define _STDC_C99 1
 #  endif
