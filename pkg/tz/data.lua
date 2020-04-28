@@ -216,7 +216,7 @@ return {
 		["Atlantic/Faroe"]=false,
 		["America/Danmarkshavn"]=false,
 		["America/Scoresbysund"]=false,
-		["America/Godthab"]=false,
+		["America/Nuuk"]=false,
 		["America/Thule"]=false,
 		["Europe/Tallinn"]=false,
 		["Europe/Helsinki"]=false,
