@@ -7,9 +7,10 @@ cflags{
 build('sed', '$outdir/include/cbor/configuration.h', '$srcdir/src/cbor/configuration.h.in', {
 	expr={
 		[[-e 's,$${CBOR_VERSION_MAJOR},0,']],
-		[[-e 's,$${CBOR_VERSION_MINOR},6,']],
-		[[-e 's,$${CBOR_VERSION_PATCH},1,']],
+		[[-e 's,$${CBOR_VERSION_MINOR},7,']],
+		[[-e 's,$${CBOR_VERSION_PATCH},0,']],
 		[[-e 's,$${CBOR_BUFFER_GROWTH},2,']],
+		[[-e 's,$${CBOR_MAX_STACK_SIZE},2048,']],
 		[[-e 's,$${CBOR_RESTRICT_SPECIFIER},restrict,']],
 		[[-e 's,$${CBOR_INLINE_SPECIFIER},inline,']],
 		'-e /CBOR_CUSTOM_ALLOC/d',
