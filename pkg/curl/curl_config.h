@@ -30,6 +30,7 @@
 /* #undef CURL_DISABLE_TELNET */
 /* #undef CURL_DISABLE_TFTP */
 /* #undef CURL_DISABLE_VERBOSE_STRINGS */
+/* #undef CURL_ENABLE_MQTT */
 #define CURL_EXTERN_SYMBOL __attribute__ ((__visibility__ ("default")))
 #define CURL_SA_FAMILY_T sa_family_t
 /* #undef CURL_WITH_MULTI_SSL */
@@ -97,9 +98,6 @@
 #define HAVE_GETTIMEOFDAY 1
 /* #undef HAVE_GLIBC_STRERROR_R */
 #define HAVE_GMTIME_R 1
-/* #undef HAVE_GNUTLS_ALPN_SET_PROTOCOLS */
-/* #undef HAVE_GNUTLS_CERTIFICATE_SET_X509_KEY_FILE2 */
-/* #undef HAVE_GNUTLS_OCSP_REQ_INIT */
 /* #undef HAVE_GNUTLS_SRP */
 /* #undef HAVE_GSSAPI */
 /* #undef HAVE_GSSAPI_GSSAPI_GENERIC_H */
@@ -164,6 +162,7 @@
 /* #undef HAVE_NGTCP2_NGTCP2_CRYPTO_H */
 /* #undef HAVE_NGTCP2_NGTCP2_H */
 /* #undef HAVE_OLD_GSSMIT */
+/* #undef HAVE_OPENSSL3 */
 /* #undef HAVE_OPENSSL_CRYPTO_H */
 /* #undef HAVE_OPENSSL_ERR_H */
 /* #undef HAVE_OPENSSL_PEM_H */
@@ -332,6 +331,7 @@
 /* #undef USE_NGHTTP2 */
 /* #undef USE_NGHTTP3 */
 /* #undef USE_NGTCP2 */
+/* #undef USE_NGTCP2_CRYPTO_GNUTLS */
 /* #undef USE_NGTCP2_CRYPTO_OPENSSL */
 /* #undef USE_NSS */
 /* #undef USE_OPENLDAP */

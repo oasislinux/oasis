@@ -43,39 +43,37 @@ pkg.deps = {
 -- src/lib/Makefile.inc:/^CSOURCES
 lib('libcurl.a', [[
 	lib/(
-		file.c timeval.c base64.c hostip.c progress.c formdata.c
-		cookie.c http.c sendf.c ftp.c url.c dict.c if2ip.c speedcheck.c
-		ldap.c version.c getenv.c escape.c mprintf.c telnet.c netrc.c
-		getinfo.c transfer.c strcase.c easy.c security.c curl_fnmatch.c
-		fileinfo.c ftplistparser.c wildcard.c krb5.c memdebug.c http_chunks.c
-		strtok.c connect.c llist.c hash.c multi.c content_encoding.c share.c
-		http_digest.c md4.c md5.c http_negotiate.c inet_pton.c strtoofft.c
-		strerror.c amigaos.c hostasyn.c hostip4.c hostip6.c hostsyn.c
-		inet_ntop.c parsedate.c select.c tftp.c splay.c strdup.c socks.c
-		curl_addrinfo.c socks_gssapi.c socks_sspi.c
-		curl_sspi.c slist.c nonblock.c curl_memrchr.c imap.c pop3.c smtp.c
-		pingpong.c rtsp.c curl_threads.c warnless.c hmac.c curl_rtmp.c
-		openldap.c curl_gethostname.c gopher.c idn_win32.c
-		http_proxy.c non-ascii.c asyn-ares.c asyn-thread.c curl_gssapi.c
-		http_ntlm.c curl_ntlm_wb.c curl_ntlm_core.c curl_sasl.c rand.c
-		curl_multibyte.c hostcheck.c conncache.c dotdot.c
-		x509asn1.c http2.c smb.c curl_endian.c curl_des.c system_win32.c
-		mime.c sha256.c setopt.c curl_path.c curl_ctype.c curl_range.c psl.c
-		doh.c urlapi.c curl_get_line.c altsvc.c socketpair.c rename.c
+		altsvc.c amigaos.c asyn-ares.c asyn-thread.c base64.c
+		conncache.c connect.c content_encoding.c cookie.c curl_addrinfo.c
+		curl_ctype.c curl_des.c curl_endian.c curl_fnmatch.c curl_get_line.c
+		curl_gethostname.c curl_gssapi.c curl_memrchr.c curl_multibyte.c
+		curl_ntlm_core.c curl_ntlm_wb.c curl_path.c curl_range.c curl_rtmp.c
+		curl_sasl.c curl_sspi.c curl_threads.c dict.c dotdot.c easy.c escape.c
+		file.c fileinfo.c formdata.c ftp.c url.c ftplistparser.c getenv.c getinfo.c
+		gopher.c hash.c hmac.c hostasyn.c hostcheck.c hostip.c hostip4.c hostip6.c
+		hostsyn.c http.c http2.c http_chunks.c http_digest.c http_negotiate.c
+		http_ntlm.c http_proxy.c idn_win32.c if2ip.c imap.c inet_ntop.c inet_pton.c
+		krb5.c ldap.c llist.c md4.c md5.c memdebug.c mime.c mprintf.c mqtt.c
+		multi.c netrc.c non-ascii.c nonblock.c openldap.c parsedate.c pingpong.c
+		pop3.c progress.c psl.c doh.c rand.c rename.c rtsp.c security.c select.c
+		sendf.c setopt.c sha256.c share.c slist.c smb.c smtp.c socketpair.c socks.c
+		socks_gssapi.c socks_sspi.c speedcheck.c splay.c strcase.c strdup.c
+		strerror.c strtok.c strtoofft.c system_win32.c telnet.c tftp.c timeval.c
+		transfer.c urlapi.c version.c warnless.c wildcard.c x509asn1.c
 		vauth/(
-			vauth.c cleartext.c cram.c
-			digest.c digest_sspi.c krb5_gssapi.c
-			krb5_sspi.c ntlm.c ntlm_sspi.c oauth2.c
-			spnego_gssapi.c spnego_sspi.c
+			cleartext.c cram.c digest.c
+			digest_sspi.c krb5_gssapi.c krb5_sspi.c ntlm.c
+			ntlm_sspi.c oauth2.c spnego_gssapi.c spnego_sspi.c
+			vauth.c
 		)
 		vtls/(
-			openssl.c gtls.c vtls.c nss.c
-			mbedtls_threadlock.c wolfssl.c schannel.c
-			schannel_verify.c sectransp.c gskit.c mbedtls.c
-			mesalink.c bearssl.c
+			bearssl.c gskit.c gtls.c mbedtls.c
+			mbedtls_threadlock.c mesalink.c nss.c openssl.c
+			schannel.c schannel_verify.c sectransp.c vtls.c
+			wolfssl.c
 		)
 		vquic/(ngtcp2.c quiche.c)
-		vssh/(libssh2.c libssh.c)
+		vssh/(libssh.c libssh2.c wolfssh.c)
 	)
 	$builddir/pkg/bearssl/libbearssl.a
 	$builddir/pkg/zlib/libz.a
@@ -126,6 +124,7 @@ exe('curl', [[
 		tool_util.c
 		tool_vms.c
 		tool_writeout.c
+		tool_writeout_json.c
 		tool_xattr.c
 	)
 	tool_hugehelp.c.o
