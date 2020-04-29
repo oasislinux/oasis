@@ -30,7 +30,6 @@ local tools = {
 	{'chvt', 1},
 	{'clear', 1},
 	{'ctrlaltdel', 8},
-	{'dd', 1},
 	{'df', 1},
 	{'dmesg', 1},
 	{'eject', 1},
