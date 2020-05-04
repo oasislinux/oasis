@@ -4,6 +4,11 @@ cflags{
 	'-D LUA_USE_POSIX',
 }
 
+pkg.hdrs = {
+	copy('$outdir/include', '$srcdir/src', {'lua.h', 'luaconf.h', 'lualib.h', 'lauxlib.h'}),
+	install=true,
+}
+
 lib('liblua.a', [[src/(
 	lapi.c lcode.c lctype.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c
 	lmem.c lobject.c lopcodes.c lparser.c lstate.c lstring.c ltable.c
@@ -11,6 +16,7 @@ lib('liblua.a', [[src/(
 	lauxlib.c lbaselib.c lbitlib.c lcorolib.c ldblib.c liolib.c
 	lmathlib.c loslib.c lstrlib.c ltablib.c loadlib.c linit.c
 )]])
+file('lib/liblua.a', '644', '$outdir/liblua.a')
 
 exe('lua', {'src/lua.c', 'liblua.a'})
 file('bin/lua5.2', '755', '$outdir/lua')
