@@ -62,6 +62,7 @@ return {
 	},
 	net={
 		'acme-client',
+		'catgirl',
 		'hostap',
 		'ii',
 		'msmtp',
