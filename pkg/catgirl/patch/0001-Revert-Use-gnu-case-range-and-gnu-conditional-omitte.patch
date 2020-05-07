@@ -1,0 +1,312 @@
+From b4b4ecd6db6499ee60fa3efc67afc60653978ff2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 7 May 2020 00:36:14 -0700
+Subject: [PATCH] Revert "Use gnu-case-range and
+ gnu-conditional-omitted-operand extensions"
+
+This reverts commit 75a6aa9258270169f43f56e063f1bfb57eebe56b.
+---
+ Makefile   |  3 +--
+ command.c  | 19 ++++++++++---------
+ complete.c |  4 ++--
+ handle.c   | 45 +++++++++++++++++++++++++++------------------
+ ui.c       |  7 ++++++-
+ 5 files changed, 46 insertions(+), 32 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 68e673b..4a610b7 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,8 +1,7 @@
+ PREFIX = /usr/local
+ MANDIR = ${PREFIX}/share/man
+ 
+-CEXTS = gnu-case-range gnu-conditional-omitted-operand
+-CFLAGS += -std=c11 -Wall -Wextra -Wpedantic ${CEXTS:%=-Wno-%}
++CFLAGS += -std=c11 -Wall -Wextra -Wpedantic
+ LDLIBS = -lcrypto -ltls -lncursesw
+ 
+ -include config.mk
+diff --git a/command.c b/command.c
+index b041e41..4393cf5 100644
+--- a/command.c
++++ b/command.c
+@@ -58,8 +58,8 @@ static void splitMessage(char *cmd, uint id, char *params) {
+ 	int overhead = snprintf(
+ 		NULL, 0, ":%s!%*s@%*s %s %s :\r\n",
+ 		self.nick,
+-		(self.user ? 0 : network.userLen), (self.user ?: "*"),
+-		(self.host ? 0 : network.hostLen), (self.host ?: "*"),
++		(self.user ? 0 : network.userLen), (self.user ? self.user : "*"),
++		(self.host ? 0 : network.hostLen), (self.host ? self.host : "*"),
+ 		cmd, idNames[id]
+ 	);
+ 	assert(overhead > 0 && overhead < 512);
+@@ -98,7 +98,7 @@ static void commandNotice(uint id, char *params) {
+ 
+ static void commandMe(uint id, char *params) {
+ 	char buf[512];
+-	snprintf(buf, sizeof(buf), "\1ACTION %s\1", (params ?: ""));
++	snprintf(buf, sizeof(buf), "\1ACTION %s\1", (params ? params : ""));
+ 	echoMessage("PRIVMSG", id, buf);
+ }
+ 
+@@ -129,7 +129,7 @@ static void commandPart(uint id, char *params) {
+ 
+ static void commandQuit(uint id, char *params) {
+ 	(void)id;
+-	set(&self.quit, (params ?: "nyaa~"));
++	set(&self.quit, (params ? params : "nyaa~"));
+ }
+ 
+ static void commandNick(uint id, char *params) {
+@@ -215,7 +215,7 @@ static void commandOp(uint id, char *params) {
+ }
+ 
+ static void commandDeop(uint id, char *params) {
+-	channelListMode(id, '-', 'o', (params ?: self.nick));
++	channelListMode(id, '-', 'o', (params ? params : self.nick));
+ }
+ 
+ static void commandVoice(uint id, char *params) {
+@@ -227,7 +227,7 @@ static void commandVoice(uint id, char *params) {
+ }
+ 
+ static void commandDevoice(uint id, char *params) {
+-	channelListMode(id, '-', 'v', (params ?: self.nick));
++	channelListMode(id, '-', 'v', (params ? params : self.nick));
+ }
+ 
+ static void commandBan(uint id, char *params) {
+@@ -388,11 +388,12 @@ static void commandExec(uint id, char *params) {
+ 	if (pid < 0) err(EX_OSERR, "fork");
+ 	if (pid) return;
+ 
++	const char *shell = getenv("SHELL");
++	if (!shell) shell = "/bin/sh";
++
+ 	close(STDIN_FILENO);
+ 	dup2(execPipe[1], STDOUT_FILENO);
+ 	dup2(utilPipe[1], STDERR_FILENO);
+-
+-	const char *shell = getenv("SHELL") ?: "/bin/sh";
+ 	execlp(shell, shell, "-c", params, NULL);
+ 	warn("%s", shell);
+ 	_exit(EX_UNAVAILABLE);
+@@ -407,7 +408,7 @@ static void commandHelp(uint id, char *params) {
+ 	if (pid) return;
+ 
+ 	char buf[256];
+-	snprintf(buf, sizeof(buf), "ip%s$", (params ?: "COMMANDS"));
++	snprintf(buf, sizeof(buf), "ip%s$", (params ? params : "COMMANDS"));
+ 	setenv("LESS", buf, 1);
+ 	execlp("man", "man", "1", "catgirl", NULL);
+ 	dup2(utilPipe[1], STDERR_FILENO);
+diff --git a/complete.c b/complete.c
+index 86846f4..5e4d773 100644
+--- a/complete.c
++++ b/complete.c
+@@ -60,7 +60,7 @@ static struct Node *prepend(struct Node *node) {
+ 	node->next = head;
+ 	if (head) head->prev = node;
+ 	head = node;
+-	tail = (tail ?: node);
++	if (!tail) tail = node;
+ 	return node;
+ }
+ 
+@@ -69,7 +69,7 @@ static struct Node *append(struct Node *node) {
+ 	node->prev = tail;
+ 	if (tail) tail->next = node;
+ 	tail = node;
+-	head = (head ?: node);
++	if (!head) head = node;
+ 	return node;
+ }
+ 
+diff --git a/handle.c b/handle.c
+index ef3f2b5..1410acc 100644
+--- a/handle.c
++++ b/handle.c
+@@ -269,9 +269,9 @@ static void handleReplyISupport(struct Message *msg) {
+ 			set(&network.setParamModes, setParam);
+ 			set(&network.channelModes, channel);
+ 		} else if (!strcmp(key, "EXCEPTS")) {
+-			network.excepts = (msg->params[i] ?: "e")[0];
++			network.excepts = (msg->params[i] ? msg->params[i][0] : 'e');
+ 		} else if (!strcmp(key, "INVEX")) {
+-			network.invex = (msg->params[i] ?: "I")[0];
++			network.invex = (msg->params[i] ? msg->params[i][0] : 'I');
+ 		}
+ 	}
+ }
+@@ -318,7 +318,7 @@ static void handleJoin(struct Message *msg) {
+ 		"\3%02d%s\3\t%s%s%sarrives in \3%02d%s\3",
+ 		hash(msg->user), msg->nick,
+ 		(msg->params[2] ? "(" : ""),
+-		(msg->params[2] ?: ""),
++		(msg->params[2] ? msg->params[2] : ""),
+ 		(msg->params[2] ? ") " : ""),
+ 		hash(msg->params[0]), msg->params[0]
+ 	);
+@@ -349,12 +349,14 @@ static void handlePart(struct Message *msg) {
+ 		id, ignoreCheck(Cold, id, msg), tagTime(msg),
+ 		"\3%02d%s\3\tleaves \3%02d%s\3%s%s",
+ 		hash(msg->user), msg->nick, hash(msg->params[0]), msg->params[0],
+-		(msg->params[1] ? ": " : ""), (msg->params[1] ?: "")
++		(msg->params[1] ? ": " : ""),
++		(msg->params[1] ? msg->params[1] : "")
+ 	);
+ 	logFormat(
+ 		id, tagTime(msg), "%s leaves %s%s%s",
+ 		msg->nick, msg->params[0],
+-		(msg->params[1] ? ": " : ""), (msg->params[1] ?: "")
++		(msg->params[1] ? ": " : ""),
++		(msg->params[1] ? msg->params[1] : "")
+ 	);
+ }
+ 
+@@ -371,12 +373,14 @@ static void handleKick(struct Message *msg) {
+ 		hash(msg->user), msg->nick,
+ 		completeColor(id, msg->params[1]), msg->params[1],
+ 		hash(msg->params[0]), msg->params[0],
+-		(msg->params[2] ? ": " : ""), (msg->params[2] ?: "")
++		(msg->params[2] ? ": " : ""),
++		(msg->params[2] ? msg->params[2] : "")
+ 	);
+ 	logFormat(
+ 		id, tagTime(msg), "%s kicks %s out of %s%s%s",
+ 		msg->nick, msg->params[1], msg->params[0],
+-		(msg->params[2] ? ": " : ""), (msg->params[2] ?: "")
++		(msg->params[2] ? ": " : ""),
++		(msg->params[2] ? msg->params[2] : "")
+ 	);
+ 	completeRemove(id, msg->params[1]);
+ 	if (kicked) completeClear(id);
+@@ -414,13 +418,15 @@ static void handleQuit(struct Message *msg) {
+ 			id, ignoreCheck(Cold, id, msg), tagTime(msg),
+ 			"\3%02d%s\3\tleaves%s%s",
+ 			hash(msg->user), msg->nick,
+-			(msg->params[0] ? ": " : ""), (msg->params[0] ?: "")
++			(msg->params[0] ? ": " : ""),
++			(msg->params[0] ? msg->params[0] : "")
+ 		);
+ 		if (id == Network) continue;
+ 		logFormat(
+ 			id, tagTime(msg), "%s leaves%s%s",
+ 			msg->nick,
+-			(msg->params[0] ? ": " : ""), (msg->params[0] ?: "")
++			(msg->params[0] ? ": " : ""),
++			(msg->params[0] ? msg->params[0] : "")
+ 		);
+ 	}
+ 	completeRemove(None, msg->nick);
+@@ -579,7 +585,7 @@ static void handleReplyUserModeIs(struct Message *msg) {
+ 		const char *name = UserModes[(byte)*ch];
+ 		catf(
+ 			buf, sizeof(buf), ", +%c%s%s",
+-			*ch, (name ? " " : ""), (name ?: "")
++			*ch, (name ? " " : ""), (name ? name : "")
+ 		);
+ 	}
+ 	uiFormat(
+@@ -621,13 +627,13 @@ static void handleReplyChannelModeIs(struct Message *msg) {
+ 			assert(param < ParamCap);
+ 			catf(
+ 				buf, sizeof(buf), ", +%c%s%s %s",
+-				*ch, (name ? " " : ""), (name ?: ""),
++				*ch, (name ? " " : ""), (name ? name : ""),
+ 				msg->params[param++]
+ 			);
+ 		} else {
+ 			catf(
+ 				buf, sizeof(buf), ", +%c%s%s",
+-				*ch, (name ? " " : ""), (name ?: "")
++				*ch, (name ? " " : ""), (name ? name : "")
+ 			);
+ 		}
+ 	}
+@@ -654,7 +660,7 @@ static void handleMode(struct Message *msg) {
+ 				hash(msg->user), msg->nick,
+ 				(set ? "" : "un"),
+ 				self.color, msg->params[0],
+-				set["-+"], *ch, (name ? " " : ""), (name ?: "")
++				set["-+"], *ch, (name ? " " : ""), (name ? name : "")
+ 			);
+ 		}
+ 		return;
+@@ -811,7 +817,7 @@ static void handleErrorBanListFull(struct Message *msg) {
+ 	require(msg, false, 4);
+ 	uiFormat(
+ 		idFor(msg->params[1]), Cold, tagTime(msg),
+-		"%s", (msg->params[4] ?: msg->params[3])
++		"%s", (msg->params[4] ? msg->params[4] : msg->params[3])
+ 	);
+ }
+ 
+@@ -944,14 +950,15 @@ static void handleReplyWhoisIdle(struct Message *msg) {
+ 		}
+ 	}
+ 	char signon[sizeof("0000-00-00 00:00:00")];
+-	time_t time = strtol((msg->params[3] ?: ""), NULL, 10);
++	time_t time = (msg->params[3] ? strtol(msg->params[3], NULL, 10) : 0);
+ 	strftime(signon, sizeof(signon), "%F %T", localtime(&time));
+ 	uiFormat(
+ 		Network, Warm, tagTime(msg),
+ 		"\3%02d%s\3\tis idle for %lu %s%s%s%s",
+ 		completeColor(Network, msg->params[1]), msg->params[1],
+ 		idle, unit, (idle != 1 ? "s" : ""),
+-		(msg->params[3] ? ", signed on " : ""), (msg->params[3] ? signon : "")
++		(msg->params[3] ? ", signed on " : ""),
++		(msg->params[3] ? signon : "")
+ 	);
+ }
+ 
+@@ -986,7 +993,9 @@ static void handleReplyWhoisGeneric(struct Message *msg) {
+ 		Network, Warm, tagTime(msg),
+ 		"\3%02d%s\3\t%s%s%s",
+ 		completeColor(Network, msg->params[1]), msg->params[1],
+-		msg->params[2], (msg->params[3] ? " " : ""), (msg->params[3] ?: "")
++		msg->params[2],
++		(msg->params[3] ? " " : ""),
++		(msg->params[3] ? msg->params[3] : "")
+ 	);
+ }
+ 
+@@ -1039,7 +1048,7 @@ static bool isMention(const struct Message *msg) {
+ 	const char *match = msg->params[1];
+ 	while (NULL != (match = strcasestr(match, self.nick))) {
+ 		char a = (match > msg->params[1] ? match[-1] : ' ');
+-		char b = (match[len] ?: ' ');
++		char b = (match[len] ? match[len] : ' ');
+ 		if ((isspace(a) || ispunct(a)) && (isspace(b) || ispunct(b))) {
+ 			return true;
+ 		}
+diff --git a/ui.c b/ui.c
+index cdb2883..2c8f2d5 100644
+--- a/ui.c
++++ b/ui.c
+@@ -922,7 +922,6 @@ static void keyCode(int code) {
+ 		break; case KeyMetaGt: windowScroll(window, -WindowLines);
+ 		break; case KeyMetaLt: windowScroll(window, +WindowLines);
+ 
+-		break; case KeyMeta0 ... KeyMeta9: uiShowNum(code - KeyMeta0);
+ 		break; case KeyMetaA: showAuto();
+ 		break; case KeyMetaB: edit(id, EditPrevWord, 0);
+ 		break; case KeyMetaD: edit(id, EditDeleteNextWord, 0);
+@@ -946,6 +945,12 @@ static void keyCode(int code) {
+ 		break; case KEY_SEND: windowScroll(window, -WindowLines);
+ 		break; case KEY_SHOME: windowScroll(window, +WindowLines);
+ 		break; case KEY_UP: windowScroll(window, +1);
++
++		break; default: {
++			if (code >= KeyMeta0 && code <= KeyMeta9) {
++				uiShowNum(code - KeyMeta0);
++			}
++		}
+ 	}
+ }
+ 
+-- 
+2.26.2
+

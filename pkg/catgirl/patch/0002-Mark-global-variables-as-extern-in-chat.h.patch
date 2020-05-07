@@ -1,0 +1,31 @@
+From 1d3b42dc527cf6f5c23d741584990a95bd1cdfc0 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 7 May 2020 00:49:32 -0700
+Subject: [PATCH] Mark global variables as extern in chat.h
+
+This fixes the build with gcc 10, which enables -fno-common by
+default.
+---
+ chat.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/chat.h b/chat.h
+index e0266ef..5307f8b 100644
+--- a/chat.h
++++ b/chat.h
+@@ -162,9 +162,9 @@ void ircFormat(const char *format, ...)
+ 	__attribute__((format(printf, 1, 2)));
+ void ircClose(void);
+ 
+-uint execID;
+-int execPipe[2];
+-int utilPipe[2];
++extern uint execID;
++extern int execPipe[2];
++extern int utilPipe[2];
+ 
+ enum { UtilCap = 16 };
+ struct Util {
+-- 
+2.26.2
+
