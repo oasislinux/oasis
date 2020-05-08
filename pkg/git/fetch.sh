@@ -1,5 +1,3 @@
-: "${SHA256SUM:=sha256sum}"
-
 set -e
 
 sh scripts/fetch-git.sh "$@"
@@ -11,9 +9,9 @@ if [ -e src/man ] ; then
 	rm -rf src/man
 fi
 
-if ! $SHA256SUM -c sha256 2>/dev/null ; then
+if ! sh "$OLDPWD/scripts/checksum.sh" -c sha256 2>/dev/null ; then
 	curl -L -O -K url
-	$SHA256SUM -c sha256
+	sh "$OLDPWD/scripts/checksum.sh" -c sha256
 fi
 
 read -r _ archive <sha256

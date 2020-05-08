@@ -1,5 +1,3 @@
-: "${SHA256SUM:=sha256sum}"
-
 set -e
 
 dir=$1
@@ -11,9 +9,9 @@ if [ -e src ] ; then
         rm -rf src
 fi
 
-if ! $SHA256SUM -c sha256 2>/dev/null ; then
+if ! sh "$OLDPWD/scripts/checksum.sh" -c sha256 2>/dev/null ; then
         curl -L -K url -O
-        $SHA256SUM -c sha256
+        sh "$OLDPWD/scripts/checksum.sh" -c sha256
 fi
 
 read -r _ archive <sha256
