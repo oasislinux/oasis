@@ -1,5 +1,4 @@
 : "${SHA256SUM:=sha256sum}"
-: "${PAXREAD:=pax -r}"
 
 set -e
 
@@ -18,4 +17,4 @@ if ! $SHA256SUM -c sha256 2>/dev/null ; then
 fi
 
 read -r _ archive <sha256
-gzip -d -c "$archive" | $PAXREAD -s ',^\.,src/man,'
+sh "$OLDPWD/scripts/extract.sh" "$archive" -s ',^\.,src/man,'

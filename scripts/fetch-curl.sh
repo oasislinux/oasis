@@ -1,5 +1,4 @@
 : "${SHA256SUM:=sha256sum}"
-: "${PAXREAD:=pax -r}"
 
 set -e
 
@@ -23,19 +22,7 @@ if ! $SHA256SUM -c sha256 2>/dev/null ; then
 fi
 
 while read -r _ archive ; do
-	case $archive in
-	*.tar.gz|*.tgz)
-		tool=gzip ;;
-	*.tar.bz2)
-		tool=bzip2 ;;
-	*.tar.xz)
-		tool=xz ;;
-	*)
-		tool=
-	esac
-	if [ -n "$tool" ] ; then
-		"$tool" -d -c "$archive" | $PAXREAD -s ',^[^/]*,src,' '*/*'
-	fi
+	sh "$OLDPWD/scripts/extract.sh" "$archive" -s ',^[^/]*,src,' '*/*'
 done <sha256
 
 if [ -d patch ] ; then

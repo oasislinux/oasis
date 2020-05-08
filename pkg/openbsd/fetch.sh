@@ -1,5 +1,4 @@
 : "${SHA256SUM:=sha256sum}"
-: "${PAXREAD:=pax -r}"
 
 set -e
 
@@ -17,7 +16,7 @@ if ! $SHA256SUM -c sha256 2>/dev/null ; then
         $SHA256SUM -c sha256
 fi
 
-gzip -d -c src.tar.gz | $PAXREAD -s ',^,src/,' \
+sh "$OLDPWD/scripts/extract.sh" src.tar.gz -s ',^,src/,' \
 	'bin/pax/*' \
 	'include/*' \
 	'lib/libc/*' \
@@ -32,6 +31,6 @@ gzip -d -c src.tar.gz | $PAXREAD -s ',^,src/,' \
 	'usr.bin/rsync/*' \
 	'usr.bin/yacc/*' \
 	'usr.sbin/acme-client/*'
-gzip -d -c sys.tar.gz | $PAXREAD -s ',^,src/,' 'sys/sys/*'
+sh "$OLDPWD/scripts/extract.sh" sys.tar.gz -s ',^,src/,' 'sys/sys/*'
 
 git apply -v --whitespace=nowarn --directory "$dir/src" patch/*
