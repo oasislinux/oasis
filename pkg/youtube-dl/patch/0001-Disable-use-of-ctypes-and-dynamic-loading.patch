@@ -1,4 +1,4 @@
-From ffe2eda43450be3bb003e96b6017907832d403ba Mon Sep 17 00:00:00 2001
+From 949cc5da3130b895564968e48ae490ef6769b393 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -9,7 +9,7 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  2 files changed, 11 insertions(+), 190 deletions(-)
 
 diff --git a/youtube_dl/compat.py b/youtube_dl/compat.py
-index d1b86bd13..46c935797 100644
+index 0ee9bc760..8fec8b2d8 100644
 --- a/youtube_dl/compat.py
 +++ b/youtube_dl/compat.py
 @@ -4,7 +4,6 @@ from __future__ import unicode_literals
@@ -20,7 +20,7 @@ index d1b86bd13..46c935797 100644
  import email
  import getpass
  import io
-@@ -2960,24 +2959,6 @@ else:
+@@ -2971,24 +2970,6 @@ else:
      compat_b64decode = base64.b64decode
  
  
@@ -45,27 +45,27 @@ index d1b86bd13..46c935797 100644
  __all__ = [
      'compat_HTMLParseError',
      'compat_HTMLParser',
-@@ -2988,7 +2969,6 @@ __all__ = [
-     'compat_chr',
+@@ -3000,7 +2981,6 @@ __all__ = [
      'compat_cookiejar',
+     'compat_cookiejar_Cookie',
      'compat_cookies',
 -    'compat_ctypes_WINFUNCTYPE',
      'compat_etree_Element',
      'compat_etree_fromstring',
      'compat_etree_register_namespace',
 diff --git a/youtube_dl/utils.py b/youtube_dl/utils.py
-index 93d1dec05..580323faa 100644
+index 112279ed7..3d1bcbde0 100644
 --- a/youtube_dl/utils.py
 +++ b/youtube_dl/utils.py
-@@ -8,7 +8,6 @@ import binascii
- import calendar
+@@ -9,7 +9,6 @@ import calendar
  import codecs
+ import collections
  import contextlib
 -import ctypes
  import datetime
  import email.utils
  import email.header
-@@ -40,7 +39,6 @@ from .compat import (
+@@ -42,7 +41,6 @@ from .compat import (
      compat_basestring,
      compat_chr,
      compat_cookiejar,
@@ -73,7 +73,7 @@ index 93d1dec05..580323faa 100644
      compat_etree_fromstring,
      compat_expanduser,
      compat_html_entities,
-@@ -3008,90 +3006,11 @@ def platform_name():
+@@ -3080,90 +3078,11 @@ def platform_name():
      return res
  
  
@@ -164,7 +164,7 @@ index 93d1dec05..580323faa 100644
      if ('b' in getattr(out, 'mode', '')
              or sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
          byt = s.encode(encoding or preferredencoding(), 'ignore')
-@@ -3121,78 +3040,22 @@ def intlist_to_bytes(xs):
+@@ -3193,78 +3112,22 @@ def intlist_to_bytes(xs):
  
  
  # Cross-platform file locking
@@ -253,7 +253,7 @@ index 93d1dec05..580323faa 100644
  
  
  class locked_file(object):
-@@ -3438,29 +3301,7 @@ def fix_xml_ampersands(xml_str):
+@@ -3510,29 +3373,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
@@ -285,5 +285,5 @@ index 93d1dec05..580323faa 100644
  
  def remove_start(s, start):
 -- 
-2.25.1
+2.26.2
 
