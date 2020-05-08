@@ -27,5 +27,6 @@ exe('catgirl', [[
 	$builddir/pkg/ncurses/libncurses.a
 ]])
 file('bin/catgirl', '755', '$outdir/catgirl')
+man{'catgirl.1'}
 
 fetch 'git'
