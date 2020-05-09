@@ -1,5 +1,14 @@
 #!/bin/lua
 
+-- Lua 5.1 compatibility
+do
+	local os_execute = os.execute
+	os.execute = function(cmd)
+		local ret = os_execute(cmd)
+		return ret == true or ret == 0
+	end
+end
+
 basedir = arg[0]:match('(.*)/') or '.'
 
 if not os.execute('test -f config.lua') then

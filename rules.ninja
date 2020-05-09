@@ -1,5 +1,5 @@
 rule gen
-  command = lua5.2 $basedir/setup.lua $gendir
+  command = lua $basedir/setup.lua $gendir
   generator = 1
 
 # toolchain

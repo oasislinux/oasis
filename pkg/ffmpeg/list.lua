@@ -4,7 +4,7 @@ local var = arg[3]
 
 local options = {}
 for line in io.lines(optionshdr) do
-	local cfg, val = line:match('^#define CONFIG_(%g+) (%g+)$')
+	local cfg, val = line:match('^#define CONFIG_([%w_]+) (%d)$')
 	if cfg then
 		options[cfg] = val == '1'
 	end
@@ -12,7 +12,7 @@ end
 
 print('static const '..type..' *const '..var..'[] = {')
 for line in io.lines() do
-	local name = line:match('^extern .*'..type..' +ff_(%g+);$')
+	local name = line:match('^extern .*'..type..' +ff_([%w_]+);$')
 	if name then
 		local cfg
 		if var == 'filter_list' then

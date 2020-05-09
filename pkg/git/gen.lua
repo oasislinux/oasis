@@ -410,7 +410,7 @@ local programs = {
 }
 
 for _, prog in ipairs(programs) do
-	local name, srcs = table.unpack(prog)
+	local name, srcs = prog[1], prog[2]
 	exe('git-'..name, {srcs or name..'.c', 'common-main.c.o', 'libgit.a.d'})
 	file('libexec/git-core/git-'..name, '755', '$outdir/git-'..name)
 end
@@ -444,7 +444,7 @@ local scripts = {
 
 rule('sh_gen', 'sed -f $dir/sh_gen.sed $in >$out')
 for _, script in ipairs(scripts) do
-	local name, mode = table.unpack(script)
+	local name, mode = script[1], script[2]
 	build('sh_gen', '$outdir/git-'..name, {'$srcdir/git-'..name..'.sh', '|', '$dir/sh_gen.sed'})
 	file('libexec/git-core/git-'..name, mode, '$outdir/git-'..name)
 end

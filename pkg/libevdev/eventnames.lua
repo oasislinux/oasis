@@ -59,7 +59,7 @@ end
 
 for i = 1, #arg do
 	for line in io.lines(arg[i]) do
-		local name, value = line:match('^#define%s+(%g+)%s+([%xx]+)%f[^%g]')
+		local name, value = line:match('^#define%s+([%w_]+)%s+(%dx?%x*)')
 		value = tonumber(value)
 		if name and not duplicates[name] then
 			for prefix, b in pairs(bits) do

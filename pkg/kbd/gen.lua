@@ -56,7 +56,7 @@ local tools = {
 }
 
 for _, tool in ipairs(tools) do
-	local name, sect, subst, srcs = table.unpack(tool)
+	local name, sect, subst, srcs = tool[1], tool[2], tool[3], tool[4]
 	exe(name, {srcs or 'src/'..name..'.c', 'libcommon.a', 'libfont.a', 'libkeymap.a', 'libkbdfile.a'})
 	file('bin/'..name, '755', '$outdir/'..name)
 	if sect then

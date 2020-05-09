@@ -143,7 +143,7 @@ sub('bfd.ninja', function()
 		end
 	end
 	for arch in pairs(selarchs) do
-		srcs['bfd/cpu-'..arch:match('bfd_(%g+)_arch')..'.c'] = true
+		srcs['bfd/cpu-'..arch:match('bfd_([%w_]+)_arch')..'.c'] = true
 	end
 	local deps = {
 		'$gendir/deps',

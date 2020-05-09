@@ -80,7 +80,7 @@ local tools = {
 }
 
 for _, tool in ipairs(tools) do
-	local name, sect, mode = table.unpack(tool)
+	local name, sect, mode = tool[1], tool[2], tool[3]
 	file('bin/'..name, mode or '755', exe(name, {name..'.c', 'libutil.a'}))
 	if sect then
 		man{name..'.'..sect}

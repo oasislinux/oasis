@@ -31,7 +31,7 @@ local cfg = {
 	ratelimit_default='on',
 }
 for line in iterlines('config.h', 1) do
-	local var, val = line:match('^#define (%g+) "(%g+)"$')
+	local var, val = line:match('^#define ([%w_]+) "(.*)"$')
 	if var then
 		cfg[var:lower()] = val
 	elseif line:find('^#define RATELIMIT') then

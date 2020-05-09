@@ -75,8 +75,8 @@ local function pathsgen(s, i)
 	local results = {}
 	local first = not i
 	while true do
-		i = s:find('%g', i)
-		local _, j, arch = s:find('^@([^%s()]*)%s*%g?', i)
+		i = s:find('[^%s]', i)
+		local _, j, arch = s:find('^@([^%s()]*)%s*[^%s]?', i)
 		if arch then i = j end
 		if not i or s:sub(i, i) == ')' then
 			break

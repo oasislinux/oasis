@@ -2,7 +2,7 @@ image: alpine/latest
 packages:
 - bison
 - libarchive-tools
-- lua5.2
+- lua
 - nasm
 - ncurses
 - ninja
@@ -37,7 +37,7 @@ tasks:
     EOF
     # build everything
     echo 'return {exclude={}}' >fs.lua
-    lua5.2 setup.lua
+    lua setup.lua
     ninja out/pkg/texi2mdoc/texi2mdoc out/pkg/mc/bin/6m out/pkg/mc/bin/muse
     mkdir $HOME/bin
     cp out/pkg/texi2mdoc/texi2mdoc out/pkg/mc/bin/6m out/pkg/mc/bin/muse $HOME/bin
@@ -54,7 +54,7 @@ tasks:
     EOF
     export SET
     for SET in $SETS ; do
-        lua5.2 setup.lua
+        lua setup.lua
         ninja commit
     done
 - deploy: |

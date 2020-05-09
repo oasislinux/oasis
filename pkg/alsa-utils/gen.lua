@@ -13,7 +13,7 @@ local tools = {
 }
 
 for _, tool in ipairs(tools) do
-	local name, srcs = table.unpack(tool)
+	local name, srcs = tool[1], tool[2]
 	local out = 'bin/'..name
 	exe(out, {srcs, '$builddir/pkg/alsa-lib/libasound.a'})
 	file(out, '755', '$outdir/'..out)
