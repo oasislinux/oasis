@@ -13,7 +13,6 @@ sources:
 secrets:
 - 0d338ffe-699f-4e82-85a0-3a4407172bed
 environment:
-  PAXREAD: bsdtar -x -f -
   GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
   SETS: core desktop devel extra media net
 tasks:
