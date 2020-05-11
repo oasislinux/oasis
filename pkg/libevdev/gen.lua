@@ -12,7 +12,7 @@ pkg.deps = {
 	'pkg/linux-headers/headers',
 }
 
-rule('eventnames', 'lua5.2 $dir/eventnames.lua $in >$out')
+rule('eventnames', 'lua $dir/eventnames.lua $in >$out')
 build('eventnames', '$outdir/event-names.h', {
 	'$srcdir/include/linux/input.h',
 	'$srcdir/include/linux/input-event-codes.h',
