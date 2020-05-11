@@ -2,8 +2,13 @@ cflags{
 	'-D USE_HOSTCC',
 	'-I $dir',
 	'-I $srcdir/tools',
+	'-I $builddir/pkg/linux-headers/include',
 	'-idirafter $srcdir/include',
 	'-include $srcdir/include/compiler.h',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 -- XXX: missing imximage.c and fdtdec_common.c, but seems to build without them
