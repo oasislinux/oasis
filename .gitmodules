@@ -183,6 +183,7 @@
 [submodule "pkg/musl/src"]
 	path = pkg/musl/src
 	url = git://git.musl-libc.org/musl
+	ignore = all
 [submodule "pkg/ncompress/src"]
 	path = pkg/ncompress/src
 	url = https://github.com/vapier/ncompress.git
