@@ -36,7 +36,7 @@ tasks:
     EOF
     # build everything
     echo 'return {exclude={}}' >fs.lua
-    lua setup.lua
+    SET=all lua setup.lua
     ninja out/pkg/texi2mdoc/texi2mdoc out/pkg/mc/bin/6m out/pkg/mc/bin/muse
     mkdir $HOME/bin
     cp out/pkg/texi2mdoc/texi2mdoc out/pkg/mc/bin/6m out/pkg/mc/bin/muse $HOME/bin
