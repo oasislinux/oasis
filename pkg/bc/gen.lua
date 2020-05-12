@@ -1,6 +1,6 @@
 cflags{
 	'-D NDEBUG',
-	'-D VERSION=2.6.1',
+	'-D VERSION=2.7.2',
 	'-D _POSIX_C_SOURCE=200809L',
 	'-I $srcdir/include',
 	'-include $dir/config.h',
@@ -32,6 +32,7 @@ exe('bin/bc', [[
 		lex.c
 		main.c
 		num.c
+		opt.c
 		parse.c
 		program.c
 		read.c
@@ -40,6 +41,7 @@ exe('bin/bc', [[
 		bc/(bc.c lex.c parse.c)
 		dc/(dc.c lex.c parse.c)
 		history/history.c
+		rand/rand.c
 	)
 	$outdir/(bc_help.c dc_help.c lib.c lib2.c)
 ]])
