@@ -418,6 +418,7 @@
 /* #undef HAVE_SYS_AUDIT_H */
 /* #undef HAVE_SYS_BITYPES_H */
 /* #undef HAVE_SYS_BSDTTY_H */
+/* #undef HAVE_SYS_BYTEORDER_H */
 /* #undef HAVE_SYS_CAPSICUM_H */
 /* #undef HAVE_SYS_CDEFS_H */
 #define HAVE_SYS_DIR_H 1
@@ -522,6 +523,7 @@
 /* #undef NEED_SETPGRP */
 /* #undef NO_ATTRIBUTE_ON_PROTOTYPE_ARGS */
 /* #undef NO_ATTRIBUTE_ON_RETURN_TYPE */
+/* #undef NO_SA_RESTART */
 /* #undef NO_UID_RESTORATION_TEST */
 /* #undef NO_X11_UNIX_SOCKETS */
 #define PACKAGE_BUGREPORT "openssh-unix-dev@mindrot.org"
