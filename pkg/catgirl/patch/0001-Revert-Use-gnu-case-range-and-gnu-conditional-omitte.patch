@@ -1,4 +1,4 @@
-From b4b4ecd6db6499ee60fa3efc67afc60653978ff2 Mon Sep 17 00:00:00 2001
+From d3dfb345b89602e1cbb382b1a8fa473f48bc3cfa Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 7 May 2020 00:36:14 -0700
 Subject: [PATCH] Revert "Use gnu-case-range and
@@ -283,10 +283,10 @@ index ef3f2b5..1410acc 100644
  			return true;
  		}
 diff --git a/ui.c b/ui.c
-index cdb2883..2c8f2d5 100644
+index 6fe7061..dc801d6 100644
 --- a/ui.c
 +++ b/ui.c
-@@ -922,7 +922,6 @@ static void keyCode(int code) {
+@@ -927,7 +927,6 @@ static void keyCode(int code) {
  		break; case KeyMetaGt: windowScroll(window, -WindowLines);
  		break; case KeyMetaLt: windowScroll(window, +WindowLines);
  
@@ -294,7 +294,7 @@ index cdb2883..2c8f2d5 100644
  		break; case KeyMetaA: showAuto();
  		break; case KeyMetaB: edit(id, EditPrevWord, 0);
  		break; case KeyMetaD: edit(id, EditDeleteNextWord, 0);
-@@ -946,6 +945,12 @@ static void keyCode(int code) {
+@@ -951,6 +950,12 @@ static void keyCode(int code) {
  		break; case KEY_SEND: windowScroll(window, -WindowLines);
  		break; case KEY_SHOME: windowScroll(window, +WindowLines);
  		break; case KEY_UP: windowScroll(window, +1);
