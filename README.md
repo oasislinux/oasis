@@ -2,84 +2,123 @@
 
 [![builds.sr.ht status](https://builds.sr.ht/~mcf/oasis.svg)](https://builds.sr.ht/~mcf/oasis)
 
-oasis is a small linux system
+oasis is a small linux system.
 
-It is suitable for a range of uses including server and desktop. oasis provides
-a solution for many common tasks:
+It is probably quite a bit different from other Linux-based operating
+systems you might be familiar with, and is probably better compared
+to a BSD.
 
-* Display server (velox, wayland-based)
-* Terminal (st)
-* Program launcher (dmenu)
-* Web browser (netsurf with custom frontend)
-* Document viewer (mupdf)
-* Media player (mpv)
-* HTTP server (nginx)
-* DNS server (nsd)
-* BitTorrent client (transmission)
+There are many features that distinguish it from other operating
+systems:
 
-The entire system can be compiled in minutes, and uses up up only a couple
-hundred megabytes of disk space (despite being statically linked). It is
-entirely C-based, and most packages make limited use of GNU C extensions.
-Additionally all packages are built in a way that ensures the binaries are 100%
-reproducible.
+* Completely **statically linked**.
 
-Updating your system is as simple as
+All software in the base system is linked statically, including the
+display server ([velox]) and web browser ([netsurf]). Compared to
+dynamic linking, this is a simpler mechanism which eliminates
+problems with upgrading libraries, and results in completely
+self-contained binaries that can easily be copied to other systems.
 
-	git -C /src/oasis pull
-	samu -C /src/oasis commit
-	doas git -C / merge
+[velox]: https://github.com/michaelforney/velox
+[netsurf]: https://netsurf-browser.org
 
-For more information, see the [wiki].
+* Minimal bootstrap dependencies.
+
+Any POSIX system with git, lua, curl, a sha256 utility, standard
+compression utilities, and an `x86_64-linux-musl` cross compiler
+can be used to bootstrap oasis. This makes it trivial to cross-compile
+oasis, even from non-Linux systems such as macOS or OpenBSD.
+
+* **Fast builds** that are **100% reproducible**.
+
+All packages are built with [samurai], using build manifests generated
+by [Lua scripts]. This involves considerable up-front packaging
+cost, but minimal maintenance cost, and offers numerous advantages,
+including near optimal build times, predictable and reproducible
+builds, reduced build-time dependencies, and incremental builds
+even across package boundaries.
+
+[samurai]: https://github.com/michaelforney/samurai
+[Lua scripts]: https://github.com/oasislinux/oasis/blob/master/pkg/nasm/gen.lua
+
+* **BearSSL** is the system TLS and crypto library.
+
+BearSSL is incredibly small and well written, but is not widely
+adopted. Through the use of libcurl, which now has native BearSSL
+support, and [libtls-bearssl], an alternative implementation of
+libtls based on BearSSL, oasis uses BearSSL throughout the system.
+Only a [few optional packages] still require LibreSSL.
+
+[libtls-bearss]: https://sr.ht/~mcf/libtls-bearssl
+[few optional packages]: https://github.com/oasislinux/oasis/issues/14
+
+* No package manager.
+
+Instead, you configure a set of [specifications] of what files from
+which packages to include on your system, and the build system
+writes the resulting filesystem tree into a git repository. This
+can then be merged into `/`, or pulled from another machine.
+
+[specifications]: https://github.com/oasislinux/oasis/blob/master/config.def.lua#L9-L12
+
+* Integration with **OS-agnostic package systems**.
+
+Although the aim is to provide a complete system, there is a lot
+of free software out there, a lot of which does not match up well
+to our goals. Rather than trying to build and maintain yet another
+repository with thousands of packages, oasis integrates well with
+[pkgsrc] and [nix]. This makes it easy to extend your system with
+software you might need, while keeping the base system small and
+focused.
+
+[pkgsrc]: https://github.com/oasislinux/oasis/wiki/pkgsrc
+[nix]: https://nixos.org/nix
+
+* Extremely **simple system configuration**.
+
+A guiding principle is that the `/etc` directory should be simple
+enough for system administrators to understand completely and
+customize appropriately. The most complex file in the default
+configuration is the system initialization script, [`/etc/rc.init`],
+at only 16 lines.
+
+[`/etc/rc.init`]: https://github.com/oasislinux/etc/blob/master/rc.init
+
+* Limited use of GNU C extensions
+
+A major goal of oasis is to build with [cproc], a C compiler, which
+is much stricter about the ISO C standard than gcc or clang, and
+orders of magnitude smaller. Although this is a [work-in-progress
+effort], all core packages, and most others, build successfully
+with cproc.
+
+[cproc]: https://sr.ht/~mcf/cproc
+[work-in-progress effort]: https://github.com/oasislinux/oasis/issues/13
 
 ## Principles
 
-* Binaries should be linked statically. This is made possible by lightweight
-  system components like musl libc, and a central source repository to keep
-  track of system-wide dependencies.
-* Software components should be built in a way that allows the user to easily
-  customize and/or modify as needed.
-* Sources can be referenced through a URL or git submodule, but not included
-  directly in the oasis repository. This way, users only need to download the
-  sources they are interested in.
-* `/etc` directory should be simple enough for system administrators to
-  understand in its entirety and customize appropriately.
+* Software complexity should be measured by including all transitive
+  dependencies.
+* Executables should be linked statically.
+* Software components should allow for easy customization and/or
+  modification.
+* Package sources should be referenced through a URL or git submodule,
+  but not included directly in the oasis repository.
+* `/etc` should be simple enough to be understood in its entirety.
 
-## Components
+## Install
 
-oasis uses software from a lot of different [packages]. The core system is built
-up from the following:
+An install guide can be found on the [wiki].
 
-* [musl](http://musl-libc.org/) (libc)
-* [suckless](http://core.suckless.org/)
-	- sbase, ubase, sinit, sdhcp
-* [openbsd](http://openbsd.org/)
-	- pax, fmt, diff, patch, doas
-* [awk](http://github.com/onetrueawk/awk/)
-* [bearssl](http://bearssl.org/)
-* [byacc](https://invisible-island.net/byacc/byacc.html)
-* [bzip2](http://bzip.org/)
-* [bc](https://github.com/gavinhoward/bc)
-* [curl](https://curl.haxx.se/)
-* [e2fsprogs](http://e2fsprogs.sourceforge.net/)
-* [git](https://git-scm.com/)
-* [iproute2](http://www.linuxfoundation.org/collaborate/workgroups/networking/iproute2)
-* [kbd](http://kbd-project.org/)
-* [lua](https://www.lua.org/)
-* [mandoc](http://mandoc.bsd.lv/)
-* [samurai](https://github.com/michaelforney/samurai) (ninja-compatible build tool)
-* [openntpd](http://www.openntpd.org/)
-* [openssh](http://www.openssh.com/)
-* [perp](http://b0llix.net/perp/) (process supervisor)
-* [pigz](http://zlib.net/pigz/) (gzip)
-* [rc](https://github.com/benavento/rc)
-* [tz](https://www.iana.org/time-zones)
-* util-linux (fdisk, losetup)
-* [xz](http://tukaani.org/xz/)
+However, keep in mind that oasis is an ambitious project, and there
+is still a lot of work to do. Users should be should be comfortable
+building your own kernel and tinkering their system when things go
+wrong. If you do run into trouble, I'm always happy to help you
+out.
+
+[wiki]: https://github.com/michaelforney/oasis/wiki
 
 ## Contact
 
 Feel free to contact me with any questions over email (address in commit
 log), or IRC at #oasislinux on Freenode.
-
-[wiki]: https://github.com/michaelforney/oasis/wiki
-[packages]: https://github.com/michaelforney/oasis/tree/master/pkg
