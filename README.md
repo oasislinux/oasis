@@ -20,7 +20,7 @@ problems with upgrading libraries, and results in completely
 self-contained binaries that can easily be copied to other systems.
 
 [velox]: https://github.com/michaelforney/velox
-[netsurf]: https://netsurf-browser.org
+[netsurf]: https://www.netsurf-browser.org
 
 * **Fast builds** that are **100% reproducible**.
 
