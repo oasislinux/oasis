@@ -22,13 +22,6 @@ self-contained binaries that can easily be copied to other systems.
 [velox]: https://github.com/michaelforney/velox
 [netsurf]: https://netsurf-browser.org
 
-* Minimal bootstrap dependencies.
-
-Any POSIX system with git, lua, curl, a sha256 utility, standard
-compression utilities, and an `x86_64-linux-musl` cross compiler
-can be used to bootstrap oasis. This makes it trivial to cross-compile
-oasis, even from non-Linux systems such as macOS or OpenBSD.
-
 * **Fast builds** that are **100% reproducible**.
 
 All packages are built with [samurai], using build manifests generated
@@ -41,6 +34,13 @@ even across package boundaries.
 [samurai]: https://github.com/michaelforney/samurai
 [Lua scripts]: https://github.com/oasislinux/oasis/blob/master/pkg/nasm/gen.lua
 
+* **Minimal bootstrap dependencies**.
+
+Any POSIX system with git, lua, curl, a sha256 utility, standard
+compression utilities, and an `x86_64-linux-musl` cross compiler
+can be used to bootstrap oasis. This makes it trivial to cross-compile
+oasis, even from non-Linux systems such as macOS or OpenBSD.
+
 * **BearSSL** is the system TLS and crypto library.
 
 BearSSL is incredibly small and well written, but is not widely
@@ -49,10 +49,10 @@ support, and [libtls-bearssl], an alternative implementation of
 libtls based on BearSSL, oasis uses BearSSL throughout the system.
 Only a [few optional packages] still require LibreSSL.
 
-[libtls-bearss]: https://sr.ht/~mcf/libtls-bearssl
+[libtls-bearssl]: https://sr.ht/~mcf/libtls-bearssl
 [few optional packages]: https://github.com/oasislinux/oasis/issues/14
 
-* No package manager.
+* **No package manager**.
 
 Instead, you configure a set of [specifications] of what files from
 which packages to include on your system, and the build system
@@ -84,7 +84,7 @@ at only 16 lines.
 
 [`/etc/rc.init`]: https://github.com/oasislinux/etc/blob/master/rc.init
 
-* Limited use of GNU C extensions
+* Mostly **ISO C conformant**.
 
 A major goal of oasis is to build with [cproc], a C compiler, which
 is much stricter about the ISO C standard than gcc or clang, and
@@ -117,6 +117,34 @@ wrong. If you do run into trouble, I'm always happy to help you
 out.
 
 [wiki]: https://github.com/michaelforney/oasis/wiki
+
+## Software
+
+oasis uses smaller and simpler implementations of libraries and
+tools whenever possible:
+
+- musl instead of glibc
+- sbase instead of coreutils
+- ubase instead of util-linux
+- pigz instead of gzip
+- mandoc instead of man-db
+- bearssl instead of openssl
+- oksh instead of bash
+- sdhcp instead of dhclient or dhcpcd
+- vis instead of vim or emacs
+- bc-gh instead of GNU bc
+- byacc instead of bison
+- perp and sinit instead of sysvinit or systemd
+- netsurf instead of chromium or firefox
+
+These packages are grouped into logical [sets], and the full list
+is available in the [pkg] directory.
+
+If your favorite software is missing, keep in mind that you can
+still install it via pkgsrc or nix.
+
+[sets]: https://github.com/oasislinux/oasis/blob/master/sets.lua
+[pkg]: https://github.com/oasislinux/oasis/blob/master/pkg
 
 ## Contact
 
