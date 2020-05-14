@@ -38,8 +38,8 @@ even across package boundaries.
 
 Any POSIX system with git, lua, curl, a sha256 utility, standard
 compression utilities, and an `x86_64-linux-musl` cross compiler
-can be used to bootstrap oasis. This makes it trivial to cross-compile
-oasis, even from non-Linux systems such as macOS or OpenBSD.
+can be used to bootstrap oasis. This makes it trivial to cross-compile,
+even from non-Linux systems such as macOS or OpenBSD.
 
 * **BearSSL** is the system TLS and crypto library.
 
@@ -61,15 +61,14 @@ can then be merged into `/`, or pulled from another machine.
 
 [specifications]: https://github.com/oasislinux/oasis/blob/master/config.def.lua#L9-L12
 
-* Integration with **OS-agnostic package systems**.
+* Integrates well with **OS-agnostic package systems**.
 
 Although the aim is to provide a complete system, there is a lot
 of free software out there, a lot of which does not match up well
 to our goals. Rather than trying to build and maintain yet another
-repository with thousands of packages, oasis integrates well with
-[pkgsrc] and [nix]. This makes it easy to extend your system with
-software you might need, while keeping the base system small and
-focused.
+repository with thousands of packages, oasis works well with [pkgsrc]
+and [nix]. This makes it easy to extend your system with software
+you might need, while keeping the base system small and focused.
 
 [pkgsrc]: https://github.com/oasislinux/oasis/wiki/pkgsrc
 [nix]: https://nixos.org/nix
@@ -103,8 +102,10 @@ with cproc.
 * Software components should allow for easy customization and/or
   modification.
 * Package sources should be referenced through a URL or git submodule,
-  but not included directly in the oasis repository.
+  but not included directly.
 * `/etc` should be simple enough to be understood in its entirety.
+* Patches should be well organized, have good descriptions, and
+  should always apply cleanly.
 
 ## Install
 
@@ -141,7 +142,7 @@ These packages are grouped into logical [sets], and the full list
 is available in the [pkg] directory.
 
 If your favorite software is missing, keep in mind that you can
-still install it via pkgsrc or nix.
+likely still install it via pkgsrc or nix.
 
 [sets]: https://github.com/oasislinux/oasis/blob/master/sets.lua
 [pkg]: https://github.com/oasislinux/oasis/blob/master/pkg
