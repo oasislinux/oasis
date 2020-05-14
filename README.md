@@ -85,7 +85,7 @@ at only 16 lines.
 
 * Mostly **ISO C conformant**.
 
-A major goal of oasis is to build with [cproc], a C compiler, which
+A major goal of oasis is to build with [cproc], a C compiler which
 is much stricter about the ISO C standard than gcc or clang, and
 orders of magnitude smaller. Although this is a [work-in-progress
 effort], all core packages, and most others, build successfully
