@@ -499,6 +499,7 @@
 # define __EXTENSIONS__ 1
 #endif
 /* #undef WINDOW_HAS_FLAGS */
+#define WITH_DECIMAL_CONTEXTVAR 1
 #define WITH_DOC_STRINGS 1
 /* #undef WITH_DTRACE */
 /* #undef WITH_DYLD */
