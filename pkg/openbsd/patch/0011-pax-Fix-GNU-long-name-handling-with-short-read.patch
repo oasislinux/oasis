@@ -1,16 +1,16 @@
-From fdfd554d5e24850f7ebbc67798c893c4ec6b7506 Mon Sep 17 00:00:00 2001
+From ec3fd37495e977af375a98a472d19ae0ccbcd874 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 3 Dec 2016 20:49:24 -0800
 Subject: [PATCH] pax: Fix GNU long name handling with short read
 
 ---
- bin/pax/ar_subs.c   | 66 +++++++++++++++++++++++++++++++++++++++--------------
- bin/pax/buf_subs.c  |  4 +---
- bin/pax/file_subs.c | 25 +-------------------
+ bin/pax/ar_subs.c   | 66 +++++++++++++++++++++++++++++++++------------
+ bin/pax/buf_subs.c  |  4 +--
+ bin/pax/file_subs.c | 25 +----------------
  3 files changed, 51 insertions(+), 44 deletions(-)
 
 diff --git a/bin/pax/ar_subs.c b/bin/pax/ar_subs.c
-index f70ec4ed0..222bfafa5 100644
+index e5b0a4ee5d1..f0a55abe2f7 100644
 --- a/bin/pax/ar_subs.c
 +++ b/bin/pax/ar_subs.c
 @@ -37,6 +37,7 @@
@@ -114,7 +114,7 @@ index f70ec4ed0..222bfafa5 100644
 +	return 1;
 +}
 diff --git a/bin/pax/buf_subs.c b/bin/pax/buf_subs.c
-index 30be3dc46..6a9594918 100644
+index 68534dcbe25..e84f9e0d3d6 100644
 --- a/bin/pax/buf_subs.c
 +++ b/bin/pax/buf_subs.c
 @@ -673,9 +673,7 @@ rd_wrfile(ARCHD *arcn, int ofd, off_t *left)
@@ -129,10 +129,10 @@ index 30be3dc46..6a9594918 100644
  			sz = (int)sb.st_blksize;
  	} else
 diff --git a/bin/pax/file_subs.c b/bin/pax/file_subs.c
-index 57ebdb490..1a8f58d57 100644
+index 89b4872988b..8aa3d249923 100644
 --- a/bin/pax/file_subs.c
 +++ b/bin/pax/file_subs.c
-@@ -917,7 +917,6 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
+@@ -919,7 +919,6 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
  	char *end;
  	int wcnt;
  	char *st = str;
@@ -140,7 +140,7 @@ index 57ebdb490..1a8f58d57 100644
  
  	/*
  	 * while we have data to process
-@@ -976,29 +975,7 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
+@@ -978,29 +977,7 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
  		/*
  		 * have non-zero data in this file system block, have to write
  		 */
@@ -172,5 +172,5 @@ index 57ebdb490..1a8f58d57 100644
  			return(-1);
  		}
 -- 
-2.12.2
+2.26.2
 

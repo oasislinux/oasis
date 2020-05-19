@@ -1,4 +1,4 @@
-From d3515f559d148e217f2a8799fd1e3db63dd817ad Mon Sep 17 00:00:00 2001
+From ac4a17dd01df3889bac917b0dc34ba9fd15aa7fe Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 3 Dec 2016 23:50:27 -0800
 Subject: [PATCH] pax: Support xz compression with -J flag
@@ -8,7 +8,7 @@ Subject: [PATCH] pax: Support xz compression with -J flag
  1 file changed, 22 insertions(+), 3 deletions(-)
 
 diff --git a/bin/pax/options.c b/bin/pax/options.c
-index 022c59664..c2d046d07 100644
+index c7e64a5d22c..917414c999a 100644
 --- a/bin/pax/options.c
 +++ b/bin/pax/options.c
 @@ -154,6 +154,7 @@ static int xz_id(char *_blk, int _size);
@@ -72,7 +72,7 @@ index 022c59664..c2d046d07 100644
  		switch (c) {
  			case 'a':
  				/*
-@@ -1347,6 +1360,12 @@ cpio_options(int argc, char **argv)
+@@ -1348,6 +1361,12 @@ cpio_options(int argc, char **argv)
  				(void)fputs("\n\n", stderr);
  				cpio_usage();
  				break;
@@ -86,5 +86,5 @@ index 022c59664..c2d046d07 100644
  				/*
  				 * follow symbolic links
 -- 
-2.12.2
+2.26.2
 

@@ -1,4 +1,4 @@
-From b1277303a902a8fffe4adb9bff8807800353280c Mon Sep 17 00:00:00 2001
+From 074f2b35512b16c9644c8bd878fa9ace208c17a6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 2 Dec 2019 21:11:04 -0800
 Subject: [PATCH] nc: Portability fixes from libressl-portable
@@ -8,7 +8,7 @@ Subject: [PATCH] nc: Portability fixes from libressl-portable
  1 file changed, 48 insertions(+), 7 deletions(-)
 
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index c04298f64c3..2509421093b 100644
+index 503095584ad..f052766213e 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
 @@ -93,9 +93,13 @@ int	zflag;					/* Port Scan Flag */
@@ -25,7 +25,7 @@ index c04298f64c3..2509421093b 100644
  
  int	usetls;					/* use TLS */
  const char    *Cflag;				/* Public cert file */
-@@ -268,12 +272,14 @@ main(int argc, char *argv[])
+@@ -269,12 +273,14 @@ main(int argc, char *argv[])
  		case 'u':
  			uflag = 1;
  			break;
@@ -40,7 +40,7 @@ index c04298f64c3..2509421093b 100644
  		case 'v':
  			vflag = 1;
  			break;
-@@ -320,9 +326,11 @@ main(int argc, char *argv[])
+@@ -321,9 +327,11 @@ main(int argc, char *argv[])
  		case 'o':
  			oflag = optarg;
  			break;
@@ -52,7 +52,7 @@ index c04298f64c3..2509421093b 100644
  		case 'T':
  			errstr = NULL;
  			errno = 0;
-@@ -346,9 +354,11 @@ main(int argc, char *argv[])
+@@ -347,9 +355,11 @@ main(int argc, char *argv[])
  	argc -= optind;
  	argv += optind;
  
@@ -63,20 +63,20 @@ index c04298f64c3..2509421093b 100644
 +#endif
  
  	/* Cruft to make sure options are clean, and used properly. */
- 	if (argv[0] && !argv[1] && family == AF_UNIX) {
-@@ -919,7 +929,10 @@ int
- remote_connect(const char *host, const char *port, struct addrinfo hints)
+ 	if (argc == 1 && family == AF_UNIX) {
+@@ -947,7 +957,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
+     char *ipaddr)
  {
  	struct addrinfo *res, *res0;
--	int s = -1, error, on = 1, save_errno;
-+	int s = -1, error, save_errno;
+-	int s = -1, error, herr, on = 1, save_errno;
++	int s = -1, error, herr, save_errno;
 +#ifdef SO_BINDANY
 +	int on = 1;
 +#endif
  
  	if ((error = getaddrinfo(host, port, &hints, &res0)))
  		errx(1, "getaddrinfo for host \"%s\" port %s: %s", host,
-@@ -934,8 +947,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints)
+@@ -962,8 +975,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
  		if (sflag || pflag) {
  			struct addrinfo ahints, *ares;
  
@@ -87,7 +87,7 @@ index c04298f64c3..2509421093b 100644
  			memset(&ahints, 0, sizeof(struct addrinfo));
  			ahints.ai_family = res->ai_family;
  			ahints.ai_socktype = uflag ? SOCK_DGRAM : SOCK_STREAM;
-@@ -1006,8 +1021,11 @@ int
+@@ -1055,8 +1070,11 @@ int
  local_listen(const char *host, const char *port, struct addrinfo hints)
  {
  	struct addrinfo *res, *res0;
@@ -100,7 +100,7 @@ index c04298f64c3..2509421093b 100644
  
  	/* Allow nodename to be null. */
  	hints.ai_flags |= AI_PASSIVE;
-@@ -1027,9 +1045,11 @@ local_listen(const char *host, const char *port, struct addrinfo hints)
+@@ -1076,9 +1094,11 @@ local_listen(const char *host, const char *port, struct addrinfo hints)
  		    res->ai_protocol)) == -1)
  			continue;
  
@@ -112,7 +112,7 @@ index c04298f64c3..2509421093b 100644
  
  		set_common_sockopts(s, res->ai_family);
  
-@@ -1499,11 +1519,13 @@ set_common_sockopts(int s, int af)
+@@ -1548,11 +1568,13 @@ set_common_sockopts(int s, int af)
  {
  	int x = 1;
  
@@ -126,7 +126,7 @@ index c04298f64c3..2509421093b 100644
  	if (Dflag) {
  		if (setsockopt(s, SOL_SOCKET, SO_DEBUG,
  			&x, sizeof(x)) == -1)
-@@ -1514,9 +1536,16 @@ set_common_sockopts(int s, int af)
+@@ -1563,9 +1585,16 @@ set_common_sockopts(int s, int af)
  		    IP_TOS, &Tflag, sizeof(Tflag)) == -1)
  			err(1, "set IP ToS");
  
@@ -143,7 +143,7 @@ index c04298f64c3..2509421093b 100644
  	}
  	if (Iflag) {
  		if (setsockopt(s, SOL_SOCKET, SO_RCVBUF,
-@@ -1540,13 +1569,17 @@ set_common_sockopts(int s, int af)
+@@ -1589,13 +1618,17 @@ set_common_sockopts(int s, int af)
  	}
  
  	if (minttl != -1) {
@@ -162,7 +162,7 @@ index c04298f64c3..2509421093b 100644
  	}
  }
  
-@@ -1768,14 +1801,22 @@ help(void)
+@@ -1820,14 +1853,22 @@ help(void)
  	\t-P proxyuser\tUsername for proxy authentication\n\
  	\t-p port\t	Specify local port for remote connects\n\
  	\t-R CAfile	CA bundle\n\
@@ -174,7 +174,7 @@ index c04298f64c3..2509421093b 100644
 +	\t-S		Enable the TCP MD5 signature option\n"
 +#endif
 +	"\
- 	\t-s source	Local source address\n\
+ 	\t-s sourceaddr	Local source address\n\
  	\t-T keyword	TOS value or TLS options\n\
  	\t-t		Answer TELNET negotiation\n\
  	\t-U		Use UNIX domain socket\n\
@@ -190,5 +190,5 @@ index c04298f64c3..2509421093b 100644
  	\t-W recvlimit	Terminate after receiving a number of packets\n\
  	\t-w timeout	Timeout for connects and final net reads\n\
 -- 
-2.24.0
+2.26.2
 

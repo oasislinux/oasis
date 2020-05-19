@@ -1,4 +1,4 @@
-From a9958b98fd7e746f4da6df5b8e89507a5ac85dab Mon Sep 17 00:00:00 2001
+From 5dd6a34aacb8c4248823f708f68201ba06ec6c25 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -57,7 +57,7 @@ index fc769bdb336..c7196e347a9 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index dfd8c8603bf..b2180a5f0e0 100644
+index a723c67a3eb..e7e3e639401 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -20,8 +20,6 @@
@@ -93,7 +93,7 @@ index dfd8c8603bf..b2180a5f0e0 100644
  	    " command [args]\n");
  	exit(1);
  }
-@@ -193,23 +200,36 @@ checkconfig(const char *confpath, int argc, char **argv,
+@@ -197,23 +204,36 @@ checkconfig(const char *confpath, int argc, char **argv,
  	}
  }
  
@@ -140,7 +140,7 @@ index dfd8c8603bf..b2180a5f0e0 100644
  	if (!challenge) {
  		char host[HOST_NAME_MAX + 1];
  		if (gethostname(host, sizeof(host)))
-@@ -221,21 +241,18 @@ authuser(char *myname, char *login_style, int persist)
+@@ -225,21 +245,18 @@ authuser(char *myname, char *login_style, int persist)
  	response = readpassphrase(challenge, rbuf, sizeof(rbuf),
  	    RPP_REQUIRE_TTY);
  	if (response == NULL && errno == ENOTTY) {
@@ -166,7 +166,7 @@ index dfd8c8603bf..b2180a5f0e0 100644
  		close(fd);
  	}
  }
-@@ -281,15 +298,14 @@ done:
+@@ -285,15 +302,14 @@ done:
  int
  main(int argc, char **argv)
  {
@@ -184,7 +184,7 @@ index dfd8c8603bf..b2180a5f0e0 100644
  	struct passwd mypwstore, targpwstore;
  	struct passwd *mypw, *targpw;
  	const struct rule *rule;
-@@ -302,28 +318,20 @@ main(int argc, char **argv)
+@@ -306,28 +322,20 @@ main(int argc, char **argv)
  	int nflag = 0;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
@@ -216,7 +216,7 @@ index dfd8c8603bf..b2180a5f0e0 100644
  		case 'u':
  			if (parseuid(optarg, &target) != 0)
  				errx(1, "unknown user");
-@@ -391,16 +399,16 @@ main(int argc, char **argv)
+@@ -395,16 +403,16 @@ main(int argc, char **argv)
  	cmd = argv[0];
  	if (!permit(uid, groups, ngroups, &rule, target, cmd,
  	    (const char **)argv + 1)) {
@@ -237,7 +237,7 @@ index dfd8c8603bf..b2180a5f0e0 100644
  	}
  
  	if ((p = getenv("PATH")) != NULL)
-@@ -427,11 +435,12 @@ main(int argc, char **argv)
+@@ -431,11 +439,12 @@ main(int argc, char **argv)
  	if (targpw == NULL)
  		errx(1, "no passwd entry for target");
  
@@ -255,7 +255,7 @@ index dfd8c8603bf..b2180a5f0e0 100644
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
-@@ -444,7 +453,7 @@ main(int argc, char **argv)
+@@ -448,7 +457,7 @@ main(int argc, char **argv)
  	if (pledge("stdio exec", NULL) == -1)
  		err(1, "pledge");
  
@@ -431,5 +431,5 @@ index 00000000000..41fa747458b
 +	return 0;
 +}
 -- 
-2.23.0
+2.26.2
 
