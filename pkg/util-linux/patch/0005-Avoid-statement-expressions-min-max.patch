@@ -1,4 +1,4 @@
-From 2b467498acfe9f1de27503a7ce94307755a997f5 Mon Sep 17 00:00:00 2001
+From 3e9baf3101f85cd288d6bbcbfc75c2e8d6a49e7e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 17:13:45 -0700
 Subject: [PATCH] Avoid statement expressions min/max
@@ -103,10 +103,10 @@ index 4ae5ff08f..931ec8b9a 100644
  		cxt->grain = cxt->user_grain < granularity ? granularity : cxt->user_grain;
  		DBG(CXT, ul_debugobj(cxt, "new grain: %lu", cxt->grain));
 diff --git a/libfdisk/src/context.c b/libfdisk/src/context.c
-index 743a6bc1d..0434840ab 100644
+index 5c9d8aabc..88d83530f 100644
 --- a/libfdisk/src/context.c
 +++ b/libfdisk/src/context.c
-@@ -890,7 +890,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
+@@ -891,7 +891,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
  	/* the current layout */
  	fdisk_get_partitions(cxt, &tb);
  	/* maximal number of partitions */
@@ -186,5 +186,5 @@ index 4b42938f6..81fe76000 100644
  	}
  
 -- 
-2.25.0
+2.26.2
 
