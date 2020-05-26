@@ -5,16 +5,16 @@ end)
 sub('libminiupnp.ninja', function()
 	cflags{
 		'-D _GNU_SOURCE',
-		'-I $outdir/miniupnp',
+		'-I $outdir/miniupnpc',
 		'-idirafter $basedir/pkg/openbsd/src/sys',
 	}
 
-	build('sed', '$outdir/miniupnp/miniupnpcstrings.h', '$srcdir/third-party/miniupnp/miniupnpcstrings.h.in', {
+	build('sed', '$outdir/miniupnpc/miniupnpcstrings.h', '$srcdir/third-party/miniupnpc/miniupnpcstrings.h.in', {
 		expr='-e s,OS/version,Linux, -e s,version,,',
 	})
 
 	lib('libminiupnp.a', [[
-		third-party/miniupnp/(
+		third-party/miniupnpc/(
 			connecthostport.c
 			igd_desc_parse.c
 			minisoap.c
@@ -25,9 +25,11 @@ sub('libminiupnp.ninja', function()
 			portlistingparse.c
 			receivedata.c
 			upnpcommands.c
+			upnpdev.c
+			upnperrors.c
 			upnpreplyparse.c
 		)
-	]], {'$outdir/miniupnp/miniupnpcstrings.h', 'pkg/openbsd/fetch'})
+	]], {'$outdir/miniupnpc/miniupnpcstrings.h', 'pkg/openbsd/fetch'})
 end)
 
 cflags{
@@ -39,7 +41,7 @@ cflags{
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/third-party',
-	'-I $srcdir/third-party/libb64',
+	'-I $srcdir/third-party/libb64/include',
 	'-I $srcdir/third-party/libnatpmp',
 	'-I $basedir/pkg/libevent/src/include',
 	'-I $basedir/pkg/libutp/src',
@@ -96,10 +98,12 @@ lib('libtransmission.a', [[
 		rpcimpl.c
 		rpc-server.c
 		session.c
+		session-id.c
 		stats.c
 		torrent.c
 		torrent-ctor.c
 		torrent-magnet.c
+		tr-assert.c
 		tr-dht.c
 		tr-lpd.c
 		tr-udp.c
@@ -120,9 +124,10 @@ lib('libtransmission.a', [[
 
 		watchdir-inotify.c
 		file-posix.c
+		subprocess-posix.c
 		crypto-utils-bearssl.c
 	)
-	libb64.a libdht.a libminiupnp.a libnatpmp.a
+	libb64.a libdht.a libminiupnpc.a libnatpmp.a
 	$builddir/pkg/(
 		bearssl/libbearssl.a
 		curl/libcurl.a.d
@@ -132,7 +137,7 @@ lib('libtransmission.a', [[
 	)
 ]])
 
-lib('libb64.a', {'third-party/libb64/cdecode.c', 'third-party/libb64/cencode.c'})
+lib('libb64.a', {'third-party/libb64/src/cdecode.c', 'third-party/libb64/src/cencode.c'})
 lib('libdht.a', {'third-party/dht/dht.c'})
 
 exe('transmission-daemon', {
@@ -143,11 +148,7 @@ exe('transmission-daemon', {
 file('bin/transmission-daemon', '755', '$outdir/transmission-daemon')
 man{'daemon/transmission-daemon.1'}
 
-exe('transmission-remote', {'daemon/remote.c', 'libtransmission.a.d'})
-file('bin/transmission-remote', '755', '$outdir/transmission-remote')
-man{'daemon/transmission-remote.1'}
-
-for _, tool in ipairs{'create', 'edit', 'show'} do
+for _, tool in ipairs{'create', 'edit', 'remote', 'show'} do
 	exe('transmission-'..tool, {'utils/'..tool..'.c', 'libtransmission.a.d'})
 	file('bin/transmission-'..tool, '755', '$outdir/transmission-'..tool)
 	man{'utils/transmission-'..tool..'.1'}

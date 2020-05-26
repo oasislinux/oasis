@@ -1,20 +1,20 @@
-From c8d489d361634413a518d614f02f3ecdaad3d4ec Mon Sep 17 00:00:00 2001
+From eb8e399417b22099b5a52e5fb468979e44486e73 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 17 Nov 2019 01:27:04 -0800
 Subject: [PATCH] Use BearSSL for SHA1 and DH, add fallback RC4
 
 ---
- libtransmission/crypto-utils-bearssl.c  | 229 ++++++++++++++++++++++++
- libtransmission/crypto-utils-fallback.c |  81 +++++++++
- 2 files changed, 310 insertions(+)
+ libtransmission/crypto-utils-bearssl.c  | 234 ++++++++++++++++++++++++
+ libtransmission/crypto-utils-fallback.c |  77 ++++++++
+ 2 files changed, 311 insertions(+)
  create mode 100644 libtransmission/crypto-utils-bearssl.c
 
 diff --git a/libtransmission/crypto-utils-bearssl.c b/libtransmission/crypto-utils-bearssl.c
 new file mode 100644
-index 000000000..23bdf5c45
+index 000000000..5672a48df
 --- /dev/null
 +++ b/libtransmission/crypto-utils-bearssl.c
-@@ -0,0 +1,229 @@
+@@ -0,0 +1,234 @@
 +#include <assert.h>
 +#include <stdlib.h>
 +
@@ -23,6 +23,7 @@ index 000000000..23bdf5c45
 +#include "crypto-utils.h"
 +
 +#define TR_CRYPTO_DH_SECRET_FALLBACK
++#define TR_CRYPTO_X509_FALLBACK
 +#define TR_CRYPTO_RC4_FALLBACK
 +#include "crypto-utils-fallback.c"
 +
@@ -32,49 +33,47 @@ index 000000000..23bdf5c45
 +
 +#define MY_NAME "tr_crypto_utils"
 +
-+tr_sha1_ctx_t
-+tr_sha1_init (void)
++tr_sha1_ctx_t tr_sha1_init(void)
 +{
-+  br_sha1_context * ctx;
++    br_sha1_context * ctx;
 +
-+  ctx = tr_malloc (sizeof (*ctx));
-+  if (!ctx)
-+    return NULL;
-+
-+  br_sha1_init (ctx);
-+
-+  return ctx;
-+}
-+
-+bool
-+tr_sha1_update (tr_sha1_ctx_t   handle,
-+                const void    * data,
-+                size_t          data_length)
-+{
-+  assert (handle != NULL);
-+
-+  if (data_length == 0)
-+    return true;
-+
-+  assert (data != NULL);
-+
-+  br_sha1_update (handle, data, data_length);
-+
-+  return true;
-+}
-+
-+bool
-+tr_sha1_final (tr_sha1_ctx_t   handle,
-+               uint8_t       * hash)
-+{
-+  if (hash != NULL)
++    ctx = tr_malloc(sizeof (*ctx));
++    if (!ctx)
 +    {
-+      assert (handle != NULL);
-+      br_sha1_out (handle, hash);
++        return NULL;
 +    }
 +
-+  tr_free (handle);
-+  return true;
++    br_sha1_init(ctx);
++
++    return ctx;
++}
++
++bool tr_sha1_update(tr_sha1_ctx_t handle, void const* data, size_t data_length)
++{
++    TR_ASSERT(handle != NULL);
++
++    if (data_length == 0)
++    {
++        return true;
++    }
++
++    TR_ASSERT(data != NULL);
++
++    br_sha1_update(handle, data, data_length);
++
++    return true;
++}
++
++bool tr_sha1_final(tr_sha1_ctx_t handle, uint8_t* hash)
++{
++    if (hash != NULL)
++    {
++        TR_ASSERT(handle != NULL);
++        br_sha1_out(handle, hash);
++    }
++
++    tr_free(handle);
++    return true;
 +}
 +
 +/***
@@ -82,180 +81,182 @@ index 000000000..23bdf5c45
 +***/
 +
 +typedef struct {
-+  const uint8_t * prime_num;
-+  size_t          prime_num_length;
-+  const uint8_t * generator_num;
-+  size_t          generator_num_length;
-+  uint8_t       * private_key;
-+  size_t          private_key_length;
++  uint8_t const* prime_num;
++  size_t         prime_num_length;
++  uint8_t const* generator_num;
++  size_t         generator_num_length;
++  uint8_t*       private_key;
++  size_t         private_key_length;
 +} DH;
 +
-+tr_dh_ctx_t
-+tr_dh_new (const uint8_t * prime_num,
-+           size_t          prime_num_length,
-+           const uint8_t * generator_num,
-+           size_t          generator_num_length)
++tr_dh_ctx_t tr_dh_new(uint8_t const* prime_num, size_t prime_num_length, uint8_t const* generator_num,
++    size_t generator_num_length)
 +{
-+  DH * handle;
++    DH* handle;
 +
-+  assert (prime_num != NULL);
-+  assert (generator_num != NULL);
-+  assert (generator_num_length < prime_num_length);
++    TR_ASSERT(prime_num != NULL);
++    TR_ASSERT(generator_num != NULL);
++    TR_ASSERT(generator_num_length < prime_num_length);
 +
-+  if (generator_num_length > prime_num_length)
-+    return NULL;
++    if (generator_num_length > prime_num_length)
++    {
++        return NULL;
++    }
 +
-+  handle = tr_malloc (sizeof(*handle));
-+  if (handle == NULL)
-+    return NULL;
++    handle = tr_malloc(sizeof(*handle));
++    if (handle == NULL)
++    {
++        return NULL;
++    }
 +
-+  handle->prime_num = prime_num;
-+  handle->prime_num_length = prime_num_length;
-+  handle->generator_num = generator_num;
-+  handle->generator_num_length = generator_num_length;
-+  handle->private_key = NULL;
++    handle->prime_num = prime_num;
++    handle->prime_num_length = prime_num_length;
++    handle->generator_num = generator_num;
++    handle->generator_num_length = generator_num_length;
++    handle->private_key = NULL;
 +
-+  return handle;
++    return handle;
 +}
 +
 +void
 +tr_dh_free (tr_dh_ctx_t raw_handle)
 +{
-+  DH * handle = raw_handle;
++    DH* handle = raw_handle;
 +
-+  if (handle == NULL)
-+    return;
++    if (handle == NULL)
++    {
++        return;
++    }
 +
-+  tr_free (handle->private_key);
-+  tr_free (handle);
++    tr_free(handle->private_key);
++    tr_free(handle);
 +}
 +
-+bool
-+tr_dh_make_key (tr_dh_ctx_t   raw_handle,
-+                size_t        private_key_length,
-+                uint8_t     * public_key,
-+                size_t      * public_key_length)
++bool tr_dh_make_key(tr_dh_ctx_t raw_handle, size_t private_key_length, uint8_t* public_key, size_t* public_key_length)
 +{
-+  DH * handle = raw_handle;
-+  br_rsa_public modexp;
-+  br_rsa_public_key key;
-+  uint8_t * x;
-+  size_t xlen;
++    TR_ASSERT(raw_handle != NULL);
++    TR_ASSERT(public_key != NULL);
 +
-+  assert (handle != NULL);
-+  assert (public_key != NULL);
++    DH* handle = raw_handle;
++    br_rsa_public modexp;
++    br_rsa_public_key key;
++    uint8_t* x;
++    size_t xlen;
 +
-+  modexp = br_rsa_public_get_default ();
++    modexp = br_rsa_public_get_default();
 +
-+  handle->private_key = tr_malloc (private_key_length);
-+  handle->private_key_length = private_key_length;
++    handle->private_key = tr_malloc(private_key_length);
++    handle->private_key_length = private_key_length;
 +
-+  if (!handle->private_key)
-+    goto fail;
++    if (!handle->private_key)
++    {
++        goto fail;
++    }
 +
-+  if (!tr_rand_buffer (handle->private_key, handle->private_key_length))
-+    goto fail;
++    if (!tr_rand_buffer(handle->private_key, handle->private_key_length))
++    {
++        goto fail;
++    }
 +
-+  memset (public_key, 0, handle->prime_num_length - handle->generator_num_length);
-+  memcpy (public_key + handle->prime_num_length - handle->generator_num_length, handle->generator_num, handle->generator_num_length);
++    memset(public_key, 0, handle->prime_num_length - handle->generator_num_length);
++    memcpy(public_key + handle->prime_num_length - handle->generator_num_length, handle->generator_num, handle->generator_num_length);
 +
-+  key.n = (unsigned char *)handle->prime_num;
-+  key.nlen = handle->prime_num_length;
-+  key.e = handle->private_key;
-+  key.elen = handle->private_key_length;
++    key.n = (unsigned char*)handle->prime_num;
++    key.nlen = handle->prime_num_length;
++    key.e = handle->private_key;
++    key.elen = handle->private_key_length;
 +
-+  if (!modexp (public_key, handle->prime_num_length, &key))
-+    goto fail;
++    if (!modexp(public_key, handle->prime_num_length, &key))
++    {
++        goto fail;
++    }
 +
-+  *public_key_length = handle->prime_num_length;
++    *public_key_length = handle->prime_num_length;
 +
-+  return true;
++    return true;
 +
 +fail:
-+  tr_free(handle->private_key);
-+  handle->private_key = NULL;
-+  return false;
++    tr_free(handle->private_key);
++    handle->private_key = NULL;
++    return false;
 +}
 +
-+tr_dh_secret_t
-+tr_dh_agree (tr_dh_ctx_t     raw_handle,
-+             const uint8_t * other_public_key,
-+             size_t          other_public_key_length)
++tr_dh_secret_t tr_dh_agree(tr_dh_ctx_t raw_handle, uint8_t const* other_public_key, size_t other_public_key_length)
 +{
-+  DH * handle = raw_handle;
-+  struct tr_dh_secret * ret;
-+  br_rsa_public modexp;
-+  br_rsa_public_key key;
-+  uint8_t * x;
-+  size_t xlen;
++    TR_ASSERT(raw_handle != NULL);
++    TR_ASSERT(other_public_key != NULL);
 +
-+  assert (handle != NULL);
-+  assert (other_public_key != NULL);
++    DH* handle = raw_handle;
++    struct tr_dh_secret* ret;
++    br_rsa_public modexp;
++    br_rsa_public_key key;
++    uint8_t* x;
++    size_t xlen;
 +
-+  if (other_public_key_length > handle->prime_num_length)
-+    return NULL;
-+
-+  ret = tr_dh_secret_new(handle->prime_num_length);
-+  if (!ret)
-+    return NULL;
-+
-+  memset (ret->key, 0, ret->key_length - other_public_key_length);
-+  memcpy (ret->key + ret->key_length - other_public_key_length, other_public_key, other_public_key_length);
-+
-+  modexp = br_rsa_public_get_default ();
-+
-+  key.n = (unsigned char *)handle->prime_num;
-+  key.nlen = handle->prime_num_length;
-+  key.e = handle->private_key;
-+  key.elen = handle->private_key_length;
-+
-+  if (!modexp (ret->key, ret->key_length, &key))
++    if (other_public_key_length > handle->prime_num_length)
 +    {
-+      tr_dh_secret_free (ret);
-+      ret = NULL;
++        return NULL;
 +    }
 +
-+  return ret;
++    ret = tr_dh_secret_new(handle->prime_num_length);
++    if (!ret)
++    {
++        return NULL;
++    }
++
++    memset(ret->key, 0, ret->key_length - other_public_key_length);
++    memcpy(ret->key + ret->key_length - other_public_key_length, other_public_key, other_public_key_length);
++
++    modexp = br_rsa_public_get_default();
++
++    key.n = (unsigned char*)handle->prime_num;
++    key.nlen = handle->prime_num_length;
++    key.e = handle->private_key;
++    key.elen = handle->private_key_length;
++
++    if (!modexp(ret->key, ret->key_length, &key))
++    {
++        tr_dh_secret_free (ret);
++        ret = NULL;
++    }
++
++    return ret;
 +}
 +
 +/***
 +****
 +***/
 +
-+bool
-+tr_rand_buffer (void   * buffer,
-+                size_t   length)
++bool tr_rand_buffer(void* buffer, size_t length)
 +{
-+  static br_hmac_drbg_context ctx;
-+  static bool init;
-+  br_prng_seeder seeder;
++    TR_ASSERT(buffer != NULL);
 +
-+  assert (buffer != NULL);
++    static br_hmac_drbg_context ctx;
++    static bool init;
++    br_prng_seeder seeder;
 +
-+  if (!init)
++    if (!init)
 +    {
-+      br_hmac_drbg_init (&ctx, &br_sha256_vtable, NULL, 0);
-+      seeder = br_prng_seeder_system (NULL);
-+      if (!seeder || !seeder(&ctx.vtable))
-+        return false;
-+      init = true;
++        br_hmac_drbg_init(&ctx, &br_sha256_vtable, NULL, 0);
++        seeder = br_prng_seeder_system(NULL);
++        if (!seeder || !seeder(&ctx.vtable))
++        {
++            return false;
++        }
++        init = true;
 +    }
 +
-+  br_hmac_drbg_generate (&ctx, buffer, length);
-+  return true;
++    br_hmac_drbg_generate(&ctx, buffer, length);
++    return true;
 +}
 diff --git a/libtransmission/crypto-utils-fallback.c b/libtransmission/crypto-utils-fallback.c
-index 0ca1ad75e..9fdb044a9 100644
+index c17b54e25..a521956a3 100644
 --- a/libtransmission/crypto-utils-fallback.c
 +++ b/libtransmission/crypto-utils-fallback.c
-@@ -75,3 +75,84 @@ tr_dh_secret_free (tr_dh_secret_t handle)
+@@ -92,3 +92,80 @@ void tr_x509_cert_free(tr_x509_cert_t handle)
  }
  
- #endif /* TR_CRYPTO_DH_SECRET_FALLBACK */
-+
-+/***
-+****
-+***/
+ #endif /* TR_CRYPTO_X509_FALLBACK */
 +
 +#ifdef TR_CRYPTO_RC4_FALLBACK
 +
@@ -334,5 +335,5 @@ index 0ca1ad75e..9fdb044a9 100644
 +
 +#endif /* TR_CRYPTO_RC4_FALLBACK */
 -- 
-2.24.0
+2.26.2
 

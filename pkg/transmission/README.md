@@ -7,7 +7,7 @@ Generated with
 	./configure \
 		--disable-nls \
 		--without-gtk \
-		--without-systemd-daemon \
+		--without-systemd \
 		LIBCURL_CFLAGS=-I/src/oasis/out/pkg/curl/include \
 		LIBCURL_LIBS=/src/oasis/out/pkg/curl/libcurl.a \
 		PKG_CONFIG=true
