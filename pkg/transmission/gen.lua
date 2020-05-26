@@ -127,7 +127,7 @@ lib('libtransmission.a', [[
 		subprocess-posix.c
 		crypto-utils-bearssl.c
 	)
-	libb64.a libdht.a libminiupnpc.a libnatpmp.a
+	libb64.a libdht.a libminiupnp.a libnatpmp.a
 	$builddir/pkg/(
 		bearssl/libbearssl.a
 		curl/libcurl.a.d
