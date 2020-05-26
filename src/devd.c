@@ -24,8 +24,11 @@ triggering "add" uevents for each one.
 
 #include <linux/netlink.h>
 
-#define HOTPLUG "/etc/hotplug"
-#define TRIGGER "/libexec/devd-trigger"
+#ifndef PREFIX
+#define PREFIX
+#endif
+#define HOTPLUG PREFIX "/etc/hotplug"
+#define TRIGGER PREFIX "/libexec/devd-trigger"
 
 #define LEN(a) (sizeof(a) / sizeof((a)[0]))
 

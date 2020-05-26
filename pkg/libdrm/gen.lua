@@ -67,7 +67,7 @@ if config.video_drivers and config.video_drivers['nouveau'] then
 end
 
 if config.video_drivers and config.video_drivers['amdgpu'] then
-	cflags{[[-D 'AMDGPU_ASIC_ID_TABLE="/share/libdrm/amdgpu.ids"']]}
+	cflags{string.format([[-D 'AMDGPU_ASIC_ID_TABLE="%s/share/libdrm/amdgpu.ids"']], config.prefix)}
 	lib('libdrm_amdgpu.a', [[
 		amdgpu/(
 			amdgpu_asic_id.c

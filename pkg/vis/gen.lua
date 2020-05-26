@@ -12,7 +12,7 @@ cflags{
 	'-D _POSIX_C_SOURCE=200809L',
 	'-D _XOPEN_SOURCE=700',
 	[[-D 'VERSION="$version"']],
-	[[-D 'VIS_PATH="/share/vis"']],
+	string.format([[-D 'VIS_PATH="%s/share/vis"']], config.prefix),
 	'-D NDEBUG',
 	'-I $outdir',
 	'-I $basedir/pkg/libtermkey/src',

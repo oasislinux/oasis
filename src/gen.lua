@@ -3,7 +3,11 @@ cflags{
 	'-std=c11', '-Wall', '-Wextra', '-Wpedantic', '-Wno-unused-parameter',
 }
 
-cc('devd.c', 'pkg/linux-headers/headers', {cflags='$cflags -I $builddir/pkg/linux-headers/include'})
+cc('devd.c', 'pkg/linux-headers/headers', {cflags={
+	'$cflags',
+	'-I $builddir/pkg/linux-headers/include',
+	string.format([[-D 'PREFIX="%s"']], config.prefix),
+}})
 
 file('libexec/applyperms',   '755', exe('applyperms',   {'applyperms.c'}))
 file('libexec/devd-trigger', '755', exe('devd-trigger', {'devd-trigger.c'}))

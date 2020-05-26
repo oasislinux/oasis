@@ -1,6 +1,6 @@
 cflags{
 	'-D _GNU_SOURCE',
-	[[-D 'SYSCONFDIR="/etc/libnl"']],
+	string.format([[-D 'SYSCONFDIR="%s/etc/libnl"']], config.prefix),
 	'-I $dir',
 	'-I $outdir/include',
 	'-I $srcdir/include',

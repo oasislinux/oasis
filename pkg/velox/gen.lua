@@ -1,5 +1,5 @@
 cflags{
-	[[-D 'VELOX_LIBEXEC="/libexec/velox"']],
+	string.format([[-D 'VELOX_LIBEXEC="%s/libexec/velox"']], config.prefix),
 	'-I $outdir',
 	'-I $basedir/pkg/fontconfig/src',
 	'-I $basedir/pkg/libinput/src/src',

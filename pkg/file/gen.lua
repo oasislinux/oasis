@@ -2,7 +2,7 @@ local version = '5.37'
 cflags{
 	'-Wall',
 	'-D HAVE_CONFIG_H',
-	[[-D 'MAGIC="/share/file/magic"']],
+	string.format([[-D 'MAGIC="%s/share/file/magic"']], config.prefix),
 	'-D _GNU_SOURCE',
 	'-I $dir',
 	'-I $outdir/include',

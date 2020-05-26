@@ -4,6 +4,9 @@ return {
 	-- build output directory
 	builddir='out',
 
+	-- install prefix
+	prefix='',
+
 	-- package/file selection
 	fs={
                 -- Each entry contains a list of packages, a list of patterns to

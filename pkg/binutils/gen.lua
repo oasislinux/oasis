@@ -162,7 +162,7 @@ sub('bfd.ninja', function()
 		'$cflags',
 		string.format([[-D 'SELECT_ARCHITECTURES=&%s']], table.concat(table.keys(selarchs), ',&')),
 	}})
-	cc('bfd/dwarf2.c', nil, {cflags={'$cflags', [[-D 'DEBUGDIR="/lib/debug"']]}})
+	cc('bfd/dwarf2.c', nil, {cflags={'$cflags', string.format([[-D 'DEBUGDIR="%s/lib/debug"']], config.prefix)}})
 	lib('libbfd.a', {
 		-- src/bfd/Makefile.am:/^BFD32_LIBS_CFILES
 		-- src/bfd/Makefile.am:/^BFD64_LIBS_CFILES
@@ -199,7 +199,7 @@ end)
 
 sub('binutils.ninja', function()
 	cflags{
-		[[-D 'LOCALEDIR="/share/locale"']],
+		string.format([[-D 'LOCALEDIR="%s/share/locale"']], config.prefix),
 		'-D bin_dummy_emulation=bin_vanilla_emulation',
 		'-I $dir/binutils',
 		'-I $srcdir/binutils',
@@ -309,9 +309,9 @@ sub('ld.ninja', function()
 		'-D ELF_LIST_OPTIONS=TRUE',
 		'-D ELF_SHLIB_LIST_OPTIONS=TRUE',
 		'-D ELF_PLT_UNWIND_LIST_OPTIONS=TRUE',
-		[[-D 'BINDIR="/bin"']],
-		string.format([[-D 'SCRIPTDIR="/%s/lib"']], config.target.platform),
-		string.format([[-D 'TOOLBINDIR="/%s/bin"']], config.target.platform),
+		string.format([[-D 'BINDIR="%s/bin"']], config.prefix),
+		string.format([[-D 'SCRIPTDIR="%s/%s/lib"']], config.prefix, config.target.platform),
+		string.format([[-D 'TOOLBINDIR="%s/%s/bin"']], config.prefix, config.target.platform),
 		'-I $dir/ld',
 		'-I $outdir/ld',
 		'-I $srcdir/ld',

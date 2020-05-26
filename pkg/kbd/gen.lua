@@ -1,5 +1,5 @@
 cflags{
-	[[-D 'DATADIR="/share/kbd"']],
+	string.format([[-D 'DATADIR="%s/share/kbd"']], config.prefix),
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/src',

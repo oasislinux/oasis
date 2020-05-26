@@ -17,6 +17,9 @@ end
 
 dofile(basedir..'/ninja.lua')
 config = dofile 'config.lua'
+if not config.prefix then
+	config.prefix = ''
+end
 
 local recurse = not arg[1]
 
