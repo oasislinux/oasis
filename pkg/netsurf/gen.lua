@@ -78,28 +78,54 @@ exe('netsurf', [[
 	desktop/(
 		cookie_manager.c knockout.c hotlist.c mouse.c
 		plot_style.c print.c search.c searchweb.c scrollbar.c
-		sslcert_viewer.c textarea.c version.c system_colour.c
-		local_history.c global_history.c treeview.c
+		textarea.c version.c system_colour.c
+		local_history.c global_history.c treeview.c page-info.c
 
-		browser.c browser_history.c download.c frames.c netsurf.c
+		browser.c browser_window.c browser_history.c
+		download.c frames.c netsurf.c cw_helper.c
 		save_complete.c save_text.c selection.c textinput.c gui_factory.c
 		save_pdf.c font_haru.c
 	)
 	frontends/tiny/(download.c fetch.c icons.c gui.c render.c schedule.c ui.c wl.c)
 	content/(
-		content.c content_factory.c dirlist.c fetch.c hlcache.c
-		llcache.c mimesniff.c urldb.c no_backing_store.c
+		content.c
+		content_factory.c
+		dirlist.c
+		fetch.c
+		hlcache.c
+		llcache.c
+		mimesniff.c
+		textsearch.c
+		urldb.c
+		no_backing_store.c
 		fetchers/(curl.c data.c file.c about.c resource.c)
 		handlers/(
 			image/(image.c image_cache.c bmp.c gif.c ico.c jpeg.c png.c svg.c)
 			css/(css.c dump.c internal.c hints.c select.c utils.c)
 			javascript/(fetcher.c none/none.c)
 			html/(
-				box.c box_construct.c box_normalise.c box_textarea.c
-				font.c form.c imagemap.c layout.c search.c table.c
-				html.c html_css.c html_css_fetcher.c html_script.c
-				html_interaction.c html_redraw.c html_redraw_border.c
-				html_forms.c html_object.c
+				box_construct.c
+				box_inspect.c
+				box_manipulate.c
+				box_normalise.c
+				box_special.c
+				box_textarea.c
+				css.c
+				css_fetcher.c
+				dom_event.c
+				font.c
+				form.c
+				forms.c
+				html.c
+				imagemap.c
+				interaction.c
+				layout.c
+				object.c
+				redraw.c
+				redraw_border.c
+				script.c
+				table.c
+				textselection.c
 			)
 			text/textplain.c
 		)
@@ -110,13 +136,16 @@ exe('netsurf', [[
 		file.c
 		filename.c
 		filepath.c
+		hashmap.c
 		hashtable.c
 		idna.c
 		libdom.c
 		log.c
 		messages.c
+		nscolour.c
 		nsoption.c
 		punycode.c
+		ssl_certs.c
 		talloc.c
 		time.c
 		url.c
@@ -174,7 +203,6 @@ file('share/netsurf/default.css', '644', '$srcdir/resources/default.css')
 file('share/netsurf/favicon.png', '644', '$srcdir/resources/favicon.png')
 file('share/netsurf/internal.css', '644', '$srcdir/resources/internal.css')
 file('share/netsurf/licence.html', '644', '$srcdir/resources/en/licence.html')
-sym('share/netsurf/maps.html', 'welcome.html')
 file('share/netsurf/netsurf.png', '644', '$srcdir/resources/netsurf.png')
 file('share/netsurf/quirks.css', '644', '$srcdir/resources/quirks.css')
 file('share/netsurf/welcome.html', '644', '$srcdir/resources/en/welcome.html')
