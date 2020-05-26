@@ -1,4 +1,5 @@
 cflags{
+	'-D NDEBUG',
 	'-I $outdir',
 	'-I $srcdir/src',
 	'-I $srcdir/include',
