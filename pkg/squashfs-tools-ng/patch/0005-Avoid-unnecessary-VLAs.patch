@@ -1,0 +1,57 @@
+From ce07abcd65ad1d5c39c53b39a16bc8d960fd3279 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 30 May 2020 01:50:48 -0700
+Subject: [PATCH] Avoid unnecessary VLAs
+
+All compressors use only 8 bytes for options, so just use a fixed
+32-byte buffer.
+---
+ lib/sqfs/comp/compressor.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
+
+diff --git a/lib/sqfs/comp/compressor.c b/lib/sqfs/comp/compressor.c
+index 946ee25..7e3f092 100644
+--- a/lib/sqfs/comp/compressor.c
++++ b/lib/sqfs/comp/compressor.c
+@@ -42,27 +42,33 @@ static const char *names[] = {
+ 
+ int sqfs_generic_write_options(sqfs_file_t *file, const void *data, size_t size)
+ {
+-	sqfs_u8 buffer[size + 2];
++	sqfs_u8 buffer[32];
+ 	int ret;
+ 
++	if (size > sizeof(buffer) - 2)
++		return SQFS_ERROR_INTERNAL;
++
+ 	*((sqfs_u16 *)buffer) = htole16(0x8000 | size);
+ 	memcpy(buffer + 2, data, size);
+ 
+ 	ret = file->write_at(file, sizeof(sqfs_super_t),
+-			     buffer, sizeof(buffer));
++			     buffer, 2 + size);
+ 	if (ret)
+ 		return ret;
+ 
+-	return sizeof(buffer);
++	return 2 + size;
+ }
+ 
+ int sqfs_generic_read_options(sqfs_file_t *file, void *data, size_t size)
+ {
+-	sqfs_u8 buffer[size + 2];
++	sqfs_u8 buffer[32];
+ 	int ret;
+ 
++	if (size > sizeof(buffer) - 2)
++		return SQFS_ERROR_INTERNAL;
++
+ 	ret = file->read_at(file, sizeof(sqfs_super_t),
+-			    buffer, sizeof(buffer));
++			    buffer, 2 + size);
+ 	if (ret)
+ 		return ret;
+ 
+-- 
+2.26.2
+
