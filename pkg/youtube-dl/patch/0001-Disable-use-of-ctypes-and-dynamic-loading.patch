@@ -1,4 +1,4 @@
-From 949cc5da3130b895564968e48ae490ef6769b393 Mon Sep 17 00:00:00 2001
+From 24dbe675a6f85710c0b3add2434e44f86b72e997 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -54,7 +54,7 @@ index 0ee9bc760..8fec8b2d8 100644
      'compat_etree_fromstring',
      'compat_etree_register_namespace',
 diff --git a/youtube_dl/utils.py b/youtube_dl/utils.py
-index 112279ed7..3d1bcbde0 100644
+index d1eca3760..f6c91d125 100644
 --- a/youtube_dl/utils.py
 +++ b/youtube_dl/utils.py
 @@ -9,7 +9,6 @@ import calendar
@@ -73,7 +73,7 @@ index 112279ed7..3d1bcbde0 100644
      compat_etree_fromstring,
      compat_expanduser,
      compat_html_entities,
-@@ -3080,90 +3078,11 @@ def platform_name():
+@@ -3086,90 +3084,11 @@ def platform_name():
      return res
  
  
@@ -164,7 +164,7 @@ index 112279ed7..3d1bcbde0 100644
      if ('b' in getattr(out, 'mode', '')
              or sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
          byt = s.encode(encoding or preferredencoding(), 'ignore')
-@@ -3193,78 +3112,22 @@ def intlist_to_bytes(xs):
+@@ -3199,78 +3118,22 @@ def intlist_to_bytes(xs):
  
  
  # Cross-platform file locking
@@ -253,7 +253,7 @@ index 112279ed7..3d1bcbde0 100644
  
  
  class locked_file(object):
-@@ -3510,29 +3373,7 @@ def fix_xml_ampersands(xml_str):
+@@ -3516,29 +3379,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
