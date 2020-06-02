@@ -5,6 +5,8 @@ cflags{
 	'-I $srcdir/include',
 }
 
+pkg.hdrs = copy('$outdir/include', '$srcdir/include', {'pciaccess.h'})
+
 lib('libpciaccess.a', [[src/(
 	common_bridge.c
 	common_iterator.c

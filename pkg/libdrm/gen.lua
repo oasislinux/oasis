@@ -40,8 +40,8 @@ lib('libdrm.a', {
 })
 
 if config.video_drivers and config.video_drivers['intel'] then
-	cflags{'-I $basedir/pkg/libpciaccess/src/include'}
-	pkg.deps = {'pkg/libpciaccess/fetch'}
+	cflags{'-I $builddir/pkg/libpciaccess/include'}
+	table.insert(pkg.deps, 'pkg/libpciaccess/headers')
 	lib('libdrm_intel.a', [[
 		intel/(
 			intel_bufmgr.c
