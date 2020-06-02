@@ -18,7 +18,7 @@ cflags{
 	'-I $srcdir/include',
 	'-I $outdir',
 	'-I $builddir/pkg/freetype/include',
-	'-I $basedir/pkg/jbig2dec/src',
+	'-I $builddir/pkg/jbig2dec/include',
 	'-I $builddir/pkg/libjpeg-turbo/include',
 	'-I $builddir/pkg/zlib/include',
 }
@@ -37,7 +37,7 @@ end
 
 pkg.deps = {
 	'pkg/freetype/headers',
-	'pkg/jbig2dec/fetch',
+	'pkg/jbig2dec/headers',
 	'pkg/libjpeg-turbo/headers',
 	'pkg/zlib/headers',
 }
