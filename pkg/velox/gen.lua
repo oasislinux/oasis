@@ -27,7 +27,6 @@ pkg.deps = {
 	'pkg/libxkbcommon/headers',
 	'pkg/linux-headers/headers',
 	'pkg/pixman/headers',
-	'pkg/swc/fetch',
 	'pkg/swc/headers',
 	'pkg/wayland/headers',
 	'pkg/wld/headers',
