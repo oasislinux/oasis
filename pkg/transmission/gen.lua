@@ -44,7 +44,6 @@ cflags{
 	'-I $srcdir/third-party',
 	'-I $srcdir/third-party/libb64/include',
 	'-I $srcdir/third-party/libnatpmp',
-	'-I $basedir/pkg/libevent/src/include',
 	'-idirafter $basedir/pkg/openbsd/src/sys',
 	'-include config.h',
 }

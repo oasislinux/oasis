@@ -10,6 +10,16 @@ build('sed', '$outdir/include/event2/event-config.h', {'$dir/config.h', '|', '$s
 })
 
 pkg.hdrs = {
+	copy('$outdir/include/event2', '$srcdir/include/event2', {
+		'buffer.h',
+		'bufferevent.h',
+		'dns.h',
+		'event.h',
+		'http.h',
+		'http_struct.h',
+		'util.h',
+		'visibility.h',
+	}),
 	'$outdir/include/event2/event-config.h',
 }
 pkg.deps = {
