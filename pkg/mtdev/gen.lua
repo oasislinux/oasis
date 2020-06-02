@@ -3,6 +3,10 @@ cflags{
 	'-I $builddir/pkg/linux-headers/include',
 }
 
+pkg.hdrs = copy('$outdir/include', '$srcdir/include', {
+	'mtdev.h',
+	'mtdev-plumbing.h',
+})
 pkg.deps = {
 	'pkg/linux-headers/headers',
 }

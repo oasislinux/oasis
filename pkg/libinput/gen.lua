@@ -4,13 +4,13 @@ cflags{
 	'-I $srcdir/include',
 	'-I $builddir/pkg/libevdev/include',
 	'-I $builddir/pkg/linux-headers/include',
-	'-I $basedir/pkg/mtdev/src/include',
+	'-I $builddir/pkg/mtdev/include',
 }
 
 pkg.deps = {
 	'pkg/libevdev/headers',
 	'pkg/linux-headers/headers',
-	'pkg/mtdev/fetch',
+	'pkg/mtdev/headers',
 }
 
 lib('libinput.a', [[
