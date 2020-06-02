@@ -1,0 +1,32 @@
+From c4b453a81c19709e118c8f3fdbb1153af9a879f0 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jun 2020 03:56:03 -0700
+Subject: [PATCH] Revert change of BPF_F_* to enum constants
+
+---
+ include/uapi/linux/bpf.h | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+index f9b7fdd951e4..91d6a5e43ccd 100644
+--- a/include/uapi/linux/bpf.h
++++ b/include/uapi/linux/bpf.h
+@@ -3216,12 +3216,10 @@ enum {
+ /* BPF_FUNC_perf_event_output, BPF_FUNC_perf_event_read and
+  * BPF_FUNC_perf_event_read_value flags.
+  */
+-enum {
+-	BPF_F_INDEX_MASK		= 0xffffffffULL,
+-	BPF_F_CURRENT_CPU		= BPF_F_INDEX_MASK,
++#define BPF_F_INDEX_MASK		0xffffffffULL
++#define BPF_F_CURRENT_CPU		BPF_F_INDEX_MASK
+ /* BPF_FUNC_perf_event_output for sk_buff input context. */
+-	BPF_F_CTXLEN_MASK		= (0xfffffULL << 32),
+-};
++#define BPF_F_CTXLEN_MASK		(0xfffffULL << 32)
+ 
+ /* Current network namespace */
+ enum {
+-- 
+2.27.0
+
