@@ -35,6 +35,7 @@ cflags{
 	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/wayland/include',
+	'-I $builddir/pkg/utf8proc/include',
 	'-I $builddir/pkg/wayland-protocols/include',
 	'-I $builddir/pkg/zlib/include',
 	'-I $dir/libcss/src/include',
@@ -47,7 +48,6 @@ cflags{
 	'-I $dir/libsvgtiny/src/include',
 	'-I $dir/libwapcaplet/src/include',
 	'-I $basedir/pkg/openbsd/include',
-	'-I $basedir/pkg/utf8proc/src',
 }
 
 pkg.deps = {
@@ -68,7 +68,7 @@ pkg.deps = {
 	'pkg/libxkbcommon/headers',
 	'pkg/linux-headers/headers',
 	'pkg/pixman/headers',
-	'pkg/utf8proc/fetch',
+	'pkg/utf8proc/headers',
 	'pkg/wayland/headers',
 	'pkg/wayland-protocols/headers',
 	'pkg/zlib/headers',
