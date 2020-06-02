@@ -2,14 +2,14 @@ cflags{
 	'-std=c11', '-Wall',
 	'-I $dir',
 	'-I $srcdir/include',
-	'-I $basedir/pkg/libevdev/src',
+	'-I $builddir/pkg/libevdev/include',
 	'-I $builddir/pkg/linux-headers/include',
 	'-I $basedir/pkg/mtdev/src/include',
 }
 
 pkg.deps = {
-	'pkg/libevdev/fetch',
-	'pkg/linux-headers/fetch',
+	'pkg/libevdev/headers',
+	'pkg/linux-headers/headers',
 	'pkg/mtdev/fetch',
 }
 
