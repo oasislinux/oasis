@@ -1,5 +1,7 @@
 cflags{'-Wall', '-Winline'}
 
+pkg.hdrs = copy('$outdir/include', '$srcdir', {'bzlib.h'})
+
 lib('libbz2.a', {
 	'blocksort.c',
 	'huffman.c',
