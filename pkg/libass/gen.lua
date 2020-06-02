@@ -1,6 +1,6 @@
 cflags{
 	'-I $dir',
-	'-I $basedir/pkg/freetype/src/include',
+	'-I $builddir/pkg/freetype/include',
 	'-I $builddir/pkg/fribidi/include',
 }
 nasmflags{
@@ -17,7 +17,7 @@ end
 
 pkg.hdrs = copy('$outdir/include/ass', '$srcdir/libass', {'ass.h', 'ass_types.h'})
 pkg.deps = {
-	'pkg/freetype/fetch',
+	'pkg/freetype/headers',
 	'pkg/fribidi/headers',
 }
 

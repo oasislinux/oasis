@@ -3,7 +3,7 @@ cflags{
 	'-D WITH_WAYLAND_DRM',
 	'-I $outdir',
 	'-I $basedir/pkg/fontconfig/src',
-	'-I $basedir/pkg/freetype/src/include',
+	'-I $builddir/pkg/freetype/include',
 	'-I $builddir/pkg/libdrm/include',
 	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/pixman/include',
@@ -57,7 +57,7 @@ waylandproto('protocol/wayland-drm.xml', {
 pkg.deps = {
 	'$outdir/protocol/wayland-drm-client-protocol.h',
 	'pkg/fontconfig/fetch',
-	'pkg/freetype/fetch',
+	'pkg/freetype/headers',
 	'pkg/libdrm/headers',
 	'pkg/linux-headers/headers',
 	'pkg/pixman/headers',

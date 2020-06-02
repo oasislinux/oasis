@@ -11,6 +11,45 @@ cflags{
 	'-I $builddir/pkg/zlib/include',
 }
 
+pkg.hdrs = copy('$outdir/include', '$srcdir/include', paths[[
+	ft2build.h
+	freetype/(
+		freetype.h
+		ftadvanc.h
+		ftbdf.h
+		ftbitmap.h
+		ftcache.h
+		ftcolor.h
+		fterrdef.h
+		fterrors.h
+		ftfntfmt.h
+		ftglyph.h
+		ftimage.h
+		ftmm.h
+		ftmodapi.h
+		ftmoderr.h
+		ftoutln.h
+		ftparams.h
+		ftsizes.h
+		ftsnames.h
+		ftstroke.h
+		ftsynth.h
+		ftsystem.h
+		fttrigon.h
+		fttypes.h
+		t1tables.h
+		ttnameid.h
+		tttables.h
+		tttags.h
+		config/(
+			ftconfig.h
+			ftheader.h
+			ftoption.h
+			ftstdlib.h
+		)
+	)
+]])
+
 cc('src/gzip/ftgzip.c', {'pkg/zlib/headers'})
 lib('libfreetype.a', [[
 	builds/unix/ftsystem.c

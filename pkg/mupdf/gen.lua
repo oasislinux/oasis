@@ -17,7 +17,7 @@ cflags{
 	'-D SHARE_JPEG',
 	'-I $srcdir/include',
 	'-I $outdir',
-	'-I $basedir/pkg/freetype/src/include',
+	'-I $builddir/pkg/freetype/include',
 	'-I $basedir/pkg/jbig2dec/src',
 	'-I $builddir/pkg/libjpeg-turbo/include',
 	'-I $builddir/pkg/zlib/include',
@@ -36,7 +36,7 @@ for _, font in ipairs(fonts) do
 end
 
 pkg.deps = {
-	'pkg/freetype/fetch',
+	'pkg/freetype/headers',
 	'pkg/jbig2dec/fetch',
 	'pkg/libjpeg-turbo/headers',
 	'pkg/zlib/headers',

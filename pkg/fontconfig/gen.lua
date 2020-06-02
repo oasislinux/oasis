@@ -3,14 +3,14 @@ cflags{
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir',
-	'-I $basedir/pkg/freetype/src/include',
+	'-I $builddir/pkg/freetype/include',
 	'-I $builddir/pkg/expat/include',
 	'-I $builddir/pkg/util-linux/include',
 }
 
 pkg.deps = {
 	'pkg/expat/headers',
-	'pkg/freetype/fetch',
+	'pkg/freetype/headers',
 	'pkg/util-linux/headers',
 }
 
