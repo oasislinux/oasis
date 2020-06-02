@@ -8,6 +8,7 @@ cflags{
 	'-I $builddir/pkg/util-linux/include',
 }
 
+pkg.hdrs = copy('$outdir/include', '$srcdir', {'fontconfig/fontconfig.h'})
 pkg.deps = {
 	'pkg/expat/headers',
 	'pkg/freetype/headers',

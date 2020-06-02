@@ -1,7 +1,7 @@
 cflags{
 	string.format([[-D 'VELOX_LIBEXEC="%s/libexec/velox"']], config.prefix),
 	'-I $outdir',
-	'-I $basedir/pkg/fontconfig/src',
+	'-I $builddir/pkg/fontconfig/include',
 	'-I $basedir/pkg/libinput/src/src',
 	'-I $basedir/pkg/libxkbcommon/src',
 	'-I $builddir/pkg/linux-headers/include',
@@ -22,7 +22,7 @@ pkg.deps = {
 	'$outdir/protocol/swc-client-protocol.h',
 	'$outdir/protocol/velox-client-protocol.h',
 	'$outdir/protocol/velox-server-protocol.h',
-	'pkg/fontconfig/fetch',
+	'pkg/fontconfig/headers',
 	'pkg/libinput/fetch',
 	'pkg/libxkbcommon/fetch',
 	'pkg/linux-headers/headers',

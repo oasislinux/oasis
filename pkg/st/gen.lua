@@ -1,7 +1,7 @@
 cflags{
 	[[-D 'VERSION="0.7"']],
 	'-I $dir',
-	'-I $basedir/pkg/fontconfig/src',
+	'-I $builddir/pkg/fontconfig/include',
 	'-I $basedir/pkg/libxkbcommon/src',
 	'-I $builddir/pkg/linux-headers/include',
 	'-I $builddir/pkg/pixman/include',
@@ -11,7 +11,7 @@ cflags{
 }
 
 pkg.deps = {
-	'pkg/fontconfig/fetch',
+	'pkg/fontconfig/headers',
 	'pkg/libxkbcommon/fetch',
 	'pkg/linux-headers/headers',
 	'pkg/pixman/headers',
