@@ -37,6 +37,7 @@ cflags{
 	'-I $builddir/pkg/bearssl/include',
 	'-I $builddir/pkg/curl/include',
 	'-I $builddir/pkg/libevent/include',
+	'-I $builddir/pkg/libutp/include',
 	'-I $builddir/pkg/zlib/include',
 	'-I $dir',
 	'-I $srcdir',
@@ -44,7 +45,6 @@ cflags{
 	'-I $srcdir/third-party/libb64/include',
 	'-I $srcdir/third-party/libnatpmp',
 	'-I $basedir/pkg/libevent/src/include',
-	'-I $basedir/pkg/libutp/src',
 	'-idirafter $basedir/pkg/openbsd/src/sys',
 	'-include config.h',
 }
@@ -53,7 +53,7 @@ pkg.deps = {
 	'pkg/bearssl/headers',
 	'pkg/curl/headers',
 	'pkg/libevent/headers',
-	'pkg/libutp/fetch',
+	'pkg/libutp/headers',
 	'pkg/openbsd/fetch',
 	'pkg/zlib/headers',
 }
