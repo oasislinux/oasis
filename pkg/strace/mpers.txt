@@ -25,7 +25,6 @@ print_msgbuf.c
 print_sg_req_info.c
 print_sigevent.c
 print_time.c
-print_timespec.c
 print_timeval.c
 printrusage.c
 printsiginfo.c

@@ -81,22 +81,6 @@ build('awk', '$outdir/sen.h', {syscalls, '|', '$dir/sen.awk'}, {
 	expr='-f $dir/sen.awk',
 })
 
-local libsrcs = {
-	'fetch_indirect_syscall_args.c',
-	'fstatfs.c',
-	'fstatfs64.c',
-	'getpagesize.c',
-	'ipc.c',
-	'mmap_cache.c',
-	'sigreturn.c',
-	'socketcall.c',
-	'statfs.c',
-	'statfs64.c',
-	'sync_file_range.c',
-	'sync_file_range2.c',
-	'upeek.c',
-	'upoke.c',
-}
 local srcs = {
 	'access.c',
 	'affinity.c',
@@ -122,7 +106,9 @@ local srcs = {
 	'desc.c',
 	'dirent.c',
 	'dirent64.c',
+	'dirent_types.c',
 	'dm.c',
+	'dup.c',
 	'dyxlat.c',
 	'epoll.c',
 	'error_prints.c',
@@ -136,6 +122,7 @@ local srcs = {
 	'fchownat.c',
 	'fcntl.c',
 	'fetch_bpf_fprog.c',
+	'fetch_indirect_syscall_args.c',
 	'fetch_struct_flock.c',
 	'fetch_struct_keyctl_kdf_params.c',
 	'fetch_struct_mmsghdr.c',
@@ -154,11 +141,14 @@ local srcs = {
 	'fsmount.c',
 	'fsopen.c',
 	'fspick.c',
+	'fstatfs.c',
+	'fstatfs64.c',
 	'futex.c',
 	'get_personality.c',
 	'get_robust_list.c',
 	'getcpu.c',
 	'getcwd.c',
+	'getpagesize.c',
 	'getrandom.c',
 	'hdio.c',
 	'hostname.c',
@@ -170,6 +160,7 @@ local srcs = {
 	'ioperm.c',
 	'iopl.c',
 	'ioprio.c',
+	'ipc.c',
 	'ipc_msg.c',
 	'ipc_msgctl.c',
 	'ipc_sem.c',
@@ -189,6 +180,7 @@ local srcs = {
 	'membarrier.c',
 	'memfd_create.c',
 	'mknod.c',
+	'mmap_cache.c',
 	'mmap_notify.c',
 	'mmsghdr.c',
 	'mount.c',
@@ -241,7 +233,6 @@ local srcs = {
 	'print_statfs.c',
 	'print_struct_stat.c',
 	'print_time.c',
-	'print_timespec.c',
 	'print_timespec32.c',
 	'print_timespec64.c',
 	'print_timeval.c',
@@ -290,18 +281,23 @@ local srcs = {
 	'sigaltstack.c',
 	'signal.c',
 	'signalfd.c',
+	'sigreturn.c',
 	'sock.c',
 	'sockaddr.c',
+	'socketcall.c',
 	'socketutils.c',
 	'sparc.c',
 	'sram_alloc.c',
 	'stage_output.c',
 	'stat.c',
 	'stat64.c',
+	'statfs.c',
+	'statfs64.c',
 	'statx.c',
-	'strace.c',
 	'string_to_uint.c',
 	'swapon.c',
+	'sync_file_range.c',
+	'sync_file_range2.c',
 	'syscall.c',
 	'sysctl.c',
 	'sysinfo.c',
@@ -318,6 +314,8 @@ local srcs = {
 	'umask.c',
 	'umount.c',
 	'uname.c',
+	'upeek.c',
+	'upoke.c',
 	'userfaultfd.c',
 	'ustat.c',
 	'util.c',
@@ -327,11 +325,12 @@ local srcs = {
 	'wait.c',
 	'watchdog_ioctl.c',
 	'xattr.c',
+	'xgetdents.c',
 	'xlat.c',
 	'xmalloc.c',
 }
 
-build('sed', '$outdir/sys_func.h', expand{'$srcdir/', {libsrcs, srcs}}, {
+build('sed', '$outdir/sys_func.h', expand{'$srcdir/', srcs}, {
 	expr=[[-n 's/^SYS_FUNC(.*/extern &;/p']],
 })
 
@@ -349,8 +348,8 @@ pkg.deps = {
 	'pkg/linux-headers/headers',
 }
 
-lib('libstrace.a', libsrcs, {'$outdir/printers.h'})
-exe('strace', {srcs, 'libstrace.a'})
+lib('libstrace.a', srcs, {'$outdir/printers.h'})
+exe('strace', {'strace.c', 'libstrace.a'})
 file('bin/strace', '755', '$outdir/strace')
 man{'strace.1'}
 

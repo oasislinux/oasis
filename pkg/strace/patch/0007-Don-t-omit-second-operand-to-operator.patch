@@ -1,4 +1,4 @@
-From 7ba3679ddf2c76b6ec0a86ee84e316d2ed06cf7b Mon Sep 17 00:00:00 2001
+From dc7f55485c8562999b5bc2ae713a3aec0c90bce8 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -39,10 +39,10 @@ index b904fa34..1366a89e 100644
  	return out;
  }
 diff --git a/strace.c b/strace.c
-index f46b25d4..7b03bc27 100644
+index 2a4e6001..352c8282 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -2097,7 +2097,7 @@ init(int argc, char *argv[])
+@@ -2235,7 +2235,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -51,7 +51,7 @@ index f46b25d4..7b03bc27 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2194,10 +2194,10 @@ init(int argc, char *argv[])
+@@ -2332,10 +2332,10 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
  			break;
  		case GETOPT_QUAL_QUIET:
@@ -65,5 +65,5 @@ index f46b25d4..7b03bc27 100644
  		default:
  			error_msg_and_help(NULL);
 -- 
-2.26.0
+2.26.2
 

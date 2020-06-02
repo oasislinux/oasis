@@ -1,4 +1,4 @@
-From 1e79756600fe0550411083a8315cfe78e52a65c7 Mon Sep 17 00:00:00 2001
+From 1626ee384c34018d4d0f2c887cfdca05bccec2ff Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -7,8 +7,8 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  netlink_smc_diag.c | 4 ++--
  print_timespec.h   | 6 ++++--
  sockaddr.c         | 2 +-
- ucopy.c            | 6 +++---
- 4 files changed, 10 insertions(+), 8 deletions(-)
+ ucopy.c            | 8 ++++----
+ 4 files changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/netlink_smc_diag.c b/netlink_smc_diag.c
 index 16815fde..09a748a8 100644
@@ -72,10 +72,19 @@ index b6b9aa7d..948fa517 100644
  
  	tprints("sa_data=");
 diff --git a/ucopy.c b/ucopy.c
-index 21f55e28..cee9f2e0 100644
+index 59af8641..3ff59781 100644
 --- a/ucopy.c
 +++ b/ucopy.c
-@@ -183,7 +183,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+@@ -165,7 +165,7 @@ vm_read_mem(const pid_t pid, void *laddr,
+ 			break;
+ 
+ 		len = next_len;
+-		laddr += copy_len;
++		laddr = (char *)laddr + copy_len;
+ 		page_start += page_size;
+ 		taddr = page_start;
+ 	}
+@@ -227,7 +227,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
  		memcpy(laddr, &u.x[residue], m);
  		residue = 0;
  		addr += sizeof(long);
@@ -84,7 +93,7 @@ index 21f55e28..cee9f2e0 100644
  		nread += m;
  		len -= m;
  	}
-@@ -280,10 +280,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+@@ -324,10 +324,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
  		memcpy(laddr, &u.x[residue], m);
  		while (residue < sizeof(long))
  			if (u.x[residue++] == '\0')
@@ -98,5 +107,5 @@ index 21f55e28..cee9f2e0 100644
  		len -= m;
  	}
 -- 
-2.25.1
+2.27.0
 

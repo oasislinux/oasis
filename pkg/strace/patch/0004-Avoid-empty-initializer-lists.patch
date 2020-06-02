@@ -1,4 +1,4 @@
-From 6785ecc1baea8f396b6a90a62cee94522a9744cc Mon Sep 17 00:00:00 2001
+From 21b9f7852ec9daf1a356c3b588b8053bed5b8383 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/bpf.c b/bpf.c
-index 0a47766e..a2bebb82 100644
+index 469f809a..cad5ab05 100644
 --- a/bpf.c
 +++ b/bpf.c
 @@ -43,7 +43,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -81,10 +81,10 @@ index 3cb54bb3..bc03dae8 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/strace.c b/strace.c
-index 19f25be5..f46b25d4 100644
+index 311e4d62..2a4e6001 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -3205,7 +3205,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -3359,7 +3359,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -94,7 +94,7 @@ index 19f25be5..f46b25d4 100644
  		if (res != 0) {
  			res = syscall_exiting_trace(tcp, &ts, res);
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index c94926d1..dedb8754 100644
+index 2423f65e..3b5ade66 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
 @@ -382,7 +382,7 @@ btrfs_test_subvol_ioctls(void)
@@ -199,10 +199,10 @@ index 2c4dae19..59bc2dd0 100644
  		.sigev_notify = 0xdefaced,
  		.sigev_signo = 0xfacefeed,
 diff --git a/tests/wait4.c b/tests/wait4.c
-index 29b0cadd..89faf508 100644
+index ea40577a..d25bd87a 100644
 --- a/tests/wait4.c
 +++ b/tests/wait4.c
-@@ -68,7 +68,7 @@ sprint_rusage(const struct rusage *const ru)
+@@ -72,7 +72,7 @@ sprint_rusage(const struct rusage *const ru)
  static pid_t
  do_wait4(pid_t pid, int *wstatus, int options, struct rusage *ru)
  {
@@ -212,12 +212,12 @@ index 29b0cadd..89faf508 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 diff --git a/tests/waitid.c b/tests/waitid.c
-index f6738e18..d9ce1105 100644
+index c58df5e2..730c58d7 100644
 --- a/tests/waitid.c
 +++ b/tests/waitid.c
-@@ -202,7 +202,7 @@ do_waitid(const unsigned int idtype,
+@@ -130,7 +130,7 @@ do_waitid(const unsigned int idtype,
  	  const unsigned int options,
- 	  const struct rusage *const rusage)
+ 	  const kernel_rusage_t *const rusage)
  {
 -	sigset_t mask = {};
 +	sigset_t mask = {0};
@@ -225,5 +225,5 @@ index f6738e18..d9ce1105 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.26.0
+2.26.2
 

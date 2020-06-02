@@ -1,4 +1,4 @@
-From 7ffe2fa8fa0a4d5dea1c0755a74d9cba5522a361 Mon Sep 17 00:00:00 2001
+From 87f14954600cd3bb13c82b1bb992a89bff545f9c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:58:46 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
@@ -26,10 +26,10 @@ index a397eba2..89682ae9 100644
  		const size_t c = columns[i];
  
 diff --git a/desc.c b/desc.c
-index 92e6fe16..8f705d70 100644
+index 32fc1882..f15b04e1 100644
 --- a/desc.c
 +++ b/desc.c
-@@ -206,11 +206,11 @@ SYS_FUNC(select)
+@@ -175,11 +175,11 @@ SYS_FUNC(select)
  
  static int
  umove_kulong_array_or_printaddr(struct tcb *const tcp, const kernel_ulong_t addr,
@@ -43,7 +43,7 @@ index 92e6fe16..8f705d70 100644
  		int r = umove_or_printaddr(tcp, addr, &ptr32);
  		if (!r) {
  			size_t i;
-@@ -231,10 +231,11 @@ do_pselect6(struct tcb *const tcp, const print_obj_by_addr_fn print_ts,
+@@ -200,10 +200,11 @@ do_pselect6(struct tcb *const tcp, const print_obj_by_addr_fn print_ts,
  	int rc = decode_select(tcp, tcp->u_arg, print_ts, sprint_ts);
  	if (entering(tcp)) {
  		kernel_ulong_t data[2];
@@ -92,7 +92,7 @@ index be459714..819abc92 100644
  		if (!inet_ntop(diag_msg->idiag_family, diag_msg->id.idiag_dst,
  			       dst_buf, text_size))
 diff --git a/syscall.c b/syscall.c
-index fd7a3d84..d8a37a07 100644
+index 022cab5b..37097d92 100644
 --- a/syscall.c
 +++ b/syscall.c
 @@ -295,7 +295,7 @@ decode_socket_subcall(struct tcb *tcp)
@@ -105,7 +105,7 @@ index fd7a3d84..d8a37a07 100644
  	if (umoven(tcp, tcp->u_arg[1], nargs * current_wordsize, buf) < 0)
  		return;
 diff --git a/util.c b/util.c
-index 5874e86d..522e772e 100644
+index 6eda524d..c15e6514 100644
 --- a/util.c
 +++ b/util.c
 @@ -481,8 +481,7 @@ enum sock_proto
@@ -128,5 +128,5 @@ index 5874e86d..522e772e 100644
  		return SOCK_PROTO_UNKNOWN;
  	else {
 -- 
-2.26.0
+2.26.2
 
