@@ -1,8 +1,10 @@
 cflags{
 	'-std=c99',
 	'-D NDEBUG',
-	'-I $basedir/pkg/lua/src/src',
+	'-I $builddir/pkg/lua/include',
 }
+
+pkg.deps = {'pkg/lua/headers'}
 
 lib('liblpeg.a', {
 	'lpvm.c',
@@ -10,6 +12,6 @@ lib('liblpeg.a', {
 	'lptree.c',
 	'lpcode.c',
 	'lpprint.c',
-}, {'pkg/lua/fetch'})
+})
 
 fetch 'curl'

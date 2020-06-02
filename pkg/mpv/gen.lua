@@ -139,9 +139,9 @@ if options['HAVE_LIBASS'] then
 	table.insert(pkg.deps, 'pkg/libass/headers')
 end
 if options['HAVE_LUA'] then
-	cflags{'-I $basedir/pkg/lua/src/src'}
+	cflags{'-I $builddir/pkg/lua/include'}
 	table.insert(libs, 'lua/liblua.a')
-	table.insert(pkg.deps, 'pkg/lua/fetch')
+	table.insert(pkg.deps, 'pkg/lua/headers')
 end
 if options['HAVE_WAYLAND'] then
 	cflags{

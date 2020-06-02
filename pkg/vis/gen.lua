@@ -16,7 +16,7 @@ cflags{
 	'-D NDEBUG',
 	'-I $outdir',
 	'-I $basedir/pkg/libtermkey/src',
-	'-I $basedir/pkg/lua/src/src',
+	'-I $builddir/pkg/lua/include',
 	'-I $builddir/pkg/ncurses/include',
 }
 
@@ -25,7 +25,7 @@ build('copy', '$outdir/config.h', '$srcdir/config.def.h')
 pkg.deps = {
 	'$outdir/config.h',
 	'pkg/libtermkey/fetch',
-	'pkg/lua/fetch',
+	'pkg/lua/headers',
 	'pkg/ncurses/headers',
 }
 
