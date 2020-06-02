@@ -7,6 +7,7 @@ cflags{
 	'-I $builddir/pkg/mtdev/include',
 }
 
+pkg.hdrs = copy('$outdir/include', '$srcdir/src', {'libinput.h'})
 pkg.deps = {
 	'pkg/libevdev/headers',
 	'pkg/linux-headers/headers',
