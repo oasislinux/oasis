@@ -15,7 +15,7 @@ cflags{
 	string.format([[-D 'VIS_PATH="%s/share/vis"']], config.prefix),
 	'-D NDEBUG',
 	'-I $outdir',
-	'-I $basedir/pkg/libtermkey/src',
+	'-I $builddir/pkg/libtermkey/include',
 	'-I $builddir/pkg/lua/include',
 	'-I $builddir/pkg/ncurses/include',
 }
@@ -24,7 +24,7 @@ build('copy', '$outdir/config.h', '$srcdir/config.def.h')
 
 pkg.deps = {
 	'$outdir/config.h',
-	'pkg/libtermkey/fetch',
+	'pkg/libtermkey/headers',
 	'pkg/lua/headers',
 	'pkg/ncurses/headers',
 }
