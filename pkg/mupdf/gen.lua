@@ -72,16 +72,16 @@ file('bin/mutool', '755', '$outdir/bin/mutool')
 
 cc('platform/x11/wl_main.c', {
 	'$gendir/deps',
-	'pkg/libxkbcommon/fetch',
+	'pkg/libxkbcommon/headers',
 	'pkg/pixman/headers',
 	'pkg/wayland/headers',
 	'pkg/wayland-protocols/headers',
 }, {cflags={
 	'$cflags',
+	'-I $builddir/pkg/libxkbcommon/include',
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/wayland/include',
 	'-I $builddir/pkg/wayland-protocols/include',
-	'-I $basedir/pkg/libxkbcommon/src',
 }})
 exe('bin/mupdf', [[
 	platform/x11/(pdfapp.c wl_main.c.o)

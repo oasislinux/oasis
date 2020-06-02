@@ -145,8 +145,8 @@ if options['HAVE_LUA'] then
 end
 if options['HAVE_WAYLAND'] then
 	cflags{
+		'-I $builddir/pkg/libxkbcommon/include',
 		'-I $builddir/pkg/wayland/include',
-		'-I $basedir/pkg/libxkbcommon/src',
 	}
 	table.insert(libs, {
 		'wayland/libwayland-client.a.d',
@@ -158,8 +158,8 @@ if options['HAVE_WAYLAND'] then
 		'$outdir/video/out/wayland/presentation-time.h',
 		'$outdir/video/out/wayland/xdg-decoration-v1.h',
 		'$outdir/video/out/wayland/xdg-shell.h',
+		'pkg/libxkbcommon/headers',
 		'pkg/wayland/headers',
-		'pkg/libxkbcommon/fetch',
 	})
 end
 

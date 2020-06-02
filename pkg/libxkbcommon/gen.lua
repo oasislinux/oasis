@@ -4,6 +4,13 @@ cflags{
 	'-I $srcdir/src',
 }
 
+pkg.hdrs = copy('$outdir/include/xkbcommon', '$srcdir/xkbcommon', {
+	'xkbcommon.h',
+	'xkbcommon-compat.h',
+	'xkbcommon-keysyms.h',
+	'xkbcommon-names.h',
+})
+
 lib('libxkbcommon.a', [[src/(
 	compose/parser.c
 	compose/paths.c

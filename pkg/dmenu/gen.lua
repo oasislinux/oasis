@@ -2,7 +2,7 @@ cflags{
 	[[-D 'VERSION="4.6"']],
 	'-I $dir',
 	'-I $builddir/pkg/fontconfig/include',
-	'-I $basedir/pkg/libxkbcommon/src',
+	'-I $builddir/pkg/libxkbcommon/include',
 	'-I $builddir/pkg/pixman/include',
 	'-I $builddir/pkg/swc/include',
 	'-I $builddir/pkg/wayland/include',
@@ -11,7 +11,7 @@ cflags{
 
 pkg.deps = {
 	'pkg/fontconfig/headers',
-	'pkg/libxkbcommon/fetch',
+	'pkg/libxkbcommon/headers',
 	'pkg/pixman/headers',
 	'pkg/swc/headers',
 	'pkg/wayland/headers',
