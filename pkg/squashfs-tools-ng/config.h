@@ -1,4 +1,5 @@
 #define WITH_GZIP 1
+#define WITH_ZSTD 1
 
 #define HAVE_DLFCN_H 1
 #define HAVE_GETLINE 1

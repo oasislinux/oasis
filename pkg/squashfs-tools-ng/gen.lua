@@ -48,6 +48,14 @@ if cfg.WITH_GZIP then
 	})
 end
 
+if cfg.WITH_ZSTD then
+	cflags{'-I $builddir/pkg/zstd/include'}
+	table.insert(srcs, {
+		'lib/sqfs/comp/zstd.c',
+		'$builddir/pkg/zstd/libzstd.a',
+	})
+end
+
 lib('libsquashfs.a', srcs)
 
 lib('libcommon.a', [[

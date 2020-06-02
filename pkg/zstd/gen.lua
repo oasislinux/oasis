@@ -5,9 +5,15 @@ cflags{
 	'-D XXH_NAMESPACE=ZSTD_',
 	'-D ZSTD_NOBENCH',
 	'-D ZSTD_NODICT',
-	'-I $srcdir/lib',
-	'-I $srcdir/lib/common',
-	'-I $srcdir/lib/dictBuilder',
+}
+
+pkg.hdrs = {
+	copy('$outdir/include', '$srcdir/lib', {'zstd.h'}),
+	copy('$outdir/include', '$srcdir/lib/common', {'zstd_errors.h'}),
+	copy('$outdir/include', '$srcdir/lib/dictBuilder', {'zdict.h'}),
+}
+pkg.deps = {
+	'$gendir/headers',
 }
 
 lib('libzstd.a', [[lib/(
