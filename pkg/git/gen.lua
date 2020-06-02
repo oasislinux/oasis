@@ -7,12 +7,22 @@ cflags{
 	'-I $builddir/pkg/zlib/include',
 }
 
+pkg.deps = {
+	'$outdir/config-list.h',
+	'$outdir/command-list.h',
+	'pkg/curl/headers',
+	'pkg/zlib/headers',
+}
+
 rule('cmdlist', 'cd $srcdir && ./generate-cmdlist.sh $$OLDPWD/$in >$$OLDPWD/$out')
 build('cmdlist', '$outdir/command-list.h', {
 	'$srcdir/command-list.txt', '|', expand{'$srcdir/Documentation/', lines('commands.txt')},
 })
 
-pkg.deps = {'$outdir/command-list.h', 'pkg/curl/headers', 'pkg/zlib/headers'}
+rule('configlist', 'cd $srcdir && ./generate-configlist.sh $$OLDPWD/$in >$$OLDPWD/$out')
+build('configlist', '$outdir/config-list.h', {
+	'$srcdir/command-list.txt', '|', expand{'$srcdir/Documentation/', lines('configs.txt')},
+})
 
 cc('exec-cmd.c', nil, {cflags=[[$cflags '-DFALLBACK_RUNTIME_PREFIX=""']]})
 cc('common-main.c')
@@ -37,6 +47,7 @@ lib('libgit.a', [[
 	bisect.c
 	blame.c
 	blob.c
+	bloom.c
 	branch.c
 	bulk-checkin.c
 	bundle.c
@@ -46,9 +57,9 @@ lib('libgit.a', [[
 	color.c
 	column.c
 	combine-diff.c
-	commit.c
 	commit-graph.c
 	commit-reach.c
+	commit.c
 	compat/obstack.c
 	compat/regex/regex.c.o
 	compat/terminal.c
@@ -64,17 +75,17 @@ lib('libgit.a', [[
 	date.c
 	decorate.c
 	delta-islands.c
-	diff-delta.c
-	diff-lib.c
-	diff-no-index.c
-	diff.c
 	diffcore-break.c
 	diffcore-delta.c
 	diffcore-order.c
 	diffcore-pickaxe.c
 	diffcore-rename.c
-	dir.c
+	diff-delta.c
+	diff-lib.c
+	diff-no-index.c
+	diff.c
 	dir-iterator.c
+	dir.c
 	editor.c
 	entry.c
 	environment.c
@@ -85,6 +96,7 @@ lib('libgit.a', [[
 	exec-cmd.c.o
 	fetch-negotiator.c
 	fetch-pack.c
+	fmt-merge-msg.c
 	fsck.c
 	fsmonitor.c
 	gettext.c
@@ -92,7 +104,6 @@ lib('libgit.a', [[
 	graph.c
 	grep.c
 	hashmap.c
-	linear-assignment.c
 	help.c
 	hex.c
 	ident.c
@@ -102,9 +113,10 @@ lib('libgit.a', [[
 	levenshtein.c
 	line-log.c
 	line-range.c
-	list-objects.c
-	list-objects-filter.c
+	linear-assignment.c
 	list-objects-filter-options.c
+	list-objects-filter.c
+	list-objects.c
 	ll-merge.c
 	lockfile.c
 	log-tree.c
@@ -113,9 +125,9 @@ lib('libgit.a', [[
 	mailmap.c
 	match-trees.c
 	mem-pool.c
+	merge.c
 	merge-blobs.c
 	merge-recursive.c
-	merge.c
 	mergesort.c
 	midx.c
 	name-hash.c
@@ -126,15 +138,16 @@ lib('libgit.a', [[
 	notes-utils.c
 	notes.c
 	object.c
+	oid-array.c
 	oidmap.c
 	oidset.c
-	packfile.c
 	pack-bitmap-write.c
 	pack-bitmap.c
 	pack-check.c
 	pack-objects.c
 	pack-revindex.c
 	pack-write.c
+	packfile.c
 	pager.c
 	parse-options-cb.c
 	parse-options.c
@@ -150,12 +163,13 @@ lib('libgit.a', [[
 	promisor-remote.c
 	prompt.c
 	protocol.c
+	prune-packed.c
 	quote.c
 	range-diff.c
 	reachable.c
 	read-cache.c
-	rebase.c
 	rebase-interactive.c
+	rebase.c
 	ref-filter.c
 	reflog-walk.c
 	refs.c
@@ -169,6 +183,7 @@ lib('libgit.a', [[
 	repo-settings.c
 	repository.c
 	rerere.c
+	reset.c
 	resolve-undo.c
 	revision.c
 	run-command.c
@@ -177,9 +192,8 @@ lib('libgit.a', [[
 	serve.c
 	server-info.c
 	setup.c
-	sha1-array.c
-	sha1-lookup.c
 	sha1-file.c
+	sha1-lookup.c
 	sha1-name.c
 	shallow.c
 	sideband.c
@@ -189,9 +203,9 @@ lib('libgit.a', [[
 	strbuf.c
 	streaming.c
 	string-list.c
+	sub-process.c
 	submodule-config.c
 	submodule.c
-	sub-process.c
 	symlinks.c
 	tag.c
 	tempfile.c
@@ -250,12 +264,12 @@ lib('libgit.a', [[
 -- src/Makefile:/^XDIFF_OBJS.\+=
 lib('libxdiff.a', [[xdiff/(
 	xdiffi.c
-	xprepare.c
-	xutils.c
 	xemit.c
+	xhistogram.c
 	xmerge.c
 	xpatience.c
-	xhistogram.c
+	xprepare.c
+	xutils.c
 )]])
 
 -- src/Makefile:/^BUILTIN_OBJS.\+=
@@ -279,9 +293,9 @@ local builtins = {
 	'clean',
 	'clone',
 	'column',
+	'commit-graph',
 	'commit-tree',
 	'commit',
-	'commit-graph',
 	'config',
 	'count-objects',
 	'credential',
@@ -312,13 +326,13 @@ local builtins = {
 	'ls-tree',
 	'mailinfo',
 	'mailsplit',
-	'merge',
 	'merge-base',
 	'merge-file',
 	'merge-index',
 	'merge-ours',
 	'merge-recursive',
 	'merge-tree',
+	'merge',
 	'mktag',
 	'mktree',
 	'multi-pack-index',
@@ -338,9 +352,9 @@ local builtins = {
 	'rebase',
 	'receive-pack',
 	'reflog',
-	'remote',
 	'remote-ext',
 	'remote-fd',
+	'remote',
 	'repack',
 	'replace',
 	'rerere',
@@ -397,14 +411,15 @@ end
 
 local programs = {
 	-- src/Makefile:/^PROGRAM_OBJS./+=
+	{'bugreport'},
 	{'credential-store'},
 	{'daemon'},
 	{'fast-import'},
 	{'http-backend'},
 	{'imap-send', {'imap-send.c', 'http.c.o', '$builddir/pkg/curl/libcurl.a.d'}},
+	-- git-remote-testsvn is intentionally omitted
 	{'sh-i18n--envsubst'},
 	{'shell'},
-	-- git-remote-testsvn is intentionally omitted
 
 	{'remote-http', {'remote-curl.c', 'http.c.o', 'http-walker.c', '$builddir/pkg/curl/libcurl.a.d'}},
 }
@@ -429,7 +444,6 @@ local scripts = {
 	{'merge-resolve', '755'},
 	{'mergetool', '755'},
 	{'quiltimport', '755'},
-	{'legacy-stash', '755'},
 	{'request-pull', '755'},
 	{'submodule', '755'},
 	{'web--browse', '755'},
@@ -438,8 +452,8 @@ local scripts = {
 	{'mergetool--lib', '644'},
 	{'parse-remote', '644'},
 	{'rebase--preserve-merges', '644'},
-	{'sh-setup', '644'},
 	{'sh-i18n', '644'},
+	{'sh-setup', '644'},
 }
 
 rule('sh_gen', 'sed -f $dir/sh_gen.sed $in >$out')
