@@ -4,6 +4,8 @@ cflags{
 	'-I $builddir/pkg/libtls-bearssl/include',
 }
 
+pkg.deps = {'pkg/libtls-bearssl/headers'}
+
 exe('pounce', {
 	'bounce.c',
 	'client.c',
