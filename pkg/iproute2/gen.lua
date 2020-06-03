@@ -3,6 +3,7 @@ cflags{
 	'-Wold-style-definition', '-Wstrict-prototypes',
 	'-D _GNU_SOURCE',
 	'-D HAVE_SETNS',
+	[[-D 'NETNS_RUN_DIR="/run/netns"']],
 	'-I $srcdir/include',
 	'-I $srcdir/include/uapi',
 	'-I $srcdir/misc',
@@ -53,13 +54,17 @@ man(paths[[man/man8/(
 	bridge ip ss
 	ip-(
 		addrlabel fou gue l2tp macsec maddress monitor mroute neighbour
-		netconf netns ntable rule sr tcp_metrics token tunnel vrf xfrm
+		netconf ntable rule sr tcp_metrics token tunnel vrf xfrm
 	)
 ).8]])
-for _, name in ipairs{'ip-address', 'ip-link', 'ip-route'} do
+for _, name in ipairs{'ip-address', 'ip-link', 'ip-netns', 'ip-route'} do
 	local out = '$outdir/'..name..'.8'
 	build('sed', out, '$srcdir/man/man8/'..name..'.8.in', {
-		expr='s,@SYSCONFDIR@,/etc,g'
+		expr={
+			'-e s,@SYSCONFDIR@,/etc,g',
+			'-e s,@NETNS_ETC_DIR@,/etc/netns,g',
+			'-e s,@NETNS_RUN_DIR@,/run/netns,g',
+		},
 	})
 	man{out}
 end

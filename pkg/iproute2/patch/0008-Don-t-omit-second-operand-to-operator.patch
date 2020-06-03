@@ -1,4 +1,4 @@
-From 9c2f01584da75c3004075d0d25ea21ccbb9db277 Mon Sep 17 00:00:00 2001
+From 768924ca1f8cf3a7968da70af6b47aa312011f74 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:40 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -70,10 +70,10 @@ index f1bf0b18..41fa1649 100644
  				print_uint(PRINT_ANY, "pid",
  					   "(%d)", pid);
 diff --git a/lib/bpf.c b/lib/bpf.c
-index f4ac5f16..a25a4bbc 100644
+index 5d620f40..223fb232 100644
 --- a/lib/bpf.c
 +++ b/lib/bpf.c
-@@ -813,7 +813,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
+@@ -771,7 +771,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
  		mnt = bpf_find_mntpt("bpf", BPF_FS_MAGIC, bpf_tmp,
  				     sizeof(bpf_tmp), bpf_known_mnts);
  	if (!mnt) {
@@ -83,7 +83,7 @@ index f4ac5f16..a25a4bbc 100644
  		if (!ret)
  			ret = bpf_mnt_fs(mnt);
 diff --git a/lib/utils.c b/lib/utils.c
-index d02bc32d..49b5b1ec 100644
+index 063a0611..b863af6f 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
 @@ -943,8 +943,10 @@ int __get_hz(void)
@@ -108,7 +108,7 @@ index d02bc32d..49b5b1ec 100644
  		return hz;
  	return HZ;
 diff --git a/misc/ss.c b/misc/ss.c
-index 23980695..bc6b4a8b 100644
+index 039f284c..1801bc5c 100644
 --- a/misc/ss.c
 +++ b/misc/ss.c
 @@ -483,7 +483,9 @@ static FILE *generic_proc_open(const char *env, const char *name)
@@ -154,7 +154,7 @@ index 23980695..bc6b4a8b 100644
  	}
  
  	if (is_port)
-@@ -3728,9 +3737,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
+@@ -3737,9 +3746,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
  
  	sock_state_print(s);
  
@@ -166,7 +166,7 @@ index 23980695..bc6b4a8b 100644
  			int_to_str(s->rport, port_name), NULL);
  
  	proc_ctx_print(s);
-@@ -3933,7 +3942,7 @@ static int unix_show(struct filter *f)
+@@ -3942,7 +3951,7 @@ static int unix_show(struct filter *f)
  			if (!p)
  				u->peer_name = "?";
  			else
@@ -175,7 +175,7 @@ index 23980695..bc6b4a8b 100644
  		}
  
  		if (f->f) {
-@@ -4417,9 +4426,10 @@ static int netlink_show_one(struct filter *f,
+@@ -4426,9 +4435,10 @@ static int netlink_show_one(struct filter *f,
  			strncpy(procname, "kernel", 7);
  		} else if (pid > 0) {
  			FILE *fp;
@@ -187,7 +187,7 @@ index 23980695..bc6b4a8b 100644
  			if ((fp = fopen(procname, "r")) != NULL) {
  				if (fscanf(fp, "%*d (%[^)])", procname) == 1) {
  					snprintf(procname+strlen(procname),
-@@ -4462,7 +4472,7 @@ static int netlink_show_one(struct filter *f,
+@@ -4471,7 +4481,7 @@ static int netlink_show_one(struct filter *f,
  		else if (pid > 0)
  			getpidcon(pid, &pid_context);
  
@@ -197,5 +197,5 @@ index 23980695..bc6b4a8b 100644
  	}
  
 -- 
-2.26.0
+2.27.0
 
