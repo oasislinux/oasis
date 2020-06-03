@@ -348,7 +348,7 @@ pkg.deps = {
 	'pkg/linux-headers/headers',
 }
 
-lib('libstrace.a', srcs, {'$outdir/printers.h'})
+lib('libstrace.a', srcs)
 exe('strace', {'strace.c', 'libstrace.a'})
 file('bin/strace', '755', '$outdir/strace')
 man{'strace.1'}
