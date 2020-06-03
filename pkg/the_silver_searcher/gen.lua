@@ -15,10 +15,8 @@ exe('ag', [[
 	        ignore.c log.c options.c print.c print_w32.c scandir.c search.c lang.c
 	        util.c decompress.c main.c
 	)
-	$builddir/pkg/(
-		pcre/libpcre.a
-		zlib/libz.a
-	)
+	$builddir/pkg/pcre/libpcre.a
+	$builddir/pkg/zlib/libz.a
 ]])
 file('bin/ag', '755', '$outdir/ag')
 man{'doc/ag.1'}

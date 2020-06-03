@@ -49,10 +49,8 @@ lib('libinput.a', [[
 		util-strings.c
 		util-prop-parsers.c
 	)
-	$builddir/pkg/(
-		libevdev/libevdev.a
-		mtdev/libmtdev.a
-	)
+	$builddir/pkg/libevdev/libevdev.a
+	$builddir/pkg/mtdev/libmtdev.a
 ]])
 
 local quirks = {

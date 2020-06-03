@@ -37,10 +37,8 @@ lib('libass.a', [[
 			be_blur.asm
 		)
 	)
-	$builddir/pkg/(
-		freetype/libfreetype.a.d
-		fribidi/libfribidi.a
-	)
+	$builddir/pkg/freetype/libfreetype.a.d
+	$builddir/pkg/fribidi/libfribidi.a
 ]])
 
 fetch 'git'

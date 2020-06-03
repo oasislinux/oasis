@@ -63,11 +63,9 @@ lib('libfontconfig.a', [[
 		fcxml.c
 		ftglue.c
 	)
-	$builddir/pkg/(
-		expat/libexpat.a.d
-		freetype/libfreetype.a.d
-		util-linux/libuuid.a.d
-	)
+	$builddir/pkg/expat/libexpat.a.d
+	$builddir/pkg/freetype/libfreetype.a.d
+	$builddir/pkg/util-linux/libuuid.a.d
 ]])
 
 fetch 'curl'
