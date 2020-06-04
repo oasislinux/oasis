@@ -79,7 +79,7 @@ local data = [[
 		ca cd ch
 		cm cn cz
 		de dk dz
-		ee es et epo eu
+		ee eg es et epo eu
 		fi fo fr
 		gb ge gh gn
 		gr hr hu
