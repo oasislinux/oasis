@@ -52,6 +52,7 @@ return {
 		'nasm',
 		'qbe',
 		'strace',
+		'wayland',
 	},
 	media={
 		'alsa-lib',
