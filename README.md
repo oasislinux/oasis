@@ -137,6 +137,8 @@ tools whenever possible:
 - byacc instead of bison
 - perp and sinit instead of sysvinit or systemd
 - netsurf instead of chromium or firefox
+- samurai instead of ninja
+- velox instead of Xorg
 
 These packages are grouped into logical [sets], and the full list
 is available in the [pkg] directory.
