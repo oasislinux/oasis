@@ -59,7 +59,7 @@ which packages to include on your system, and the build system
 writes the resulting filesystem tree into a git repository. This
 can then be merged into `/`, or pulled from another machine.
 
-[specifications]: https://github.com/oasislinux/oasis/blob/master/config.def.lua#L9-L12
+[specifications]: https://github.com/oasislinux/oasis/blob/master/config.def.lua#L12-15
 
 * Integrates well with **OS-agnostic package systems**.
 
