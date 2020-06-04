@@ -19,7 +19,7 @@ return {
 	target={
 		platform='x86_64-linux-musl',
 		cflags='-Os -pipe',
-		ldflags='-s',
+		ldflags='-s -static',
 	},
 
 	-- host toolchain and flags
