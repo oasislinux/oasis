@@ -1,5 +1,6 @@
 cflags{
 	'-std=c11', '-Wall', '-Wextra', '-Wpedantic',
+	'-Wno-maybe-uninitialized',
 	'-D _GNU_SOURCE',
 	'-isystem $builddir/pkg/libtls-bearssl/include',
 	'-isystem $builddir/pkg/ncurses/include',
