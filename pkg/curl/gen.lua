@@ -1,5 +1,5 @@
 cflags{
-	'-std=c99', '-Wall', '-Wpedantic',
+	'-std=c99', '-Wall', '-Wpedantic', '-Wno-maybe-uninitialized',
 	'-D _DEFAULT_SOURCE',
 	'-D HAVE_CONFIG_H',
 	'-D BUILDING_LIBCURL',
