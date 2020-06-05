@@ -1,4 +1,4 @@
-From b6441967d311b6d62f5936ff346293505d5f0261 Mon Sep 17 00:00:00 2001
+From 40238cc120312dc1e70ac35e8c993d959c70438b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 13 May 2016 23:01:44 -0700
 Subject: [PATCH] Remove unnecessary check for sizeof(long long)
@@ -10,11 +10,11 @@ The C standard guarantees that its maximum value is at least 2^63 - 1.
  2 files changed, 5 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index b3b0fa1..2c1aef7 100644
+index 6b214b6..a2c4ef2 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -50,7 +50,6 @@ AC_CHECK_HEADERS([sysexits.h netdb.h arpa/inet.h sys/socket.h sys/wait.h netinet
- AC_CHECK_FUNCS([fmemopen fseeko fseeko64 getpass link signal strndup syslog])
+ AC_CHECK_FUNCS([fmemopen fseeko fseeko64 getpass link signal strndup syslog vasprintf])
  AC_SEARCH_LIBS([nanosleep], [rt posix4])
  AC_SEARCH_LIBS([socket], [socket])
 -AC_CHECK_SIZEOF([long long])
@@ -22,7 +22,7 @@ index b3b0fa1..2c1aef7 100644
  dnl Unfortunately AC_SEARCH_LIBS([res_query], [resolv]) does not work because we
  dnl apparently need to include the appropriate header files, so we use a double
 diff --git a/src/conf.c b/src/conf.c
-index a0e3eb3..d5c9306 100644
+index aedbd18..c92c088 100644
 --- a/src/conf.c
 +++ b/src/conf.c
 @@ -36,10 +36,6 @@
@@ -37,5 +37,5 @@ index a0e3eb3..d5c9306 100644
  #define _(string) gettext(string)
  
 -- 
-2.26.0
+2.27.0
 

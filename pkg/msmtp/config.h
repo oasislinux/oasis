@@ -36,13 +36,14 @@
 #define HAVE_SYS_WAIT_H 1
 #define HAVE_TLS 1
 #define HAVE_UNISTD_H 1
+#define HAVE_VASPRINTF 1
 #define PACKAGE "msmtp"
 #define PACKAGE_BUGREPORT "marlam@marlam.de"
 #define PACKAGE_NAME "msmtp"
-#define PACKAGE_STRING "msmtp 1.8.10"
+#define PACKAGE_STRING "msmtp 1.8.11"
 #define PACKAGE_TARNAME "msmtp"
 #define PACKAGE_URL "https://marlam.de/msmtp"
-#define PACKAGE_VERSION "1.8.10"
+#define PACKAGE_VERSION "1.8.11"
 #define PLATFORM "x86_64-pc-linux-musl"
 #define STDC_HEADERS 1
 #ifndef _ALL_SOURCE
@@ -60,7 +61,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.8.10"
+#define VERSION "1.8.11"
 #if (defined _WIN32 || defined __WIN32__) && !defined __CYGWIN__
 #define W32_NATIVE 1
 #endif
