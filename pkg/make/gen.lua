@@ -1,4 +1,5 @@
 cflags{
+	'-std=c99', '-Wno-return-local-addr',
 	'-D HAVE_CONFIG_H',
 	'-I $dir',
 	'-I $srcdir/src',
