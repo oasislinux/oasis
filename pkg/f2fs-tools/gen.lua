@@ -1,5 +1,5 @@
 cflags{
-	'-Wall',
+	'-Wall', '-Wno-address-of-packed-member',
 	'-D HAVE_CONFIG_H',
 	'-I $dir',
 	'-I $srcdir/include',

@@ -1,0 +1,44 @@
+From 19375b1476921178f4af5a74708239b3671cd56e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 5 Jun 2020 02:10:12 -0700
+Subject: [PATCH] Prevent unused-but-set variables
+
+---
+ mkfs/f2fs_format_utils.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/mkfs/f2fs_format_utils.c b/mkfs/f2fs_format_utils.c
+index f2d55ad..76f5a1e 100644
+--- a/mkfs/f2fs_format_utils.c
++++ b/mkfs/f2fs_format_utils.c
+@@ -49,11 +49,13 @@
+ static int trim_device(int i)
+ {
+ #ifndef ANDROID_WINDOWS_HOST
+-	unsigned long long range[2];
+ 	struct stat *stat_buf;
+ 	struct device_info *dev = c.devices + i;
+-	u_int64_t bytes = dev->total_sectors * dev->sector_size;
+ 	int fd = dev->fd;
++#if defined(WITH_BLKDISCARD) && defined(BLKDISCARD)
++	unsigned long long range[2];
++	u_int64_t bytes = dev->total_sectors * dev->sector_size;
++#endif
+ 
+ 	stat_buf = malloc(sizeof(struct stat));
+ 	if (stat_buf == NULL) {
+@@ -67,10 +69,10 @@ static int trim_device(int i)
+ 		return -1;
+ 	}
+ 
++#if defined(WITH_BLKDISCARD) && defined(BLKDISCARD)
+ 	range[0] = 0;
+ 	range[1] = bytes;
+ 
+-#if defined(WITH_BLKDISCARD) && defined(BLKDISCARD)
+ 	MSG(0, "Info: [%s] Discarding device\n", dev->path);
+ 	if (S_ISREG(stat_buf->st_mode)) {
+ #if defined(HAVE_FALLOCATE) && defined(FALLOC_FL_PUNCH_HOLE)
+-- 
+2.27.0
+
