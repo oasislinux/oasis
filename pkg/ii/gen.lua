@@ -1,6 +1,6 @@
 set('version', '1.8')
 cflags{
-	'-Wall',
+	'-Wall', '-Wno-format-truncation',
 	[[-D 'VERSION="$version"']],
 }
 
