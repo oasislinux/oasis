@@ -8,6 +8,8 @@ local emuls = {
 }
 
 cflags{
+	'-std=c99', '-Wall', '-Wno-return-local-addr',
+	'-D _POSIX_C_SOURCE=200809L',
 	'-D HAVE_CONFIG_H',
 	'-I $srcdir/include',
 	'-I $outdir/bfd',
