@@ -1,5 +1,9 @@
 set('version', '4.1')
 cflags{
+	'-std=c99', '-Wall', '-Wpedantic',
+	'-Wno-address-of-packed-member', '-Wno-format-overflow',
+	'-Wno-overflow', -- ioctl
+	'-D _POSIX_C_SOURCE=200809L',
 	'-include $dir/config.h',
 	'-I $dir',
 	'-I $srcdir/src/blkdev',
