@@ -3,7 +3,7 @@ cc('src/guids.S', {'$outdir/guids.bin', '$outdir/names.bin'}, {
 })
 
 cflags{
-	'-Wall', '-Wextra',
+	'-Wall', '-Wextra', '-Wno-address-of-packed-member',
 	'-D _GNU_SOURCE',
 	'-include $dir/compat.h',
 	'-I $outdir/include',
