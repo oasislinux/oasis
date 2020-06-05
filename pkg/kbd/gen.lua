@@ -1,4 +1,6 @@
 cflags{
+	'-Wall',
+	'-Wno-incompatible-pointer-types',  -- fixed in upcoming release
 	string.format([[-D 'DATADIR="%s/share/kbd"']], config.prefix),
 	'-I $dir',
 	'-I $srcdir',
