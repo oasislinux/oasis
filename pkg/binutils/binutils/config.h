@@ -1,4 +1,3 @@
-/* Check that config.h is #included before system headers
 #if defined(__GLIBC__) && !defined(__FreeBSD_kernel__) && !defined(__CONFIG_H__)
 #  error config.h must be #included before system headers
 #endif
