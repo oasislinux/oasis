@@ -1,0 +1,25 @@
+From 2a0a318dc7fbb930842cd2af44b9802e183b342e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 5 Jun 2020 01:49:20 -0700
+Subject: [PATCH] Fix use of uninitialized variable
+
+---
+ src/blind-from-video.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/blind-from-video.c b/src/blind-from-video.c
+index d34e2aa..b1a5430 100644
+--- a/src/blind-from-video.c
++++ b/src/blind-from-video.c
+@@ -231,7 +231,7 @@ main(int argc, char *argv[])
+ 	}
+ 
+ 	if (skip_length) {
+-		SPRINTF_HEAD_ZN(head, frames, width, height, "xyza", &headlen);
++		SPRINTF_HEAD_ZN(head, 0, width, height, "xyza", &headlen);
+ 		ewriteall(outfd, head, (size_t)headlen, outfile);
+ 	}
+ 
+-- 
+2.27.0
+
