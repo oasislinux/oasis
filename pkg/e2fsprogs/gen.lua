@@ -1,5 +1,8 @@
 set('version', '1.45.6')
 cflags{
+	'-std=c99', '-Wall',
+	'-Wno-address-of-packed-member', '-Wno-format-truncation', '-Wno-format-overflow',
+	'-Wno-pointer-sign', '-Wno-maybe-uninitialized',
 	'-D HAVE_CONFIG_H',
 	'-I $outdir',
 	'-I $outdir/include',

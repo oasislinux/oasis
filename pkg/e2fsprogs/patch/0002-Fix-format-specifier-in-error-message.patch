@@ -1,0 +1,25 @@
+From b346ce6f199dccc18caf26d25473f1841c51007d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 5 Jun 2020 01:27:30 -0700
+Subject: [PATCH] Fix format specifier in error message
+
+---
+ e2fsck/util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/e2fsck/util.c b/e2fsck/util.c
+index d98b8e47..b0e01cc9 100644
+--- a/e2fsck/util.c
++++ b/e2fsck/util.c
+@@ -126,7 +126,7 @@ void *e2fsck_allocate_memory(e2fsck_t ctx, unsigned long size,
+ 	printf("Allocating %u bytes for %s...\n", size, description);
+ #endif
+ 	if (ext2fs_get_memzero(size, &ret)) {
+-		sprintf(buf, "Can't allocate %u bytes for %s\n",
++		sprintf(buf, "Can't allocate %lu bytes for %s\n",
+ 			size, description);
+ 		fatal_error(ctx, buf);
+ 	}
+-- 
+2.27.0
+
