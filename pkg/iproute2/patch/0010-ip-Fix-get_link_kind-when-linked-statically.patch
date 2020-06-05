@@ -1,17 +1,25 @@
-From 0c041b19587034bd0e0265eeae90cc033c55e658 Mon Sep 17 00:00:00 2001
+From 770cec2780c804cb65a8e6e4ded1d5ea4627c8f3 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 16:03:55 -0700
 Subject: [PATCH] ip: Fix get_link_kind when linked statically
 
 ---
- ip/iplink.c | 95 ++++++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 86 insertions(+), 9 deletions(-)
+ ip/iplink.c | 96 +++++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 86 insertions(+), 10 deletions(-)
 
 diff --git a/ip/iplink.c b/ip/iplink.c
-index edb88b02..5f5d81e1 100644
+index edb88b02..76207e63 100644
 --- a/ip/iplink.c
 +++ b/ip/iplink.c
-@@ -152,21 +152,98 @@ struct link_util *get_link_kind(const char *id)
+@@ -143,7 +143,6 @@ static int on_off(const char *msg, const char *realval)
+ 	return -1;
+ }
+ 
+-static void *BODY;		/* cached dlopen(NULL) handle */
+ static struct link_util *linkutil_list;
+ 
+ struct link_util *get_link_kind(const char *id)
+@@ -152,21 +151,98 @@ struct link_util *get_link_kind(const char *id)
  	char buf[256];
  	struct link_util *l;
  
@@ -120,5 +128,5 @@ index edb88b02..5f5d81e1 100644
  	snprintf(buf, sizeof(buf), "%s_link_util", id);
  	l = dlsym(dlh, buf);
 -- 
-2.25.0
+2.27.0
 

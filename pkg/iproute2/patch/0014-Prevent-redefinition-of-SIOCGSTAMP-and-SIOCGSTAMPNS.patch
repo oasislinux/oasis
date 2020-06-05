@@ -1,0 +1,39 @@
+From d266a4f1050e083596723e25ce4ffb0be09ab162 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 4 Jun 2020 22:23:11 -0700
+Subject: [PATCH] Prevent redefinition of SIOCGSTAMP and SIOCGSTAMPNS
+
+---
+ include/uapi/linux/sockios.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/include/uapi/linux/sockios.h b/include/uapi/linux/sockios.h
+index 7d1bccbb..ef870187 100644
+--- a/include/uapi/linux/sockios.h
++++ b/include/uapi/linux/sockios.h
+@@ -39,14 +39,22 @@
+ 
+ #if __BITS_PER_LONG == 64 || (defined(__x86_64__) && defined(__ILP32__))
+ /* on 64-bit and x32, avoid the ?: operator */
++#ifndef SIOCGSTAMP
+ #define SIOCGSTAMP	SIOCGSTAMP_OLD
++#endif
++#ifndef SIOCGSTAMPNS
+ #define SIOCGSTAMPNS	SIOCGSTAMPNS_OLD
++#endif
+ #else
++#ifndef SIOCGSTAMP
+ #define SIOCGSTAMP	((sizeof(struct timeval))  == 8 ? \
+ 			 SIOCGSTAMP_OLD   : SIOCGSTAMP_NEW)
++#endif
++#ifndef SIOCGSTAMPNS
+ #define SIOCGSTAMPNS	((sizeof(struct timespec)) == 8 ? \
+ 			 SIOCGSTAMPNS_OLD : SIOCGSTAMPNS_NEW)
+ #endif
++#endif
+ 
+ /* Routing table calls. */
+ #define SIOCADDRT	0x890B		/* add routing table entry	*/
+-- 
+2.27.0
+
