@@ -1,5 +1,5 @@
 cflags{
-	'-Wall',
+	'-Wall', '-Wno-maybe-uninitialized',
 	'-D FT2_BUILD_LIBRARY',
 	'-D FT_CONFIG_OPTION_SYSTEM_ZLIB',
 	'-D HAVE_FCNTL_H',
