@@ -23,9 +23,6 @@ pkg.hdrs = {
 		'mixer_abst.h',
 		'output.h',
 		'pcm.h',
-		'pcm_external.h',
-		'pcm_extplug.h',
-		'pcm_ioplug.h',
 		'pcm_old.h',
 		'pcm_plugin.h',
 		'pcm_rate.h',
@@ -76,7 +73,6 @@ lib('libasound.a', [[src/(
 		pcm_null.c
 		pcm_empty.c
 		pcm_share.c
-		pcm_meter.c
 		pcm_hooks.c
 		pcm_lfloat.c
 		pcm_dmix.c
@@ -86,8 +82,6 @@ lib('libasound.a', [[src/(
 		pcm_asym.c
 		pcm_iec958.c
 		pcm_softvol.c
-		pcm_extplug.c
-		pcm_ioplug.c
 		pcm_mmap_emul.c
 	)
 	timer/(
