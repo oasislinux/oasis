@@ -1,5 +1,6 @@
 local arch = config.target.platform:match('[^-]*')
 cflags{
+	'-Wall', '-Wno-deprecated-declarations',
 	'-I $dir',
 	'-I $outdir/include',
 	'-I $srcdir/include',
