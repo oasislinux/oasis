@@ -1,5 +1,6 @@
 cflags{
 	'-std=c99', '-Wall', '-Wextra', '-Wpedantic',
+	'-Wno-format-overflow', '-Wno-format-truncation', '-Wno-maybe-uninitialized',
 	'-I $dir',
 }
 
