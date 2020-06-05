@@ -19,6 +19,7 @@ set('cflags_memops', '-fno-tree-loop-distribute-patterns')
 cflags{
 	'$cflags_auto',
 	'$cflags_c99fse',
+	'-Wno-return-local-addr',
 	'-fPIC',
 	'-D _XOPEN_SOURCE=700',
 	'-I $srcdir/arch/'..arch,
