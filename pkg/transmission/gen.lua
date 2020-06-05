@@ -34,16 +34,16 @@ end)
 
 cflags{
 	'-D __TRANSMISSION__',
-	'-I $builddir/pkg/bearssl/include',
-	'-I $builddir/pkg/curl/include',
-	'-I $builddir/pkg/libevent/include',
-	'-I $builddir/pkg/libutp/include',
-	'-I $builddir/pkg/zlib/include',
 	'-I $dir',
 	'-I $srcdir',
 	'-I $srcdir/third-party',
 	'-I $srcdir/third-party/libb64/include',
 	'-I $srcdir/third-party/libnatpmp',
+	'-isystem $builddir/pkg/bearssl/include',
+	'-isystem $builddir/pkg/curl/include',
+	'-isystem $builddir/pkg/libevent/include',
+	'-isystem $builddir/pkg/libutp/include',
+	'-isystem $builddir/pkg/zlib/include',
 	'-idirafter $basedir/pkg/openbsd/src/sys',
 	'-include config.h',
 }

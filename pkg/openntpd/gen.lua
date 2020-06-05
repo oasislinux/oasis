@@ -3,8 +3,8 @@ cflags{
 	'-include $dir/config.h',
 	'-I $srcdir/src',
 	'-I $srcdir/include',
-	'-I $basedir/pkg/openbsd/include',
-	'-I $builddir/pkg/libtls-bearssl/include',
+	'-isystem $basedir/pkg/openbsd/include',
+	'-isystem $builddir/pkg/libtls-bearssl/include',
 }
 
 pkg.deps = {

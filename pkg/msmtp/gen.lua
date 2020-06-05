@@ -2,7 +2,7 @@ cflags{
 	'-D HAVE_CONFIG_H',
 	string.format([[-D 'SYSCONFDIR="%s/etc"']], config.prefix),
 	'-I $dir',
-	'-I $builddir/pkg/libressl/include',
+	'-isystem $builddir/pkg/libressl/include',
 }
 
 exe('msmtp', [[

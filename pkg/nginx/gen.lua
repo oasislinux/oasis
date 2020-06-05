@@ -3,7 +3,7 @@ cflags{
 	'-I $srcdir/src/core',
 	'-I $srcdir/src/event',
 	'-I $srcdir/src/os/unix',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 local libs = {}
 pkg.deps = {'pkg/linux-headers/headers'}
@@ -14,7 +14,7 @@ for line in iterlines('modules.txt') do
 end
 
 if modules['openssl'] then
-	cflags{'-I $builddir/pkg/libressl/include'}
+	cflags{'-isystem $builddir/pkg/libressl/include'}
 	table.insert(libs, {
 		'$builddir/pkg/libressl/libssl.a.d',
 		'$builddir/pkg/libressl/libcrypto.a.d',
@@ -22,7 +22,7 @@ if modules['openssl'] then
 	table.insert(pkg.deps, 'pkg/libressl/headers')
 end
 if modules['regex'] then
-	cflags{'-I $builddir/pkg/pcre/include'}
+	cflags{'-isystem $builddir/pkg/pcre/include'}
 	table.insert(libs, '$builddir/pkg/pcre/libpcre.a')
 	table.insert(pkg.deps, 'pkg/pcre/headers')
 end
@@ -34,7 +34,7 @@ for line in iterlines('ngx_auto_config.h', 1) do
 	end
 end
 if zlib then
-	cflags{'-I $builddir/pkg/zlib/include'}
+	cflags{'-isystem $builddir/pkg/zlib/include'}
 	table.insert(libs, '$builddir/pkg/zlib/libz.a')
 	table.insert(pkg.deps, 'pkg/zlib/headers')
 end

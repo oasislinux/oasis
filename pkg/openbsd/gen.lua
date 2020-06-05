@@ -47,7 +47,7 @@ man{'usr.bin/fmt/fmt.1'}
 
 -- nc
 sub('nc.ninja', function()
-	cflags{'-I $builddir/pkg/libtls-bearssl/include'}
+	cflags{'-isystem $builddir/pkg/libtls-bearssl/include'}
 	exe('nc', [[
 		usr.bin/nc/(netcat.c atomicio.c socks.c)
 		$builddir/pkg/libtls-bearssl/libtls.a.d

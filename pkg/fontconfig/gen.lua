@@ -3,9 +3,9 @@ cflags{
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir',
-	'-I $builddir/pkg/freetype/include',
-	'-I $builddir/pkg/expat/include',
-	'-I $builddir/pkg/util-linux/include',
+	'-isystem $builddir/pkg/freetype/include',
+	'-isystem $builddir/pkg/expat/include',
+	'-isystem $builddir/pkg/util-linux/include',
 }
 
 pkg.hdrs = copy('$outdir/include/fontconfig', '$srcdir/fontconfig', {

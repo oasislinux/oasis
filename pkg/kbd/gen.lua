@@ -7,7 +7,7 @@ cflags{
 	'-I $srcdir/src/libkbdfile',
 	'-I $srcdir/src/libkeymap',
 	'-I $srcdir/src/libkeymap/keymap',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {

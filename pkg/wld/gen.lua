@@ -2,12 +2,12 @@ cflags{
 	'-D WITH_WAYLAND_SHM',
 	'-D WITH_WAYLAND_DRM',
 	'-I $outdir',
-	'-I $builddir/pkg/fontconfig/include',
-	'-I $builddir/pkg/freetype/include',
-	'-I $builddir/pkg/libdrm/include',
-	'-I $builddir/pkg/linux-headers/include',
-	'-I $builddir/pkg/pixman/include',
-	'-I $builddir/pkg/wayland/include',
+	'-isystem $builddir/pkg/fontconfig/include',
+	'-isystem $builddir/pkg/freetype/include',
+	'-isystem $builddir/pkg/libdrm/include',
+	'-isystem $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/pixman/include',
+	'-isystem $builddir/pkg/wayland/include',
 }
 
 pkg.hdrs = copy('$outdir/include/wld', '$srcdir', {'drm.h', 'pixman.h', 'wayland.h', 'wld.h'})
@@ -38,12 +38,12 @@ local libs = {
 }
 
 if config.video_drivers and config.video_drivers['intel'] then
-	cflags{'-D WITH_DRM_INTEL', '-I $basedir/pkg/libdrm/src/intel'}
+	cflags{'-D WITH_DRM_INTEL', '-isystem $basedir/pkg/libdrm/src/intel'}
 	table.insert(srcs, {'intel.c', 'intel/batch.c'})
 	table.insert(libs, 'libdrm/libdrm_intel.a.d')
 end
 if config.video_drivers and config.video_drivers['nouveau'] then
-	cflags{'-D WITH_DRM_NOUVEAU', '-I $basedir/pkg/libdrm/src/nouveau'}
+	cflags{'-D WITH_DRM_NOUVEAU', '-isystem $basedir/pkg/libdrm/src/nouveau'}
 	table.insert(srcs, 'nouveau.c')
 	table.insert(libs, 'libdrm/libdrm_nouveau.a')
 end

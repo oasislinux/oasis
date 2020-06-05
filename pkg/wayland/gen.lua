@@ -3,8 +3,8 @@ cflags{
 	'-I $outdir/include',
 	'-I $srcdir',
 	'-I $srcdir/src',
-	'-I $builddir/pkg/expat/include',
-	'-I $builddir/pkg/libffi/include',
+	'-isystem $builddir/pkg/expat/include',
+	'-isystem $builddir/pkg/libffi/include',
 }
 
 build('sed', '$outdir/include/wayland-version.h', '$srcdir/src/wayland-version.h.in', {

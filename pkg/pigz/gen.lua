@@ -1,6 +1,6 @@
 cflags{
 	'-Wall', '-Wextra', '-Wno-clobbered',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 exe('pigz', [[

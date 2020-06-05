@@ -1,7 +1,7 @@
 cflags{
 	'-I $dir',
-	'-I $basedir/pkg/openbsd/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $basedir/pkg/openbsd/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 lib('libmandoc.a', {

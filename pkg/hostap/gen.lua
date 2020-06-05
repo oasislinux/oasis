@@ -2,9 +2,9 @@ cflags{
 	'-include $dir/config.h',
 	'-I $srcdir/src/utils',
 	'-I $srcdir/src',
-	'-I $builddir/pkg/bearssl/include',
-	'-I $builddir/pkg/libnl/include',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/bearssl/include',
+	'-isystem $builddir/pkg/libnl/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {

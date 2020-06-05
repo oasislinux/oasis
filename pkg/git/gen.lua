@@ -3,8 +3,8 @@ cflags{
 	'-I $srcdir',
 	'-I $srcdir/compat/regex',
 	'-I $outdir',
-	'-I $builddir/pkg/curl/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/curl/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 pkg.deps = {

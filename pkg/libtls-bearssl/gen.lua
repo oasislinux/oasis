@@ -1,8 +1,8 @@
 cflags{
 	'-std=c11', '-Wall', '-Wpedantic',
 	'-D _DEFAULT_SOURCE',
-	'-I $builddir/pkg/bearssl/include',
 	'-I $srcdir',
+	'-isystem $builddir/pkg/bearssl/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir', {'tls.h'})

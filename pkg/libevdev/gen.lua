@@ -2,7 +2,7 @@ cflags{
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir/include',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.hdrs = copy('$outdir/include/libevdev', '$srcdir/libevdev', {'libevdev.h'})

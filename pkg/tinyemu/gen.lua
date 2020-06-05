@@ -5,9 +5,9 @@ cflags{
 	'-D CONFIG_SLIRP',
 	'-D CONFIG_X86EMU',
 	[[-D 'CONFIG_VERSION="2019-02-10"']],
-	'-I $builddir/pkg/bearssl/include',
-	'-I $builddir/pkg/curl/include',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/bearssl/include',
+	'-isystem $builddir/pkg/curl/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {

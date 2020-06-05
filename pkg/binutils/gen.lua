@@ -12,7 +12,7 @@ cflags{
 	'-I $srcdir/include',
 	'-I $outdir/bfd',
 	'-I $srcdir/bfd',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 pkg.deps = {

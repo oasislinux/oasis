@@ -4,7 +4,7 @@ cflags{
 	'-I $outdir',
 	'-I $srcdir/include',
 	'-I $srcdir/libuuid/src',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 build('cat', '$outdir/config.h', {

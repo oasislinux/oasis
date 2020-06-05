@@ -3,8 +3,8 @@ cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $dir',
 	'-I $srcdir/include',
-	'-I $builddir/pkg/linux-headers/include',
-	'-I $builddir/pkg/util-linux/include',
+	'-isystem $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/util-linux/include',
 }
 
 pkg.deps = {

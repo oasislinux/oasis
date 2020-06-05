@@ -1,8 +1,8 @@
 cflags{
 	'-std=c99', '-Wpedantic', '-Wall', '-Wextra',
 	'-D _DEFAULT_SOURCE',
-	'-I $builddir/pkg/libjpeg-turbo/include',
-	'-I $builddir/pkg/libpng/include',
+	'-isystem $builddir/pkg/libjpeg-turbo/include',
+	'-isystem $builddir/pkg/libpng/include',
 }
 
 cc('util.c')

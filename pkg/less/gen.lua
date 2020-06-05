@@ -1,6 +1,6 @@
 cflags{
 	'-I $dir',
-	'-I $builddir/pkg/ncurses/include',
+	'-isystem $builddir/pkg/ncurses/include',
 }
 
 cc('version.c')

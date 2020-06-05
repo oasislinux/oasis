@@ -3,7 +3,7 @@ cflags{
 	'-include $dir/config.h',
 	'-I $dir',
 	'-I $srcdir/src/blkdev',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {

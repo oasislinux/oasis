@@ -1,8 +1,8 @@
 cflags{
 	'-D _GNU_SOURCE',
 	'-I $dir',
-	'-I $builddir/pkg/pcre/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/pcre/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 pkg.deps = {

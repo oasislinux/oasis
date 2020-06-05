@@ -1,4 +1,4 @@
-cflags{'-I $builddir/pkg/wayland/include'}
+cflags{'-isystem $builddir/pkg/wayland/include'}
 
 waylandproto('stable/presentation-time/presentation-time.xml', {
 	client='include/presentation-time-client-protocol.h',

@@ -1,7 +1,7 @@
 cflags{
 	'-I $dir',
-	'-I $builddir/pkg/freetype/include',
-	'-I $builddir/pkg/fribidi/include',
+	'-isystem $builddir/pkg/freetype/include',
+	'-isystem $builddir/pkg/fribidi/include',
 }
 nasmflags{
 	'-D ARCH_X86_64=1',

@@ -1,10 +1,10 @@
 set('srcdir', '$basedir/pkg/openbsd/src/usr.sbin/acme-client')
 cflags{
 	'-D _GNU_SOURCE',  -- for memmem
-	'-I $basedir/pkg/openbsd/include',
-	'-I $builddir/pkg/libressl/include',
-	'-I $builddir/pkg/libtls-bearssl/include',
 	'-I $srcdir',
+	'-isystem $basedir/pkg/openbsd/include',
+	'-isystem $builddir/pkg/libressl/include',
+	'-isystem $builddir/pkg/libtls-bearssl/include',
 	'-idirafter $basedir/pkg/openbsd/src/sys',
 }
 

@@ -3,7 +3,7 @@ cflags{
 	'-I $dir',
 	'-I $dir/alsa',
 	'-I $srcdir/include',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 build('cat', '$outdir/config.h', {

@@ -5,7 +5,7 @@ cflags{
 
 cc('devd.c', 'pkg/linux-headers/headers', {cflags={
 	'$cflags',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 	string.format([[-D 'PREFIX="%s"']], config.prefix),
 }})
 

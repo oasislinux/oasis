@@ -2,7 +2,7 @@ cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $dir',
 	'-I $outdir/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 build('awk', '$outdir/pnglibconf.tf4', {

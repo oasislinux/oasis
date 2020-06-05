@@ -7,9 +7,9 @@ cflags{
 	'-I $outdir/include',
 	'-I $outdir/internal',
 	'-I $srcdir',
-	'-I $builddir/pkg/alsa-lib/include',
-	'-I $builddir/pkg/libtls-bearssl/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/alsa-lib/include',
+	'-isystem $builddir/pkg/libtls-bearssl/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 nasmflags{
 	'-i $srcdir/',

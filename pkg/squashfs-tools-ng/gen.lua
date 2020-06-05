@@ -40,7 +40,7 @@ local srcs = paths[[
 ]]
 
 if cfg.WITH_GZIP then
-	cflags{'-I $builddir/pkg/zlib/include'}
+	cflags{'-isystem $builddir/pkg/zlib/include'}
 	table.insert(pkg.deps, 'pkg/zlib/headers')
 	table.insert(srcs, {
 		'lib/sqfs/comp/gzip.c',
@@ -49,7 +49,7 @@ if cfg.WITH_GZIP then
 end
 
 if cfg.WITH_ZSTD then
-	cflags{'-I $builddir/pkg/zstd/include'}
+	cflags{'-isystem $builddir/pkg/zstd/include'}
 	table.insert(srcs, {
 		'lib/sqfs/comp/zstd.c',
 		'$builddir/pkg/zstd/libzstd.a',

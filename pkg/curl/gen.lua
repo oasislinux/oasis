@@ -9,9 +9,9 @@ cflags{
 	'-I $outdir/include',
 	'-I $srcdir/lib',
 	'-I $srcdir/src',
-	'-I $builddir/pkg/bearssl/include',
-	'-I $builddir/pkg/linux-headers/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/bearssl/include',
+	'-isystem $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 build('cat', '$outdir/curl_config.h', {

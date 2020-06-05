@@ -2,9 +2,9 @@ cflags{
 	'-std=c11', '-Wall',
 	'-I $dir',
 	'-I $srcdir/include',
-	'-I $builddir/pkg/libevdev/include',
-	'-I $builddir/pkg/linux-headers/include',
-	'-I $builddir/pkg/mtdev/include',
+	'-isystem $builddir/pkg/libevdev/include',
+	'-isystem $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/mtdev/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/src', {'libinput.h'})

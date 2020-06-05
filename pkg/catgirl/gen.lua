@@ -1,8 +1,8 @@
 cflags{
 	'-std=c11', '-Wall', '-Wextra', '-Wpedantic',
 	'-D _GNU_SOURCE',
-	'-I $builddir/pkg/libtls-bearssl/include',
-	'-I $builddir/pkg/ncurses/include',
+	'-isystem $builddir/pkg/libtls-bearssl/include',
+	'-isystem $builddir/pkg/ncurses/include',
 }
 
 pkg.deps = {

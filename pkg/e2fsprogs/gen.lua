@@ -6,8 +6,8 @@ cflags{
 	'-I $outdir/internal',
 	'-I $outdir/internal/support',
 	'-I $srcdir/lib',
-	'-I $builddir/pkg/linux-headers/include',
-	'-I $builddir/pkg/util-linux/include',
+	'-isystem $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/util-linux/include',
 }
 
 build('cat', '$outdir/config.h', {

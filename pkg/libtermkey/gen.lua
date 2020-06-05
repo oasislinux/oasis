@@ -1,6 +1,6 @@
 cflags{
 	'-std=c99', '-Wall',
-	'-I $builddir/pkg/ncurses/include',
+	'-isystem $builddir/pkg/ncurses/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir', {'termkey.h'})

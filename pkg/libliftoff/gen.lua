@@ -1,7 +1,7 @@
 cflags{
 	'-std=c99', '-Wall', '-Wpedantic',
-	'-I $builddir/pkg/libdrm/include',
 	'-I $srcdir/include',
+	'-isystem $builddir/pkg/libdrm/include',
 }
 
 pkg.deps = {

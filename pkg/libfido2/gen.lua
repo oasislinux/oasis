@@ -3,11 +3,11 @@ cflags{
 	'-include $outdir/config.h',
 	'-D _DEFAULT_SOURCE',
 	'-D _FIDO_INTERNAL',
-	'-I $builddir/pkg/bearssl/include',
-	'-I $builddir/pkg/libcbor/include',
-	'-I $builddir/pkg/linux-headers/include',
 	'-I $srcdir/src',
-	'-I $basedir/pkg/openbsd/include',
+	'-isystem $basedir/pkg/openbsd/include',
+	'-isystem $builddir/pkg/bearssl/include',
+	'-isystem $builddir/pkg/libcbor/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/src', {

@@ -8,7 +8,7 @@ cflags{
 	-- trashing the libinstaller/advconst.h symlink.
 	'-I $srcdir/com32/include/syslinux',
 
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {

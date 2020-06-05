@@ -1,7 +1,7 @@
 cflags{
 	'-std=c99', '-Wall', '-Wextra', '-Wpedantic',
 	'-I $srcdir/include',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 	'-include $dir/config.h',
 }
 

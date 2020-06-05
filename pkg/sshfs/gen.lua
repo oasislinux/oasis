@@ -1,7 +1,7 @@
 cflags{
 	'-D FUSE_USE_VERSION=31',
 	'-I $dir',
-	'-I $builddir/pkg/fuse/include',
+	'-isystem $builddir/pkg/fuse/include',
 }
 
 pkg.deps = {'pkg/fuse/headers'}

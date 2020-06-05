@@ -1,7 +1,7 @@
 cflags{
 	'-std=c11', '-Wall', '-Wextra', '-Wpedantic',
 	'-D _GNU_SOURCE',
-	'-I $builddir/pkg/libtls-bearssl/include',
+	'-isystem $builddir/pkg/libtls-bearssl/include',
 }
 
 pkg.deps = {'pkg/libtls-bearssl/headers'}

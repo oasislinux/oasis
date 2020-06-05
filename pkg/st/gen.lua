@@ -1,13 +1,13 @@
 cflags{
 	[[-D 'VERSION="0.7"']],
 	'-I $dir',
-	'-I $builddir/pkg/fontconfig/include',
-	'-I $builddir/pkg/libxkbcommon/include',
-	'-I $builddir/pkg/linux-headers/include',
-	'-I $builddir/pkg/pixman/include',
-	'-I $builddir/pkg/wayland/include',
-	'-I $builddir/pkg/wayland-protocols/include',
-	'-I $builddir/pkg/wld/include',
+	'-isystem $builddir/pkg/fontconfig/include',
+	'-isystem $builddir/pkg/libxkbcommon/include',
+	'-isystem $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/pixman/include',
+	'-isystem $builddir/pkg/wayland/include',
+	'-isystem $builddir/pkg/wayland-protocols/include',
+	'-isystem $builddir/pkg/wld/include',
 }
 
 pkg.deps = {

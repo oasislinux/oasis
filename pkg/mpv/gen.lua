@@ -14,10 +14,10 @@ cflags{
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir',
-	'-I $basedir/pkg/ffmpeg/src',
-	'-I $builddir/pkg/ffmpeg/include',
-	'-I $builddir/pkg/linux-headers/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $basedir/pkg/ffmpeg/src',
+	'-isystem $builddir/pkg/ffmpeg/include',
+	'-isystem $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 local libs = {
 	'ffmpeg/libavcodec.a.d',
@@ -124,29 +124,29 @@ end
 sources = table.keys(sources)
 
 if options['HAVE_ALSA'] then
-	cflags{'-I $builddir/pkg/alsa-lib/include'}
+	cflags{'-isystem $builddir/pkg/alsa-lib/include'}
 	table.insert(libs, 'alsa-lib/libasound.a')
 	table.insert(pkg.deps, 'pkg/alsa-lib/headers')
 end
 if options['HAVE_DRM'] then
-	cflags{'-I $builddir/pkg/libdrm/include'}
+	cflags{'-isystem $builddir/pkg/libdrm/include'}
 	table.insert(libs, 'libdrm/libdrm.a')
 	table.insert(pkg.deps, 'pkg/libdrm/headers')
 end
 if options['HAVE_LIBASS'] then
-	cflags{'-I $builddir/pkg/libass/include'}
+	cflags{'-isystem $builddir/pkg/libass/include'}
 	table.insert(libs, 'libass/libass.a.d')
 	table.insert(pkg.deps, 'pkg/libass/headers')
 end
 if options['HAVE_LUA'] then
-	cflags{'-I $builddir/pkg/lua/include'}
+	cflags{'-isystem $builddir/pkg/lua/include'}
 	table.insert(libs, 'lua/liblua.a')
 	table.insert(pkg.deps, 'pkg/lua/headers')
 end
 if options['HAVE_WAYLAND'] then
 	cflags{
-		'-I $builddir/pkg/libxkbcommon/include',
-		'-I $builddir/pkg/wayland/include',
+		'-isystem $builddir/pkg/libxkbcommon/include',
+		'-isystem $builddir/pkg/wayland/include',
 	}
 	table.insert(libs, {
 		'wayland/libwayland-client.a.d',

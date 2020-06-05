@@ -2,9 +2,9 @@ cflags{
 	[[-D 'EFIBOOTMGR_VERSION="17"']],
 	[[-D 'DEFAULT_LOADER="/linux"']],
 	'-I $srcdir/src/include',
-	'-I $builddir/pkg/efivar/include',
-	'-I $builddir/pkg/efivar/include/efivar',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/efivar/include',
+	'-isystem $builddir/pkg/efivar/include/efivar',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {

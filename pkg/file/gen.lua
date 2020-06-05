@@ -6,7 +6,7 @@ cflags{
 	'-D _GNU_SOURCE',
 	'-I $dir',
 	'-I $outdir/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 build('sed', '$outdir/include/magic.h', '$srcdir/src/magic.h.in', {

@@ -7,7 +7,7 @@ cflags{
 	'-I $srcdir/include',
 	'-I $srcdir/include/uapi',
 	'-I $srcdir/misc',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.deps = {

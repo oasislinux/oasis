@@ -5,7 +5,7 @@ cflags{
 	'-I $outdir/include',
 	'-I $srcdir/include',
 	'-I $srcdir/include/linux-private',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 build('sed', '$outdir/include/netlink/version.h', '$srcdir/include/netlink/version.h.in', {

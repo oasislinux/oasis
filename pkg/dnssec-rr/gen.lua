@@ -1,7 +1,7 @@
 cflags{
 	'-std=c11', '-Wall', '-Wpedantic',
 	'-D _POSIX_C_SOURCE=200809L',
-	'-I $builddir/pkg/bearssl/include',
+	'-isystem $builddir/pkg/bearssl/include',
 }
 
 pkg.deps = {

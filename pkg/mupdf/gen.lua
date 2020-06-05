@@ -17,10 +17,10 @@ cflags{
 	'-D SHARE_JPEG',
 	'-I $srcdir/include',
 	'-I $outdir',
-	'-I $builddir/pkg/freetype/include',
-	'-I $builddir/pkg/jbig2dec/include',
-	'-I $builddir/pkg/libjpeg-turbo/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/freetype/include',
+	'-isystem $builddir/pkg/jbig2dec/include',
+	'-isystem $builddir/pkg/libjpeg-turbo/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 sub('tools.ninja', function()
@@ -78,10 +78,10 @@ cc('platform/x11/wl_main.c', {
 	'pkg/wayland-protocols/headers',
 }, {cflags={
 	'$cflags',
-	'-I $builddir/pkg/libxkbcommon/include',
-	'-I $builddir/pkg/pixman/include',
-	'-I $builddir/pkg/wayland/include',
-	'-I $builddir/pkg/wayland-protocols/include',
+	'-isystem $builddir/pkg/libxkbcommon/include',
+	'-isystem $builddir/pkg/pixman/include',
+	'-isystem $builddir/pkg/wayland/include',
+	'-isystem $builddir/pkg/wayland-protocols/include',
 }})
 exe('bin/mupdf', [[
 	platform/x11/(pdfapp.c wl_main.c.o)

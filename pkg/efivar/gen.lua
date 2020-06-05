@@ -8,7 +8,7 @@ cflags{
 	'-include $dir/compat.h',
 	'-I $outdir/include',
 	'-I $srcdir/src/include',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 sub('tools.ninja', function()

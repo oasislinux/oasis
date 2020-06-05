@@ -1,6 +1,6 @@
 cflags{
 	'-I $srcdir/include',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/include', {

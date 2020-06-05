@@ -2,7 +2,7 @@ cflags{
 	'-D USE_HOSTCC',
 	'-I $dir',
 	'-I $srcdir/tools',
-	'-I $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 	'-idirafter $srcdir/include',
 	'-include $srcdir/include/compiler.h',
 }

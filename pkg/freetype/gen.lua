@@ -8,7 +8,7 @@ cflags{
 	'-I $srcdir/builds/unix',
 	'-I $srcdir/include/freetype/config',
 	'-I $srcdir/include',
-	'-I $builddir/pkg/zlib/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/include', paths[[

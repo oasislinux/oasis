@@ -1,7 +1,7 @@
 cflags{
 	'-include $dir/config.h',
 	'-I $srcdir',
-	'-I $builddir/pkg/bzip2/include',
+	'-isystem $builddir/pkg/bzip2/include',
 }
 
 pkg.deps = {'pkg/bzip2/headers'}

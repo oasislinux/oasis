@@ -1,7 +1,7 @@
 cflags{
 	'-std=c99',
 	'-D NDEBUG',
-	'-I $builddir/pkg/lua/include',
+	'-isystem $builddir/pkg/lua/include',
 }
 
 pkg.deps = {'pkg/lua/headers'}
