@@ -1,5 +1,6 @@
 cflags{
 	'-std=c99', '-Wall', '-Wextra', '-Wpedantic',
+	'-Wno-overflow',  -- ioctl opcode conversion
 	'-I $srcdir/include',
 	'-isystem $builddir/pkg/linux-headers/include',
 	'-include $dir/config.h',
