@@ -1,4 +1,4 @@
-From 5dd6a34aacb8c4248823f708f68201ba06ec6c25 Mon Sep 17 00:00:00 2001
+From c95443d87b64650823e41016c26b1f5a3b38e7b3 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -293,7 +293,7 @@ index dd9466e5f13..d1f698c7679 100644
  #include <stdio.h>
 diff --git a/usr.bin/doas/persist.c b/usr.bin/doas/persist.c
 new file mode 100644
-index 00000000000..41fa747458b
+index 00000000000..4ad1bf1efbf
 --- /dev/null
 +++ b/usr.bin/doas/persist.c
 @@ -0,0 +1,133 @@
@@ -401,7 +401,7 @@ index 00000000000..41fa747458b
 +		*valid = clock_gettime(CLOCK_BOOTTIME, &ts) == 0 &&
 +		         fstat(fd, &st) == 0 &&
 +		         (ts.tv_sec < st.st_mtim.tv_sec ||
-+		          ts.tv_sec == st.st_mtim.tv_sec && ts.tv_nsec < st.st_mtim.tv_nsec) &&
++		          (ts.tv_sec == st.st_mtim.tv_sec && ts.tv_nsec < st.st_mtim.tv_nsec)) &&
 +		         st.st_mtime - ts.tv_sec <= PERSIST_TIMEOUT;
 +	}
 +	return fd;
@@ -431,5 +431,5 @@ index 00000000000..41fa747458b
 +	return 0;
 +}
 -- 
-2.26.2
+2.27.0
 

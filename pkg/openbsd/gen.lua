@@ -1,4 +1,5 @@
 cflags{
+	'-Wall', '-Wno-pointer-sign', '-Wno-maybe-uninitialized', '-Wno-attributes',
 	[[-D 'DEF_WEAK(n)=_Static_assert(1, "")']],
 	'-I $dir/include',
 	'-idirafter $srcdir/include',

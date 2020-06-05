@@ -1,0 +1,25 @@
+From dbec208559b72489671f119e695a4c340a288803 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 4 Jun 2020 21:36:24 -0700
+Subject: [PATCH] rsync: Fix some incorrect format specifiers
+
+---
+ usr.bin/rsync/uploader.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/usr.bin/rsync/uploader.c b/usr.bin/rsync/uploader.c
+index 38d5d24fcc7..bf82896d221 100644
+--- a/usr.bin/rsync/uploader.c
++++ b/usr.bin/rsync/uploader.c
+@@ -945,7 +945,7 @@ rsync_uploader(struct upload *u, int *fileinfd,
+ 			init_blk(&blk.blks[i], &blk, offs, i, mbuf, sess);
+ 			offs += blk.len;
+ 			LOG3(
+-			    "i=%ld, offs=%lld, msz=%ld, blk.len=%lu, blk.rem=%lu",
++			    "i=%zu, offs=%td, msz=%zd, blk.len=%zu, blk.rem=%zu",
+ 			    i, offs, msz, blk.len, blk.rem);
+ 			i++;
+ 		} while (i < blk.blksz);
+-- 
+2.27.0
+

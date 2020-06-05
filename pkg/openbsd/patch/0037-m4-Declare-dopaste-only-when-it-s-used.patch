@@ -1,0 +1,26 @@
+From 666a050e706230ba5b0316a316100d8c7e86c93c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 4 Jun 2020 21:42:18 -0700
+Subject: [PATCH] m4: Declare dopaste only when it's used
+
+---
+ usr.bin/m4/eval.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/usr.bin/m4/eval.c b/usr.bin/m4/eval.c
+index d226505cab3..fe9fbde3d9c 100644
+--- a/usr.bin/m4/eval.c
++++ b/usr.bin/m4/eval.c
+@@ -61,7 +61,9 @@ static void	dodump(const char *[], int);
+ static void	dotrace(const char *[], int, int);
+ static void	doifelse(const char *[], int);
+ static int	doincl(const char *);
++#ifdef EXTENDED
+ static int	dopaste(const char *);
++#endif
+ static void	dochq(const char *[], int);
+ static void	dochc(const char *[], int);
+ static void	dom4wrap(const char *);
+-- 
+2.27.0
+

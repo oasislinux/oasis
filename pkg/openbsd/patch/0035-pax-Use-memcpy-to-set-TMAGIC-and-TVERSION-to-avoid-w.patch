@@ -1,0 +1,27 @@
+From b6eaf185d9a9c39e31c638ac162ec5f5a364e94d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 4 Jun 2020 21:44:26 -0700
+Subject: [PATCH] pax: Use memcpy to set TMAGIC and TVERSION to avoid warning
+
+---
+ bin/pax/tar.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/bin/pax/tar.c b/bin/pax/tar.c
+index 8c9e4baea9c..c62705b2199 100644
+--- a/bin/pax/tar.c
++++ b/bin/pax/tar.c
+@@ -1030,8 +1030,8 @@ ustar_wr(ARCHD *arcn)
+ 		break;
+ 	}
+ 
+-	strncpy(hd->magic, TMAGIC, TMAGLEN);
+-	strncpy(hd->version, TVERSION, TVERSLEN);
++	memcpy(hd->magic, TMAGIC, TMAGLEN);
++	memcpy(hd->version, TVERSION, TVERSLEN);
+ 
+ 	/*
+ 	 * set the remaining fields. Some versions want all 16 bits of mode
+-- 
+2.27.0
+
