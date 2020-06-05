@@ -1,4 +1,4 @@
-cflags{'-Wall', '-Winline'}
+cflags{'-Wall'}
 
 pkg.hdrs = copy('$outdir/include', '$srcdir', {'bzlib.h'})
 
