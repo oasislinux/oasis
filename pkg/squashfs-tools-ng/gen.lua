@@ -1,5 +1,6 @@
 cflags{
 	'-std=c99', '-Wall', '-Wpedantic',
+	'-Wno-maybe-uninitialized',
 	'-D _XOPEN_SOURCE=700',
 	'-I $srcdir',
 	'-I $srcdir/include',
