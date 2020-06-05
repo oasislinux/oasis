@@ -1,4 +1,5 @@
 cflags{
+	'-Wall', '-Wno-address-of-packed-member',
 	'-I $dir',
 	'-I $outdir',
 	'-I $srcdir/libinstaller',
