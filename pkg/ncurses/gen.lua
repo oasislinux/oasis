@@ -1,4 +1,6 @@
 set('common_cflags', {
+	'-std=c99', '-Wall', '-Wextra', '-Wpedantic',
+	'-D _XOPEN_SOURCE=700',
 	'-D NDEBUG',
 	'-I $dir',
 	'-I $outdir',

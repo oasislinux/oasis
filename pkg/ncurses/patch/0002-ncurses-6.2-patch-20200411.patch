@@ -1,0 +1,35 @@
+From 5593001810366798e889501144e38af5367b6511 Mon Sep 17 00:00:00 2001
+From: "Thomas E. Dickey" <dickey@invisible-island.net>
+Date: Sun, 12 Apr 2020 01:22:49 +0000
+Subject: [PATCH] ncurses 6.2 - patch 20200411
+
++ add a trailing null for magic-string in putwin, flagged by gcc 10
+---
+ ncurses/base/lib_screen.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ncurses/base/lib_screen.c b/ncurses/base/lib_screen.c
+index 164356dc..fd22cd51 100644
+--- a/ncurses/base/lib_screen.c
++++ b/ncurses/base/lib_screen.c
+@@ -42,7 +42,7 @@
+ #define CUR SP_TERMTYPE
+ #endif
+ 
+-MODULE_ID("$Id: lib_screen.c,v 1.97 2020/02/02 23:34:34 tom Exp $")
++MODULE_ID("$Id: lib_screen.c,v 1.98 2020/04/06 00:33:50 tom Exp $")
+ 
+ #define MAX_SIZE 0x3fff		/* 16k is big enough for a window or pad */
+ 
+@@ -67,7 +67,7 @@ MODULE_ID("$Id: lib_screen.c,v 1.97 2020/02/02 23:34:34 tom Exp $")
+  * format.  It happens to be unused in the file 5.22 database (2015/03/07).
+  */
+ static const char my_magic[] =
+-{'\210', '\210', '\210', '\210'};
++{'\210', '\210', '\210', '\210', 0};
+ 
+ #if NCURSES_EXT_PUTWIN
+ typedef enum {
+-- 
+2.27.0
+
