@@ -52,10 +52,10 @@ rule muse
   command = muse $museflags -o $out $in
 
 rule probe
-  command = sh $basedir/scripts/probe.sh $var $cc $cflags $ldflags -o /dev/null -x c $in >$out
+  command = sh $basedir/scripts/probe.sh $var $out $cc $cflags $ldflags -o /dev/null -x c $in
 
 rule probesize
-  command = sh $basedir/scripts/probe-size.sh $var $cc $cflags -c -o /dev/null -x c $in >$out
+  command = sh $basedir/scripts/probe-size.sh $var $out $cc $cflags -c -o /dev/null -x c $in
 
 # misc tools
 rule touch
