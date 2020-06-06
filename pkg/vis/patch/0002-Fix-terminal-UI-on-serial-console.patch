@@ -1,0 +1,34 @@
+From c2889016484ea3c36ed04228c3ce0df549260273 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marc=20Andr=C3=A9=20Tanner?= <mat@brain-dump.org>
+Date: Sat, 6 Jun 2020 13:20:43 -0700
+Subject: [PATCH] Fix terminal UI on serial console
+
+---
+ ui-terminal.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/ui-terminal.c b/ui-terminal.c
+index c862f63..9cdfd7e 100644
+--- a/ui-terminal.c
++++ b/ui-terminal.c
+@@ -371,13 +371,13 @@ static void ui_resize(Ui *ui) {
+ 	int width = 80, height = 24;
+ 
+ 	if (ioctl(STDERR_FILENO, TIOCGWINSZ, &ws) != -1) {
+-		width = ws.ws_col;
+-		height = ws.ws_row;
++		if (ws.ws_col > 0)
++			width = ws.ws_col;
++		if (ws.ws_row > 0)
++			height = ws.ws_row;
+ 	}
+ 
+-	width = MAX(width, 1);
+ 	width = MIN(width, MAX_WIDTH);
+-	height = MAX(height, 1);
+ 	height = MIN(height, MAX_HEIGHT);
+ 	if (!ui_term_backend_resize(tui, width, height))
+ 		return;
+-- 
+2.27.0
+
