@@ -1,4 +1,4 @@
-set('version', 'v0.5')
+set('version', 'v0.6')
 cflags{
 	'-std=c99',
 	'-D CONFIG_HELP=1',
@@ -9,7 +9,6 @@ cflags{
 	'-D CONFIG_SELINUX=0',
 	'-D CONFIG_ACL=0',
 	'-D HAVE_MEMRCHR=1',
-	'-D _POSIX_C_SOURCE=200809L',
 	'-D _XOPEN_SOURCE=700',
 	[[-D 'VERSION="$version"']],
 	string.format([[-D 'VIS_PATH="%s/share/vis"']], config.prefix),
@@ -34,12 +33,10 @@ exe('vis', [[
 	sam.c text.c text-motions.c text-objects.c text-util.c
 	ui-terminal.c view.c vis.c vis-lua.c vis-modes.c vis-motions.c
 	vis-operators.c vis-registers.c vis-marks.c vis-prompt.c vis-text-objects.c text-regex.c
-	$builddir/pkg/(
-		libtermkey/libtermkey.a.d
-		lpeg/liblpeg.a
-		lua/liblua.a
-		ncurses/libncurses.a
-	)
+	$builddir/pkg/libtermkey/libtermkey.a.d
+	$builddir/pkg/lpeg/liblpeg.a
+	$builddir/pkg/lua/liblua.a
+	$builddir/pkg/ncurses/libncurses.a
 ]])
 file('bin/vis', '755', '$outdir/vis')
 
