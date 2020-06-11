@@ -1,4 +1,4 @@
-From c8474cfa6b657af057b861d756741cb003547b69 Mon Sep 17 00:00:00 2001
+From 1b477b68254face3b4e5d907a26210966bf8f27e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 18:15:11 -0700
 Subject: [PATCH] Prevent empty top-level declarations
@@ -83,10 +83,10 @@ index bba9a9d4..26fde696 100644
  #endif
  
 diff --git a/src/conf.c b/src/conf.c
-index 50d04034..91f66fb7 100644
+index 8518f90c..a97e2eb7 100644
 --- a/src/conf.c
 +++ b/src/conf.c
-@@ -3915,7 +3915,7 @@ int snd_config_hook_load(snd_config_t *root, snd_config_t *config, snd_config_t
+@@ -3965,7 +3965,7 @@ int snd_config_hook_load(snd_config_t *root, snd_config_t *config, snd_config_t
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -95,7 +95,7 @@ index 50d04034..91f66fb7 100644
  #endif
  
  #ifndef DOC_HIDDEN
-@@ -3983,7 +3983,7 @@ int snd_config_hook_load_for_all_cards(snd_config_t *root, snd_config_t *config,
+@@ -4033,7 +4033,7 @@ int snd_config_hook_load_for_all_cards(snd_config_t *root, snd_config_t *config,
  	return 0;
  }
  #ifndef DOC_HIDDEN
@@ -253,7 +253,7 @@ index eb8218c1..b6e0753b 100644
  
  #ifndef DOC_HIDDEN
 diff --git a/src/control/control.c b/src/control/control.c
-index 27f42135..12f1eff2 100644
+index 19528ae3..30b36b95 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
 @@ -2374,7 +2374,7 @@ int snd_ctl_elem_info_is_indirect(const snd_ctl_elem_info_t *obj)
@@ -304,10 +304,10 @@ index 40d42643..f59c33f5 100644
 -SND_DLSYM_BUILD_VERSION(_snd_ctl_shm_open, SND_CONTROL_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_ctl_shm_open, SND_CONTROL_DLSYM_VERSION)
 diff --git a/src/dlmisc.c b/src/dlmisc.c
-index 8c8f3ff7..74ac16be 100644
+index 5d672146..b5ff5025 100644
 --- a/src/dlmisc.c
 +++ b/src/dlmisc.c
-@@ -116,8 +116,8 @@ void *INTERNAL(snd_dlopen_old)(const char *name, int mode)
+@@ -171,8 +171,8 @@ void *INTERNAL(snd_dlopen_old)(const char *name, int mode)
  }
  #endif
  
@@ -348,10 +348,10 @@ index d909a11d..890d2a34 100644
 -link_warning(snd_names_list_free, "Warning: snd_names_list_free is deprecated, use snd_device_name_free_hint");
 +link_warning(snd_names_list_free, "Warning: snd_names_list_free is deprecated, use snd_device_name_free_hint")
 diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 1064044c..557e51fb 100644
+index 06a48f4c..77f0547d 100644
 --- a/src/pcm/pcm.c
 +++ b/src/pcm/pcm.c
-@@ -1508,7 +1508,7 @@ snd_pcm_sframes_t snd_pcm_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
+@@ -1526,7 +1526,7 @@ snd_pcm_sframes_t snd_pcm_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
  	snd_pcm_unlock(pcm->fast_op_arg);
  	return result;
  }
@@ -360,7 +360,7 @@ index 1064044c..557e51fb 100644
  
  /**
   * \brief Write interleaved frames to a PCM
-@@ -2177,7 +2177,7 @@ const char *snd_pcm_start_mode_name(snd_pcm_start_t mode)
+@@ -2195,7 +2195,7 @@ const char *snd_pcm_start_mode_name(snd_pcm_start_t mode)
  }
  
  #ifndef DOC_HIDDEN
@@ -369,7 +369,7 @@ index 1064044c..557e51fb 100644
  #endif
  
  /**
-@@ -2193,7 +2193,7 @@ const char *snd_pcm_xrun_mode_name(snd_pcm_xrun_t mode)
+@@ -2211,7 +2211,7 @@ const char *snd_pcm_xrun_mode_name(snd_pcm_xrun_t mode)
  }
  
  #ifndef DOC_HIDDEN
@@ -378,7 +378,7 @@ index 1064044c..557e51fb 100644
  #endif
  
  /**
-@@ -2247,7 +2247,7 @@ const char *snd_pcm_type_name(snd_pcm_type_t type)
+@@ -2265,7 +2265,7 @@ const char *snd_pcm_type_name(snd_pcm_type_t type)
  		return NULL;
  	return snd_pcm_type_names[type];
  }
@@ -387,7 +387,7 @@ index 1064044c..557e51fb 100644
  
  /**
   * \brief Dump current hardware setup for PCM
-@@ -6270,7 +6270,7 @@ int snd_pcm_sw_params_set_start_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params
+@@ -6289,7 +6289,7 @@ int snd_pcm_sw_params_set_start_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params
  }
  
  #ifndef DOC_HIDDEN
@@ -396,7 +396,7 @@ index 1064044c..557e51fb 100644
  #endif
  
  /**
-@@ -6286,7 +6286,7 @@ snd_pcm_start_t snd_pcm_sw_params_get_start_mode(const snd_pcm_sw_params_t *para
+@@ -6305,7 +6305,7 @@ snd_pcm_start_t snd_pcm_sw_params_get_start_mode(const snd_pcm_sw_params_t *para
  }
  
  #ifndef DOC_HIDDEN
@@ -405,7 +405,7 @@ index 1064044c..557e51fb 100644
  #endif
  
  /**
-@@ -6318,7 +6318,7 @@ int snd_pcm_sw_params_set_xrun_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params,
+@@ -6337,7 +6337,7 @@ int snd_pcm_sw_params_set_xrun_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params,
  }
  
  #ifndef DOC_HIDDEN
@@ -414,7 +414,7 @@ index 1064044c..557e51fb 100644
  #endif
  
  /**
-@@ -6334,7 +6334,7 @@ snd_pcm_xrun_t snd_pcm_sw_params_get_xrun_mode(const snd_pcm_sw_params_t *params
+@@ -6353,7 +6353,7 @@ snd_pcm_xrun_t snd_pcm_sw_params_get_xrun_mode(const snd_pcm_sw_params_t *params
  }
  
  #ifndef DOC_HIDDEN
@@ -423,7 +423,7 @@ index 1064044c..557e51fb 100644
  #endif
  
  /**
-@@ -6827,7 +6827,7 @@ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimest
+@@ -6846,7 +6846,7 @@ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimest
  	assert(obj && ptr);
  	*ptr = obj->trigger_tstamp;
  }
@@ -432,7 +432,7 @@ index 1064044c..557e51fb 100644
  
  /** 
   * \brief Get "now" timestamp from a PCM status container
-@@ -6855,7 +6855,7 @@ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *p
+@@ -6874,7 +6874,7 @@ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *p
  	assert(obj && ptr);
  	*ptr = obj->tstamp;
  }
@@ -441,7 +441,7 @@ index 1064044c..557e51fb 100644
  
  /** 
   * \brief Get "now" hi-res audio timestamp from a PCM status container
-@@ -7538,8 +7538,8 @@ snd_pcm_uframes_t _snd_pcm_boundary(snd_pcm_t *pcm)
+@@ -7557,8 +7557,8 @@ snd_pcm_uframes_t _snd_pcm_boundary(snd_pcm_t *pcm)
  }
  
  #ifndef DOC_HIDDEN
@@ -452,7 +452,7 @@ index 1064044c..557e51fb 100644
  #endif
  
  static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
-@@ -7804,13 +7804,13 @@ void snd_pcm_unlink_appl_ptr(snd_pcm_t *pcm, snd_pcm_t *slave)
+@@ -7823,13 +7823,13 @@ void snd_pcm_unlink_appl_ptr(snd_pcm_t *pcm, snd_pcm_t *slave)
  #ifdef USE_VERSIONED_SYMBOLS
  
  #define OBSOLETE1(name, what, new) \
@@ -514,10 +514,10 @@ index 4c099acd..f7769f22 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_copy_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index d533f40c..b29e295d 100644
+index 843fa316..ad39c31d 100644
 --- a/src/pcm/pcm_dmix.c
 +++ b/src/pcm/pcm_dmix.c
-@@ -1428,5 +1428,5 @@ int _snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
+@@ -1432,5 +1432,5 @@ int _snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -525,10 +525,10 @@ index d533f40c..b29e295d 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_dmix_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 59448cfb..3f804c02 100644
+index 6a99452b..efd1c25a 100644
 --- a/src/pcm/pcm_dshare.c
 +++ b/src/pcm/pcm_dshare.c
-@@ -1045,5 +1045,5 @@ int _snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
+@@ -1049,5 +1049,5 @@ int _snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -536,10 +536,10 @@ index 59448cfb..3f804c02 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_dshare_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index 24f472c7..a8720bfd 100644
+index c64df381..320325be 100644
 --- a/src/pcm/pcm_dsnoop.c
 +++ b/src/pcm/pcm_dsnoop.c
-@@ -894,5 +894,5 @@ int _snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
+@@ -898,5 +898,5 @@ int _snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -716,10 +716,10 @@ index abf6f1ab..ce48cc45 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_plug_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index fdcaa8de..0e82a9ed 100644
+index 5bf7dbb9..11c3bb7c 100644
 --- a/src/pcm/pcm_rate.c
 +++ b/src/pcm/pcm_rate.c
-@@ -1595,5 +1595,5 @@ int _snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+@@ -1613,5 +1613,5 @@ int _snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -727,10 +727,10 @@ index fdcaa8de..0e82a9ed 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_rate_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
-index bbcc6118..325eee62 100644
+index d3e5f3ff..975029d6 100644
 --- a/src/pcm/pcm_route.c
 +++ b/src/pcm/pcm_route.c
-@@ -1393,5 +1393,5 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
+@@ -1430,5 +1430,5 @@ int _snd_pcm_route_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -900,5 +900,5 @@ index dad228c8..7fc7cf4d 100644
 -SND_DLSYM_BUILD_VERSION(_snd_timer_query_hw_open, SND_TIMER_QUERY_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_timer_query_hw_open, SND_TIMER_QUERY_DLSYM_VERSION)
 -- 
-2.25.0
+2.27.0
 

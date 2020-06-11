@@ -1,4 +1,4 @@
-From 9e429a5ce747070338395bebffe575083fa94aa9 Mon Sep 17 00:00:00 2001
+From 6c5ae6c275df9cb44475d69b140e3e822907824c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 31 May 2019 17:47:08 -0700
 Subject: [PATCH] Use switch statements instead of labels as values
@@ -349,7 +349,7 @@ index 58f741b6..1bab7edd 100644
  			src += src_step;
  			dst += dst_step;
 diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index 0e82a9ed..f15cea81 100644
+index 11c3bb7c..383d7e0e 100644
 --- a/src/pcm/pcm_rate.c
 +++ b/src/pcm/pcm_rate.c
 @@ -431,12 +431,6 @@ static void convert_to_s16(snd_pcm_rate_t *rate, int16_t *buf,
@@ -409,7 +409,7 @@ index 0e82a9ed..f15cea81 100644
  		}
  	}
 diff --git a/src/pcm/pcm_rate_linear.c b/src/pcm/pcm_rate_linear.c
-index 7fe943d2..2789136e 100644
+index 53ce902d..6e74fa71 100644
 --- a/src/pcm/pcm_rate_linear.c
 +++ b/src/pcm/pcm_rate_linear.c
 @@ -71,13 +71,6 @@ static void linear_expand(struct rate_linear *rate,
@@ -494,10 +494,10 @@ index 7fe943d2..2789136e 100644
  				dst_frames1++;
  				if (CHECK_SANITY(dst_frames1 > dst_frames)) {
 diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
-index 325eee62..b93b8bd9 100644
+index 975029d6..460676f5 100644
 --- a/src/pcm/pcm_route.c
 +++ b/src/pcm/pcm_route.c
-@@ -131,10 +131,6 @@ static void snd_pcm_route_convert1_one(const snd_pcm_channel_area_t *dst_area,
+@@ -132,10 +132,6 @@ static void snd_pcm_route_convert1_one(const snd_pcm_channel_area_t *dst_area,
  				       const snd_pcm_route_ttable_dst_t* ttable,
  				       const snd_pcm_route_params_t *params)
  {
@@ -508,7 +508,7 @@ index 325eee62..b93b8bd9 100644
  	const snd_pcm_channel_area_t *src_area = 0;
  	unsigned int srcidx;
  	const char *src;
-@@ -156,17 +152,12 @@ static void snd_pcm_route_convert1_one(const snd_pcm_channel_area_t *dst_area,
+@@ -157,17 +153,12 @@ static void snd_pcm_route_convert1_one(const snd_pcm_channel_area_t *dst_area,
  		return;
  	}
  	
@@ -527,7 +527,7 @@ index 325eee62..b93b8bd9 100644
  		src += src_step;
  		dst += dst_step;
  	}
-@@ -181,10 +172,6 @@ static void snd_pcm_route_convert1_one_getput(const snd_pcm_channel_area_t *dst_
+@@ -182,10 +173,6 @@ static void snd_pcm_route_convert1_one_getput(const snd_pcm_channel_area_t *dst_
  					      const snd_pcm_route_ttable_dst_t* ttable,
  					      const snd_pcm_route_params_t *params)
  {
@@ -538,7 +538,7 @@ index 325eee62..b93b8bd9 100644
  	const snd_pcm_channel_area_t *src_area = 0;
  	unsigned int srcidx;
  	const char *src;
-@@ -207,18 +194,13 @@ static void snd_pcm_route_convert1_one_getput(const snd_pcm_channel_area_t *dst_
+@@ -208,18 +195,13 @@ static void snd_pcm_route_convert1_one_getput(const snd_pcm_channel_area_t *dst_
  		return;
  	}
  	
@@ -559,7 +559,7 @@ index 325eee62..b93b8bd9 100644
  		src += src_step;
  		dst += dst_step;
  	}
-@@ -233,34 +215,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
+@@ -234,34 +216,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
  					const snd_pcm_route_ttable_dst_t* ttable,
  					const snd_pcm_route_params_t *params)
  {
@@ -594,7 +594,7 @@ index 325eee62..b93b8bd9 100644
  	int nsrcs = ttable->nsrcs;
  	char *dst;
  	int dst_step;
-@@ -301,11 +255,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
+@@ -302,11 +256,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
  		return;
  	}
  
@@ -606,7 +606,7 @@ index 325eee62..b93b8bd9 100644
  	dst = snd_pcm_channel_area_addr(dst_area, dst_offset);
  	dst_step = snd_pcm_channel_area_step(dst_area);
  
-@@ -314,83 +263,71 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
+@@ -315,83 +264,71 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
  		sum_t sum;
  
  		/* Zero sum */
@@ -1704,5 +1704,5 @@ index 6392073c..ab9bf42e 100644
  #undef as_u8
  #undef as_u16
 -- 
-2.22.0
+2.27.0
 
