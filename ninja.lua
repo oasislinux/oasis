@@ -144,7 +144,7 @@ end
 
 function iterlines(file, raw)
 	table.insert(pkg.inputs.gen, '$dir/'..file)
-	file = string.format('%s/%s/%s', basedir, pkg.dir, file)
+	file = string.format('%s/%s/%s', basedir, pkg.gendir, file)
 	if raw then
 		return io.lines(file)
 	end
@@ -157,7 +157,7 @@ end
 
 function load(file)
 	table.insert(pkg.inputs.gen, '$dir/'..file)
-	return dofile(string.format('%s/%s/%s', basedir, pkg.dir, file))
+	return dofile(string.format('%s/%s/%s', basedir, pkg.gendir, file))
 end
 
 --
@@ -226,7 +226,7 @@ end
 
 function sub(name, fn)
 	local old = io.output()
-	io.output(pkg.dir..'/'..name)
+	io.output(pkg.gendir..'/'..name)
 	fn()
 	io.output(old)
 	subninja(name)
@@ -431,7 +431,7 @@ local function fs(name, path)
 end
 
 function file(path, mode, src)
-	if pkg.dir:hasprefix('pkg/') and not fs(pkg.name, path) then
+	if pkg.gendir:hasprefix('pkg/') and not fs(pkg.name, path) then
 		return
 	end
 	local out = '$builddir/root.hash/'..path
@@ -447,7 +447,7 @@ function file(path, mode, src)
 end
 
 function dir(path, mode)
-	if pkg.dir:hasprefix('pkg/') and not fs(pkg.name, path) then
+	if pkg.gendir:hasprefix('pkg/') and not fs(pkg.name, path) then
 		return
 	end
 	mode = tonumber(mode, 8)
@@ -455,7 +455,7 @@ function dir(path, mode)
 end
 
 function sym(path, target)
-	if pkg.dir:hasprefix('pkg/') and not fs(pkg.name, path) then
+	if pkg.gendir:hasprefix('pkg/') and not fs(pkg.name, path) then
 		return
 	end
 	local out = '$builddir/root.hash/'..path

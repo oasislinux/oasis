@@ -29,11 +29,11 @@ function subgen(dir)
 	table.insert(pkg.inputs.ninja, '$gendir/'..dir..'/ninja')
 	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
 	table.insert(pkg.inputs.perms, '$outdir/'..dir..'/root.perms')
-	local cmd = string.format('test -f %s/%s/local.ninja', pkg.dir, dir)
+	local cmd = string.format('test -f %s/%s/local.ninja', pkg.gendir, dir)
 	if recurse or not os.execute(cmd) then
 		local oldpkg, oldout = pkg, io.output()
-		if pkg.dir ~= '.' then
-			dir = pkg.dir..'/'..dir
+		if pkg.gendir ~= '.' then
+			dir = pkg.gendir..'/'..dir
 		end
 		gen(dir)
 		pkg = oldpkg
@@ -41,10 +41,10 @@ function subgen(dir)
 	end
 end
 
-function gen(dir)
+function gen(gendir)
 	pkg={
-		name=dir:match('[^/]*$'),
-		dir=dir,
+		name=gendir:match('[^/]*$'),
+		gendir=gendir,
 		inputs={
 			perms={},
 			index={},
@@ -59,12 +59,12 @@ function gen(dir)
 		},
 		perms={},
 	}
-	assert(os.execute('mkdir -p '..dir))
-	local outdir = config.builddir..'/'..dir
+	assert(os.execute('mkdir -p '..gendir))
+	local outdir = config.builddir..'/'..gendir
 	assert(os.execute('mkdir -p '..outdir))
-	io.output(dir..'/local.ninja.tmp')
-	set('gendir', dir)
-	if dir ~= '.' then
+	io.output(gendir..'/local.ninja.tmp')
+	set('gendir', gendir)
+	if gendir ~= '.' then
 		set('dir', '$basedir/$gendir')
 		set('outdir', '$builddir/$gendir')
 		set('srcdir', '$dir/src')
@@ -113,8 +113,8 @@ function gen(dir)
 	end
 	build('phony', '$dir/root', pkg.inputs.root)
 	io.close()
-	os.rename(dir..'/local.ninja.tmp', dir..'/local.ninja')
-	if dir == '.' then
+	os.rename(gendir..'/local.ninja.tmp', gendir..'/local.ninja')
+	if gendir == '.' then
 		os.execute('ln -sf local.ninja build.ninja')
 	end
 end
