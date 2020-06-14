@@ -23,26 +23,7 @@ end
 
 local recurse = not arg[1]
 
-function subgen(dir)
-	local file = '$gendir/'..dir..'/local.ninja'
-	subninja(file)
-	table.insert(pkg.inputs.ninja, '$gendir/'..dir..'/ninja')
-	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
-	table.insert(pkg.inputs.perms, '$outdir/'..dir..'/root.perms')
-	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/root.fspec')
-	local cmd = string.format('test -f %s/%s/local.ninja', pkg.gendir, dir)
-	if recurse or not os.execute(cmd) then
-		local oldpkg, oldout = pkg, io.output()
-		if pkg.gendir ~= '.' then
-			dir = pkg.gendir..'/'..dir
-		end
-		gen(dir)
-		pkg = oldpkg
-		io.output(oldout)
-	end
-end
-
-function gen(gendir)
+local function gen(gendir)
 	local dir = basedir..'/'..gendir
 	local outdir = config.builddir..'/'..gendir
 	pkg={
@@ -145,6 +126,25 @@ function gen(gendir)
 	os.rename(gendir..'/local.ninja.tmp', gendir..'/local.ninja')
 	if gendir == '.' then
 		os.execute('ln -sf local.ninja build.ninja')
+	end
+end
+
+function subgen(dir)
+	local file = '$gendir/'..dir..'/local.ninja'
+	subninja(file)
+	table.insert(pkg.inputs.ninja, '$gendir/'..dir..'/ninja')
+	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
+	table.insert(pkg.inputs.perms, '$outdir/'..dir..'/root.perms')
+	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/root.fspec')
+	local cmd = string.format('test -f %s/%s/local.ninja', pkg.gendir, dir)
+	if recurse or not os.execute(cmd) then
+		local oldpkg, oldout = pkg, io.output()
+		if pkg.gendir ~= '.' then
+			dir = pkg.gendir..'/'..dir
+		end
+		gen(dir)
+		pkg = oldpkg
+		io.output(oldout)
 	end
 end
 
