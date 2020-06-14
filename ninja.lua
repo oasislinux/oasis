@@ -434,14 +434,20 @@ function file(path, mode, src)
 	if pkg.gendir:hasprefix('pkg/') and not fs(pkg.name, path) then
 		return
 	end
+	mode = ('%04o'):format(tonumber(mode, 8))
+	pkg.fspec[path] = {
+		type='reg',
+		mode=mode,
+		source=src:gsub('^%$(%w+)', pkg, 1),
+	}
+	table.insert(pkg.inputs.fspec.implicit, src)
 	local out = '$builddir/root.hash/'..path
-	mode = tonumber(mode, 8)
-	local perm = string.format('10%04o %s', mode, path)
+	local perm = ('10%s %s'):format(mode, path)
 	build('githash', out, {src, '|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
 		args=perm,
 	})
 	table.insert(pkg.inputs.index, out)
-	if mode ~= 420 and mode ~= 493 then -- 0644 and 0755
+	if mode ~= '0644' and mode ~= '0755' then
 		table.insert(pkg.perms, perm)
 	end
 end
@@ -450,14 +456,23 @@ function dir(path, mode)
 	if pkg.gendir:hasprefix('pkg/') and not fs(pkg.name, path) then
 		return
 	end
-	mode = tonumber(mode, 8)
-	table.insert(pkg.perms, string.format('04%04o %s', mode, path))
+	mode = ('%04o'):format(tonumber(mode, 8))
+	pkg.fspec[path] = {
+		type='dir',
+		mode=mode,
+	}
+	table.insert(pkg.perms, ('04%s %s'):format(mode, path))
 end
 
 function sym(path, target)
 	if pkg.gendir:hasprefix('pkg/') and not fs(pkg.name, path) then
 		return
 	end
+	pkg.fspec[path] = {
+		type='sym',
+		mode='0777',
+		target=target,
+	}
 	local out = '$builddir/root.hash/'..path
 	build('githash', out, {'|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
 		args=string.format('120000 %s %s', path, target),

@@ -29,6 +29,7 @@ function subgen(dir)
 	table.insert(pkg.inputs.ninja, '$gendir/'..dir..'/ninja')
 	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
 	table.insert(pkg.inputs.perms, '$outdir/'..dir..'/root.perms')
+	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/root.fspec')
 	local cmd = string.format('test -f %s/%s/local.ninja', pkg.gendir, dir)
 	if recurse or not os.execute(cmd) then
 		local oldpkg, oldout = pkg, io.output()
@@ -42,12 +43,18 @@ function subgen(dir)
 end
 
 function gen(gendir)
+	local dir = basedir..'/'..gendir
+	local outdir = config.builddir..'/'..gendir
 	pkg={
 		name=gendir:match('[^/]*$'),
+		dir=dir,
 		gendir=gendir,
+		srcdir=dir..'/src',
+		outdir=outdir,
 		inputs={
 			perms={},
 			index={},
+			fspec={implicit={}},
 			gen={
 				'$basedir/ninja.lua',
 				'$basedir/sets.lua',
@@ -58,9 +65,9 @@ function gen(gendir)
 			fetch={},
 		},
 		perms={},
+		fspec={},
 	}
 	assert(os.execute('mkdir -p '..gendir))
-	local outdir = config.builddir..'/'..gendir
 	assert(os.execute('mkdir -p '..outdir))
 	io.output(gendir..'/local.ninja.tmp')
 	set('gendir', gendir)
@@ -99,6 +106,18 @@ function gen(gendir)
 		table.insert(pkg.inputs.perms, '$outdir/local.perms')
 		f:close()
 	end
+	if next(pkg.fspec) then
+		local f = assert(io.open(outdir..'/local.fspec', 'w'))
+		for _, path in ipairs(table.keys(pkg.fspec)) do
+			f:write(('/%s\n'):format(path))
+			for k, v in pairs(pkg.fspec[path]) do
+				f:write(('%s=%s\n'):format(k, v))
+			end
+			f:write('\n')
+		end
+		f:close()
+		table.insert(pkg.inputs.fspec, '$outdir/local.fspec')
+	end
 	if next(pkg.inputs.perms) then
 		build('mergeperms', '$outdir/root.perms', pkg.inputs.perms)
 	else
@@ -110,6 +129,16 @@ function gen(gendir)
 		})
 	else
 		build('empty', '$outdir/root.index')
+	end
+	if next(pkg.inputs.fspec) then
+		if next(pkg.inputs.fspec.implicit) then
+			table.insert(pkg.inputs.fspec, {'|', pkg.inputs.fspec.implicit})
+		end
+		build('cat', '$outdir/root.fspec', pkg.inputs.fspec, {
+			description = '	FSPEC	$outdir/root.fspec',
+		})
+	else
+		build('empty', '$outdir/root.fspec')
 	end
 	build('phony', '$dir/root', pkg.inputs.root)
 	io.close()
