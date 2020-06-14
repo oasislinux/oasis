@@ -48,8 +48,7 @@ local function gen(gendir)
 		perms={},
 		fspec={},
 	}
-	assert(os.execute('mkdir -p '..gendir))
-	assert(os.execute('mkdir -p '..outdir))
+	assert(os.execute(('mkdir -p %s %s'):format(gendir, outdir)))
 	io.output(gendir..'/local.ninja.tmp')
 	set('gendir', gendir)
 	if gendir ~= '.' then
