@@ -1,4 +1,4 @@
-From 0a32cd776d53b6f2d99e4faae19def38f9354ee9 Mon Sep 17 00:00:00 2001
+From e24b8a396960fc521dd72c9e69be04f7bd899144 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 16:48:56 -0700
 Subject: [PATCH] Use alloca instead of VLA when VLA is not available
@@ -8,7 +8,7 @@ Subject: [PATCH] Use alloca instead of VLA when VLA is not available
  1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/ip/ipaddress.c b/ip/ipaddress.c
-index 6be96503..cb76a763 100644
+index 6be96503..43d18098 100644
 --- a/ip/ipaddress.c
 +++ b/ip/ipaddress.c
 @@ -249,7 +249,12 @@ static void print_linktype(FILE *fp, struct rtattr *tb)
@@ -16,7 +16,7 @@ index 6be96503..cb76a763 100644
  		lu = get_link_kind(kind);
  		if (lu && lu->print_opt) {
 -			struct rtattr *attr[lu->maxattr+1], **data = NULL;
-+#ifndef __STDC_NO_VLA__
++#ifdef __STDC_NO_VLA__
 +			struct rtattr **attr = alloca((lu->maxattr+1)*sizeof(attr[0]));
 +#else
 +			struct rtattr *attr[lu->maxattr+1];
@@ -30,7 +30,7 @@ index 6be96503..cb76a763 100644
  		slave_lu = get_link_kind(slave);
  		if (slave_lu && slave_lu->print_opt) {
 -			struct rtattr *attr[slave_lu->maxattr+1], **data = NULL;
-+#ifndef __STDC_NO_VLA__
++#ifdef __STDC_NO_VLA__
 +			struct rtattr **attr = alloca((slave_lu->maxattr+1)*sizeof(attr[0]));
 +#else
 +			struct rtattr *attr[slave_lu->maxattr+1];
