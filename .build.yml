@@ -1,4 +1,4 @@
-image: alpine/latest
+image: alpine/edge
 packages:
 - bison
 - libarchive-tools
