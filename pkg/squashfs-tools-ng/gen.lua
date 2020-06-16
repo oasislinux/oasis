@@ -20,17 +20,19 @@ end
 local srcs = paths[[
 	lib/sqfs/(
 		id_table.c super.c
-		readdir.c xattr.c
+		readdir.c xattr/xattr.c
 		write_table.c meta_writer.c
 		read_super.c meta_reader.c
 		read_inode.c write_inode.c
-		dir_writer.c xattr_reader.c
+		dir_writer.c xattr/xattr_reader.c
 		read_table.c comp/compressor.c
-		xattr_writer.c
 		dir_reader.c read_tree.c
-		inode.c
+		inode.c xattr/xattr_writer.c
+		xattr/xattr_writer_flush.c
+		xattr/xattr_writer_record.c
 		write_super.c data_reader.c
 		block_processor/common.c
+		block_processor/frontend.c
 		frag_table.c
 		block_writer.c
 
@@ -112,7 +114,7 @@ exe('gensquashfs', [[
 	libcommon.a.d
 ]])
 file('bin/gensquashfs', '755', '$outdir/gensquashfs')
-man{'doc/gensquashfs.1'}
+man{'bin/gensquashfs/gensquashfs.1'}
 
 exe('rdsquashfs', [[
 	bin/rdsquashfs/(
@@ -124,7 +126,7 @@ exe('rdsquashfs', [[
 	libcommon.a.d
 ]])
 file('bin/rdsquashfs', '755', '$outdir/rdsquashfs')
-man{'doc/rdsquashfs.1'}
+man{'bin/rdsquashfs/rdsquashfs.1'}
 
 exe('sqfsdiff', [[
 	bin/sqfsdiff/(
@@ -137,14 +139,20 @@ exe('sqfsdiff', [[
 	libcommon.a.d
 ]])
 file('bin/sqfsdiff', '755', '$outdir/sqfsdiff')
-man{'doc/sqfsdiff.1'}
+man{'bin/sqfsdiff/sqfsdiff.1'}
 
-exe('sqfs2tar', 'bin/sqfs2tar.c libcommon.a.d libtar.a')
+exe('sqfs2tar', [[
+	bin/sqfs2tar/(sqfs2tar.c options.c write_tree.c xattr.c)
+	libcommon.a.d libtar.a
+]])
 file('bin/sqfs2tar', '755', '$outdir/sqfs2tar')
-man{'doc/sqfs2tar.1'}
+man{'bin/sqfs2tar/sqfs2tar.1'}
 
-exe('tar2sqfs', 'bin/tar2sqfs.c libcommon.a.d libtar.a')
+exe('tar2sqfs', [[
+	bin/tar2sqfs/(tar2sqfs.c options.c process_tarball.c)
+	libcommon.a.d libtar.a
+]])
 file('bin/tar2sqfs', '755', '$outdir/tar2sqfs')
-man{'doc/tar2sqfs.1'}
+man{'bin/tar2sqfs/tar2sqfs.1'}
 
 fetch 'git'

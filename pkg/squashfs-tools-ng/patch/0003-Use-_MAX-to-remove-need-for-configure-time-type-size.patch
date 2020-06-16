@@ -1,4 +1,4 @@
-From b288e677f7258365379dae8708044fea14774d22 Mon Sep 17 00:00:00 2001
+From d54a0ed7e31670d941ef2bae62c2ed15ae39b5f9 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 30 May 2020 01:23:59 -0700
 Subject: [PATCH] Use *_MAX to remove need for configure-time type size checks
@@ -11,10 +11,10 @@ Subject: [PATCH] Use *_MAX to remove need for configure-time type size checks
  delete mode 100644 m4/ax_compile_check_sizeof.m4
 
 diff --git a/configure.ac b/configure.ac
-index a47872e..7bf97b2 100644
+index 54d43f1..7e61de1 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -231,11 +231,6 @@ PKG_CHECK_MODULES(READLINE, [readline], [have_readline="yes"],
+@@ -233,11 +233,6 @@ PKG_CHECK_MODULES(READLINE, [readline], [have_readline="yes"],
  AM_CONDITIONAL([WITH_READLINE], [test "x$have_readline" = "xyes"])
  
  ##### additional checks #####
@@ -25,33 +25,35 @@ index a47872e..7bf97b2 100644
 -
  AC_CHECK_HEADERS([sys/xattr.h], [], [])
  AC_CHECK_HEADERS([sys/sysinfo.h], [], [])
- 
+ AC_CHECK_HEADERS([alloca.h], [], [])
 diff --git a/include/compat.h b/include/compat.h
-index b2bb054..3eac307 100644
+index ee47ef9..20c8ab2 100644
 --- a/include/compat.h
 +++ b/include/compat.h
-@@ -9,15 +9,17 @@
+@@ -9,17 +9,19 @@
  
  #include "sqfs/predef.h"
  
 +#include <limits.h>
 +
- #if defined(__GNUC__) || defined(__clang__)
- #	if defined(__GNUC__) && __GNUC__ < 5
--#		if SIZEOF_SIZE_T <= SIZEOF_INT
-+#		if SIZE_MAX <= UINT_MAX
- #			define SZ_ADD_OV __builtin_uadd_overflow
- #			define SZ_MUL_OV __builtin_umul_overflow
--#		elif SIZEOF_SIZE_T == SIZEOF_LONG
-+#		elif SIZE_MAX == ULONG_MAX
- #			define SZ_ADD_OV __builtin_uaddl_overflow
- #			define SZ_MUL_OV __builtin_umull_overflow
--#		elif SIZEOF_SIZE_T == SIZEOF_LONG_LONG
-+#		elif SIZE_MAX == ULLONG_MAX
- #			define SZ_ADD_OV __builtin_uaddll_overflow
- #			define SZ_MUL_OV __builtin_umulll_overflow
- #		else
-@@ -40,11 +42,11 @@
+ #if defined(__GNUC__) && __GNUC__ >= 5
+ #	define SZ_ADD_OV __builtin_add_overflow
+ #	define SZ_MUL_OV __builtin_mul_overflow
+ #elif defined(__clang__) && defined(__GNUC__) && __GNUC__ < 5
+-#	if SIZEOF_SIZE_T <= SIZEOF_INT
++#	if SIZE_MAX <= UINT_MAX
+ #		define SZ_ADD_OV __builtin_uadd_overflow
+ #		define SZ_MUL_OV __builtin_umul_overflow
+-#	elif SIZEOF_SIZE_T == SIZEOF_LONG
++#	elif SIZE_MAX == ULONG_MAX
+ #		define SZ_ADD_OV __builtin_uaddl_overflow
+ #		define SZ_MUL_OV __builtin_umull_overflow
+-#	elif SIZEOF_SIZE_T == SIZEOF_LONG_LONG
++#	elif SIZE_MAX == ULLONG_MAX
+ #		define SZ_ADD_OV __builtin_uaddll_overflow
+ #		define SZ_MUL_OV __builtin_umulll_overflow
+ #	else
+@@ -50,11 +52,11 @@ static inline int _sz_mul_overflow(size_t a, size_t b, size_t *res)
  #	define PRI_U32 "%" PRIu32
  #endif
  
@@ -188,5 +190,5 @@ index f834df6..0000000
 -undefine([AC_CV_NAME])dnl
 -])
 -- 
-2.26.2
+2.27.0
 
