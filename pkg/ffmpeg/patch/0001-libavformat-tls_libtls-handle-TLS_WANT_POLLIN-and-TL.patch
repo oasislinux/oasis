@@ -1,4 +1,4 @@
-From 1ea65b2fd8798766d6965378b0484ecf1cf72e6a Mon Sep 17 00:00:00 2001
+From 42236d444f98f18eb49824a391c8dacdb4d60e2c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 9 Dec 2019 16:36:57 -0800
 Subject: [PATCH] libavformat/tls_libtls: handle TLS_WANT_POLLIN and
@@ -17,10 +17,10 @@ Signed-off-by: Michael Forney <mforney@mforney.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/libavformat/tls_libtls.c b/libavformat/tls_libtls.c
-index ba83b56ffe..286454e452 100644
+index dff7f2d9fb..10609fb7eb 100644
 --- a/libavformat/tls_libtls.c
 +++ b/libavformat/tls_libtls.c
-@@ -159,6 +159,8 @@ static int ff_tls_read(URLContext *h, uint8_t *buf, int size)
+@@ -158,6 +158,8 @@ static int ff_tls_read(URLContext *h, uint8_t *buf, int size)
          return ret;
      else if (ret == 0)
          return AVERROR_EOF;
@@ -29,7 +29,7 @@ index ba83b56ffe..286454e452 100644
      av_log(h, AV_LOG_ERROR, "%s\n", tls_error(p->ctx));
      return AVERROR(EIO);
  }
-@@ -172,6 +174,8 @@ static int ff_tls_write(URLContext *h, const uint8_t *buf, int size)
+@@ -171,6 +173,8 @@ static int ff_tls_write(URLContext *h, const uint8_t *buf, int size)
          return ret;
      else if (ret == 0)
          return AVERROR_EOF;
@@ -39,5 +39,5 @@ index ba83b56ffe..286454e452 100644
      return AVERROR(EIO);
  }
 -- 
-2.24.0
+2.27.0
 

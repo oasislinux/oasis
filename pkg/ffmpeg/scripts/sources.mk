@@ -26,6 +26,8 @@ endef
 all: vars.txt
 	$(foreach var,$(VARS),$(call printsrcs,$(var)))
 
+SRC_PATH := ../src
+
 define subdir
 	$(foreach var,$(VARS),$(eval $(var):=$(var)/$(1)))
 	include ../src/$(1)/Makefile
