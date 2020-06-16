@@ -18,6 +18,7 @@ application
 applix
 apt
 archive
+asf
 assembler
 asterix
 att3b
@@ -68,6 +69,7 @@ dataone
 dbpf
 der
 diamond
+dif
 diff
 digital
 dolby
@@ -263,6 +265,7 @@ sql
 ssh
 ssl
 sun
+sylk
 symbos
 sysex
 tcl
@@ -277,7 +280,9 @@ troff
 tuxedo
 typeset
 unicode
+unisig
 unknown
+usd
 uterus
 uuencode
 vacuum-cleaner
@@ -294,6 +299,7 @@ vorbis
 vxl
 warc
 weak
+web
 webassembly
 windows
 wireless

@@ -74,6 +74,7 @@
 #define HAVE_VASPRINTF 1
 #define HAVE_VFORK 1
 /* #undef HAVE_VFORK_H */
+#define HAVE_VISIBILITY 1
 #define HAVE_WCHAR_H 1
 #define HAVE_WCTYPE_H 1
 #define HAVE_WCWIDTH 1
@@ -87,10 +88,10 @@
 #define PACKAGE "file"
 #define PACKAGE_BUGREPORT "christos@astron.com"
 #define PACKAGE_NAME "file"
-#define PACKAGE_STRING "file 5.38"
+#define PACKAGE_STRING "file 5.39"
 #define PACKAGE_TARNAME "file"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "5.38"
+#define PACKAGE_VERSION "5.39"
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
 #ifndef _ALL_SOURCE
@@ -108,7 +109,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.38"
+#define VERSION "5.39"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
