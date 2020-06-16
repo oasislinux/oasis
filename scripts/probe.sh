@@ -9,5 +9,5 @@ var=$1
 out=$2
 shift 2
 if "$@" 2>"$out.log" ; then
-	echo "#define $var 1" >"$out"
-fi
+	echo "#define $var 1"
+fi >"$out"
