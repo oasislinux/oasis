@@ -69,6 +69,7 @@ local quirks = {
 	'30-vendor-microsoft.quirks',
 	'30-vendor-razer.quirks',
 	'30-vendor-synaptics.quirks',
+	'30-vendor-trust.quirks',
 	'30-vendor-vmware.quirks',
 	'30-vendor-wacom.quirks',
 	'50-system-acer.quirks',
@@ -80,6 +81,7 @@ local quirks = {
 	'50-system-google.quirks',
 	'50-system-hp.quirks',
 	'50-system-lenovo.quirks',
+	'50-system-sony.quirks',
 	'50-system-system76.quirks',
 	'50-system-toshiba.quirks',
 }
