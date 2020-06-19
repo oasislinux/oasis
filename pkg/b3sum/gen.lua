@@ -3,6 +3,11 @@ cflags{
 	'-D WITH_ASM',
 }
 
+pkg.hdrs = {
+	copy('$outdir/include', '$srcdir', {'blake3.h'}),
+	install=true,
+}
+
 lib('libblake3.a', [[
 	blake3.c
 	blake3_dispatch.c
@@ -14,6 +19,7 @@ lib('libblake3.a', [[
 		blake3_sse41_x86-64_unix.S
 	)
 ]])
+file('lib/libblake3.a', '644', '$outdir/libblake3.a')
 
 exe('b3sum', {'b3sum.c', 'libblake3.a'})
 file('bin/b3sum', '755', '$outdir/b3sum')
