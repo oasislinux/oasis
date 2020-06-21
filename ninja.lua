@@ -304,18 +304,16 @@ function objects(srcs, deps)
 end
 
 function link(out, files, args)
-	local objs, nobjs = {}, 0
-	local deps, ndeps = {}, 0
+	local objs = {}
+	local deps = {}
 	for _, file in ipairs(files) do
 		if not file:hasprefix('$') then
 			file = '$outdir/'..file
 		end
 		if file:hassuffix('.d') then
-			ndeps = ndeps + 1
-			deps[ndeps] = file
+			deps[#deps + 1] = file
 		else
-			nobjs = nobjs + 1
-			objs[nobjs] = file
+			objs[#objs + 1] = file
 		end
 	end
 	out = '$outdir/'..out
@@ -325,7 +323,8 @@ function link(out, files, args)
 	if next(deps) then
 		local rsp = out..'.rsp'
 		build('awk', rsp, {deps, '|', '$basedir/scripts/rsp.awk'}, {expr='-f $basedir/scripts/rsp.awk'})
-		objs = {objs, '|', rsp}
+		objs[#objs + 1] = '|'
+		objs[#objs + 1] = rsp
 		args.ldlibs = '@'..rsp
 	end
 	build('link', out, objs, args)
