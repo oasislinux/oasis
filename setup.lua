@@ -11,8 +11,8 @@ end
 
 basedir = arg[0]:match('(.*)/') or '.'
 
-if not os.execute('test -f config.lua') then
-	os.execute('cp '..basedir..'/config.def.lua config.lua')
+if not os.execute('exec test -f config.lua') then
+	os.execute('exec cp '..basedir..'/config.def.lua config.lua')
 end
 
 dofile(basedir..'/ninja.lua')
@@ -48,7 +48,7 @@ local function gen(gendir)
 		perms={},
 		fspec={},
 	}
-	assert(os.execute(('mkdir -p %s %s'):format(gendir, outdir)))
+	assert(os.execute(('exec mkdir -p %s %s'):format(gendir, outdir)))
 	io.output(gendir..'/local.ninja.tmp')
 	set('gendir', gendir)
 	if gendir ~= '.' then
@@ -127,7 +127,7 @@ local function gen(gendir)
 	io.close()
 	os.rename(gendir..'/local.ninja.tmp', gendir..'/local.ninja')
 	if gendir == '.' then
-		os.execute('ln -sf local.ninja build.ninja')
+		os.execute('exec ln -sf local.ninja build.ninja')
 	end
 end
 
@@ -138,7 +138,7 @@ function subgen(dir)
 	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
 	table.insert(pkg.inputs.perms, '$outdir/'..dir..'/root.perms')
 	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/root.fspec')
-	local cmd = string.format('test -f %s/%s/local.ninja', pkg.gendir, dir)
+	local cmd = ('exec test -f %s/%s/local.ninja'):format(pkg.gendir, dir)
 	if recurse or not os.execute(cmd) then
 		local oldpkg, oldout = pkg, io.output()
 		if pkg.gendir ~= '.' then
