@@ -87,8 +87,11 @@ local function gen(gendir)
 		f:close()
 	end
 	if next(pkg.fspec) then
-		local f = assert(io.open(outdir..'/local.fspec', 'w'))
-		for path, fspec in pairs(pkg.fspec) do
+		local out = outdir..'/local.fspec'
+		local tmp = out..'.tmp'
+		local f = assert(io.open(tmp, 'w'))
+		for _, path in ipairs(table.keys(pkg.fspec)) do
+			local fspec = pkg.fspec[path]
 			f:write(('/%s\n'):format(path))
 			for _, k in ipairs{'type', 'mode', 'source', 'target'} do
 				local v = fspec[k]
@@ -99,6 +102,11 @@ local function gen(gendir)
 			f:write('\n')
 		end
 		f:close()
+		if os.execute(('exec cmp -s %s %s'):format(tmp, out)) then
+			os.remove(tmp)
+		else
+			os.rename(tmp, out)
+		end
 		table.insert(pkg.inputs.fspec, '$outdir/local.fspec')
 	end
 	if next(pkg.inputs.perms) then
