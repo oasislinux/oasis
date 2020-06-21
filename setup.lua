@@ -88,10 +88,13 @@ local function gen(gendir)
 	end
 	if next(pkg.fspec) then
 		local f = assert(io.open(outdir..'/local.fspec', 'w'))
-		for _, path in ipairs(table.keys(pkg.fspec)) do
+		for path, fspec in pairs(pkg.fspec) do
 			f:write(('/%s\n'):format(path))
-			for k, v in pairs(pkg.fspec[path]) do
-				f:write(('%s=%s\n'):format(k, v))
+			for _, k in ipairs{'type', 'mode', 'source', 'target'} do
+				local v = fspec[k]
+				if v then
+					f:write(('%s=%s\n'):format(k, v))
+				end
 			end
 			f:write('\n')
 		end
