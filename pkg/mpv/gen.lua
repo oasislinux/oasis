@@ -113,15 +113,15 @@ do
 	end
 end
 
-local sources = {}
+local srcs = {}
 for line in iterlines('sources.txt', 1) do
 	local i = line:find(' ', 1, true)
 	local add = true
 	if not i or eval(line, i + 1) then
-		sources[line:sub(1, i and i - 1)] = true
+		srcs[line:sub(1, i and i - 1)] = true
 	end
 end
-sources = table.keys(sources)
+srcs = table.keys(srcs)
 
 if options['HAVE_ALSA'] then
 	cflags{'-isystem $builddir/pkg/alsa-lib/include'}
@@ -172,7 +172,7 @@ exe('mpv', {
 	'ta/ta.c',
 	'ta/ta_talloc.c',
 	'ta/ta_utils.c',
-	sources,
+	srcs,
 	expand{'$builddir/pkg/', libs},
 })
 file('bin/mpv', '755', '$outdir/mpv')

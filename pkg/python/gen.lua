@@ -34,21 +34,21 @@ if modules['zlib'] then
 	table.insert(libs, 'zlib/libz.a')
 end
 
-local sources = {}
+local srcs = {}
 sub('modules.ninja', function()
 	cflags{'-D Py_BUILD_CORE_BUILTIN'}
 
 	for _, mod in pairs(modules) do
 		for _, src in ipairs(mod) do
 			local obj = src..'.o'
-			if not sources[obj] then
+			if not srcs[obj] then
 				cc('Modules/'..src)
-				sources[obj] = true
+				srcs[obj] = true
 			end
 		end
 	end
 end)
-sources = table.keys(sources)
+srcs = table.keys(srcs)
 
 cflags{'-D Py_BUILD_CORE'}
 
@@ -86,7 +86,7 @@ cc('Python/sysmodule.c', nil, {
 	cflags=string.format([[$cflags -D 'ABIFLAGS="%s"']], abiflags),
 })
 
-lib('libpython.a', {expand{'Modules/', sources}, paths[[
+lib('libpython.a', {expand{'Modules/', srcs}, paths[[
 	Modules/(
 		getbuildinfo.c.o
 		getpath.c.o

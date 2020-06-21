@@ -11,13 +11,12 @@ function string.hassuffix(s, suffix)
 end
 
 -- collects the results of an iterator into a table
-local function collect(fn, s, i)
-	local results, nresults = {}, 0
-	for val in fn, s, i do
-		nresults = nresults + 1
-		results[nresults] = val
+local function collect(f, s, i)
+	local t = {}
+	for v in f, s, i do
+		t[#t + 1] = v
 	end
-	return results
+	return t
 end
 
 -- collects the keys of a table into a sorted table
