@@ -1,0 +1,114 @@
+From 5436472ffdcd5d33b6756a295a10add09db83dd6 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 21 Jun 2020 14:29:38 -0700
+Subject: [PATCH] revision: use repository from rev_info when parsing commits
+
+Since revision.c was the only user of the parse_commit_gently
+compatibility define, remove it from commit.h.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ commit.h   |  1 -
+ revision.c | 18 +++++++++---------
+ 2 files changed, 9 insertions(+), 10 deletions(-)
+
+diff --git a/commit.h b/commit.h
+index 1b2dea5d85..a2e8ca99a2 100644
+--- a/commit.h
++++ b/commit.h
+@@ -97,7 +97,6 @@ static inline int parse_commit_no_graph(struct commit *commit)
+ 
+ #ifndef NO_THE_REPOSITORY_COMPATIBILITY_MACROS
+ #define parse_commit_internal(item, quiet, use) repo_parse_commit_internal(the_repository, item, quiet, use)
+-#define parse_commit_gently(item, quiet) repo_parse_commit_gently(the_repository, item, quiet)
+ #define parse_commit(item) repo_parse_commit(the_repository, item)
+ #endif
+ 
+diff --git a/revision.c b/revision.c
+index 60cca8c0b9..3ac0a50ed3 100644
+--- a/revision.c
++++ b/revision.c
+@@ -437,7 +437,7 @@ static struct commit *handle_commit(struct rev_info *revs,
+ 	if (object->type == OBJ_COMMIT) {
+ 		struct commit *commit = (struct commit *)object;
+ 
+-		if (parse_commit(commit) < 0)
++		if (repo_parse_commit(revs->repo, commit) < 0)
+ 			die("unable to parse commit %s", name);
+ 		if (flags & UNINTERESTING) {
+ 			mark_parents_uninteresting(commit);
+@@ -987,7 +987,7 @@ static void try_to_simplify_commit(struct rev_info *revs, struct commit *commit)
+ 					ts->treesame[0] = 1;
+ 			}
+ 		}
+-		if (parse_commit(p) < 0)
++		if (repo_parse_commit(revs->repo, p) < 0)
+ 			die("cannot simplify commit %s (because of %s)",
+ 			    oid_to_hex(&commit->object.oid),
+ 			    oid_to_hex(&p->object.oid));
+@@ -1032,7 +1032,7 @@ static void try_to_simplify_commit(struct rev_info *revs, struct commit *commit)
+ 				 * IOW, we pretend this parent is a
+ 				 * "root" commit.
+ 				 */
+-				if (parse_commit(p) < 0)
++				if (repo_parse_commit(revs->repo, p) < 0)
+ 					die("cannot simplify commit %s (invalid %s)",
+ 					    oid_to_hex(&commit->object.oid),
+ 					    oid_to_hex(&p->object.oid));
+@@ -1100,7 +1100,7 @@ static int process_parents(struct rev_info *revs, struct commit *commit,
+ 			parent = parent->next;
+ 			if (p)
+ 				p->object.flags |= UNINTERESTING;
+-			if (parse_commit_gently(p, 1) < 0)
++			if (repo_parse_commit_gently(revs->repo, p, 1) < 0)
+ 				continue;
+ 			if (p->parents)
+ 				mark_parents_uninteresting(p);
+@@ -1131,7 +1131,7 @@ static int process_parents(struct rev_info *revs, struct commit *commit,
+ 		struct commit *p = parent->item;
+ 		int gently = revs->ignore_missing_links ||
+ 			     revs->exclude_promisor_objects;
+-		if (parse_commit_gently(p, gently) < 0) {
++		if (repo_parse_commit_gently(revs->repo, p, gently) < 0) {
+ 			if (revs->exclude_promisor_objects &&
+ 			    is_promisor_object(&p->object.oid)) {
+ 				if (revs->first_parent_only)
+@@ -3289,7 +3289,7 @@ static void explore_walk_step(struct rev_info *revs)
+ 	if (!c)
+ 		return;
+ 
+-	if (parse_commit_gently(c, 1) < 0)
++	if (repo_parse_commit_gently(revs->repo, c, 1) < 0)
+ 		return;
+ 
+ 	if (revs->sort_order == REV_SORT_BY_AUTHOR_DATE)
+@@ -3327,7 +3327,7 @@ static void indegree_walk_step(struct rev_info *revs)
+ 	if (!c)
+ 		return;
+ 
+-	if (parse_commit_gently(c, 1) < 0)
++	if (repo_parse_commit_gently(revs->repo, c, 1) < 0)
+ 		return;
+ 
+ 	explore_to_depth(revs, c->generation);
+@@ -3408,7 +3408,7 @@ static void init_topo_walk(struct rev_info *revs)
+ 	for (list = revs->commits; list; list = list->next) {
+ 		struct commit *c = list->item;
+ 
+-		if (parse_commit_gently(c, 1))
++		if (repo_parse_commit_gently(revs->repo, c, 1))
+ 			continue;
+ 
+ 		test_flag_and_insert(&info->explore_queue, c, TOPO_WALK_EXPLORED);
+@@ -3470,7 +3470,7 @@ static void expand_topo_walk(struct rev_info *revs, struct commit *commit)
+ 		if (parent->object.flags & UNINTERESTING)
+ 			continue;
+ 
+-		if (parse_commit_gently(parent, 1) < 0)
++		if (repo_parse_commit_gently(revs->repo, parent, 1) < 0)
+ 			continue;
+ 
+ 		if (parent->generation < info->min_generation) {
+-- 
+2.27.0
+
