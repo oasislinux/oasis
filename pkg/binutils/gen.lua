@@ -112,7 +112,7 @@ sub('bfd.ninja', function()
 	build('sed', '$outdir/bfd/peigen.c', '$srcdir/bfd/peXXigen.c', {expr='-e s,XX,pe,g'})
 
 	-- src/bfd/config.bfd
-	for vec in pairs(selvecs) do
+	for _, vec in ipairs(table.keys(selvecs)) do
 		if vec:find('elf64') or vec:find('mips_elf32_n') then
 			selvecs.elf64_le_vec = true
 			selvecs.elf64_be_vec = true
