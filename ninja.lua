@@ -397,7 +397,7 @@ function fetch(method)
 	else
 		script = '$basedir/scripts/fetch-'..method..'.sh'
 	end
-	build('fetch-'..method, '$dir/fetch', {'|', '$dir/ver', script})
+	build('fetch', '$dir/fetch', {'|', '$dir/ver', script}, {script=script})
 	if basedir ~= '.' then
 		build('phony', '$gendir/fetch', '$dir/fetch')
 	end

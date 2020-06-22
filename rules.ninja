@@ -118,22 +118,8 @@ rule git-archive
 rule git-init
   command = git init $repo_flags $repo && touch $out
 
-rule fetch-curl
-  command = cd $basedir && sh scripts/fetch-curl.sh $gendir && touch $$OLDPWD/$out
-  description = 	FETCH	$gendir
-  restat = 1
-  generator = 1
-  pool = console
-
-rule fetch-git
-  command = cd $basedir && sh scripts/fetch-git.sh $gendir && touch $$OLDPWD/$out
-  description = 	FETCH	$gendir
-  restat = 1
-  generator = 1
-  pool = console
-
-rule fetch-local
-  command = cd $basedir && sh $gendir/fetch.sh $gendir && touch $$OLDPWD/$out
+rule fetch
+  command = cd $basedir && sh $$OLDPWD/$script $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir
   restat = 1
   generator = 1
