@@ -378,14 +378,14 @@ end
 function waylandproto(proto, outs, args)
 	proto = '$srcdir/'..proto
 	if outs.client then
-		build('waylandproto', '$outdir/'..outs.client, proto, {type='client-header'})
+		build('wayland-proto', '$outdir/'..outs.client, proto, {type='client-header'})
 	end
 	if outs.server then
-		build('waylandproto', '$outdir/'..outs.server, proto, {type='server-header'})
+		build('wayland-proto', '$outdir/'..outs.server, proto, {type='server-header'})
 	end
 	if outs.code then
 		local code = '$outdir/'..outs.code
-		build('waylandproto', code, proto, {type='public-code'})
+		build('wayland-proto', code, proto, {type='public-code'})
 		cc(code, {'pkg/wayland/headers'}, args)
 	end
 end
@@ -397,7 +397,7 @@ function fetch(method)
 	else
 		script = '$basedir/scripts/fetch-'..method..'.sh'
 	end
-	build('fetch'..method, '$dir/fetch', {'|', '$dir/ver', script})
+	build('fetch-'..method, '$dir/fetch', {'|', '$dir/ver', script})
 	if basedir ~= '.' then
 		build('phony', '$gendir/fetch', '$dir/fetch')
 	end
@@ -439,7 +439,7 @@ end
 function gitfile(path, mode, src)
 	local out = '$builddir/root.hash/'..path
 	local perm = ('10%04o %s'):format(tonumber(mode, 8), path)
-	build('githash', out, {src, '|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
+	build('git-hash', out, {src, '|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
 		args=perm,
 	})
 	table.insert(pkg.inputs.index, out)
@@ -479,7 +479,7 @@ function sym(path, target)
 		target=target,
 	}
 	local out = '$builddir/root.hash/'..path
-	build('githash', out, {'|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
+	build('git-hash', out, {'|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
 		args=string.format('120000 %s %s', path, target),
 	})
 	table.insert(pkg.inputs.index, out)

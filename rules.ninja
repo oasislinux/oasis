@@ -54,7 +54,7 @@ rule muse
 rule probe
   command = sh $basedir/scripts/probe.sh $var $out $cc $cflags $ldflags -o /dev/null -x c $in
 
-rule probesize
+rule probe-size
   command = sh $basedir/scripts/probe-size.sh $var $out $cc $cflags -c -o /dev/null -x c $in
 
 # misc tools
@@ -97,42 +97,42 @@ rule printf
 rule tic
   command = tic $ticflags $in
 
-rule waylandproto
+rule wayland-proto
   command = wayland-scanner $type <$in >$out
 
-rule githash
+rule git-hash
   command = sh $basedir/scripts/hash.sh $repo $args $in >$out
   description = 	HASH	$args
 
-rule gittree
+rule git-tree
   command = sh $basedir/scripts/tree.sh $repo $repo_tag $in $out
   description = 	TREE	$out
   restat = 1
 
-rule gitcommit
+rule git-commit
   command = sh $basedir/scripts/commit.sh $repo $repo_branch $repo_tag $out
 
-rule gitarchive
+rule git-archive
   command = git -C $repo archive -o $$PWD/$out $repo_tag
 
-rule gitinit
+rule git-init
   command = git init $repo_flags $repo && touch $out
 
-rule fetchcurl
+rule fetch-curl
   command = cd $basedir && sh scripts/fetch-curl.sh $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir
   restat = 1
   generator = 1
   pool = console
 
-rule fetchgit
+rule fetch-git
   command = cd $basedir && sh scripts/fetch-git.sh $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir
   restat = 1
   generator = 1
   pool = console
 
-rule fetchlocal
+rule fetch-local
   command = cd $basedir && sh $gendir/fetch.sh $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir
   restat = 1

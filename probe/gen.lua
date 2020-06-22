@@ -11,7 +11,7 @@ probe('HAVE___BUILTIN_CTZL')
 probe('HAVE___BUILTIN_POPCOUNT')
 
 local function probesize(var)
-	build('probesize', '$outdir/'..var, {'$dir/'..var, '|', '$basedir/scripts/probe-size.sh'}, {var=var})
+	build('probe-size', '$outdir/'..var, {'$dir/'..var, '|', '$basedir/scripts/probe-size.sh'}, {var=var})
 end
 
 probesize('SIZEOF_LONG')
