@@ -15,4 +15,4 @@ dir('var/empty', '755')
 dir('var/log', '755')
 sym('usr/bin', '../bin')
 
-file('.gitignore', '644', '$dir/gitignore')
+gitfile('.gitignore', '644', '$dir/gitignore')

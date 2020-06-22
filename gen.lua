@@ -18,7 +18,7 @@ subgen 'probe'
 subgen 'pkg'
 subgen 'src'
 
-file('.perms', '644', '$outdir/root.perms')
+gitfile('.perms', '644', '$outdir/root.perms')
 
 build('gitinit', '$builddir/root.stamp')
 build('gittree', '$builddir/root.tree', {'$outdir/root.index', '|', '$basedir/scripts/tree.sh', '||', '$builddir/root.stamp'})
