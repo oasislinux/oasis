@@ -23,10 +23,10 @@ build('awk', '$outdir/root.perms', {'$outdir/root.fspec', '|', '$basedir/scripts
 })
 gitfile('.perms', '644', '$outdir/root.perms')
 
-build('gitinit', '$builddir/root.stamp')
-build('gittree', '$builddir/root.tree', {'$outdir/root.index', '|', '$basedir/scripts/tree.sh', '||', '$builddir/root.stamp'})
-build('gitarchive', '$builddir/root.tar', {'|', '$builddir/root.tree'})
-build('gitcommit', '$builddir/root.commit', {'|', '$builddir/root.tree'})
+build('gitinit', '$outdir/root.stamp')
+build('gittree', '$outdir/root.tree', {'$outdir/root.index', '|', '$basedir/scripts/tree.sh', '||', '$outdir/root.stamp'})
+build('gitarchive', '$outdir/root.tar', {'|', '$outdir/root.tree'})
+build('gitcommit', '$outdir/root.commit', {'|', '$outdir/root.tree'})
 build('phony', 'commit', '$builddir/root.commit')
 build('phony', 'build.ninja', 'ninja', {generator='1'})
 
