@@ -85,6 +85,9 @@
 [submodule "pkg/fribidi/src"]
 	path = pkg/fribidi/src
 	url = https://github.com/fribidi/fribidi
+[submodule "pkg/fspec-sync/src"]
+	path = pkg/fspec-sync/src
+	url = https://github.com/oasislinux/fspec-sync.git
 [submodule "pkg/fuse/src"]
 	path = pkg/fuse/src
 	url = https://github.com/libfuse/libfuse
