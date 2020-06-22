@@ -18,6 +18,9 @@ subgen 'probe'
 subgen 'pkg'
 subgen 'src'
 
+build('awk', '$outdir/root.perms', {'$outdir/root.fspec', '|', '$basedir/scripts/perms.awk'}, {
+	expr='-f $basedir/scripts/perms.awk',
+})
 gitfile('.perms', '644', '$outdir/root.perms')
 
 build('gitinit', '$builddir/root.stamp')

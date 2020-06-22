@@ -33,7 +33,6 @@ local function gen(gendir)
 		srcdir=dir..'/src',
 		outdir=outdir,
 		inputs={
-			perms={},
 			index={},
 			fspec={implicit={}},
 			gen={
@@ -45,7 +44,6 @@ local function gen(gendir)
 			ninja={'$gendir/local.ninja'},
 			fetch={},
 		},
-		perms={},
 		fspec={},
 	}
 	assert(os.execute(('exec mkdir -p %s %s'):format(gendir, outdir)))
@@ -76,16 +74,6 @@ local function gen(gendir)
 		phony('deps', pkg.deps)
 	end
 
-	if next(pkg.perms) then
-		table.sort(pkg.perms, function(s1, s2)
-			return s1:sub(8) < s2:sub(8)
-		end)
-		local f = assert(io.open(outdir..'/local.perms', 'w'))
-		f:write(table.concat(pkg.perms, '\n'))
-		f:write('\n')
-		table.insert(pkg.inputs.perms, '$outdir/local.perms')
-		f:close()
-	end
 	if next(pkg.fspec) then
 		local out = outdir..'/local.fspec'
 		local tmp = out..'.tmp'
@@ -108,11 +96,6 @@ local function gen(gendir)
 			os.rename(tmp, out)
 		end
 		table.insert(pkg.inputs.fspec, '$outdir/local.fspec')
-	end
-	if next(pkg.inputs.perms) then
-		build('mergeperms', '$outdir/root.perms', pkg.inputs.perms)
-	else
-		build('empty', '$outdir/root.perms')
 	end
 	if next(pkg.inputs.index) then
 		build('cat', '$outdir/root.index', pkg.inputs.index, {
@@ -144,7 +127,6 @@ function subgen(dir)
 	subninja(file)
 	table.insert(pkg.inputs.ninja, '$gendir/'..dir..'/ninja')
 	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
-	table.insert(pkg.inputs.perms, '$outdir/'..dir..'/root.perms')
 	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/root.fspec')
 	local cmd = ('exec test -f %s/%s/local.ninja'):format(pkg.gendir, dir)
 	if recurse or not os.execute(cmd) then

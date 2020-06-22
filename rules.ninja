@@ -72,10 +72,6 @@ rule copy
 rule cat
   command = cat $in >$out
 
-rule mergeperms
-  command = sort -k 2 -m $in >$out
-  description = 	PERMS	$out
-
 rule gzip
   command = gzip -c -9 -n <$in >$out
   description = 	GZIP	$out

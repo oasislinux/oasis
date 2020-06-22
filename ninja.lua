@@ -435,9 +435,6 @@ function gitfile(path, mode, src)
 		args=perm,
 	})
 	table.insert(pkg.inputs.index, out)
-	if mode ~= '0644' and mode ~= '0755' then
-		table.insert(pkg.perms, perm)
-	end
 end
 
 function file(path, mode, src)
@@ -458,12 +455,10 @@ function dir(path, mode)
 	if pkg.gendir:hasprefix('pkg/') and not fs(pkg.name, path) then
 		return
 	end
-	mode = ('%04o'):format(tonumber(mode, 8))
 	pkg.fspec[path] = {
 		type='dir',
-		mode=mode,
+		mode=('%04o'):format(tonumber(mode, 8)),
 	}
-	table.insert(pkg.perms, ('04%s %s'):format(mode, path))
 end
 
 function sym(path, target)
