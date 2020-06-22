@@ -428,6 +428,18 @@ local function fs(name, path)
 	return (config.fs.include or config.fs.exclude) and specmatch(config.fs, path)
 end
 
+function gitfile(path, mode, src)
+	local out = '$builddir/root.hash/'..path
+	local perm = ('10%04o %s'):format(tonumber(mode, 8), path)
+	build('githash', out, {src, '|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
+		args=perm,
+	})
+	table.insert(pkg.inputs.index, out)
+	if mode ~= '0644' and mode ~= '0755' then
+		table.insert(pkg.perms, perm)
+	end
+end
+
 function file(path, mode, src)
 	if pkg.gendir:hasprefix('pkg/') and not fs(pkg.name, path) then
 		return
@@ -439,15 +451,7 @@ function file(path, mode, src)
 		source=src:gsub('^%$(%w+)', pkg, 1),
 	}
 	table.insert(pkg.inputs.fspec.implicit, src)
-	local out = '$builddir/root.hash/'..path
-	local perm = ('10%s %s'):format(mode, path)
-	build('githash', out, {src, '|', '$basedir/scripts/hash.sh', '||', '$builddir/root.stamp'}, {
-		args=perm,
-	})
-	table.insert(pkg.inputs.index, out)
-	if mode ~= '0644' and mode ~= '0755' then
-		table.insert(pkg.perms, perm)
-	end
+	gitfile(path, mode, src)
 end
 
 function dir(path, mode)
