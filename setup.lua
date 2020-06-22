@@ -78,8 +78,7 @@ local function gen(gendir)
 		local out = outdir..'/local.fspec'
 		local tmp = out..'.tmp'
 		local f = assert(io.open(tmp, 'w'))
-		for _, path in ipairs(table.keys(pkg.fspec)) do
-			local fspec = pkg.fspec[path]
+		for _, path, fspec in sortedpairs(pkg.fspec) do
 			f:write(('/%s\n'):format(path))
 			for _, k in ipairs{'type', 'mode', 'source', 'target'} do
 				local v = fspec[k]

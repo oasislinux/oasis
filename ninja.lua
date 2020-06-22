@@ -20,10 +20,18 @@ local function collect(f, s, i)
 end
 
 -- collects the keys of a table into a sorted table
-function table.keys(t)
+function table.keys(t, f)
 	local keys = collect(next, t)
-	table.sort(keys)
+	table.sort(keys, f)
 	return keys
+end
+
+-- iterates over the sorted keys and values of a table
+function sortedpairs(t, f)
+	return function(s, i)
+		local k = s[i]
+		return k and i + 1, k, t[k]
+	end, table.keys(t, f), 1
 end
 
 -- yields string values of table or nested tables
