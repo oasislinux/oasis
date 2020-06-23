@@ -39,6 +39,9 @@
 [submodule "pkg/cproc/src"]
 	path = pkg/cproc/src
 	url = https://git.sr.ht/~mcf/cproc
+[submodule "pkg/devd/src"]
+	path = pkg/devd/src
+	url = https://github.com/oasislinux/devd.git
 [submodule "pkg/dmenu/src"]
 	path = pkg/dmenu/src
 	url = git://git.suckless.org/dmenu

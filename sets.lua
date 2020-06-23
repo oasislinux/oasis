@@ -6,6 +6,7 @@ return {
 		'bzip2',
 		'cacert',
 		'curl',
+		'devd',
 		'e2fsprogs',
 		'git',
 		'iproute2',
