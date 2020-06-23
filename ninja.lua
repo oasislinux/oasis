@@ -455,7 +455,6 @@ function file(path, mode, src)
 		mode=mode,
 		source=src:gsub('^%$(%w+)', pkg, 1),
 	}
-	table.insert(pkg.inputs.fspec.implicit, src)
 	gitfile(path, mode, src)
 end
 

@@ -118,6 +118,9 @@ rule git-archive
 rule git-init
   command = git init $repo_flags $repo && touch $out
 
+rule fspec-hash
+  command = $builddir/pkg/fspec-sync/host/fspec-hash <$in >$out
+
 rule fetch
   command = cd $basedir && sh $$OLDPWD/$script $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir

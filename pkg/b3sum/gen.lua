@@ -8,6 +8,13 @@ pkg.hdrs = {
 	install=true,
 }
 
+sub('host.ninja', function()
+	set('outdir', '$outdir/host')
+	toolchain(config.host)
+
+	lib('libblake3.a', {'blake3.c', 'blake3_dispatch.c', 'blake3_portable.c'})
+end)
+
 lib('libblake3.a', [[
 	blake3.c
 	blake3_dispatch.c

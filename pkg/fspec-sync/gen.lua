@@ -3,6 +3,15 @@ cflags{
 	'-isystem $builddir/pkg/b3sum/include',
 }
 
+sub('host.ninja', function()
+	set('outdir', '$outdir/host')
+	toolchain(config.host)
+	cflags{'-isystem $builddir/pkg/b3sum/include'}
+
+	lib('libcommon.a', {'fatal.c', 'parse.c', 'reallocarray.c'})
+	exe('fspec-hash', {'fspec-hash.c', 'libcommon.a', '$builddir/pkg/b3sum/host/libblake3.a'}, {'pkg/b3sum/headers'})
+end)
+
 lib('libcommon.a', {'fatal.c', 'parse.c', 'reallocarray.c'})
 
 exe('fspec-hash', {'fspec-hash.c', 'libcommon.a', '$builddir/pkg/b3sum/libblake3.a'}, {'pkg/b3sum/headers'})

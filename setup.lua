@@ -34,7 +34,7 @@ local function gen(gendir)
 		outdir=outdir,
 		inputs={
 			index={},
-			fspec={implicit={}},
+			fspec={},
 			gen={
 				'$basedir/ninja.lua',
 				'$basedir/sets.lua',
@@ -78,6 +78,7 @@ local function gen(gendir)
 		local out = outdir..'/local.fspec'
 		local tmp = out..'.tmp'
 		local f = assert(io.open(tmp, 'w'))
+		local srcs = {}
 		for _, path, fspec in sortedpairs(pkg.fspec) do
 			f:write(('/%s\n'):format(path))
 			for _, k in ipairs{'type', 'mode', 'source', 'target'} do
@@ -87,6 +88,10 @@ local function gen(gendir)
 				end
 			end
 			f:write('\n')
+			local src = fspec.source
+			if src then
+				srcs[#srcs + 1] = src
+			end
 		end
 		f:close()
 		if os.execute(('exec cmp -s %s %s'):format(tmp, out)) then
@@ -94,7 +99,8 @@ local function gen(gendir)
 		else
 			os.rename(tmp, out)
 		end
-		table.insert(pkg.inputs.fspec, '$outdir/local.fspec')
+		build('fspec-hash', '$outdir/local-hashed.fspec', {'$outdir/local.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-hash', srcs})
+		table.insert(pkg.inputs.fspec, '$outdir/local-hashed.fspec')
 	end
 	if next(pkg.inputs.index) then
 		build('cat', '$outdir/root.index', pkg.inputs.index, {
@@ -104,9 +110,6 @@ local function gen(gendir)
 		build('empty', '$outdir/root.index')
 	end
 	if next(pkg.inputs.fspec) then
-		if next(pkg.inputs.fspec.implicit) then
-			table.insert(pkg.inputs.fspec, {'|', pkg.inputs.fspec.implicit})
-		end
 		build('cat', '$outdir/root.fspec', pkg.inputs.fspec, {
 			description = '	FSPEC	$outdir/root.fspec',
 		})
