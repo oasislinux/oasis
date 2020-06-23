@@ -1,6 +1,6 @@
 cflags{
 	'-D NDEBUG',
-	'-D VERSION=2.7.2',
+	'-D VERSION=3.0.1',
 	'-D _POSIX_C_SOURCE=200809L',
 	'-I $srcdir/include',
 	'-include $dir/config.h',
@@ -28,6 +28,7 @@ exe('bin/bc', [[
 	src/(
 		args.c
 		data.c
+		file.c
 		lang.c
 		lex.c
 		main.c
