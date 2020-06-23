@@ -112,14 +112,17 @@ rule git-tree
 rule git-commit
   command = sh $basedir/scripts/commit.sh $repo $repo_branch $repo_tag $out
 
-rule git-archive
-  command = git -C $repo archive -o $$PWD/$out $repo_tag
-
 rule git-init
   command = git init $repo_flags $repo && touch $out
 
 rule fspec-hash
   command = $builddir/pkg/fspec-sync/host/fspec-hash <$in >$out
+
+rule fspec-sort
+  command = $builddir/pkg/fspec-sync/host/fspec-sort -p <$in >$out
+
+rule fspec-tar
+  command = $builddir/pkg/fspec-sync/host/fspec-tar <$in >$out
 
 rule fetch
   command = cd $basedir && sh $$OLDPWD/$script $gendir && touch $$OLDPWD/$out
