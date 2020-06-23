@@ -24,7 +24,7 @@ return {
 
 	-- host toolchain and flags
 	host={
-		cflags='-pipe',
+		cflags='-O2 -pipe',
 		ldflags='',
 	},
 
