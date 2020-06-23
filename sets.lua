@@ -25,6 +25,7 @@ return {
 		'sdhcp',
 		'sinit',
 		'skeleton',
+		'syslogd',
 		'tz',
 		'ubase',
 		'util-linux',

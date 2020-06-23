@@ -283,6 +283,9 @@
 [submodule "pkg/swc/src"]
 	path = pkg/swc/src
 	url = https://github.com/michaelforney/swc
+[submodule "pkg/syslogd/src"]
+	path = pkg/syslogd/src
+	url = https://github.com/oasislinux/syslogd.git
 [submodule "pkg/the_silver_searcher/src"]
 	path = pkg/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher
