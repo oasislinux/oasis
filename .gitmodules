@@ -39,9 +39,6 @@
 [submodule "pkg/cproc/src"]
 	path = pkg/cproc/src
 	url = https://git.sr.ht/~mcf/cproc
-[submodule "pkg/devd/src"]
-	path = pkg/devd/src
-	url = https://github.com/oasislinux/devd.git
 [submodule "pkg/dmenu/src"]
 	path = pkg/dmenu/src
 	url = git://git.suckless.org/dmenu
@@ -103,6 +100,9 @@
 	path = pkg/hostap/src
 	url = git://w1.fi/hostap.git
 	ignore = all
+[submodule "pkg/hotplugd/src"]
+	path = pkg/hotplugd/src
+	url = https://github.com/oasislinux/hotplugd.git
 [submodule "pkg/ii/src"]
 	path = pkg/ii/src
 	url = git://git.suckless.org/ii

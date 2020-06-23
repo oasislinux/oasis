@@ -6,7 +6,7 @@ cflags{
 
 pkg.deps = {'pkg/linux-headers/headers'}
 
-file('bin/devd',             '755', exe('devd',         {'devd.c'}))
-file('libexec/devd-trigger', '755', exe('devd-trigger', {'devd-trigger.c'}))
+file('bin/hotplugd',             '755', exe('hotplugd',         {'hotplugd.c'}))
+file('libexec/hotplugd-trigger', '755', exe('hotplugd-trigger', {'hotplugd-trigger.c'}))
 
 fetch 'git'
