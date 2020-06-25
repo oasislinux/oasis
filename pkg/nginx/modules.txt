@@ -8,6 +8,7 @@ http_core
 http_log
 http_upstream
 
+http_v2
 http_static
 http_autoindex
 http_index
@@ -20,6 +21,7 @@ http_ssl
 http_write_filter
 http_header_filter
 http_chunked_filter
+http_v2_filter
 http_range_header_filter
 http_gzip_filter
 http_postpone_filter

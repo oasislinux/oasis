@@ -20,7 +20,7 @@ http_core http/ngx_http_core_module.c
 http_log http/modules/ngx_http_log_module.c
 http_upstream http/ngx_http_upstream.c http/ngx_http_upstream_round_robin.c
 
-http_v2 http/v2/ngx_http_v2.c http/v2/ngx_http_v2_table.c http/v2/ngx_http_v2_encode.c http/v2/ngx_http_v2_huff_decode.c http/v2/ngx_http_v2/huff_encode.c http/v2/ngx_http_v2_module.c
+http_v2 http/v2/ngx_http_v2.c http/v2/ngx_http_v2_table.c http/v2/ngx_http_v2_encode.c http/v2/ngx_http_v2_huff_decode.c http/v2/ngx_http_v2_huff_encode.c http/v2/ngx_http_v2_module.c
 http_static http/modules/ngx_http_static_module.c
 http_gzip_static http/modules/ngx_http_gzip_static_module.c
 http_dav http/modules/ngx_http_dav_module.c

@@ -2,6 +2,7 @@ cflags{
 	'-I $dir',
 	'-I $srcdir/src/core',
 	'-I $srcdir/src/event',
+	'-I $srcdir/src/http/v2',
 	'-I $srcdir/src/os/unix',
 	'-isystem $builddir/pkg/linux-headers/include',
 }

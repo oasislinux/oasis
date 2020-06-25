@@ -82,6 +82,8 @@
 
 /* auto/modules */
 #define NGX_HTTP_CACHE 1
+#define NGX_HTTP_V2 1
+#define NGX_HTTP_HEADERS 1
 #define NGX_HTTP_GZIP 1
 #define NGX_CRYPT 1
 #define NGX_HTTP_SSL 1
