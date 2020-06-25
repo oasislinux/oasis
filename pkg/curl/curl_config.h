@@ -181,6 +181,7 @@
 /* #undef HAVE_PROTO_BSDSOCKET_H */
 #define HAVE_PTHREAD_H 1
 #define HAVE_PWD_H 1
+/* #undef HAVE_QUICHE_CONN_SET_QLOG_FD */
 /* #undef HAVE_QUICHE_H */
 /* #undef HAVE_RAND_EGD */
 #define HAVE_RECV 1
@@ -227,6 +228,7 @@
 #define HAVE_STRTOLL 1
 #define HAVE_STRUCT_SOCKADDR_STORAGE 1
 #define HAVE_STRUCT_TIMEVAL 1
+#define HAVE_SUSECONDS_T 1
 /* #undef HAVE_SYS_FILIO_H */
 #define HAVE_SYS_IOCTL_H 1
 #define HAVE_SYS_PARAM_H 1
@@ -261,9 +263,10 @@
 /* #undef HAVE_WINSOCK_H */
 /* #undef HAVE_WOLFSSH_SSH_H */
 /* #undef HAVE_WOLFSSLV3_CLIENT_METHOD */
+/* #undef HAVE_WOLFSSL_DES_SET_ODD_PARITY */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_WOLFSSL_USEALPN */
-/* #undef HAVE_WRITABLE_ARGV */
+#define HAVE_WRITABLE_ARGV 1
 #define HAVE_WRITEV 1
 /* #undef HAVE_WS2TCPIP_H */
 /* #undef HAVE_X509_H */
