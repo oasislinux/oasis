@@ -4,6 +4,7 @@ cflags{
 }
 
 build('cat', '$outdir/jconfigint.h', {
+	'$builddir/probe/HAVE__THREAD_LOCAL',
 	'$builddir/probe/HAVE___BUILTIN_CTZL',
 	'$dir/jconfigint.h',
 })
