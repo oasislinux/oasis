@@ -10,6 +10,7 @@ cflags{
 }
 
 build('cat', '$outdir/config/config.h', {
+	'$builddir/probe/HAVE___BUILTIN_CHOOSE_EXPR',
 	'$builddir/probe/HAVE___BUILTIN_CLZ',
 	'$dir/config.h',
 })
@@ -20,11 +21,12 @@ lib('libnasm.a', [[
 	stdlib/(snprintf.c vsnprintf.c strlcpy.c strnlen.c strrchrnul.c)
 	nasmlib/(
 		ver.c
-		crc64.c malloc.c errfile.c
-		md5c.c string.c
+		alloc.c asprintf.c errfile.c
+		crc64.c md5c.c
+		string.c nctype.c
 		file.c mmap.c ilog2.c
 		realpath.c path.c
-		filename.c srcfile.c
+		filename.c rlimit.c
 		zerobuf.c readnum.c bsi.c
 		rbtree.c hashtbl.c
 		raa.c saa.c
@@ -38,8 +40,8 @@ lib('libnasm.a', [[
 		disp8.c iflag.c
 	)
 	asm/(
-		error.c
-		float.c
+		error.c warnings.c
+		floats.c
 		directiv.c directbl.c
 		pragma.c
 		assemble.c labels.c parser.c
@@ -50,11 +52,11 @@ lib('libnasm.a', [[
 		segalloc.c
 		preproc-nop.c
 		rdstrnum.c
+		srcfile.c
 	)
 	macros/macros.c
 	output/(
 		outform.c outlib.c legacy.c
-		strtbl.c
 		nulldbg.c nullout.c
 		outbin.c outaout.c outcoff.c
 		outelf.c

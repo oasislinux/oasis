@@ -1,0 +1,3 @@
+int main(void) {
+	return __builtin_choose_expr(123, 1, 0);
+}
