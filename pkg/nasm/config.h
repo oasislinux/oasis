@@ -18,6 +18,8 @@
 #define CFLAGS_W 1
 #define CFLAGS_WALL 1
 #define CFLAGS_WC90_C99_COMPAT 1
+/* #undef CFLAGS_WC99_COMPAT */
+/* #undef CFLAGS_WC99_EXTENSIONS */
 /* #undef CFLAGS_WERROR */
 #define CFLAGS_WERROR_ATTRIBUTES 1
 #define CFLAGS_WERROR_COMMENT 1
@@ -66,6 +68,7 @@
 #define HAVE_FUNC_ATTRIBUTE_PURE 1
 #define HAVE_FUNC_ATTRIBUTE_RETURNS_NONNULL 1
 #define HAVE_FUNC_ATTRIBUTE_SENTINEL 1
+#define HAVE_FUNC_ATTRIBUTE_UNUSED 1
 #define HAVE_FUNC_PTR_ATTRIBUTE1_ALLOC_SIZE 1
 /* #undef HAVE_FUNC_PTR_ATTRIBUTE2_ALLOC_SIZE */
 #define HAVE_FUNC_PTR_ATTRIBUTE3_FORMAT 1
@@ -76,6 +79,7 @@
 /* #undef HAVE_FUNC_PTR_ATTRIBUTE_PURE */
 #define HAVE_FUNC_PTR_ATTRIBUTE_RETURNS_NONNULL 1
 #define HAVE_FUNC_PTR_ATTRIBUTE_SENTINEL 1
+#define HAVE_FUNC_PTR_ATTRIBUTE_UNUSED 1
 #define HAVE_GETGID 1
 #define HAVE_GETPAGESIZE 1
 #define HAVE_GETRLIMIT 1
@@ -289,6 +293,20 @@
 #  define unlikely_func_ptr __attribute__((cold))
 # else
 #  define unlikely_func_ptr
+# endif
+#endif
+#ifndef unused_func
+# ifdef HAVE_FUNC_ATTRIBUTE_UNUSED
+#  define unused_func __attribute__((unused))
+# else
+#  define unused_func
+# endif
+#endif
+#ifndef unused_func_ptr
+# ifdef HAVE_FUNC_PTR_ATTRIBUTE_UNUSED
+#  define unused_func_ptr __attribute__((unused))
+# else
+#  define unused_func_ptr
 # endif
 #endif
 #ifndef never_null
