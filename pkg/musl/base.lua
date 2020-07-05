@@ -1,6 +1,6 @@
 return {
 	srcs={
-		-- <cd src && printf "\t\t'%s',\n" src/*/*.c
+		-- <cd src && printf "\t\t'%s',\n" src/*/*.c src/malloc/mallocng/*.c
 		'src/aio/aio.c',
 		'src/aio/aio_suspend.c',
 		'src/aio/lio_listio.c',
@@ -302,14 +302,10 @@ return {
 		'src/locale/uselocale.c',
 		'src/locale/wcscoll.c',
 		'src/locale/wcsxfrm.c',
-		'src/malloc/aligned_alloc.c',
-		'src/malloc/donate.c',
-		'src/malloc/free.c',
-		'src/malloc/malloc.c',
-		'src/malloc/malloc_usable_size.c',
+		'src/malloc/calloc.c',
+		'src/malloc/lite_malloc.c',
 		'src/malloc/memalign.c',
 		'src/malloc/posix_memalign.c',
-		'src/malloc/realloc.c',
 		'src/malloc/replaced.c',
 		'src/math/__cos.c',
 		'src/math/__cosdf.c',
@@ -863,7 +859,6 @@ return {
 		'src/stdio/__stdio_seek.c',
 		'src/stdio/__stdio_write.c',
 		'src/stdio/__stdout_write.c',
-		'src/stdio/__string_read.c',
 		'src/stdio/__toread.c',
 		'src/stdio/__towrite.c',
 		'src/stdio/__uflow.c',
@@ -1327,6 +1322,12 @@ return {
 		'src/unistd/usleep.c',
 		'src/unistd/write.c',
 		'src/unistd/writev.c',
+		'src/malloc/mallocng/aligned_alloc.c',
+		'src/malloc/mallocng/donate.c',
+		'src/malloc/mallocng/free.c',
+		'src/malloc/mallocng/malloc.c',
+		'src/malloc/mallocng/malloc_usable_size.c',
+		'src/malloc/mallocng/realloc.c',
 	},
 	hdrs={
 		-- <cd src/include && printf "\t\t'%s',\n" *.h */*.h
