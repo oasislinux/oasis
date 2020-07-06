@@ -6,6 +6,7 @@
 #define DISABLE_MM_REPLACEMENT 1
 /* #undef DISABLE_THREAD_SUPPORT */
 #define HAVE_ACCEPT4 1
+/* #undef HAVE_AFUNIX_H */
 /* #undef HAVE_ARC4RANDOM */
 /* #undef HAVE_ARC4RANDOM_ADDRANDOM */
 /* #undef HAVE_ARC4RANDOM_BUF */
@@ -13,8 +14,6 @@
 #define HAVE_CLOCK_GETTIME 1
 /* #undef HAVE_DECL_CTL_KERN */
 /* #undef HAVE_DECL_KERN_ARND */
-/* #undef HAVE_DECL_KERN_RANDOM */
-/* #undef HAVE_DECL_RANDOM_UUID */
 /* #undef HAVE_DEVPOLL */
 #define HAVE_DLFCN_H 1
 #define HAVE_EPOLL 1
@@ -36,6 +35,7 @@
 #define HAVE_GETIFADDRS 1
 #define HAVE_GETNAMEINFO 1
 #define HAVE_GETPROTOBYNUMBER 1
+#define HAVE_GETRANDOM 1
 #define HAVE_GETSERVBYNAME 1
 #define HAVE_GETTIMEOFDAY 1
 #define HAVE_IFADDRS_H 1
@@ -44,8 +44,10 @@
 #define HAVE_INTTYPES_H 1
 #define HAVE_ISSETUGID 1
 /* #undef HAVE_KQUEUE */
+/* #undef HAVE_LIBWS2_32 */
 /* #undef HAVE_LIBZ */
 /* #undef HAVE_MACH_ABSOLUTE_TIME */
+/* #undef HAVE_MACH_MACH_H */
 /* #undef HAVE_MACH_MACH_TIME_H */
 #define HAVE_MEMORY_H 1
 #define HAVE_MMAP 1
@@ -55,7 +57,7 @@
 #define HAVE_NETINET_IN_H 1
 #define HAVE_NETINET_TCP_H 1
 /* #undef HAVE_OPENSSL */
-#define HAVE_OPENSSL_SSL_H 1
+/* #undef HAVE_OPENSSL_SSL_H */
 #define HAVE_PIPE 1
 #define HAVE_PIPE2 1
 #define HAVE_POLL_H 1
@@ -103,6 +105,7 @@
 #define HAVE_SYS_MMAN_H 1
 #define HAVE_SYS_PARAM_H 1
 /* #undef HAVE_SYS_QUEUE_H */
+#define HAVE_SYS_RANDOM_H 1
 #define HAVE_SYS_RESOURCE_H 1
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_SENDFILE_H 1
@@ -133,17 +136,19 @@
 #define HAVE_VASPRINTF 1
 /* #undef HAVE_WORKING_KQUEUE */
 /* #undef HAVE_ZLIB_H */
+/* #undef HAVE__GMTIME64 */
+/* #undef HAVE__GMTIME64_S */
 #define HAVE___FUNCTION__ 1
 #define HAVE___func__ 1
 #define LT_OBJDIR ".libs/"
-#define NUMERIC_VERSION 0x02010b00
+#define NUMERIC_VERSION 0x02010c00
 #define PACKAGE "libevent"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "libevent"
-#define PACKAGE_STRING "libevent 2.1.11-stable"
+#define PACKAGE_STRING "libevent 2.1.12-stable"
 #define PACKAGE_TARNAME "libevent"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.1.11-stable"
+#define PACKAGE_VERSION "2.1.12-stable"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 8
@@ -171,7 +176,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.1.11-stable"
+#define VERSION "2.1.12-stable"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
