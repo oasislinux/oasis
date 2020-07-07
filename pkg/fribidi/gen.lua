@@ -1,5 +1,6 @@
 cflags{
 	'-D HAVE_CONFIG_H',
+	'-D FRIBIDI_LIB_STATIC',
 	'-I $dir',
 	'-I $outdir',
 	'-I $outdir/include',
