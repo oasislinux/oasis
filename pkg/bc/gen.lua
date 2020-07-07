@@ -1,6 +1,6 @@
 cflags{
 	'-D NDEBUG',
-	'-D VERSION=3.0.1',
+	'-D VERSION=3.1.1',
 	'-D _POSIX_C_SOURCE=200809L',
 	'-I $srcdir/include',
 	'-include $dir/config.h',
@@ -47,6 +47,23 @@ exe('bin/bc', [[
 	$outdir/(bc_help.c dc_help.c lib.c lib2.c)
 ]])
 file('bin/bc', '755', '$outdir/bin/bc')
-man{'manuals/bc.1'}
+
+local opts = {}
+for line in iterlines('config.h', 1) do
+	local var, val = line:match('^define ([^ ]+) ([^ ]+)')
+	if var and val == '1' then
+		opts[var] = true
+	end
+end
+
+local manfile = ''
+if not opts.BC_ENABLE_EXTRA_MATH then manfile = manfile..'E' end
+if not opts.BC_ENABLE_HISTORY    then manfile = manfile..'H' end
+if not opts.BC_ENABLE_NLS        then manfile = manfile..'N' end
+if not opts.BC_ENABLE_PROMPT     then manfile = manfile..'P' end
+if manfile == ''                 then manfile = 'A' end
+
+build('copy', '$outdir/bc.1', '$srcdir/manuals/bc/'..manfile..'.1')
+man{'$outdir/bc.1'}
 
 fetch 'git'
