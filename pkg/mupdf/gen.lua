@@ -1,7 +1,6 @@
 cflags{
 	'-D NDEBUG',
-	'-Wall',
-	'-Wno-maybe-uninitialized',
+	'-Wall', '-Wno-maybe-uninitialized', '-Wno-stringop-overflow', '-Wno-format-overflow',
 	'-D FZ_ENABLE_JS=0',
 	-- HTML and EPUB require harfbuzz
 	'-D FZ_ENABLE_HTML=0',

@@ -35,6 +35,7 @@ fitz/draw-rasterize.c
 fitz/draw-scale-simple.c
 fitz/draw-unpack.c
 fitz/encode-basic.c
+fitz/encode-fax.c
 fitz/encodings.c
 fitz/error.c
 fitz/filter-basic.c
@@ -67,6 +68,7 @@ fitz/load-jxr.c
 fitz/load-png.c
 fitz/load-pnm.c
 fitz/load-tiff.c
+fitz/log.c
 fitz/memento.c
 fitz/memory.c
 fitz/noto.c
