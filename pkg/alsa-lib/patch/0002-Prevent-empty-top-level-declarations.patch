@@ -1,4 +1,4 @@
-From 1b477b68254face3b4e5d907a26210966bf8f27e Mon Sep 17 00:00:00 2001
+From ea66f2d20c3388de4d569eb2cd982ff4742def1a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 18:15:11 -0700
 Subject: [PATCH] Prevent empty top-level declarations
@@ -304,10 +304,10 @@ index 40d42643..f59c33f5 100644
 -SND_DLSYM_BUILD_VERSION(_snd_ctl_shm_open, SND_CONTROL_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_ctl_shm_open, SND_CONTROL_DLSYM_VERSION)
 diff --git a/src/dlmisc.c b/src/dlmisc.c
-index 5d672146..b5ff5025 100644
+index 1a60e0dd..0d3d4082 100644
 --- a/src/dlmisc.c
 +++ b/src/dlmisc.c
-@@ -171,8 +171,8 @@ void *INTERNAL(snd_dlopen_old)(const char *name, int mode)
+@@ -178,8 +178,8 @@ void *INTERNAL(snd_dlopen_old)(const char *name, int mode)
  }
  #endif
  
@@ -536,7 +536,7 @@ index 6a99452b..efd1c25a 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_dshare_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index c64df381..320325be 100644
+index 7904314c..8d7762aa 100644
 --- a/src/pcm/pcm_dsnoop.c
 +++ b/src/pcm/pcm_dsnoop.c
 @@ -898,5 +898,5 @@ int _snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
