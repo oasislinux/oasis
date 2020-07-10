@@ -1,0 +1,160 @@
+From 338e2553f39a37b3e2bd1d91cfaa4c336b85c3f0 Mon Sep 17 00:00:00 2001
+From: jca <jca@openbsd.org>
+Date: Tue, 7 Jul 2020 10:33:58 +0000
+Subject: [PATCH] Add support for set -o pipefail
+
+With the pipefail option set, the exit status of a pipeline is 0 if all
+commands succeed, or the return status of the rightmost command that
+fails.  This can help stronger error checking, but is not a silver
+bullet.  For example, commands will exhibit a non-zero exit status if
+they're killed by a SIGPIPE when writing to a pipe.  Yet pipefail was
+considered useful enough to be included in the next POSIX standard.
+
+This implementation remembers the value of the pipefail option when
+a pipeline is started, as described as option 1) in
+
+  https://www.austingroupbugs.net/view.php?id=789#c4102
+
+Requested by ajacoutot@, ok millert@
+---
+ jobs.c | 30 ++++++++++++++++++++++++++++--
+ ksh.1  | 12 +++++++++---
+ misc.c |  3 ++-
+ sh.h   |  3 ++-
+ 4 files changed, 41 insertions(+), 7 deletions(-)
+
+diff --git a/jobs.c b/jobs.c
+index f99c9eb..121c0cf 100644
+--- a/jobs.c
++++ b/jobs.c
+@@ -1,4 +1,4 @@
+-/*	$OpenBSD: jobs.c,v 1.61 2019/06/28 13:34:59 deraadt Exp $	*/
++/*	$OpenBSD: jobs.c,v 1.62 2020/07/07 10:33:58 jca Exp $	*/
+ 
+ /*
+  * Process and job control
+@@ -70,6 +70,7 @@ struct proc {
+ #define JF_REMOVE	0x200	/* flagged for removal (j_jobs()/j_notify()) */
+ #define JF_USETTYMODE	0x400	/* tty mode saved if process exits normally */
+ #define JF_SAVEDTTYPGRP	0x800	/* j->saved_ttypgrp is valid */
++#define JF_PIPEFAIL	0x1000	/* pipefail on when job was started */
+ 
+ typedef struct job Job;
+ struct job {
+@@ -421,6 +422,8 @@ exchild(struct op *t, int flags, volatile int *xerrok,
+ 		 */
+ 		j->flags = (flags & XXCOM) ? JF_XXCOM :
+ 		    ((flags & XBGND) ? 0 : (JF_FG|JF_USETTYMODE));
++		if (Flag(FPIPEFAIL))
++			j->flags |= JF_PIPEFAIL;
+ 		timerclear(&j->usrtime);
+ 		timerclear(&j->systime);
+ 		j->state = PRUNNING;
+@@ -1084,7 +1087,30 @@ j_waitj(Job *j,
+ 
+ 	j_usrtime = j->usrtime;
+ 	j_systime = j->systime;
+-	rv = j->status;
++
++	if (j->flags & JF_PIPEFAIL) {
++		Proc *p;
++		int status;
++
++		rv = 0;
++		for (p = j->proc_list; p != NULL; p = p->next) {
++			switch (p->state) {
++			case PEXITED:
++				status = WEXITSTATUS(p->status);
++				break;
++			case PSIGNALLED:
++				status = 128 + WTERMSIG(p->status);
++				break;
++			default:
++				status = 0;
++				break;
++			}
++			if (status)
++				rv = status;
++		}
++	} else
++		rv = j->status;
++
+ 
+ 	if (!(flags & JW_ASYNCNOTIFY) &&
+ 	    (!Flag(FMONITOR) || j->state != PSTOPPED)) {
+diff --git a/ksh.1 b/ksh.1
+index 7330e93..a91ab51 100644
+--- a/ksh.1
++++ b/ksh.1
+@@ -1,8 +1,8 @@
+-.\"	$OpenBSD: ksh.1,v 1.208 2019/11/26 22:49:01 jmc Exp $
++.\"	$OpenBSD: ksh.1,v 1.209 2020/07/07 10:33:58 jca Exp $
+ .\"
+ .\"	Public Domain
+ .\"
+-.Dd $Mdocdate: November 26 2019 $
++.Dd $Mdocdate: July 7 2020 $
+ .Dt KSH 1
+ .Os
+ .Sh NAME
+@@ -361,7 +361,9 @@ token to form pipelines, in which the standard output of each command but the
+ last is piped (see
+ .Xr pipe 2 )
+ to the standard input of the following command.
+-The exit status of a pipeline is that of its last command.
++The exit status of a pipeline is that of its last command, unless the
++.Ic pipefail
++option is set.
+ A pipeline may be prefixed by the
+ .Ql \&!
+ reserved word, which causes the exit status of the pipeline to be logically
+@@ -3664,6 +3666,10 @@ See the
+ and
+ .Ic pwd
+ commands above for more details.
++.It Ic pipefail
++The exit status of a pipeline is the exit status of the rightmost
++command in the pipeline that doesn't return 0, or 0 if all commands
++returned a 0 exit status.
+ .It Ic posix
+ Enable POSIX mode.
+ See
+diff --git a/misc.c b/misc.c
+index 0f8b336..c2ee2fa 100644
+--- a/misc.c
++++ b/misc.c
+@@ -1,4 +1,4 @@
+-/*	$OpenBSD: misc.c,v 1.73 2019/06/28 13:34:59 deraadt Exp $	*/
++/*	$OpenBSD: misc.c,v 1.74 2020/07/07 10:33:58 jca Exp $	*/
+ 
+ /*
+  * Miscellaneous functions
+@@ -147,6 +147,7 @@ const struct option sh_options[] = {
+ 	{ "notify",	'b',		OF_ANY },
+ 	{ "nounset",	'u',		OF_ANY },
+ 	{ "physical",	  0,		OF_ANY }, /* non-standard */
++	{ "pipefail",	  0,		OF_ANY }, /* non-standard */
+ 	{ "posix",	  0,		OF_ANY }, /* non-standard */
+ 	{ "privileged",	'p',		OF_ANY },
+ 	{ "restricted",	'r',	    OF_CMDLINE },
+diff --git a/sh.h b/sh.h
+index f9cdd53..2d65808 100644
+--- a/sh.h
++++ b/sh.h
+@@ -1,4 +1,4 @@
+-/*	$OpenBSD: sh.h,v 1.75 2019/02/20 23:59:17 schwarze Exp $	*/
++/*	$OpenBSD: sh.h,v 1.76 2020/07/07 10:33:58 jca Exp $	*/
+ 
+ /*
+  * Public Domain Bourne/Korn shell
+@@ -158,6 +158,7 @@ enum sh_flag {
+ 	FNOTIFY,	/* -b: asynchronous job completion notification */
+ 	FNOUNSET,	/* -u: using an unset var is an error */
+ 	FPHYSICAL,	/* -o physical: don't do logical cd's/pwd's */
++	FPIPEFAIL,	/* -o pipefail: all commands in pipeline can affect $? */
+ 	FPOSIX,		/* -o posix: be posixly correct */
+ 	FPRIVILEGED,	/* -p: use suid_profile */
+ 	FRESTRICTED,	/* -r: restricted shell */
+-- 
+2.27.0
+
