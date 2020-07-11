@@ -72,6 +72,7 @@ i386/qwerty/br-latin1-us.map
 i386/qwerty/by-cp1251.map
 i386/qwerty/by.map
 i386/qwerty/bywin-cp1251.map
+i386/qwerty/ca.map
 i386/qwerty/cf.map
 i386/qwerty/cz-cp1250.map
 i386/qwerty/cz-lat2-prog.map
@@ -178,6 +179,7 @@ i386/qwerty/ua.map
 i386/qwerty/uk.map
 i386/qwerty/us-acentos.map
 i386/qwerty/us.map
+i386/qwerty/us1.map
 i386/qwertz/croat.map
 i386/qwertz/cz-us-qwertz.map
 i386/qwertz/cz.map

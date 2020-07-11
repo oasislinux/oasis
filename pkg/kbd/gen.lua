@@ -1,6 +1,5 @@
 cflags{
-	'-Wall',
-	'-Wno-incompatible-pointer-types',  -- fixed in upcoming release
+	'-Wall', '-Wno-stringop-truncation',
 	string.format([[-D 'DATADIR="%s/share/kbd"']], config.prefix),
 	'-I $dir',
 	'-I $srcdir',
@@ -9,6 +8,7 @@ cflags{
 	'-I $srcdir/src/libkbdfile',
 	'-I $srcdir/src/libkeymap',
 	'-I $srcdir/src/libkeymap/keymap',
+	'-I $srcdir/src/libkfont',
 	'-isystem $builddir/pkg/linux-headers/include',
 }
 
@@ -16,24 +16,39 @@ pkg.deps = {
 	'pkg/linux-headers/headers',
 }
 
-lib('libcommon.a', 'src/libcommon/(getfd.c error.c version.c xmalloc.c)')
+lib('libcommon.a', 'src/libcommon/(getfd.c error.c version.c)')
 lib('libkbdfile.a', 'src/libkbdfile/(init.c kbdfile.c)')
-lib('libkeymap.a', [[src/libkeymap/(
-	analyze.c
-	array.c
-	common.c
-	diacr.c
-	dump.c
-	func.c
-	kernel.c
-	kmap.c
-	ksyms.c
-	loadkeys.c
-	modifiers.c
-	parser.c
-	summary.c
-)]])
-lib('libfont.a', 'src/(kdfontop.c kdmapop.c loadunimap.c psffontop.c utf8.c)')
+lib('libkeymap.a', [[
+	src/libkeymap/(
+		analyze.c
+		array.c
+		common.c
+		diacr.c
+		dump.c
+		func.c
+		kernel.c
+		kmap.c
+		ksyms.c
+		loadkeys.c
+		modifiers.c
+		parser.c
+		summary.c
+	)
+]])
+lib('libkfont.a', [[
+	src/libkfont/(
+		psffontop.c
+		psfxtable.c
+		context.c
+		unicode.c
+		utf8.c
+		kdmapop.c
+		loadunimap.c
+		mapscrn.c
+		setfont.c
+		kdfontop.c
+	)
+]])
 
 -- old: loadunimap mapscrn
 -- optional: clrunmap getunimap setlogcons setvesablank setpalette screendump
@@ -50,7 +65,7 @@ local tools = {
 	{'loadkeys',        '1', true},
 	{'openvt',          '1'},
 	{'psfxtable',       '1'},
-	{'setfont',         '8', true, {'src/setfont.c', 'src/mapscrn.c'}},
+	{'setfont',         '8', true},
 	{'setkeycodes',     '8'},
 	{'setvtrgb',        '8'},
 	{'showconsolefont', '8'},
@@ -58,8 +73,8 @@ local tools = {
 }
 
 for _, tool in ipairs(tools) do
-	local name, sect, subst, srcs = tool[1], tool[2], tool[3], tool[4]
-	exe(name, {srcs or 'src/'..name..'.c', 'libcommon.a', 'libfont.a', 'libkeymap.a', 'libkbdfile.a'})
+	local name, sect, subst = tool[1], tool[2], tool[3]
+	exe(name, {'src/'..name..'.c', 'libcommon.a', 'libkfont.a', 'libkeymap.a', 'libkbdfile.a'})
 	file('bin/'..name, '755', '$outdir/'..name)
 	if sect then
 		local manpage = string.format('docs/man/man%s/%s.%s', sect, name, sect)
