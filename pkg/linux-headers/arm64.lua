@@ -7,6 +7,7 @@ return {
 	'asm/fcntl.h',
 	'asm/hwcap.h',
 	'asm/kvm.h',
+	'asm/mman.h',
 	'asm/param.h',
 	'asm/perf_regs.h',
 	'asm/posix_types.h',
