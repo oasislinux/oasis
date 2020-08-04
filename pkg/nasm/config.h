@@ -8,12 +8,16 @@
 /* #undef CFLAGS_FNO_OMIT_FRAME_POINTER */
 /* #undef CFLAGS_FSANITIZE_ADDRESS */
 /* #undef CFLAGS_FSANITIZE_UNDEFINED */
+/* #undef CFLAGS_FTRIVIAL_AUTO_VAR_INIT_ZERO */
 #define CFLAGS_FVISIBILITY_HIDDEN 1
 #define CFLAGS_FWRAPV 1
 /* #undef CFLAGS_GGDB3 */
 /* #undef CFLAGS_O0 */
 #define CFLAGS_PEDANTIC 1
 /* #undef CFLAGS_PG */
+/* #undef CFLAGS_STD_C11 */
+#define CFLAGS_STD_C17 1
+/* #undef CFLAGS_STD_C99 */
 #define CFLAGS_U_STRICT_ANSI 1
 #define CFLAGS_W 1
 #define CFLAGS_WALL 1
@@ -100,6 +104,7 @@
 #define HAVE_REALPATH 1
 #define HAVE_SNPRINTF 1
 #define HAVE_STAT 1
+#define HAVE_STDARG_H 1
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDC_INLINE 1
 #define HAVE_STDINT_H 1
@@ -125,6 +130,7 @@
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TYPES_H 1
 /* #undef HAVE_S_ISREG */
+#define HAVE_TYPEOF 1
 #define HAVE_UINTPTR_T 1
 #define HAVE_UNISTD_H 1
 #define HAVE_VSNPRINTF 1
@@ -141,9 +147,7 @@
 /* #undef HAVE__FSEEKI64 */
 /* #undef HAVE__FSTATI64 */
 /* #undef HAVE__FULLPATH */
-/* #undef HAVE__SNPRINTF */
 /* #undef HAVE__STATI64 */
-/* #undef HAVE__VSNPRINTF */
 /* #undef HAVE___BSWAP_16 */
 /* #undef HAVE___BSWAP_32 */
 /* #undef HAVE___BSWAP_64 */
@@ -203,12 +207,15 @@
 # define __restrict__
 #endif
 /* #undef size_t */
+/* #undef snprintf */
+#define typeof __typeof__
 /* #undef uintptr_t */
-#ifndef noreturn_func
-# ifdef HAVE_FUNC_ATTRIBUTE_NORETURN
-#  define noreturn_func __attribute__((noreturn))
+/* #undef vsnprintf */
+#ifndef alloc_size_func2
+# ifdef HAVE_FUNC_ATTRIBUTE2_ALLOC_SIZE
+#  define alloc_size_func2(x1,x2) __attribute__((alloc_size(x1,x2)))
 # else
-#  define noreturn_func
+#  define alloc_size_func2(x1,x2)
 # endif
 #endif
 #ifndef alloc_size_func2_ptr
@@ -274,18 +281,18 @@
 #  define pure_func_ptr
 # endif
 #endif
+#ifndef noreturn_func
+# ifdef HAVE_FUNC_ATTRIBUTE_NORETURN
+#  define noreturn_func __attribute__((noreturn))
+# else
+#  define noreturn_func
+# endif
+#endif
 #ifndef unlikely_func
 # ifdef HAVE_FUNC_ATTRIBUTE_COLD
 #  define unlikely_func __attribute__((cold))
 # else
 #  define unlikely_func
-# endif
-#endif
-#ifndef noreturn_func_ptr
-# ifdef HAVE_FUNC_PTR_ATTRIBUTE_NORETURN
-#  define noreturn_func_ptr __attribute__((noreturn))
-# else
-#  define noreturn_func_ptr
 # endif
 #endif
 #ifndef unlikely_func_ptr
@@ -307,6 +314,13 @@
 #  define unused_func_ptr __attribute__((unused))
 # else
 #  define unused_func_ptr
+# endif
+#endif
+#ifndef noreturn_func_ptr
+# ifdef HAVE_FUNC_PTR_ATTRIBUTE_NORETURN
+#  define noreturn_func_ptr __attribute__((noreturn))
+# else
+#  define noreturn_func_ptr
 # endif
 #endif
 #ifndef never_null
@@ -349,12 +363,5 @@
 #  define alloc_size_func1_ptr(x1) __attribute__((alloc_size(x1)))
 # else
 #  define alloc_size_func1_ptr(x1)
-# endif
-#endif
-#ifndef alloc_size_func2
-# ifdef HAVE_FUNC_ATTRIBUTE2_ALLOC_SIZE
-#  define alloc_size_func2(x1,x2) __attribute__((alloc_size(x1,x2)))
-# else
-#  define alloc_size_func2(x1,x2)
 # endif
 #endif
