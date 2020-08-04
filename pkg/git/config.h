@@ -11,7 +11,7 @@
 #define GIT_LOCALE_PATH "/share/locale"
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
-#define GIT_VERSION "2.27.0"
+#define GIT_VERSION "2.28.0"
 #define HAVE_ALLOCA_H
 #define HAVE_PATHS_H
 #define HAVE_DEV_TTY

@@ -8,6 +8,7 @@ man1/git-archive.1
 man1/git-bisect.1
 man1/git-blame.1
 man1/git-branch.1
+man1/git-bugreport.1
 man1/git-bundle.1
 man1/git-cat-file.1
 man1/git-check-attr.1
@@ -166,6 +167,7 @@ man7/gitcredentials.7
 man7/gitcvs-migration.7
 man7/gitdiffcore.7
 man7/giteveryday.7
+man7/gitfaq.7
 man7/gitglossary.7
 man7/gitnamespaces.7
 man7/gitremote-helpers.7
