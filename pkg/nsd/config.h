@@ -1,6 +1,7 @@
 #define ATTR_NORETURN __attribute__((__noreturn__))
 #define BIND8_STATS /**/
 /* #undef CHROOTDIR */
+#define CONFCMDLINE "--prefix= --sbindir=/bin --with-zonesdir=/etc/nsd/zone --with-pidfile=/run/nsd.pid --without-ssl --without-libevent"
 #define CONFIGDIR "/etc/nsd"
 #define CONFIGFILE "/etc/nsd/nsd.conf"
 #define CPU_OR_THREE_ARGS 1
@@ -167,10 +168,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.3.1"
+#define PACKAGE_STRING "NSD 4.3.2"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.3.1"
+#define PACKAGE_VERSION "4.3.2"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */

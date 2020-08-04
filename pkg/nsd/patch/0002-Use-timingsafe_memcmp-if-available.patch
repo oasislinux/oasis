@@ -1,4 +1,4 @@
-From b7775ef04a2afebea2d3f98bcbc86454fb316624 Mon Sep 17 00:00:00 2001
+From 4d74fd369274f100e8aca1332ed59ca3c2eb8063 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 21 Aug 2018 15:52:34 -0700
 Subject: [PATCH] Use timingsafe_memcmp if available
@@ -9,10 +9,10 @@ Subject: [PATCH] Use timingsafe_memcmp if available
  2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index eaa20552..57098aba 100644
+index 6c6bb224..f955eb1f 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -654,7 +654,7 @@ AC_CHECK_SIZEOF(void*)
+@@ -657,7 +657,7 @@ AC_CHECK_SIZEOF(void*)
  AC_CHECK_SIZEOF(off_t)
  AC_CHECK_FUNCS([getrandom arc4random arc4random_uniform])
  AC_SEARCH_LIBS([setusercontext],[util],[AC_CHECK_HEADERS([login_cap.h])])
@@ -37,5 +37,5 @@ index 8b24fd1b..e75aa231 100644
  #define CRYPTO_memcmp memcmp_fixedtime
  int memcmp_fixedtime(const void *s1, const void *s2, size_t n)
 -- 
-2.26.1
+2.28.0
 
