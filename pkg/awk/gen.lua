@@ -20,7 +20,7 @@ build('maketab', '$outdir/proctab.c', {'$outdir/ytab.h', '|', '$outdir/maketab'}
 
 exe('awk', [[
 	b.c main.c parse.c tran.c lib.c run.c lex.c
-	$outdir/(gram.tab.c proctab.c)
+	$outdir/(awkgram.tab.c proctab.c)
 ]])
 file('bin/awk', '755', '$outdir/awk')
 man{'awk.1'}
