@@ -1,0 +1,44 @@
+From 8ba630f69445285a84daa356fc9bdb0dd059be40 Mon Sep 17 00:00:00 2001
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+Date: Mon, 15 Jun 2020 22:01:25 +1200
+Subject: [PATCH] io_uring: Remove struct io_cqring_offsets compile time
+ asserts
+
+The generated types/check-io_uring.c already checks the kernel's struct
+io_cqring_offsets for compatibility with the strace definition so
+there's no need for manual checks.
+
+* io_uring.c [HAVE_STRUCT_IO_CQRING_OFFSETS]: Remove static_asserts.
+---
+ io_uring.c | 15 ---------------
+ 1 file changed, 15 deletions(-)
+
+diff --git a/io_uring.c b/io_uring.c
+index cd183457..cfeea82b 100644
+--- a/io_uring.c
++++ b/io_uring.c
+@@ -18,21 +18,6 @@
+ #include "xlat/uring_enter_flags.h"
+ #include "xlat/uring_register_opcodes.h"
+ 
+-#ifdef HAVE_STRUCT_IO_CQRING_OFFSETS
+-# ifdef HAVE_STRUCT_IO_CQRING_OFFSETS_RESV
+-static_assert(offsetof(struct_io_cqring_offsets, resv)
+-             >= offsetof(struct io_cqring_offsets, resv),
+-             "struct io_cqring_offsets.resv offset mismatch"
+-             ", please update the decoder");
+-static_assert(sizeof_field(struct_io_cqring_offsets, resv)
+-             <= sizeof_field(struct io_cqring_offsets, resv),
+-             "struct io_cqring_offsets.resv size mismatch"
+-             ", please update the decoder");
+-# else /* !HAVE_STRUCT_IO_CQRING_OFFSETS_RESV */
+-static_assert(0, "struct io_cqring_offsets.resv is missing"
+-		 ", please update the decoder");
+-# endif
+-#endif /* HAVE_STRUCT_IO_CQRING_OFFSETS */
+ #ifdef HAVE_STRUCT_IO_URING_PARAMS
+ # ifdef HAVE_STRUCT_IO_URING_PARAMS_RESV
+ static_assert(offsetof(struct_io_uring_params, resv)
+-- 
+2.28.0
+
