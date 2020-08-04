@@ -5,10 +5,9 @@ cflags{
 	'-I $srcdir',
 }
 
-yacc('gram', 'awkgram.y')
-build('copy', '$outdir/ytab.h', '$outdir/gram.tab.h')
+yacc('awkgram', 'awkgram.y')
 
-pkg.deps = {'$outdir/ytab.h'}
+pkg.deps = {'$outdir/awkgram.tab.h'}
 
 sub('tools.ninja', function()
 	toolchain(config.host)
