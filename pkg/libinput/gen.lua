@@ -36,6 +36,7 @@ lib('libinput.a', [[
 		filter-low-dpi.c
 		filter-mouse.c
 		filter-touchpad.c
+		filter-touchpad-flat.c
 		filter-touchpad-x230.c
 		filter-tablet.c
 		filter-trackpoint.c
@@ -54,6 +55,7 @@ lib('libinput.a', [[
 ]])
 
 local quirks = {
+	-- <cd src/quirks && printf "\t'%s',\n" *.quirks
 	'10-generic-keyboard.quirks',
 	'10-generic-lid.quirks',
 	'10-generic-trackball.quirks',
