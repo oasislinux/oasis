@@ -1,4 +1,4 @@
-From d580bcc2f406db4980013e665441258fd42a4c2a Mon Sep 17 00:00:00 2001
+From feb76b8ad5f9f017496874424d3b602e38056674 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -36,10 +36,10 @@ index e27516f7..253d2141 100644
  #ifndef IFA_RTA
  #define IFA_RTA(r) \
 diff --git a/ip/ipfou.c b/ip/ipfou.c
-index ea126b08..f24586d4 100644
+index 9c697770..539e7ab7 100644
 --- a/ip/ipfou.c
 +++ b/ip/ipfou.c
-@@ -228,7 +228,7 @@ static int print_fou_mapping(struct nlmsghdr *n, void *arg)
+@@ -232,7 +232,7 @@ static int print_fou_mapping(struct nlmsghdr *n, void *arg)
  		return -1;
  
  	ghdr = NLMSG_DATA(n);
@@ -140,7 +140,7 @@ index e02d6294..48b19501 100644
  	}
  	memset(tb, 0, sizeof(struct rtattr *) * (max + 1));
 diff --git a/lib/utils.c b/lib/utils.c
-index c6f19ce1..d02bc32d 100644
+index c98021d6..063a0611 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
 @@ -1532,7 +1532,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
@@ -153,5 +153,5 @@ index c6f19ce1..d02bc32d 100644
  		len = size;
  
 -- 
-2.26.0
+2.28.0
 

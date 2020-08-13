@@ -20,7 +20,7 @@ lib('libnetlink.a', [[lib/(
 
 	utils.c rt_names.c ll_map.c ll_types.c ll_proto.c ll_addr.c
 	inet_proto.c namespace.c json_writer.c json_print.c
-	names.c color.c bpf.c exec.c fs.c
+	names.c color.c bpf.c exec.c fs.c cg_map.c
 	mpls_ntop.c mpls_pton.c
 )]])
 
@@ -37,7 +37,7 @@ exe('bin/ip', [[ip/(
 	iplink_bridge.c iplink_bridge_slave.c ipfou.c iplink_ipvlan.c
 	iplink_geneve.c iplink_vrf.c iproute_lwtunnel.c ipmacsec.c ipila.c
 	ipvrf.c iplink_xstats.c ipseg6.c iplink_netdevsim.c iplink_rmnet.c
-	ipnexthop.c
+	ipnexthop.c ipmptcp.c iplink_bareudp.c
 ) libnetlink.a]])
 file('bin/ip', '755', '$outdir/bin/ip')
 
@@ -48,7 +48,7 @@ exe('bin/bridge', [[
 file('bin/bridge', '755', '$outdir/bin/bridge')
 
 yacc('ssfilter', '$srcdir/misc/ssfilter.y')
-exe('bin/ss', {'misc/ss.c', '$outdir/ssfilter.tab.c', 'libnetlink.a'})
+exe('bin/ss', {'misc/ss.c', 'misc/ssfilter_check.c', '$outdir/ssfilter.tab.c', 'libnetlink.a'})
 file('bin/ss', '755', '$outdir/bin/ss')
 
 man(paths[[man/man8/(
