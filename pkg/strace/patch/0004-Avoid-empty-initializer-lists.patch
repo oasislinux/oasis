@@ -1,4 +1,4 @@
-From 21b9f7852ec9daf1a356c3b588b8053bed5b8383 Mon Sep 17 00:00:00 2001
+From 6b445913b3178e5056b13e73ab03cc05d2b47bc4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/bpf.c b/bpf.c
-index 469f809a..cad5ab05 100644
+index af830053..6b77f17f 100644
 --- a/bpf.c
 +++ b/bpf.c
 @@ -43,7 +43,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -42,10 +42,10 @@ index 469f809a..cad5ab05 100644
  
  		print_array(tcp, addr, len, &insn, sizeof(insn),
 diff --git a/net.c b/net.c
-index a58fa921..d5f2dc1d 100644
+index fa4638e7..7b049211 100644
 --- a/net.c
 +++ b/net.c
-@@ -729,7 +729,7 @@ print_tpacket_stats(struct tcb *const tcp, const kernel_ulong_t addr,
+@@ -655,7 +655,7 @@ print_tpacket_stats(struct tcb *const tcp, const kernel_ulong_t addr,
  static void
  print_icmp_filter(struct tcb *const tcp, const kernel_ulong_t addr, int len)
  {
@@ -68,7 +68,7 @@ index 788ef39b..2e5775d5 100644
  	bool is_set = false;
  
 diff --git a/signal.c b/signal.c
-index 3cb54bb3..bc03dae8 100644
+index d5d59105..d20317ca 100644
 --- a/signal.c
 +++ b/signal.c
 @@ -246,7 +246,7 @@ print_sigset_addr_len_limit(struct tcb *const tcp, const kernel_ulong_t addr,
@@ -81,7 +81,7 @@ index 3cb54bb3..bc03dae8 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/strace.c b/strace.c
-index 311e4d62..2a4e6001 100644
+index 4c96a98b..fed04fc9 100644
 --- a/strace.c
 +++ b/strace.c
 @@ -3359,7 +3359,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
@@ -199,12 +199,12 @@ index 2c4dae19..59bc2dd0 100644
  		.sigev_notify = 0xdefaced,
  		.sigev_signo = 0xfacefeed,
 diff --git a/tests/wait4.c b/tests/wait4.c
-index ea40577a..d25bd87a 100644
+index 048e6225..b7bf7c8a 100644
 --- a/tests/wait4.c
 +++ b/tests/wait4.c
-@@ -72,7 +72,7 @@ sprint_rusage(const struct rusage *const ru)
+@@ -89,7 +89,7 @@ k_wait4(const unsigned int pid, void const *wstatus,
  static pid_t
- do_wait4(pid_t pid, int *wstatus, int options, struct rusage *ru)
+ do_wait4(pid_t pid, int *wstatus, int options, kernel_rusage_t *ru)
  {
 -	sigset_t mask = {};
 +	sigset_t mask = {0};
@@ -212,7 +212,7 @@ index ea40577a..d25bd87a 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 diff --git a/tests/waitid.c b/tests/waitid.c
-index c58df5e2..730c58d7 100644
+index 8716fa08..4ec091f4 100644
 --- a/tests/waitid.c
 +++ b/tests/waitid.c
 @@ -130,7 +130,7 @@ do_waitid(const unsigned int idtype,
@@ -225,5 +225,5 @@ index c58df5e2..730c58d7 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.26.2
+2.28.0
 

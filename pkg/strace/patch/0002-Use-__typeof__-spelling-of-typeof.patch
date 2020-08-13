@@ -1,23 +1,23 @@
-From 0e52d3415b494f37166d31c523ce0609880c4825 Mon Sep 17 00:00:00 2001
+From f0030f1c023963e1d58f91026ab6f1d714a7af06 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:33:01 -0700
 Subject: [PATCH] Use __typeof__ spelling of typeof
 
 ---
  btrfs.c              |  8 ++++----
+ defs.h               |  4 ++--
  file_ioctl.c         |  4 ++--
  gcc_compat.h         |  2 +-
  list.h               | 10 +++++-----
  tests/btrfs.c        |  2 +-
  tests/fcntl-common.c |  2 +-
- util.c               |  4 ++--
  7 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/btrfs.c b/btrfs.c
-index dc5eff1a..693b1b7d 100644
+index 77ce151f..6e6cb721 100644
 --- a/btrfs.c
 +++ b/btrfs.c
-@@ -247,7 +247,7 @@ btrfs_print_logical_ino_container(struct tcb *tcp,
+@@ -248,7 +248,7 @@ btrfs_print_logical_ino_container(struct tcb *tcp,
  		tprints(", ...");
  	} else {
  		const uint64_t val_addr =
@@ -26,7 +26,7 @@ index dc5eff1a..693b1b7d 100644
  		uint64_t record[3];
  		tprints(", val=");
  		print_array(tcp, val_addr, container.elem_cnt / 3,
-@@ -286,7 +286,7 @@ btrfs_print_ino_path_container(struct tcb *tcp,
+@@ -287,7 +287,7 @@ btrfs_print_ino_path_container(struct tcb *tcp,
  		tprints(", ...");
  	} else {
  		uint64_t val_addr =
@@ -35,7 +35,7 @@ index dc5eff1a..693b1b7d 100644
  		uint64_t offset;
  		tprints(", val=");
  		print_array(tcp, val_addr, container.elem_cnt,
-@@ -319,7 +319,7 @@ btrfs_print_qgroup_inherit(struct tcb *const tcp, const kernel_ulong_t qgi_addr)
+@@ -320,7 +320,7 @@ btrfs_print_qgroup_inherit(struct tcb *const tcp, const kernel_ulong_t qgi_addr)
  	} else {
  		uint64_t record;
  		tprints(", qgroups=");
@@ -44,7 +44,7 @@ index dc5eff1a..693b1b7d 100644
  			    inherit.num_qgroups, &record, sizeof(record),
  			    tfetch_mem, print_uint64_array_member, 0);
  	}
-@@ -1149,7 +1149,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+@@ -1139,7 +1139,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
  		} else {
  			struct btrfs_ioctl_space_info info;
  			tprints(", spaces=");
@@ -53,11 +53,26 @@ index dc5eff1a..693b1b7d 100644
  				    args.total_spaces,
  				    &info, sizeof(info), tfetch_mem,
  				    print_btrfs_ioctl_space_info, 0);
+diff --git a/defs.h b/defs.h
+index 3fd8cba1..08e85fed 100644
+--- a/defs.h
++++ b/defs.h
+@@ -1699,8 +1699,8 @@ scno_is_valid(kernel_ulong_t scno)
+ 
+ #define ILOG2_ITER_(val_, ret_, bit_)					\
+ 	do {								\
+-		typeof(ret_) shift_ =					\
+-			((val_) > ((((typeof(val_)) 1)			\
++		__typeof__(ret_) shift_ =				\
++			((val_) > ((((__typeof__(val_)) 1)		\
+ 				   << (1 << (bit_))) - 1)) << (bit_);	\
+ 		(val_) >>= shift_;					\
+ 		(ret_) |= shift_;					\
 diff --git a/file_ioctl.c b/file_ioctl.c
-index 94cb71f8..eed79727 100644
+index d9a07ab0..63c2bcb3 100644
 --- a/file_ioctl.c
 +++ b/file_ioctl.c
-@@ -164,7 +164,7 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
+@@ -157,7 +157,7 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
  		if (abbrev(tcp) && args.dest_count > count)
  			limit = &count;
  
@@ -66,7 +81,7 @@ index 94cb71f8..eed79727 100644
  				 args.dest_count, &info, sizeof(info),
  				 tfetch_mem,
  				 print_file_dedupe_range_info, limit);
-@@ -212,7 +212,7 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
+@@ -202,7 +202,7 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
  			struct fiemap_extent fe;
  			tprints(", fm_extents=");
  			print_array(tcp,
@@ -156,21 +171,6 @@ index 27694326..46667e4e 100644
  #else
  # define TYPEOF_FLOCK_OFF_T off_t
  #endif
-diff --git a/util.c b/util.c
-index 59696b58..6eda524d 100644
---- a/util.c
-+++ b/util.c
-@@ -1122,8 +1122,8 @@ dumpiov_upto(struct tcb *const tcp, const int len, const kernel_ulong_t addr,
- 
- #define ILOG2_ITER_(val_, ret_, bit_)					\
- 	do {								\
--		typeof(ret_) shift_ =					\
--			((val_) > ((((typeof(val_)) 1)			\
-+		__typeof__(ret_) shift_ =				\
-+			((val_) > ((((__typeof__(val_)) 1)		\
- 				   << (1 << (bit_))) - 1)) << (bit_);	\
- 		(val_) >>= shift_;					\
- 		(ret_) |= shift_;					\
 -- 
-2.26.2
+2.28.0
 

@@ -1,4 +1,4 @@
-From 1626ee384c34018d4d0f2c887cfdca05bccec2ff Mon Sep 17 00:00:00 2001
+From a5642a0735182fca95b8a1191df91233f88393a0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -59,10 +59,10 @@ index 0f0e296d..4449f857 100644
  
  	tprints("]");
 diff --git a/sockaddr.c b/sockaddr.c
-index b6b9aa7d..948fa517 100644
+index b0046331..35e36392 100644
 --- a/sockaddr.c
 +++ b/sockaddr.c
-@@ -475,7 +475,7 @@ print_sockaddr_data_ll(const void *const buf, const int addrlen)
+@@ -481,7 +481,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
  static void
  print_sockaddr_data_raw(const void *const buf, const int addrlen)
  {
@@ -107,5 +107,5 @@ index 59af8641..3ff59781 100644
  		len -= m;
  	}
 -- 
-2.27.0
+2.28.0
 
