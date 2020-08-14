@@ -6,6 +6,7 @@ Generated with
 	./configure \
 		--target=x86_64-linux-musl \
 		--disable-gold \
+		--disable-libctf \
 		--disable-nls \
 		--disable-plugins \
 		--enable-default-hash-style=gnu \

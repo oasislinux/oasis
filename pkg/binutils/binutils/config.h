@@ -6,7 +6,7 @@
 /* #undef C_ALLOCA */
 #define DEFAULT_AR_DETERMINISTIC 1
 #define DEFAULT_STRINGS_ALL 1
-#define ENABLE_LIBCTF 1
+/* #undef ENABLE_LIBCTF */
 /* #undef ENABLE_NLS */
 #define EXECUTABLE_SUFFIX ""
 #define HAVE_ALLOCA 1

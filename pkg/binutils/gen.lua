@@ -30,7 +30,6 @@ sub('libiberty.ninja', function()
 		regex.c cplus-dem.c cp-demangle.c
 		md5.c sha1.c alloca.c
 		argv.c
-		bsearch_r.c
 		choose-temp.c concat.c
 		cp-demint.c crc32.c d-demangle.c
 		dwarfnames.c dyn-string.c
@@ -61,26 +60,6 @@ sub('libiberty.ninja', function()
 		xstrerror.c xstrndup.c
 		xvasprintf.c
 	)]])
-end)
-
-sub('libctf.ninja', function()
-	cflags{
-		'-I $dir/libctf',
-		'-I $srcdir/libctf',
-	}
-	-- src/libctf/Makefile.am:/^libctf_nobfd_la_SOURCES
-	lib('libctf.a', [[
-		libctf/(
-			ctf-archive.c ctf-dump.c ctf-create.c ctf-decl.c ctf-error.c
-			ctf-hash.c ctf-labels.c ctf-link.c ctf-lookup.c ctf-open.c
-			ctf-string.c ctf-subr.c ctf-types.c ctf-util.c
-			ctf-qsort_r.c
-
-			ctf-open-bfd.c
-		)
-		libiberty.a
-		$builddir/pkg/zlib/libz.a
-	]])
 end)
 
 sub('bfd.ninja', function()
@@ -215,7 +194,6 @@ sub('binutils.ninja', function()
 			dwarf.c
 		)
 		libbfd.a.d
-		libctf.a.d
 		libiberty.a
 	]])
 
@@ -355,7 +333,6 @@ sub('ld.ninja', function()
 				ldelf.c ldelfgen.c
 			)
 			libbfd.a.d
-			libctf.a.d
 		]],
 		srcs,
 	}, deps)
