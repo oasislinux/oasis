@@ -1,0 +1,57 @@
+From 8482f0d8fb9196755bcbe3466ac592f94e78345a Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 14 Aug 2020 00:15:58 -0700
+Subject: [PATCH] Switch back to arc4random_buf
+
+This partially reverts commit 04ad4ecc7b4b5db1bbe10372a6820ed88e2799e8.
+---
+ bounce.c  | 9 +++------
+ configure | 2 +-
+ 2 files changed, 4 insertions(+), 7 deletions(-)
+
+diff --git a/bounce.c b/bounce.c
+index 8f8d38f..21dddce 100644
+--- a/bounce.c
++++ b/bounce.c
+@@ -31,7 +31,6 @@
+ #include <fcntl.h>
+ #include <getopt.h>
+ #include <limits.h>
+-#include <openssl/rand.h>
+ #include <poll.h>
+ #include <pwd.h>
+ #include <signal.h>
+@@ -61,14 +60,12 @@
+ bool verbose;
+ 
+ static void hashPass(void) {
++	void arc4random_buf(void *, size_t);
++	char *pass = getpass("Password: ");
+ 	byte rand[12];
+-	int n = RAND_bytes(rand, sizeof(rand));
+-	if (n < 1) errx(EX_OSERR, "RAND_bytes failure");
+-
++	arc4random_buf(rand, sizeof(rand));
+ 	char salt[3 + BASE64_SIZE(sizeof(rand))] = "$6$";
+ 	base64(&salt[3], rand, sizeof(rand));
+-
+-	char *pass = getpass("Password: ");
+ 	printf("%s\n", crypt(pass, salt));
+ }
+ 
+diff --git a/configure b/configure
+index 5911471..0fe0f97 100755
+--- a/configure
++++ b/configure
+@@ -32,7 +32,7 @@ done
+ 
+ case "$(uname)" in
+ 	(FreeBSD)
+-		ldlibs -lcrypt -lcrypto
++		ldlibs -lcrypt
+ 		config libtls
+ 		defstr OPENSSL_BIN /usr/bin/openssl
+ 		defstr CERTBOT_PATH /usr/local/etc/letsencrypt
+-- 
+2.28.0
+
