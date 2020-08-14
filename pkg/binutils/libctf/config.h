@@ -1,7 +1,11 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
+/* #undef ENABLE_NLS */
 #define HAVE_BFD_ELF 1
 #define HAVE_BYTESWAP_H 1
 #define HAVE_DECL_ASPRINTF 1
+#define HAVE_DECL_BSWAP_16 1
+#define HAVE_DECL_BSWAP_32 1
+#define HAVE_DECL_BSWAP_64 1
 #define HAVE_DLFCN_H 1
 #define HAVE_ENDIAN_H 1
 #define HAVE_GETPAGESIZE 1

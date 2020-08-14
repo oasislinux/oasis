@@ -1,4 +1,4 @@
-From 7ae72f3ab19b802de9cc290d2f8aa0cb8bead54b Mon Sep 17 00:00:00 2001
+From eabd6eb5545fc2e468834030b5e6dc41e774d1a6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 19 May 2019 13:48:45 -0700
 Subject: [PATCH] bfd: Don't use long double if not available
@@ -8,10 +8,10 @@ Subject: [PATCH] bfd: Don't use long double if not available
  1 file changed, 6 insertions(+)
 
 diff --git a/bfd/bfd.c b/bfd/bfd.c
-index b1050626b6..b3d0b67fac 100644
+index 538bdfa5d7..b05387162f 100644
 --- a/bfd/bfd.c
 +++ b/bfd/bfd.c
-@@ -854,7 +854,9 @@ union _bfd_doprnt_args
+@@ -858,7 +858,9 @@ union _bfd_doprnt_args
    long l;
    long long ll;
    double d;
@@ -21,7 +21,7 @@ index b1050626b6..b3d0b67fac 100644
    void *p;
    enum
    {
-@@ -863,7 +865,9 @@ union _bfd_doprnt_args
+@@ -867,7 +869,9 @@ union _bfd_doprnt_args
      Long,
      LongLong,
      Double,
@@ -31,7 +31,7 @@ index b1050626b6..b3d0b67fac 100644
      Ptr
    } type;
  };
-@@ -1339,9 +1343,11 @@ error_handler_internal (const char *fmt, va_list ap)
+@@ -1343,9 +1347,11 @@ error_handler_internal (const char *fmt, va_list ap)
  	case Double:
  	  args[i].d = va_arg (ap, double);
  	  break;
@@ -44,5 +44,5 @@ index b1050626b6..b3d0b67fac 100644
  	  args[i].p = va_arg (ap, void *);
  	  break;
 -- 
-2.25.1
+2.28.0
 

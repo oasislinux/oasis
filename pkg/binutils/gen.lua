@@ -1,4 +1,4 @@
-local version = setmetatable({2, 34}, {__index=function() return 0 end})
+local version = setmetatable({2, 35}, {__index=function() return 0 end})
 local defvec = 'x86_64_elf64_vec'
 local selvecs = {[defvec]=true, i386_elf32_vec=true}
 local selarchs = {bfd_i386_arch=true}
@@ -30,6 +30,7 @@ sub('libiberty.ninja', function()
 		regex.c cplus-dem.c cp-demangle.c
 		md5.c sha1.c alloca.c
 		argv.c
+		bsearch_r.c
 		choose-temp.c concat.c
 		cp-demint.c crc32.c d-demangle.c
 		dwarfnames.c dyn-string.c
@@ -348,7 +349,7 @@ sub('ld.ninja', function()
 		paths[[
 			ld/(
 				ldgram.c ldlex-wrapper.c lexsup.c ldlang.c mri.c ldctor.c ldmain.c.o
-				ldwrite.c ldexp.c ldemul.c ldver.c ldmisc.c ldfile.c ldcref.c
+				ldwrite.c ldexp.c ldemul.c ldver.c ldmisc.c ldfile.c ldcref.c plugin.c
 				ldbuildid.c
 
 				ldelf.c ldelfgen.c

@@ -1,4 +1,4 @@
-From b8be1a9aa4a1235d5ec969690d1d6ff93d08eaa2 Mon Sep 17 00:00:00 2001
+From f68705915679bbb5e42d553a7f4b284830035502 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 17 Apr 2019 16:44:05 -0700
 Subject: [PATCH] libiberty: Implement pex_unix_exec_child using posix_spawn
@@ -35,10 +35,10 @@ index f7052b5d95..ce79a9e77f 100644
  #undef HAVE_STDINT_H
  
 diff --git a/libiberty/configure b/libiberty/configure
-index 7a34dabec3..ecac4db0fb 100755
+index 1f8e23f0d2..001b3d2980 100755
 --- a/libiberty/configure
 +++ b/libiberty/configure
-@@ -5288,7 +5288,7 @@ host_makefile_frag=${frag}
+@@ -5467,7 +5467,7 @@ host_makefile_frag=${frag}
  # It's OK to check for header files.  Although the compiler may not be
  # able to link anything, it had better be able to at least compile
  # something.
@@ -47,7 +47,7 @@ index 7a34dabec3..ecac4db0fb 100755
  do :
    as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
  ac_fn_c_check_header_preproc "$LINENO" "$ac_header" "$as_ac_Header"
-@@ -5797,9 +5797,9 @@ funcs="$funcs setproctitle"
+@@ -5976,9 +5976,9 @@ funcs="$funcs setproctitle"
  vars="sys_errlist sys_nerr sys_siglist"
  
  checkfuncs="__fsetlocking canonicalize_file_name dup3 getrlimit getrusage \
@@ -60,7 +60,7 @@ index 7a34dabec3..ecac4db0fb 100755
  
  # These are neither executed nor required, but they help keep
  # autoheader happy without adding a bunch of text to acconfig.h.
-@@ -5813,7 +5813,7 @@ if test "x" = "y"; then
+@@ -5992,7 +5992,7 @@ if test "x" = "y"; then
      index insque \
      memchr memcmp memcpy memmem memmove memset mkstemps \
      on_exit \
@@ -70,10 +70,10 @@ index 7a34dabec3..ecac4db0fb 100755
      sbrk setenv setproctitle setrlimit sigsetmask snprintf spawnve spawnvpe \
       stpcpy stpncpy strcasecmp strchr strdup \
 diff --git a/libiberty/configure.ac b/libiberty/configure.ac
-index f1ce76010c..9220ae2837 100644
+index 4e2599c14a..f3323c33a2 100644
 --- a/libiberty/configure.ac
 +++ b/libiberty/configure.ac
-@@ -267,7 +267,7 @@ AC_SUBST_FILE(host_makefile_frag)
+@@ -270,7 +270,7 @@ AC_SUBST_FILE(host_makefile_frag)
  # It's OK to check for header files.  Although the compiler may not be
  # able to link anything, it had better be able to at least compile
  # something.
@@ -82,7 +82,7 @@ index f1ce76010c..9220ae2837 100644
  AC_HEADER_SYS_WAIT
  AC_HEADER_TIME
  
-@@ -390,9 +390,9 @@ funcs="$funcs setproctitle"
+@@ -393,9 +393,9 @@ funcs="$funcs setproctitle"
  vars="sys_errlist sys_nerr sys_siglist"
  
  checkfuncs="__fsetlocking canonicalize_file_name dup3 getrlimit getrusage \
@@ -95,7 +95,7 @@ index f1ce76010c..9220ae2837 100644
  
  # These are neither executed nor required, but they help keep
  # autoheader happy without adding a bunch of text to acconfig.h.
-@@ -406,7 +406,7 @@ if test "x" = "y"; then
+@@ -409,7 +409,7 @@ if test "x" = "y"; then
      index insque \
      memchr memcmp memcpy memmem memmove memset mkstemps \
      on_exit \
@@ -218,5 +218,5 @@ index 684a49ace6..25823cedd6 100644
  
  /* Subroutine of pex_unix_exec_child.  Move OLD_FD to a new file descriptor
 -- 
-2.25.1
+2.28.0
 

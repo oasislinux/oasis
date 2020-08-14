@@ -96,10 +96,10 @@
 #define PACKAGE "bfd"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "bfd"
-#define PACKAGE_STRING "bfd 2.34"
+#define PACKAGE_STRING "bfd 2.35"
 #define PACKAGE_TARNAME "bfd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.34"
+#define PACKAGE_VERSION "2.35"
 /* #undef SIZEOF_CHAR */
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 8
@@ -131,7 +131,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.34"
+#define VERSION "2.35"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif

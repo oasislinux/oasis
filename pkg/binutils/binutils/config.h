@@ -6,6 +6,7 @@
 /* #undef C_ALLOCA */
 #define DEFAULT_AR_DETERMINISTIC 1
 #define DEFAULT_STRINGS_ALL 1
+#define ENABLE_LIBCTF 1
 /* #undef ENABLE_NLS */
 #define EXECUTABLE_SUFFIX ""
 #define HAVE_ALLOCA 1
@@ -64,10 +65,10 @@
 #define PACKAGE "binutils"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "binutils"
-#define PACKAGE_STRING "binutils 2.34"
+#define PACKAGE_STRING "binutils 2.35"
 #define PACKAGE_TARNAME "binutils"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.34"
+#define PACKAGE_VERSION "2.35"
 #define SIZEOF_LONG 8
 #define SIZEOF_LONG_LONG 8
 /* #undef STACK_DIRECTION */
@@ -91,7 +92,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.34"
+#define VERSION "2.35"
 /* #undef YYTEXT_POINTER */
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
