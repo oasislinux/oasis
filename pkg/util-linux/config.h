@@ -5,6 +5,7 @@
 #define AGETTY_RELOAD 1
 #define CHFN_CHSH_PASSWORD 1
 #define CONFIG_ADJTIME_PATH "/etc/adjtime"
+/* #undef CRYPTSETUP_VIA_DLOPEN */
 /* #undef ENABLE_NLS */
 #define FS_SEARCH_PATH "/bin"
 /* #undef HAVE_ASM_IO_H */
@@ -16,6 +17,7 @@
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_CPU_SET_T 1
 /* #undef HAVE_CRYPTSETUP */
+/* #undef HAVE_CRYPT_ACTIVATE_BY_SIGNED_KEY */
 #define HAVE_CRYPT_H 1
 /* #undef HAVE_DCGETTEXT */
 #define HAVE_DECL_CPU_ALLOC 1
@@ -68,6 +70,7 @@
 /* #undef HAVE_LIBBLKID */
 /* #undef HAVE_LIBCAP_NG */
 /* #undef HAVE_LIBCRYPT */
+/* #undef HAVE_LIBECONF */
 /* #undef HAVE_LIBMOUNT */
 /* #undef HAVE_LIBNCURSES */
 /* #undef HAVE_LIBNCURSESW */
@@ -100,11 +103,9 @@
 #define HAVE_LINUX_VERSION_H 1
 #define HAVE_LINUX_WATCHDOG_H 1
 /* #undef HAVE_LLSEEK */
-/* #undef HAVE_LLSEEK_PROTOTYPE */
 #define HAVE_LOCALE_H 1
 /* #undef HAVE_LOFF_T */
-#define HAVE_LSEEK64 1
-#define HAVE_LSEEK64_PROTOTYPE 1
+/* #undef HAVE_MAGIC */
 #define HAVE_MEMORY_H 1
 #define HAVE_MEMPCPY 1
 #define HAVE_MKOSTEMP 1
@@ -231,11 +232,11 @@
 #define HAVE___FPURGE 1
 #define HAVE___PROGNAME 1
 /* #undef HAVE___SECURE_GETENV */
-#define LIBBLKID_DATE "20-May-2020"
-#define LIBBLKID_VERSION "2.35.2"
-#define LIBFDISK_VERSION "2.35.2"
-#define LIBMOUNT_VERSION "2.35.2"
-#define LIBSMARTCOLS_VERSION "2.35.2"
+#define LIBBLKID_DATE "23-Jul-2020"
+#define LIBBLKID_VERSION "2.36.0"
+#define LIBFDISK_VERSION "2.36.0"
+#define LIBMOUNT_VERSION "2.36.0"
+#define LIBSMARTCOLS_VERSION "2.36.0"
 /* #undef LOGIN_CHOWN_VCS */
 /* #undef LOGIN_STAT_MAIL */
 #define LT_OBJDIR ".libs/"
@@ -245,10 +246,10 @@
 #define PACKAGE "util-linux"
 #define PACKAGE_BUGREPORT "kzak@redhat.com"
 #define PACKAGE_NAME "util-linux"
-#define PACKAGE_STRING "util-linux 2.35.2"
+#define PACKAGE_STRING "util-linux 2.36"
 #define PACKAGE_TARNAME "util-linux"
 #define PACKAGE_URL "http://www.kernel.org/pub/linux/utils/util-linux/"
-#define PACKAGE_VERSION "2.35.2"
+#define PACKAGE_VERSION "2.36"
 #define PG_BELL 1
 #define STDC_HEADERS 1
 /* #undef SYS_fallocate */
@@ -289,7 +290,8 @@
 #endif
 #define USE_TTY_GROUP 1
 /* #undef USE_USRDIR_PATHS_ONLY */
-#define VERSION "2.35.2"
+/* #undef USE_VENDORDIR */
+#define VERSION "2.36"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

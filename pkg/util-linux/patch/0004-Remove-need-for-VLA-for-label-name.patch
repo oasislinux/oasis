@@ -1,4 +1,4 @@
-From 40ca588931ea2ef57ce2c44a3b92bf036fae827a Mon Sep 17 00:00:00 2001
+From 29065cab257849cec348bf72afcc64885032130c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 18 Jun 2019 11:54:57 -0700
 Subject: [PATCH] Remove need for VLA for label name
@@ -10,10 +10,10 @@ Subject: [PATCH] Remove need for VLA for label name
  3 files changed, 8 insertions(+), 10 deletions(-)
 
 diff --git a/disk-utils/fdisk-list.c b/disk-utils/fdisk-list.c
-index 6bc52d704..66c04fb6a 100644
+index 8cc116281..62cc3471b 100644
 --- a/disk-utils/fdisk-list.c
 +++ b/disk-utils/fdisk-list.c
-@@ -464,19 +464,15 @@ void list_available_columns(FILE *out)
+@@ -469,19 +469,15 @@ void list_available_columns(FILE *out)
  static int fieldname_to_id(const char *name, size_t namesz)
  {
  	const struct fdisk_field *fl;
@@ -37,7 +37,7 @@ index 6bc52d704..66c04fb6a 100644
  	}
  	return fdisk_field_get_id(fl);
 diff --git a/libfdisk/src/label.c b/libfdisk/src/label.c
-index a18cdeaff..a976d3650 100644
+index 98ab475bf..381a3f83b 100644
 --- a/libfdisk/src/label.c
 +++ b/libfdisk/src/label.c
 @@ -223,12 +223,14 @@ const struct fdisk_field *fdisk_label_get_field(const struct fdisk_label *lb, in
@@ -66,10 +66,10 @@ index a18cdeaff..a976d3650 100644
  	}
  
 diff --git a/libfdisk/src/libfdisk.h.in b/libfdisk/src/libfdisk.h.in
-index 0669c0a7c..c7bc5b6d4 100644
+index 374661982..2c0d9c285 100644
 --- a/libfdisk/src/libfdisk.h.in
 +++ b/libfdisk/src/libfdisk.h.in
-@@ -425,7 +425,7 @@ extern int fdisk_label_get_fields_ids_all(
+@@ -463,7 +463,7 @@ extern int fdisk_label_get_fields_ids_all(
  extern const struct fdisk_field *fdisk_label_get_field(const struct fdisk_label *lb, int id);
  extern const struct fdisk_field *fdisk_label_get_field_by_name(
  			const struct fdisk_label *lb,
@@ -79,5 +79,5 @@ index 0669c0a7c..c7bc5b6d4 100644
  extern void fdisk_label_set_changed(struct fdisk_label *lb, int changed);
  extern int fdisk_label_is_changed(const struct fdisk_label *lb);
 -- 
-2.25.0
+2.28.0
 

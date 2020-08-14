@@ -1,4 +1,4 @@
-set('version', '2.35.2')
+set('version', '2.36.0')
 cflags{
 	'-include $dir/config.h',
 	'-I $outdir',
@@ -40,6 +40,7 @@ lib('libcommon.a', [[
 		crc32c.c
 		env.c
 		idcache.c
+		encode.c
 		fileutils.c
 		ismounted.c
 		mangle.c

@@ -1,4 +1,4 @@
-From eed6c30243fef046d6079c5c84266885268d2fcd Mon Sep 17 00:00:00 2001
+From abcdd92972cc92840e8db22d7018c44dbb9ec2f4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 23:41:53 -0700
 Subject: [PATCH] Use MAXIMUM_PARTS instead of VLA
@@ -10,10 +10,10 @@ static array length.
  1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/libfdisk/src/dos.c b/libfdisk/src/dos.c
-index 4a2cd946b..badc7ef28 100644
+index 7a1f6ea34..967b7bd19 100644
 --- a/libfdisk/src/dos.c
 +++ b/libfdisk/src/dos.c
-@@ -1530,8 +1530,7 @@ static int dos_verify_disklabel(struct fdisk_context *cxt)
+@@ -1624,8 +1624,7 @@ static int dos_verify_disklabel(struct fdisk_context *cxt)
  {
  	size_t i, j;
  	fdisk_sector_t total = 1, n_sectors = cxt->total_sectors;
@@ -22,7 +22,7 @@ index 4a2cd946b..badc7ef28 100644
 +	fdisk_sector_t first[MAXIMUM_PARTS], last[MAXIMUM_PARTS];
  	struct dos_partition *p;
  	struct fdisk_dos_label *l = self_label(cxt);
- 
+ 	int nerrors = 0;
 -- 
-2.25.0
+2.28.0
 

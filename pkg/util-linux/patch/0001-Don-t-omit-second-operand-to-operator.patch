@@ -1,16 +1,15 @@
-From ee722c6acbea8bd467ce7a8100d185d72e6573b4 Mon Sep 17 00:00:00 2001
+From 2087e89a262f9655f13878f175ad019ed3578d01 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 18 Jun 2019 01:38:53 -0700
 Subject: [PATCH] Don't omit second operand to `?` operator
 
 ---
- libfdisk/src/bsd.c      | 2 +-
- libfdisk/src/dos.c      | 2 +-
- libfdisk/src/gpt.c      | 2 +-
- libfdisk/src/parttype.c | 2 +-
- libfdisk/src/sgi.c      | 2 +-
- libfdisk/src/sun.c      | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+ libfdisk/src/bsd.c | 2 +-
+ libfdisk/src/dos.c | 2 +-
+ libfdisk/src/gpt.c | 2 +-
+ libfdisk/src/sgi.c | 2 +-
+ libfdisk/src/sun.c | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/libfdisk/src/bsd.c b/libfdisk/src/bsd.c
 index a7e2791a7..c31a29156 100644
@@ -26,10 +25,10 @@ index a7e2791a7..c31a29156 100644
  
  
 diff --git a/libfdisk/src/dos.c b/libfdisk/src/dos.c
-index 53713ec5f..4a2cd946b 100644
+index 176969883..7a1f6ea34 100644
 --- a/libfdisk/src/dos.c
 +++ b/libfdisk/src/dos.c
-@@ -136,7 +136,7 @@ static struct fdisk_parttype *dos_partition_parttype(
+@@ -148,7 +148,7 @@ static struct fdisk_parttype *dos_partition_parttype(
  {
  	struct fdisk_parttype *t
  		= fdisk_label_get_parttype_from_code(cxt->label, p->sys_ind);
@@ -39,10 +38,10 @@ index 53713ec5f..4a2cd946b 100644
  
  /*
 diff --git a/libfdisk/src/gpt.c b/libfdisk/src/gpt.c
-index f50bb4441..a2a346faa 100644
+index 66520c51d..dbd240617 100644
 --- a/libfdisk/src/gpt.c
 +++ b/libfdisk/src/gpt.c
-@@ -248,7 +248,7 @@ static struct fdisk_parttype *gpt_partition_parttype(
+@@ -262,7 +262,7 @@ static struct fdisk_parttype *gpt_partition_parttype(
  
  	guid_to_string(&guid, str);
  	t = fdisk_label_get_parttype_from_string(cxt->label, str);
@@ -51,21 +50,8 @@ index f50bb4441..a2a346faa 100644
  }
  
  static void gpt_entry_set_type(struct gpt_entry *e, struct gpt_guid *uuid)
-diff --git a/libfdisk/src/parttype.c b/libfdisk/src/parttype.c
-index d5ad434f0..ba4e994cf 100644
---- a/libfdisk/src/parttype.c
-+++ b/libfdisk/src/parttype.c
-@@ -335,7 +335,7 @@ struct fdisk_parttype *fdisk_label_parse_parttype(
- 
- done:
- 	DBG(PARTTYPE, ul_debugobj(ret, "returns parsed '%s' [%s] partition type",
--				ret->name, ret->typestr ? : ""));
-+				ret->name, ret->typestr ? ret->typestr : ""));
- 	return ret;
- }
- 
 diff --git a/libfdisk/src/sgi.c b/libfdisk/src/sgi.c
-index 884e385ac..4bdc5729c 100644
+index 6b4b5d116..14c7ea9b7 100644
 --- a/libfdisk/src/sgi.c
 +++ b/libfdisk/src/sgi.c
 @@ -351,7 +351,7 @@ static struct fdisk_parttype *sgi_get_parttype(struct fdisk_context *cxt, size_t
@@ -91,5 +77,5 @@ index 833f421a8..708e4554f 100644
  
  
 -- 
-2.25.0
+2.28.0
 

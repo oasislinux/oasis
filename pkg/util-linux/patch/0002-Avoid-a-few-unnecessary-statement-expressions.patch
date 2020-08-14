@@ -1,4 +1,4 @@
-From 71672deb5a3eb13f2a641f55c5a62e954b3b2252 Mon Sep 17 00:00:00 2001
+From 4dc325cb325a2640f429c5107ac9bc0fe85ea79b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 18 Jun 2019 02:29:07 -0700
 Subject: [PATCH] Avoid a few unnecessary statement expressions
@@ -8,7 +8,7 @@ Subject: [PATCH] Avoid a few unnecessary statement expressions
  1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
-index 812692885..7f3a8b173 100644
+index 64cf5c3fb..62fcfe2d0 100644
 --- a/include/c.h
 +++ b/include/c.h
 @@ -161,9 +161,8 @@
@@ -37,7 +37,7 @@ index 812692885..7f3a8b173 100644
  
  /* After failed execvp() */
  #define EX_EXEC_FAILED		126	/* Program located, but not usable. */
-@@ -366,10 +365,10 @@ static inline int xusleep(useconds_t usec)
+@@ -372,10 +371,10 @@ static inline int xusleep(useconds_t usec)
  
  #define UTIL_LINUX_VERSION _("%s from %s\n"), program_invocation_short_name, PACKAGE_STRING
  
@@ -51,5 +51,5 @@ index 812692885..7f3a8b173 100644
  /*
   * scanf modifiers for "strings allocation"
 -- 
-2.25.0
+2.28.0
 

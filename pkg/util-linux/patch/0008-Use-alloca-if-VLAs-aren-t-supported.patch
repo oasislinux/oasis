@@ -1,4 +1,4 @@
-From ab9ac99af70f341362ca9afa7d2fad22b6b02ca2 Mon Sep 17 00:00:00 2001
+From 7943a7c1c795a1ffe79b2898eb4860cec60dec23 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 23:54:21 -0700
 Subject: [PATCH] Use alloca if VLAs aren't supported
@@ -8,10 +8,10 @@ Subject: [PATCH] Use alloca if VLAs aren't supported
  1 file changed, 4 insertions(+)
 
 diff --git a/lib/path.c b/lib/path.c
-index 64bf7c6f0..786b709ae 100644
+index 75fa85305..af90261a6 100644
 --- a/lib/path.c
 +++ b/lib/path.c
-@@ -968,7 +968,11 @@ static int ul_path_cpuparse(struct path_cxt *pc, cpu_set_t **set, int maxcpus, i
+@@ -982,7 +982,11 @@ static int ul_path_cpuparse(struct path_cxt *pc, cpu_set_t **set, int maxcpus, i
  {
  	FILE *f;
  	size_t setsize, len = maxcpus * 7;
@@ -24,5 +24,5 @@ index 64bf7c6f0..786b709ae 100644
  
  	*set = NULL;
 -- 
-2.25.0
+2.28.0
 
