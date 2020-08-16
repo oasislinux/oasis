@@ -53,6 +53,7 @@ end
 
 if cfg.WITH_ZSTD then
 	cflags{'-isystem $builddir/pkg/zstd/include'}
+	table.insert(pkg.deps, 'pkg/zstd/headers')
 	table.insert(srcs, {
 		'lib/sqfs/comp/zstd.c',
 		'$builddir/pkg/zstd/libzstd.a',
