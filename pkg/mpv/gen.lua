@@ -32,6 +32,7 @@ local libs = {
 pkg.deps = {
 	'$outdir/version.h',
 	'pkg/ffmpeg/headers',
+	'pkg/ffmpeg/fetch',
 	'pkg/linux-headers/headers',
 	'pkg/zlib/headers',
 }
