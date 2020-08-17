@@ -7,18 +7,13 @@ cflags{
 
 pkg.deps = {'pkg/alsa-lib/headers'}
 
-local tools = {
-	{'amixer', {'amixer/amixer.c', 'alsamixer/volume_mapping.c'}},
-	{'aplay', {'aplay/aplay.c'}},
-}
+exe('bin/amixer', {'amixer/amixer.c', 'alsamixer/volume_mapping.c', '$builddir/pkg/alsa-lib/libasound.a'})
+file('bin/amixer', '755', '$outdir/bin/amixer')
+man{'amixer/amixer.1'}
 
-for _, tool in ipairs(tools) do
-	local name, srcs = tool[1], tool[2]
-	local out = 'bin/'..name
-	exe(out, {srcs, '$builddir/pkg/alsa-lib/libasound.a'})
-	file(out, '755', '$outdir/'..out)
-	man{name..'/'..name..'.1'}
-end
+exe('bin/aplay', {'aplay/aplay.c', '$builddir/pkg/alsa-lib/libasound.a'})
+file('bin/aplay', '755', '$outdir/bin/aplay')
+man{'aplay/aplay.1'}
 
 sym('bin/arecord', 'aplay')
 sym('share/man/man1/arecord.1.gz', 'aplay.1.gz')
