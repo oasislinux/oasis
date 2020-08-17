@@ -100,7 +100,7 @@ spawn(char **argv, pid_t *pid)
 	if ((errno = posix_spawn_file_actions_adddup2(&actions, fd[1], 1)) > 0)
 		die("posix_spawn_file_actions_adddup2:");
 	if ((errno = posix_spawnp(pid, argv[0], &actions, NULL, argv, environ)) > 0)
-		die("posix_spawnp:");
+		die("posix_spawnp %s:", argv[0]);
 	posix_spawn_file_actions_destroy(&actions);
 	close(fd[1]);
 
