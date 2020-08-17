@@ -1,4 +1,5 @@
 subgen 'acme-client'
+subgen 'acpid2'
 subgen 'adobe-source-fonts'
 subgen 'alsa-lib'
 subgen 'alsa-utils'

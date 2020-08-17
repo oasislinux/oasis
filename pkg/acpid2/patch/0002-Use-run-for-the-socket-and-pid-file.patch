@@ -1,0 +1,29 @@
+From f1cb8f96e446ba38d425fc130fda7a041394636e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Aug 2020 18:06:18 -0700
+Subject: [PATCH] Use /run for the socket and pid file
+
+---
+ acpid.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/acpid.h b/acpid.h
+index 916da5f..d11253b 100644
+--- a/acpid.h
++++ b/acpid.h
+@@ -26,10 +26,10 @@
+ #define ACPI_PROCDIR 		"/proc/acpi"
+ #define ACPID_EVENTFILE		ACPI_PROCDIR "/event"
+ #define ACPID_CONFDIR		"/etc/acpi/events"
+-#define ACPID_SOCKETFILE	"/var/run/acpid.socket"
++#define ACPID_SOCKETFILE	"/run/acpid.socket"
+ #define ACPID_SOCKETMODE	0666
+ #define ACPID_CLIENTMAX		256
+-#define ACPID_PIDFILE		"/var/run/acpid.pid"
++#define ACPID_PIDFILE		"/run/acpid.pid"
+ #define ACPID_LOCKFILE		"/var/lock/acpid"
+ #define ACPID_MAX_ERRS		5
+ 
+-- 
+2.28.0
+

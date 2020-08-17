@@ -1,0 +1,54 @@
+From a6a138ee8c131b4ce056a5db516496c91610cf2f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Aug 2020 18:00:54 -0700
+Subject: [PATCH] Avoid void pointer arithmetic
+
+ISO C requires the pointer to be to a complete object type.
+---
+ acpi_ids.c   | 2 +-
+ libnetlink.c | 2 +-
+ libnetlink.h | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/acpi_ids.c b/acpi_ids.c
+index ba218d7..08271cb 100644
+--- a/acpi_ids.c
++++ b/acpi_ids.c
+@@ -126,7 +126,7 @@ genl_get_mcast_group_id(struct nlmsghdr *n)
+ 	}
+ 
+ 	/* set attrs to point to the attribute */
+-	attrs = (struct rtattr *)(NLMSG_DATA(n) + GENL_HDRLEN);
++	attrs = (struct rtattr *)((char *)NLMSG_DATA(n) + GENL_HDRLEN);
+ 	/* Read the table from the message into "tb".  This actually just  */
+ 	/* places pointers into the message into tb[].  */
+ 	parse_rtattr(tb, CTRL_ATTR_MAX, attrs, len);
+diff --git a/libnetlink.c b/libnetlink.c
+index 346162a..b1760ba 100644
+--- a/libnetlink.c
++++ b/libnetlink.c
+@@ -516,7 +516,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
+ 	}
+ 
+ 	memcpy(NLMSG_TAIL(n), data, len);
+-	memset((void *) NLMSG_TAIL(n) + len, 0, NLMSG_ALIGN(len) - len);
++	memset((char *) NLMSG_TAIL(n) + len, 0, NLMSG_ALIGN(len) - len);
+ 	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len);
+ 	return 0;
+ }
+diff --git a/libnetlink.h b/libnetlink.h
+index 8f9cb5e..7b2f8bc 100644
+--- a/libnetlink.h
++++ b/libnetlink.h
+@@ -53,7 +53,7 @@ extern int rtnl_from_file(FILE *, rtnl_filter_t handler,
+ 		       void *jarg);
+ 
+ #define NLMSG_TAIL(nmsg) \
+-	((struct rtattr *) (((void *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
++	((struct rtattr *) (((char *) (nmsg)) + NLMSG_ALIGN((nmsg)->nlmsg_len)))
+ 
+ #ifndef IFA_RTA
+ #define IFA_RTA(r) \
+-- 
+2.28.0
+
