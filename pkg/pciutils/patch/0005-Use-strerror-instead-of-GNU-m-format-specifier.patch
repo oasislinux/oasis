@@ -1,0 +1,39 @@
+From 05925c2cbd72dc84a825a8a618efb5975b9d75ea Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Aug 2020 17:16:31 -0700
+Subject: [PATCH] Use strerror instead of GNU %m format specifier
+
+---
+ ls-kernel.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/ls-kernel.c b/ls-kernel.c
+index 4199402..e75f9af 100644
+--- a/ls-kernel.c
++++ b/ls-kernel.c
+@@ -6,6 +6,7 @@
+  *	Can be freely distributed and used under the terms of the GNU GPL.
+  */
+ 
++#include <errno.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <unistd.h>
+@@ -124,12 +125,12 @@ show_kernel_init(void)
+     {
+       f = fopen(name, "r");
+       if (!f)
+-	die("Cannot open pcimap file %s: %m", name);
++	die("Cannot open pcimap file %s: %s", name, strerror(errno));
+     }
+   else
+     {
+       if (uname(&uts) < 0)
+-	die("uname() failed: %m");
++	die("uname() failed: %s", strerror(errno));
+       name = alloca(64 + strlen(uts.release));
+       sprintf(name, "/lib/modules/%s/modules.pcimap", uts.release);
+       f = fopen(name, "r");
+-- 
+2.28.0
+

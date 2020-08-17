@@ -1,0 +1,64 @@
+From b7a6ea17d3ba3a271b475da6f8a419e55ffb7310 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Aug 2020 16:23:10 -0700
+Subject: [PATCH] Fix pointer type of sscanf arguments
+
+---
+ lib/dump.c  | 6 +++---
+ lib/sysfs.c | 2 +-
+ ls-kernel.c | 2 +-
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/lib/dump.c b/lib/dump.c
+index 59cf7ed..778d2ec 100644
+--- a/lib/dump.c
++++ b/lib/dump.c
+@@ -60,7 +60,7 @@ dump_init(struct pci_access *a)
+   FILE *f;
+   char buf[256];
+   struct pci_dev *dev = NULL;
+-  int len, mn, bn, dn, fn, i, j;
++  unsigned int len, mn, bn, dn, fn, i, j;
+ 
+   if (!name)
+     a->error("dump: File name not given.");
+@@ -79,8 +79,8 @@ dump_init(struct pci_access *a)
+ 	*z-- = 0;
+       len = z - buf + 1;
+       mn = 0;
+-      if (dump_validate(buf, "##:##.# ") && sscanf(buf, "%x:%x.%d", &bn, &dn, &fn) == 3 ||
+-	  dump_validate(buf, "####:##:##.# ") && sscanf(buf, "%x:%x:%x.%d", &mn, &bn, &dn, &fn) == 4)
++      if (dump_validate(buf, "##:##.# ") && sscanf(buf, "%x:%x.%u", &bn, &dn, &fn) == 3 ||
++	  dump_validate(buf, "####:##:##.# ") && sscanf(buf, "%x:%x:%x.%u", &mn, &bn, &dn, &fn) == 4)
+ 	{
+ 	  dev = pci_get_dev(a, mn, bn, dn, fn);
+ 	  dump_alloc_data(dev, 256);
+diff --git a/lib/sysfs.c b/lib/sysfs.c
+index fb64241..df39b36 100644
+--- a/lib/sysfs.c
++++ b/lib/sysfs.c
+@@ -212,7 +212,7 @@ static void sysfs_scan(struct pci_access *a)
+ 	continue;
+ 
+       d = pci_alloc_dev(a);
+-      if (sscanf(entry->d_name, "%x:%x:%x.%d", &dom, &bus, &dev, &func) < 4)
++      if (sscanf(entry->d_name, "%x:%x:%x.%u", &dom, &bus, &dev, &func) < 4)
+ 	a->error("sysfs_scan: Couldn't parse entry name %s", entry->d_name);
+ 
+       /* Ensure kernel provided domain that fits in a signed integer */
+diff --git a/ls-kernel.c b/ls-kernel.c
+index ecacd0e..4199402 100644
+--- a/ls-kernel.c
++++ b/ls-kernel.c
+@@ -156,7 +156,7 @@ show_kernel_init(void)
+       *c++ = 0;
+ 
+       e = xmalloc(sizeof(*e) + strlen(line));
+-      if (sscanf(c, "%i%i%i%i%i%i",
++      if (sscanf(c, "%u%u%u%u%u%u",
+ 		 &e->vendor, &e->device,
+ 		 &e->subvendor, &e->subdevice,
+ 		 &e->class, &e->class_mask) != 6)
+-- 
+2.28.0
+

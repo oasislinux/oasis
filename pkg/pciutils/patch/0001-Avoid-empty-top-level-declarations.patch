@@ -1,0 +1,104 @@
+From 0ff37625c4e1d7835fed885de5f9ef6ec642ffe6 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 16 Aug 2020 16:14:04 -0700
+Subject: [PATCH] Avoid empty top-level declarations
+
+These are not allowed in ISO C.
+---
+ lib/access.c | 24 ++++++++++++------------
+ lib/filter.c | 24 ++++++++++++------------
+ lib/init.c   |  8 ++++----
+ 3 files changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/lib/access.c b/lib/access.c
+index b257849..139924f 100644
+--- a/lib/access.c
++++ b/lib/access.c
+@@ -204,18 +204,18 @@ pci_fill_info_v35(struct pci_dev *d, int flags)
+ 
+ /* In version 3.1, pci_fill_info got new flags => versioned alias */
+ /* In versions 3.2, 3.3, 3.4 and 3.5, the same has happened */
+-STATIC_ALIAS(int pci_fill_info(struct pci_dev *d, int flags), pci_fill_info_v35(d, flags));
+-DEFINE_ALIAS(int pci_fill_info_v30(struct pci_dev *d, int flags), pci_fill_info_v35);
+-DEFINE_ALIAS(int pci_fill_info_v31(struct pci_dev *d, int flags), pci_fill_info_v35);
+-DEFINE_ALIAS(int pci_fill_info_v32(struct pci_dev *d, int flags), pci_fill_info_v35);
+-DEFINE_ALIAS(int pci_fill_info_v33(struct pci_dev *d, int flags), pci_fill_info_v35);
+-DEFINE_ALIAS(int pci_fill_info_v34(struct pci_dev *d, int flags), pci_fill_info_v35);
+-SYMBOL_VERSION(pci_fill_info_v30, pci_fill_info@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_fill_info_v31, pci_fill_info@LIBPCI_3.1);
+-SYMBOL_VERSION(pci_fill_info_v32, pci_fill_info@LIBPCI_3.2);
+-SYMBOL_VERSION(pci_fill_info_v33, pci_fill_info@LIBPCI_3.3);
+-SYMBOL_VERSION(pci_fill_info_v34, pci_fill_info@LIBPCI_3.4);
+-SYMBOL_VERSION(pci_fill_info_v35, pci_fill_info@@LIBPCI_3.5);
++STATIC_ALIAS(int pci_fill_info(struct pci_dev *d, int flags), pci_fill_info_v35(d, flags))
++DEFINE_ALIAS(int pci_fill_info_v30(struct pci_dev *d, int flags), pci_fill_info_v35)
++DEFINE_ALIAS(int pci_fill_info_v31(struct pci_dev *d, int flags), pci_fill_info_v35)
++DEFINE_ALIAS(int pci_fill_info_v32(struct pci_dev *d, int flags), pci_fill_info_v35)
++DEFINE_ALIAS(int pci_fill_info_v33(struct pci_dev *d, int flags), pci_fill_info_v35)
++DEFINE_ALIAS(int pci_fill_info_v34(struct pci_dev *d, int flags), pci_fill_info_v35)
++SYMBOL_VERSION(pci_fill_info_v30, pci_fill_info@LIBPCI_3.0)
++SYMBOL_VERSION(pci_fill_info_v31, pci_fill_info@LIBPCI_3.1)
++SYMBOL_VERSION(pci_fill_info_v32, pci_fill_info@LIBPCI_3.2)
++SYMBOL_VERSION(pci_fill_info_v33, pci_fill_info@LIBPCI_3.3)
++SYMBOL_VERSION(pci_fill_info_v34, pci_fill_info@LIBPCI_3.4)
++SYMBOL_VERSION(pci_fill_info_v35, pci_fill_info@@LIBPCI_3.5)
+ 
+ void
+ pci_setup_cache(struct pci_dev *d, byte *cache, int len)
+diff --git a/lib/filter.c b/lib/filter.c
+index 573fb28..7ca56a8 100644
+--- a/lib/filter.c
++++ b/lib/filter.c
+@@ -223,18 +223,18 @@ pci_filter_match_v30(struct pci_filter_v30 *f, struct pci_dev *d)
+   return pci_filter_match_v33(&new, d);
+ }
+ 
+-STATIC_ALIAS(void pci_filter_init(struct pci_access *a, struct pci_filter *f), pci_filter_init_v33(a, f));
+-SYMBOL_VERSION(pci_filter_init_v30, pci_filter_init@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_filter_init_v33, pci_filter_init@@LIBPCI_3.3);
++STATIC_ALIAS(void pci_filter_init(struct pci_access *a, struct pci_filter *f), pci_filter_init_v33(a, f))
++SYMBOL_VERSION(pci_filter_init_v30, pci_filter_init@LIBPCI_3.0)
++SYMBOL_VERSION(pci_filter_init_v33, pci_filter_init@@LIBPCI_3.3)
+ 
+-STATIC_ALIAS(char *pci_filter_parse_slot(struct pci_filter *f, char *str), pci_filter_parse_slot_v33(f, str));
+-SYMBOL_VERSION(pci_filter_parse_slot_v30, pci_filter_parse_slot@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_filter_parse_slot_v33, pci_filter_parse_slot@@LIBPCI_3.3);
++STATIC_ALIAS(char *pci_filter_parse_slot(struct pci_filter *f, char *str), pci_filter_parse_slot_v33(f, str))
++SYMBOL_VERSION(pci_filter_parse_slot_v30, pci_filter_parse_slot@LIBPCI_3.0)
++SYMBOL_VERSION(pci_filter_parse_slot_v33, pci_filter_parse_slot@@LIBPCI_3.3)
+ 
+-STATIC_ALIAS(char *pci_filter_parse_id(struct pci_filter *f, char *str), pci_filter_parse_id_v33(f, str));
+-SYMBOL_VERSION(pci_filter_parse_id_v30, pci_filter_parse_id@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_filter_parse_id_v33, pci_filter_parse_id@@LIBPCI_3.3);
++STATIC_ALIAS(char *pci_filter_parse_id(struct pci_filter *f, char *str), pci_filter_parse_id_v33(f, str))
++SYMBOL_VERSION(pci_filter_parse_id_v30, pci_filter_parse_id@LIBPCI_3.0)
++SYMBOL_VERSION(pci_filter_parse_id_v33, pci_filter_parse_id@@LIBPCI_3.3)
+ 
+-STATIC_ALIAS(int pci_filter_match(struct pci_filter *f, struct pci_dev *d), pci_filter_match_v33(f, d));
+-SYMBOL_VERSION(pci_filter_match_v30, pci_filter_match@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_filter_match_v33, pci_filter_match@@LIBPCI_3.3);
++STATIC_ALIAS(int pci_filter_match(struct pci_filter *f, struct pci_dev *d), pci_filter_match_v33(f, d))
++SYMBOL_VERSION(pci_filter_match_v30, pci_filter_match@LIBPCI_3.0)
++SYMBOL_VERSION(pci_filter_match_v33, pci_filter_match@@LIBPCI_3.3)
+diff --git a/lib/init.c b/lib/init.c
+index e6295fc..4703dbd 100644
+--- a/lib/init.c
++++ b/lib/init.c
+@@ -245,10 +245,10 @@ pci_init_v35(struct pci_access *a)
+   a->methods->init(a);
+ }
+ 
+-STATIC_ALIAS(void pci_init(struct pci_access *a), pci_init_v35(a));
+-DEFINE_ALIAS(void pci_init_v30(struct pci_access *a), pci_init_v35);
+-SYMBOL_VERSION(pci_init_v30, pci_init@LIBPCI_3.0);
+-SYMBOL_VERSION(pci_init_v35, pci_init@@LIBPCI_3.5);
++STATIC_ALIAS(void pci_init(struct pci_access *a), pci_init_v35(a))
++DEFINE_ALIAS(void pci_init_v30(struct pci_access *a), pci_init_v35)
++SYMBOL_VERSION(pci_init_v30, pci_init@LIBPCI_3.0)
++SYMBOL_VERSION(pci_init_v35, pci_init@@LIBPCI_3.5)
+ 
+ void
+ pci_cleanup(struct pci_access *a)
+-- 
+2.28.0
+
