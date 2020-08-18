@@ -7,9 +7,6 @@ cflags{
 	'-I $outdir/include',
 	'-I $outdir/internal',
 	'-I $srcdir',
-	'-isystem $builddir/pkg/alsa-lib/include',
-	'-isystem $builddir/pkg/libtls-bearssl/include',
-	'-isystem $builddir/pkg/zlib/include',
 }
 nasmflags{
 	'-i $srcdir/',
@@ -31,9 +28,6 @@ pkg.hdrs = {
 pkg.deps = {
 	'$outdir/config.asm',
 	'$gendir/headers',
-	'pkg/alsa-lib/headers',
-	'pkg/libtls-bearssl/headers',
-	'pkg/zlib/headers',
 }
 
 build('awk', '$outdir/config.asm', '$dir/options.h', {
@@ -104,10 +98,28 @@ for lib, srcs in pairs(sources) do
 	sources[lib] = table.keys(srcs)
 end
 
+if options.CONFIG_ALSA_INDEV or options.config_ALSA_OUTDEV then
+	cflags{'-isystem $builddir/pkg/alsa-lib/include'}
+	table.insert(pkg.deps, 'pkg/alsa-lib/headers')
+	table.insert(sources.libavdevice, '$builddir/pkg/alsa-lib/libasound.a')
+end
+
+if options.CONFIG_TLS_PROTOCOL and options.CONFIG_LIBTLS then
+	cflags{'-isystem $builddir/pkg/libtls-bearssl/include'}
+	table.insert(pkg.deps, 'pkg/libtls-bearssl/headers')
+	table.insert(sources.libavformat, '$builddir/pkg/libtls-bearssl/libtls.a.d')
+end
+
 if options.CONFIG_LIBOPUS_ENCODER or options.CONFIG_LIBOPUS_DECODER then
 	cflags{'-isystem $builddir/pkg/opus/include'}
 	table.insert(pkg.deps, 'pkg/opus/headers')
 	table.insert(sources.libavcodec, '$builddir/pkg/opus/libopus.a')
+end
+
+if options.CONFIG_ZLIB then
+	cflags{'-isystem $builddir/pkg/zlib/include'}
+	table.insert(pkg.deps, 'pkg/zlib/headers')
+	table.insert(sources.libavformat, '$builddir/pkg/zlib/libz.a')
 end
 
 lib('libavcodec.a', {
@@ -208,8 +220,6 @@ lib('libavformat.a', {
 	sources.libavformat,
 	'libavcodec.a.d',
 	'libavutil.a',
-	'$builddir/pkg/libtls-bearssl/libtls.a.d',
-	'$builddir/pkg/zlib/libz.a',
 })
 
 lib('libavutil.a', {
