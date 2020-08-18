@@ -25,3 +25,5 @@ man{'acpid.8'}
 exe('acpi_listen', {'acpi_listen.c', 'libcommon.a'})
 file('bin/acpi_listen', '755', '$outdir/acpi_listen')
 man{'acpi_listen.8'}
+
+fetch 'git'
