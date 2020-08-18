@@ -104,6 +104,12 @@ for lib, srcs in pairs(sources) do
 	sources[lib] = table.keys(srcs)
 end
 
+if options.CONFIG_LIBOPUS_ENCODER or options.CONFIG_LIBOPUS_DECODER then
+	cflags{'-isystem $builddir/pkg/opus/include'}
+	table.insert(pkg.deps, 'pkg/opus/headers')
+	table.insert(sources.libavcodec, '$builddir/pkg/opus/libopus.a')
+end
+
 lib('libavcodec.a', {
 	expand{'libavcodec/', {
 		'ac3_parser.c',
