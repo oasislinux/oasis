@@ -43,6 +43,10 @@
 [submodule "pkg/cproc/src"]
 	path = pkg/cproc/src
 	url = https://git.sr.ht/~mcf/cproc
+[submodule "pkg/dav1d/src"]
+	path = pkg/dav1d/src
+	url = https://github.com/videolan/dav1d.git
+	ignore = all
 [submodule "pkg/dmenu/src"]
 	path = pkg/dmenu/src
 	url = git://git.suckless.org/dmenu
