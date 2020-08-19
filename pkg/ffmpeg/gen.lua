@@ -104,6 +104,12 @@ if options.CONFIG_ALSA_INDEV or options.config_ALSA_OUTDEV then
 	table.insert(sources.libavdevice, '$builddir/pkg/alsa-lib/libasound.a')
 end
 
+if options.CONFIG_LIBDAV1D_DECODER then
+	cflags{'-isystem $builddir/pkg/dav1d/include'}
+	table.insert(pkg.deps, 'pkg/dav1d/headers')
+	table.insert(sources.libavcodec, '$builddir/pkg/dav1d/libdav1d.a')
+end
+
 if options.CONFIG_TLS_PROTOCOL and options.CONFIG_LIBTLS then
 	cflags{'-isystem $builddir/pkg/libtls-bearssl/include'}
 	table.insert(pkg.deps, 'pkg/libtls-bearssl/headers')
