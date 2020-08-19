@@ -1,5 +1,6 @@
 cflags{
 	'-Wall', '-Wpedantic',
+	'-Wno-overflow',  -- ioctl opcode conversion
 	'-D _GNU_SOURCE',
 	'-include $dir/config.h',
 }

@@ -1,4 +1,4 @@
-[submodule "pkg/acpid2/src"]
+[submodule "pkg/acpid/src"]
 	path = pkg/acpid/src
 	url = https://git.code.sf.net/p/acpid2/code
 	ignore = all
