@@ -1,5 +1,5 @@
 [submodule "pkg/acpid2/src"]
-	path = pkg/acpid2/src
+	path = pkg/acpid/src
 	url = https://git.code.sf.net/p/acpid2/code
 	ignore = all
 [submodule "pkg/alsa-lib/src"]
