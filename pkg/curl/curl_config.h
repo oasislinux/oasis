@@ -142,6 +142,7 @@
 /* #undef HAVE_LIBSSL */
 /* #undef HAVE_LIBWOLFSSH */
 #define HAVE_LIBZ 1
+/* #undef HAVE_LIBZSTD */
 #define HAVE_LINUX_TCP_H 1
 #define HAVE_LL 1
 #define HAVE_LOCALE_H 1
@@ -263,7 +264,7 @@
 /* #undef HAVE_WINSOCK_H */
 /* #undef HAVE_WOLFSSH_SSH_H */
 /* #undef HAVE_WOLFSSLV3_CLIENT_METHOD */
-/* #undef HAVE_WOLFSSL_DES_SET_ODD_PARITY */
+/* #undef HAVE_WOLFSSL_DES_ECB_ENCRYPT */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_WOLFSSL_USEALPN */
 #define HAVE_WRITABLE_ARGV 1
@@ -271,6 +272,8 @@
 /* #undef HAVE_WS2TCPIP_H */
 /* #undef HAVE_X509_H */
 #define HAVE_ZLIB_H 1
+/* #undef HAVE_ZSTD */
+/* #undef HAVE_ZSTD_H */
 #define LT_OBJDIR ".libs/"
 /* #undef NEED_LBER_H */
 /* #undef NEED_MALLOC_H */
