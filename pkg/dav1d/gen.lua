@@ -122,7 +122,7 @@ local tmpl = paths[[
 for _, bit in ipairs{'8', '16'} do
 	for _, src in ipairs(tmpl) do
 		local obj = ('$outdir/%s/%s.o'):format(bit, src)
-		build('cc', obj, '$srcdir/src/'..src, {cflags='$cflags -D BITDEPTH='..bit})
+		build('cc', obj, {'$srcdir/src/'..src, '||', '$dir/deps'}, {cflags='$cflags -D BITDEPTH='..bit})
 		table.insert(srcs, obj)
 	end
 end
