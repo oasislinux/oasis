@@ -24,13 +24,13 @@
 #define PACKAGE "squashfs-tools-ng"
 #define PACKAGE_BUGREPORT "goliath@infraroot.at"
 #define PACKAGE_NAME "squashfs-tools-ng"
-#define PACKAGE_STRING "squashfs-tools-ng 1.0.1"
+#define PACKAGE_STRING "squashfs-tools-ng 1.0.2"
 #define PACKAGE_TARNAME "squashfs-tools-ng"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.0.1"
+#define PACKAGE_VERSION "1.0.2"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define STDC_HEADERS 1
-#define VERSION "1.0.1"
+#define VERSION "1.0.2"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif

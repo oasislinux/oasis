@@ -99,6 +99,7 @@ lib('libtar.a', [[
 		base64.c urldecode.c
 		padd_file.c read_retry.c
 		write_retry.c pax_header.c
+		read_sparse_map_new.c
 	)
 ]])
 
@@ -123,6 +124,7 @@ exe('rdsquashfs', [[
 		list_files.c options.c
 		restore_fstree.c describe.c
 		fill_files.c dump_xattrs.c
+		stat.c
 	)
 	libcommon.a.d
 ]])
