@@ -1,4 +1,4 @@
-From 62c2b6a0314a2c7123f9925a45b694d7119227f6 Mon Sep 17 00:00:00 2001
+From b6860ea26851edb599bfe0e2d08d212c6a7aaeec Mon Sep 17 00:00:00 2001
 From: Val Lorentz <progval@progval.net>
 Date: Sun, 29 Jan 2017 17:39:54 -0800
 Subject: [PATCH] Remove date from version info to make build reproducible
@@ -12,10 +12,10 @@ Signed-off-by: Jordan Justen <jordan.l.justen@intel.com>
  4 files changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/asm/nasm.c b/asm/nasm.c
-index 7c64569f..9659bf15 100644
+index e5ae89af..70024db5 100644
 --- a/asm/nasm.c
 +++ b/asm/nasm.c
-@@ -973,8 +973,8 @@ static const struct textargs textopts[] = {
+@@ -977,8 +977,8 @@ static const struct textargs textopts[] = {
  
  static void show_version(void)
  {
@@ -42,7 +42,7 @@ index 01e0c557..7424b282 100644
                  case 'u':	/* -u for -b 32, -uu for -b 64 */
  		    if (bits < 64)
 diff --git a/include/ver.h b/include/ver.h
-index ab6e9784..4b26499c 100644
+index a5bbf384..7a6ce42a 100644
 --- a/include/ver.h
 +++ b/include/ver.h
 @@ -41,7 +41,6 @@
@@ -52,9 +52,9 @@ index ab6e9784..4b26499c 100644
 -extern const char nasm_date[];
  extern const char nasm_compile_options[];
  
- extern const char *nasm_comment(void);
+ extern bool reproducible;
 diff --git a/nasmlib/ver.c b/nasmlib/ver.c
-index 9f80f79c..f711f332 100644
+index 96260b6c..8f02eaca 100644
 --- a/nasmlib/ver.c
 +++ b/nasmlib/ver.c
 @@ -36,7 +36,6 @@
@@ -66,5 +66,5 @@ index 9f80f79c..f711f332 100644
  #ifdef DEBUG
      " with -DDEBUG"
 -- 
-2.27.0
+2.28.0
 
