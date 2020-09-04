@@ -1,0 +1,88 @@
+From 8aee18d96218ce523e705e0bb43b8b67909f83aa Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 4 Sep 2020 22:33:09 -0700
+Subject: [PATCH] Move definition of blk_zone_v2
+
+Otherwise, the definitions of blk_zone_type_str and blk_zone_cond_str
+still refer to the original struct blk_zone.
+---
+ include/f2fs_fs.h | 56 +++++++++++++++++++++++------------------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+index b5bda13..4d99fb7 100644
+--- a/include/f2fs_fs.h
++++ b/include/f2fs_fs.h
+@@ -1288,6 +1288,34 @@ static inline int get_inline_xattr_addrs(struct f2fs_inode *inode)
+ #define blk_zone_seq_pref(z)	((z)->type == BLK_ZONE_TYPE_SEQWRITE_PREF)
+ #define blk_zone_seq(z)		(blk_zone_seq_req(z) || blk_zone_seq_pref(z))
+ 
++/*
++ * Handle kernel zone capacity support
++ */
++#ifndef HAVE_BLK_ZONE_REP_V2
++#define BLK_ZONE_REP_CAPACITY   (1 << 0)
++struct blk_zone_v2 {
++	__u64   start;          /* Zone start sector */
++	__u64   len;            /* Zone length in number of sectors */
++	__u64   wp;             /* Zone write pointer position */
++	__u8    type;           /* Zone type */
++	__u8    cond;           /* Zone condition */
++	__u8    non_seq;        /* Non-sequential write resources active */
++	__u8    reset;          /* Reset write pointer recommended */
++	__u8    resv[4];
++	__u64   capacity;       /* Zone capacity in number of sectors */
++	__u8    reserved[24];
++};
++#define blk_zone blk_zone_v2
++
++struct blk_zone_report_v2 {
++	__u64   sector;
++	__u32   nr_zones;
++	__u32   flags;
++struct blk_zone zones[0];
++};
++#define blk_zone_report blk_zone_report_v2
++#endif /* HAVE_BLK_ZONE_REP_V2 */
++
+ static inline const char *
+ blk_zone_type_str(struct blk_zone *blkz)
+ {
+@@ -1328,34 +1356,6 @@ blk_zone_cond_str(struct blk_zone *blkz)
+ 	return "Unknown-cond";
+ }
+ 
+-/*
+- * Handle kernel zone capacity support
+- */
+-#ifndef HAVE_BLK_ZONE_REP_V2
+-#define BLK_ZONE_REP_CAPACITY   (1 << 0)
+-struct blk_zone_v2 {
+-	__u64   start;          /* Zone start sector */
+-	__u64   len;            /* Zone length in number of sectors */
+-	__u64   wp;             /* Zone write pointer position */
+-	__u8    type;           /* Zone type */
+-	__u8    cond;           /* Zone condition */
+-	__u8    non_seq;        /* Non-sequential write resources active */
+-	__u8    reset;          /* Reset write pointer recommended */
+-	__u8    resv[4];
+-	__u64   capacity;       /* Zone capacity in number of sectors */
+-	__u8    reserved[24];
+-};
+-#define blk_zone blk_zone_v2
+-
+-struct blk_zone_report_v2 {
+-	__u64   sector;
+-	__u32   nr_zones;
+-	__u32   flags;
+-struct blk_zone zones[0];
+-};
+-#define blk_zone_report blk_zone_report_v2
+-#endif /* HAVE_BLK_ZONE_REP_V2 */
+-
+ #define blk_zone_empty(z)	(blk_zone_cond(z) == BLK_ZONE_COND_EMPTY)
+ #define blk_zone_sector(z)	(z)->start
+ #define blk_zone_length(z)	(z)->len
+-- 
+2.28.0
+

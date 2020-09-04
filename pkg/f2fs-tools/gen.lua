@@ -4,7 +4,7 @@ cflags{
 	'-I $dir',
 	'-I $srcdir/include',
 	'-isystem $builddir/pkg/linux-headers/include',
-	'-isystem $builddir/pkg/util-linux/include',
+	'-isystem $builddir/pkg/util-linux/include/uuid',
 }
 
 pkg.deps = {

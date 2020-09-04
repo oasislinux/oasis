@@ -1,9 +1,10 @@
 #define F2FS_MAJOR_VERSION 1
-#define F2FS_MINOR_VERSION 13
-#define F2FS_TOOLS_DATE "2019-09-24"
-#define F2FS_TOOLS_VERSION "1.13.0"
+#define F2FS_MINOR_VERSION 14
+#define F2FS_TOOLS_DATE "2020-08-24"
+#define F2FS_TOOLS_VERSION "1.14.0"
 /* #undef HAVE_ADD_KEY */
 /* #undef HAVE_ATTR_XATTR_H */
+/* #undef HAVE_BLK_ZONE_REP_V2 */
 #define HAVE_BYTESWAP_H 1
 #define HAVE_DECL_BSWAP_64 1
 #define HAVE_DLFCN_H 1
@@ -29,6 +30,7 @@
 /* #undef HAVE_LLSEEK_PROTOTYPE */
 #define HAVE_LSEEK64 1
 #define HAVE_LSEEK64_PROTOTYPE 1
+/* #undef HAVE_MACH_MACH_TIME_H */
 #define HAVE_MEMORY_H 1
 #define HAVE_MEMSET 1
 #define HAVE_MNTENT_H 1
@@ -52,12 +54,12 @@
 #define PACKAGE "f2fs-tools"
 #define PACKAGE_BUGREPORT "linux-f2fs-devel@lists.sourceforge.net"
 #define PACKAGE_NAME "F2FS tools"
-#define PACKAGE_STRING "F2FS tools 1.13.0"
+#define PACKAGE_STRING "F2FS tools 1.14.0"
 #define PACKAGE_TARNAME "f2fs-tools"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.13.0"
+#define PACKAGE_VERSION "1.14.0"
 #define STDC_HEADERS 1
-#define VERSION "1.13.0"
+#define VERSION "1.14.0"
 #ifndef __cplusplus
 /* #undef inline */
 #endif
