@@ -1,7 +1,7 @@
 local version = setmetatable({2, 35}, {__index=function() return 0 end})
 local defvec = 'x86_64_elf64_vec'
 local selvecs = {[defvec]=true, i386_elf32_vec=true}
-local selarchs = {bfd_i386_arch=true}
+local selarchs = {i386=true}
 local emuls = {
 	'elf_x86_64',
 	'elf_i386',
@@ -102,13 +102,13 @@ sub('bfd.ninja', function()
 			selvecs.elf32_be_vec = true
 		end
 		if vec:find('iamcu_elf32') then
-			selarchs.bfd_iamcu_arch = true
+			selarchs.iamcu = true
 		end
 		if vec:find('l1om_elf64') then
-			selarchs.bfd_l1om_arch = true
+			selarchs.l1om = true
 		end
 		if vec:find('k1om_elf64') then
-			selarchs.bfd_k1om_arch = true
+			selarchs.k1om = true
 		end
 	end
 	local srcs = {}
@@ -125,7 +125,7 @@ sub('bfd.ninja', function()
 		end
 	end
 	for arch in pairs(selarchs) do
-		srcs['bfd/cpu-'..arch:match('bfd_([%w_]+)_arch')..'.c'] = true
+		srcs['bfd/cpu-'..arch..'.c'] = true
 	end
 	local deps = {
 		'$gendir/deps',
@@ -142,7 +142,7 @@ sub('bfd.ninja', function()
 	}})
 	cc('bfd/archures.c', nil, {cflags={
 		'$cflags',
-		string.format([[-D 'SELECT_ARCHITECTURES=&%s']], table.concat(table.keys(selarchs), ',&')),
+		string.format([[-D 'SELECT_ARCHITECTURES=&bfd_%s_arch']], table.concat(table.keys(selarchs), '_arch,&bfd_')),
 	}})
 	cc('bfd/dwarf2.c', nil, {cflags={'$cflags', string.format([[-D 'DEBUGDIR="%s/lib/debug"']], config.prefix)}})
 	lib('libbfd.a', {
@@ -173,8 +173,11 @@ sub('opcodes.ninja', function()
 			end
 		end
 	end
+	cc('opcodes/disassemble.c', nil, {cflags={
+		'$cflags', '-D ARCH_'..table.concat(table.keys(selarchs), ' -D ARCH_'),
+	}})
 	lib('libopcodes.a', {
-		paths[[opcodes/(dis-buf.c disassemble.c dis-init.c)]],
+		paths[[opcodes/(dis-buf.c disassemble.c.o dis-init.c)]],
 		table.keys(srcs),
 	})
 end)
