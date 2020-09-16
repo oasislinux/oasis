@@ -12,6 +12,7 @@ pkg.deps = {
 }
 
 exe('catgirl', [[
+	buffer.c
 	chat.c
 	command.c
 	complete.c

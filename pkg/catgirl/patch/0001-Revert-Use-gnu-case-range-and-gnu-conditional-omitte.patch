@@ -1,4 +1,4 @@
-From 6eb3b6bab7a8a605b653e3bda11ebf59d941a323 Mon Sep 17 00:00:00 2001
+From 8d21fed1729022bd31adb15014944c8ac2ca9da0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 7 May 2020 00:36:14 -0700
 Subject: [PATCH] Revert "Use gnu-case-range and
@@ -15,7 +15,7 @@ This reverts commit 75a6aa9258270169f43f56e063f1bfb57eebe56b.
  6 files changed, 47 insertions(+), 33 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 08e90ab..942f879 100644
+index 2c3061d..b844712 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -1,8 +1,7 @@
@@ -126,7 +126,7 @@ index 5835926..0e1de47 100644
  }
  
 diff --git a/handle.c b/handle.c
-index fcc0c5d..01f6dc8 100644
+index e5e370e..04b73d3 100644
 --- a/handle.c
 +++ b/handle.c
 @@ -280,9 +280,9 @@ static void handleReplyISupport(struct Message *msg) {
@@ -276,7 +276,7 @@ index fcc0c5d..01f6dc8 100644
  
 @@ -1063,7 +1072,7 @@ static bool isMention(const struct Message *msg) {
  	const char *match = msg->params[1];
- 	while (NULL != (match = strcasestr(match, self.nick))) {
+ 	while (NULL != (match = strstr(match, self.nick))) {
  		char a = (match > msg->params[1] ? match[-1] : ' ');
 -		char b = (match[len] ?: ' ');
 +		char b = (match[len] ? match[len] : ' ');
@@ -297,20 +297,20 @@ index f8e4d59..73d2d90 100644
  	for (size_t i = 0; i < ignore.len; ++i) {
  		if (fnmatch(ignore.patterns[i], match, FNM_CASEFOLD)) continue;
 diff --git a/ui.c b/ui.c
-index 59903c9..773f415 100644
+index 22ec02e..c01da59 100644
 --- a/ui.c
 +++ b/ui.c
-@@ -965,7 +965,6 @@ static void keyCode(int code) {
- 		break; case KeyMetaGt: windowScroll(window, -WindowLines);
- 		break; case KeyMetaLt: windowScroll(window, +WindowLines);
+@@ -836,7 +836,6 @@ static void keyCode(int code) {
+ 		break; case KeyMetaGt: windowScroll(window, -BufferCap);
+ 		break; case KeyMetaLt: windowScroll(window, +BufferCap);
  
 -		break; case KeyMeta0 ... KeyMeta9: uiShowNum(code - KeyMeta0);
  		break; case KeyMetaA: showAuto();
  		break; case KeyMetaB: edit(id, EditPrevWord, 0);
  		break; case KeyMetaD: edit(id, EditDeleteNextWord, 0);
-@@ -989,6 +988,12 @@ static void keyCode(int code) {
- 		break; case KEY_SEND: windowScroll(window, -WindowLines);
- 		break; case KEY_SHOME: windowScroll(window, +WindowLines);
+@@ -862,6 +861,12 @@ static void keyCode(int code) {
+ 		break; case KEY_SEND: windowScroll(window, -BufferCap);
+ 		break; case KEY_SHOME: windowScroll(window, +BufferCap);
  		break; case KEY_UP: windowScroll(window, +1);
 +
 +		break; default: {
