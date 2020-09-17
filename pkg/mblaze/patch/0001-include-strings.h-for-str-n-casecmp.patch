@@ -1,0 +1,66 @@
+From bd0ea24cf77efc683f103b037d446b0e5644364e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 17 Sep 2020 12:16:34 -0700
+Subject: [PATCH] include strings.h for str(n)casecmp
+
+These POSIX functions are declared in strings.h, so include this
+header explicitly instead of relying on the libc's default feature-test
+macros to include it through string.h.
+---
+ magrep.c   | 1 +
+ mdeliver.c | 1 +
+ mflow.c    | 1 +
+ mhdr.c     | 1 +
+ 4 files changed, 4 insertions(+)
+
+diff --git a/magrep.c b/magrep.c
+index 6f93a57..72ce1bb 100644
+--- a/magrep.c
++++ b/magrep.c
+@@ -7,6 +7,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <unistd.h>
+ 
+ #include "blaze822.h"
+diff --git a/mdeliver.c b/mdeliver.c
+index 161cea5..27c4b9c 100644
+--- a/mdeliver.c
++++ b/mdeliver.c
+@@ -10,6 +10,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <unistd.h>
+ 
+ #include "blaze822.h"
+diff --git a/mflow.c b/mflow.c
+index af6755d..1013da5 100644
+--- a/mflow.c
++++ b/mflow.c
+@@ -7,6 +7,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <unistd.h>
+ 
+ #include "blaze822.h"
+diff --git a/mhdr.c b/mhdr.c
+index d434d1d..83bed02 100644
+--- a/mhdr.c
++++ b/mhdr.c
+@@ -7,6 +7,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <strings.h>
+ #include <unistd.h>
+ 
+ #include "blaze822.h"
+-- 
+2.28.0
+

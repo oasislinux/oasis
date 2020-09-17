@@ -178,6 +178,10 @@
 	path = pkg/libxkbcommon/src
 	url = https://github.com/xkbcommon/libxkbcommon.git
 	ignore = all
+[submodule "pkg/mblaze/src"]
+	path = pkg/mblaze/src
+	url = https://github.com/leahneukirchen/mblaze.git
+	ignore = all
 [submodule "pkg/mc/src"]
 	path = pkg/mc/src
 	url = https://github.com/oridb/mc

@@ -1,0 +1,28 @@
+From 52fe8d766c7709e93f4ee2f57b2eab61287a2470 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 17 Sep 2020 12:24:08 -0700
+Subject: [PATCH] mpick: use function pointer type for callback
+
+Though POSIX requires this conversion to work correctly (for dlsym),
+it is not valid in ISO C, so it is better to just uses the appropriate
+function pointer type.
+---
+ mpick.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mpick.c b/mpick.c
+index 379200d..3b11e67 100644
+--- a/mpick.c
++++ b/mpick.c
+@@ -1466,7 +1466,7 @@ main(int argc, char *argv[])
+ 
+ 	xpledge("stdio rpath wpath cpath proc exec", 0);
+ 
+-	void *cb = need_thr ? collect : oneline;
++	void (*cb)(char *) = need_thr ? collect : oneline;
+ 	if (argc == optind && isatty(0))
+ 		i = blaze822_loop1(":", cb);
+ 	else
+-- 
+2.28.0
+
