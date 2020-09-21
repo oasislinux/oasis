@@ -4,6 +4,7 @@ local archflags = {
 	aarch64='-D SANDBOX_SECCOMP_FILTER=1 -D SECCOMP_AUDIT_ARCH=AUDIT_ARCH_AARCH64',
 }
 cflags{
+	'-Wall', '-Wno-pointer-sign', '-Wno-format-truncation', '-Wno-stringop-truncation',
 	'-D _XOPEN_SOURCE=600',
 	'-D _DEFAULT_SOURCE',
 	archflags[arch] or '-D SANDBOX_RLIMIT=1',
