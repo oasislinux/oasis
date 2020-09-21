@@ -159,6 +159,11 @@
 #define HAVE_FCNTL_H 1
 #define HAVE_FD_MASK 1
 #define HAVE_FEATURES_H 1
+/* #undef HAVE_FIDO_CRED_PROT */
+/* #undef HAVE_FIDO_CRED_SET_PROT */
+/* #undef HAVE_FIDO_DEV_GET_TOUCH_BEGIN */
+/* #undef HAVE_FIDO_DEV_GET_TOUCH_STATUS */
+/* #undef HAVE_FIDO_DEV_SUPPORTS_CRED_PROT */
 /* #undef HAVE_FLOATINGPOINT_H */
 #define HAVE_FLOCK 1
 /* #undef HAVE_FMT_SCALED */
@@ -371,6 +376,7 @@
 #define HAVE_SO_PEERCRED 1
 #define HAVE_SSIZE_T 1
 #define HAVE_SS_FAMILY_IN_SS 1
+/* #undef HAVE_SS_IN_UTMPX */
 #define HAVE_STATFS 1
 #define HAVE_STATVFS 1
 #define HAVE_STDDEF_H 1
@@ -550,6 +556,7 @@
 /* #undef SIZEOF_LONG_INT */
 /* #undef SIZEOF_LONG_LONG_INT */
 /* #undef SIZEOF_SHORT_INT */
+/* #undef SIZEOF_SIZE_T */
 #define SNPRINTF_CONST const
 #define SPT_TYPE SPT_REUSEARGV
 /* #undef SSHD_ACQUIRES_CTTY */

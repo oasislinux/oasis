@@ -11,8 +11,8 @@ Generated with
 		--with-security-key-builtin \
 		--with-bearssl \
 		CPPFLAGS='-I/src/oasis/pkg/openbsd/include -I/src/oasis/out/pkg/libfido2/include -I/src/oasis/out/pkg/zlib/include' \
-		LDFLAGS='-L/src/oasis/out/pkg/libressl -L/src/oasis/out/pkg/openbsd -L/src/oasis/out/pkg/libfido2 -L/src/oasis/out/pkg/libcbor -L/src/oasis/out/pkg/zlib' \
-		LIBS='-lcrypto -lbsd'
+		LDFLAGS='-L/src/oasis/out/pkg/bearssl -L/src/oasis/out/pkg/openbsd -L/src/oasis/out/pkg/libfido2 -L/src/oasis/out/pkg/libcbor -L/src/oasis/out/pkg/zlib' \
+		LIBS='-l bsd'
 
 Several changes were made:
 * `SECCOMP_AUDIT_ARCH`, `SANDBOX_SECCOMP_FILTER`, and `SANDBOX_RLIMIT`
