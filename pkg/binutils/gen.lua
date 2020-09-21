@@ -1,4 +1,4 @@
-local version = setmetatable({2, 35}, {__index=function() return 0 end})
+local version = setmetatable({2, 35, 1}, {__index=function() return 0 end})
 local defvec = 'x86_64_elf64_vec'
 local selvecs = {[defvec]=true, i386_elf32_vec=true}
 local selarchs = {i386=true}
@@ -8,7 +8,7 @@ local emuls = {
 }
 
 cflags{
-	'-std=c99', '-Wall', '-Wno-return-local-addr',
+	'-std=c99', '-Wall', '-Wno-return-local-addr', '-Wno-stringop-truncation',
 	'-D _POSIX_C_SOURCE=200809L',
 	'-D HAVE_CONFIG_H',
 	'-I $srcdir/include',

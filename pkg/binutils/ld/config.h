@@ -15,6 +15,7 @@
 /* #undef EXTRA_SHLIB_EXTENSION */
 #define GOT_HANDLING_DEFAULT GOT_HANDLING_TARGET_DEFAULT
 #define HAVE_CLOSE 1
+#define HAVE_DECL_ASPRINTF 1
 #define HAVE_DECL_ENVIRON 1
 #define HAVE_DECL_FREE 1
 #define HAVE_DECL_GETENV 1
@@ -59,10 +60,10 @@
 #define PACKAGE "ld"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "ld"
-#define PACKAGE_STRING "ld 2.35"
+#define PACKAGE_STRING "ld 2.35.1"
 #define PACKAGE_TARNAME "ld"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.35"
+#define PACKAGE_VERSION "2.35.1"
 #define SIZEOF_VOID_P 8
 #define STDC_HEADERS 1
 #define STRING_WITH_STRINGS 1
@@ -82,7 +83,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.35"
+#define VERSION "2.35.1"
 /* #undef YYTEXT_POINTER */
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
