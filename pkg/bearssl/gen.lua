@@ -2,6 +2,8 @@ cflags{
 	'-Wall',
 	'-I $srcdir/src',
 	'-I $srcdir/inc',
+	'-D BR_RDRAND=0',
+	'-D BR_USE_GETENTROPY',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/inc', {
