@@ -283,6 +283,9 @@
 [submodule "pkg/sdhcp/src"]
 	path = pkg/sdhcp/src
 	url = https://github.com/michaelforney/sdhcp
+[submodule "pkg/sfeed/src"]
+	path = pkg/sfeed/src
+	url = git://git.codemadness.org/sfeed
 [submodule "pkg/sinit/src"]
 	path = pkg/sinit/src
 	url = git://git.suckless.org/sinit
