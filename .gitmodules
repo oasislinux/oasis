@@ -286,6 +286,10 @@
 [submodule "pkg/sfeed/src"]
 	path = pkg/sfeed/src
 	url = git://git.codemadness.org/sfeed
+[submodule "pkg/sfeed_curses/src"]
+	path = pkg/sfeed_curses/src
+	url = git://git.codemadness.org/sfeed_curses
+	ignore = all
 [submodule "pkg/sinit/src"]
 	path = pkg/sinit/src
 	url = git://git.suckless.org/sinit

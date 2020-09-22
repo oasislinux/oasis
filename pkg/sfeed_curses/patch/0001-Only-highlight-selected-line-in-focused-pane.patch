@@ -1,0 +1,25 @@
+From 661e3f40b9e6ae9d9e9eae9a72b69e0d40e28c7d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 22 Sep 2020 01:49:54 -0700
+Subject: [PATCH] Only highlight selected line in focused pane
+
+---
+ sfeed_curses.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sfeed_curses.c b/sfeed_curses.c
+index f9d7477..b6177b9 100644
+--- a/sfeed_curses.c
++++ b/sfeed_curses.c
+@@ -36,7 +36,7 @@
+ #define THEME_ITEM_NORMAL()           do {                            } while(0)
+ #define THEME_ITEM_FOCUS()            do {                            } while(0)
+ #define THEME_ITEM_BOLD()             do { attrmode(ATTR_BOLD_ON);    } while(0)
+-#define THEME_ITEM_SELECTED()         do { attrmode(ATTR_REVERSE_ON); } while(0)
++#define THEME_ITEM_SELECTED()         do { if (p->focused) attrmode(ATTR_REVERSE_ON); } while(0)
+ #define THEME_SCROLLBAR_FOCUS()       do {                            } while(0)
+ #define THEME_SCROLLBAR_NORMAL()      do { attrmode(ATTR_FAINT_ON);   } while(0)
+ #define THEME_SCROLLBAR_TICK_FOCUS()  do { attrmode(ATTR_REVERSE_ON); } while(0)
+-- 
+2.28.0
+
