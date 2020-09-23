@@ -1,4 +1,4 @@
-From feb76b8ad5f9f017496874424d3b602e38056674 Mon Sep 17 00:00:00 2001
+From e8d0162f530f4fafde0a14202f1c2e4ff78bfd0b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -7,11 +7,12 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  include/libnetlink.h |  4 ++--
  ip/ipfou.c           |  2 +-
  ip/ipila.c           |  2 +-
+ ip/ipmptcp.c         |  4 ++--
  ip/ipseg6.c          |  2 +-
  ip/tcp_metrics.c     |  2 +-
  lib/libnetlink.c     | 12 ++++++------
  lib/utils.c          |  2 +-
- 7 files changed, 13 insertions(+), 13 deletions(-)
+ 8 files changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/include/libnetlink.h b/include/libnetlink.h
 index e27516f7..253d2141 100644
@@ -61,6 +62,28 @@ index 739ee4e1..50c8c300 100644
  
  	open_json_object(NULL);
  	print_ila_locid("locator_match", ILA_ATTR_LOCATOR_MATCH, tb);
+diff --git a/ip/ipmptcp.c b/ip/ipmptcp.c
+index e1ffafb3..802272d3 100644
+--- a/ip/ipmptcp.c
++++ b/ip/ipmptcp.c
+@@ -234,7 +234,7 @@ static int print_mptcp_addr(struct nlmsghdr *n, void *arg)
+ 		return -1;
+ 
+ 	ghdr = NLMSG_DATA(n);
+-	parse_rtattr_flags(tb, MPTCP_PM_ATTR_MAX, (void *) ghdr + GENL_HDRLEN,
++	parse_rtattr_flags(tb, MPTCP_PM_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN),
+ 			   len, NLA_F_NESTED);
+ 	addrinfo = tb[MPTCP_PM_ATTR_ADDR];
+ 	if (!addrinfo)
+@@ -345,7 +345,7 @@ static int print_mptcp_limit(struct nlmsghdr *n, void *arg)
+ 		return -1;
+ 
+ 	ghdr = NLMSG_DATA(n);
+-	parse_rtattr(tb, MPTCP_PM_ATTR_MAX, (void *) ghdr + GENL_HDRLEN, len);
++	parse_rtattr(tb, MPTCP_PM_ATTR_MAX, (struct rtattr *)((char *)ghdr + GENL_HDRLEN), len);
+ 
+ 	open_json_object(NULL);
+ 	if (tb[MPTCP_PM_ATTR_RCV_ADD_ADDRS]) {
 diff --git a/ip/ipseg6.c b/ip/ipseg6.c
 index 56a76996..1c3c3bf5 100644
 --- a/ip/ipseg6.c
