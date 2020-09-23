@@ -6,6 +6,7 @@ Upstream tar archives are used over git because the parser
 Generated with
 
 	meson \
+		--prefix=/ \
 		-Dxkb-config-root=/share/xkb \
 		-Dx-locale-root=/share/xlocale \
 		-Denable-x11=false \
