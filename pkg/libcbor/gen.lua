@@ -7,7 +7,7 @@ cflags{
 build('sed', '$outdir/include/cbor/configuration.h', '$srcdir/src/cbor/configuration.h.in', {
 	expr={
 		[[-e 's,$${CBOR_VERSION_MAJOR},0,']],
-		[[-e 's,$${CBOR_VERSION_MINOR},7,']],
+		[[-e 's,$${CBOR_VERSION_MINOR},8,']],
 		[[-e 's,$${CBOR_VERSION_PATCH},0,']],
 		[[-e 's,$${CBOR_BUFFER_GROWTH},2,']],
 		[[-e 's,$${CBOR_MAX_STACK_SIZE},2048,']],
@@ -35,6 +35,7 @@ pkg.hdrs = {
 		'cbor/strings.h',
 		'cbor/tags.h',
 	}),
+	copy('$outdir/include/cbor', '$dir', {'cbor_export.h'}),
 	'$outdir/include/cbor/configuration.h',
 }
 pkg.deps = {'$gendir/headers'}
