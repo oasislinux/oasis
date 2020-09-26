@@ -1,4 +1,4 @@
-From 87f14954600cd3bb13c82b1bb992a89bff545f9c Mon Sep 17 00:00:00 2001
+From 0308e8cd17c92f96a61d8b231336caa299d7683d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:58:46 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
@@ -92,7 +92,7 @@ index be459714..819abc92 100644
  		if (!inet_ntop(diag_msg->idiag_family, diag_msg->id.idiag_dst,
  			       dst_buf, text_size))
 diff --git a/syscall.c b/syscall.c
-index 022cab5b..37097d92 100644
+index d228ae4d..c8fdd85e 100644
 --- a/syscall.c
 +++ b/syscall.c
 @@ -295,7 +295,7 @@ decode_socket_subcall(struct tcb *tcp)
@@ -105,10 +105,10 @@ index 022cab5b..37097d92 100644
  	if (umoven(tcp, tcp->u_arg[1], nargs * current_wordsize, buf) < 0)
  		return;
 diff --git a/util.c b/util.c
-index 6eda524d..c15e6514 100644
+index 481144bf..b65479a0 100644
 --- a/util.c
 +++ b/util.c
-@@ -481,8 +481,7 @@ enum sock_proto
+@@ -493,8 +493,7 @@ enum sock_proto
  getfdproto(struct tcb *tcp, int fd)
  {
  #ifdef HAVE_SYS_XATTR_H
@@ -118,15 +118,15 @@ index 6eda524d..c15e6514 100644
  	ssize_t r;
  	char path[sizeof("/proc/%u/fd/%u") + 2 * sizeof(int)*3];
  
-@@ -490,7 +489,7 @@ getfdproto(struct tcb *tcp, int fd)
+@@ -502,7 +501,7 @@ getfdproto(struct tcb *tcp, int fd)
  		return SOCK_PROTO_UNKNOWN;
  
- 	xsprintf(path, "/proc/%u/fd/%u", tcp->pid, fd);
+ 	xsprintf(path, "/proc/%u/fd/%u", get_proc_pid(tcp), fd);
 -	r = getxattr(path, "system.sockprotoname", buf, bufsize - 1);
 +	r = getxattr(path, "system.sockprotoname", buf, sizeof(buf) - 1);
  	if (r <= 0)
  		return SOCK_PROTO_UNKNOWN;
  	else {
 -- 
-2.26.2
+2.28.0
 

@@ -1,4 +1,4 @@
-From f0030f1c023963e1d58f91026ab6f1d714a7af06 Mon Sep 17 00:00:00 2001
+From 4df6fee4836c6ecceb33221ec93f36592973bd12 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:33:01 -0700
 Subject: [PATCH] Use __typeof__ spelling of typeof
@@ -54,12 +54,12 @@ index 77ce151f..6e6cb721 100644
  				    &info, sizeof(info), tfetch_mem,
  				    print_btrfs_ioctl_space_info, 0);
 diff --git a/defs.h b/defs.h
-index 3fd8cba1..08e85fed 100644
+index 656c04a5..732542e4 100644
 --- a/defs.h
 +++ b/defs.h
-@@ -1699,8 +1699,8 @@ scno_is_valid(kernel_ulong_t scno)
+@@ -1760,8 +1760,8 @@ scno_is_valid(kernel_ulong_t scno)
  
- #define ILOG2_ITER_(val_, ret_, bit_)					\
+ # define ILOG2_ITER_(val_, ret_, bit_)					\
  	do {								\
 -		typeof(ret_) shift_ =					\
 -			((val_) > ((((typeof(val_)) 1)			\
@@ -91,10 +91,10 @@ index d9a07ab0..63c2bcb3 100644
  				    tfetch_mem,
  				    print_fiemap_extent, 0);
 diff --git a/gcc_compat.h b/gcc_compat.h
-index 0525b5e1..042c7961 100644
+index 4c23ebc9..8eaa54bf 100644
 --- a/gcc_compat.h
 +++ b/gcc_compat.h
-@@ -44,7 +44,7 @@
+@@ -59,7 +59,7 @@
  # endif
  
  # if GNUC_PREREQ(3, 0)
@@ -159,10 +159,10 @@ index 2a474dc4..2423f65e 100644
  				printf(", ");
  			printf("{transid=%" PRI__u64 ", objectid=",
 diff --git a/tests/fcntl-common.c b/tests/fcntl-common.c
-index 27694326..46667e4e 100644
+index ec18aa79..637bb405 100644
 --- a/tests/fcntl-common.c
 +++ b/tests/fcntl-common.c
-@@ -20,7 +20,7 @@
+@@ -22,7 +22,7 @@
  #define TEST_FLOCK64_EINVAL(cmd) test_flock64_einval(cmd, #cmd)
  
  #ifdef HAVE_TYPEOF

@@ -1,4 +1,4 @@
-From dc7f55485c8562999b5bc2ae713a3aec0c90bce8 Mon Sep 17 00:00:00 2001
+From 1d0a51b8e89231e92b0b3280dd850eccfa6cf143 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -10,7 +10,7 @@ Subject: [PATCH] Don't omit second operand to '?' operator
  3 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/open.c b/open.c
-index 690453ed..1960ea1c 100644
+index eb6af088..16e64946 100644
 --- a/open.c
 +++ b/open.c
 @@ -77,8 +77,9 @@ sprint_open_modes64(uint64_t flags)
@@ -39,10 +39,10 @@ index b904fa34..1366a89e 100644
  	return out;
  }
 diff --git a/strace.c b/strace.c
-index 2a4e6001..352c8282 100644
+index 280f1a68..11a3d9dd 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -2235,7 +2235,7 @@ init(int argc, char *argv[])
+@@ -2251,7 +2251,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -51,7 +51,7 @@ index 2a4e6001..352c8282 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2332,10 +2332,10 @@ init(int argc, char *argv[])
+@@ -2351,10 +2351,10 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
  			break;
  		case GETOPT_QUAL_QUIET:
@@ -65,5 +65,5 @@ index 2a4e6001..352c8282 100644
  		default:
  			error_msg_and_help(NULL);
 -- 
-2.26.2
+2.28.0
 

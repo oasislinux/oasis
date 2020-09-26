@@ -1,4 +1,4 @@
-From 6b445913b3178e5056b13e73ab03cc05d2b47bc4 Mon Sep 17 00:00:00 2001
+From d57542b29ffe81ac355c2889aa5cf326b60e7d67 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/bpf.c b/bpf.c
-index af830053..6b77f17f 100644
+index 0ec33ba4..16cbf257 100644
 --- a/bpf.c
 +++ b/bpf.c
 @@ -43,7 +43,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -42,7 +42,7 @@ index af830053..6b77f17f 100644
  
  		print_array(tcp, addr, len, &insn, sizeof(insn),
 diff --git a/net.c b/net.c
-index fa4638e7..7b049211 100644
+index 2099f0ac..316cecf2 100644
 --- a/net.c
 +++ b/net.c
 @@ -655,7 +655,7 @@ print_tpacket_stats(struct tcb *const tcp, const kernel_ulong_t addr,
@@ -55,10 +55,10 @@ index fa4638e7..7b049211 100644
  	if (len > (int) sizeof(filter))
  		len = sizeof(filter);
 diff --git a/sched.c b/sched.c
-index 788ef39b..2e5775d5 100644
+index ff427e48..2f46a836 100644
 --- a/sched.c
 +++ b/sched.c
-@@ -94,7 +94,7 @@ static void
+@@ -99,7 +99,7 @@ static void
  print_sched_attr(struct tcb *const tcp, const kernel_ulong_t addr,
  		 unsigned int usize)
  {
@@ -68,7 +68,7 @@ index 788ef39b..2e5775d5 100644
  	bool is_set = false;
  
 diff --git a/signal.c b/signal.c
-index d5d59105..d20317ca 100644
+index 49b4ebd5..a809d260 100644
 --- a/signal.c
 +++ b/signal.c
 @@ -246,7 +246,7 @@ print_sigset_addr_len_limit(struct tcb *const tcp, const kernel_ulong_t addr,
@@ -81,10 +81,10 @@ index d5d59105..d20317ca 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/strace.c b/strace.c
-index 4c96a98b..fed04fc9 100644
+index 2897195c..280f1a68 100644
 --- a/strace.c
 +++ b/strace.c
-@@ -3359,7 +3359,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -3381,7 +3381,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {

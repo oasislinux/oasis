@@ -1,5 +1,17 @@
+From 8f8487a1c0e9be10746b255383fc892095174aac Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 26 Sep 2020 16:30:33 -0700
+Subject: [PATCH] Prevent zero-sized arrays
+
+---
+ xlat/btrfs_features_compat.h | 3 ++-
+ xlat/mq_attr_flags.h         | 3 ++-
+ xlat/sigprof_codes.h         | 3 ++-
+ xlat/sock_ipx_options.h      | 3 ++-
+ 4 files changed, 8 insertions(+), 4 deletions(-)
+
 diff --git a/xlat/btrfs_features_compat.h b/xlat/btrfs_features_compat.h
-index d74af3154..70331b1d7 100644
+index d74af31..70331b1 100644
 --- a/xlat/btrfs_features_compat.h
 +++ b/xlat/btrfs_features_compat.h
 @@ -13,13 +13,14 @@ extern const struct xlat btrfs_features_compat[];
@@ -19,7 +31,7 @@ index d74af3154..70331b1d7 100644
   .flags_mask = 0
    ,
 diff --git a/xlat/mq_attr_flags.h b/xlat/mq_attr_flags.h
-index 9dfbe94d8..84ec9cd3c 100644
+index 9dfbe94..84ec9cd 100644
 --- a/xlat/mq_attr_flags.h
 +++ b/xlat/mq_attr_flags.h
 @@ -18,13 +18,14 @@ static const struct xlat_data mq_attr_flags_xdata[] = {
@@ -39,7 +51,7 @@ index 9dfbe94d8..84ec9cd3c 100644
   .flags_mask = 0
  #  ifdef XLAT_VAL_0
 diff --git a/xlat/sigprof_codes.h b/xlat/sigprof_codes.h
-index 65614dc28..a173d59b7 100644
+index 65614dc..a173d59 100644
 --- a/xlat/sigprof_codes.h
 +++ b/xlat/sigprof_codes.h
 @@ -18,13 +18,14 @@ static const struct xlat_data sigprof_codes_xdata[] = {
@@ -59,7 +71,7 @@ index 65614dc28..a173d59b7 100644
   .flags_mask = 0
  #  ifdef XLAT_VAL_0
 diff --git a/xlat/sock_ipx_options.h b/xlat/sock_ipx_options.h
-index 166d010dc..527089bc0 100644
+index 166d010..527089b 100644
 --- a/xlat/sock_ipx_options.h
 +++ b/xlat/sock_ipx_options.h
 @@ -18,11 +18,12 @@ static const struct xlat_data sock_ipx_options_xdata[] = {
@@ -76,3 +88,6 @@ index 166d010dc..527089bc0 100644
   .type = XT_NORMAL,
   .flags_mask = 0
  #  ifdef XLAT_VAL_0
+-- 
+2.28.0
+
