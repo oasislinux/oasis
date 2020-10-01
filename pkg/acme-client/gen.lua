@@ -5,12 +5,13 @@ cflags{
 	'-isystem $basedir/pkg/openbsd/include',
 	'-isystem $builddir/pkg/libressl/include',
 	'-isystem $builddir/pkg/libtls-bearssl/include',
-	'-idirafter $basedir/pkg/openbsd/src/sys',
+	'-isystem $builddir/pkg/openbsd/include',
 }
 
 pkg.deps = {
 	'pkg/libressl/headers',
 	'pkg/libtls-bearssl/headers',
+	'pkg/openbsd/headers',
 }
 
 yacc('parse', 'parse.y')

@@ -2,7 +2,7 @@ cflags{
 	'-I $dir',
 	'-I $outdir/include',
 	'-I $srcdir/include',
-	'-idirafter $basedir/pkg/openbsd/src/sys',
+	'-isystem $builddir/pkg/openbsd/include',
 }
 
 build('sed', '$outdir/include/event2/event-config.h', {'$dir/config.h', '|', '$srcdir/make-event-config.sed'}, {
@@ -24,7 +24,7 @@ pkg.hdrs = {
 }
 pkg.deps = {
 	'$gendir/headers',
-	'pkg/openbsd/fetch',
+	'pkg/openbsd/headers',
 }
 
 lib('libevent.a', {

@@ -2,10 +2,15 @@ cflags{
 	'-Wall', '-Wno-pointer-sign', '-Wno-maybe-uninitialized', '-Wno-attributes',
 	[[-D 'DEF_WEAK(n)=_Static_assert(1, "")']],
 	'-I $dir/include',
-	'-idirafter $srcdir/include',
-	'-idirafter $srcdir/sys',
-	'-idirafter $srcdir/lib/libutil',
+	'-I $outdir/include',
 }
+
+pkg.hdrs = {
+	copy('$outdir/include', '$srcdir/sys', {'sys/queue.h', 'sys/tree.h', 'sys/_null.h'}),
+	copy('$outdir/include', '$srcdir/include', {'fts.h', 'vis.h'}),
+	copy('$outdir/include', '$srcdir/lib/libutil', {'ohash.h'}),
+}
+pkg.deps = {'$gendir/headers'}
 
 -- Link arc4random.c to '$outdir' so that it doesn't include the local
 -- arc4random.h

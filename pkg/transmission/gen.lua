@@ -6,7 +6,7 @@ sub('libminiupnp.ninja', function()
 	cflags{
 		'-D _GNU_SOURCE',
 		'-I $outdir/miniupnpc',
-		'-idirafter $basedir/pkg/openbsd/src/sys',
+		'-isystem $outdir/pkg/openbsd/include',
 	}
 
 	build('sed', '$outdir/miniupnpc/miniupnpcstrings.h', '$srcdir/third-party/miniupnpc/miniupnpcstrings.h.in', {
@@ -29,7 +29,7 @@ sub('libminiupnp.ninja', function()
 			upnperrors.c
 			upnpreplyparse.c
 		)
-	]], {'$outdir/miniupnpc/miniupnpcstrings.h', 'pkg/openbsd/fetch'})
+	]], {'$outdir/miniupnpc/miniupnpcstrings.h', 'pkg/openbsd/headers'})
 end)
 
 cflags{
@@ -44,7 +44,7 @@ cflags{
 	'-isystem $builddir/pkg/libevent/include',
 	'-isystem $builddir/pkg/libutp/include',
 	'-isystem $builddir/pkg/zlib/include',
-	'-idirafter $basedir/pkg/openbsd/src/sys',
+	'-isystem $builddir/pkg/openbsd/include',
 	'-include config.h',
 }
 
@@ -53,7 +53,7 @@ pkg.deps = {
 	'pkg/curl/headers',
 	'pkg/libevent/headers',
 	'pkg/libutp/headers',
-	'pkg/openbsd/fetch',
+	'pkg/openbsd/headers',
 	'pkg/zlib/headers',
 }
 

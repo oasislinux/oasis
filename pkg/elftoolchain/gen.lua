@@ -3,7 +3,7 @@ cflags{
 	'-I $dir',
 	'-I $srcdir/common',
 	'-I $srcdir/libelf',
-	'-idirafter $basedir/pkg/openbsd/src/sys',
+	'-isystem $builddir/pkg/openbsd/include',
 }
 
 pkg.hdrs = {
@@ -11,6 +11,7 @@ pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/common', {'elfdefinitions.h'}),
 	install=true,
 }
+pkg.deps = {'pkg/openbsd/headers'}
 
 rule('m4', 'm4 -D SRCDIR=$srcdir/libelf $in >$out')
 build('m4', '$outdir/libelf_convert.c', {'$srcdir/libelf/libelf_convert.m4', '|', '$srcdir/libelf/elf_types.m4'})
