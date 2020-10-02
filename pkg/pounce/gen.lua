@@ -8,12 +8,14 @@ pkg.deps = {'pkg/libtls-bearssl/headers'}
 
 exe('pounce', {
 	'bounce.c',
+	'cert.c',
 	'client.c',
 	'config.c',
 	'local.c',
 	'ring.c',
 	'server.c',
 	'state.c',
+	'xdg.c',
 	'$builddir/pkg/libtls-bearssl/libtls.a.d',
 })
 file('bin/pounce', '755', '$outdir/pounce')
