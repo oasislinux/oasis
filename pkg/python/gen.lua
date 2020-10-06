@@ -56,7 +56,7 @@ rule('makesetup', 'lua $dir/makesetup.lua $dir/modules.lua <$in >$out')
 build('makesetup', '$outdir/config.c', {'$srcdir/Modules/config.c.in', '|', '$dir/makesetup.lua', '$dir/modules.lua'})
 
 cc('Modules/getbuildinfo.c', nil, {
-	cflags=[[$cflags -D 'DATE="Oct 14 2019"' -D 'TIME="15:34:47"']]
+	cflags=[[$cflags -D 'DATE="Oct  4 2020"' -D 'TIME="19:31:29"']]
 })
 cc('Modules/getpath.c', nil, {
 	cflags={
@@ -64,7 +64,7 @@ cc('Modules/getpath.c', nil, {
 		[[-D 'PYTHONPATH=":plat-linux"']],
 		[[-D 'PREFIX="/"']],
 		[[-D 'EXEC_PREFIX="/"']],
-		[[-D 'VERSION="3.8"']],
+		[[-D 'VERSION="3.9"']],
 		[[-D 'VPATH=""']],
 	},
 })
@@ -81,6 +81,9 @@ end
 
 cc('Python/getplatform.c', nil, {
 	cflags=string.format([[$cflags -D 'PLATFORM="%s"']], platform),
+})
+cc('Python/initconfig.c', nil, {
+	cflags=[[$cflags -D 'PLATLIBDIR="lib"']],
 })
 cc('Python/sysmodule.c', nil, {
 	cflags=string.format([[$cflags -D 'ABIFLAGS="%s"']], abiflags),
@@ -109,6 +112,7 @@ lib('libpython.a', {expand{'Modules/', srcs}, paths[[
 		descrobject.c
 		enumobject.c
 		exceptions.c
+		genericaliasobject.c
 		genobject.c
 		fileobject.c
 		floatobject.c
@@ -144,6 +148,7 @@ lib('libpython.a', {expand{'Modules/', srcs}, paths[[
 		node.c
 		parser.c
 		token.c
+		pegen/(pegen.c parse.c parse_string.c peg_api.c)
 		myreadline.c parsetok.c tokenizer.c
 	)
 	Python/(
@@ -168,9 +173,10 @@ lib('libpython.a', {expand{'Modules/', srcs}, paths[[
 		getversion.c
 		graminit.c
 		hamt.c
+		hashtable.c
 		import.c
 		importdl.c
-		initconfig.c
+		initconfig.c.o
 		marshal.c
 		modsupport.c
 		mysnprintf.c
@@ -215,10 +221,10 @@ man{'$outdir/python3.1'}
 sym('share/man/man1/python.1.gz', 'python3.1.gz')
 
 for f in iterlines('pylibs.txt') do
-	file('lib/python3.8/'..f, '644', '$srcdir/Lib/'..f)
+	file('lib/python3.9/'..f, '644', '$srcdir/Lib/'..f)
 end
-file('lib/python3.8/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$dir/lib/_sysconfigdata.py')
-file('lib/python3.8/Makefile', '644', '$dir/lib/Makefile')
-dir('lib/python3.8/lib-dynload', '755')
+file('lib/python3.9/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$dir/lib/_sysconfigdata.py')
+file('lib/python3.9/Makefile', '644', '$dir/lib/Makefile')
+dir('lib/python3.9/lib-dynload', '755')
 
 fetch 'curl'

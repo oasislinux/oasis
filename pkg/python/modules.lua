@@ -27,7 +27,8 @@ return {
 		'_io/stringio.c',
 	},
 	faulthandler={'faulthandler.c'},
-	_tracemalloc={'_tracemalloc.c', 'hashtable.c'},
+	_tracemalloc={'_tracemalloc.c'},
+	_peg_parser={'_peg_parser.c'},
 	--_symtable={'symtablemodule.c'},
 	--xxsubtype={'xxsubtype.c'},
 
@@ -38,6 +39,7 @@ return {
 	cmath={'cmathmodule.c', '_math.c'},
 	-- time defined above
 	_datetime={'_datetimemodule.c'},
+	_zoneinfo={'_zoneinfo.c'},
 	_random={'_randommodule.c'},
 	_bisect={'_bisectmodule.c'},
 	_heapq={'_heapqmodule.c'},
