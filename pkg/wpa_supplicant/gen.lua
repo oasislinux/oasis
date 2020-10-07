@@ -95,4 +95,6 @@ exe('bin/wpa_cli', [[
 ]])
 file('bin/wpa_cli', '755', '$outdir/bin/wpa_cli')
 
-fetch 'git'
+man(paths[[wpa_supplicant/doc/docbook/(wpa_cli.8 wpa_supplicant.8 wpa_supplicant.conf.5)]])
+
+fetch 'curl'

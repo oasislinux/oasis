@@ -66,7 +66,6 @@ return {
 	net={
 		'acme-client',
 		'catgirl',
-		'hostap',
 		'ii',
 		'msmtp',
 		'nginx',
@@ -74,6 +73,7 @@ return {
 		'pounce',
 		'sshfs',
 		'transmission',
+		'wpa_supplicant',
 	},
 	desktop={
 		'adobe-source-fonts',

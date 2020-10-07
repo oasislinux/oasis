@@ -104,10 +104,6 @@
 	path = pkg/git/src
 	url = https://github.com/git/git
 	ignore = all
-[submodule "pkg/hostap/src"]
-	path = pkg/hostap/src
-	url = git://w1.fi/hostap.git
-	ignore = all
 [submodule "pkg/hotplugd/src"]
 	path = pkg/hotplugd/src
 	url = https://github.com/oasislinux/hotplugd.git
