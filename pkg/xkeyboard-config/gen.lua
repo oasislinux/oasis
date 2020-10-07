@@ -41,7 +41,6 @@ local data = [[
 	rules/(
 		xfree98
 		xkb.dtd
-		xkb.its
 		README
 	)
 	symbols/(
@@ -86,7 +85,7 @@ local data = [[
 		id ie il
 		in iq
 		ir is it
-		jp
+		jp jv
 		ke kg kh
 		kr kz
 		la latam latin
@@ -104,7 +103,7 @@ local data = [[
 		ua us uz vn
 		za
 		altwin capslock compose ctrl empty eurosign rupeesign group inet
-		keypad kpdl level3 level5 nbsp olpc shift srvr_ctrl typo
+		keypad kpdl level2 level3 level5 nbsp olpc shift srvr_ctrl typo
 	)
 	types/(
 		basic cancel caps
@@ -119,31 +118,34 @@ end
 
 local function parts(ruleset)
 	return expand{'$srcdir/rules/', {
-		'base.hdr.part', 'base.lists.part',
-		ruleset..'.lists.base.part',
-		ruleset..'.m_k.part',
-		'base.l1_k.part',
-		'base.l_k.part',
-		'base.ml_g.part',
-		'base.m_g.part',
-		'base.mlv_s.part',
-		'base.ml_s.part',
-		'base.ml1_s.part',
-		'base.ml2_s.part',
-		'base.ml3_s.part',
-		'base.ml4_s.part',
-		ruleset..'.m_s.part',
-		ruleset..'.ml_s1.part',
-		'base.ml_c.part',
-		'base.ml1_c.part',
-		'base.m_t.part',
-		'base.l1o_s.part',
-		'base.l2o_s.part',
-		'base.l3o_s.part',
-		'base.l4o_s.part',
-		'base.o_s.part',
-		'base.o_c.part',
-		'base.o_t.part',
+		'0000-hdr.part',
+		'0001-lists.part',
+		'0002-'..ruleset..'.lists.part',
+		'0004-'..ruleset..'.m_k.part',
+		'0005-l1_k.part',
+		'0006-l_k.part',
+		'0007-o_k.part',
+		'0008-ml_g.part',
+		'0009-m_g.part',
+		'0011-mlv_s.part',
+		'0013-ml_s.part',
+		'0015-ml1_s.part',
+		'0018-ml2_s.part ',
+		'0020-ml3_s.part ',
+		'0022-ml4_s.part ',
+		'0026-'..ruleset..'.m_s.part',
+		'0027-'..ruleset..'.ml_s1.part',
+		'0033-ml_c.part',
+		'0034-ml1_c.part',
+		'0035-m_t.part',
+		'0036-lo_s.part',
+		'0037-l1o_s.part',
+		'0038-l2o_s.part',
+		'0039-l3o_s.part',
+		'0040-l4o_s.part',
+		'0042-o_s.part',
+		'0043-o_c.part',
+		'0044-o_t.part',
 	}}
 end
 
