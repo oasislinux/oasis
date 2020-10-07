@@ -78,6 +78,7 @@ return {
 	desktop={
 		'adobe-source-fonts',
 		'dmenu',
+		'mupdf',
 		'netsurf',
 		'libinput',
 		'st',
