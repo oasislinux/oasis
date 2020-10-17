@@ -1,6 +1,7 @@
 cflags{
 	'-Wall', '-Wformat=2', '-Wmissing-declarations', '-Wmissing-prototypes',
 	'-Wold-style-definition', '-Wstrict-prototypes', '-Wno-maybe-uninitialized',
+	'-Wno-format-truncation',
 	'-Wno-cpp',  -- we don't have libmnl
 	'-D _GNU_SOURCE',
 	'-D HAVE_SETNS',

@@ -1,4 +1,4 @@
-From 8926901e33cd9e213cf2a6267e4620989ebafc8b Mon Sep 17 00:00:00 2001
+From 62ee678cb79c05af51c4ab511e479b61b9279669 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:40 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -108,10 +108,10 @@ index 063a0611..b863af6f 100644
  		return hz;
  	return HZ;
 diff --git a/misc/ss.c b/misc/ss.c
-index e2e3f1ec..8bf66482 100644
+index cfc430cc..9ebc9d4b 100644
 --- a/misc/ss.c
 +++ b/misc/ss.c
-@@ -471,7 +471,9 @@ static FILE *generic_proc_open(const char *env, const char *name)
+@@ -481,7 +481,9 @@ static FILE *generic_proc_open(const char *env, const char *name)
  	char store[128];
  
  	if (!p) {
@@ -122,7 +122,7 @@ index e2e3f1ec..8bf66482 100644
  		snprintf(store, sizeof(store)-1, "%s/%s", p, name);
  		p = store;
  	}
-@@ -563,7 +565,7 @@ static void user_ent_destroy(void)
+@@ -573,7 +575,7 @@ static void user_ent_destroy(void)
  
  static void user_ent_hash_build(void)
  {
@@ -131,7 +131,7 @@ index e2e3f1ec..8bf66482 100644
  	struct dirent *d;
  	char name[1024];
  	int nameoff;
-@@ -573,6 +575,10 @@ static void user_ent_hash_build(void)
+@@ -583,6 +585,10 @@ static void user_ent_hash_build(void)
  	const char *no_ctx = "unavailable";
  	static int user_ent_hash_build_init;
  
@@ -142,7 +142,7 @@ index e2e3f1ec..8bf66482 100644
  	/* If show_users & show_proc_ctx set only do this once */
  	if (user_ent_hash_build_init != 0)
  		return;
-@@ -2222,7 +2228,10 @@ void *parse_hostcond(char *addr, bool is_port)
+@@ -2234,7 +2240,10 @@ void *parse_hostcond(char *addr, bool is_port)
  	} else if (addr[0] == '*') {
  		port = addr+1;
  	} else {
@@ -154,7 +154,7 @@ index e2e3f1ec..8bf66482 100644
  	}
  
  	if (is_port)
-@@ -3838,9 +3847,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
+@@ -3926,9 +3935,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
  
  	sock_state_print(s);
  
@@ -166,7 +166,7 @@ index e2e3f1ec..8bf66482 100644
  			int_to_str(s->rport, port_name), NULL);
  
  	proc_ctx_print(s);
-@@ -4043,7 +4052,7 @@ static int unix_show(struct filter *f)
+@@ -4131,7 +4140,7 @@ static int unix_show(struct filter *f)
  			if (!p)
  				u->peer_name = "?";
  			else
@@ -175,7 +175,7 @@ index e2e3f1ec..8bf66482 100644
  		}
  
  		if (f->f) {
-@@ -4527,9 +4536,10 @@ static int netlink_show_one(struct filter *f,
+@@ -4615,9 +4624,10 @@ static int netlink_show_one(struct filter *f,
  			strncpy(procname, "kernel", 7);
  		} else if (pid > 0) {
  			FILE *fp;
@@ -187,7 +187,7 @@ index e2e3f1ec..8bf66482 100644
  			if ((fp = fopen(procname, "r")) != NULL) {
  				if (fscanf(fp, "%*d (%[^)])", procname) == 1) {
  					snprintf(procname+strlen(procname),
-@@ -4572,7 +4582,7 @@ static int netlink_show_one(struct filter *f,
+@@ -4660,7 +4670,7 @@ static int netlink_show_one(struct filter *f,
  		else if (pid > 0)
  			getpidcon(pid, &pid_context);
  
