@@ -1,7 +1,7 @@
 #define nstiny
 #define NETSURF_BUILTIN_LOG_FILTER "level:WARNING"
 #define NETSURF_BUILTIN_VERBOSE_FILTER "level:DEBUG"
-#define NETSURF_HOMEPAGE "https://duckduckgo.com/html"
+#define NETSURF_HOMEPAGE "https://lite.duckduckgo.com/lite"
 #define TINY_RESPATH "/share/netsurf:/share/fonts"
 
 #define TINY_FONT_SANS_SERIF "source-sans-pro/SourceSansPro-Regular.otf"
