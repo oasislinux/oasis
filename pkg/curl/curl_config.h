@@ -9,6 +9,7 @@
 /* #undef CURL_DISABLE_DOH */
 /* #undef CURL_DISABLE_FILE */
 /* #undef CURL_DISABLE_FTP */
+/* #undef CURL_DISABLE_GETOPTIONS */
 /* #undef CURL_DISABLE_GOPHER */
 /* #undef CURL_DISABLE_HTTP */
 /* #undef CURL_DISABLE_HTTP_AUTH */
@@ -17,6 +18,7 @@
 #define CURL_DISABLE_LDAPS 1
 /* #undef CURL_DISABLE_LIBCURL_OPTION */
 /* #undef CURL_DISABLE_MIME */
+/* #undef CURL_DISABLE_MQTT */
 /* #undef CURL_DISABLE_NETRC */
 /* #undef CURL_DISABLE_OPENSSL_AUTO_LOAD_CONFIG */
 /* #undef CURL_DISABLE_PARSEDATE */
@@ -27,10 +29,10 @@
 /* #undef CURL_DISABLE_SHUFFLE_DNS */
 #define CURL_DISABLE_SMB 1
 /* #undef CURL_DISABLE_SMTP */
+/* #undef CURL_DISABLE_SOCKETPAIR */
 /* #undef CURL_DISABLE_TELNET */
 /* #undef CURL_DISABLE_TFTP */
 /* #undef CURL_DISABLE_VERBOSE_STRINGS */
-/* #undef CURL_ENABLE_MQTT */
 #define CURL_EXTERN_SYMBOL __attribute__ ((__visibility__ ("default")))
 #define CURL_SA_FAMILY_T sa_family_t
 /* #undef CURL_WITH_MULTI_SSL */
@@ -208,7 +210,7 @@
 #define HAVE_SOCKETPAIR 1
 /* #undef HAVE_SOCKET_H */
 /* #undef HAVE_SSLV2_CLIENT_METHOD */
-/* #undef HAVE_SSL_GET_ESNI_STATUS */
+/* #undef HAVE_SSL_GET_ECH_STATUS */
 /* #undef HAVE_SSL_H */
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
@@ -323,7 +325,7 @@
 /* #undef USE_AMISSL */
 /* #undef USE_ARES */
 #define USE_BEARSSL 1
-/* #undef USE_ESNI */
+/* #undef USE_ECH */
 /* #undef USE_GNUTLS */
 /* #undef USE_GNUTLS_NETTLE */
 /* #undef USE_LIBPSL */
