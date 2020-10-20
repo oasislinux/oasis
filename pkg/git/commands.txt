@@ -74,6 +74,7 @@ git-ls-remote.txt
 git-ls-tree.txt
 git-mailinfo.txt
 git-mailsplit.txt
+git-maintenance.txt
 git-merge-base.txt
 git-merge-file.txt
 git-merge-index.txt

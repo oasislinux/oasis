@@ -41,7 +41,6 @@ lib('libgit.a', [[
 	archive-tar.c
 	archive-zip.c
 	archive.c
-	argv-array.c
 	attr.c
 	base85.c
 	bisect.c
@@ -107,7 +106,6 @@ lib('libgit.a', [[
 	help.c
 	hex.c
 	ident.c
-	interdiff.c
 	json-writer.c
 	kwset.c
 	levenshtein.c
@@ -132,6 +130,7 @@ lib('libgit.a', [[
 	midx.c
 	name-hash.c
 	negotiator/default.c
+	negotiator/noop.c
 	negotiator/skipping.c
 	notes-cache.c
 	notes-merge.c
@@ -173,6 +172,7 @@ lib('libgit.a', [[
 	ref-filter.c
 	reflog-walk.c
 	refs.c
+	refs/debug.c
 	refs/files-backend.c
 	refs/iterator.c
 	refs/packed-backend.c
@@ -203,6 +203,7 @@ lib('libgit.a', [[
 	strbuf.c
 	streaming.c
 	string-list.c
+	strvec.c
 	sub-process.c
 	submodule-config.c
 	submodule.c
@@ -251,6 +252,8 @@ lib('libgit.a', [[
 	xdiff-interface.c
 	zlib.c
 
+	unix-socket.c
+
 	sha1dc_git.c
 	sha1dc/sha1.c
 	sha1dc/ubc_check.c
@@ -282,6 +285,7 @@ local builtins = {
 	'bisect--helper',
 	'blame',
 	'branch',
+	'bugreport',
 	'bundle',
 	'cat-file',
 	'check-attr',
@@ -298,6 +302,9 @@ local builtins = {
 	'commit',
 	'config',
 	'count-objects',
+	'credential-cache--daemon',
+	'credential-cache',
+	'credential-store',
 	'credential',
 	'describe',
 	'diff-files',
@@ -307,6 +314,7 @@ local builtins = {
 	'difftool',
 	'env--helper',
 	'fast-export',
+	'fast-import',
 	'fetch-pack',
 	'fetch',
 	'fmt-merge-msg',
@@ -390,34 +398,12 @@ local builtins = {
 }
 exe('git', {'git.c', 'common-main.c.o', expand{'builtin/', builtins, '.c'}, 'libgit.a.d'})
 file('bin/git', '755', '$outdir/git')
-local syms = {
-	builtins,
-	'cherry',
-	'cherry-pick',
-	'format-patch',
-	'fsck-objects',
-	'init',
-	'merge-subtree',
-	'restore',
-	'show',
-	'stage',
-	'status',
-	'switch',
-	'whatchanged',
-}
-for name in iterstrings(syms) do
-	sym('libexec/git-core/git-'..name, '../../bin/git')
-end
 
 local programs = {
 	-- src/Makefile:/^PROGRAM_OBJS./+=
-	{'bugreport'},
-	{'credential-store'},
 	{'daemon'},
-	{'fast-import'},
 	{'http-backend'},
 	{'imap-send', {'imap-send.c', 'http.c.o', '$builddir/pkg/curl/libcurl.a.d'}},
-	-- git-remote-testsvn is intentionally omitted
 	{'sh-i18n--envsubst'},
 	{'shell'},
 

@@ -14,11 +14,13 @@ config/clean.txt
 config/color.txt
 config/column.txt
 config/commit.txt
+config/commitgraph.txt
 config/completion.txt
 config/core.txt
 config/credential.txt
 config/diff.txt
 config/difftool.txt
+config/extensions.txt
 config/fastimport.txt
 config/feature.txt
 config/fetch.txt
@@ -44,6 +46,7 @@ config/interactive.txt
 config/log.txt
 config/mailinfo.txt
 config/mailmap.txt
+config/maintenance.txt
 config/man.txt
 config/merge.txt
 config/mergetool.txt
