@@ -1,4 +1,4 @@
-From 4d74fd369274f100e8aca1332ed59ca3c2eb8063 Mon Sep 17 00:00:00 2001
+From f536f64e20726132db052e6613ccfde0098b762a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 21 Aug 2018 15:52:34 -0700
 Subject: [PATCH] Use timingsafe_memcmp if available
@@ -9,15 +9,15 @@ Subject: [PATCH] Use timingsafe_memcmp if available
  2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/configure.ac b/configure.ac
-index 6c6bb224..f955eb1f 100644
+index a257afae..f230b693 100644
 --- a/configure.ac
 +++ b/configure.ac
 @@ -657,7 +657,7 @@ AC_CHECK_SIZEOF(void*)
  AC_CHECK_SIZEOF(off_t)
  AC_CHECK_FUNCS([getrandom arc4random arc4random_uniform])
  AC_SEARCH_LIBS([setusercontext],[util],[AC_CHECK_HEADERS([login_cap.h])])
--AC_CHECK_FUNCS([tzset alarm chroot dup2 endpwent gethostname memset memcpy pwrite socket strcasecmp strchr strdup strerror strncasecmp strtol writev getaddrinfo getnameinfo freeaddrinfo gai_strerror sigaction sigprocmask strptime strftime localtime_r setusercontext glob initgroups setresuid setreuid setresgid setregid getpwnam mmap ppoll clock_gettime accept4])
-+AC_CHECK_FUNCS([tzset alarm chroot dup2 endpwent gethostname memset memcpy pwrite socket strcasecmp strchr strdup strerror strncasecmp strtol writev getaddrinfo getnameinfo freeaddrinfo gai_strerror sigaction sigprocmask strptime strftime localtime_r setusercontext glob initgroups setresuid setreuid setresgid setregid getpwnam mmap ppoll clock_gettime accept4 timingsafe_memcmp])
+-AC_CHECK_FUNCS([tzset alarm chroot dup2 endpwent gethostname memset memcpy pwrite socket strcasecmp strchr strdup strerror strncasecmp strtol writev getaddrinfo getnameinfo freeaddrinfo gai_strerror sigaction sigprocmask strptime strftime localtime_r setusercontext glob initgroups setresuid setreuid setresgid setregid getpwnam mmap ppoll clock_gettime accept4 getifaddrs])
++AC_CHECK_FUNCS([tzset alarm chroot dup2 endpwent gethostname memset memcpy pwrite socket strcasecmp strchr strdup strerror strncasecmp strtol writev getaddrinfo getnameinfo freeaddrinfo gai_strerror sigaction sigprocmask strptime strftime localtime_r setusercontext glob initgroups setresuid setreuid setresgid setregid getpwnam mmap ppoll clock_gettime accept4 getifaddrs timingsafe_memcmp])
  
  AC_CHECK_TYPE([struct mmsghdr], AC_DEFINE(HAVE_MMSGHDR, 1, [If sys/socket.h has a struct mmsghdr.]), [], [
  AC_INCLUDES_DEFAULT
@@ -37,5 +37,5 @@ index 8b24fd1b..e75aa231 100644
  #define CRYPTO_memcmp memcmp_fixedtime
  int memcmp_fixedtime(const void *s1, const void *s2, size_t n)
 -- 
-2.28.0
+2.29.0
 

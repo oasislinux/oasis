@@ -8,7 +8,7 @@
 /* #undef DARWIN_BROKEN_SETREUID */
 #define DBFILE "/var/db/nsd/nsd.db"
 /* #undef DNSTAP_SOCKET_PATH */
-#define EDNS_MAX_MESSAGE_LEN 4096
+#define EDNS_MAX_MESSAGE_LEN 1232
 #define FACILITY LOG_DAEMON
 #define HAVE_ACCEPT4 1
 #define HAVE_ALARM 1
@@ -43,6 +43,8 @@
 /* #undef HAVE_EVENT_BASE_ONCE */
 /* #undef HAVE_EVENT_H */
 /* #undef HAVE_EVP_CLEANUP */
+/* #undef HAVE_EVP_MAC_CTX_NEW */
+/* #undef HAVE_EVP_MAC_CTX_SET_PARAMS */
 /* #undef HAVE_EV_DEFAULT_LOOP */
 /* #undef HAVE_EV_LOOP */
 #define HAVE_FCNTL_H 1
@@ -52,6 +54,7 @@
 #define HAVE_GAI_STRERROR 1
 #define HAVE_GETADDRINFO 1
 #define HAVE_GETHOSTNAME 1
+#define HAVE_GETIFADDRS 1
 #define HAVE_GETNAMEINFO 1
 #define HAVE_GETPWNAM 1
 #define HAVE_GETRANDOM 1
@@ -80,6 +83,7 @@
 #define HAVE_NETDB_H 1
 #define HAVE_NETINET_IN_H 1
 #define HAVE_NETINET_TCP_H 1
+/* #undef HAVE_OPENSSL_CORE_NAMES_H */
 /* #undef HAVE_OPENSSL_ERR_H */
 /* #undef HAVE_OPENSSL_INIT_CRYPTO */
 /* #undef HAVE_OPENSSL_INIT_SSL */
@@ -168,10 +172,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.3.2"
+#define PACKAGE_STRING "NSD 4.3.3"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.3.2"
+#define PACKAGE_VERSION "4.3.3"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
