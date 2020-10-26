@@ -1,4 +1,4 @@
-From 2fbd98389e3ff9f2810c9a6de17c10e2d1f9c1dd Mon Sep 17 00:00:00 2001
+From 2be689a3a8bb453d7ed588eeae6e32cb7c71e488 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 11 Aug 2019 04:26:06 +0000
 Subject: [PATCH] aplay: Error on WAV files with more than 256 channels
@@ -10,7 +10,7 @@ limit for channels manually specified on the command-line anyway.
  1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/aplay/aplay.c b/aplay/aplay.c
-index 08395f6..91765e7 100644
+index 0a65ad6..7c7ba71 100644
 --- a/aplay/aplay.c
 +++ b/aplay/aplay.c
 @@ -1057,7 +1057,7 @@ static ssize_t test_wavefile(int fd, u_char *_buffer, size_t size)
@@ -31,7 +31,7 @@ index 08395f6..91765e7 100644
  	snd_pcm_chmap_t *hw_chmap;
  	unsigned int ch, i;
  	int err;
-@@ -2088,7 +2088,7 @@ static ssize_t pcm_writev(u_char **data, unsigned int channels, size_t count)
+@@ -2085,7 +2085,7 @@ static ssize_t pcm_writev(u_char **data, unsigned int channels, size_t count)
  	data = remap_datav(data, count);
  	while (count > 0 && !in_aborting) {
  		unsigned int channel;
@@ -40,16 +40,16 @@ index 08395f6..91765e7 100644
  		size_t offset = result;
  		for (channel = 0; channel < channels; channel++)
  			bufs[channel] = data[channel] + offset * bits_per_sample / 8;
-@@ -2176,7 +2176,7 @@ static ssize_t pcm_readv(u_char **data, unsigned int channels, size_t rcount)
- 
- 	while (count > 0 && !in_aborting) {
+@@ -2178,7 +2178,7 @@ static ssize_t pcm_readv(u_char **data, unsigned int channels, size_t rcount)
+ 		if (in_aborting)
+ 			goto abort;
  		unsigned int channel;
 -		void *bufs[channels];
 +		void *bufs[256];
  		size_t offset = result;
  		for (channel = 0; channel < channels; channel++)
  			bufs[channel] = data[channel] + offset * bits_per_sample / 8;
-@@ -3242,7 +3242,7 @@ static void playbackv_go(int* fds, unsigned int channels, size_t loaded, off64_t
+@@ -3247,7 +3247,7 @@ static void playbackv_go(int* fds, unsigned int channels, size_t loaded, off64_t
  	size_t vsize;
  
  	unsigned int channel;
@@ -58,7 +58,7 @@ index 08395f6..91765e7 100644
  
  	header(rtype, names[0]);
  	set_params();
-@@ -3294,7 +3294,7 @@ static void capturev_go(int* fds, unsigned int channels, off64_t count, int rtyp
+@@ -3299,7 +3299,7 @@ static void capturev_go(int* fds, unsigned int channels, off64_t count, int rtyp
  	ssize_t r;
  	unsigned int channel;
  	size_t vsize;
@@ -67,7 +67,7 @@ index 08395f6..91765e7 100644
  
  	header(rtype, names[0]);
  	set_params();
-@@ -3331,7 +3331,7 @@ static void playbackv(char **names, unsigned int count)
+@@ -3336,7 +3336,7 @@ static void playbackv(char **names, unsigned int count)
  	unsigned int channel;
  	unsigned int channels = rhwparams.channels;
  	int alloced = 0;
@@ -76,7 +76,7 @@ index 08395f6..91765e7 100644
  	for (channel = 0; channel < channels; ++channel)
  		fds[channel] = -1;
  
-@@ -3384,7 +3384,7 @@ static void capturev(char **names, unsigned int count)
+@@ -3389,7 +3389,7 @@ static void capturev(char **names, unsigned int count)
  	unsigned int channel;
  	unsigned int channels = rhwparams.channels;
  	int alloced = 0;
@@ -86,5 +86,5 @@ index 08395f6..91765e7 100644
  		fds[channel] = -1;
  
 -- 
-2.25.0
+2.29.0
 
