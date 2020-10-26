@@ -1,4 +1,4 @@
-From 6c5ae6c275df9cb44475d69b140e3e822907824c Mon Sep 17 00:00:00 2001
+From e3e74c5ad0ee6fea1aa2205f84613412df676572 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 31 May 2019 17:47:08 -0700
 Subject: [PATCH] Use switch statements instead of labels as values
@@ -121,10 +121,10 @@ index 839783cf..bc1463a7 100644
  			src += src_step;
  			dst += dst_step;
 diff --git a/src/pcm/pcm_iec958.c b/src/pcm/pcm_iec958.c
-index f994876b..c6df5ef1 100644
+index 0f7bf296..80145cf5 100644
 --- a/src/pcm/pcm_iec958.c
 +++ b/src/pcm/pcm_iec958.c
-@@ -149,10 +149,6 @@ static void snd_pcm_iec958_decode(snd_pcm_iec958_t *iec,
+@@ -150,10 +150,6 @@ static void snd_pcm_iec958_decode(snd_pcm_iec958_t *iec,
  				  snd_pcm_uframes_t src_offset,
  				  unsigned int channels, snd_pcm_uframes_t frames)
  {
@@ -135,7 +135,7 @@ index f994876b..c6df5ef1 100644
  	unsigned int channel;
  	for (channel = 0; channel < channels; ++channel) {
  		const uint32_t *src;
-@@ -168,11 +164,7 @@ static void snd_pcm_iec958_decode(snd_pcm_iec958_t *iec,
+@@ -169,11 +165,7 @@ static void snd_pcm_iec958_decode(snd_pcm_iec958_t *iec,
  		frames1 = frames;
  		while (frames1-- > 0) {
  			int32_t sample = iec958_to_s32(iec, *src);
@@ -148,7 +148,7 @@ index f994876b..c6df5ef1 100644
  			src += src_step;
  			dst += dst_step;
  		}
-@@ -186,10 +178,6 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
+@@ -187,10 +179,6 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
  				  snd_pcm_uframes_t src_offset,
  				  unsigned int channels, snd_pcm_uframes_t frames)
  {
@@ -159,9 +159,9 @@ index f994876b..c6df5ef1 100644
  	unsigned int channel;
  	int32_t sample = 0;
  	int counter = iec->counter;
-@@ -207,11 +195,7 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
- 		frames1 = frames;
- 		iec->counter = counter;
+@@ -217,11 +205,7 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
+ 			iec->counter = counter;
+ 
  		while (frames1-- > 0) {
 -			goto *get;
 -#define GET32_END after
@@ -1704,5 +1704,5 @@ index 6392073c..ab9bf42e 100644
  #undef as_u8
  #undef as_u16
 -- 
-2.27.0
+2.29.0
 
