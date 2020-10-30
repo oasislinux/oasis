@@ -348,10 +348,6 @@
 	path = pkg/xz/src
 	url = https://git.tukaani.org/xz.git
 	ignore = all
-[submodule "pkg/youtube-dl/src"]
-	path = pkg/youtube-dl/src
-	url = https://github.com/rg3/youtube-dl
-	ignore = all
 [submodule "pkg/zlib/src"]
 	path = pkg/zlib/src
 	url = https://github.com/madler/zlib
