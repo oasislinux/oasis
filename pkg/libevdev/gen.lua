@@ -14,8 +14,8 @@ pkg.deps = {
 
 rule('eventnames', 'lua $dir/eventnames.lua $in >$out')
 build('eventnames', '$outdir/event-names.h', {
-	'$srcdir/include/linux/input.h',
-	'$srcdir/include/linux/input-event-codes.h',
+	'$srcdir/include/linux/linux/input.h',
+	'$srcdir/include/linux/linux/input-event-codes.h',
 	'|', '$dir/eventnames.lua',
 })
 lib('libevdev.a', {'libevdev/libevdev.c', 'libevdev/libevdev-names.c'}, {'$outdir/event-names.h'})
