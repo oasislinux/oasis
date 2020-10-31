@@ -1,6 +1,6 @@
 # oasis
 
-[![builds.sr.ht status](https://builds.sr.ht/~mcf/oasis/.build.yml.svg)](https://builds.sr.ht/~mcf/oasis/.build.yml)
+[![builds.sr.ht status](https://builds.sr.ht/~mcf/oasis/commits/.build.yml.svg)](https://builds.sr.ht/~mcf/oasis/commits/.build.yml)
 
 oasis is a small linux system.
 
