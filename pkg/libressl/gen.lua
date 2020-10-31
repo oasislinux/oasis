@@ -16,6 +16,7 @@ cflags{
 	'-I $srcdir/crypto/evp',
 	'-I $srcdir/crypto/modes',
 	'-I $basedir/pkg/openbsd/include',
+	'-idirafter $srcdir/include/compat',
 }
 
 pkg.hdrs = {
@@ -81,6 +82,7 @@ pkg.hdrs = {
 		'whrlpool.h',
 		'x509.h',
 		'x509_vfy.h',
+		'x509_verify.h',
 		'x509v3.h',
 
 		'opensslconf.h',
@@ -273,6 +275,7 @@ lib('libcrypto.a', [[crypto/(
 		x509_prn.c x509_utl.c x509_genn.c x509_alt.c x509_skey.c x509_akey.c x509_pku.c
 		x509_int.c x509_enum.c x509_sxnet.c x509_cpols.c x509_crld.c x509_purp.c x509_info.c
 		x509_ocsp.c x509_akeya.c x509_pmaps.c x509_pcons.c x509_ncons.c x509_pcia.c x509_pci.c
+		x509_issuer_cache.c x509_constraints.c x509_verify.c
 		pcy_cache.c pcy_node.c pcy_data.c pcy_map.c pcy_tree.c pcy_lib.c
 	)
 
@@ -326,6 +329,7 @@ lib('libssl.a', [[ssl/(
 	ssl_versions.c
 	t1_enc.c
 	t1_lib.c
+	tls12_record_layer.c
 	tls13_buffer.c
 	tls13_client.c
 	tls13_error.c
