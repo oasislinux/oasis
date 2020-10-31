@@ -1,0 +1,112 @@
+From 23f10d1262ff50c5cf28e47f8eac59dcbf6cd820 Mon Sep 17 00:00:00 2001
+From: jkoshy <jkoshy@95820547-d848-0410-985e-9ae8fe0fa350>
+Date: Sat, 26 Sep 2020 07:19:13 +0000
+Subject: [PATCH] Permit the parameters related extended section numbering to
+ be NULL in a call to gelf_getsymshndx().
+
+This change improves compatibility with other
+implementations of libelf.
+
+Ticket:		#593
+Draft patches by: Ethan Sommer & Michael Forney
+
+git-svn-id: https://svn.code.sf.net/p/elftoolchain/code/trunk@3873 95820547-d848-0410-985e-9ae8fe0fa350
+---
+ libelf/gelf_getsymshndx.3 | 31 +++++++++++++++++++++++++------
+ libelf/gelf_symshndx.c    | 15 +++++++++++----
+ 2 files changed, 36 insertions(+), 10 deletions(-)
+
+diff --git a/libelf/gelf_getsymshndx.3 b/libelf/gelf_getsymshndx.3
+index 7d5a19c1..78327e8f 100644
+--- a/libelf/gelf_getsymshndx.3
++++ b/libelf/gelf_getsymshndx.3
+@@ -1,4 +1,4 @@
+-.\" Copyright (c) 2006,2008 Joseph Koshy.  All rights reserved.
++.\" Copyright (c) 2006,2008,2020 Joseph Koshy.  All rights reserved.
+ .\"
+ .\" Redistribution and use in source and binary forms, with or without
+ .\" modification, are permitted provided that the following conditions
+@@ -23,7 +23,7 @@
+ .\"
+ .\" $Id: gelf_getsymshndx.3 189 2008-07-20 10:38:08Z jkoshy $
+ .\"
+-.Dd November 5, 2006
++.Dd September 26, 2020
+ .Os
+ .Dt GELF_GETSYMSHNDX 3
+ .Sh NAME
+@@ -88,17 +88,36 @@ retrieves symbol information at index
+ .Ar ndx
+ from the data descriptor specified by argument
+ .Ar symdata
+-and stores in class-independent form in argument
++and stores it in class-independent form in argument
+ .Ar sym .
+-In addition it retrieves the extended section index for the
+-symbol from data buffer
++Additionally:
++.Bl -bullet
++.It
++If the arguments
++.Ad xndxdata
++and
++.Ar xndxptr
++are both not
++.Dv NULL ,
++it retrieves the extended section index for the
++symbol from the data buffer pointed to by the
++argument
+ .Ar xndxdata
+ and stores it into the location pointed to by argument
+ .Ar xndxptr .
++.It
++Otherwise, if the argument
++.Ar xndxptr
++is not
++.Dv NULL ,
++a value of zero is stored into the location pointed to by
++argument
++.Ar xndxptr .
++.El
+ .Pp
+ Function
+ .Fn gelf_update_symshndx
+-updates the underlying symbol table entry in data
++updates the underlying symbol table entry in the data
+ descriptor
+ .Ar symdata
+ with the information in argument
+diff --git a/libelf/gelf_symshndx.c b/libelf/gelf_symshndx.c
+index 93ce2dba..0bd12040 100644
+--- a/libelf/gelf_symshndx.c
++++ b/libelf/gelf_symshndx.c
+@@ -1,5 +1,5 @@
+ /*-
+- * Copyright (c) 2006,2008 Joseph Koshy
++ * Copyright (c) 2006,2008,2020 Joseph Koshy
+  * All rights reserved.
+  *
+  * Redistribution and use in source and binary forms, with or without
+@@ -48,9 +48,16 @@ gelf_getsymshndx(Elf_Data *d, Elf_Data *id, int ndx, GElf_Sym *dst,
+ 	if (gelf_getsym(d, ndx, dst) == 0)
+ 		return (NULL);
+ 
+-	if (lid == NULL || (scn = lid->d_scn) == NULL ||
+-	    (e = scn->s_elf) == NULL || (e != ld->d_scn->s_elf) ||
+-	    shindex == NULL) {
++	if (shindex == NULL)
++		return (dst);
++
++	if (lid == NULL) {
++		*shindex = 0;
++		return (dst);
++	}
++
++	if ((scn = lid->d_scn) == NULL ||
++	    (e = scn->s_elf) == NULL || (e != ld->d_scn->s_elf)) {
+ 		LIBELF_SET_ERROR(ARGUMENT, 0);
+ 		return (NULL);
+ 	}
+-- 
+2.29.0
+
