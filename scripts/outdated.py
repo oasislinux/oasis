@@ -8,13 +8,13 @@ import urllib.request
 names = {
 	'awk': 'nawk',
 	'bc': 'bc-gh',
-	'hostap': 'wpa-supplicant',
 	'lpeg': 'lua:lpeg',
 	'sshfs': 'fusefs:sshfs',
 	'st': 'st-term',
 	'terminus-font': 'fonts:terminus',
 	'the_silver_searcher': 'the-silver-searcher',
 	'tz': 'tzdata',
+	'wpa_supplicant': 'wpa-supplicant',
 }
 skip = set([
 	'adobe-source-fonts',
