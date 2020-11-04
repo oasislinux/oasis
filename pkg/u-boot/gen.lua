@@ -11,6 +11,8 @@ pkg.deps = {
 	'pkg/linux-headers/headers',
 }
 
+cc('lib/sha512.c', nil, {cflags='$cflags -D CONFIG_SHA384 -D CONFIG_SHA512'})
+
 -- XXX: missing imximage.c and fdtdec_common.c, but seems to build without them
 local objs = objects[[
 	tools/(
@@ -55,6 +57,7 @@ local objs = objects[[
 		rc4.c
 		sha1.c
 		sha256.c
+		sha512.c.o
 	)
 ]]
 
