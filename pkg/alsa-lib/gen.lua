@@ -26,6 +26,7 @@ pkg.hdrs = {
 		'pcm_old.h',
 		'pcm_plugin.h',
 		'pcm_rate.h',
+		'rawmidi.h',
 		'seq.h',
 		'seq_event.h',
 		'seq_midi_event.h',
@@ -83,6 +84,9 @@ lib('libasound.a', [[src/(
 		pcm_iec958.c
 		pcm_softvol.c
 		pcm_mmap_emul.c
+	)
+	rawmidi/(
+		rawmidi.c rawmidi_hw.c rawmidi_symbols.c
 	)
 	timer/(
 		timer.c timer_hw.c timer_query.c timer_query_hw.c

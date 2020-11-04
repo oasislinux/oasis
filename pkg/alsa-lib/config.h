@@ -14,7 +14,7 @@
 #define BUILD_PCM_PLUGIN_MULAW "1"
 #define BUILD_PCM_PLUGIN_RATE "1"
 #define BUILD_PCM_PLUGIN_ROUTE "1"
-/* #undef BUILD_RAWMIDI */
+#define BUILD_RAWMIDI "1"
 #define BUILD_SEQ "1"
 #define BUILD_TOPOLOGY "1"
 #define BUILD_UCM "1"

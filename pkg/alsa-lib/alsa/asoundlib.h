@@ -52,6 +52,7 @@
 #include <alsa/error.h>
 #include <alsa/conf.h>
 #include <alsa/pcm.h>
+#include <alsa/rawmidi.h>
 #include <alsa/timer.h>
 #include <alsa/control.h>
 #include <alsa/mixer.h>
