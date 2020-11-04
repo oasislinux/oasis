@@ -449,10 +449,8 @@ for _, script in ipairs(scripts) do
 	file('libexec/git-core/git-'..name, mode, '$outdir/git-'..name)
 end
 
-for _, name in ipairs{'git-shell', 'git-upload-pack'} do
-	sym('bin/'..name, '../libexec/git-core/'..name)
-end
-for _, name in ipairs{'git-receive-pack', 'git-upload-archive'} do
+sym('bin/git-shell', '../libexec/git-core/git-shell')
+for _, name in ipairs{'git-receive-pack', 'git-upload-archive', 'git-upload-pack'} do
 	sym('bin/'..name, 'git')
 end
 
