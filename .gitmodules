@@ -290,6 +290,9 @@
 	path = pkg/sndio/src
 	url = https://caoua.org/git/sndio
 	ignore = all
+[submodule "pkg/snes9x/src"]
+	path = pkg/snes9x/src
+	url = https://github.com/libretro/snes9x2010.git
 [submodule "pkg/squashfs-tools-ng/src"]
 	path = pkg/squashfs-tools-ng/src
 	url = https://github.com/AgentD/squashfs-tools-ng.git
