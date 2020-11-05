@@ -1,0 +1,58 @@
+From 4ee56f07ef8be718bb1f24f5b73c440527c93bc9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 5 Nov 2020 00:28:06 -0800
+Subject: [PATCH] sndiod: Fix build without DEBUG
+
+---
+ aucat/afile.c   | 4 ++--
+ sndiod/listen.c | 4 ++++
+ 2 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/aucat/afile.c b/aucat/afile.c
+index b880878..3e400ce 100644
+--- a/aucat/afile.c
++++ b/aucat/afile.c
+@@ -743,13 +743,13 @@ afile_au_writehdr(struct afile *f)
+ 	case 32:
+ 		fmt = AU_FMT_PCM32;
+ 		break;
+-#ifdef DEBUG
+ 	default:
++#ifdef DEBUG
+ 		log_puts(f->path);
+ 		log_puts(": wrong precision\n");
+ 		panic();
+-		return 0;
+ #endif
++		return 0;
+ 	}
+ 	be32_set(&hdr.fmt, fmt);
+ 	be32_set(&hdr.rate, f->rate);
+diff --git a/sndiod/listen.c b/sndiod/listen.c
+index 54c9684..c87f600 100644
+--- a/sndiod/listen.c
++++ b/sndiod/listen.c
+@@ -254,16 +254,20 @@ listen_in(void *arg)
+ 		return;
+ 	}
+ 	if (fcntl(sock, F_SETFL, O_NONBLOCK) == -1) {
++#ifdef DEBUG
+ 		file_log(f->file);
+ 		log_puts(": failed to set non-blocking mode\n");
++#endif
+ 		goto bad_close;
+ 	}
+ 	if (f->path == NULL) {
+ 		opt = 1;
+ 		if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY,
+ 		    &opt, sizeof(int)) == -1) {
++#ifdef DEBUG
+ 			file_log(f->file);
+ 			log_puts(": failed to set TCP_NODELAY flag\n");
++#endif
+ 			goto bad_close;
+ 		}
+ 	}
+-- 
+2.29.2
+

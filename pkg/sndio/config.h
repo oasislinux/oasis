@@ -1,0 +1,2 @@
+#define HAVE_CLOCK_GETTIME 1
+#define HAVE_SOCK_CLOEXEC 1

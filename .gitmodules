@@ -286,6 +286,10 @@
 [submodule "pkg/sinit/src"]
 	path = pkg/sinit/src
 	url = git://git.suckless.org/sinit
+[submodule "pkg/sndio/src"]
+	path = pkg/sndio/src
+	url = https://caoua.org/git/sndio
+	ignore = all
 [submodule "pkg/squashfs-tools-ng/src"]
 	path = pkg/squashfs-tools-ng/src
 	url = https://github.com/AgentD/squashfs-tools-ng.git
