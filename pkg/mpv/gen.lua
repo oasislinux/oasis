@@ -124,27 +124,32 @@ for line in iterlines('sources.txt', 1) do
 end
 srcs = table.keys(srcs)
 
-if options['HAVE_ALSA'] then
+if options.HAVE_ALSA then
 	cflags{'-isystem $builddir/pkg/alsa-lib/include'}
 	table.insert(libs, 'alsa-lib/libasound.a')
 	table.insert(pkg.deps, 'pkg/alsa-lib/headers')
 end
-if options['HAVE_DRM'] then
+if options.HAVE_SNDIO then
+	cflags{'-isystem $builddir/pkg/sndio/include'}
+	table.insert(libs, 'sndio/libsndio.a')
+	table.insert(pkg.deps, 'pkg/sndio/headers')
+end
+if options.HAVE_DRM then
 	cflags{'-isystem $builddir/pkg/libdrm/include'}
 	table.insert(libs, 'libdrm/libdrm.a')
 	table.insert(pkg.deps, 'pkg/libdrm/headers')
 end
-if options['HAVE_LIBASS'] then
+if options.HAVE_LIBASS then
 	cflags{'-isystem $builddir/pkg/libass/include'}
 	table.insert(libs, 'libass/libass.a.d')
 	table.insert(pkg.deps, 'pkg/libass/headers')
 end
-if options['HAVE_LUA'] then
+if options.HAVE_LUA then
 	cflags{'-isystem $builddir/pkg/lua/include'}
 	table.insert(libs, 'lua/liblua.a')
 	table.insert(pkg.deps, 'pkg/lua/headers')
 end
-if options['HAVE_WAYLAND'] then
+if options.HAVE_WAYLAND then
 	cflags{
 		'-isystem $builddir/pkg/libxkbcommon/include',
 		'-isystem $builddir/pkg/wayland/include',
