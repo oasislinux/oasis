@@ -1,0 +1,70 @@
+From b58ec7875cbc169eed7fea709c95769c0318c442 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 7 Nov 2020 14:40:36 -0800
+Subject: [PATCH] All: Avoid return with expression in void function
+
+This is not permitted by ISO C (C99 6.8.6.4p1 [0]).
+
+[0] https://port70.net/~nsz/c/c99/n1256.html#6.8.6.4p1
+---
+ src/core/input.c     | 2 +-
+ src/core/interface.c | 2 +-
+ src/gb/core.c        | 2 +-
+ src/gba/core.c       | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/core/input.c b/src/core/input.c
+index fab88a50e..da18e5c89 100644
+--- a/src/core/input.c
++++ b/src/core/input.c
+@@ -615,7 +615,7 @@ void mInputSetPreferredDevice(struct Configuration* config, const char* platform
+ 
+ 	char deviceId[KEY_NAME_MAX];
+ 	snprintf(deviceId, sizeof(deviceId), "device%i", playerId);
+-	return ConfigurationSetValue(config, sectionName, deviceId, deviceName);
++	ConfigurationSetValue(config, sectionName, deviceId, deviceName);
+ }
+ 
+ const char* mInputGetCustomValue(const struct Configuration* config, const char* platformName, uint32_t type, const char* key, const char* profile) {
+diff --git a/src/core/interface.c b/src/core/interface.c
+index e6288e274..b808e32ba 100644
+--- a/src/core/interface.c
++++ b/src/core/interface.c
+@@ -15,7 +15,7 @@ static void _rtcGenericSample(struct mRTCSource* source) {
+ 	switch (rtc->override) {
+ 	default:
+ 		if (rtc->custom->sample) {
+-			return rtc->custom->sample(rtc->custom);
++			rtc->custom->sample(rtc->custom);
+ 		}
+ 		break;
+ 	case RTC_NO_OVERRIDE:
+diff --git a/src/gb/core.c b/src/gb/core.c
+index 9f67fd19d..5bceb1fae 100644
+--- a/src/gb/core.c
++++ b/src/gb/core.c
+@@ -400,7 +400,7 @@ static void _GBCoreUnloadROM(struct mCore* core) {
+ 		mCheatDeviceDestroy(gbcore->cheatDevice);
+ 		gbcore->cheatDevice = NULL;
+ 	}
+-	return GBUnloadROM(core->board);
++	GBUnloadROM(core->board);
+ }
+ 
+ static void _GBCoreChecksum(const struct mCore* core, void* data, enum mCoreChecksumType type) {
+diff --git a/src/gba/core.c b/src/gba/core.c
+index 901d25111..9444c8a5b 100644
+--- a/src/gba/core.c
++++ b/src/gba/core.c
+@@ -506,7 +506,7 @@ static void _GBACoreUnloadROM(struct mCore* core) {
+ 		mCheatDeviceDestroy(gbacore->cheatDevice);
+ 		gbacore->cheatDevice = NULL;
+ 	}
+-	return GBAUnloadROM(core->board);
++	GBAUnloadROM(core->board);
+ }
+ 
+ static void _GBACoreChecksum(const struct mCore* core, void* data, enum mCoreChecksumType type) {
+-- 
+2.29.2
+

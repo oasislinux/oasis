@@ -1,0 +1,15 @@
+#define COLOR_16_BIT 1
+#define COLOR_5_6_5 1
+#define DISABLE_THREADING 1
+#define HAVE_CHMOD 1
+#define HAVE_LOCALE 1
+#define HAVE_LOCALTIME_R 1
+#define HAVE_SETLOCALE 1
+#define HAVE_STRDUP 1
+#define HAVE_STRNDUP 1
+#define HAVE_UMASK 1
+#define MGBA_STANDALONE 1
+#define MINIMAL_CORE 1
+#define M_CORE_GB 1
+#define M_CORE_GBA 1
+#define NDEBUG 1

@@ -180,6 +180,10 @@
 [submodule "pkg/mc/src"]
 	path = pkg/mc/src
 	url = https://github.com/oridb/mc
+[submodule "pkg/mgba/src"]
+	path = pkg/mgba/src
+	url = https://github.com/mgba-emu/mgba.git
+	ignore = all
 [submodule "pkg/mpv/src"]
 	path = pkg/mpv/src
 	url = https://github.com/mpv-player/mpv

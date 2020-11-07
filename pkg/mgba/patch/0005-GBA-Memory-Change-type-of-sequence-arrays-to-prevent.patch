@@ -1,0 +1,35 @@
+From 2de8da98e15392b70c468fdb5123b958b10a6187 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 7 Nov 2020 14:54:14 -0800
+Subject: [PATCH] GBA Memory: Change type of sequence arrays to prevent
+ overflow
+
+These arrays contain values > 0x7F, which cannot be represented in
+int8_t (or char if it is signed). Since they are only used in memcmp,
+change their type to uint8_t[].
+---
+ src/gba/vfame.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/gba/vfame.c b/src/gba/vfame.c
+index 0ac834cc9..67c0ed1dc 100644
+--- a/src/gba/vfame.c
++++ b/src/gba/vfame.c
+@@ -29,11 +29,11 @@ static const uint8_t VALUE_REORDERING_GEORGE[4][16] = {
+ 	{ 5, 2, 1, 6, 7, 0, 3, 4 }
+ };
+ 
+-static const int8_t MODE_CHANGE_START_SEQUENCE[5] = { 0x99, 0x02, 0x05, 0x02, 0x03 };
+-static const int8_t MODE_CHANGE_END_SEQUENCE[5] = { 0x99, 0x03, 0x62, 0x02, 0x56 };
++static const uint8_t MODE_CHANGE_START_SEQUENCE[5] = { 0x99, 0x02, 0x05, 0x02, 0x03 };
++static const uint8_t MODE_CHANGE_END_SEQUENCE[5] = { 0x99, 0x03, 0x62, 0x02, 0x56 };
+ 
+ // A portion of the initialisation routine that gets copied into RAM - Always seems to be present at 0x15C in VFame game ROM
+-static const char INIT_SEQUENCE[16] = { 0xB4, 0x00, 0x9F, 0xE5, 0x99, 0x10, 0xA0, 0xE3, 0x00, 0x10, 0xC0, 0xE5, 0xAC, 0x00, 0x9F, 0xE5 };
++static const uint8_t INIT_SEQUENCE[16] = { 0xB4, 0x00, 0x9F, 0xE5, 0x99, 0x10, 0xA0, 0xE3, 0x00, 0x10, 0xC0, 0xE5, 0xAC, 0x00, 0x9F, 0xE5 };
+ 
+ static bool _isInMirroredArea(uint32_t address, size_t romSize);
+ static uint32_t _getPatternValue(uint32_t addr);
+-- 
+2.29.2
+

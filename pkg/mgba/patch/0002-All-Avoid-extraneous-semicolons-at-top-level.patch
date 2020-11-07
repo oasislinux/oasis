@@ -1,0 +1,2314 @@
+From 44be0c1af5be67d662b9a92cddc5d8b85b4e788c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 7 Nov 2020 13:58:35 -0800
+Subject: [PATCH] All: Avoid extraneous semicolons at top-level
+
+These are unnecessary and not allowed in ISO C.
+---
+ include/mgba-util/common.h                    |   2 +-
+ include/mgba-util/elf-read.h                  |   4 +-
+ include/mgba-util/patch/fast.h                |   2 +-
+ include/mgba-util/vector.h                    |   2 +-
+ include/mgba/core/bitmap-cache.h              |  18 +-
+ include/mgba/core/cache-set.h                 |   6 +-
+ include/mgba/core/cheats.h                    |   6 +-
+ include/mgba/core/interface.h                 |   2 +-
+ include/mgba/core/library.h                   |   2 +-
+ include/mgba/core/map-cache.h                 |  34 ++--
+ include/mgba/core/mem-search.h                |   2 +-
+ include/mgba/core/rewind.h                    |   2 +-
+ include/mgba/core/tile-cache.h                |  12 +-
+ include/mgba/debugger/debugger.h              |   6 +-
+ include/mgba/internal/arm/debugger/debugger.h |   2 +-
+ include/mgba/internal/debugger/parser.h       |   2 +-
+ include/mgba/internal/gb/audio.h              | 116 ++++++------
+ include/mgba/internal/gb/cheats.h             |   2 +-
+ include/mgba/internal/gb/gb.h                 |   2 +-
+ include/mgba/internal/gb/io.h                 |   2 +-
+ include/mgba/internal/gb/mbc.h                |   2 +-
+ include/mgba/internal/gb/memory.h             |  14 +-
+ include/mgba/internal/gb/serialize.h          | 110 ++++++------
+ include/mgba/internal/gb/sio.h                |  10 +-
+ include/mgba/internal/gb/timer.h              |   6 +-
+ include/mgba/internal/gb/video.h              |  62 +++----
+ include/mgba/internal/gba/audio.h             |  34 ++--
+ include/mgba/internal/gba/bios.h              |   2 +-
+ include/mgba/internal/gba/dma.h               |  18 +-
+ include/mgba/internal/gba/gba.h               |  10 +-
+ include/mgba/internal/gba/hardware.h          |  20 +--
+ include/mgba/internal/gba/io.h                |   2 +-
+ include/mgba/internal/gba/memory.h            |   2 +-
+ include/mgba/internal/gba/rr/rr.h             |   2 +-
+ include/mgba/internal/gba/savedata.h          |   2 +-
+ include/mgba/internal/gba/serialize.h         |  38 ++--
+ include/mgba/internal/gba/sio.h               |  34 ++--
+ include/mgba/internal/gba/timer.h             |  10 +-
+ include/mgba/internal/gba/video.h             | 168 +++++++++---------
+ src/arm/debugger/debugger.c                   |   2 +-
+ src/arm/isa-arm.c                             |   2 +-
+ src/core/cache-set.c                          |   6 +-
+ src/core/cheats.c                             |   6 +-
+ src/core/input.c                              |   4 +-
+ src/core/interface.c                          |   2 +-
+ src/core/library.c                            |   2 +-
+ src/core/mem-search.c                         |   2 +-
+ src/core/rewind.c                             |   2 +-
+ src/core/serialize.c                          |   2 +-
+ src/debugger/debugger.c                       |   6 +-
+ src/debugger/parser.c                         |   2 +-
+ src/gb/cheats.c                               |   2 +-
+ src/gb/gb.c                                   |   2 +-
+ src/gb/io.c                                   |   2 +-
+ src/gb/mbc.c                                  |   2 +-
+ src/gb/memory.c                               |   2 +-
+ src/gb/serialize.c                            |   2 +-
+ src/gb/sio.c                                  |   2 +-
+ src/gba/audio.c                               |   2 +-
+ src/gba/bios.c                                |  10 +-
+ src/gba/dma.c                                 |   2 +-
+ src/gba/extra/battlechip.c                    |   4 +-
+ src/gba/gba.c                                 |   4 +-
+ src/gba/hardware.c                            |   2 +-
+ src/gba/io.c                                  |   2 +-
+ src/gba/memory.c                              |   2 +-
+ src/gba/savedata.c                            |   2 +-
+ src/gba/serialize.c                           |   2 +-
+ src/gba/sio.c                                 |   2 +-
+ src/gba/video.c                               |   2 +-
+ src/platform/opengl/gles2.c                   |   8 +-
+ src/platform/sdl/sdl-audio.c                  |   2 +-
+ src/platform/sdl/sdl-audio.h                  |   2 +-
+ src/platform/sdl/sdl-events.c                 |   4 +-
+ src/platform/sdl/sdl-events.h                 |   4 +-
+ src/sm83/decoder.c                            |  88 ++++-----
+ src/sm83/isa-sm83.c                           | 110 ++++++------
+ src/util/elf-read.c                           |   4 +-
+ src/util/patch-fast.c                         |   2 +-
+ src/util/string.c                             |   2 +-
+ 80 files changed, 543 insertions(+), 543 deletions(-)
+
+diff --git a/include/mgba-util/common.h b/include/mgba-util/common.h
+index 8c52f3463..e2b0529b6 100644
+--- a/include/mgba-util/common.h
++++ b/include/mgba-util/common.h
+@@ -258,7 +258,7 @@ typedef intptr_t ssize_t;
+ #define CONSTRUCTOR(FN) static __attribute__((constructor)) void FN(void)
+ #endif
+ 
+-#define DECL_BITFIELD(NAME, TYPE) typedef TYPE NAME
++#define DECL_BITFIELD(NAME, TYPE) typedef TYPE NAME;
+ 
+ #define DECL_BITS(TYPE, FIELD, START, SIZE) \
+ 	ATTRIBUTE_UNUSED static inline TYPE TYPE ## Is ## FIELD (TYPE src) { \
+diff --git a/include/mgba-util/elf-read.h b/include/mgba-util/elf-read.h
+index 86683ea82..d57c16a4a 100644
+--- a/include/mgba-util/elf-read.h
++++ b/include/mgba-util/elf-read.h
+@@ -19,8 +19,8 @@ CXX_GUARD_START
+ struct ELF;
+ struct VFile;
+ 
+-DECLARE_VECTOR(ELFProgramHeaders, Elf32_Phdr);
+-DECLARE_VECTOR(ELFSectionHeaders, Elf32_Shdr);
++DECLARE_VECTOR(ELFProgramHeaders, Elf32_Phdr)
++DECLARE_VECTOR(ELFSectionHeaders, Elf32_Shdr)
+ 
+ struct ELF* ELFOpen(struct VFile*);
+ void ELFClose(struct ELF*);
+diff --git a/include/mgba-util/patch/fast.h b/include/mgba-util/patch/fast.h
+index ee59cd23f..2130a8fb4 100644
+--- a/include/mgba-util/patch/fast.h
++++ b/include/mgba-util/patch/fast.h
+@@ -21,7 +21,7 @@ struct PatchFastExtent {
+ 	uint32_t extent[PATCH_FAST_EXTENT];
+ };
+ 
+-DECLARE_VECTOR(PatchFastExtents, struct PatchFastExtent);
++DECLARE_VECTOR(PatchFastExtents, struct PatchFastExtent)
+ 
+ struct PatchFast {
+ 	struct Patch d;
+diff --git a/include/mgba-util/vector.h b/include/mgba-util/vector.h
+index c18b6c8b5..8d911d3d0 100644
+--- a/include/mgba-util/vector.h
++++ b/include/mgba-util/vector.h
+@@ -96,7 +96,7 @@ CXX_GUARD_START
+ 		dest->size = src->size; \
+ 	} \
+ 
+-DECLARE_VECTOR(StringList, char*);
++DECLARE_VECTOR(StringList, char*)
+ 
+ CXX_GUARD_END
+ 
+diff --git a/include/mgba/core/bitmap-cache.h b/include/mgba/core/bitmap-cache.h
+index d8bd416e9..48a4b8cd0 100644
+--- a/include/mgba/core/bitmap-cache.h
++++ b/include/mgba/core/bitmap-cache.h
+@@ -12,15 +12,15 @@ CXX_GUARD_START
+ 
+ #include <mgba/core/interface.h>
+ 
+-DECL_BITFIELD(mBitmapCacheConfiguration, uint32_t);
+-DECL_BIT(mBitmapCacheConfiguration, ShouldStore, 0);
+-
+-DECL_BITFIELD(mBitmapCacheSystemInfo, uint32_t);
+-DECL_BITS(mBitmapCacheSystemInfo, EntryBPP, 0, 3);
+-DECL_BIT(mBitmapCacheSystemInfo, UsesPalette, 3);
+-DECL_BITS(mBitmapCacheSystemInfo, Width, 4, 10);
+-DECL_BITS(mBitmapCacheSystemInfo, Height, 14, 10);
+-DECL_BITS(mBitmapCacheSystemInfo, Buffers, 24, 2);
++DECL_BITFIELD(mBitmapCacheConfiguration, uint32_t)
++DECL_BIT(mBitmapCacheConfiguration, ShouldStore, 0)
++
++DECL_BITFIELD(mBitmapCacheSystemInfo, uint32_t)
++DECL_BITS(mBitmapCacheSystemInfo, EntryBPP, 0, 3)
++DECL_BIT(mBitmapCacheSystemInfo, UsesPalette, 3)
++DECL_BITS(mBitmapCacheSystemInfo, Width, 4, 10)
++DECL_BITS(mBitmapCacheSystemInfo, Height, 14, 10)
++DECL_BITS(mBitmapCacheSystemInfo, Buffers, 24, 2)
+ 
+ struct mBitmapCacheEntry {
+ 	uint32_t paletteVersion;
+diff --git a/include/mgba/core/cache-set.h b/include/mgba/core/cache-set.h
+index 5749c0e64..abeb639e7 100644
+--- a/include/mgba/core/cache-set.h
++++ b/include/mgba/core/cache-set.h
+@@ -15,9 +15,9 @@ CXX_GUARD_START
+ #include <mgba/core/tile-cache.h>
+ #include <mgba-util/vector.h>
+ 
+-DECLARE_VECTOR(mMapCacheSet, struct mMapCache);
+-DECLARE_VECTOR(mBitmapCacheSet, struct mBitmapCache);
+-DECLARE_VECTOR(mTileCacheSet, struct mTileCache);
++DECLARE_VECTOR(mMapCacheSet, struct mMapCache)
++DECLARE_VECTOR(mBitmapCacheSet, struct mBitmapCache)
++DECLARE_VECTOR(mTileCacheSet, struct mTileCache)
+ 
+ struct mCacheSet {
+ 	struct mMapCacheSet maps;
+diff --git a/include/mgba/core/cheats.h b/include/mgba/core/cheats.h
+index d05ac8e5f..885aee7ec 100644
+--- a/include/mgba/core/cheats.h
++++ b/include/mgba/core/cheats.h
+@@ -44,9 +44,9 @@ struct mCheat {
+ 	int32_t operandOffset;
+ };
+ 
+-mLOG_DECLARE_CATEGORY(CHEATS);
++mLOG_DECLARE_CATEGORY(CHEATS)
+ 
+-DECLARE_VECTOR(mCheatList, struct mCheat);
++DECLARE_VECTOR(mCheatList, struct mCheat)
+ 
+ struct mCheatDevice;
+ struct mCheatSet {
+@@ -69,7 +69,7 @@ struct mCheatSet {
+ 	struct StringList lines;
+ };
+ 
+-DECLARE_VECTOR(mCheatSets, struct mCheatSet*);
++DECLARE_VECTOR(mCheatSets, struct mCheatSet*)
+ 
+ struct mCheatDevice {
+ 	struct mCPUComponent d;
+diff --git a/include/mgba/core/interface.h b/include/mgba/core/interface.h
+index 51ba6447f..73bb091ec 100644
+--- a/include/mgba/core/interface.h
++++ b/include/mgba/core/interface.h
+@@ -93,7 +93,7 @@ struct mCoreCallbacks {
+ 	void (*keysRead)(void* context);
+ };
+ 
+-DECLARE_VECTOR(mCoreCallbacksList, struct mCoreCallbacks);
++DECLARE_VECTOR(mCoreCallbacksList, struct mCoreCallbacks)
+ 
+ struct mAVStream {
+ 	void (*videoDimensionsChanged)(struct mAVStream*, unsigned width, unsigned height);
+diff --git a/include/mgba/core/library.h b/include/mgba/core/library.h
+index d55ad4094..b53ff833d 100644
+--- a/include/mgba/core/library.h
++++ b/include/mgba/core/library.h
+@@ -26,7 +26,7 @@ struct mLibraryEntry {
+ 
+ #ifdef USE_SQLITE3
+ 
+-DECLARE_VECTOR(mLibraryListing, struct mLibraryEntry);
++DECLARE_VECTOR(mLibraryListing, struct mLibraryEntry)
+ 
+ struct mLibrary;
+ struct mLibrary* mLibraryCreateEmpty(void);
+diff --git a/include/mgba/core/map-cache.h b/include/mgba/core/map-cache.h
+index 6dc9e72f6..a1521e462 100644
+--- a/include/mgba/core/map-cache.h
++++ b/include/mgba/core/map-cache.h
+@@ -13,23 +13,23 @@ CXX_GUARD_START
+ #include <mgba/core/interface.h>
+ #include <mgba/core/tile-cache.h>
+ 
+-DECL_BITFIELD(mMapCacheConfiguration, uint32_t);
+-DECL_BIT(mMapCacheConfiguration, ShouldStore, 0);
+-
+-DECL_BITFIELD(mMapCacheSystemInfo, uint32_t);
+-DECL_BITS(mMapCacheSystemInfo, PaletteBPP, 0, 2);
+-DECL_BITS(mMapCacheSystemInfo, PaletteCount, 2, 4);
+-DECL_BITS(mMapCacheSystemInfo, TilesWide, 8, 4);
+-DECL_BITS(mMapCacheSystemInfo, TilesHigh, 12, 4);
+-DECL_BITS(mMapCacheSystemInfo, MacroTileSize, 16, 7);
+-DECL_BITS(mMapCacheSystemInfo, MapAlign, 23, 2);
+-
+-DECL_BITFIELD(mMapCacheEntryFlags, uint16_t);
+-DECL_BITS(mMapCacheEntryFlags, PaletteId, 0, 4);
+-DECL_BIT(mMapCacheEntryFlags, VramClean, 4);
+-DECL_BIT(mMapCacheEntryFlags, HMirror, 5);
+-DECL_BIT(mMapCacheEntryFlags, VMirror, 6);
+-DECL_BITS(mMapCacheEntryFlags, Mirror, 5, 2);
++DECL_BITFIELD(mMapCacheConfiguration, uint32_t)
++DECL_BIT(mMapCacheConfiguration, ShouldStore, 0)
++
++DECL_BITFIELD(mMapCacheSystemInfo, uint32_t)
++DECL_BITS(mMapCacheSystemInfo, PaletteBPP, 0, 2)
++DECL_BITS(mMapCacheSystemInfo, PaletteCount, 2, 4)
++DECL_BITS(mMapCacheSystemInfo, TilesWide, 8, 4)
++DECL_BITS(mMapCacheSystemInfo, TilesHigh, 12, 4)
++DECL_BITS(mMapCacheSystemInfo, MacroTileSize, 16, 7)
++DECL_BITS(mMapCacheSystemInfo, MapAlign, 23, 2)
++
++DECL_BITFIELD(mMapCacheEntryFlags, uint16_t)
++DECL_BITS(mMapCacheEntryFlags, PaletteId, 0, 4)
++DECL_BIT(mMapCacheEntryFlags, VramClean, 4)
++DECL_BIT(mMapCacheEntryFlags, HMirror, 5)
++DECL_BIT(mMapCacheEntryFlags, VMirror, 6)
++DECL_BITS(mMapCacheEntryFlags, Mirror, 5, 2)
+ 
+ struct mMapCacheEntry {
+ 	uint32_t vramVersion;
+diff --git a/include/mgba/core/mem-search.h b/include/mgba/core/mem-search.h
+index d45601556..110c13982 100644
+--- a/include/mgba/core/mem-search.h
++++ b/include/mgba/core/mem-search.h
+@@ -51,7 +51,7 @@ struct mCoreMemorySearchResult {
+ 	int32_t oldValue;
+ };
+ 
+-DECLARE_VECTOR(mCoreMemorySearchResults, struct mCoreMemorySearchResult);
++DECLARE_VECTOR(mCoreMemorySearchResults, struct mCoreMemorySearchResult)
+ 
+ struct mCore;
+ void mCoreMemorySearch(struct mCore* core, const struct mCoreMemorySearchParams* params, struct mCoreMemorySearchResults* out, size_t limit);
+diff --git a/include/mgba/core/rewind.h b/include/mgba/core/rewind.h
+index 04549761d..0779c5b67 100644
+--- a/include/mgba/core/rewind.h
++++ b/include/mgba/core/rewind.h
+@@ -15,7 +15,7 @@ CXX_GUARD_START
+ #include <mgba-util/threading.h>
+ #endif
+ 
+-DECLARE_VECTOR(mCoreRewindPatches, struct PatchFast);
++DECLARE_VECTOR(mCoreRewindPatches, struct PatchFast)
+ 
+ struct VFile;
+ struct mCoreRewindContext {
+diff --git a/include/mgba/core/tile-cache.h b/include/mgba/core/tile-cache.h
+index f8600b3ad..64a9937b2 100644
+--- a/include/mgba/core/tile-cache.h
++++ b/include/mgba/core/tile-cache.h
+@@ -12,13 +12,13 @@ CXX_GUARD_START
+ 
+ #include <mgba/core/interface.h>
+ 
+-DECL_BITFIELD(mTileCacheConfiguration, uint32_t);
+-DECL_BIT(mTileCacheConfiguration, ShouldStore, 0);
++DECL_BITFIELD(mTileCacheConfiguration, uint32_t)
++DECL_BIT(mTileCacheConfiguration, ShouldStore, 0)
+ 
+-DECL_BITFIELD(mTileCacheSystemInfo, uint32_t);
+-DECL_BITS(mTileCacheSystemInfo, PaletteBPP, 0, 2);
+-DECL_BITS(mTileCacheSystemInfo, PaletteCount, 2, 4);
+-DECL_BITS(mTileCacheSystemInfo, MaxTiles, 16, 13);
++DECL_BITFIELD(mTileCacheSystemInfo, uint32_t)
++DECL_BITS(mTileCacheSystemInfo, PaletteBPP, 0, 2)
++DECL_BITS(mTileCacheSystemInfo, PaletteCount, 2, 4)
++DECL_BITS(mTileCacheSystemInfo, MaxTiles, 16, 13)
+ 
+ struct mTileCacheEntry {
+ 	uint32_t paletteVersion;
+diff --git a/include/mgba/debugger/debugger.h b/include/mgba/debugger/debugger.h
+index 2a4bc2dce..353b5da4e 100644
+--- a/include/mgba/debugger/debugger.h
++++ b/include/mgba/debugger/debugger.h
+@@ -14,7 +14,7 @@ CXX_GUARD_START
+ #include <mgba/core/log.h>
+ #include <mgba-util/vector.h>
+ 
+-mLOG_DECLARE_CATEGORY(DEBUGGER);
++mLOG_DECLARE_CATEGORY(DEBUGGER)
+ 
+ extern const uint32_t DEBUGGER_ID;
+ 
+@@ -87,8 +87,8 @@ struct mWatchpoint {
+ 	struct ParseTree* condition;
+ };
+ 
+-DECLARE_VECTOR(mBreakpointList, struct mBreakpoint);
+-DECLARE_VECTOR(mWatchpointList, struct mWatchpoint);
++DECLARE_VECTOR(mBreakpointList, struct mBreakpoint)
++DECLARE_VECTOR(mWatchpointList, struct mWatchpoint)
+ 
+ struct mDebugger;
+ struct ParseTree;
+diff --git a/include/mgba/internal/arm/debugger/debugger.h b/include/mgba/internal/arm/debugger/debugger.h
+index 5dc73485c..a2d9e581a 100644
+--- a/include/mgba/internal/arm/debugger/debugger.h
++++ b/include/mgba/internal/arm/debugger/debugger.h
+@@ -24,7 +24,7 @@ struct ARMDebugBreakpoint {
+ 	} sw;
+ };
+ 
+-DECLARE_VECTOR(ARMDebugBreakpointList, struct ARMDebugBreakpoint);
++DECLARE_VECTOR(ARMDebugBreakpointList, struct ARMDebugBreakpoint)
+ 
+ struct ARMDebugger {
+ 	struct mDebuggerPlatform d;
+diff --git a/include/mgba/internal/debugger/parser.h b/include/mgba/internal/debugger/parser.h
+index 37f194ddb..6edea602f 100644
+--- a/include/mgba/internal/debugger/parser.h
++++ b/include/mgba/internal/debugger/parser.h
+@@ -13,7 +13,7 @@
+ CXX_GUARD_START
+ 
+ struct Token;
+-DECLARE_VECTOR(LexVector, struct Token);
++DECLARE_VECTOR(LexVector, struct Token)
+ 
+ enum Operation {
+ 	OP_ASSIGN,
+diff --git a/include/mgba/internal/gb/audio.h b/include/mgba/internal/gb/audio.h
+index e01e60a3f..62367bbb8 100644
+--- a/include/mgba/internal/gb/audio.h
++++ b/include/mgba/internal/gb/audio.h
+@@ -12,64 +12,64 @@ CXX_GUARD_START
+ 
+ #include <mgba/core/timing.h>
+ 
+-DECL_BITFIELD(GBAudioRegisterDuty, uint8_t);
+-DECL_BITS(GBAudioRegisterDuty, Length, 0, 6);
+-DECL_BITS(GBAudioRegisterDuty, Duty, 6, 2);
+-
+-DECL_BITFIELD(GBAudioRegisterSweep, uint8_t);
+-DECL_BITS(GBAudioRegisterSweep, StepTime, 0, 3);
+-DECL_BIT(GBAudioRegisterSweep, Direction, 3);
+-DECL_BITS(GBAudioRegisterSweep, InitialVolume, 4, 4);
+-
+-DECL_BITFIELD(GBAudioRegisterControl, uint16_t);
+-DECL_BITS(GBAudioRegisterControl, Rate, 0, 11);
+-DECL_BITS(GBAudioRegisterControl, Frequency, 0, 11);
+-DECL_BIT(GBAudioRegisterControl, Stop, 14);
+-DECL_BIT(GBAudioRegisterControl, Restart, 15);
+-
+-DECL_BITFIELD(GBAudioRegisterSquareSweep, uint8_t);
+-DECL_BITS(GBAudioRegisterSquareSweep, Shift, 0, 3);
+-DECL_BIT(GBAudioRegisterSquareSweep, Direction, 3);
+-DECL_BITS(GBAudioRegisterSquareSweep, Time, 4, 3);
+-
+-DECL_BITFIELD(GBAudioRegisterBank, uint8_t);
+-DECL_BIT(GBAudioRegisterBank, Size, 5);
+-DECL_BIT(GBAudioRegisterBank, Bank, 6);
+-DECL_BIT(GBAudioRegisterBank, Enable, 7);
+-
+-DECL_BITFIELD(GBAudioRegisterBankVolume, uint8_t);
+-DECL_BITS(GBAudioRegisterBankVolume, VolumeGB, 5, 2);
+-DECL_BITS(GBAudioRegisterBankVolume, VolumeGBA, 5, 3);
+-
+-DECL_BITFIELD(GBAudioRegisterNoiseFeedback, uint8_t);
+-DECL_BITS(GBAudioRegisterNoiseFeedback, Ratio, 0, 3);
+-DECL_BIT(GBAudioRegisterNoiseFeedback, Power, 3);
+-DECL_BITS(GBAudioRegisterNoiseFeedback, Frequency, 4, 4);
+-
+-DECL_BITFIELD(GBAudioRegisterNoiseControl, uint8_t);
+-DECL_BIT(GBAudioRegisterNoiseControl, Stop, 6);
+-DECL_BIT(GBAudioRegisterNoiseControl, Restart, 7);
+-
+-DECL_BITFIELD(GBRegisterNR50, uint8_t);
+-DECL_BITS(GBRegisterNR50, VolumeRight, 0, 3);
+-DECL_BITS(GBRegisterNR50, VolumeLeft, 4, 3);
+-
+-DECL_BITFIELD(GBRegisterNR51, uint8_t);
+-DECL_BIT(GBRegisterNR51, Ch1Right, 0);
+-DECL_BIT(GBRegisterNR51, Ch2Right, 1);
+-DECL_BIT(GBRegisterNR51, Ch3Right, 2);
+-DECL_BIT(GBRegisterNR51, Ch4Right, 3);
+-DECL_BIT(GBRegisterNR51, Ch1Left, 4);
+-DECL_BIT(GBRegisterNR51, Ch2Left, 5);
+-DECL_BIT(GBRegisterNR51, Ch3Left, 6);
+-DECL_BIT(GBRegisterNR51, Ch4Left, 7);
+-
+-DECL_BITFIELD(GBAudioEnable, uint8_t);
+-DECL_BIT(GBAudioEnable, PlayingCh1, 0);
+-DECL_BIT(GBAudioEnable, PlayingCh2, 1);
+-DECL_BIT(GBAudioEnable, PlayingCh3, 2);
+-DECL_BIT(GBAudioEnable, PlayingCh4, 3);
+-DECL_BIT(GBAudioEnable, Enable, 7);
++DECL_BITFIELD(GBAudioRegisterDuty, uint8_t)
++DECL_BITS(GBAudioRegisterDuty, Length, 0, 6)
++DECL_BITS(GBAudioRegisterDuty, Duty, 6, 2)
++
++DECL_BITFIELD(GBAudioRegisterSweep, uint8_t)
++DECL_BITS(GBAudioRegisterSweep, StepTime, 0, 3)
++DECL_BIT(GBAudioRegisterSweep, Direction, 3)
++DECL_BITS(GBAudioRegisterSweep, InitialVolume, 4, 4)
++
++DECL_BITFIELD(GBAudioRegisterControl, uint16_t)
++DECL_BITS(GBAudioRegisterControl, Rate, 0, 11)
++DECL_BITS(GBAudioRegisterControl, Frequency, 0, 11)
++DECL_BIT(GBAudioRegisterControl, Stop, 14)
++DECL_BIT(GBAudioRegisterControl, Restart, 15)
++
++DECL_BITFIELD(GBAudioRegisterSquareSweep, uint8_t)
++DECL_BITS(GBAudioRegisterSquareSweep, Shift, 0, 3)
++DECL_BIT(GBAudioRegisterSquareSweep, Direction, 3)
++DECL_BITS(GBAudioRegisterSquareSweep, Time, 4, 3)
++
++DECL_BITFIELD(GBAudioRegisterBank, uint8_t)
++DECL_BIT(GBAudioRegisterBank, Size, 5)
++DECL_BIT(GBAudioRegisterBank, Bank, 6)
++DECL_BIT(GBAudioRegisterBank, Enable, 7)
++
++DECL_BITFIELD(GBAudioRegisterBankVolume, uint8_t)
++DECL_BITS(GBAudioRegisterBankVolume, VolumeGB, 5, 2)
++DECL_BITS(GBAudioRegisterBankVolume, VolumeGBA, 5, 3)
++
++DECL_BITFIELD(GBAudioRegisterNoiseFeedback, uint8_t)
++DECL_BITS(GBAudioRegisterNoiseFeedback, Ratio, 0, 3)
++DECL_BIT(GBAudioRegisterNoiseFeedback, Power, 3)
++DECL_BITS(GBAudioRegisterNoiseFeedback, Frequency, 4, 4)
++
++DECL_BITFIELD(GBAudioRegisterNoiseControl, uint8_t)
++DECL_BIT(GBAudioRegisterNoiseControl, Stop, 6)
++DECL_BIT(GBAudioRegisterNoiseControl, Restart, 7)
++
++DECL_BITFIELD(GBRegisterNR50, uint8_t)
++DECL_BITS(GBRegisterNR50, VolumeRight, 0, 3)
++DECL_BITS(GBRegisterNR50, VolumeLeft, 4, 3)
++
++DECL_BITFIELD(GBRegisterNR51, uint8_t)
++DECL_BIT(GBRegisterNR51, Ch1Right, 0)
++DECL_BIT(GBRegisterNR51, Ch2Right, 1)
++DECL_BIT(GBRegisterNR51, Ch3Right, 2)
++DECL_BIT(GBRegisterNR51, Ch4Right, 3)
++DECL_BIT(GBRegisterNR51, Ch1Left, 4)
++DECL_BIT(GBRegisterNR51, Ch2Left, 5)
++DECL_BIT(GBRegisterNR51, Ch3Left, 6)
++DECL_BIT(GBRegisterNR51, Ch4Left, 7)
++
++DECL_BITFIELD(GBAudioEnable, uint8_t)
++DECL_BIT(GBAudioEnable, PlayingCh1, 0)
++DECL_BIT(GBAudioEnable, PlayingCh2, 1)
++DECL_BIT(GBAudioEnable, PlayingCh3, 2)
++DECL_BIT(GBAudioEnable, PlayingCh4, 3)
++DECL_BIT(GBAudioEnable, Enable, 7)
+ 
+ struct GB;
+ struct GBAudioEnvelope {
+diff --git a/include/mgba/internal/gb/cheats.h b/include/mgba/internal/gb/cheats.h
+index 0eb7d3b3c..45a01d167 100644
+--- a/include/mgba/internal/gb/cheats.h
++++ b/include/mgba/internal/gb/cheats.h
+@@ -29,7 +29,7 @@ struct GBCheatPatch {
+ 	bool checkByte;
+ };
+ 
+-DECLARE_VECTOR(GBCheatPatchList, struct GBCheatPatch);
++DECLARE_VECTOR(GBCheatPatchList, struct GBCheatPatch)
+ 
+ struct GBCheatSet {
+ 	struct mCheatSet d;
+diff --git a/include/mgba/internal/gb/gb.h b/include/mgba/internal/gb/gb.h
+index d0e59e07e..7750a2d92 100644
+--- a/include/mgba/internal/gb/gb.h
++++ b/include/mgba/internal/gb/gb.h
+@@ -25,7 +25,7 @@ extern const uint32_t DMG_SM83_FREQUENCY;
+ extern const uint32_t CGB_SM83_FREQUENCY;
+ extern const uint32_t SGB_SM83_FREQUENCY;
+ 
+-mLOG_DECLARE_CATEGORY(GB);
++mLOG_DECLARE_CATEGORY(GB)
+ 
+ // TODO: Prefix GBAIRQ
+ enum GBIRQ {
+diff --git a/include/mgba/internal/gb/io.h b/include/mgba/internal/gb/io.h
+index 1df09da2f..c642970b5 100644
+--- a/include/mgba/internal/gb/io.h
++++ b/include/mgba/internal/gb/io.h
+@@ -12,7 +12,7 @@ CXX_GUARD_START
+ 
+ #include <mgba/core/log.h>
+ 
+-mLOG_DECLARE_CATEGORY(GB_IO);
++mLOG_DECLARE_CATEGORY(GB_IO)
+ 
+ enum GBIORegisters {
+ 	REG_JOYP = 0x00,
+diff --git a/include/mgba/internal/gb/mbc.h b/include/mgba/internal/gb/mbc.h
+index 72f4e1a47..22ed2f407 100644
+--- a/include/mgba/internal/gb/mbc.h
++++ b/include/mgba/internal/gb/mbc.h
+@@ -12,7 +12,7 @@ CXX_GUARD_START
+ 
+ #include <mgba/core/log.h>
+ 
+-mLOG_DECLARE_CATEGORY(GB_MBC);
++mLOG_DECLARE_CATEGORY(GB_MBC)
+ 
+ struct GB;
+ struct GBMemory;
+diff --git a/include/mgba/internal/gb/memory.h b/include/mgba/internal/gb/memory.h
+index 3c7387b14..43134c723 100644
+--- a/include/mgba/internal/gb/memory.h
++++ b/include/mgba/internal/gb/memory.h
+@@ -14,8 +14,8 @@ CXX_GUARD_START
+ #include <mgba/core/timing.h>
+ #include <mgba/gb/interface.h>
+ 
+-mLOG_DECLARE_CATEGORY(GB_MBC);
+-mLOG_DECLARE_CATEGORY(GB_MEM);
++mLOG_DECLARE_CATEGORY(GB_MBC)
++mLOG_DECLARE_CATEGORY(GB_MEM)
+ 
+ struct GB;
+ 
+@@ -72,11 +72,11 @@ struct GBMemory;
+ typedef void (*GBMemoryBankControllerWrite)(struct GB*, uint16_t address, uint8_t value);
+ typedef uint8_t (*GBMemoryBankControllerRead)(struct GBMemory*, uint16_t address);
+ 
+-DECL_BITFIELD(GBMBC7Field, uint8_t);
+-DECL_BIT(GBMBC7Field, CS, 7);
+-DECL_BIT(GBMBC7Field, CLK, 6);
+-DECL_BIT(GBMBC7Field, DI, 1);
+-DECL_BIT(GBMBC7Field, DO, 0);
++DECL_BITFIELD(GBMBC7Field, uint8_t)
++DECL_BIT(GBMBC7Field, CS, 7)
++DECL_BIT(GBMBC7Field, CLK, 6)
++DECL_BIT(GBMBC7Field, DI, 1)
++DECL_BIT(GBMBC7Field, DO, 0)
+ 
+ enum GBMBC7MachineState {
+ 	GBMBC7_STATE_IDLE = 0,
+diff --git a/include/mgba/internal/gb/serialize.h b/include/mgba/internal/gb/serialize.h
+index ef2d5c4bc..90faeeafa 100644
+--- a/include/mgba/internal/gb/serialize.h
++++ b/include/mgba/internal/gb/serialize.h
+@@ -16,7 +16,7 @@ CXX_GUARD_START
+ extern const uint32_t GB_SAVESTATE_MAGIC;
+ extern const uint32_t GB_SAVESTATE_VERSION;
+ 
+-mLOG_DECLARE_CATEGORY(GB_STATE);
++mLOG_DECLARE_CATEGORY(GB_STATE)
+ 
+ /* Savestate format:
+  * 0x00000 - 0x00003: Version Magic (0x01000002)
+@@ -182,25 +182,25 @@ mLOG_DECLARE_CATEGORY(GB_STATE);
+  * Total size: 0x11800 (71,680) bytes
+ */
+ 
+-DECL_BITFIELD(GBSerializedAudioFlags, uint32_t);
+-DECL_BITS(GBSerializedAudioFlags, Ch1Volume, 0, 4);
+-DECL_BITS(GBSerializedAudioFlags, Ch1Dead, 4, 2);
+-DECL_BIT(GBSerializedAudioFlags, Ch1Hi, 6);
+-DECL_BITS(GBSerializedAudioFlags, Ch2Volume, 8, 4);
+-DECL_BITS(GBSerializedAudioFlags, Ch2Dead, 12, 2);
+-DECL_BIT(GBSerializedAudioFlags, Ch2Hi, 14);
+-DECL_BITS(GBSerializedAudioFlags, Ch4Volume, 16, 4);
+-DECL_BITS(GBSerializedAudioFlags, Ch4Dead, 20, 2);
+-DECL_BITS(GBSerializedAudioFlags, Frame, 22, 3);
+-DECL_BIT(GBSerializedAudioFlags, Ch1SweepEnabled, 25);
+-DECL_BIT(GBSerializedAudioFlags, Ch1SweepOccurred, 26);
+-DECL_BIT(GBSerializedAudioFlags, Ch3Readable, 27);
+-DECL_BIT(GBSerializedAudioFlags, SkipFrame, 28);
+-
+-DECL_BITFIELD(GBSerializedAudioEnvelope, uint32_t);
+-DECL_BITS(GBSerializedAudioEnvelope, Length, 0, 7);
+-DECL_BITS(GBSerializedAudioEnvelope, NextStep, 7, 3);
+-DECL_BITS(GBSerializedAudioEnvelope, Frequency, 10, 11);
++DECL_BITFIELD(GBSerializedAudioFlags, uint32_t)
++DECL_BITS(GBSerializedAudioFlags, Ch1Volume, 0, 4)
++DECL_BITS(GBSerializedAudioFlags, Ch1Dead, 4, 2)
++DECL_BIT(GBSerializedAudioFlags, Ch1Hi, 6)
++DECL_BITS(GBSerializedAudioFlags, Ch2Volume, 8, 4)
++DECL_BITS(GBSerializedAudioFlags, Ch2Dead, 12, 2)
++DECL_BIT(GBSerializedAudioFlags, Ch2Hi, 14)
++DECL_BITS(GBSerializedAudioFlags, Ch4Volume, 16, 4)
++DECL_BITS(GBSerializedAudioFlags, Ch4Dead, 20, 2)
++DECL_BITS(GBSerializedAudioFlags, Frame, 22, 3)
++DECL_BIT(GBSerializedAudioFlags, Ch1SweepEnabled, 25)
++DECL_BIT(GBSerializedAudioFlags, Ch1SweepOccurred, 26)
++DECL_BIT(GBSerializedAudioFlags, Ch3Readable, 27)
++DECL_BIT(GBSerializedAudioFlags, SkipFrame, 28)
++
++DECL_BITFIELD(GBSerializedAudioEnvelope, uint32_t)
++DECL_BITS(GBSerializedAudioEnvelope, Length, 0, 7)
++DECL_BITS(GBSerializedAudioEnvelope, NextStep, 7, 3)
++DECL_BITS(GBSerializedAudioEnvelope, Frequency, 10, 11)
+ 
+ struct GBSerializedPSGState {
+ 	struct {
+@@ -229,41 +229,41 @@ struct GBSerializedPSGState {
+ 	} ch4;
+ };
+ 
+-DECL_BITFIELD(GBSerializedCpuFlags, uint32_t);
+-DECL_BIT(GBSerializedCpuFlags, Condition, 0);
+-DECL_BIT(GBSerializedCpuFlags, IrqPending, 1);
+-DECL_BIT(GBSerializedCpuFlags, DoubleSpeed, 2);
+-DECL_BIT(GBSerializedCpuFlags, EiPending, 3);
+-
+-DECL_BITFIELD(GBSerializedTimerFlags, uint8_t);
+-DECL_BIT(GBSerializedTimerFlags, IrqPending, 0);
+-
+-DECL_BITFIELD(GBSerializedVideoFlags, uint8_t);
+-DECL_BIT(GBSerializedVideoFlags, BcpIncrement, 0);
+-DECL_BIT(GBSerializedVideoFlags, OcpIncrement, 1);
+-DECL_BITS(GBSerializedVideoFlags, Mode, 2, 2);
+-DECL_BIT(GBSerializedVideoFlags, NotModeEventScheduled, 4);
+-DECL_BIT(GBSerializedVideoFlags, NotFrameEventScheduled, 5);
+-
+-DECL_BITFIELD(GBSerializedMBC7Flags, uint8_t);
+-DECL_BITS(GBSerializedMBC7Flags, Command, 0, 2);
+-DECL_BIT(GBSerializedMBC7Flags, Writable, 2);
+-
+-DECL_BITFIELD(GBSerializedMemoryFlags, uint16_t);
+-DECL_BIT(GBSerializedMemoryFlags, SramAccess, 0);
+-DECL_BIT(GBSerializedMemoryFlags, RtcAccess, 1);
+-DECL_BIT(GBSerializedMemoryFlags, RtcLatched, 2);
+-DECL_BIT(GBSerializedMemoryFlags, Ime, 3);
+-DECL_BIT(GBSerializedMemoryFlags, IsHdma, 4);
+-DECL_BITS(GBSerializedMemoryFlags, ActiveRtcReg, 5, 3);
+-
+-DECL_BITFIELD(GBSerializedSGBFlags, uint32_t);
+-DECL_BITS(GBSerializedSGBFlags, P1Bits, 0, 2);
+-DECL_BITS(GBSerializedSGBFlags, RenderMode, 2, 2);
+-DECL_BITS(GBSerializedSGBFlags, BufferIndex, 4, 3);
+-DECL_BITS(GBSerializedSGBFlags, CurrentController, 7, 2);
+-DECL_BITS(GBSerializedSGBFlags, ReqControllers, 9, 2);
+-DECL_BIT(GBSerializedSGBFlags, Increment, 11);
++DECL_BITFIELD(GBSerializedCpuFlags, uint32_t)
++DECL_BIT(GBSerializedCpuFlags, Condition, 0)
++DECL_BIT(GBSerializedCpuFlags, IrqPending, 1)
++DECL_BIT(GBSerializedCpuFlags, DoubleSpeed, 2)
++DECL_BIT(GBSerializedCpuFlags, EiPending, 3)
++
++DECL_BITFIELD(GBSerializedTimerFlags, uint8_t)
++DECL_BIT(GBSerializedTimerFlags, IrqPending, 0)
++
++DECL_BITFIELD(GBSerializedVideoFlags, uint8_t)
++DECL_BIT(GBSerializedVideoFlags, BcpIncrement, 0)
++DECL_BIT(GBSerializedVideoFlags, OcpIncrement, 1)
++DECL_BITS(GBSerializedVideoFlags, Mode, 2, 2)
++DECL_BIT(GBSerializedVideoFlags, NotModeEventScheduled, 4)
++DECL_BIT(GBSerializedVideoFlags, NotFrameEventScheduled, 5)
++
++DECL_BITFIELD(GBSerializedMBC7Flags, uint8_t)
++DECL_BITS(GBSerializedMBC7Flags, Command, 0, 2)
++DECL_BIT(GBSerializedMBC7Flags, Writable, 2)
++
++DECL_BITFIELD(GBSerializedMemoryFlags, uint16_t)
++DECL_BIT(GBSerializedMemoryFlags, SramAccess, 0)
++DECL_BIT(GBSerializedMemoryFlags, RtcAccess, 1)
++DECL_BIT(GBSerializedMemoryFlags, RtcLatched, 2)
++DECL_BIT(GBSerializedMemoryFlags, Ime, 3)
++DECL_BIT(GBSerializedMemoryFlags, IsHdma, 4)
++DECL_BITS(GBSerializedMemoryFlags, ActiveRtcReg, 5, 3)
++
++DECL_BITFIELD(GBSerializedSGBFlags, uint32_t)
++DECL_BITS(GBSerializedSGBFlags, P1Bits, 0, 2)
++DECL_BITS(GBSerializedSGBFlags, RenderMode, 2, 2)
++DECL_BITS(GBSerializedSGBFlags, BufferIndex, 4, 3)
++DECL_BITS(GBSerializedSGBFlags, CurrentController, 7, 2)
++DECL_BITS(GBSerializedSGBFlags, ReqControllers, 9, 2)
++DECL_BIT(GBSerializedSGBFlags, Increment, 11)
+ 
+ #pragma pack(push, 1)
+ struct GBSerializedState {
+diff --git a/include/mgba/internal/gb/sio.h b/include/mgba/internal/gb/sio.h
+index 50d62868b..6744a76ec 100644
+--- a/include/mgba/internal/gb/sio.h
++++ b/include/mgba/internal/gb/sio.h
+@@ -18,7 +18,7 @@ CXX_GUARD_START
+ 
+ extern const int GBSIOCyclesPerTransfer[2];
+ 
+-mLOG_DECLARE_CATEGORY(GB_SIO);
++mLOG_DECLARE_CATEGORY(GB_SIO)
+ 
+ struct GB;
+ struct GBSIODriver;
+@@ -35,10 +35,10 @@ struct GBSIO {
+ 	uint8_t pendingSB;
+ };
+ 
+-DECL_BITFIELD(GBRegisterSC, uint8_t);
+-DECL_BIT(GBRegisterSC, ShiftClock, 0);
+-DECL_BIT(GBRegisterSC, ClockSpeed, 1);
+-DECL_BIT(GBRegisterSC, Enable, 7);
++DECL_BITFIELD(GBRegisterSC, uint8_t)
++DECL_BIT(GBRegisterSC, ShiftClock, 0)
++DECL_BIT(GBRegisterSC, ClockSpeed, 1)
++DECL_BIT(GBRegisterSC, Enable, 7)
+ 
+ void GBSIOInit(struct GBSIO* sio);
+ void GBSIOReset(struct GBSIO* sio);
+diff --git a/include/mgba/internal/gb/timer.h b/include/mgba/internal/gb/timer.h
+index b81ff1c34..31f5fb849 100644
+--- a/include/mgba/internal/gb/timer.h
++++ b/include/mgba/internal/gb/timer.h
+@@ -12,9 +12,9 @@ CXX_GUARD_START
+ 
+ #include <mgba/core/timing.h>
+ 
+-DECL_BITFIELD(GBRegisterTAC, uint8_t);
+-DECL_BITS(GBRegisterTAC, Clock, 0, 2);
+-DECL_BIT(GBRegisterTAC, Run, 2);
++DECL_BITFIELD(GBRegisterTAC, uint8_t)
++DECL_BITS(GBRegisterTAC, Clock, 0, 2)
++DECL_BIT(GBRegisterTAC, Run, 2)
+ 
+ enum {
+ 	GB_DMG_DIV_PERIOD = 16
+diff --git a/include/mgba/internal/gb/video.h b/include/mgba/internal/gb/video.h
+index 69a3b0420..56c6cda0f 100644
+--- a/include/mgba/internal/gb/video.h
++++ b/include/mgba/internal/gb/video.h
+@@ -37,20 +37,20 @@ enum {
+ 	SGB_SIZE_ATF_RAM = 0x1000
+ };
+ 
+-DECL_BITFIELD(GBObjAttributes, uint8_t);
+-DECL_BITS(GBObjAttributes, CGBPalette, 0, 3);
+-DECL_BIT(GBObjAttributes, Bank, 3);
+-DECL_BIT(GBObjAttributes, Palette, 4);
+-DECL_BIT(GBObjAttributes, XFlip, 5);
+-DECL_BIT(GBObjAttributes, YFlip, 6);
+-DECL_BIT(GBObjAttributes, Priority, 7);
+-
+-DECL_BITFIELD(SGBBgAttributes, uint16_t);
+-DECL_BITS(SGBBgAttributes, Tile, 0, 10);
+-DECL_BITS(SGBBgAttributes, Palette, 10, 3);
+-DECL_BIT(SGBBgAttributes, Priority, 13);
+-DECL_BIT(SGBBgAttributes, XFlip, 14);
+-DECL_BIT(SGBBgAttributes, YFlip, 15);
++DECL_BITFIELD(GBObjAttributes, uint8_t)
++DECL_BITS(GBObjAttributes, CGBPalette, 0, 3)
++DECL_BIT(GBObjAttributes, Bank, 3)
++DECL_BIT(GBObjAttributes, Palette, 4)
++DECL_BIT(GBObjAttributes, XFlip, 5)
++DECL_BIT(GBObjAttributes, YFlip, 6)
++DECL_BIT(GBObjAttributes, Priority, 7)
++
++DECL_BITFIELD(SGBBgAttributes, uint16_t)
++DECL_BITS(SGBBgAttributes, Tile, 0, 10)
++DECL_BITS(SGBBgAttributes, Palette, 10, 3)
++DECL_BIT(SGBBgAttributes, Priority, 13)
++DECL_BIT(SGBBgAttributes, XFlip, 14)
++DECL_BIT(SGBBgAttributes, YFlip, 15)
+ 
+ struct GBObj {
+ 	uint8_t y;
+@@ -98,23 +98,23 @@ struct GBVideoRenderer {
+ 	bool disableWIN;
+ };
+ 
+-DECL_BITFIELD(GBRegisterLCDC, uint8_t);
+-DECL_BIT(GBRegisterLCDC, BgEnable, 0);
+-DECL_BIT(GBRegisterLCDC, ObjEnable, 1);
+-DECL_BIT(GBRegisterLCDC, ObjSize, 2);
+-DECL_BIT(GBRegisterLCDC, TileMap, 3);
+-DECL_BIT(GBRegisterLCDC, TileData, 4);
+-DECL_BIT(GBRegisterLCDC, Window, 5);
+-DECL_BIT(GBRegisterLCDC, WindowTileMap, 6);
+-DECL_BIT(GBRegisterLCDC, Enable, 7);
+-
+-DECL_BITFIELD(GBRegisterSTAT, uint8_t);
+-DECL_BITS(GBRegisterSTAT, Mode, 0, 2);
+-DECL_BIT(GBRegisterSTAT, LYC, 2);
+-DECL_BIT(GBRegisterSTAT, HblankIRQ, 3);
+-DECL_BIT(GBRegisterSTAT, VblankIRQ, 4);
+-DECL_BIT(GBRegisterSTAT, OAMIRQ, 5);
+-DECL_BIT(GBRegisterSTAT, LYCIRQ, 6);
++DECL_BITFIELD(GBRegisterLCDC, uint8_t)
++DECL_BIT(GBRegisterLCDC, BgEnable, 0)
++DECL_BIT(GBRegisterLCDC, ObjEnable, 1)
++DECL_BIT(GBRegisterLCDC, ObjSize, 2)
++DECL_BIT(GBRegisterLCDC, TileMap, 3)
++DECL_BIT(GBRegisterLCDC, TileData, 4)
++DECL_BIT(GBRegisterLCDC, Window, 5)
++DECL_BIT(GBRegisterLCDC, WindowTileMap, 6)
++DECL_BIT(GBRegisterLCDC, Enable, 7)
++
++DECL_BITFIELD(GBRegisterSTAT, uint8_t)
++DECL_BITS(GBRegisterSTAT, Mode, 0, 2)
++DECL_BIT(GBRegisterSTAT, LYC, 2)
++DECL_BIT(GBRegisterSTAT, HblankIRQ, 3)
++DECL_BIT(GBRegisterSTAT, VblankIRQ, 4)
++DECL_BIT(GBRegisterSTAT, OAMIRQ, 5)
++DECL_BIT(GBRegisterSTAT, LYCIRQ, 6)
+ 
+ struct GBVideo {
+ 	struct GB* p;
+diff --git a/include/mgba/internal/gba/audio.h b/include/mgba/internal/gba/audio.h
+index f08f845b6..2eebdf81b 100644
+--- a/include/mgba/internal/gba/audio.h
++++ b/include/mgba/internal/gba/audio.h
+@@ -18,7 +18,7 @@ CXX_GUARD_START
+ #define MP2K_MAGIC 0x68736D53
+ #define MP2K_MAX_SOUND_CHANNELS 12
+ 
+-mLOG_DECLARE_CATEGORY(GBA_AUDIO);
++mLOG_DECLARE_CATEGORY(GBA_AUDIO)
+ 
+ struct GBADMA;
+ 
+@@ -31,22 +31,22 @@ struct GBAAudioFIFO {
+ 	int8_t sample;
+ };
+ 
+-DECL_BITFIELD(GBARegisterSOUNDCNT_HI, uint16_t);
+-DECL_BITS(GBARegisterSOUNDCNT_HI, Volume, 0, 2);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, VolumeChA, 2);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, VolumeChB, 3);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, ChARight, 8);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, ChALeft, 9);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, ChATimer, 10);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, ChAReset, 11);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, ChBRight, 12);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, ChBLeft, 13);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, ChBTimer, 14);
+-DECL_BIT(GBARegisterSOUNDCNT_HI, ChBReset, 15);
+-
+-DECL_BITFIELD(GBARegisterSOUNDBIAS, uint16_t);
+-DECL_BITS(GBARegisterSOUNDBIAS, Bias, 0, 10);
+-DECL_BITS(GBARegisterSOUNDBIAS, Resolution, 14, 2);
++DECL_BITFIELD(GBARegisterSOUNDCNT_HI, uint16_t)
++DECL_BITS(GBARegisterSOUNDCNT_HI, Volume, 0, 2)
++DECL_BIT(GBARegisterSOUNDCNT_HI, VolumeChA, 2)
++DECL_BIT(GBARegisterSOUNDCNT_HI, VolumeChB, 3)
++DECL_BIT(GBARegisterSOUNDCNT_HI, ChARight, 8)
++DECL_BIT(GBARegisterSOUNDCNT_HI, ChALeft, 9)
++DECL_BIT(GBARegisterSOUNDCNT_HI, ChATimer, 10)
++DECL_BIT(GBARegisterSOUNDCNT_HI, ChAReset, 11)
++DECL_BIT(GBARegisterSOUNDCNT_HI, ChBRight, 12)
++DECL_BIT(GBARegisterSOUNDCNT_HI, ChBLeft, 13)
++DECL_BIT(GBARegisterSOUNDCNT_HI, ChBTimer, 14)
++DECL_BIT(GBARegisterSOUNDCNT_HI, ChBReset, 15)
++
++DECL_BITFIELD(GBARegisterSOUNDBIAS, uint16_t)
++DECL_BITS(GBARegisterSOUNDBIAS, Bias, 0, 10)
++DECL_BITS(GBARegisterSOUNDBIAS, Resolution, 14, 2)
+ 
+ struct GBAAudioMixer;
+ struct GBAAudio {
+diff --git a/include/mgba/internal/gba/bios.h b/include/mgba/internal/gba/bios.h
+index a89edfd68..efa2a1025 100644
+--- a/include/mgba/internal/gba/bios.h
++++ b/include/mgba/internal/gba/bios.h
+@@ -12,7 +12,7 @@ CXX_GUARD_START
+ 
+ #include <mgba/core/log.h>
+ 
+-mLOG_DECLARE_CATEGORY(GBA_BIOS);
++mLOG_DECLARE_CATEGORY(GBA_BIOS)
+ 
+ struct ARMCore;
+ void GBASwi16(struct ARMCore* cpu, int immediate);
+diff --git a/include/mgba/internal/gba/dma.h b/include/mgba/internal/gba/dma.h
+index 6f880c971..815077f8d 100644
+--- a/include/mgba/internal/gba/dma.h
++++ b/include/mgba/internal/gba/dma.h
+@@ -24,15 +24,15 @@ enum GBADMATiming {
+ 	GBA_DMA_TIMING_CUSTOM = 3
+ };
+ 
+-DECL_BITFIELD(GBADMARegister, uint16_t);
+-DECL_BITS(GBADMARegister, DestControl, 5, 2);
+-DECL_BITS(GBADMARegister, SrcControl, 7, 2);
+-DECL_BIT(GBADMARegister, Repeat, 9);
+-DECL_BIT(GBADMARegister, Width, 10);
+-DECL_BIT(GBADMARegister, DRQ, 11);
+-DECL_BITS(GBADMARegister, Timing, 12, 2);
+-DECL_BIT(GBADMARegister, DoIRQ, 14);
+-DECL_BIT(GBADMARegister, Enable, 15);
++DECL_BITFIELD(GBADMARegister, uint16_t)
++DECL_BITS(GBADMARegister, DestControl, 5, 2)
++DECL_BITS(GBADMARegister, SrcControl, 7, 2)
++DECL_BIT(GBADMARegister, Repeat, 9)
++DECL_BIT(GBADMARegister, Width, 10)
++DECL_BIT(GBADMARegister, DRQ, 11)
++DECL_BITS(GBADMARegister, Timing, 12, 2)
++DECL_BIT(GBADMARegister, DoIRQ, 14)
++DECL_BIT(GBADMARegister, Enable, 15)
+ 
+ struct GBADMA {
+ 	GBADMARegister reg;
+diff --git a/include/mgba/internal/gba/gba.h b/include/mgba/internal/gba/gba.h
+index fffd46936..343ed6f10 100644
+--- a/include/mgba/internal/gba/gba.h
++++ b/include/mgba/internal/gba/gba.h
+@@ -55,12 +55,12 @@ struct GBA;
+ struct Patch;
+ struct VFile;
+ 
+-mLOG_DECLARE_CATEGORY(GBA);
+-mLOG_DECLARE_CATEGORY(GBA_DEBUG);
++mLOG_DECLARE_CATEGORY(GBA)
++mLOG_DECLARE_CATEGORY(GBA_DEBUG)
+ 
+-DECL_BITFIELD(GBADebugFlags, uint16_t);
+-DECL_BITS(GBADebugFlags, Level, 0, 3);
+-DECL_BIT(GBADebugFlags, Send, 8);
++DECL_BITFIELD(GBADebugFlags, uint16_t)
++DECL_BITS(GBADebugFlags, Level, 0, 3)
++DECL_BIT(GBADebugFlags, Send, 8)
+ 
+ struct GBA {
+ 	struct mCPUComponent d;
+diff --git a/include/mgba/internal/gba/hardware.h b/include/mgba/internal/gba/hardware.h
+index fab175538..54b2f5971 100644
+--- a/include/mgba/internal/gba/hardware.h
++++ b/include/mgba/internal/gba/hardware.h
+@@ -14,7 +14,7 @@ CXX_GUARD_START
+ #include <mgba/core/timing.h>
+ #include <mgba/gba/interface.h>
+ 
+-mLOG_DECLARE_CATEGORY(GBA_HW);
++mLOG_DECLARE_CATEGORY(GBA_HW)
+ 
+ #define IS_GPIO_REGISTER(reg) ((reg) == GPIO_REG_DATA || (reg) == GPIO_REG_DIRECTION || (reg) == GPIO_REG_CONTROL)
+ 
+@@ -48,10 +48,10 @@ enum GPIODirection {
+ 	GPIO_READ_WRITE = 1
+ };
+ 
+-DECL_BITFIELD(RTCControl, uint32_t);
+-DECL_BIT(RTCControl, MinIRQ, 3);
+-DECL_BIT(RTCControl, Hour24, 6);
+-DECL_BIT(RTCControl, Poweroff, 7);
++DECL_BITFIELD(RTCControl, uint32_t)
++DECL_BIT(RTCControl, MinIRQ, 3)
++DECL_BIT(RTCControl, Hour24, 6)
++DECL_BIT(RTCControl, Poweroff, 7)
+ 
+ enum RTCCommand {
+ 	RTC_RESET = 0,
+@@ -61,10 +61,10 @@ enum RTCCommand {
+ 	RTC_TIME = 6
+ };
+ 
+-DECL_BITFIELD(RTCCommandData, uint32_t);
+-DECL_BITS(RTCCommandData, Magic, 0, 4);
+-DECL_BITS(RTCCommandData, Command, 4, 3);
+-DECL_BIT(RTCCommandData, Reading, 7);
++DECL_BITFIELD(RTCCommandData, uint32_t)
++DECL_BITS(RTCCommandData, Magic, 0, 4)
++DECL_BITS(RTCCommandData, Command, 4, 3)
++DECL_BIT(RTCCommandData, Reading, 7)
+ 
+ #ifndef PYCPARSE
+ #pragma pack(push, 1)
+@@ -93,7 +93,7 @@ struct GBAGBPSIODriver {
+ 	struct GBACartridgeHardware* p;
+ };
+ 
+-DECL_BITFIELD(GPIOPin, uint16_t);
++DECL_BITFIELD(GPIOPin, uint16_t)
+ 
+ struct GBACartridgeHardware {
+ 	struct GBA* p;
+diff --git a/include/mgba/internal/gba/io.h b/include/mgba/internal/gba/io.h
+index 9875061f3..7075e0e9e 100644
+--- a/include/mgba/internal/gba/io.h
++++ b/include/mgba/internal/gba/io.h
+@@ -159,7 +159,7 @@ enum GBAIORegisters {
+ 	REG_DEBUG_ENABLE = 0xFFF780,
+ };
+ 
+-mLOG_DECLARE_CATEGORY(GBA_IO);
++mLOG_DECLARE_CATEGORY(GBA_IO)
+ 
+ extern MGBA_EXPORT const char* const GBAIORegisterNames[];
+ 
+diff --git a/include/mgba/internal/gba/memory.h b/include/mgba/internal/gba/memory.h
+index f98b7e94a..4c3746ef9 100644
+--- a/include/mgba/internal/gba/memory.h
++++ b/include/mgba/internal/gba/memory.h
+@@ -88,7 +88,7 @@ enum {
+ 	AGB_PRINT_FLUSH_ADDR = 0x01FE209C,
+ };
+ 
+-mLOG_DECLARE_CATEGORY(GBA_MEM);
++mLOG_DECLARE_CATEGORY(GBA_MEM)
+ 
+ struct GBAPrintContext {
+ 	uint16_t request;
+diff --git a/include/mgba/internal/gba/rr/rr.h b/include/mgba/internal/gba/rr/rr.h
+index b4fc2e627..e8fda37bc 100644
+--- a/include/mgba/internal/gba/rr/rr.h
++++ b/include/mgba/internal/gba/rr/rr.h
+@@ -15,7 +15,7 @@ CXX_GUARD_START
+ 
+ struct VFile;
+ 
+-mLOG_DECLARE_CATEGORY(GBA_RR);
++mLOG_DECLARE_CATEGORY(GBA_RR)
+ 
+ enum GBARRInitFrom {
+ 	INIT_EX_NIHILO = 0,
+diff --git a/include/mgba/internal/gba/savedata.h b/include/mgba/internal/gba/savedata.h
+index 05cd65963..3fa6813c2 100644
+--- a/include/mgba/internal/gba/savedata.h
++++ b/include/mgba/internal/gba/savedata.h
+@@ -13,7 +13,7 @@ CXX_GUARD_START
+ #include <mgba/core/log.h>
+ #include <mgba/core/timing.h>
+ 
+-mLOG_DECLARE_CATEGORY(GBA_SAVE);
++mLOG_DECLARE_CATEGORY(GBA_SAVE)
+ 
+ struct VFile;
+ 
+diff --git a/include/mgba/internal/gba/serialize.h b/include/mgba/internal/gba/serialize.h
+index 3d2e0e69c..83b337b2c 100644
+--- a/include/mgba/internal/gba/serialize.h
++++ b/include/mgba/internal/gba/serialize.h
+@@ -17,7 +17,7 @@ CXX_GUARD_START
+ extern const uint32_t GBA_SAVESTATE_MAGIC;
+ extern const uint32_t GBA_SAVESTATE_VERSION;
+ 
+-mLOG_DECLARE_CATEGORY(GBA_STATE);
++mLOG_DECLARE_CATEGORY(GBA_STATE)
+ 
+ /* Savestate format:
+  * 0x00000 - 0x00003: Version Magic (0x01000001)
+@@ -208,28 +208,28 @@ mLOG_DECLARE_CATEGORY(GBA_STATE);
+  * Total size: 0x61000 (397,312) bytes
+  */
+ 
+-DECL_BITFIELD(GBASerializedHWFlags1, uint16_t);
+-DECL_BIT(GBASerializedHWFlags1, ReadWrite, 0);
+-DECL_BIT(GBASerializedHWFlags1, GyroEdge, 1);
+-DECL_BIT(GBASerializedHWFlags1, LightEdge, 2);
+-DECL_BITS(GBASerializedHWFlags1, LightCounter, 4, 12);
++DECL_BITFIELD(GBASerializedHWFlags1, uint16_t)
++DECL_BIT(GBASerializedHWFlags1, ReadWrite, 0)
++DECL_BIT(GBASerializedHWFlags1, GyroEdge, 1)
++DECL_BIT(GBASerializedHWFlags1, LightEdge, 2)
++DECL_BITS(GBASerializedHWFlags1, LightCounter, 4, 12)
+ 
+-DECL_BITFIELD(GBASerializedHWFlags2, uint8_t);
+-DECL_BITS(GBASerializedHWFlags2, TiltState, 0, 2);
+-DECL_BITS(GBASerializedHWFlags2, GbpInputsPosted, 2, 2);
+-DECL_BITS(GBASerializedHWFlags2, GbpTxPosition, 4, 5);
++DECL_BITFIELD(GBASerializedHWFlags2, uint8_t)
++DECL_BITS(GBASerializedHWFlags2, TiltState, 0, 2)
++DECL_BITS(GBASerializedHWFlags2, GbpInputsPosted, 2, 2)
++DECL_BITS(GBASerializedHWFlags2, GbpTxPosition, 4, 5)
+ 
+-DECL_BITFIELD(GBASerializedHWFlags3, uint16_t);
++DECL_BITFIELD(GBASerializedHWFlags3, uint16_t)
+ 
+-DECL_BITFIELD(GBASerializedSavedataFlags, uint8_t);
+-DECL_BITS(GBASerializedSavedataFlags, FlashState, 0, 2);
+-DECL_BIT(GBASerializedSavedataFlags, FlashBank, 4);
+-DECL_BIT(GBASerializedSavedataFlags, DustSettling, 5);
++DECL_BITFIELD(GBASerializedSavedataFlags, uint8_t)
++DECL_BITS(GBASerializedSavedataFlags, FlashState, 0, 2)
++DECL_BIT(GBASerializedSavedataFlags, FlashBank, 4)
++DECL_BIT(GBASerializedSavedataFlags, DustSettling, 5)
+ 
+-DECL_BITFIELD(GBASerializedMiscFlags, uint32_t);
+-DECL_BIT(GBASerializedMiscFlags, Halted, 0);
+-DECL_BIT(GBASerializedMiscFlags, POSTFLG, 1);
+-DECL_BIT(GBASerializedMiscFlags, IrqPending, 2);
++DECL_BITFIELD(GBASerializedMiscFlags, uint32_t)
++DECL_BIT(GBASerializedMiscFlags, Halted, 0)
++DECL_BIT(GBASerializedMiscFlags, POSTFLG, 1)
++DECL_BIT(GBASerializedMiscFlags, IrqPending, 2)
+ 
+ struct GBASerializedState {
+ 	uint32_t versionMagic;
+diff --git a/include/mgba/internal/gba/sio.h b/include/mgba/internal/gba/sio.h
+index 7a4e3ecfb..263def9b8 100644
+--- a/include/mgba/internal/gba/sio.h
++++ b/include/mgba/internal/gba/sio.h
+@@ -17,7 +17,7 @@ CXX_GUARD_START
+ 
+ extern const int GBASIOCyclesPerTransfer[4][MAX_GBAS];
+ 
+-mLOG_DECLARE_CATEGORY(GBA_SIO);
++mLOG_DECLARE_CATEGORY(GBA_SIO)
+ 
+ enum {
+ 	RCNT_INITIAL = 0x8000
+@@ -33,22 +33,22 @@ enum {
+ 	JOYSTAT_RECV_BIT = 2,
+ };
+ 
+-DECL_BITFIELD(GBASIONormal, uint16_t);
+-DECL_BIT(GBASIONormal, Sc, 0);
+-DECL_BIT(GBASIONormal, InternalSc, 1);
+-DECL_BIT(GBASIONormal, Si, 2);
+-DECL_BIT(GBASIONormal, IdleSo, 3);
+-DECL_BIT(GBASIONormal, Start, 7);
+-DECL_BIT(GBASIONormal, Length, 12);
+-DECL_BIT(GBASIONormal, Irq, 14);
+-DECL_BITFIELD(GBASIOMultiplayer, uint16_t);
+-DECL_BITS(GBASIOMultiplayer, Baud, 0, 2);
+-DECL_BIT(GBASIOMultiplayer, Slave, 2);
+-DECL_BIT(GBASIOMultiplayer, Ready, 3);
+-DECL_BITS(GBASIOMultiplayer, Id, 4, 2);
+-DECL_BIT(GBASIOMultiplayer, Error, 6);
+-DECL_BIT(GBASIOMultiplayer, Busy, 7);
+-DECL_BIT(GBASIOMultiplayer, Irq, 14);
++DECL_BITFIELD(GBASIONormal, uint16_t)
++DECL_BIT(GBASIONormal, Sc, 0)
++DECL_BIT(GBASIONormal, InternalSc, 1)
++DECL_BIT(GBASIONormal, Si, 2)
++DECL_BIT(GBASIONormal, IdleSo, 3)
++DECL_BIT(GBASIONormal, Start, 7)
++DECL_BIT(GBASIONormal, Length, 12)
++DECL_BIT(GBASIONormal, Irq, 14)
++DECL_BITFIELD(GBASIOMultiplayer, uint16_t)
++DECL_BITS(GBASIOMultiplayer, Baud, 0, 2)
++DECL_BIT(GBASIOMultiplayer, Slave, 2)
++DECL_BIT(GBASIOMultiplayer, Ready, 3)
++DECL_BITS(GBASIOMultiplayer, Id, 4, 2)
++DECL_BIT(GBASIOMultiplayer, Error, 6)
++DECL_BIT(GBASIOMultiplayer, Busy, 7)
++DECL_BIT(GBASIOMultiplayer, Irq, 14)
+ 
+ struct GBASIODriverSet {
+ 	struct GBASIODriver* normal;
+diff --git a/include/mgba/internal/gba/timer.h b/include/mgba/internal/gba/timer.h
+index 664842e6b..b10335f72 100644
+--- a/include/mgba/internal/gba/timer.h
++++ b/include/mgba/internal/gba/timer.h
+@@ -12,11 +12,11 @@ CXX_GUARD_START
+ 
+ #include <mgba/core/timing.h>
+ 
+-DECL_BITFIELD(GBATimerFlags, uint32_t);
+-DECL_BITS(GBATimerFlags, PrescaleBits, 0, 4);
+-DECL_BIT(GBATimerFlags, CountUp, 4);
+-DECL_BIT(GBATimerFlags, DoIrq, 5);
+-DECL_BIT(GBATimerFlags, Enable, 6);
++DECL_BITFIELD(GBATimerFlags, uint32_t)
++DECL_BITS(GBATimerFlags, PrescaleBits, 0, 4)
++DECL_BIT(GBATimerFlags, CountUp, 4)
++DECL_BIT(GBATimerFlags, DoIrq, 5)
++DECL_BIT(GBATimerFlags, Enable, 6)
+ 
+ struct GBA;
+ struct GBATimer {
+diff --git a/include/mgba/internal/gba/video.h b/include/mgba/internal/gba/video.h
+index 77ff3cf0e..5cc14c18c 100644
+--- a/include/mgba/internal/gba/video.h
++++ b/include/mgba/internal/gba/video.h
+@@ -14,7 +14,7 @@ CXX_GUARD_START
+ #include <mgba/core/timing.h>
+ #include <mgba/gba/interface.h>
+ 
+-mLOG_DECLARE_CATEGORY(GBA_VIDEO);
++mLOG_DECLARE_CATEGORY(GBA_VIDEO)
+ 
+ enum {
+ 	VIDEO_HBLANK_PIXELS = 68,
+@@ -52,27 +52,27 @@ enum GBAVideoBlendEffect {
+ 	BLEND_DARKEN = 3
+ };
+ 
+-DECL_BITFIELD(GBAObjAttributesA, uint16_t);
+-DECL_BITS(GBAObjAttributesA, Y, 0, 8);
+-DECL_BIT(GBAObjAttributesA, Transformed, 8);
+-DECL_BIT(GBAObjAttributesA, Disable, 9);
+-DECL_BIT(GBAObjAttributesA, DoubleSize, 9);
+-DECL_BITS(GBAObjAttributesA, Mode, 10, 2);
+-DECL_BIT(GBAObjAttributesA, Mosaic, 12);
+-DECL_BIT(GBAObjAttributesA, 256Color, 13);
+-DECL_BITS(GBAObjAttributesA, Shape, 14, 2);
+-
+-DECL_BITFIELD(GBAObjAttributesB, uint16_t);
+-DECL_BITS(GBAObjAttributesB, X, 0, 9);
+-DECL_BITS(GBAObjAttributesB, MatIndex, 9, 5);
+-DECL_BIT(GBAObjAttributesB, HFlip, 12);
+-DECL_BIT(GBAObjAttributesB, VFlip, 13);
+-DECL_BITS(GBAObjAttributesB, Size, 14, 2);
+-
+-DECL_BITFIELD(GBAObjAttributesC, uint16_t);
+-DECL_BITS(GBAObjAttributesC, Tile, 0, 10);
+-DECL_BITS(GBAObjAttributesC, Priority, 10, 2);
+-DECL_BITS(GBAObjAttributesC, Palette, 12, 4);
++DECL_BITFIELD(GBAObjAttributesA, uint16_t)
++DECL_BITS(GBAObjAttributesA, Y, 0, 8)
++DECL_BIT(GBAObjAttributesA, Transformed, 8)
++DECL_BIT(GBAObjAttributesA, Disable, 9)
++DECL_BIT(GBAObjAttributesA, DoubleSize, 9)
++DECL_BITS(GBAObjAttributesA, Mode, 10, 2)
++DECL_BIT(GBAObjAttributesA, Mosaic, 12)
++DECL_BIT(GBAObjAttributesA, 256Color, 13)
++DECL_BITS(GBAObjAttributesA, Shape, 14, 2)
++
++DECL_BITFIELD(GBAObjAttributesB, uint16_t)
++DECL_BITS(GBAObjAttributesB, X, 0, 9)
++DECL_BITS(GBAObjAttributesB, MatIndex, 9, 5)
++DECL_BIT(GBAObjAttributesB, HFlip, 12)
++DECL_BIT(GBAObjAttributesB, VFlip, 13)
++DECL_BITS(GBAObjAttributesB, Size, 14, 2)
++
++DECL_BITFIELD(GBAObjAttributesC, uint16_t)
++DECL_BITS(GBAObjAttributesC, Tile, 0, 10)
++DECL_BITS(GBAObjAttributesC, Priority, 10, 2)
++DECL_BITS(GBAObjAttributesC, Palette, 12, 4)
+ 
+ struct GBAObj {
+ 	GBAObjAttributesA a;
+@@ -108,68 +108,68 @@ struct GBAVideoWindowRegion {
+ #define GBA_TEXT_MAP_VFLIP(MAP) ((MAP) & 0x0800)
+ #define GBA_TEXT_MAP_PALETTE(MAP) (((MAP) & 0xF000) >> 12)
+ 
+-DECL_BITFIELD(GBARegisterDISPCNT, uint16_t);
+-DECL_BITS(GBARegisterDISPCNT, Mode, 0, 3);
+-DECL_BIT(GBARegisterDISPCNT, Cgb, 3);
+-DECL_BIT(GBARegisterDISPCNT, FrameSelect, 4);
+-DECL_BIT(GBARegisterDISPCNT, HblankIntervalFree, 5);
+-DECL_BIT(GBARegisterDISPCNT, ObjCharacterMapping, 6);
+-DECL_BIT(GBARegisterDISPCNT, ForcedBlank, 7);
+-DECL_BIT(GBARegisterDISPCNT, Bg0Enable, 8);
+-DECL_BIT(GBARegisterDISPCNT, Bg1Enable, 9);
+-DECL_BIT(GBARegisterDISPCNT, Bg2Enable, 10);
+-DECL_BIT(GBARegisterDISPCNT, Bg3Enable, 11);
+-DECL_BIT(GBARegisterDISPCNT, ObjEnable, 12);
+-DECL_BIT(GBARegisterDISPCNT, Win0Enable, 13);
+-DECL_BIT(GBARegisterDISPCNT, Win1Enable, 14);
+-DECL_BIT(GBARegisterDISPCNT, ObjwinEnable, 15);
+-
+-DECL_BITFIELD(GBARegisterDISPSTAT, uint16_t);
+-DECL_BIT(GBARegisterDISPSTAT, InVblank, 0);
+-DECL_BIT(GBARegisterDISPSTAT, InHblank, 1);
+-DECL_BIT(GBARegisterDISPSTAT, Vcounter, 2);
+-DECL_BIT(GBARegisterDISPSTAT, VblankIRQ, 3);
+-DECL_BIT(GBARegisterDISPSTAT, HblankIRQ, 4);
+-DECL_BIT(GBARegisterDISPSTAT, VcounterIRQ, 5);
+-DECL_BITS(GBARegisterDISPSTAT, VcountSetting, 8, 8);
+-
+-DECL_BITFIELD(GBARegisterBGCNT, uint16_t);
+-DECL_BITS(GBARegisterBGCNT, Priority, 0, 2);
+-DECL_BITS(GBARegisterBGCNT, CharBase, 2, 2);
+-DECL_BIT(GBARegisterBGCNT, Mosaic, 6);
+-DECL_BIT(GBARegisterBGCNT, 256Color, 7);
+-DECL_BITS(GBARegisterBGCNT, ScreenBase, 8, 5);
+-DECL_BIT(GBARegisterBGCNT, Overflow, 13);
+-DECL_BITS(GBARegisterBGCNT, Size, 14, 2);
+-
+-DECL_BITFIELD(GBARegisterBLDCNT, uint16_t);
+-DECL_BIT(GBARegisterBLDCNT, Target1Bg0, 0);
+-DECL_BIT(GBARegisterBLDCNT, Target1Bg1, 1);
+-DECL_BIT(GBARegisterBLDCNT, Target1Bg2, 2);
+-DECL_BIT(GBARegisterBLDCNT, Target1Bg3, 3);
+-DECL_BIT(GBARegisterBLDCNT, Target1Obj, 4);
+-DECL_BIT(GBARegisterBLDCNT, Target1Bd, 5);
+-DECL_BITS(GBARegisterBLDCNT, Effect, 6, 2);
+-DECL_BIT(GBARegisterBLDCNT, Target2Bg0, 8);
+-DECL_BIT(GBARegisterBLDCNT, Target2Bg1, 9);
+-DECL_BIT(GBARegisterBLDCNT, Target2Bg2, 10);
+-DECL_BIT(GBARegisterBLDCNT, Target2Bg3, 11);
+-DECL_BIT(GBARegisterBLDCNT, Target2Obj, 12);
+-DECL_BIT(GBARegisterBLDCNT, Target2Bd, 13);
+-
+-DECL_BITFIELD(GBAWindowControl, uint8_t);
+-DECL_BIT(GBAWindowControl, Bg0Enable, 0);
+-DECL_BIT(GBAWindowControl, Bg1Enable, 1);
+-DECL_BIT(GBAWindowControl, Bg2Enable, 2);
+-DECL_BIT(GBAWindowControl, Bg3Enable, 3);
+-DECL_BIT(GBAWindowControl, ObjEnable, 4);
+-DECL_BIT(GBAWindowControl, BlendEnable, 5);
+-
+-DECL_BITFIELD(GBAMosaicControl, uint16_t);
+-DECL_BITS(GBAMosaicControl, BgH, 0, 4);
+-DECL_BITS(GBAMosaicControl, BgV, 4, 4);
+-DECL_BITS(GBAMosaicControl, ObjH, 8, 4);
+-DECL_BITS(GBAMosaicControl, ObjV, 12, 4);
++DECL_BITFIELD(GBARegisterDISPCNT, uint16_t)
++DECL_BITS(GBARegisterDISPCNT, Mode, 0, 3)
++DECL_BIT(GBARegisterDISPCNT, Cgb, 3)
++DECL_BIT(GBARegisterDISPCNT, FrameSelect, 4)
++DECL_BIT(GBARegisterDISPCNT, HblankIntervalFree, 5)
++DECL_BIT(GBARegisterDISPCNT, ObjCharacterMapping, 6)
++DECL_BIT(GBARegisterDISPCNT, ForcedBlank, 7)
++DECL_BIT(GBARegisterDISPCNT, Bg0Enable, 8)
++DECL_BIT(GBARegisterDISPCNT, Bg1Enable, 9)
++DECL_BIT(GBARegisterDISPCNT, Bg2Enable, 10)
++DECL_BIT(GBARegisterDISPCNT, Bg3Enable, 11)
++DECL_BIT(GBARegisterDISPCNT, ObjEnable, 12)
++DECL_BIT(GBARegisterDISPCNT, Win0Enable, 13)
++DECL_BIT(GBARegisterDISPCNT, Win1Enable, 14)
++DECL_BIT(GBARegisterDISPCNT, ObjwinEnable, 15)
++
++DECL_BITFIELD(GBARegisterDISPSTAT, uint16_t)
++DECL_BIT(GBARegisterDISPSTAT, InVblank, 0)
++DECL_BIT(GBARegisterDISPSTAT, InHblank, 1)
++DECL_BIT(GBARegisterDISPSTAT, Vcounter, 2)
++DECL_BIT(GBARegisterDISPSTAT, VblankIRQ, 3)
++DECL_BIT(GBARegisterDISPSTAT, HblankIRQ, 4)
++DECL_BIT(GBARegisterDISPSTAT, VcounterIRQ, 5)
++DECL_BITS(GBARegisterDISPSTAT, VcountSetting, 8, 8)
++
++DECL_BITFIELD(GBARegisterBGCNT, uint16_t)
++DECL_BITS(GBARegisterBGCNT, Priority, 0, 2)
++DECL_BITS(GBARegisterBGCNT, CharBase, 2, 2)
++DECL_BIT(GBARegisterBGCNT, Mosaic, 6)
++DECL_BIT(GBARegisterBGCNT, 256Color, 7)
++DECL_BITS(GBARegisterBGCNT, ScreenBase, 8, 5)
++DECL_BIT(GBARegisterBGCNT, Overflow, 13)
++DECL_BITS(GBARegisterBGCNT, Size, 14, 2)
++
++DECL_BITFIELD(GBARegisterBLDCNT, uint16_t)
++DECL_BIT(GBARegisterBLDCNT, Target1Bg0, 0)
++DECL_BIT(GBARegisterBLDCNT, Target1Bg1, 1)
++DECL_BIT(GBARegisterBLDCNT, Target1Bg2, 2)
++DECL_BIT(GBARegisterBLDCNT, Target1Bg3, 3)
++DECL_BIT(GBARegisterBLDCNT, Target1Obj, 4)
++DECL_BIT(GBARegisterBLDCNT, Target1Bd, 5)
++DECL_BITS(GBARegisterBLDCNT, Effect, 6, 2)
++DECL_BIT(GBARegisterBLDCNT, Target2Bg0, 8)
++DECL_BIT(GBARegisterBLDCNT, Target2Bg1, 9)
++DECL_BIT(GBARegisterBLDCNT, Target2Bg2, 10)
++DECL_BIT(GBARegisterBLDCNT, Target2Bg3, 11)
++DECL_BIT(GBARegisterBLDCNT, Target2Obj, 12)
++DECL_BIT(GBARegisterBLDCNT, Target2Bd, 13)
++
++DECL_BITFIELD(GBAWindowControl, uint8_t)
++DECL_BIT(GBAWindowControl, Bg0Enable, 0)
++DECL_BIT(GBAWindowControl, Bg1Enable, 1)
++DECL_BIT(GBAWindowControl, Bg2Enable, 2)
++DECL_BIT(GBAWindowControl, Bg3Enable, 3)
++DECL_BIT(GBAWindowControl, ObjEnable, 4)
++DECL_BIT(GBAWindowControl, BlendEnable, 5)
++
++DECL_BITFIELD(GBAMosaicControl, uint16_t)
++DECL_BITS(GBAMosaicControl, BgH, 0, 4)
++DECL_BITS(GBAMosaicControl, BgV, 4, 4)
++DECL_BITS(GBAMosaicControl, ObjH, 8, 4)
++DECL_BITS(GBAMosaicControl, ObjV, 12, 4)
+ 
+ struct GBAVideoRenderer {
+ 	void (*init)(struct GBAVideoRenderer* renderer);
+diff --git a/src/arm/debugger/debugger.c b/src/arm/debugger/debugger.c
+index 7449ece33..8e8f4b523 100644
+--- a/src/arm/debugger/debugger.c
++++ b/src/arm/debugger/debugger.c
+@@ -12,7 +12,7 @@
+ #include <mgba/internal/arm/debugger/memory-debugger.h>
+ #include <mgba/internal/debugger/parser.h>
+ 
+-DEFINE_VECTOR(ARMDebugBreakpointList, struct ARMDebugBreakpoint);
++DEFINE_VECTOR(ARMDebugBreakpointList, struct ARMDebugBreakpoint)
+ 
+ static struct ARMDebugBreakpoint* _lookupBreakpoint(struct ARMDebugBreakpointList* breakpoints, uint32_t address) {
+ 	size_t i;
+diff --git a/src/arm/isa-arm.c b/src/arm/isa-arm.c
+index 68a9726dc..46dfb8bae 100644
+--- a/src/arm/isa-arm.c
++++ b/src/arm/isa-arm.c
+@@ -682,7 +682,7 @@ DEFINE_INSTRUCTION_ARM(MRC, ARM_STUB)
+ 
+ // Begin miscellaneous definitions
+ 
+-DEFINE_INSTRUCTION_ARM(BKPT, cpu->irqh.bkpt32(cpu, ((opcode >> 4) & 0xFFF0) | (opcode & 0xF))); // Not strictly in ARMv4T, but here for convenience
++DEFINE_INSTRUCTION_ARM(BKPT, cpu->irqh.bkpt32(cpu, ((opcode >> 4) & 0xFFF0) | (opcode & 0xF))) // Not strictly in ARMv4T, but here for convenience
+ DEFINE_INSTRUCTION_ARM(ILL, ARM_ILL) // Illegal opcode
+ 
+ DEFINE_INSTRUCTION_ARM(MSR,
+diff --git a/src/core/cache-set.c b/src/core/cache-set.c
+index a638c786e..f107fca04 100644
+--- a/src/core/cache-set.c
++++ b/src/core/cache-set.c
+@@ -5,9 +5,9 @@
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ #include <mgba/core/cache-set.h>
+ 
+-DEFINE_VECTOR(mMapCacheSet, struct mMapCache);
+-DEFINE_VECTOR(mBitmapCacheSet, struct mBitmapCache);
+-DEFINE_VECTOR(mTileCacheSet, struct mTileCache);
++DEFINE_VECTOR(mMapCacheSet, struct mMapCache)
++DEFINE_VECTOR(mBitmapCacheSet, struct mBitmapCache)
++DEFINE_VECTOR(mTileCacheSet, struct mTileCache)
+ 
+ void mCacheSetInit(struct mCacheSet* cache, size_t nMaps, size_t nBitmaps, size_t nTiles) {
+ 	mMapCacheSetInit(&cache->maps, nMaps);
+diff --git a/src/core/cheats.c b/src/core/cheats.c
+index acd994393..92b6ff481 100644
+--- a/src/core/cheats.c
++++ b/src/core/cheats.c
+@@ -14,10 +14,10 @@
+ 
+ const uint32_t M_CHEAT_DEVICE_ID = 0xABADC0DE;
+ 
+-mLOG_DEFINE_CATEGORY(CHEATS, "Cheats", "core.cheats");
++mLOG_DEFINE_CATEGORY(CHEATS, "Cheats", "core.cheats")
+ 
+-DEFINE_VECTOR(mCheatList, struct mCheat);
+-DEFINE_VECTOR(mCheatSets, struct mCheatSet*);
++DEFINE_VECTOR(mCheatList, struct mCheat)
++DEFINE_VECTOR(mCheatSets, struct mCheatSet*)
+ 
+ static int32_t _readMem(struct mCore* core, uint32_t address, int width) {
+ 	switch (width) {
+diff --git a/src/core/input.c b/src/core/input.c
+index fe24d0822..fab88a50e 100644
+--- a/src/core/input.c
++++ b/src/core/input.c
+@@ -16,8 +16,8 @@
+ #define KEY_VALUE_MAX 16
+ #define AXIS_INFO_MAX 12
+ 
+-DECLARE_VECTOR(mInputHatList, struct mInputHatBindings);
+-DEFINE_VECTOR(mInputHatList, struct mInputHatBindings);
++DECLARE_VECTOR(mInputHatList, struct mInputHatBindings)
++DEFINE_VECTOR(mInputHatList, struct mInputHatBindings)
+ 
+ struct mInputMapImpl {
+ 	int* map;
+diff --git a/src/core/interface.c b/src/core/interface.c
+index 961b83619..e6288e274 100644
+--- a/src/core/interface.c
++++ b/src/core/interface.c
+@@ -8,7 +8,7 @@
+ #include <mgba/core/core.h>
+ #include <mgba/core/serialize.h>
+ 
+-DEFINE_VECTOR(mCoreCallbacksList, struct mCoreCallbacks);
++DEFINE_VECTOR(mCoreCallbacksList, struct mCoreCallbacks)
+ 
+ static void _rtcGenericSample(struct mRTCSource* source) {
+ 	struct mRTCGenericSource* rtc = (struct mRTCGenericSource*) source;
+diff --git a/src/core/library.c b/src/core/library.c
+index 60e16592f..61c144a02 100644
+--- a/src/core/library.c
++++ b/src/core/library.c
+@@ -13,7 +13,7 @@
+ #include <sqlite3.h>
+ #include "feature/sqlite3/no-intro.h"
+ 
+-DEFINE_VECTOR(mLibraryListing, struct mLibraryEntry);
++DEFINE_VECTOR(mLibraryListing, struct mLibraryEntry)
+ 
+ struct mLibrary {
+ 	sqlite3* db;
+diff --git a/src/core/mem-search.c b/src/core/mem-search.c
+index 7f0c215a1..8ffa540d5 100644
+--- a/src/core/mem-search.c
++++ b/src/core/mem-search.c
+@@ -8,7 +8,7 @@
+ #include <mgba/core/core.h>
+ #include <mgba/core/interface.h>
+ 
+-DEFINE_VECTOR(mCoreMemorySearchResults, struct mCoreMemorySearchResult);
++DEFINE_VECTOR(mCoreMemorySearchResults, struct mCoreMemorySearchResult)
+ 
+ static bool _op(int32_t value, int32_t match, enum mCoreMemorySearchOp op) {
+ 	switch (op) {
+diff --git a/src/core/rewind.c b/src/core/rewind.c
+index 3a554ff4e..41a6ce3db 100644
+--- a/src/core/rewind.c
++++ b/src/core/rewind.c
+@@ -10,7 +10,7 @@
+ #include <mgba-util/patch/fast.h>
+ #include <mgba-util/vfs.h>
+ 
+-DEFINE_VECTOR(mCoreRewindPatches, struct PatchFast);
++DEFINE_VECTOR(mCoreRewindPatches, struct PatchFast)
+ 
+ void _rewindDiff(struct mCoreRewindContext* context);
+ 
+diff --git a/src/core/serialize.c b/src/core/serialize.c
+index ed99107dd..800076f7b 100644
+--- a/src/core/serialize.c
++++ b/src/core/serialize.c
+@@ -17,7 +17,7 @@
+ #include <zlib.h>
+ #endif
+ 
+-mLOG_DEFINE_CATEGORY(SAVESTATE, "Savestate", "core.serialize");
++mLOG_DEFINE_CATEGORY(SAVESTATE, "Savestate", "core.serialize")
+ 
+ struct mBundledState {
+ 	size_t stateSize;
+diff --git a/src/debugger/debugger.c b/src/debugger/debugger.c
+index 675e04698..b894c341a 100644
+--- a/src/debugger/debugger.c
++++ b/src/debugger/debugger.c
+@@ -20,10 +20,10 @@
+ 
+ const uint32_t DEBUGGER_ID = 0xDEADBEEF;
+ 
+-mLOG_DEFINE_CATEGORY(DEBUGGER, "Debugger", "core.debugger");
++mLOG_DEFINE_CATEGORY(DEBUGGER, "Debugger", "core.debugger")
+ 
+-DEFINE_VECTOR(mBreakpointList, struct mBreakpoint);
+-DEFINE_VECTOR(mWatchpointList, struct mWatchpoint);
++DEFINE_VECTOR(mBreakpointList, struct mBreakpoint)
++DEFINE_VECTOR(mWatchpointList, struct mWatchpoint)
+ 
+ static void mDebuggerInit(void* cpu, struct mCPUComponent* component);
+ static void mDebuggerDeinit(struct mCPUComponent* component);
+diff --git a/src/debugger/parser.c b/src/debugger/parser.c
+index 41197b53e..ea94c7600 100644
+--- a/src/debugger/parser.c
++++ b/src/debugger/parser.c
+@@ -9,7 +9,7 @@
+ #include <mgba/debugger/debugger.h>
+ #include <mgba-util/string.h>
+ 
+-DEFINE_VECTOR(LexVector, struct Token);
++DEFINE_VECTOR(LexVector, struct Token)
+ 
+ enum LexState {
+ 	LEX_ERROR = -1,
+diff --git a/src/gb/cheats.c b/src/gb/cheats.c
+index 5c202782c..a157e3e28 100644
+--- a/src/gb/cheats.c
++++ b/src/gb/cheats.c
+@@ -10,7 +10,7 @@
+ #include <mgba/internal/gb/memory.h>
+ #include <mgba-util/string.h>
+ 
+-DEFINE_VECTOR(GBCheatPatchList, struct GBCheatPatch);
++DEFINE_VECTOR(GBCheatPatchList, struct GBCheatPatch)
+ 
+ static void _patchROM(struct mCheatDevice* device, struct GBCheatSet* cheats) {
+ 	if (!device->p) {
+diff --git a/src/gb/gb.c b/src/gb/gb.c
+index 461b574a6..e34f17d6a 100644
+--- a/src/gb/gb.c
++++ b/src/gb/gb.c
+@@ -33,7 +33,7 @@ static const uint8_t _knownHeader[4] = { 0xCE, 0xED, 0x66, 0x66};
+ #define SGB2_BIOS_CHECKSUM 0X53D0DD63
+ #define CGB_BIOS_CHECKSUM 0x41884E46
+ 
+-mLOG_DEFINE_CATEGORY(GB, "GB", "gb");
++mLOG_DEFINE_CATEGORY(GB, "GB", "gb")
+ 
+ static void GBInit(void* cpu, struct mCPUComponent* component);
+ static void GBDeinit(struct mCPUComponent* component);
+diff --git a/src/gb/io.c b/src/gb/io.c
+index 535e0995a..9e0727b98 100644
+--- a/src/gb/io.c
++++ b/src/gb/io.c
+@@ -9,7 +9,7 @@
+ #include <mgba/internal/gb/sio.h>
+ #include <mgba/internal/gb/serialize.h>
+ 
+-mLOG_DEFINE_CATEGORY(GB_IO, "GB I/O", "gb.io");
++mLOG_DEFINE_CATEGORY(GB_IO, "GB I/O", "gb.io")
+ 
+ MGBA_EXPORT const char* const GBIORegisterNames[] = {
+ 	[REG_JOYP] = "JOYP",
+diff --git a/src/gb/mbc.c b/src/gb/mbc.c
+index 6014a200c..333d1e576 100644
+--- a/src/gb/mbc.c
++++ b/src/gb/mbc.c
+@@ -14,7 +14,7 @@
+ 
+ const uint32_t GB_LOGO_HASH = 0x46195417;
+ 
+-mLOG_DEFINE_CATEGORY(GB_MBC, "GB MBC", "gb.mbc");
++mLOG_DEFINE_CATEGORY(GB_MBC, "GB MBC", "gb.mbc")
+ 
+ static void _GBMBCNone(struct GB* gb, uint16_t address, uint8_t value) {
+ 	UNUSED(gb);
+diff --git a/src/gb/memory.c b/src/gb/memory.c
+index a5c047d0f..5aa3ec204 100644
+--- a/src/gb/memory.c
++++ b/src/gb/memory.c
+@@ -14,7 +14,7 @@
+ 
+ #include <mgba-util/memory.h>
+ 
+-mLOG_DEFINE_CATEGORY(GB_MEM, "GB Memory", "gb.memory");
++mLOG_DEFINE_CATEGORY(GB_MEM, "GB Memory", "gb.memory")
+ 
+ static const uint8_t _yankBuffer[] = { 0xFF };
+ 
+diff --git a/src/gb/serialize.c b/src/gb/serialize.c
+index 0c1884c67..3568971da 100644
+--- a/src/gb/serialize.c
++++ b/src/gb/serialize.c
+@@ -11,7 +11,7 @@
+ 
+ #include <mgba-util/memory.h>
+ 
+-mLOG_DEFINE_CATEGORY(GB_STATE, "GB Savestate", "gb.serialize");
++mLOG_DEFINE_CATEGORY(GB_STATE, "GB Savestate", "gb.serialize")
+ 
+ const uint32_t GB_SAVESTATE_MAGIC = 0x00400000;
+ const uint32_t GB_SAVESTATE_VERSION = 0x00000002;
+diff --git a/src/gb/sio.c b/src/gb/sio.c
+index f2bb20fe8..6ffb98775 100644
+--- a/src/gb/sio.c
++++ b/src/gb/sio.c
+@@ -9,7 +9,7 @@
+ #include <mgba/internal/gb/io.h>
+ #include <mgba/internal/gb/serialize.h>
+ 
+-mLOG_DEFINE_CATEGORY(GB_SIO, "GB Serial I/O", "gb.sio");
++mLOG_DEFINE_CATEGORY(GB_SIO, "GB Serial I/O", "gb.sio")
+ 
+ const int GBSIOCyclesPerTransfer[2] = {
+ 	512,
+diff --git a/src/gba/audio.c b/src/gba/audio.c
+index 72f49b7e3..48febf959 100644
+--- a/src/gba/audio.c
++++ b/src/gba/audio.c
+@@ -20,7 +20,7 @@
+ #define blip_add_delta blip_add_delta_fast
+ #endif
+ 
+-mLOG_DEFINE_CATEGORY(GBA_AUDIO, "GBA Audio", "gba.audio");
++mLOG_DEFINE_CATEGORY(GBA_AUDIO, "GBA Audio", "gba.audio")
+ 
+ const unsigned GBA_AUDIO_SAMPLES = 2048;
+ const unsigned GBA_AUDIO_FIFO_SIZE = 8 * sizeof(int32_t);
+diff --git a/src/gba/bios.c b/src/gba/bios.c
+index 0a7982ad5..c9c96d72d 100644
+--- a/src/gba/bios.c
++++ b/src/gba/bios.c
+@@ -15,7 +15,7 @@
+ const uint32_t GBA_BIOS_CHECKSUM = 0xBAAE187F;
+ const uint32_t GBA_DS_BIOS_CHECKSUM = 0xBAAE1880;
+ 
+-mLOG_DEFINE_CATEGORY(GBA_BIOS, "GBA BIOS", "gba.bios");
++mLOG_DEFINE_CATEGORY(GBA_BIOS, "GBA BIOS", "gba.bios")
+ 
+ static void _unLz77(struct GBA* gba, int width);
+ static void _unHuffman(struct GBA* gba);
+@@ -681,10 +681,10 @@ static void _unLz77(struct GBA* gba, int width) {
+ 	cpu->gprs[3] = 0;
+ }
+ 
+-DECL_BITFIELD(HuffmanNode, uint8_t);
+-DECL_BITS(HuffmanNode, Offset, 0, 6);
+-DECL_BIT(HuffmanNode, RTerm, 6);
+-DECL_BIT(HuffmanNode, LTerm, 7);
++DECL_BITFIELD(HuffmanNode, uint8_t)
++DECL_BITS(HuffmanNode, Offset, 0, 6)
++DECL_BIT(HuffmanNode, RTerm, 6)
++DECL_BIT(HuffmanNode, LTerm, 7)
+ 
+ static void _unHuffman(struct GBA* gba) {
+ 	struct ARMCore* cpu = gba->cpu;
+diff --git a/src/gba/dma.c b/src/gba/dma.c
+index 2c112716f..cccff346e 100644
+--- a/src/gba/dma.c
++++ b/src/gba/dma.c
+@@ -102,7 +102,7 @@ uint16_t GBADMAWriteCNT_HI(struct GBA* gba, int dma, uint16_t control) {
+ 	}
+ 	// If the DMA has already occurred, this value might have changed since the function started
+ 	return currentDma->reg;
+-};
++}
+ 
+ void GBADMASchedule(struct GBA* gba, int number, struct GBADMA* info) {
+ 	switch (GBADMARegisterGetTiming(info->reg)) {
+diff --git a/src/gba/extra/battlechip.c b/src/gba/extra/battlechip.c
+index ae8aedff0..1731fb20f 100644
+--- a/src/gba/extra/battlechip.c
++++ b/src/gba/extra/battlechip.c
+@@ -9,8 +9,8 @@
+ #include <mgba/internal/gba/io.h>
+ #include <mgba/internal/gba/sio.h>
+ 
+-mLOG_DECLARE_CATEGORY(GBA_BATTLECHIP);
+-mLOG_DEFINE_CATEGORY(GBA_BATTLECHIP, "GBA BattleChip Gate", "gba.battlechip");
++mLOG_DECLARE_CATEGORY(GBA_BATTLECHIP)
++mLOG_DEFINE_CATEGORY(GBA_BATTLECHIP, "GBA BattleChip Gate", "gba.battlechip")
+ 
+ enum {
+ 	BATTLECHIP_STATE_SYNC = -1,
+diff --git a/src/gba/gba.c b/src/gba/gba.c
+index 07043c8eb..02b7cee16 100644
+--- a/src/gba/gba.c
++++ b/src/gba/gba.c
+@@ -27,8 +27,8 @@
+ 
+ #define GBA_IRQ_DELAY 7
+ 
+-mLOG_DEFINE_CATEGORY(GBA, "GBA", "gba");
+-mLOG_DEFINE_CATEGORY(GBA_DEBUG, "GBA Debug", "gba.debug");
++mLOG_DEFINE_CATEGORY(GBA, "GBA", "gba")
++mLOG_DEFINE_CATEGORY(GBA_DEBUG, "GBA Debug", "gba.debug")
+ 
+ const uint32_t GBA_COMPONENT_MAGIC = 0x1000000;
+ 
+diff --git a/src/gba/hardware.c b/src/gba/hardware.c
+index 5ee4c55e8..cb7ac44d6 100644
+--- a/src/gba/hardware.c
++++ b/src/gba/hardware.c
+@@ -11,7 +11,7 @@
+ #include <mgba-util/formatting.h>
+ #include <mgba-util/hash.h>
+ 
+-mLOG_DEFINE_CATEGORY(GBA_HW, "GBA Pak Hardware", "gba.hardware");
++mLOG_DEFINE_CATEGORY(GBA_HW, "GBA Pak Hardware", "gba.hardware")
+ 
+ MGBA_EXPORT const int GBA_LUX_LEVELS[10] = { 5, 11, 18, 27, 42, 62, 84, 109, 139, 183 };
+ 
+diff --git a/src/gba/io.c b/src/gba/io.c
+index 209335ec6..5df243b49 100644
+--- a/src/gba/io.c
++++ b/src/gba/io.c
+@@ -11,7 +11,7 @@
+ #include <mgba/internal/gba/rr/rr.h>
+ #include <mgba/internal/gba/serialize.h>
+ 
+-mLOG_DEFINE_CATEGORY(GBA_IO, "GBA I/O", "gba.io");
++mLOG_DEFINE_CATEGORY(GBA_IO, "GBA I/O", "gba.io")
+ 
+ const char* const GBAIORegisterNames[] = {
+ 	// Video
+diff --git a/src/gba/memory.c b/src/gba/memory.c
+index d2ba5a419..d2a8e8280 100644
+--- a/src/gba/memory.c
++++ b/src/gba/memory.c
+@@ -19,7 +19,7 @@
+ 
+ #define IDLE_LOOP_THRESHOLD 10000
+ 
+-mLOG_DEFINE_CATEGORY(GBA_MEM, "GBA Memory", "gba.memory");
++mLOG_DEFINE_CATEGORY(GBA_MEM, "GBA Memory", "gba.memory")
+ 
+ static void _pristineCow(struct GBA* gba);
+ static void _agbPrintStore(struct GBA* gba, uint32_t address, int16_t value);
+diff --git a/src/gba/savedata.c b/src/gba/savedata.c
+index 39a805725..70b18d93a 100644
+--- a/src/gba/savedata.c
++++ b/src/gba/savedata.c
+@@ -26,7 +26,7 @@
+ #define EEPROM_SETTLE_CYCLES 115000
+ #define CLEANUP_THRESHOLD 15
+ 
+-mLOG_DEFINE_CATEGORY(GBA_SAVE, "GBA Savedata", "gba.savedata");
++mLOG_DEFINE_CATEGORY(GBA_SAVE, "GBA Savedata", "gba.savedata")
+ 
+ static void _flashSwitchBank(struct GBASavedata* savedata, int bank);
+ static void _flashErase(struct GBASavedata* savedata);
+diff --git a/src/gba/serialize.c b/src/gba/serialize.c
+index 6f09e3005..8741d40e8 100644
+--- a/src/gba/serialize.c
++++ b/src/gba/serialize.c
+@@ -18,7 +18,7 @@
+ const uint32_t GBA_SAVESTATE_MAGIC = 0x01000000;
+ const uint32_t GBA_SAVESTATE_VERSION = 0x00000003;
+ 
+-mLOG_DEFINE_CATEGORY(GBA_STATE, "GBA Savestate", "gba.serialize");
++mLOG_DEFINE_CATEGORY(GBA_STATE, "GBA Savestate", "gba.serialize")
+ 
+ struct GBABundledState {
+ 	struct GBASerializedState* state;
+diff --git a/src/gba/sio.c b/src/gba/sio.c
+index a153cb1fa..e5cbf97ba 100644
+--- a/src/gba/sio.c
++++ b/src/gba/sio.c
+@@ -8,7 +8,7 @@
+ #include <mgba/internal/gba/gba.h>
+ #include <mgba/internal/gba/io.h>
+ 
+-mLOG_DEFINE_CATEGORY(GBA_SIO, "GBA Serial I/O", "gba.sio");
++mLOG_DEFINE_CATEGORY(GBA_SIO, "GBA Serial I/O", "gba.sio")
+ 
+ const int GBASIOCyclesPerTransfer[4][MAX_GBAS] = {
+ 	{ 38326, 73003, 107680, 142356 },
+diff --git a/src/gba/video.c b/src/gba/video.c
+index a05d6a7f0..f3dc99db4 100644
+--- a/src/gba/video.c
++++ b/src/gba/video.c
+@@ -16,7 +16,7 @@
+ 
+ #include <mgba-util/memory.h>
+ 
+-mLOG_DEFINE_CATEGORY(GBA_VIDEO, "GBA Video", "gba.video");
++mLOG_DEFINE_CATEGORY(GBA_VIDEO, "GBA Video", "gba.video")
+ 
+ static void GBAVideoDummyRendererInit(struct GBAVideoRenderer* renderer);
+ static void GBAVideoDummyRendererReset(struct GBAVideoRenderer* renderer);
+diff --git a/src/platform/opengl/gles2.c b/src/platform/opengl/gles2.c
+index fbb0fa601..af959d410 100644
+--- a/src/platform/opengl/gles2.c
++++ b/src/platform/opengl/gles2.c
+@@ -12,8 +12,8 @@
+ #include <mgba-util/vector.h>
+ #include <mgba-util/vfs.h>
+ 
+-mLOG_DECLARE_CATEGORY(OPENGL);
+-mLOG_DEFINE_CATEGORY(OPENGL, "OpenGL", "video.ogl");
++mLOG_DECLARE_CATEGORY(OPENGL)
++mLOG_DEFINE_CATEGORY(OPENGL, "OpenGL", "video.ogl")
+ 
+ #define MAX_PASSES 8
+ 
+@@ -626,8 +626,8 @@ static bool _lookupBoolValue(const struct Configuration* config, const char* sec
+ 	return true;
+ }
+ 
+-DECLARE_VECTOR(mGLES2UniformList, struct mGLES2Uniform);
+-DEFINE_VECTOR(mGLES2UniformList, struct mGLES2Uniform);
++DECLARE_VECTOR(mGLES2UniformList, struct mGLES2Uniform)
++DEFINE_VECTOR(mGLES2UniformList, struct mGLES2Uniform)
+ 
+ static void _uniformHandler(const char* sectionName, void* user) {
+ 	struct mGLES2UniformList* uniforms = user;
+diff --git a/src/platform/sdl/sdl-audio.c b/src/platform/sdl/sdl-audio.c
+index f1666aa4e..85f9d761a 100644
+--- a/src/platform/sdl/sdl-audio.c
++++ b/src/platform/sdl/sdl-audio.c
+@@ -14,7 +14,7 @@
+ 
+ #define BUFFER_SIZE (GBA_AUDIO_SAMPLES >> 2)
+ 
+-mLOG_DEFINE_CATEGORY(SDL_AUDIO, "SDL Audio", "platform.sdl.audio");
++mLOG_DEFINE_CATEGORY(SDL_AUDIO, "SDL Audio", "platform.sdl.audio")
+ 
+ static void _mSDLAudioCallback(void* context, Uint8* data, int len);
+ 
+diff --git a/src/platform/sdl/sdl-audio.h b/src/platform/sdl/sdl-audio.h
+index 2ae920af4..b131c7d2f 100644
+--- a/src/platform/sdl/sdl-audio.h
++++ b/src/platform/sdl/sdl-audio.h
+@@ -22,7 +22,7 @@ CXX_GUARD_START
+ #define bool _Bool
+ #endif
+ 
+-mLOG_DECLARE_CATEGORY(SDL_AUDIO);
++mLOG_DECLARE_CATEGORY(SDL_AUDIO)
+ 
+ struct mSDLAudio {
+ 	// Input
+diff --git a/src/platform/sdl/sdl-events.c b/src/platform/sdl/sdl-events.c
+index c7291ff32..0a4a26310 100644
+--- a/src/platform/sdl/sdl-events.c
++++ b/src/platform/sdl/sdl-events.c
+@@ -25,9 +25,9 @@
+ #define RUMBLE_PWM 16
+ #define RUMBLE_STEPS 2
+ 
+-mLOG_DEFINE_CATEGORY(SDL_EVENTS, "SDL Events", "platform.sdl.events");
++mLOG_DEFINE_CATEGORY(SDL_EVENTS, "SDL Events", "platform.sdl.events")
+ 
+-DEFINE_VECTOR(SDL_JoystickList, struct SDL_JoystickCombo);
++DEFINE_VECTOR(SDL_JoystickList, struct SDL_JoystickCombo)
+ 
+ #if SDL_VERSION_ATLEAST(2, 0, 0)
+ static void _mSDLSetRumble(struct mRumble* rumble, int enable);
+diff --git a/src/platform/sdl/sdl-events.h b/src/platform/sdl/sdl-events.h
+index 8cb1aede2..8998449a2 100644
+--- a/src/platform/sdl/sdl-events.h
++++ b/src/platform/sdl/sdl-events.h
+@@ -25,7 +25,7 @@ CXX_GUARD_START
+ #define bool _Bool
+ #endif
+ 
+-mLOG_DECLARE_CATEGORY(SDL_EVENTS);
++mLOG_DECLARE_CATEGORY(SDL_EVENTS)
+ 
+ #define SDL_BINDING_KEY 0x53444C4BU
+ #define SDL_BINDING_BUTTON 0x53444C42U
+@@ -45,7 +45,7 @@ struct SDL_JoystickCombo {
+ #endif
+ };
+ 
+-DECLARE_VECTOR(SDL_JoystickList, struct SDL_JoystickCombo);
++DECLARE_VECTOR(SDL_JoystickList, struct SDL_JoystickCombo)
+ 
+ struct mSDLPlayer;
+ struct mSDLEvents {
+diff --git a/src/sm83/decoder.c b/src/sm83/decoder.c
+index 949a8119a..7d9ae040f 100644
+--- a/src/sm83/decoder.c
++++ b/src/sm83/decoder.c
+@@ -75,20 +75,20 @@ DEFINE_DECODER_SM83(NOP, info->mnemonic = SM83_MN_NOP;)
+ 		info->op1.reg = SM83_REG_ ## NAME; \
+ 		return 2;)
+ 
+-DEFINE_LD_DECODER_SM83(B);
+-DEFINE_LD_DECODER_SM83(C);
+-DEFINE_LD_DECODER_SM83(D);
+-DEFINE_LD_DECODER_SM83(E);
+-DEFINE_LD_DECODER_SM83(H);
+-DEFINE_LD_DECODER_SM83(L);
+-DEFINE_LD_DECODER_SM83(A);
+-DEFINE_LD_DECODER_SM83_MEM(A, BC);
+-DEFINE_LD_DECODER_SM83_MEM(A, DE);
+-
+-DEFINE_LD_2_DECODER_SM83(BC);
+-DEFINE_LD_2_DECODER_SM83(DE);
+-DEFINE_LD_2_DECODER_SM83(HL);
+-DEFINE_LD_2_DECODER_SM83(SP);
++DEFINE_LD_DECODER_SM83(B)
++DEFINE_LD_DECODER_SM83(C)
++DEFINE_LD_DECODER_SM83(D)
++DEFINE_LD_DECODER_SM83(E)
++DEFINE_LD_DECODER_SM83(H)
++DEFINE_LD_DECODER_SM83(L)
++DEFINE_LD_DECODER_SM83(A)
++DEFINE_LD_DECODER_SM83_MEM(A, BC)
++DEFINE_LD_DECODER_SM83_MEM(A, DE)
++
++DEFINE_LD_2_DECODER_SM83(BC)
++DEFINE_LD_2_DECODER_SM83(DE)
++DEFINE_LD_2_DECODER_SM83(HL)
++DEFINE_LD_2_DECODER_SM83(SP)
+ 
+ DEFINE_DECODER_SM83(LDHL_, \
+ 	info->mnemonic = SM83_MN_LD; \
+@@ -157,16 +157,16 @@ DEFINE_DECODER_SM83(LDIOA, \
+ 		return 1;) \
+ 	DEFINE_ALU_DECODER_SM83_NOHL(NAME)
+ 
+-DEFINE_ALU_DECODER_SM83_NOHL(INC);
+-DEFINE_ALU_DECODER_SM83_NOHL(DEC);
+-DEFINE_ALU_DECODER_SM83(AND);
+-DEFINE_ALU_DECODER_SM83(XOR);
+-DEFINE_ALU_DECODER_SM83(OR);
+-DEFINE_ALU_DECODER_SM83(CP);
+-DEFINE_ALU_DECODER_SM83(ADD);
+-DEFINE_ALU_DECODER_SM83(ADC);
+-DEFINE_ALU_DECODER_SM83(SUB);
+-DEFINE_ALU_DECODER_SM83(SBC);
++DEFINE_ALU_DECODER_SM83_NOHL(INC)
++DEFINE_ALU_DECODER_SM83_NOHL(DEC)
++DEFINE_ALU_DECODER_SM83(AND)
++DEFINE_ALU_DECODER_SM83(XOR)
++DEFINE_ALU_DECODER_SM83(OR)
++DEFINE_ALU_DECODER_SM83(CP)
++DEFINE_ALU_DECODER_SM83(ADD)
++DEFINE_ALU_DECODER_SM83(ADC)
++DEFINE_ALU_DECODER_SM83(SUB)
++DEFINE_ALU_DECODER_SM83(SBC)
+ 
+ #define DEFINE_ALU_DECODER_SM83_ADD_HL(REG) \
+ 	DEFINE_DECODER_SM83(ADDHL_ ## REG, info->mnemonic = SM83_MN_ADD; \
+@@ -213,10 +213,10 @@ DEFINE_DECODER_SM83(ADDSP, info->mnemonic = SM83_MN_ADD; \
+ 		info->mnemonic = SM83_MN_RET; \
+ 		info->condition = CONDITION;)
+ 
+-DEFINE_CONDITIONAL_DECODER_SM83(JP);
+-DEFINE_CONDITIONAL_DECODER_SM83(JR);
+-DEFINE_CONDITIONAL_DECODER_SM83(CALL);
+-DEFINE_CONDITIONAL_DECODER_SM83(RET);
++DEFINE_CONDITIONAL_DECODER_SM83(JP)
++DEFINE_CONDITIONAL_DECODER_SM83(JR)
++DEFINE_CONDITIONAL_DECODER_SM83(CALL)
++DEFINE_CONDITIONAL_DECODER_SM83(RET)
+ 
+ DEFINE_DECODER_SM83(JPHL, \
+ 	info->mnemonic = SM83_MN_JP; \
+@@ -282,10 +282,10 @@ DEFINE_DECODER_SM83(LDA_DHL, \
+ 	DEFINE_DECODER_SM83(INC ## REG, info->mnemonic = SM83_MN_INC; info->op1.reg = SM83_REG_ ## REG) \
+ 	DEFINE_DECODER_SM83(DEC ## REG, info->mnemonic = SM83_MN_DEC; info->op1.reg = SM83_REG_ ## REG)
+ 
+-DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(BC);
+-DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(DE);
+-DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(HL);
+-DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(SP);
++DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(BC)
++DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(DE)
++DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(HL)
++DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(SP)
+ 
+ DEFINE_DECODER_SM83(INC_HL,
+ 	info->mnemonic = SM83_MN_INC;
+@@ -310,10 +310,10 @@ DEFINE_DECODER_SM83(DAA, info->mnemonic = SM83_MN_DAA)
+ 		info->mnemonic = SM83_MN_PUSH; \
+ 		info->op1.reg = SM83_REG_ ## REG;) \
+ 
+-DEFINE_POPPUSH_DECODER_SM83(BC);
+-DEFINE_POPPUSH_DECODER_SM83(DE);
+-DEFINE_POPPUSH_DECODER_SM83(HL);
+-DEFINE_POPPUSH_DECODER_SM83(AF);
++DEFINE_POPPUSH_DECODER_SM83(BC)
++DEFINE_POPPUSH_DECODER_SM83(DE)
++DEFINE_POPPUSH_DECODER_SM83(HL)
++DEFINE_POPPUSH_DECODER_SM83(AF)
+ 
+ #define DEFINE_CB_OP_DECODER_SM83(NAME, BODY, OP) \
+ 	DEFINE_DECODER_SM83(NAME ## B, info->OP.reg = SM83_REG_B; BODY) \
+@@ -369,14 +369,14 @@ DEFINE_DECODER_SM83(STOP, info->mnemonic = SM83_MN_STOP; return 1)
+ #define DEFINE_RST_DECODER_SM83(VEC) \
+ 	DEFINE_DECODER_SM83(RST ## VEC, info->op1.immediate = 0x ## VEC;)
+ 
+-DEFINE_RST_DECODER_SM83(00);
+-DEFINE_RST_DECODER_SM83(08);
+-DEFINE_RST_DECODER_SM83(10);
+-DEFINE_RST_DECODER_SM83(18);
+-DEFINE_RST_DECODER_SM83(20);
+-DEFINE_RST_DECODER_SM83(28);
+-DEFINE_RST_DECODER_SM83(30);
+-DEFINE_RST_DECODER_SM83(38);
++DEFINE_RST_DECODER_SM83(00)
++DEFINE_RST_DECODER_SM83(08)
++DEFINE_RST_DECODER_SM83(10)
++DEFINE_RST_DECODER_SM83(18)
++DEFINE_RST_DECODER_SM83(20)
++DEFINE_RST_DECODER_SM83(28)
++DEFINE_RST_DECODER_SM83(30)
++DEFINE_RST_DECODER_SM83(38)
+ 
+ DEFINE_DECODER_SM83(CB, return 1)
+ 
+diff --git a/src/sm83/isa-sm83.c b/src/sm83/isa-sm83.c
+index 8599d2af2..4085b3553 100644
+--- a/src/sm83/isa-sm83.c
++++ b/src/sm83/isa-sm83.c
+@@ -44,7 +44,7 @@ static inline void SM83WriteDE(struct SM83Core* cpu, uint16_t de) {
+ 		BODY; \
+ 	}
+ 
+-DEFINE_INSTRUCTION_SM83(NOP,);
++DEFINE_INSTRUCTION_SM83(NOP,)
+ 
+ #define DEFINE_CONDITIONAL_ONLY_INSTRUCTION_SM83(NAME) \
+ 	DEFINE_ ## NAME ## _INSTRUCTION_SM83(C, cpu->f.c) \
+@@ -74,7 +74,7 @@ DEFINE_INSTRUCTION_SM83(JPDelay,
+ 		cpu->instruction = _SM83InstructionJPDelay; \
+ 		cpu->condition = CONDITION;)
+ 
+-DEFINE_CONDITIONAL_INSTRUCTION_SM83(JP);
++DEFINE_CONDITIONAL_INSTRUCTION_SM83(JP)
+ 
+ DEFINE_INSTRUCTION_SM83(JPHL,
+ 	cpu->pc = SM83ReadHL(cpu);
+@@ -93,7 +93,7 @@ DEFINE_INSTRUCTION_SM83(JRFinish,
+ 		cpu->instruction = _SM83InstructionJRFinish; \
+ 		cpu->condition = CONDITION;)
+ 
+-DEFINE_CONDITIONAL_INSTRUCTION_SM83(JR);
++DEFINE_CONDITIONAL_INSTRUCTION_SM83(JR)
+ 
+ DEFINE_INSTRUCTION_SM83(CALLUpdateSPL,
+ 	--cpu->index;
+@@ -235,13 +235,13 @@ DEFINE_CONDITIONAL_ONLY_INSTRUCTION_SM83(RET)
+ 		cpu->a = OPERAND;)
+ 
+ #define DEFINE_ALU_INSTRUCTION_SM83_NOHL(NAME) \
+-	DEFINE_ ## NAME ## _INSTRUCTION_SM83(A, cpu->a); \
+-	DEFINE_ ## NAME ## _INSTRUCTION_SM83(B, cpu->b); \
+-	DEFINE_ ## NAME ## _INSTRUCTION_SM83(C, cpu->c); \
+-	DEFINE_ ## NAME ## _INSTRUCTION_SM83(D, cpu->d); \
+-	DEFINE_ ## NAME ## _INSTRUCTION_SM83(E, cpu->e); \
+-	DEFINE_ ## NAME ## _INSTRUCTION_SM83(H, cpu->h); \
+-	DEFINE_ ## NAME ## _INSTRUCTION_SM83(L, cpu->l);
++	DEFINE_ ## NAME ## _INSTRUCTION_SM83(A, cpu->a) \
++	DEFINE_ ## NAME ## _INSTRUCTION_SM83(B, cpu->b) \
++	DEFINE_ ## NAME ## _INSTRUCTION_SM83(C, cpu->c) \
++	DEFINE_ ## NAME ## _INSTRUCTION_SM83(D, cpu->d) \
++	DEFINE_ ## NAME ## _INSTRUCTION_SM83(E, cpu->e) \
++	DEFINE_ ## NAME ## _INSTRUCTION_SM83(H, cpu->h) \
++	DEFINE_ ## NAME ## _INSTRUCTION_SM83(L, cpu->l)
+ 
+ DEFINE_INSTRUCTION_SM83(LDHL_Bus, \
+ 	cpu->index = SM83ReadHL(cpu); \
+@@ -277,17 +277,17 @@ DEFINE_INSTRUCTION_SM83(LDSP_HL,
+ 		cpu->instruction = _SM83Instruction ## NAME ## Bus;)
+ 
+ #define DEFINE_ALU_INSTRUCTION_SM83(NAME) \
+-	DEFINE_ ## NAME ## _INSTRUCTION_SM83(Bus, cpu->bus); \
++	DEFINE_ ## NAME ## _INSTRUCTION_SM83(Bus, cpu->bus) \
+ 	DEFINE_ALU_INSTRUCTION_SM83_MEM(NAME, HL) \
+ 	DEFINE_INSTRUCTION_SM83(NAME, \
+ 		cpu->executionState = SM83_CORE_READ_PC; \
+ 		cpu->instruction = _SM83Instruction ## NAME ## Bus;) \
+ 	DEFINE_ALU_INSTRUCTION_SM83_NOHL(NAME)
+ 
+-DEFINE_ALU_INSTRUCTION_SM83(AND);
+-DEFINE_ALU_INSTRUCTION_SM83(XOR);
+-DEFINE_ALU_INSTRUCTION_SM83(OR);
+-DEFINE_ALU_INSTRUCTION_SM83(CP);
++DEFINE_ALU_INSTRUCTION_SM83(AND)
++DEFINE_ALU_INSTRUCTION_SM83(XOR)
++DEFINE_ALU_INSTRUCTION_SM83(OR)
++DEFINE_ALU_INSTRUCTION_SM83(CP)
+ 
+ static void _SM83InstructionLDB_Bus(struct SM83Core*);
+ static void _SM83InstructionLDC_Bus(struct SM83Core*);
+@@ -334,20 +334,20 @@ static void _SM83InstructionLDA_Bus(struct SM83Core*);
+ 		cpu->a = diff; \
+ 		cpu->f.z = !cpu->a;)
+ 
+-DEFINE_ALU_INSTRUCTION_SM83(LDB_);
+-DEFINE_ALU_INSTRUCTION_SM83(LDC_);
+-DEFINE_ALU_INSTRUCTION_SM83(LDD_);
+-DEFINE_ALU_INSTRUCTION_SM83(LDE_);
+-DEFINE_ALU_INSTRUCTION_SM83(LDH_);
+-DEFINE_ALU_INSTRUCTION_SM83(LDL_);
+-DEFINE_ALU_INSTRUCTION_SM83_NOHL(LDHL_);
+-DEFINE_ALU_INSTRUCTION_SM83(LDA_);
+-DEFINE_ALU_INSTRUCTION_SM83_MEM(LDA_, BC);
+-DEFINE_ALU_INSTRUCTION_SM83_MEM(LDA_, DE);
+-DEFINE_ALU_INSTRUCTION_SM83(ADD);
+-DEFINE_ALU_INSTRUCTION_SM83(ADC);
+-DEFINE_ALU_INSTRUCTION_SM83(SUB);
+-DEFINE_ALU_INSTRUCTION_SM83(SBC);
++DEFINE_ALU_INSTRUCTION_SM83(LDB_)
++DEFINE_ALU_INSTRUCTION_SM83(LDC_)
++DEFINE_ALU_INSTRUCTION_SM83(LDD_)
++DEFINE_ALU_INSTRUCTION_SM83(LDE_)
++DEFINE_ALU_INSTRUCTION_SM83(LDH_)
++DEFINE_ALU_INSTRUCTION_SM83(LDL_)
++DEFINE_ALU_INSTRUCTION_SM83_NOHL(LDHL_)
++DEFINE_ALU_INSTRUCTION_SM83(LDA_)
++DEFINE_ALU_INSTRUCTION_SM83_MEM(LDA_, BC)
++DEFINE_ALU_INSTRUCTION_SM83_MEM(LDA_, DE)
++DEFINE_ALU_INSTRUCTION_SM83(ADD)
++DEFINE_ALU_INSTRUCTION_SM83(ADC)
++DEFINE_ALU_INSTRUCTION_SM83(SUB)
++DEFINE_ALU_INSTRUCTION_SM83(SBC)
+ 
+ DEFINE_INSTRUCTION_SM83(ADDSPFinish,
+ 	cpu->sp = cpu->index;
+@@ -534,9 +534,9 @@ DEFINE_INSTRUCTION_SM83(LDISP,
+ 		SM83Write ## REG (cpu, reg - 1); \
+ 		cpu->executionState = SM83_CORE_STALL;)
+ 
+-DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(BC);
+-DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(DE);
+-DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(HL);
++DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(BC)
++DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(DE)
++DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(HL)
+ 
+ #define DEFINE_ADD_HL_INSTRUCTION_SM83(REG, L, H) \
+ 	DEFINE_INSTRUCTION_SM83(ADDHL_ ## REG ## Finish, \
+@@ -552,10 +552,10 @@ DEFINE_INCDEC_WIDE_INSTRUCTION_SM83(HL);
+ 		cpu->executionState = SM83_CORE_OP2; \
+ 		cpu->instruction = _SM83InstructionADDHL_ ## REG ## Finish;)
+ 
+-DEFINE_ADD_HL_INSTRUCTION_SM83(BC, cpu->c, cpu->b);
+-DEFINE_ADD_HL_INSTRUCTION_SM83(DE, cpu->e, cpu->d);
+-DEFINE_ADD_HL_INSTRUCTION_SM83(HL, cpu->l, cpu->h);
+-DEFINE_ADD_HL_INSTRUCTION_SM83(SP, (cpu->sp & 0xFF), (cpu->sp >> 8));
++DEFINE_ADD_HL_INSTRUCTION_SM83(BC, cpu->c, cpu->b)
++DEFINE_ADD_HL_INSTRUCTION_SM83(DE, cpu->e, cpu->d)
++DEFINE_ADD_HL_INSTRUCTION_SM83(HL, cpu->l, cpu->h)
++DEFINE_ADD_HL_INSTRUCTION_SM83(SP, (cpu->sp & 0xFF), (cpu->sp >> 8))
+ 
+ 
+ #define DEFINE_INC_INSTRUCTION_SM83(NAME, OPERAND) \
+@@ -574,8 +574,8 @@ DEFINE_ADD_HL_INSTRUCTION_SM83(SP, (cpu->sp & 0xFF), (cpu->sp >> 8));
+ 		cpu->f.n = 1; \
+ 		cpu->f.z = !OPERAND;)
+ 
+-DEFINE_ALU_INSTRUCTION_SM83_NOHL(INC);
+-DEFINE_ALU_INSTRUCTION_SM83_NOHL(DEC);
++DEFINE_ALU_INSTRUCTION_SM83_NOHL(INC)
++DEFINE_ALU_INSTRUCTION_SM83_NOHL(DEC)
+ 
+ DEFINE_INSTRUCTION_SM83(INC_HLDelay,
+ 	int diff = cpu->bus + 1;
+@@ -680,10 +680,10 @@ DEFINE_INSTRUCTION_SM83(DAA,
+ 		cpu->instruction = _SM83InstructionPUSH ## REG ## Delay; \
+ 		cpu->executionState = SM83_CORE_MEMORY_STORE;)
+ 
+-DEFINE_POPPUSH_INSTRUCTION_SM83(BC, B, b, c);
+-DEFINE_POPPUSH_INSTRUCTION_SM83(DE, D, d, e);
+-DEFINE_POPPUSH_INSTRUCTION_SM83(HL, H, h, l);
+-DEFINE_POPPUSH_INSTRUCTION_SM83(AF, A, a, f.packed);
++DEFINE_POPPUSH_INSTRUCTION_SM83(BC, B, b, c)
++DEFINE_POPPUSH_INSTRUCTION_SM83(DE, D, d, e)
++DEFINE_POPPUSH_INSTRUCTION_SM83(HL, H, h, l)
++DEFINE_POPPUSH_INSTRUCTION_SM83(AF, A, a, f.packed)
+ 
+ #define DEFINE_CB_2_INSTRUCTION_SM83(NAME, WB, BODY) \
+ 	DEFINE_INSTRUCTION_SM83(NAME ## B, uint8_t reg = cpu->b; BODY; cpu->b = reg) \
+@@ -765,9 +765,9 @@ DEFINE_INSTRUCTION_SM83(RRCA_,
+ 	cpu->f.n = 0;
+ 	cpu->f.c = low;)
+ 
+-DEFINE_INSTRUCTION_SM83(DI, cpu->irqh.setInterrupts(cpu, false));
+-DEFINE_INSTRUCTION_SM83(EI, cpu->irqh.setInterrupts(cpu, true));
+-DEFINE_INSTRUCTION_SM83(HALT, cpu->irqh.halt(cpu));
++DEFINE_INSTRUCTION_SM83(DI, cpu->irqh.setInterrupts(cpu, false))
++DEFINE_INSTRUCTION_SM83(EI, cpu->irqh.setInterrupts(cpu, true))
++DEFINE_INSTRUCTION_SM83(HALT, cpu->irqh.halt(cpu))
+ 
+ #define DEFINE_RST_INSTRUCTION_SM83(VEC) \
+ 	DEFINE_INSTRUCTION_SM83(RST ## VEC ## UpdateSPL, \
+@@ -788,18 +788,18 @@ DEFINE_INSTRUCTION_SM83(HALT, cpu->irqh.halt(cpu));
+ 		cpu->executionState = SM83_CORE_OP2; \
+ 		cpu->instruction = _SM83InstructionRST ## VEC ## UpdateSPH;)
+ 
+-DEFINE_RST_INSTRUCTION_SM83(00);
+-DEFINE_RST_INSTRUCTION_SM83(08);
+-DEFINE_RST_INSTRUCTION_SM83(10);
+-DEFINE_RST_INSTRUCTION_SM83(18);
+-DEFINE_RST_INSTRUCTION_SM83(20);
+-DEFINE_RST_INSTRUCTION_SM83(28);
+-DEFINE_RST_INSTRUCTION_SM83(30);
+-DEFINE_RST_INSTRUCTION_SM83(38);
++DEFINE_RST_INSTRUCTION_SM83(00)
++DEFINE_RST_INSTRUCTION_SM83(08)
++DEFINE_RST_INSTRUCTION_SM83(10)
++DEFINE_RST_INSTRUCTION_SM83(18)
++DEFINE_RST_INSTRUCTION_SM83(20)
++DEFINE_RST_INSTRUCTION_SM83(28)
++DEFINE_RST_INSTRUCTION_SM83(30)
++DEFINE_RST_INSTRUCTION_SM83(38)
+ 
+-DEFINE_INSTRUCTION_SM83(ILL, cpu->irqh.hitIllegal(cpu));
++DEFINE_INSTRUCTION_SM83(ILL, cpu->irqh.hitIllegal(cpu))
+ 
+-DEFINE_INSTRUCTION_SM83(STOP2, cpu->irqh.stop(cpu));
++DEFINE_INSTRUCTION_SM83(STOP2, cpu->irqh.stop(cpu))
+ 
+ DEFINE_INSTRUCTION_SM83(STOP, \
+ 	cpu->executionState = SM83_CORE_READ_PC; \
+diff --git a/src/util/elf-read.c b/src/util/elf-read.c
+index 520c01ca3..138290eee 100644
+--- a/src/util/elf-read.c
++++ b/src/util/elf-read.c
+@@ -9,8 +9,8 @@
+ 
+ #include <mgba-util/vfs.h>
+ 
+-DEFINE_VECTOR(ELFProgramHeaders, Elf32_Phdr);
+-DEFINE_VECTOR(ELFSectionHeaders, Elf32_Shdr);
++DEFINE_VECTOR(ELFProgramHeaders, Elf32_Phdr)
++DEFINE_VECTOR(ELFSectionHeaders, Elf32_Shdr)
+ 
+ static bool _elfInit = false;
+ 
+diff --git a/src/util/patch-fast.c b/src/util/patch-fast.c
+index 81b3aa45a..8fcd87436 100644
+--- a/src/util/patch-fast.c
++++ b/src/util/patch-fast.c
+@@ -5,7 +5,7 @@
+  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+ #include <mgba-util/patch/fast.h>
+ 
+-DEFINE_VECTOR(PatchFastExtents, struct PatchFastExtent);
++DEFINE_VECTOR(PatchFastExtents, struct PatchFastExtent)
+ 
+ size_t _fastOutputSize(struct Patch* patch, size_t inSize);
+ bool _fastApplyPatch(struct Patch* patch, const void* in, size_t inSize, void* out, size_t outSize);
+diff --git a/src/util/string.c b/src/util/string.c
+index 46e52fba7..69112a0cd 100644
+--- a/src/util/string.c
++++ b/src/util/string.c
+@@ -9,7 +9,7 @@
+ 
+ #include <string.h>
+ 
+-DEFINE_VECTOR(StringList, char*);
++DEFINE_VECTOR(StringList, char*)
+ 
+ #ifndef HAVE_STRNDUP
+ char* strndup(const char* start, size_t len) {
+-- 
+2.29.2
+
