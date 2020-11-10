@@ -1,0 +1,97 @@
+From 89946a1c9eb8c6b9704a0119d8eec8ecbfd27372 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 10 Nov 2020 16:18:47 -0800
+Subject: [PATCH] Fix tab completion with escaped characters
+
+---
+ emacs.c | 36 +++++++++++++++---------------------
+ 1 file changed, 15 insertions(+), 21 deletions(-)
+
+diff --git a/emacs.c b/emacs.c
+index 2b70992..2ec4fc4 100644
+--- a/emacs.c
++++ b/emacs.c
+@@ -130,6 +130,7 @@ static	int	x_arg_set;
+ static	char	*macro_args;
+ static	int	prompt_skip;
+ static	int	prompt_redraw;
++static	int	completed;
+ 
+ static int	x_ins(char *);
+ static void	x_delete(int, int);
+@@ -460,6 +461,7 @@ x_ins(char *s)
+ 
+ 	if (x_do_ins(s, strlen(s)) < 0)
+ 		return -1;
++	completed = 0;
+ 	/*
+ 	 * x_zots() may result in a call to x_adjust()
+ 	 * we want xcp to reflect the new position.
+@@ -566,7 +568,7 @@ x_delete(int nc, int push)
+ 	for (cp = x_lastcp(); cp > xcp; )
+ 		x_bs(*--cp);
+ 
+-	return;
++	completed = 0;
+ }
+ 
+ static int
+@@ -1749,7 +1751,6 @@ do_complete(int flags,	/* XCF_{COMMAND,FILE,COMMAND_FILE} */
+ 	int nwords;
+ 	int start, end, nlen, olen;
+ 	int is_command;
+-	int completed = 0;
+ 
+ 	nwords = x_cf_glob(flags, xbuf, xep - xbuf, xcp - xbuf,
+ 	    &start, &end, &words, &is_command);
+@@ -1759,7 +1760,7 @@ do_complete(int flags,	/* XCF_{COMMAND,FILE,COMMAND_FILE} */
+ 		return;
+ 	}
+ 
+-	if (type == CT_LIST) {
++	if (type == CT_LIST || type == CT_COMPLIST && completed) {
+ 		x_print_expansions(nwords, words, is_command);
+ 		x_redraw(0);
+ 		x_free_words(nwords, words);
+@@ -1769,27 +1770,20 @@ do_complete(int flags,	/* XCF_{COMMAND,FILE,COMMAND_FILE} */
+ 	olen = end - start;
+ 	nlen = x_longest_prefix(nwords, words);
+ 	/* complete */
+-	if (nwords == 1 || nlen > olen) {
+-		x_goto(xbuf + start);
+-		x_delete(olen, false);
+-		x_escape(words[0], nlen, x_do_ins);
+-		x_adjust();
+-		completed = 1;
+-	}
+-	/* add space if single non-dir match */
+-	if (nwords == 1 && words[0][nlen - 1] != '/') {
+-		x_ins(" ");
+-		completed = 1;
+-	}
++	x_goto(xbuf + start);
++	x_delete(olen, false);
++	x_escape(words[0], nlen, x_do_ins);
++	x_adjust();
++	completed = 1;
+ 
+-	if (type == CT_COMPLIST && !completed) {
+-		x_print_expansions(nwords, words, is_command);
+-		completed = 1;
++	/* add space if single non-dir match */
++	if (nwords == 1) {
++		completed = 0;
++		if (words[0][nlen - 1] != '/')
++			x_ins(" ");
+ 	}
+ 
+-	if (completed)
+-		x_redraw(0);
+-
++	x_redraw(0);
+ 	x_free_words(nwords, words);
+ }
+ 
+-- 
+2.29.2
+

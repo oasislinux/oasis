@@ -246,6 +246,7 @@
 [submodule "pkg/oksh/src"]
 	path = pkg/oksh/src
 	url = https://github.com/ibara/oksh.git
+	ignore = all
 [submodule "pkg/openssh/src"]
 	path = pkg/openssh/src
 	url = https://github.com/oasislinux/openssh.git
