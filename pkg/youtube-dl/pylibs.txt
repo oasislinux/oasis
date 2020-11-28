@@ -34,6 +34,7 @@ youtube_dl/extractor/aliexpress.py
 youtube_dl/extractor/aljazeera.py
 youtube_dl/extractor/allocine.py
 youtube_dl/extractor/alphaporno.py
+youtube_dl/extractor/amara.py
 youtube_dl/extractor/amcnetworks.py
 youtube_dl/extractor/americastestkitchen.py
 youtube_dl/extractor/amp.py
@@ -79,6 +80,7 @@ youtube_dl/extractor/blinkx.py
 youtube_dl/extractor/bloomberg.py
 youtube_dl/extractor/bokecc.py
 youtube_dl/extractor/bostonglobe.py
+youtube_dl/extractor/box.py
 youtube_dl/extractor/bpb.py
 youtube_dl/extractor/br.py
 youtube_dl/extractor/bravotv.py
@@ -320,6 +322,7 @@ youtube_dl/extractor/kusi.py
 youtube_dl/extractor/kuwo.py
 youtube_dl/extractor/la7.py
 youtube_dl/extractor/laola1tv.py
+youtube_dl/extractor/lbry.py
 youtube_dl/extractor/lci.py
 youtube_dl/extractor/lcp.py
 youtube_dl/extractor/lecture2go.py
@@ -353,6 +356,7 @@ youtube_dl/extractor/markiza.py
 youtube_dl/extractor/massengeschmacktv.py
 youtube_dl/extractor/matchtv.py
 youtube_dl/extractor/mdr.py
+youtube_dl/extractor/medaltv.py
 youtube_dl/extractor/medialaan.py
 youtube_dl/extractor/mediaset.py
 youtube_dl/extractor/mediasite.py
@@ -464,6 +468,7 @@ youtube_dl/extractor/photobucket.py
 youtube_dl/extractor/picarto.py
 youtube_dl/extractor/piksel.py
 youtube_dl/extractor/pinkbike.py
+youtube_dl/extractor/pinterest.py
 youtube_dl/extractor/pladform.py
 youtube_dl/extractor/platzi.py
 youtube_dl/extractor/playfm.py
@@ -527,6 +532,7 @@ youtube_dl/extractor/rtve.py
 youtube_dl/extractor/rtvnh.py
 youtube_dl/extractor/rtvs.py
 youtube_dl/extractor/ruhd.py
+youtube_dl/extractor/rumble.py
 youtube_dl/extractor/rutube.py
 youtube_dl/extractor/rutv.py
 youtube_dl/extractor/ruutu.py
@@ -552,6 +558,7 @@ youtube_dl/extractor/showroomlive.py
 youtube_dl/extractor/sina.py
 youtube_dl/extractor/sixplay.py
 youtube_dl/extractor/sky.py
+youtube_dl/extractor/skyit.py
 youtube_dl/extractor/skylinewebcams.py
 youtube_dl/extractor/skynewsarabia.py
 youtube_dl/extractor/slideshare.py
@@ -567,11 +574,11 @@ youtube_dl/extractor/southpark.py
 youtube_dl/extractor/spankbang.py
 youtube_dl/extractor/spankwire.py
 youtube_dl/extractor/spiegel.py
-youtube_dl/extractor/spiegeltv.py
 youtube_dl/extractor/spike.py
 youtube_dl/extractor/sport5.py
 youtube_dl/extractor/sportbox.py
 youtube_dl/extractor/sportdeutschland.py
+youtube_dl/extractor/spreaker.py
 youtube_dl/extractor/springboardplatform.py
 youtube_dl/extractor/sprout.py
 youtube_dl/extractor/srgssr.py
