@@ -29,6 +29,6 @@ sh "$OLDPWD/scripts/extract.sh" src.tar.gz -s ',^,src/,' \
 	'usr.bin/rsync/*' \
 	'usr.bin/yacc/*' \
 	'usr.sbin/acme-client/*'
-sh "$OLDPWD/scripts/extract.sh" sys.tar.gz -s ',^,src/,' 'sys/sys/*'
+sh "$OLDPWD/scripts/extract.sh" sys.tar.gz -s ',^,src/,' './sys/sys/*'
 
 git apply -v --whitespace=nowarn --directory "$dir/src" patch/*
