@@ -1,13 +1,13 @@
-From 95342a67221944e99dd2adf2d5d75d62fd256afe Mon Sep 17 00:00:00 2001
+From 07b3e7ec9c1f06ee2c7ccb146ca995f68893a30d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 26 Oct 2019 02:05:31 -0700
 Subject: [PATCH] Track generated xkbcomp parser
 
 ---
  src/xkbcomp/.gitignore |    2 -
- src/xkbcomp/parser.c   | 3258 ++++++++++++++++++++++++++++++++++++++++
+ src/xkbcomp/parser.c   | 3260 ++++++++++++++++++++++++++++++++++++++++
  src/xkbcomp/parser.h   |  169 +++
- 3 files changed, 3427 insertions(+), 2 deletions(-)
+ 3 files changed, 3429 insertions(+), 2 deletions(-)
  delete mode 100644 src/xkbcomp/.gitignore
  create mode 100644 src/xkbcomp/parser.c
  create mode 100644 src/xkbcomp/parser.h
@@ -22,11 +22,11 @@ index d7814e4..0000000
 -parser.h
 diff --git a/src/xkbcomp/parser.c b/src/xkbcomp/parser.c
 new file mode 100644
-index 0000000..105d720
+index 0000000..e5ce45b
 --- /dev/null
 +++ b/src/xkbcomp/parser.c
-@@ -0,0 +1,3258 @@
-+/* A Bison parser, made by GNU Bison 3.7.1.  */
+@@ -0,0 +1,3260 @@
++/* A Bison parser, made by GNU Bison 3.7.4.  */
 +
 +/* Bison implementation for Yacc-like parsers in C
 +
@@ -73,11 +73,11 @@ index 0000000..105d720
 +   define necessary library symbols; they are noted "INFRINGES ON
 +   USER NAME SPACE" below.  */
 +
-+/* Identify Bison output.  */
-+#define YYBISON 1
++/* Identify Bison output, and Bison version.  */
++#define YYBISON 30704
 +
-+/* Bison version.  */
-+#define YYBISON_VERSION "3.7.1"
++/* Bison version string.  */
++#define YYBISON_VERSION "3.7.4"
 +
 +/* Skeleton name.  */
 +#define YYSKELETON_NAME "yacc.c"
@@ -703,8 +703,8 @@ index 0000000..105d720
 +     653,   655,   657,   661,   663,   665,   667,   669,   671,   673,
 +     675,   679,   681,   685,   689,   691,   693,   695,   699,   701,
 +     703,   705,   709,   710,   713,   715,   717,   719,   723,   727,
-+     733,   734,   754,   755,   758,   759,   762,   765,   768,   771,
-+     772,   775,   778,   779,   782
++     735,   736,   756,   757,   760,   761,   764,   767,   770,   773,
++     774,   777,   780,   781,   784
 +};
 +#endif
 +
@@ -2918,21 +2918,23 @@ index 0000000..105d720
 +  case 169: /* KeySym: IDENT  */
 +#line 728 "parser.y"
 +                        {
-+                            if (!resolve_keysym((yyvsp[0].str), &(yyval.keysym)))
++                            if (!resolve_keysym((yyvsp[0].str), &(yyval.keysym))) {
 +                                parser_warn(param, "unrecognized keysym \"%s\"", (yyvsp[0].str));
++                                (yyval.keysym) = XKB_KEY_NoSymbol;
++                            }
 +                            free((yyvsp[0].str));
 +                        }
-+#line 2898 "parser.c"
++#line 2900 "parser.c"
 +    break;
 +
 +  case 170: /* KeySym: SECTION  */
-+#line 733 "parser.y"
++#line 735 "parser.y"
 +                                { (yyval.keysym) = XKB_KEY_section; }
-+#line 2904 "parser.c"
++#line 2906 "parser.c"
 +    break;
 +
 +  case 171: /* KeySym: Integer  */
-+#line 735 "parser.y"
++#line 737 "parser.y"
 +                        {
 +                            if ((yyvsp[0].num) < 0) {
 +                                parser_warn(param, "unrecognized keysym \"%"PRId64"\"", (yyvsp[0].num));
@@ -2950,89 +2952,89 @@ index 0000000..105d720
 +                                }
 +                            }
 +                        }
-+#line 2926 "parser.c"
++#line 2928 "parser.c"
 +    break;
 +
 +  case 172: /* SignedNumber: MINUS Number  */
-+#line 754 "parser.y"
++#line 756 "parser.y"
 +                                        { (yyval.num) = -(yyvsp[0].num); }
-+#line 2932 "parser.c"
++#line 2934 "parser.c"
 +    break;
 +
 +  case 173: /* SignedNumber: Number  */
-+#line 755 "parser.y"
++#line 757 "parser.y"
 +                                        { (yyval.num) = (yyvsp[0].num); }
-+#line 2938 "parser.c"
++#line 2940 "parser.c"
 +    break;
 +
 +  case 174: /* Number: FLOAT  */
-+#line 758 "parser.y"
++#line 760 "parser.y"
 +                                { (yyval.num) = (yyvsp[0].num); }
-+#line 2944 "parser.c"
++#line 2946 "parser.c"
 +    break;
 +
 +  case 175: /* Number: INTEGER  */
-+#line 759 "parser.y"
++#line 761 "parser.y"
 +                                { (yyval.num) = (yyvsp[0].num); }
-+#line 2950 "parser.c"
++#line 2952 "parser.c"
 +    break;
 +
 +  case 176: /* Float: FLOAT  */
-+#line 762 "parser.y"
++#line 764 "parser.y"
 +                                { (yyval.num) = 0; }
-+#line 2956 "parser.c"
++#line 2958 "parser.c"
 +    break;
 +
 +  case 177: /* Integer: INTEGER  */
-+#line 765 "parser.y"
++#line 767 "parser.y"
 +                                { (yyval.num) = (yyvsp[0].num); }
-+#line 2962 "parser.c"
++#line 2964 "parser.c"
 +    break;
 +
 +  case 178: /* KeyCode: INTEGER  */
-+#line 768 "parser.y"
++#line 770 "parser.y"
 +                                { (yyval.num) = (yyvsp[0].num); }
-+#line 2968 "parser.c"
++#line 2970 "parser.c"
 +    break;
 +
 +  case 179: /* Ident: IDENT  */
-+#line 771 "parser.y"
++#line 773 "parser.y"
 +                                { (yyval.atom) = xkb_atom_intern(param->ctx, (yyvsp[0].str), strlen((yyvsp[0].str))); free((yyvsp[0].str)); }
-+#line 2974 "parser.c"
++#line 2976 "parser.c"
 +    break;
 +
 +  case 180: /* Ident: DEFAULT  */
-+#line 772 "parser.y"
++#line 774 "parser.y"
 +                                { (yyval.atom) = xkb_atom_intern_literal(param->ctx, "default"); }
-+#line 2980 "parser.c"
++#line 2982 "parser.c"
 +    break;
 +
 +  case 181: /* String: STRING  */
-+#line 775 "parser.y"
++#line 777 "parser.y"
 +                                { (yyval.atom) = xkb_atom_intern(param->ctx, (yyvsp[0].str), strlen((yyvsp[0].str))); free((yyvsp[0].str)); }
-+#line 2986 "parser.c"
++#line 2988 "parser.c"
 +    break;
 +
 +  case 182: /* OptMapName: MapName  */
-+#line 778 "parser.y"
++#line 780 "parser.y"
 +                                { (yyval.str) = (yyvsp[0].str); }
-+#line 2992 "parser.c"
++#line 2994 "parser.c"
 +    break;
 +
 +  case 183: /* OptMapName: %empty  */
-+#line 779 "parser.y"
++#line 781 "parser.y"
 +                                { (yyval.str) = NULL; }
-+#line 2998 "parser.c"
++#line 3000 "parser.c"
 +    break;
 +
 +  case 184: /* MapName: STRING  */
-+#line 782 "parser.y"
++#line 784 "parser.y"
 +                                { (yyval.str) = (yyvsp[0].str); }
-+#line 3004 "parser.c"
++#line 3006 "parser.c"
 +    break;
 +
 +
-+#line 3008 "parser.c"
++#line 3010 "parser.c"
 +
 +      default: break;
 +    }
@@ -3226,7 +3228,7 @@ index 0000000..105d720
 +  return yyresult;
 +}
 +
-+#line 785 "parser.y"
++#line 787 "parser.y"
 +
 +
 +XkbFile *
@@ -3286,11 +3288,11 @@ index 0000000..105d720
 +}
 diff --git a/src/xkbcomp/parser.h b/src/xkbcomp/parser.h
 new file mode 100644
-index 0000000..8f5bfe9
+index 0000000..feb82ce
 --- /dev/null
 +++ b/src/xkbcomp/parser.h
 @@ -0,0 +1,169 @@
-+/* A Bison parser, made by GNU Bison 3.7.1.  */
++/* A Bison parser, made by GNU Bison 3.7.4.  */
 +
 +/* Bison interface for Yacc-like parsers in C
 +
@@ -3460,5 +3462,5 @@ index 0000000..8f5bfe9
 +
 +#endif /* !YY__XKBCOMMON_PARSER_H_INCLUDED  */
 -- 
-2.28.0
+2.29.2
 
