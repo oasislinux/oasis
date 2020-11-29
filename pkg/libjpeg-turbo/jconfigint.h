@@ -1,11 +1,11 @@
-#define BUILD  "20200630"
+#define BUILD  "20201116"
 #undef inline
 #define INLINE  __inline__ __attribute__((always_inline))
 #ifdef HAVE__THREAD_LOCAL
 #define THREAD_LOCAL  _Thread_local
 #endif
 #define PACKAGE_NAME  "libjpeg-turbo"
-#define VERSION  "2.0.5"
+#define VERSION  "2.0.6"
 #define SIZEOF_SIZE_T  8
 #ifdef HAVE___BUILTIN_CTZL
 #define HAVE_BUILTIN_CTZL
