@@ -27,7 +27,9 @@ local objs = objects[[
 
 -- build mio.c and sio.c for sndiod with alsa support
 for _, src in ipairs{'mio.c', 'mio_alsa.c', 'sio.c', 'sio_alsa.c'} do
-	build('cc', '$outdir/sndiod/'..src..'.o', '$srcdir/libsndio/'..src, {cflags='$cflags -D USE_ALSA'})
+	build('cc', '$outdir/sndiod/'..src..'.o', {'$srcdir/libsndio/'..src, '||', '$gendir/deps'}, {
+		cflags='$cflags -D USE_ALSA',
+	})
 end
 lib('libsndio.a', {objs, 'libsndio/mio.c', 'libsndio/sio.c'})
 
