@@ -32,16 +32,16 @@ pkg.deps = {
 
 build('sed', '$outdir/include/dav1d/version.h', '$srcdir/include/dav1d/version.h.in', {
 	expr={
-		'-e s,@DAV1D_API_VERSION_MAJOR@,4,',
+		'-e s,@DAV1D_API_VERSION_MAJOR@,5,',
 		'-e s,@DAV1D_API_VERSION_MINOR@,0,',
-		'-e s,@DAV1D_API_VERSION_PATCH@,2,',
+		'-e s,@DAV1D_API_VERSION_PATCH@,0,',
 	},
 })
 build('awk', '$outdir/vcs_version.h', '$dir/ver', {
 	expr=[['{printf "#define DAV1D_VERSION \"%s\"\n", $$1}']],
 })
 build('awk', '$outdir/config.asm', '$dir/config.h', {
-	expr=[['$$1 == "#define" {print "%define " substr($$0, length("#define ") + 1)}']],
+	expr=[['$$1 == "#define" {print "%define " substr($$0, length("#define ") + 1)} END {print "%define private_prefix dav1d"}']],
 })
 build('touch', '$outdir/cli_config.h')
 
@@ -57,6 +57,7 @@ local srcs = paths[[
 		itx_1d.c
 		lf_mask.c
 		log.c
+		mem.c
 		msac.c
 		obu.c
 		picture.c
@@ -76,13 +77,14 @@ local srcs = paths[[
 			cpuid.asm msac.asm
 
 			cdef_avx512.asm
+			mc_avx512.asm
 			cdef_avx2.asm
+			mc_avx2.asm
 			film_grain.asm
 			ipred.asm
 			itx.asm
 			loopfilter.asm
 			looprestoration.asm
-			mc.asm
 			cdef_sse.asm
 			film_grain_ssse3.asm
 			ipred_ssse3.asm
