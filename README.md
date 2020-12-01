@@ -119,6 +119,20 @@ out.
 
 [wiki]: https://github.com/michaelforney/oasis/wiki
 
+## QEMU
+
+If you'd like to give oasis for a spin without installing it yourself,
+there is a QEMU image available [here][qemu-image].
+
+Inside the archive are the root filesystem (`root.qcow2`), a Linux
+kernel (`bzImage`), and a script to launch qemu (`run`).
+
+There is also `README.md` with some information about how to use
+it. In short, use `./run` to launch in graphical mode, and `./run -s`
+to launch in serial mode.
+
+[qemu-image]: https://patchouli.sr.ht/builds.sr.ht/artifacts/~mcf/356456/5af47a3cf086151c/oasis-qemu.tar.xz
+
 ## Software
 
 oasis uses smaller and simpler implementations of libraries and
