@@ -1,4 +1,4 @@
-From 7eee2181082fb4ff4a8026be959931f56bbad11c Mon Sep 17 00:00:00 2001
+From 2def6690cc2df49dee47a38fbc4ed4243c28abbe Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 30 Oct 2016 23:54:56 -0700
 Subject: [PATCH] Port to wayland using wld
@@ -7,8 +7,8 @@ Subject: [PATCH] Port to wayland using wld
  Makefile     |   12 +-
  config.def.h |  500 ++++++-----
  config.mk    |   12 +-
- st.c         | 2361 +++++++++++++++++++++++++-------------------------
- 4 files changed, 1459 insertions(+), 1426 deletions(-)
+ st.c         | 2365 +++++++++++++++++++++++++-------------------------
+ 4 files changed, 1462 insertions(+), 1427 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index fb026c4..053d3e0 100644
@@ -645,7 +645,7 @@ index c84c5ee..7da06f1 100644
  # flags
  CPPFLAGS = -DVERSION=\"${VERSION}\" -D_XOPEN_SOURCE=600
 diff --git a/st.c b/st.c
-index fbcd9e0..4feb1f9 100644
+index fbcd9e0..863b338 100644
 --- a/st.c
 +++ b/st.c
 @@ -3,6 +3,8 @@
@@ -3152,20 +3152,20 @@ index fbcd9e0..4feb1f9 100644
 -unmap(XEvent *ev)
 -{
 -	xw.state &= ~WIN_VISIBLE;
+-}
+-
+-void
+-xsetpointermotion(int set)
+-{
+-	MODBIT(xw.attrs.event_mask, set, PointerMotionMask);
+-	XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
 +	wldrawcursor();
  }
  
  void
--xsetpointermotion(int set)
+-xseturgency(int add)
 +wlseturgency(int add)
  {
--	MODBIT(xw.attrs.event_mask, set, PointerMotionMask);
--	XChangeWindowAttributes(xw.dpy, xw.win, CWEventMask, &xw.attrs);
--}
--
--void
--xseturgency(int add)
--{
 -	XWMHints *h = XGetWMHints(xw.dpy, xw.win);
 -
 -	MODBIT(h->flags, add, XUrgencyHint);
@@ -3291,7 +3291,10 @@ index fbcd9e0..4feb1f9 100644
 +void
 +kbdkeymap(void *data, struct wl_keyboard *keyboard, uint32_t format, int32_t fd,
 +          uint32_t size)
-+{
+ {
+-	XKeyEvent *e = &ev->xkey;
+-	KeySym ksym;
+-	char buf[32], *customkey;
 +	char *string;
 +
 +	if (format != WL_KEYBOARD_KEYMAP_FORMAT_XKB_V1) {
@@ -3349,10 +3352,7 @@ index fbcd9e0..4feb1f9 100644
 +void
 +kbdkey(void *data, struct wl_keyboard *keyboard, uint32_t serial, uint32_t time,
 +       uint32_t key, uint32_t state)
- {
--	XKeyEvent *e = &ev->xkey;
--	KeySym ksym;
--	char buf[32], *customkey;
++{
 +	xkb_keysym_t ksym;
 +	char buf[32], *str;
  	int len;
@@ -3401,7 +3401,7 @@ index fbcd9e0..4feb1f9 100644
  		if (IS_SET(MODE_8BIT)) {
  			if (*buf < 0177) {
  				c = *buf | 0x80;
-@@ -4294,101 +4110,332 @@ kpress(XEvent *ev)
+@@ -4294,101 +4110,334 @@ kpress(XEvent *ev)
  			len = 2;
  		}
  	}
@@ -3540,7 +3540,11 @@ index fbcd9e0..4feb1f9 100644
 +				selclear();
 +			sel.mode = SEL_IDLE;
 +			tsetdirt(sel.nb.y, sel.ne.y);
-+		}
+ 		}
+-	} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
+-		/* Send SIGHUP to shell */
+-		kill(pid, SIGHUP);
+-		exit(0);
 +		break;
 +
 +	case WL_POINTER_BUTTON_STATE_PRESSED:
@@ -3577,11 +3581,7 @@ index fbcd9e0..4feb1f9 100644
 +			tsetdirt(sel.nb.y, sel.ne.y);
 +			sel.tclick2 = sel.tclick1;
 +			sel.tclick1 = time;
- 		}
--	} else if (e->xclient.data.l[0] == xw.wmdeletewin) {
--		/* Send SIGHUP to shell */
--		kill(pid, SIGHUP);
--		exit(0);
++		}
 +		break;
  	}
  }
@@ -3621,20 +3621,20 @@ index fbcd9e0..4feb1f9 100644
 +wmping(void *data, struct xdg_wm_base *wm, uint32_t serial)
 +{
 +	xdg_wm_base_pong(wm, serial);
++}
++
++void
++xdgsurfconfigure(void *data, struct xdg_surface *surf, uint32_t serial)
++{
++	xdg_surface_ack_configure(surf, serial);
  }
  
  void
 -resize(XEvent *e)
-+xdgsurfconfigure(void *data, struct xdg_surface *surf, uint32_t serial)
- {
--	if (e->xconfigure.width == xw.w && e->xconfigure.height == xw.h)
-+	xdg_surface_ack_configure(surf, serial);
-+}
-+
-+void
 +toplevelconfigure(void *data, struct xdg_toplevel *toplevel, int32_t w, int32_t h,
 +                  struct wl_array *states)
-+{
+ {
+-	if (e->xconfigure.width == xw.w && e->xconfigure.height == xw.h)
 +	if (w == wl.w && h == wl.h)
  		return;
 +	cresize(w, h);
@@ -3760,12 +3760,15 @@ index fbcd9e0..4feb1f9 100644
 -	} while (ev.type != MapNotify);
 -
 -	cresize(w, h);
+ 	ttynew();
+-	ttyresize();
++
 +	/* Look for initial configure. */
 +	wl_display_roundtrip(wl.dpy);
-+	if (!wl.configured)
++	if (!wl.configured) {
 +		cresize(wl.w, wl.h);
- 	ttynew();
- 	ttyresize();
++		ttyresize();
++	}
 +	draw();
  
  	clock_gettime(CLOCK_MONOTONIC, &last);
@@ -3788,7 +3791,7 @@ index fbcd9e0..4feb1f9 100644
  		if (FD_ISSET(cmdfd, &rfd)) {
  			ttyread();
  			if (blinktimeout) {
-@@ -4398,60 +4445,54 @@ run(void)
+@@ -4398,60 +4447,54 @@ run(void)
  			}
  		}
  
@@ -3889,7 +3892,7 @@ index fbcd9e0..4feb1f9 100644
  	}
  }
  
-@@ -4471,9 +4512,7 @@ usage(void)
+@@ -4471,9 +4514,7 @@ usage(void)
  int
  main(int argc, char *argv[])
  {
@@ -3900,7 +3903,7 @@ index fbcd9e0..4feb1f9 100644
  
  	ARGBEGIN {
  	case 'a':
-@@ -4489,13 +4528,6 @@ main(int argc, char *argv[])
+@@ -4489,13 +4530,6 @@ main(int argc, char *argv[])
  	case 'f':
  		opt_font = EARGF(usage());
  		break;
@@ -3914,7 +3917,7 @@ index fbcd9e0..4feb1f9 100644
  	case 'o':
  		opt_io = EARGF(usage());
  		break;
-@@ -4527,9 +4559,8 @@ run:
+@@ -4527,9 +4561,8 @@ run:
  			opt_title = basename(xstrdup(argv[0]));
  	}
  	setlocale(LC_CTYPE, "");
@@ -3926,5 +3929,5 @@ index fbcd9e0..4feb1f9 100644
  	run();
  
 -- 
-2.19.1
+2.29.2
 

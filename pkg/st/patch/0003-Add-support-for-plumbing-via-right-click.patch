@@ -1,0 +1,152 @@
+From 6e99154fe219e4fdb7bf6fd441863adb3c2e005b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 2 Dec 2020 17:54:35 -0800
+Subject: [PATCH] Add support for plumbing via right click
+
+---
+ config.def.h |  5 ++++
+ st.c         | 66 +++++++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 68 insertions(+), 3 deletions(-)
+
+diff --git a/config.def.h b/config.def.h
+index 49ca50b..a63d2be 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -460,3 +460,8 @@ static char ascii_printable[] =
+ 	"@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
+ 	"`abcdefghijklmnopqrstuvwxyz{|}~";
+ 
++/*
++ * plumb_cmd is run on mouse button 3 click, with first NULL set to
++ * current selection and with cwd set to the cwd of the active shell
++ */
++static char *plumb_cmd[] = {"plumb", NULL, NULL};
+diff --git a/st.c b/st.c
+index caa5aa0..b4e9616 100644
+--- a/st.c
++++ b/st.c
+@@ -44,6 +44,9 @@ char *argv0;
+ #elif defined(__FreeBSD__) || defined(__DragonFly__)
+  #include <libutil.h>
+ #endif
++#if defined(__OpenBSD__)
++ #include <sys/sysctl.h>
++#endif
+ 
+ 
+ /* Arbitrary sizes */
+@@ -558,6 +561,8 @@ static void *xmalloc(size_t);
+ static void *xrealloc(void *, size_t);
+ static char *xstrdup(char *);
+ 
++static int subprocwd(char *, size_t);
++
+ static void usage(void);
+ 
+ static struct wl_registry_listener reglistener = { regglobal, regglobalremove };
+@@ -579,6 +584,7 @@ static struct wl_data_source_listener datasrclistener =
+ 	{ datasrctarget, datasrcsend, datasrccancelled };
+ 
+ /* Globals */
++static int plumbsel;
+ static DC dc;
+ static Wayland wl;
+ static WLD wld;
+@@ -763,6 +769,21 @@ utf8validate(Rune *u, size_t i)
+ 	return i;
+ }
+ 
++int
++subprocwd(char *path, size_t len)
++{
++#if defined(__linux__)
++	if (snprintf(path, len, "/proc/%d/cwd", pid) < 0)
++		return -1;
++	return 0;
++#elif defined(__OpenBSD__)
++	int name[3] = {CTL_KERN, KERN_PROC_CWD, pid};
++	if (sysctl(name, 3, path, &len, 0, 0) == -1)
++		return -1;
++	return 0;
++#endif
++}
++
+ void
+ selinit(void)
+ {
+@@ -1165,6 +1186,37 @@ wlsetsel(char *str, uint32_t serial)
+ 	wl_data_device_set_selection(wl.datadev, sel.source, serial);
+ }
+ 
++void
++plumbinit(void)
++{
++	for (plumbsel = 0; plumb_cmd[plumbsel]; ++plumbsel)
++		;
++}
++
++void
++plumb(char *sel)
++{
++	char cwd[PATH_MAX];
++	pid_t pid;
++
++	if (!sel || subprocwd(cwd, sizeof(cwd)) != 0)
++		return;
++	plumb_cmd[plumbsel] = sel;
++
++	pid = fork();
++	switch (pid) {
++	case -1:
++		break;
++	case 0:
++		if (chdir(cwd) != 0)
++			exit(1);
++		execvp(plumb_cmd[0], plumb_cmd);
++		_exit(1);
++	default:
++		waitpid(pid, NULL, 0);
++	}
++}
++
+ void
+ die(const char *errstr, ...)
+ {
+@@ -4223,16 +4275,23 @@ ptrbutton(void * data, struct wl_pointer * pointer, uint32_t serial,
+ 
+ 	switch (state) {
+ 	case WL_POINTER_BUTTON_STATE_RELEASED:
+-		if (button == BTN_MIDDLE) {
++		switch (button) {
++		case BTN_MIDDLE:
+ 			selpaste(NULL);
+-		} else if (button == BTN_LEFT) {
++			break;
++		case BTN_LEFT:
+ 			if (sel.mode == SEL_READY) {
+ 				getbuttoninfo();
+ 				selcopy(serial);
+-			} else
++			} else {
+ 				selclear();
++			}
+ 			sel.mode = SEL_IDLE;
+ 			tsetdirt(sel.nb.y, sel.ne.y);
++			break;
++		case BTN_RIGHT:
++			plumb(sel.primary);
++			break;
+ 		}
+ 		break;
+ 
+@@ -4556,6 +4615,7 @@ main(int argc, char *argv[])
+ 	} ARGEND;
+ 
+ run:
++	plumbinit();
+ 	if (argc > 0) {
+ 		/* eat all remaining arguments */
+ 		opt_cmd = argv;
+-- 
+2.29.2
+

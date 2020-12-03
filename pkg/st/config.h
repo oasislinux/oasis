@@ -466,3 +466,8 @@ static char ascii_printable[] =
 	"@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_"
 	"`abcdefghijklmnopqrstuvwxyz{|}~";
 
+/*
+ * plumb_cmd is run on mouse button 3 click, with first NULL set to
+ * current selection and with cwd set to the cwd of the active shell
+ */
+static char *plumb_cmd[] = {"plumb", NULL, NULL};
