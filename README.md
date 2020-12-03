@@ -145,7 +145,6 @@ tools whenever possible:
 - oksh instead of bash
 - sdhcp instead of dhclient or dhcpcd
 - vis instead of vim or emacs
-- bc-gh instead of GNU bc
 - byacc instead of bison
 - perp and sinit instead of sysvinit or systemd
 - netsurf instead of chromium or firefox
