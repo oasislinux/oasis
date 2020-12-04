@@ -1,4 +1,5 @@
 dir('bin', '755')
+sym('bin/plumb', '../etc/plumb')
 dir('boot', '755')
 dir('dev', '755')
 dir('etc', '755')
