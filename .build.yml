@@ -29,7 +29,7 @@ tasks:
     return {
     	builddir='out',
     	fs=dofile 'fs.lua',
-    	target={platform='x86_64-linux-musl', cflags='-Os -pipe', ldflags='-s -static', mc='6m'},
+    	target={platform='x86_64-linux-musl', cflags='-Os -fPIE -pipe', ldflags='-s -static-pie', mc='6m', pie=true},
     	host={cflags='-pipe', ldflags=''},
     	repo={path='$HOME/root-x86_64.git', flags='--bare', tag='tree', branch=os.getenv('SET')},
     }

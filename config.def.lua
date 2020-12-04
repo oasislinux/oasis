@@ -18,7 +18,7 @@ return {
 	-- target toolchain and flags
 	target={
 		platform='x86_64-linux-musl',
-		cflags='-Os -pipe',
+		cflags='-Os -fPIE -pipe',
 		ldflags='-s -static-pie',
 		pie=true,
 	},
