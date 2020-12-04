@@ -172,10 +172,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.3.3"
+#define PACKAGE_STRING "NSD 4.3.4"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.3.3"
+#define PACKAGE_VERSION "4.3.4"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
@@ -394,7 +394,7 @@ char *nsd_strptime(const char *s, const char *format, struct tm *tm);
 #ifdef __linux__
 #define HAVE_SETPROCTITLE 1
 #include <stdarg.h>
-void setproctitle(char *fmt, ...);
+void setproctitle(const char *fmt, ...);
 #endif
 #endif
 #ifdef MEMCMP_IS_BROKEN
