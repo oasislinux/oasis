@@ -52,7 +52,6 @@ return {
 	},
 	bits={
 		-- <cd src/arch/x86_64/bits && printf "\t\t'%s',\n" *.h
-		'fcntl.h',
 		'fenv.h',
 		'float.h',
 		'io.h',
