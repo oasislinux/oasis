@@ -140,8 +140,6 @@
 /* #undef HAVE_RPMATCH */
 /* #undef HAVE_SA_LEN */
 /* #undef HAVE_SCANDIRAT */
-/* #undef HAVE_SCANF_AS_MODIFIER */
-#define HAVE_SCANF_MS_MODIFIER 1
 /* #undef HAVE_SCHED_SETATTR */
 #define HAVE_SCHED_SETSCHEDULER 1
 #define HAVE_SECURE_GETENV 1
@@ -232,11 +230,11 @@
 #define HAVE___FPURGE 1
 #define HAVE___PROGNAME 1
 /* #undef HAVE___SECURE_GETENV */
-#define LIBBLKID_DATE "23-Jul-2020"
-#define LIBBLKID_VERSION "2.36.0"
-#define LIBFDISK_VERSION "2.36.0"
-#define LIBMOUNT_VERSION "2.36.0"
-#define LIBSMARTCOLS_VERSION "2.36.0"
+#define LIBBLKID_DATE "16-Nov-2020"
+#define LIBBLKID_VERSION "2.36.1"
+#define LIBFDISK_VERSION "2.36.1"
+#define LIBMOUNT_VERSION "2.36.1"
+#define LIBSMARTCOLS_VERSION "2.36.1"
 /* #undef LOGIN_CHOWN_VCS */
 /* #undef LOGIN_STAT_MAIL */
 #define LT_OBJDIR ".libs/"
@@ -246,10 +244,10 @@
 #define PACKAGE "util-linux"
 #define PACKAGE_BUGREPORT "kzak@redhat.com"
 #define PACKAGE_NAME "util-linux"
-#define PACKAGE_STRING "util-linux 2.36"
+#define PACKAGE_STRING "util-linux 2.36.1"
 #define PACKAGE_TARNAME "util-linux"
 #define PACKAGE_URL "http://www.kernel.org/pub/linux/utils/util-linux/"
-#define PACKAGE_VERSION "2.36"
+#define PACKAGE_VERSION "2.36.1"
 #define PG_BELL 1
 #define STDC_HEADERS 1
 /* #undef SYS_fallocate */
@@ -291,7 +289,7 @@
 #define USE_TTY_GROUP 1
 /* #undef USE_USRDIR_PATHS_ONLY */
 /* #undef USE_VENDORDIR */
-#define VERSION "2.36"
+#define VERSION "2.36.1"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

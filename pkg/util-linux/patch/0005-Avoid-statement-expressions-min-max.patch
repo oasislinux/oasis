@@ -1,4 +1,4 @@
-From 6bd00097ea010f4ead414f740e0b180dacdfc7bf Mon Sep 17 00:00:00 2001
+From 922e927710ecc196aa6f60eab1690a113c2a96ee Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 17:13:45 -0700
 Subject: [PATCH] Avoid statement expressions min/max
@@ -7,14 +7,14 @@ Subject: [PATCH] Avoid statement expressions min/max
  include/c.h                  | 24 ++++++++++--------------
  lib/mbsalign.c               |  2 +-
  libfdisk/src/alignment.c     |  8 ++++----
- libfdisk/src/context.c       |  2 +-
+ libfdisk/src/context.c       |  4 ++--
  libfdisk/src/gpt.c           |  4 ++--
  libsmartcols/src/calculate.c |  8 ++++----
  libsmartcols/src/column.c    |  2 +-
- 7 files changed, 23 insertions(+), 27 deletions(-)
+ 7 files changed, 24 insertions(+), 28 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
-index 62fcfe2d0..3c54d57f4 100644
+index 66fefe2a2..d7eeb699e 100644
 --- a/include/c.h
 +++ b/include/c.h
 @@ -126,21 +126,17 @@
@@ -103,10 +103,10 @@ index 3d0254634..91f6d1f7d 100644
  		cxt->grain = cxt->user_grain < granularity ? granularity : cxt->user_grain;
  		DBG(CXT, ul_debugobj(cxt, "new grain: %lu", cxt->grain));
 diff --git a/libfdisk/src/context.c b/libfdisk/src/context.c
-index 363db30f4..85f68d816 100644
+index 206627849..6c3a17b98 100644
 --- a/libfdisk/src/context.c
 +++ b/libfdisk/src/context.c
-@@ -893,7 +893,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
+@@ -894,7 +894,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
  	/* the current layout */
  	fdisk_get_partitions(cxt, &tb);
  	/* maximal number of partitions */
@@ -115,11 +115,20 @@ index 363db30f4..85f68d816 100644
  
  	while (fdisk_diff_tables(org, tb, &itr, &pa, &change) == 0) {
  		if (change == FDISK_DIFF_UNCHANGED)
+@@ -951,7 +951,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
+ 			/* Let's follow the Linux kernel and reduce
+                          * DOS extended partition to 1 or 2 sectors.
+ 			 */
+-			sz = min(sz, (uint64_t) 2);
++			sz = umin(sz, (uint64_t) 2);
+ 
+ 		if (partx_add_partition(cxt->dev_fd, pa->partno + 1,
+ 					pa->start * ssf, sz) != 0) {
 diff --git a/libfdisk/src/gpt.c b/libfdisk/src/gpt.c
-index dbd240617..ac7515630 100644
+index 29fcffa59..5e95b205d 100644
 --- a/libfdisk/src/gpt.c
 +++ b/libfdisk/src/gpt.c
-@@ -496,7 +496,7 @@ static int gpt_mknew_pmbr(struct fdisk_context *cxt)
+@@ -504,7 +504,7 @@ static int gpt_mknew_pmbr(struct fdisk_context *cxt)
  	pmbr->partition_record[0].end_track    = 0xFF;
  	pmbr->partition_record[0].starting_lba = cpu_to_le32(1);
  	pmbr->partition_record[0].size_in_lba  =
@@ -128,7 +137,7 @@ index dbd240617..ac7515630 100644
  
  	return 0;
  }
-@@ -923,7 +923,7 @@ static int valid_pmbr(struct fdisk_context *cxt)
+@@ -931,7 +931,7 @@ static int valid_pmbr(struct fdisk_context *cxt)
  			/* Note that gpt_write_pmbr() overwrites PMBR, but we want to keep it valid already
  			 * in memory too to disable warnings when valid_pmbr() called next time */
  			pmbr->partition_record[part].size_in_lba  =
@@ -186,5 +195,5 @@ index c11df69f5..1285d42e6 100644
  	}
  
 -- 
-2.28.0
+2.29.2
 

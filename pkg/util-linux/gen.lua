@@ -1,4 +1,4 @@
-set('version', '2.36.0')
+set('version', '2.36.1')
 cflags{
 	'-include $dir/config.h',
 	'-I $outdir',
@@ -42,31 +42,28 @@ lib('libcommon.a', [[
 		idcache.c
 		encode.c
 		fileutils.c
-		ismounted.c
 		mangle.c
 		match.c
 		mbsalign.c
 		md5.c
 		pager.c
+		procutils.c
 		pwdutils.c
 		randutils.c
 		setproctitle.c
 		strutils.c
 		timeutils.c
 		ttyutils.c
-		exec_shell.c
 		strv.c
 		sha1.c
 		signames.c
 
-		caputils.c
 		linux_version.c
 		loopdev.c
 
 		cpuset.c
 
 		path.c
-		procutils.c
 		sysfs.c
 	)
 ]])
