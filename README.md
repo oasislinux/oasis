@@ -113,9 +113,9 @@ An install guide can be found on the [wiki].
 
 However, keep in mind that oasis is an ambitious project, and there
 is still a lot of work to do. Users should be should be comfortable
-building your own kernel and tinkering their system when things go
-wrong. If you do run into trouble, I'm always happy to help you
-out.
+building their own kernel and tinkering with their system when
+things go wrong. If you do run into trouble, I'm always happy to
+help you out.
 
 [wiki]: https://github.com/michaelforney/oasis/wiki
 
