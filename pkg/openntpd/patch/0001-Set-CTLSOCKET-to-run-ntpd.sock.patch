@@ -1,4 +1,4 @@
-From 299d37f57b16a4613fabd179288039e883c161cb Mon Sep 17 00:00:00 2001
+From 2760ceff5d4817963fb7882bfaf8852c8dc4460c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 11 Aug 2017 23:08:10 -0700
 Subject: [PATCH] Set CTLSOCKET to /run/ntpd.sock
@@ -8,18 +8,18 @@ Subject: [PATCH] Set CTLSOCKET to /run/ntpd.sock
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/ntpd.h b/src/ntpd.h
-index 39b8e7b..41a0b22 100644
+index ced81b9ff..7364c5aa8 100644
 --- a/src/ntpd.h
 +++ b/src/ntpd.h
-@@ -48,7 +48,7 @@
+@@ -49,7 +49,7 @@
  #define	LOCALSTATEDIR	"/var"
  #endif
  #define	DRIFTFILE	LOCALSTATEDIR "/db/ntpd.drift"
 -#define	CTLSOCKET	LOCALSTATEDIR "/run/ntpd.sock"
 +#define	CTLSOCKET	"/run/ntpd.sock"
  
- #if defined(SO_SETFIB)
- #define	SO_RTABLE	SO_SETFIB
+ #define	INTERVAL_QUERY_NORMAL		30	/* sync to peers every n secs */
+ #define	INTERVAL_QUERY_PATHETIC		60
 -- 
-2.14.1
+2.29.2
 

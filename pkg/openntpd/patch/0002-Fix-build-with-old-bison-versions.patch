@@ -1,4 +1,4 @@
-From b204244b9e678064b7b519e049030bb0aeb029ed Mon Sep 17 00:00:00 2001
+From 10b2b1ed0b275a0594033872104a53645c8b245c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 15 Apr 2020 20:10:16 -0700
 Subject: [PATCH] Fix build with old bison versions
@@ -8,10 +8,10 @@ Subject: [PATCH] Fix build with old bison versions
  1 file changed, 1 insertion(+)
 
 diff --git a/src/parse.y b/src/parse.y
-index eb7e9b9..7ae236b 100644
+index 4a101bcd6..742108c51 100644
 --- a/src/parse.y
 +++ b/src/parse.y
-@@ -79,6 +79,7 @@ typedef struct {
+@@ -80,6 +80,7 @@ typedef struct {
  	} v;
  	int lineno;
  } YYSTYPE;
@@ -20,5 +20,5 @@ index eb7e9b9..7ae236b 100644
  %}
  
 -- 
-2.26.1
+2.29.2
 
