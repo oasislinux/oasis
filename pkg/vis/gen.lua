@@ -1,4 +1,4 @@
-set('version', 'v0.6')
+set('version', 'v0.7')
 cflags{
 	'-std=c99',
 	'-D CONFIG_HELP=1',
@@ -29,10 +29,31 @@ pkg.deps = {
 }
 
 exe('vis', [[
-	array.c buffer.c libutf.c main.c map.c
-	sam.c text.c text-motions.c text-objects.c text-util.c
-	ui-terminal.c view.c vis.c vis-lua.c vis-modes.c vis-motions.c
-	vis-operators.c vis-registers.c vis-marks.c vis-prompt.c vis-text-objects.c text-regex.c
+	array.c
+	buffer.c
+	libutf.c
+	main.c
+	map.c
+	sam.c
+	text.c
+	text-common.c
+	text-io.c
+	text-iterator.c
+	text-motions.c
+	text-objects.c
+	text-util.c
+	ui-terminal.c
+	view.c
+	vis.c
+	vis-lua.c
+	vis-marks.c
+	vis-modes.c
+	vis-motions.c
+	vis-operators.c
+	vis-prompt.c
+	vis-registers.c
+	vis-text-objects.c
+	text-regex.c
 	$builddir/pkg/libtermkey/libtermkey.a.d
 	$builddir/pkg/lpeg/liblpeg.a
 	$builddir/pkg/lua/liblua.a

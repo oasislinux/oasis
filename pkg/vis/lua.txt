@@ -1,4 +1,4 @@
-# 2,<cd src/lua && find * -type f -name '*.lua' | sort
+# 2,<cd src/lua && find * -type f -name '*.lua' | LC_COLLATE=C sort
 lexers/actionscript.lua
 lexers/ada.lua
 lexers/ansi_c.lua
@@ -36,6 +36,7 @@ lexers/dot.lua
 lexers/dsv.lua
 lexers/eiffel.lua
 lexers/elixir.lua
+lexers/elm.lua
 lexers/erlang.lua
 lexers/fantom.lua
 lexers/faust.lua
@@ -46,8 +47,10 @@ lexers/fortran.lua
 lexers/fsharp.lua
 lexers/fstab.lua
 lexers/gap.lua
+lexers/gemini.lua
 lexers/gettext.lua
 lexers/gherkin.lua
+lexers/git-rebase.lua
 lexers/glsl.lua
 lexers/gnuplot.lua
 lexers/go.lua
@@ -64,6 +67,7 @@ lexers/java.lua
 lexers/javascript.lua
 lexers/json.lua
 lexers/jsp.lua
+lexers/julia.lua
 lexers/latex.lua
 lexers/ledger.lua
 lexers/less.lua
@@ -77,6 +81,7 @@ lexers/makefile.lua
 lexers/man.lua
 lexers/markdown.lua
 lexers/matlab.lua
+lexers/meson.lua
 lexers/moonscript.lua
 lexers/myrddin.lua
 lexers/nemerle.lua
@@ -106,6 +111,7 @@ lexers/rebol.lua
 lexers/rest.lua
 lexers/rexx.lua
 lexers/rhtml.lua
+lexers/routeros.lua
 lexers/rstats.lua
 lexers/ruby.lua
 lexers/rust.lua
@@ -136,6 +142,7 @@ lexers/xml.lua
 lexers/xs.lua
 lexers/xtend.lua
 lexers/yaml.lua
+lexers/zig.lua
 plugins/complete-filename.lua
 plugins/complete-word.lua
 plugins/digraph.lua
