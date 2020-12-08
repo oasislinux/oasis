@@ -230,6 +230,7 @@ youtube_dl/extractor/freesound.py
 youtube_dl/extractor/freespeech.py
 youtube_dl/extractor/freshlive.py
 youtube_dl/extractor/frontendmasters.py
+youtube_dl/extractor/fujitv.py
 youtube_dl/extractor/funimation.py
 youtube_dl/extractor/funk.py
 youtube_dl/extractor/fusion.py
@@ -663,6 +664,7 @@ youtube_dl/extractor/tv5mondeplus.py
 youtube_dl/extractor/tva.py
 youtube_dl/extractor/tvanouvelles.py
 youtube_dl/extractor/tvc.py
+youtube_dl/extractor/tver.py
 youtube_dl/extractor/tvigle.py
 youtube_dl/extractor/tvland.py
 youtube_dl/extractor/tvn24.py
