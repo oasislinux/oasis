@@ -61,7 +61,7 @@ lib('libcurl.a', [[
 		socks_gssapi.c socks_sspi.c speedcheck.c splay.c strcase.c strdup.c
 		strerror.c strtok.c strtoofft.c system_win32.c telnet.c tftp.c timeval.c
 		transfer.c urlapi.c version.c warnless.c wildcard.c x509asn1.c dynbuf.c
-		version_win32.c easyoptions.c easygetopt.c
+		version_win32.c easyoptions.c easygetopt.c hsts.c
 		vauth/(
 			cleartext.c cram.c digest.c
 			digest_sspi.c krb5_gssapi.c krb5_sspi.c ntlm.c

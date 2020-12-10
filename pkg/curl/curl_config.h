@@ -3,6 +3,7 @@
 /* #undef CURL_CA_FALLBACK */
 /* #undef CURL_CA_PATH */
 /* #undef CURL_DEFAULT_SSL_BACKEND */
+/* #undef CURL_DISABLE_ALTSVC */
 /* #undef CURL_DISABLE_COOKIES */
 /* #undef CURL_DISABLE_CRYPTO_AUTH */
 /* #undef CURL_DISABLE_DICT */
@@ -286,7 +287,7 @@
 #define NTLM_WB_FILE "/usr/bin/ntlm_auth"
 #define OS "oasis"
 #define PACKAGE "curl"
-#define PACKAGE_BUGREPORT "a suitable curl mailing list: https://curl.haxx.se/mail/"
+#define PACKAGE_BUGREPORT "a suitable curl mailing list: https://curl.se/mail/"
 #define PACKAGE_NAME "curl"
 #define PACKAGE_STRING "curl -"
 #define PACKAGE_TARNAME "curl"
@@ -321,13 +322,13 @@
 #define STDC_HEADERS 1
 #define STRERROR_R_TYPE_ARG3 size_t
 #define TIME_WITH_SYS_TIME 1
-/* #undef USE_ALTSVC */
 /* #undef USE_AMISSL */
 /* #undef USE_ARES */
 #define USE_BEARSSL 1
 /* #undef USE_ECH */
 /* #undef USE_GNUTLS */
 /* #undef USE_GNUTLS_NETTLE */
+/* #undef USE_HSTS */
 /* #undef USE_LIBPSL */
 /* #undef USE_LIBRTMP */
 /* #undef USE_LIBSSH */
