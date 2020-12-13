@@ -1,6 +1,6 @@
 /* #undef ENABLE_NLS */
 #define HAVE_ARPA_INET_H 1
-/* #undef HAVE_CFLOCALECOPYCURRENT */
+/* #undef HAVE_CFLOCALECOPYPREFERREDLANGUAGES */
 /* #undef HAVE_CFPREFERENCESCOPYAPPVALUE */
 /* #undef HAVE_DCGETTEXT */
 #define HAVE_FMEMOPEN 1
@@ -16,7 +16,8 @@
 /* #undef HAVE_LIBIDN */
 #define HAVE_LIBRESOLV 1
 /* #undef HAVE_LIBSECRET */
-#define HAVE_LIBSSL 1
+/* #undef HAVE_LIBSSL */
+#define HAVE_LIBTLS 1
 #define HAVE_LINK 1
 /* #undef HAVE_MACOSXKEYRING */
 #define HAVE_MEMORY_H 1

@@ -2,7 +2,11 @@ cflags{
 	'-D HAVE_CONFIG_H',
 	string.format([[-D 'SYSCONFDIR="%s/etc"']], config.prefix),
 	'-I $dir',
-	'-isystem $builddir/pkg/libressl/include',
+	'-isystem $builddir/pkg/libtls-bearssl/include',
+}
+
+pkg.deps = {
+	'pkg/libtls-bearssl/headers',
 }
 
 exe('msmtp', [[
@@ -21,12 +25,13 @@ exe('msmtp', [[
 		password.c
 		base64.c
 
-		tls.c
+		mtls.c
+		mtls-libtls.c
 
 		md5.c md5-apps.c
 	)
-	$builddir/pkg/libressl/(libssl.a.d libcrypto.a.d)
-]], {'pkg/libressl/headers'})
+	$builddir/pkg/libtls-bearssl/libtls.a.d
+]])
 
 file('bin/msmtp', '755', '$outdir/msmtp')
 man{'doc/msmtp.1'}
