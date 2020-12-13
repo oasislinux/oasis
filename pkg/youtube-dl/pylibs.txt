@@ -62,7 +62,6 @@ youtube_dl/extractor/azmedien.py
 youtube_dl/extractor/baidu.py
 youtube_dl/extractor/bandcamp.py
 youtube_dl/extractor/bbc.py
-youtube_dl/extractor/beampro.py
 youtube_dl/extractor/beatport.py
 youtube_dl/extractor/beeg.py
 youtube_dl/extractor/behindkink.py
@@ -565,7 +564,6 @@ youtube_dl/extractor/skynewsarabia.py
 youtube_dl/extractor/slideshare.py
 youtube_dl/extractor/slideslive.py
 youtube_dl/extractor/slutload.py
-youtube_dl/extractor/smotri.py
 youtube_dl/extractor/snotr.py
 youtube_dl/extractor/sohu.py
 youtube_dl/extractor/sonyliv.py
