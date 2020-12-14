@@ -1,9 +1,8 @@
 cflags{
-	'-Wall', '-Wno-maybe-uninitialized',
+	'-std=c99', '-Wall', '-Wpedantic',
 	'-D FT2_BUILD_LIBRARY',
 	'-D FT_CONFIG_OPTION_SYSTEM_ZLIB',
 	'-D HAVE_FCNTL_H',
-	'-D HAVE_STDINT_H',
 	'-D HAVE_UNISTD_H',
 	'-I $srcdir/builds/unix',
 	'-I $srcdir/include/freetype/config',
@@ -46,6 +45,9 @@ pkg.hdrs = copy('$outdir/include', '$srcdir/include', paths[[
 			ftheader.h
 			ftoption.h
 			ftstdlib.h
+			integer-types.h
+			mac-support.h
+			public-macros.h
 		)
 	)
 ]])
