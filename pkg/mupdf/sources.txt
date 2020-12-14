@@ -72,10 +72,12 @@ fitz/log.c
 fitz/memento.c
 fitz/memory.c
 fitz/noto.c
+fitz/ocr-device.c
 fitz/outline.c
 fitz/output-cbz.c
 fitz/output-pcl.c
 fitz/output-pclm.c
+fitz/output-pdfocr.c
 fitz/output-png.c
 fitz/output-pnm.c
 fitz/output-ps.c
@@ -110,8 +112,10 @@ fitz/ucdn.c
 fitz/untar.c
 fitz/unzip.c
 fitz/util.c
+fitz/warp.c
 fitz/writer.c
 fitz/xml.c
+fitz/xmltext-device.c
 fitz/zip.c
 pdf/pdf-annot.c
 pdf/pdf-appearance.c
