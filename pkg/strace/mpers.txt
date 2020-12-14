@@ -14,6 +14,7 @@ fetch_struct_statfs.c
 fetch_struct_xfs_quotastat.c
 hdio.c
 ipc_msgctl.c
+ipc_semctl.c
 ipc_shmctl.c
 loop.c
 mtd.c
