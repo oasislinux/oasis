@@ -8,6 +8,7 @@ import urllib.request
 names = {
 	'awk': 'nawk',
 	'lpeg': 'lua:lpeg',
+	'sfeed_curses': 'sfeed-curses',
 	'sshfs': 'fusefs:sshfs',
 	'st': 'st-term',
 	'terminus-font': 'fonts:terminus',
@@ -48,7 +49,7 @@ for line in p.stdout:
 		pkgs = json.loads(response.read())
 	newest = collections.Counter()
 	for pkg in pkgs:
-		if pkg['status'] == 'newest':
+		if pkg['status'] in ('newest', 'unique'):
 			newest[pkg['version']] += 1
 	if not newest:
 		print('could not find newest version of {}'.format(proj), file=sys.stderr)
