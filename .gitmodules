@@ -102,9 +102,6 @@
 	path = pkg/git/src
 	url = https://github.com/git/git
 	ignore = all
-[submodule "pkg/gumbo/src"]
-	path = pkg/gumbo/src
-	url = https://github.com/google/gumbo-parser.git
 [submodule "pkg/hotplugd/src"]
 	path = pkg/hotplugd/src
 	url = https://github.com/oasislinux/hotplugd.git
