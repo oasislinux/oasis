@@ -189,7 +189,6 @@
 [submodule "pkg/msmtp/src"]
 	path = pkg/msmtp/src
 	url = https://github.com/marlam/msmtp-mirror
-	ignore = all
 [submodule "pkg/mtdev/src"]
 	path = pkg/mtdev/src
 	url = http://bitmath.org/git/mtdev.git
