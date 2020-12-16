@@ -27,4 +27,6 @@ for _, cmd in ipairs{'less', 'lessecho', 'lesskey'} do
 	file('share/man/man1/'..cmd..'.1.gz', '644', '$outdir/'..cmd..'.1.gz')
 end
 
+sym('bin/more', 'less')
+
 fetch 'curl'
