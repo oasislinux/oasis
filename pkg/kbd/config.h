@@ -1,6 +1,8 @@
 /* #undef CLOSEDIR_VOID */
 /* #undef ENABLE_NLS */
 #define HAVE_ALARM 1
+/* #undef HAVE_CFLOCALECOPYCURRENT */
+/* #undef HAVE_CFPREFERENCESCOPYAPPVALUE */
 #define HAVE_CHOWN 1
 /* #undef HAVE_DCGETTEXT */
 #define HAVE_DIRENT_H 1
@@ -8,7 +10,7 @@
 #define HAVE_FCNTL_H 1
 #define HAVE_FORK 1
 /* #undef HAVE_GETTEXT */
-#define HAVE_ICONV 1
+/* #undef HAVE_ICONV */
 #define HAVE_INTTYPES_H 1
 #define HAVE_LIBINTL_H 1
 #define HAVE_LOCALE_H 1
@@ -50,13 +52,13 @@
 #define PACKAGE "kbd"
 #define PACKAGE_BUGREPORT "gladkov.alexey@gmail.com"
 #define PACKAGE_NAME "kbd"
-#define PACKAGE_STRING "kbd 2.2.0"
+#define PACKAGE_STRING "kbd 2.4.0"
 #define PACKAGE_TARNAME "kbd"
 #define PACKAGE_URL "http://kbd-project.org/"
-#define PACKAGE_VERSION "2.2.0"
+#define PACKAGE_VERSION "2.4.0"
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
-#define VERSION "2.2.0"
+#define VERSION "2.4.0"
 /* #undef YYTEXT_POINTER */
 /* #undef const */
 /* #undef gid_t */

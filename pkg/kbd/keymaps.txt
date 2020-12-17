@@ -55,7 +55,11 @@ i386/include/qwertz-layout.inc
 i386/include/unicode.map
 i386/include/windowkeys.map
 i386/neo/README.md
+i386/neo/adnw.map
+i386/neo/bone.map
+i386/neo/koy.map
 i386/neo/neo.map
+i386/neo/neoqwertz.map
 i386/olpc/es.map
 i386/olpc/pt.map
 i386/qwerty/bashkir.map
