@@ -1,4 +1,4 @@
-From 15d284ff179b0af83e13bba21912cf9aadf422aa Mon Sep 17 00:00:00 2001
+From cdd4e1770e86f077391f18dbcb6d6a3bb004aa64 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:21:05 -0700
 Subject: [PATCH] Don't use empty initializer lists
@@ -90,18 +90,18 @@ Subject: [PATCH] Don't use empty initializer lists
  83 files changed, 287 insertions(+), 287 deletions(-)
 
 diff --git a/bridge/mdb.c b/bridge/mdb.c
-index 1f2cebd8..124fef49 100644
+index 2d653682..88b5a660 100644
 --- a/bridge/mdb.c
 +++ b/bridge/mdb.c
-@@ -377,7 +377,7 @@ static int mdb_modify(int cmd, int flags, int argc, char **argv)
- 		.n.nlmsg_type = cmd,
+@@ -452,7 +452,7 @@ static int mdb_modify(int cmd, int flags, int argc, char **argv)
  		.bpm.family = PF_BRIDGE,
  	};
+ 	char *d = NULL, *p = NULL, *grp = NULL, *src = NULL;
 -	struct br_mdb_entry entry = {};
 +	struct br_mdb_entry entry = {0};
- 	char *d = NULL, *p = NULL, *grp = NULL;
  	short vid = 0;
  
+ 	while (argc > 0) {
 diff --git a/bridge/vlan.c b/bridge/vlan.c
 index cc1c34cf..231f8543 100644
 --- a/bridge/vlan.c
@@ -125,10 +125,10 @@ index cc1c34cf..231f8543 100644
  	unsigned short flags = 0;
  	__u32 tun_id_start = 0;
 diff --git a/devlink/devlink.c b/devlink/devlink.c
-index 007677a5..bcdc700c 100644
+index 43549965..4b2ac5b4 100644
 --- a/devlink/devlink.c
 +++ b/devlink/devlink.c
-@@ -748,7 +748,7 @@ static int function_attr_cb(const struct nlattr *attr, void *data)
+@@ -751,7 +751,7 @@ static int function_attr_cb(const struct nlattr *attr, void *data)
  
  static int ifname_map_cb(const struct nlmsghdr *nlh, void *data)
  {
@@ -137,7 +137,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  	struct dl *dl = data;
  	struct ifname_map *ifname_map;
-@@ -2310,7 +2310,7 @@ static void pr_out_eswitch(struct dl *dl, struct nlattr **tb)
+@@ -2355,7 +2355,7 @@ static void pr_out_eswitch(struct dl *dl, struct nlattr **tb)
  static int cmd_dev_eswitch_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dl *dl = data;
@@ -146,7 +146,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -2478,7 +2478,7 @@ static const struct param_val_conv param_val_conv[] = {
+@@ -2523,7 +2523,7 @@ static const struct param_val_conv param_val_conv[] = {
  static void pr_out_param_value(struct dl *dl, const char *nla_name,
  			       int nla_type, struct nlattr *nl)
  {
@@ -155,7 +155,7 @@ index 007677a5..bcdc700c 100644
  	struct nlattr *val_attr;
  	const char *vstr;
  	bool conv_exists;
-@@ -2560,7 +2560,7 @@ static void pr_out_param_value(struct dl *dl, const char *nla_name,
+@@ -2605,7 +2605,7 @@ static void pr_out_param_value(struct dl *dl, const char *nla_name,
  
  static void pr_out_param(struct dl *dl, struct nlattr **tb, bool array)
  {
@@ -164,7 +164,7 @@ index 007677a5..bcdc700c 100644
  	struct nlattr *param_value_attr;
  	const char *nla_name;
  	int nla_type;
-@@ -2603,7 +2603,7 @@ static void pr_out_param(struct dl *dl, struct nlattr **tb, bool array)
+@@ -2648,7 +2648,7 @@ static void pr_out_param(struct dl *dl, struct nlattr **tb, bool array)
  static int cmd_dev_param_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
@@ -173,7 +173,7 @@ index 007677a5..bcdc700c 100644
  	struct dl *dl = data;
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -2629,8 +2629,8 @@ struct param_ctx {
+@@ -2674,8 +2674,8 @@ struct param_ctx {
  static int cmd_dev_param_set_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
@@ -184,7 +184,7 @@ index 007677a5..bcdc700c 100644
  	struct nlattr *param_value_attr;
  	enum devlink_param_cmode cmode;
  	struct param_ctx *ctx = data;
-@@ -2654,7 +2654,7 @@ static int cmd_dev_param_set_cb(const struct nlmsghdr *nlh, void *data)
+@@ -2699,7 +2699,7 @@ static int cmd_dev_param_set_cb(const struct nlmsghdr *nlh, void *data)
  	nla_type = mnl_attr_get_u8(nla_param[DEVLINK_ATTR_PARAM_TYPE]);
  	mnl_attr_for_each_nested(param_value_attr,
  				 nla_param[DEVLINK_ATTR_PARAM_VALUES_LIST]) {
@@ -193,7 +193,7 @@ index 007677a5..bcdc700c 100644
  		struct nlattr *val_attr;
  
  		err = mnl_attr_parse_nested(param_value_attr,
-@@ -2696,7 +2696,7 @@ static int cmd_dev_param_set_cb(const struct nlmsghdr *nlh, void *data)
+@@ -2741,7 +2741,7 @@ static int cmd_dev_param_set_cb(const struct nlmsghdr *nlh, void *data)
  
  static int cmd_dev_param_set(struct dl *dl)
  {
@@ -201,8 +201,8 @@ index 007677a5..bcdc700c 100644
 +	struct param_ctx ctx = {0};
  	struct nlmsghdr *nlh;
  	bool conv_exists;
- 	uint32_t val_u32;
-@@ -2851,7 +2851,7 @@ static int cmd_dev_param(struct dl *dl)
+ 	uint32_t val_u32 = 0;
+@@ -2896,7 +2896,7 @@ static int cmd_dev_param(struct dl *dl)
  static int cmd_dev_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dl *dl = data;
@@ -211,7 +211,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  	uint8_t reload_failed = 0;
  
-@@ -2923,7 +2923,7 @@ static void pr_out_versions_single(struct dl *dl, const struct nlmsghdr *nlh,
+@@ -2968,7 +2968,7 @@ static void pr_out_versions_single(struct dl *dl, const struct nlmsghdr *nlh,
  	struct nlattr *version;
  
  	mnl_attr_for_each(version, nlh, sizeof(struct genlmsghdr)) {
@@ -220,7 +220,7 @@ index 007677a5..bcdc700c 100644
  		const char *ver_value;
  		const char *ver_name;
  		int err;
-@@ -3013,7 +3013,7 @@ static void pr_out_info(struct dl *dl, const struct nlmsghdr *nlh,
+@@ -3058,7 +3058,7 @@ static void pr_out_info(struct dl *dl, const struct nlmsghdr *nlh,
  static int cmd_versions_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
@@ -229,7 +229,7 @@ index 007677a5..bcdc700c 100644
  	bool has_versions, has_info;
  	struct dl *dl = data;
  
-@@ -3451,7 +3451,7 @@ static void pr_out_port(struct dl *dl, struct nlattr **tb)
+@@ -3610,7 +3610,7 @@ static void pr_out_port(struct dl *dl, struct nlattr **tb)
  static int cmd_port_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dl *dl = data;
@@ -238,7 +238,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -3642,7 +3642,7 @@ static void pr_out_sb(struct dl *dl, struct nlattr **tb)
+@@ -3801,7 +3801,7 @@ static void pr_out_sb(struct dl *dl, struct nlattr **tb)
  static int cmd_sb_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dl *dl = data;
@@ -247,7 +247,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -3721,7 +3721,7 @@ static void pr_out_sb_pool(struct dl *dl, struct nlattr **tb)
+@@ -3880,7 +3880,7 @@ static void pr_out_sb_pool(struct dl *dl, struct nlattr **tb)
  static int cmd_sb_pool_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dl *dl = data;
@@ -256,7 +256,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -3807,7 +3807,7 @@ static void pr_out_sb_port_pool(struct dl *dl, struct nlattr **tb)
+@@ -3966,7 +3966,7 @@ static void pr_out_sb_port_pool(struct dl *dl, struct nlattr **tb)
  static int cmd_sb_port_pool_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dl *dl = data;
@@ -265,7 +265,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -3910,7 +3910,7 @@ static void pr_out_sb_tc_bind(struct dl *dl, struct nlattr **tb)
+@@ -4069,7 +4069,7 @@ static void pr_out_sb_tc_bind(struct dl *dl, struct nlattr **tb)
  static int cmd_sb_tc_bind_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dl *dl = data;
@@ -274,7 +274,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -4198,7 +4198,7 @@ static void cmd_sb_occ_port_pool_process(struct occ_show *occ_show,
+@@ -4357,7 +4357,7 @@ static void cmd_sb_occ_port_pool_process(struct occ_show *occ_show,
  static int cmd_sb_occ_port_pool_process_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct occ_show *occ_show = data;
@@ -283,7 +283,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -4249,7 +4249,7 @@ static void cmd_sb_occ_tc_pool_process(struct occ_show *occ_show,
+@@ -4408,7 +4408,7 @@ static void cmd_sb_occ_tc_pool_process(struct occ_show *occ_show,
  static int cmd_sb_occ_tc_pool_process_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct occ_show *occ_show = data;
@@ -292,7 +292,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -4536,7 +4536,7 @@ static void pr_out_trap_policer(struct dl *dl, struct nlattr **tb, bool array);
+@@ -4695,7 +4695,7 @@ static void pr_out_trap_policer(struct dl *dl, struct nlattr **tb, bool array);
  static int cmd_mon_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dl *dl = data;
@@ -301,7 +301,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  	uint8_t cmd = genl->cmd;
  
-@@ -5064,7 +5064,7 @@ static void pr_out_dpipe_headers(struct dpipe_ctx *ctx,
+@@ -5223,7 +5223,7 @@ static void pr_out_dpipe_headers(struct dpipe_ctx *ctx,
  
  static int dpipe_header_field_get(struct nlattr *nl, struct dpipe_field *field)
  {
@@ -310,7 +310,7 @@ index 007677a5..bcdc700c 100644
  	const char *name;
  	int err;
  
-@@ -5115,7 +5115,7 @@ static unsigned int dpipe_header_field_count_get(struct nlattr *nla_fields)
+@@ -5274,7 +5274,7 @@ static unsigned int dpipe_header_field_count_get(struct nlattr *nla_fields)
  
  static int dpipe_header_get(struct dpipe_ctx *ctx, struct nlattr *nl)
  {
@@ -319,7 +319,7 @@ index 007677a5..bcdc700c 100644
  	struct dpipe_header *header;
  	unsigned int fields_count;
  	const char *header_name;
-@@ -5171,7 +5171,7 @@ static int dpipe_headers_get(struct dpipe_ctx *ctx, struct nlattr **tb)
+@@ -5330,7 +5330,7 @@ static int dpipe_headers_get(struct dpipe_ctx *ctx, struct nlattr **tb)
  static int cmd_dpipe_header_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dpipe_ctx *ctx = data;
@@ -328,7 +328,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  	int err;
  
-@@ -5193,7 +5193,7 @@ static int cmd_dpipe_header_cb(const struct nlmsghdr *nlh, void *data)
+@@ -5352,7 +5352,7 @@ static int cmd_dpipe_header_cb(const struct nlmsghdr *nlh, void *data)
  static int cmd_dpipe_headers_show(struct dl *dl)
  {
  	struct nlmsghdr *nlh;
@@ -337,7 +337,7 @@ index 007677a5..bcdc700c 100644
  	uint16_t flags = NLM_F_REQUEST | NLM_F_ACK;
  	int err;
  
-@@ -5288,7 +5288,7 @@ static void pr_out_dpipe_action(struct dpipe_action *action,
+@@ -5447,7 +5447,7 @@ static void pr_out_dpipe_action(struct dpipe_action *action,
  
  static int dpipe_action_parse(struct dpipe_action *action, struct nlattr *nl)
  {
@@ -346,7 +346,7 @@ index 007677a5..bcdc700c 100644
  	int err;
  
  	err = mnl_attr_parse_nested(nl, attr_cb, nla_action);
-@@ -5373,7 +5373,7 @@ static int dpipe_match_parse(struct dpipe_match *match,
+@@ -5532,7 +5532,7 @@ static int dpipe_match_parse(struct dpipe_match *match,
  			     struct nlattr *nl)
  
  {
@@ -355,7 +355,7 @@ index 007677a5..bcdc700c 100644
  	int err;
  
  	err = mnl_attr_parse_nested(nl, attr_cb, nla_match);
-@@ -5478,7 +5478,7 @@ resource_path_print(struct dl *dl, struct resources *resources,
+@@ -5637,7 +5637,7 @@ resource_path_print(struct dl *dl, struct resources *resources,
  
  static int dpipe_table_show(struct dpipe_ctx *ctx, struct nlattr *nl)
  {
@@ -364,7 +364,7 @@ index 007677a5..bcdc700c 100644
  	struct dpipe_table *table;
  	uint32_t resource_units;
  	bool counters_enabled;
-@@ -5572,7 +5572,7 @@ err_table_show:
+@@ -5731,7 +5731,7 @@ err_table_show:
  static int cmd_dpipe_table_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dpipe_ctx *ctx = data;
@@ -373,7 +373,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -5590,8 +5590,8 @@ static int cmd_resource_dump_cb(const struct nlmsghdr *nlh, void *data);
+@@ -5749,8 +5749,8 @@ static int cmd_resource_dump_cb(const struct nlmsghdr *nlh, void *data);
  static int cmd_dpipe_table_show(struct dl *dl)
  {
  	struct nlmsghdr *nlh;
@@ -384,7 +384,7 @@ index 007677a5..bcdc700c 100644
  	uint16_t flags = NLM_F_REQUEST;
  	int err;
  
-@@ -5848,7 +5848,7 @@ static void pr_out_dpipe_entry_value(struct dpipe_ctx *ctx,
+@@ -6007,7 +6007,7 @@ static void pr_out_dpipe_entry_value(struct dpipe_ctx *ctx,
  static int dpipe_entry_match_value_show(struct dpipe_ctx *ctx,
  					struct nlattr *nl)
  {
@@ -393,7 +393,7 @@ index 007677a5..bcdc700c 100644
  	struct dpipe_match match;
  	int err;
  
-@@ -5879,7 +5879,7 @@ err_match_parse:
+@@ -6038,7 +6038,7 @@ err_match_parse:
  static int dpipe_entry_action_value_show(struct dpipe_ctx *ctx,
  					 struct nlattr *nl)
  {
@@ -402,7 +402,7 @@ index 007677a5..bcdc700c 100644
  	struct dpipe_action action;
  	int err;
  
-@@ -5935,7 +5935,7 @@ dpipe_tables_match_values_show(struct dpipe_ctx *ctx,
+@@ -6094,7 +6094,7 @@ dpipe_tables_match_values_show(struct dpipe_ctx *ctx,
  
  static int dpipe_entry_show(struct dpipe_ctx *ctx, struct nlattr *nl)
  {
@@ -411,7 +411,7 @@ index 007677a5..bcdc700c 100644
  	uint32_t entry_index;
  	uint64_t counter;
  	int err;
-@@ -5999,7 +5999,7 @@ err_entry_show:
+@@ -6158,7 +6158,7 @@ err_entry_show:
  static int cmd_dpipe_table_entry_dump_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct dpipe_ctx *ctx = data;
@@ -420,7 +420,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -6015,7 +6015,7 @@ static int cmd_dpipe_table_entry_dump_cb(const struct nlmsghdr *nlh, void *data)
+@@ -6174,7 +6174,7 @@ static int cmd_dpipe_table_entry_dump_cb(const struct nlmsghdr *nlh, void *data)
  static int cmd_dpipe_table_dump(struct dl *dl)
  {
  	struct nlmsghdr *nlh;
@@ -429,7 +429,7 @@ index 007677a5..bcdc700c 100644
  	uint16_t flags = NLM_F_REQUEST;
  	int err;
  
-@@ -6124,7 +6124,7 @@ static int
+@@ -6283,7 +6283,7 @@ static int
  resource_get(struct resource_ctx *ctx, struct resource *resource,
  	     struct resource *parent_resource, struct nlattr *nl)
  {
@@ -438,7 +438,7 @@ index 007677a5..bcdc700c 100644
  	struct nlattr *nla_child_resource;
  	struct nlattr *nla_resources;
  	bool top = false;
-@@ -6272,7 +6272,7 @@ static int resources_get(struct resource_ctx *ctx, struct nlattr **tb)
+@@ -6431,7 +6431,7 @@ static int resources_get(struct resource_ctx *ctx, struct nlattr **tb)
  static int cmd_resource_dump_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct resource_ctx *ctx = data;
@@ -447,7 +447,7 @@ index 007677a5..bcdc700c 100644
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
  	int err;
  
-@@ -6296,8 +6296,8 @@ static int cmd_resource_dump_cb(const struct nlmsghdr *nlh, void *data)
+@@ -6455,8 +6455,8 @@ static int cmd_resource_dump_cb(const struct nlmsghdr *nlh, void *data)
  static int cmd_resource_show(struct dl *dl)
  {
  	struct nlmsghdr *nlh;
@@ -458,7 +458,7 @@ index 007677a5..bcdc700c 100644
  	int err;
  
  	err = dl_argv_parse(dl, DL_OPT_HANDLE, 0);
-@@ -6392,7 +6392,7 @@ err_resource_lookup:
+@@ -6551,7 +6551,7 @@ err_resource_lookup:
  static int cmd_resource_set(struct dl *dl)
  {
  	struct nlmsghdr *nlh;
@@ -467,7 +467,7 @@ index 007677a5..bcdc700c 100644
  	int err;
  
  	err = resource_ctx_init(&ctx, dl);
-@@ -6504,7 +6504,7 @@ static void pr_out_region_snapshots_id(struct dl *dl, struct nlattr **tb, int in
+@@ -6663,7 +6663,7 @@ static void pr_out_region_snapshots_id(struct dl *dl, struct nlattr **tb, int in
  
  static void pr_out_snapshots(struct dl *dl, struct nlattr **tb)
  {
@@ -476,7 +476,7 @@ index 007677a5..bcdc700c 100644
  	struct nlattr *nla_sanpshot;
  	int err, index = 0;
  
-@@ -6545,7 +6545,7 @@ static void pr_out_region(struct dl *dl, struct nlattr **tb)
+@@ -6704,7 +6704,7 @@ static void pr_out_region(struct dl *dl, struct nlattr **tb)
  static int cmd_region_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
@@ -485,7 +485,7 @@ index 007677a5..bcdc700c 100644
  	struct dl *dl = data;
  
  	mnl_attr_parse(nlh, sizeof(*genl), attr_cb, tb);
-@@ -6601,8 +6601,8 @@ static int cmd_region_read_cb(const struct nlmsghdr *nlh, void *data)
+@@ -6760,8 +6760,8 @@ static int cmd_region_read_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct nlattr *nla_entry, *nla_chunk_data, *nla_chunk_addr;
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
@@ -496,7 +496,7 @@ index 007677a5..bcdc700c 100644
  	struct dl *dl = data;
  	int err;
  
-@@ -6949,7 +6949,7 @@ static int cmd_fmsg_nest(struct fmsg_cb_data *fmsg_data, uint8_t nest_value,
+@@ -7108,7 +7108,7 @@ static int cmd_fmsg_nest(struct fmsg_cb_data *fmsg_data, uint8_t nest_value,
  static int cmd_fmsg_object_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
@@ -505,7 +505,7 @@ index 007677a5..bcdc700c 100644
  	struct fmsg_cb_data *fmsg_data = data;
  	struct dl *dl = fmsg_data->dl;
  	struct nlattr *nla_object;
-@@ -7133,7 +7133,7 @@ static void pr_out_dump_report_timestamp(struct dl *dl, const struct nlattr *att
+@@ -7299,7 +7299,7 @@ static void pr_out_dump_report_timestamp(struct dl *dl, const struct nlattr *att
  static void pr_out_health(struct dl *dl, struct nlattr **tb_health,
  			  bool print_device, bool print_port)
  {
@@ -514,7 +514,7 @@ index 007677a5..bcdc700c 100644
  	enum devlink_health_reporter_state state;
  	int err;
  
-@@ -7204,7 +7204,7 @@ struct health_ctx {
+@@ -7370,7 +7370,7 @@ struct health_ctx {
  static int cmd_health_show_cb(const struct nlmsghdr *nlh, void *data)
  {
  	struct genlmsghdr *genl = mnl_nlmsg_get_payload(nlh);
@@ -568,7 +568,7 @@ index c712d664..318e54b1 100644
  				if (tnl_get_ioctl(*argv, &old_p))
  					return -1;
 diff --git a/ip/ipaddress.c b/ip/ipaddress.c
-index 2b4cb48a..3a8884b4 100644
+index 571346b1..f8cea9cb 100644
 --- a/ip/ipaddress.c
 +++ b/ip/ipaddress.c
 @@ -167,7 +167,7 @@ static void print_queuelen(FILE *f, struct rtattr *tb[IFLA_MAX + 1])
@@ -589,7 +589,7 @@ index 2b4cb48a..3a8884b4 100644
  
  	SPRINT_BUF(b1);
  
-@@ -2248,7 +2248,7 @@ static int ipaddr_modify(int cmd, int flags, int argc, char **argv)
+@@ -2284,7 +2284,7 @@ static int ipaddr_modify(int cmd, int flags, int argc, char **argv)
  	char  *lcl_arg = NULL;
  	char  *valid_lftp = NULL;
  	char  *preferred_lftp = NULL;
@@ -598,7 +598,7 @@ index 2b4cb48a..3a8884b4 100644
  	inet_prefix peer;
  	int local_len = 0;
  	int peer_len = 0;
-@@ -2423,7 +2423,7 @@ static int ipaddr_modify(int cmd, int flags, int argc, char **argv)
+@@ -2459,7 +2459,7 @@ static int ipaddr_modify(int cmd, int flags, int argc, char **argv)
  		return nodev(d);
  
  	if (valid_lftp || preferred_lftp) {
@@ -634,10 +634,10 @@ index f090390f..edbe0f2f 100644
  	if (attrs[L2TP_ATTR_PW_TYPE])
  		p->pw_type = rta_getattr_u16(attrs[L2TP_ATTR_PW_TYPE]);
 diff --git a/ip/iplink.c b/ip/iplink.c
-index 5ec33a98..dc294a20 100644
+index d6b766de..4bd8c3cd 100644
 --- a/ip/iplink.c
 +++ b/ip/iplink.c
-@@ -1233,7 +1233,7 @@ static int set_mtu(const char *dev, int mtu)
+@@ -1256,7 +1256,7 @@ static int set_mtu(const char *dev, int mtu)
  
  static int get_address(const char *dev, int *htype)
  {
@@ -770,10 +770,10 @@ index 91d3512b..f1bf0b18 100644
  	int err;
  
 diff --git a/ip/ipxfrm.c b/ip/ipxfrm.c
-index bae568f8..68aea0cb 100644
+index ab8d5aa6..6b615f08 100644
 --- a/ip/ipxfrm.c
 +++ b/ip/ipxfrm.c
-@@ -907,7 +907,7 @@ void xfrm_xfrma_print(struct rtattr *tb[], __u16 family,
+@@ -911,7 +911,7 @@ void xfrm_xfrma_print(struct rtattr *tb[], __u16 family,
  
  static int xfrm_selector_iszero(struct xfrm_selector *s)
  {
@@ -782,7 +782,7 @@ index bae568f8..68aea0cb 100644
  
  	return (memcmp(&s0, s, sizeof(s0)) == 0);
  }
-@@ -916,7 +916,7 @@ void xfrm_state_info_print(struct xfrm_usersa_info *xsinfo,
+@@ -920,7 +920,7 @@ void xfrm_state_info_print(struct xfrm_usersa_info *xsinfo,
  			    struct rtattr *tb[], FILE *fp, const char *prefix,
  			    const char *title, bool nokeys)
  {
@@ -791,7 +791,7 @@ index bae568f8..68aea0cb 100644
  	int force_spi = xfrm_xfrmproto_is_ipsec(xsinfo->id.proto);
  
  	xfrm_id_info_print(&xsinfo->saddr, &xsinfo->id, xsinfo->mode,
-@@ -998,7 +998,7 @@ void xfrm_policy_info_print(struct xfrm_userpolicy_info *xpinfo,
+@@ -1002,7 +1002,7 @@ void xfrm_policy_info_print(struct xfrm_userpolicy_info *xpinfo,
  			    struct rtattr *tb[], FILE *fp, const char *prefix,
  			    const char *title)
  {
@@ -800,7 +800,7 @@ index bae568f8..68aea0cb 100644
  
  	xfrm_selector_print(&xpinfo->sel, preferred_family, fp, title);
  
-@@ -1099,8 +1099,8 @@ int xfrm_id_parse(xfrm_address_t *saddr, struct xfrm_id *id, __u16 *family,
+@@ -1103,8 +1103,8 @@ int xfrm_id_parse(xfrm_address_t *saddr, struct xfrm_id *id, __u16 *family,
  {
  	int argc = *argcp;
  	char **argv = *argvp;
@@ -811,7 +811,7 @@ index bae568f8..68aea0cb 100644
  
  	while (1) {
  		if (strcmp(*argv, "src") == 0) {
-@@ -1407,8 +1407,8 @@ int xfrm_selector_parse(struct xfrm_selector *sel, int *argcp, char ***argvp)
+@@ -1411,8 +1411,8 @@ int xfrm_selector_parse(struct xfrm_selector *sel, int *argcp, char ***argvp)
  {
  	int argc = *argcp;
  	char **argv = *argvp;
@@ -869,7 +869,7 @@ index 7cc00e7c..fc593008 100644
  	while (argc > 0) {
  		if (strcmp(*argv, "ptype") == 0) {
 diff --git a/ip/xfrm_state.c b/ip/xfrm_state.c
-index ddf784ca..cea6033f 100644
+index a4f452fa..dad6e53f 100644
 --- a/ip/xfrm_state.c
 +++ b/ip/xfrm_state.c
 @@ -307,9 +307,9 @@ static int xfrm_state_modify(int cmd, unsigned int flags, int argc, char **argv)
@@ -891,7 +891,7 @@ index ddf784ca..cea6033f 100644
  		char    str[CTX_BUF_SIZE];
 -	} ctx = {};
 +	} ctx = {0};
- 	__u32 output_mark = 0;
+ 	struct xfrm_mark output_mark = {0, 0};
  	bool is_if_id_set = false;
  	__u32 if_id = 0;
 @@ -396,7 +396,7 @@ static int xfrm_state_modify(int cmd, unsigned int flags, int argc, char **argv)
@@ -903,7 +903,7 @@ index ddf784ca..cea6033f 100644
  
  			if (coap)
  				duparg("coa", *argv);
-@@ -474,7 +474,7 @@ static int xfrm_state_modify(int cmd, unsigned int flags, int argc, char **argv)
+@@ -484,7 +484,7 @@ static int xfrm_state_modify(int cmd, unsigned int flags, int argc, char **argv)
  						struct xfrm_algo_auth auth;
  					} u;
  					char buf[XFRM_ALGO_KEY_BUF_SIZE];
@@ -1106,10 +1106,10 @@ index c7d45077..5d620f40 100644
  		if (read(fd, tmp, sizeof(tmp)) > 0)
  			ctx->cfg.jit_enabled = atoi(tmp);
 diff --git a/lib/libnetlink.c b/lib/libnetlink.c
-index 48b19501..5345b1c7 100644
+index 5585c27f..b67d208b 100644
 --- a/lib/libnetlink.c
 +++ b/lib/libnetlink.c
-@@ -81,7 +81,7 @@ static void print_ext_ack_msg(bool is_err, const char *msg)
+@@ -84,7 +84,7 @@ static void print_ext_ack_msg(bool is_err, const char *msg)
  /* dump netlink extended ack error message */
  int nl_dump_ext_ack(const struct nlmsghdr *nlh, nl_ext_ack_fn_t errfn)
  {
@@ -1118,7 +1118,7 @@ index 48b19501..5345b1c7 100644
  	const struct nlmsgerr *err = mnl_nlmsg_get_payload(nlh);
  	const struct nlmsghdr *err_nlh = NULL;
  	unsigned int hlen = sizeof(*err);
-@@ -128,7 +128,7 @@ int nl_dump_ext_ack(const struct nlmsghdr *nlh, nl_ext_ack_fn_t errfn)
+@@ -131,7 +131,7 @@ int nl_dump_ext_ack(const struct nlmsghdr *nlh, nl_ext_ack_fn_t errfn)
  
  int nl_dump_ext_ack_done(const struct nlmsghdr *nlh, int error)
  {
@@ -1163,10 +1163,10 @@ index 504961cb..ac412e29 100644
  		for (i = 0; i < ifnum; i++) {
  			if (get_ifname(ifr.ifr_name, ifnames[i]))
 diff --git a/misc/ss.c b/misc/ss.c
-index e5565725..cfc430cc 100644
+index 0593627b..8c7fcb0c 100644
 --- a/misc/ss.c
 +++ b/misc/ss.c
-@@ -2681,7 +2681,7 @@ static void sctp_timer_print(struct tcpstat *s)
+@@ -2682,7 +2682,7 @@ static void sctp_timer_print(struct tcpstat *s)
  static int tcp_show_line(char *line, const struct filter *f, int family)
  {
  	int rto = 0, ato = 0;
@@ -1175,7 +1175,7 @@ index e5565725..cfc430cc 100644
  	char *loc, *rem, *data;
  	char opt[256];
  	int n;
-@@ -2948,7 +2948,7 @@ static void tcp_show_info(const struct nlmsghdr *nlh, struct inet_diag_msg *r,
+@@ -2949,7 +2949,7 @@ static void tcp_show_info(const struct nlmsghdr *nlh, struct inet_diag_msg *r,
  		struct rtattr *tb[])
  {
  	double rtt = 0;
@@ -1184,7 +1184,7 @@ index e5565725..cfc430cc 100644
  
  	s.ss.state = r->idiag_state;
  
-@@ -3294,7 +3294,7 @@ static int inet_show_sock(struct nlmsghdr *nlh,
+@@ -3295,7 +3295,7 @@ static int inet_show_sock(struct nlmsghdr *nlh,
  	inet_stats_print(s, v6only);
  
  	if (show_options) {
@@ -1193,7 +1193,7 @@ index e5565725..cfc430cc 100644
  
  		t.timer = r->idiag_timer;
  		t.timeout = r->idiag_expires;
-@@ -3536,7 +3536,7 @@ static int show_one_inet_sock(struct nlmsghdr *h, void *arg)
+@@ -3572,7 +3572,7 @@ static int show_one_inet_sock(struct nlmsghdr *h, void *arg)
  	int err;
  	struct inet_diag_arg *diag_arg = arg;
  	struct inet_diag_msg *r = NLMSG_DATA(h);
@@ -1202,7 +1202,7 @@ index e5565725..cfc430cc 100644
  
  	if (!(diag_arg->f->families & FAMILY_MASK(r->idiag_family)))
  		return 0;
-@@ -3625,7 +3625,7 @@ static int tcp_show_netlink_file(struct filter *f)
+@@ -3661,7 +3661,7 @@ static int tcp_show_netlink_file(struct filter *f)
  		int err2;
  		size_t status, nitems;
  		struct nlmsghdr *h = (struct nlmsghdr *)buf;
@@ -1211,7 +1211,7 @@ index e5565725..cfc430cc 100644
  
  		status = fread(buf, 1, sizeof(*h), fp);
  		if (status != sizeof(*h)) {
-@@ -3782,7 +3782,7 @@ static int sctp_show(struct filter *f)
+@@ -3818,7 +3818,7 @@ static int sctp_show(struct filter *f)
  
  static int dgram_show_line(char *line, const struct filter *f, int family)
  {
@@ -1220,7 +1220,7 @@ index e5565725..cfc430cc 100644
  	char *loc, *rem, *data;
  	char opt[256];
  	int n;
-@@ -3922,7 +3922,7 @@ static bool unix_type_skip(struct sockstat *s, struct filter *f)
+@@ -3958,7 +3958,7 @@ static bool unix_type_skip(struct sockstat *s, struct filter *f)
  
  static void unix_stats_print(struct sockstat *s, struct filter *f)
  {
@@ -1229,7 +1229,7 @@ index e5565725..cfc430cc 100644
  
  	sock_state_print(s);
  
-@@ -4235,7 +4235,7 @@ static int packet_show_sock(struct nlmsghdr *nlh, void *arg)
+@@ -4271,7 +4271,7 @@ static int packet_show_sock(struct nlmsghdr *nlh, void *arg)
  	struct packet_diag_info *pinfo = NULL;
  	struct packet_diag_ring *ring_rx = NULL, *ring_tx = NULL;
  	struct rtattr *tb[PACKET_DIAG_MAX+1];
@@ -1238,7 +1238,7 @@ index e5565725..cfc430cc 100644
  	uint32_t fanout = 0;
  	bool has_fanout = false;
  
-@@ -4384,7 +4384,7 @@ static int packet_show_netlink(struct filter *f)
+@@ -4420,7 +4420,7 @@ static int packet_show_netlink(struct filter *f)
  static int packet_show_line(char *buf, const struct filter *f, int fam)
  {
  	unsigned long long sk;
@@ -1247,16 +1247,16 @@ index e5565725..cfc430cc 100644
  	int type, prot, iface, state, rq, uid, ino;
  
  	sscanf(buf, "%llx %*d %d %x %d %d %u %u %u",
-@@ -4508,7 +4508,7 @@ static int xdp_show_sock(struct nlmsghdr *nlh, void *arg)
- 	struct xdp_diag_info *info = NULL;
+@@ -4560,7 +4560,7 @@ static int xdp_show_sock(struct nlmsghdr *nlh, void *arg)
  	struct xdp_diag_umem *umem = NULL;
+ 	struct xdp_diag_stats *stats = NULL;
  	const struct filter *f = arg;
 -	struct sockstat stat = {};
 +	struct sockstat stat = {0};
  
  	parse_rtattr(tb, XDP_DIAG_MAX, (struct rtattr *)(msg + 1),
  		     nlh->nlmsg_len - NLMSG_LENGTH(sizeof(*msg)));
-@@ -4589,9 +4589,9 @@ static int netlink_show_one(struct filter *f,
+@@ -4645,9 +4645,9 @@ static int netlink_show_one(struct filter *f,
  		.remote.family	= AF_NETLINK,
  	};
  
@@ -1268,7 +1268,7 @@ index e5565725..cfc430cc 100644
  
  	if (f->f) {
  		st.rport = -1;
-@@ -4838,8 +4838,8 @@ static void tipc_sock_addr_print(struct rtattr *net_addr, struct rtattr *id)
+@@ -4894,8 +4894,8 @@ static void tipc_sock_addr_print(struct rtattr *net_addr, struct rtattr *id)
  	uint32_t node = rta_getattr_u32(net_addr);
  	uint32_t identity = rta_getattr_u32(id);
  
@@ -1279,7 +1279,7 @@ index e5565725..cfc430cc 100644
  
  	sprintf(addr, "%u", node);
  	sprintf(port, "%u", identity);
-@@ -4849,12 +4849,12 @@ static void tipc_sock_addr_print(struct rtattr *net_addr, struct rtattr *id)
+@@ -4905,12 +4905,12 @@ static void tipc_sock_addr_print(struct rtattr *net_addr, struct rtattr *id)
  
  static int tipc_show_sock(struct nlmsghdr *nlh, void *arg)
  {
@@ -1646,7 +1646,7 @@ index 388e9ee5..e6eb0147 100644
  	int pinfo_ok = 0;
  	struct rtattr *tail;
 diff --git a/tc/f_u32.c b/tc/f_u32.c
-index e0a322d5..483c4685 100644
+index 2ed5254a..6354400a 100644
 --- a/tc/f_u32.c
 +++ b/tc/f_u32.c
 @@ -984,7 +984,7 @@ static int u32_parse_opt(struct filter_util *qu, char *handle,
@@ -1747,7 +1747,7 @@ index 56e8f47c..ef8f75fb 100644
  	int argc = *argc_p;
  	char **argv = *argv_p;
 diff --git a/tc/m_pedit.c b/tc/m_pedit.c
-index 51dcf109..84fb9060 100644
+index aa874408..c99e53f3 100644
 --- a/tc/m_pedit.c
 +++ b/tc/m_pedit.c
 @@ -511,7 +511,7 @@ done:
@@ -1795,10 +1795,10 @@ index bfec9072..3c850f40 100644
  	int argc = *argc_p;
  	struct rtattr *tail;
 diff --git a/tc/m_vlan.c b/tc/m_vlan.c
-index 1096ba0f..3640d13a 100644
+index 57722b73..d4f0e993 100644
 --- a/tc/m_vlan.c
 +++ b/tc/m_vlan.c
-@@ -69,7 +69,7 @@ static int parse_vlan(struct action_util *a, int *argc_p, char ***argv_p,
+@@ -77,7 +77,7 @@ static int parse_vlan(struct action_util *a, int *argc_p, char ***argv_p,
  	int proto_set = 0;
  	__u8 prio;
  	int prio_set = 0;
@@ -2480,7 +2480,7 @@ index d899eeb6..dd8a7a49 100644
  	char str[33] = {0,};
  
 diff --git a/tipc/node.c b/tipc/node.c
-index ffdaeaea..40eda09e 100644
+index 05246013..171747ab 100644
 --- a/tipc/node.c
 +++ b/tipc/node.c
 @@ -26,9 +26,9 @@
@@ -2496,7 +2496,7 @@ index ffdaeaea..40eda09e 100644
  	uint32_t addr;
  
  	mnl_attr_parse(nlh, sizeof(struct genlmsghdr), parse_attrs, info);
-@@ -266,8 +266,8 @@ static int cmd_node_flush_key(struct nlmsghdr *nlh, const struct cmd *cmd,
+@@ -305,8 +305,8 @@ static int cmd_node_flush_key(struct nlmsghdr *nlh, const struct cmd *cmd,
  
  static int nodeid_get_cb(const struct nlmsghdr *nlh, void *data)
  {
@@ -2507,7 +2507,7 @@ index ffdaeaea..40eda09e 100644
  	char str[33] = {0,};
  	uint8_t id[16] = {0,};
  	uint64_t *w0 = (uint64_t *) &id[0];
-@@ -312,8 +312,8 @@ static int cmd_node_get_nodeid(struct nlmsghdr *nlh, const struct cmd *cmd,
+@@ -351,8 +351,8 @@ static int cmd_node_get_nodeid(struct nlmsghdr *nlh, const struct cmd *cmd,
  
  static int netid_get_cb(const struct nlmsghdr *nlh, void *data)
  {
@@ -2554,5 +2554,5 @@ index 852984ec..c6bf518b 100644
  		mnl_attr_parse_nested(attrs[TIPC_NLA_SOCK_CON], parse_attrs, con);
  		node = mnl_attr_get_u32(con[TIPC_NLA_CON_NODE]);
 -- 
-2.28.0
+2.29.2
 

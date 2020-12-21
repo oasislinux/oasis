@@ -1,4 +1,4 @@
-From e8d0162f530f4fafde0a14202f1c2e4ff78bfd0b Mon Sep 17 00:00:00 2001
+From 0ac115c6e107846e43aa98fe6358cfdf08db479d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -15,7 +15,7 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  8 files changed, 15 insertions(+), 15 deletions(-)
 
 diff --git a/include/libnetlink.h b/include/libnetlink.h
-index e27516f7..253d2141 100644
+index b9073a6a..82630ca7 100644
 --- a/include/libnetlink.h
 +++ b/include/libnetlink.h
 @@ -169,7 +169,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
@@ -111,10 +111,10 @@ index acbd745a..051ddc63 100644
  
  	if (attrs[TCP_METRICS_ATTR_ADDR_IPV4]) {
 diff --git a/lib/libnetlink.c b/lib/libnetlink.c
-index e02d6294..48b19501 100644
+index c958aa57..5585c27f 100644
 --- a/lib/libnetlink.c
 +++ b/lib/libnetlink.c
-@@ -1280,7 +1280,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
+@@ -1283,7 +1283,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
  	}
  
  	memcpy(NLMSG_TAIL(n), data, len);
@@ -123,7 +123,7 @@ index e02d6294..48b19501 100644
  	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len);
  	return 0;
  }
-@@ -1295,7 +1295,7 @@ struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type)
+@@ -1298,7 +1298,7 @@ struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type)
  
  int addattr_nest_end(struct nlmsghdr *n, struct rtattr *nest)
  {
@@ -132,7 +132,7 @@ index e02d6294..48b19501 100644
  	return n->nlmsg_len;
  }
  
-@@ -1311,9 +1311,9 @@ struct rtattr *addattr_nest_compat(struct nlmsghdr *n, int maxlen, int type,
+@@ -1314,9 +1314,9 @@ struct rtattr *addattr_nest_compat(struct nlmsghdr *n, int maxlen, int type,
  
  int addattr_nest_compat_end(struct nlmsghdr *n, struct rtattr *start)
  {
@@ -144,7 +144,7 @@ index e02d6294..48b19501 100644
  	addattr_nest_end(n, nest);
  	return n->nlmsg_len;
  }
-@@ -1385,7 +1385,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type)
+@@ -1388,7 +1388,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type)
  
  int rta_nest_end(struct rtattr *rta, struct rtattr *nest)
  {
@@ -153,7 +153,7 @@ index e02d6294..48b19501 100644
  
  	return rta->rta_len;
  }
-@@ -1434,7 +1434,7 @@ int __parse_rtattr_nested_compat(struct rtattr *tb[], int max,
+@@ -1437,7 +1437,7 @@ int __parse_rtattr_nested_compat(struct rtattr *tb[], int max,
  	if (RTA_PAYLOAD(rta) < len)
  		return -1;
  	if (RTA_PAYLOAD(rta) >= RTA_ALIGN(len) + sizeof(struct rtattr)) {
@@ -176,5 +176,5 @@ index c98021d6..063a0611 100644
  		len = size;
  
 -- 
-2.28.0
+2.29.2
 
