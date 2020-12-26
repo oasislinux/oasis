@@ -197,7 +197,6 @@ youtube_dl/extractor/escapist.py
 youtube_dl/extractor/espn.py
 youtube_dl/extractor/esri.py
 youtube_dl/extractor/europa.py
-youtube_dl/extractor/everyonesmixtape.py
 youtube_dl/extractor/expotv.py
 youtube_dl/extractor/expressen.py
 youtube_dl/extractor/extractors.py
@@ -305,7 +304,6 @@ youtube_dl/extractor/jove.py
 youtube_dl/extractor/jwplatform.py
 youtube_dl/extractor/kakao.py
 youtube_dl/extractor/kaltura.py
-youtube_dl/extractor/kanalplay.py
 youtube_dl/extractor/kankan.py
 youtube_dl/extractor/karaoketv.py
 youtube_dl/extractor/karrierevideos.py
@@ -421,7 +419,6 @@ youtube_dl/extractor/ninenow.py
 youtube_dl/extractor/nintendo.py
 youtube_dl/extractor/njpwworld.py
 youtube_dl/extractor/nobelprize.py
-youtube_dl/extractor/noco.py
 youtube_dl/extractor/nonktube.py
 youtube_dl/extractor/noovo.py
 youtube_dl/extractor/normalboots.py
@@ -599,7 +596,6 @@ youtube_dl/extractor/syfy.py
 youtube_dl/extractor/sztvhu.py
 youtube_dl/extractor/tagesschau.py
 youtube_dl/extractor/tass.py
-youtube_dl/extractor/tastytrade.py
 youtube_dl/extractor/tbs.py
 youtube_dl/extractor/tdslifeway.py
 youtube_dl/extractor/teachable.py
@@ -659,6 +655,7 @@ youtube_dl/extractor/tv2dk.py
 youtube_dl/extractor/tv2hu.py
 youtube_dl/extractor/tv4.py
 youtube_dl/extractor/tv5mondeplus.py
+youtube_dl/extractor/tv5unis.py
 youtube_dl/extractor/tva.py
 youtube_dl/extractor/tvanouvelles.py
 youtube_dl/extractor/tvc.py
@@ -784,7 +781,6 @@ youtube_dl/extractor/yourporn.py
 youtube_dl/extractor/yourupload.py
 youtube_dl/extractor/youtube.py
 youtube_dl/extractor/zapiks.py
-youtube_dl/extractor/zaq1.py
 youtube_dl/extractor/zattoo.py
 youtube_dl/extractor/zdf.py
 youtube_dl/extractor/zingmp3.py
