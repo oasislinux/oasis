@@ -150,7 +150,6 @@ return {
 		["Australia/Lindeman"]=false,
 		["Australia/Adelaide"]=false,
 		["Australia/Hobart"]=false,
-		["Australia/Currie"]=false,
 		["Australia/Melbourne"]=false,
 		["Australia/Sydney"]=false,
 		["Australia/Broken_Hill"]=false,
