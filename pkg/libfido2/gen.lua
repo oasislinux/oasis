@@ -52,11 +52,13 @@ lib('libfido2.a', [[
 		iso7816.c
 		log.c
 		pin.c
+		random.c
 		reset.c
 		rs256.c
 		u2f.c
 
 		hid_linux.c
+		hid_unix.c
 	)
 	$builddir/pkg/bearssl/libbearssl.a
 	$builddir/pkg/libcbor/libcbor.a
