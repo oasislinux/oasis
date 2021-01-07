@@ -16,7 +16,6 @@
 [submodule "pkg/awk/src"]
 	path = pkg/awk/src
 	url = https://github.com/onetrueawk/awk
-	ignore = all
 [submodule "pkg/b3sum/src"]
 	path = pkg/b3sum/src
 	url = https://git.sr.ht/~mcf/b3sum
