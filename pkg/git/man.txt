@@ -49,6 +49,7 @@ man1/git-fetch.1
 man1/git-filter-branch.1
 man1/git-fmt-merge-msg.1
 man1/git-for-each-ref.1
+man1/git-for-each-repo.1
 man1/git-format-patch.1
 man1/git-fsck-objects.1
 man1/git-fsck.1
@@ -73,6 +74,7 @@ man1/git-ls-remote.1
 man1/git-ls-tree.1
 man1/git-mailinfo.1
 man1/git-mailsplit.1
+man1/git-maintenance.1
 man1/git-merge-base.1
 man1/git-merge-file.1
 man1/git-merge-index.1
@@ -91,7 +93,6 @@ man1/git-p4.1
 man1/git-pack-objects.1
 man1/git-pack-redundant.1
 man1/git-pack-refs.1
-man1/git-parse-remote.1
 man1/git-patch-id.1
 man1/git-prune-packed.1
 man1/git-prune.1

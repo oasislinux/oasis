@@ -125,6 +125,8 @@ lib('libgit.a', [[
 	mem-pool.c
 	merge.c
 	merge-blobs.c
+	merge-ort.c
+	merge-ort-wrappers.c
 	merge-recursive.c
 	mergesort.c
 	midx.c
@@ -203,6 +205,7 @@ lib('libgit.a', [[
 	strbuf.c
 	streaming.c
 	string-list.c
+	strmap.c
 	strvec.c
 	sub-process.c
 	submodule-config.c
@@ -319,6 +322,7 @@ local builtins = {
 	'fetch',
 	'fmt-merge-msg',
 	'for-each-ref',
+	'for-each-repo',
 	'fsck',
 	'gc',
 	'get-tar-commit-id',
@@ -436,7 +440,6 @@ local scripts = {
 
 	-- src/Makefile:/^SCRIPT_LIB.\+=
 	{'mergetool--lib', '644'},
-	{'parse-remote', '644'},
 	{'rebase--preserve-merges', '644'},
 	{'sh-i18n', '644'},
 	{'sh-setup', '644'},
