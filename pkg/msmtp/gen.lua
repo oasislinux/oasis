@@ -1,6 +1,6 @@
 cflags{
 	'-D HAVE_CONFIG_H',
-	string.format([[-D 'SYSCONFDIR="%s/etc"']], config.prefix),
+	([[-D 'SYSCONFDIR="%s/etc"']]):format(config.prefix),
 	'-I $dir',
 	'-isystem $builddir/pkg/libtls-bearssl/include',
 }
