@@ -46,6 +46,7 @@ youtube_dl/extractor/aparat.py
 youtube_dl/extractor/appleconnect.py
 youtube_dl/extractor/appletrailers.py
 youtube_dl/extractor/archiveorg.py
+youtube_dl/extractor/arcpublishing.py
 youtube_dl/extractor/ard.py
 youtube_dl/extractor/arkena.py
 youtube_dl/extractor/arte.py
@@ -78,6 +79,7 @@ youtube_dl/extractor/bleacherreport.py
 youtube_dl/extractor/blinkx.py
 youtube_dl/extractor/bloomberg.py
 youtube_dl/extractor/bokecc.py
+youtube_dl/extractor/bongacams.py
 youtube_dl/extractor/bostonglobe.py
 youtube_dl/extractor/box.py
 youtube_dl/extractor/bpb.py
@@ -144,6 +146,7 @@ youtube_dl/extractor/crooksandliars.py
 youtube_dl/extractor/crunchyroll.py
 youtube_dl/extractor/cspan.py
 youtube_dl/extractor/ctsnews.py
+youtube_dl/extractor/ctv.py
 youtube_dl/extractor/ctvnews.py
 youtube_dl/extractor/cultureunplugged.py
 youtube_dl/extractor/curiositystream.py
@@ -232,7 +235,6 @@ youtube_dl/extractor/fujitv.py
 youtube_dl/extractor/funimation.py
 youtube_dl/extractor/funk.py
 youtube_dl/extractor/fusion.py
-youtube_dl/extractor/fxnetworks.py
 youtube_dl/extractor/gaia.py
 youtube_dl/extractor/gameinformer.py
 youtube_dl/extractor/gamespot.py
