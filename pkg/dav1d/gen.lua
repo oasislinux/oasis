@@ -90,7 +90,7 @@ local srcs = paths[[
 			ipred_ssse3.asm
 			itx_ssse3.asm
 			loopfilter_ssse3.asm
-			looprestoration_ssse3.asm
+			looprestoration_sse.asm
 			mc_sse.asm
 		)
 	)
