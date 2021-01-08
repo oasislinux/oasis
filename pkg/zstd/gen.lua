@@ -1,6 +1,7 @@
 cflags{
 	'-Wall', '-Wextra', '-Wpedantic',
 	'-D ZSTD_LEGACY_SUPPORT=0',
+	'-D ZSTD_NO_UNUSED_FUNCTIONS',
 	'-D ZSTD_MULTITHREAD',
 	'-D XXH_NAMESPACE=ZSTD_',
 	'-D ZSTD_NOBENCH',
