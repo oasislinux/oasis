@@ -116,6 +116,12 @@ if options.CONFIG_TLS_PROTOCOL and options.CONFIG_LIBTLS then
 	table.insert(sources.libavformat, '$builddir/pkg/libtls-bearssl/libtls.a.d')
 end
 
+if options.CONFIG_TLS_PROTOCOL and options.CONFIG_OPENSSL then
+	cflags{'-isystem $builddir/pkg/libressl/include'}
+	table.insert(pkg.deps, 'pkg/libressl/headers')
+	table.insert(sources.libavformat, '$builddir/pkg/libressl/libssl.a.d')
+end
+
 if options.CONFIG_LIBOPUS_ENCODER or options.CONFIG_LIBOPUS_DECODER then
 	cflags{'-isystem $builddir/pkg/opus/include'}
 	table.insert(pkg.deps, 'pkg/opus/headers')
