@@ -10,12 +10,12 @@ pkg.deps = {'pkg/linux-headers/headers'}
 local libs = {}
 local modules = load 'modules.lua'
 
-if modules['_ctypes'] then
+if modules._ctypes then
 	cflags{'-isystem $builddir/pkg/libffi/include'}
 	table.insert(pkg.deps, 'pkg/libffi/headers')
 	table.insert(libs, 'libffi/libffi.a')
 end
-if modules['_hashlib'] or modules['_ssl'] then
+if modules._hashlib or modules._ssl then
 	cflags{'-isystem $builddir/pkg/libressl/include'}
 	table.insert(pkg.deps, 'pkg/libressl/headers')
 	table.insert(libs, {
@@ -23,12 +23,12 @@ if modules['_hashlib'] or modules['_ssl'] then
 		'libressl/libcrypto.a',
 	})
 end
-if modules['pyexpat'] then
+if modules.pyexpat then
 	cflags{'-isystem $builddir/pkg/expat/include'}
 	table.insert(pkg.deps, 'pkg/expat/headers')
 	table.insert(libs, 'expat/libexpat.a.d')
 end
-if modules['zlib'] then
+if modules.zlib then
 	cflags{'-isystem $builddir/pkg/zlib/include'}
 	table.insert(pkg.deps, 'pkg/zlib/headers')
 	table.insert(libs, 'zlib/libz.a')
