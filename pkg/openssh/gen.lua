@@ -154,6 +154,7 @@ man{
 	'ssh-keygen.1',
 	'ssh-keyscan.1',
 	'ssh_config.5',
+	'sshd_config.5',
 	'sshd.8',
 	'sftp-server.8',
 	'sftp.1',
