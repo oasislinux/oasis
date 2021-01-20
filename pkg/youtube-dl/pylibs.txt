@@ -44,6 +44,7 @@ youtube_dl/extractor/aol.py
 youtube_dl/extractor/apa.py
 youtube_dl/extractor/aparat.py
 youtube_dl/extractor/appleconnect.py
+youtube_dl/extractor/applepodcasts.py
 youtube_dl/extractor/appletrailers.py
 youtube_dl/extractor/archiveorg.py
 youtube_dl/extractor/arcpublishing.py
@@ -69,6 +70,8 @@ youtube_dl/extractor/behindkink.py
 youtube_dl/extractor/bellmedia.py
 youtube_dl/extractor/bet.py
 youtube_dl/extractor/bfi.py
+youtube_dl/extractor/bfmtv.py
+youtube_dl/extractor/bibeltv.py
 youtube_dl/extractor/bigflix.py
 youtube_dl/extractor/bild.py
 youtube_dl/extractor/bilibili.py
@@ -253,7 +256,7 @@ youtube_dl/extractor/go.py
 youtube_dl/extractor/godtube.py
 youtube_dl/extractor/golem.py
 youtube_dl/extractor/googledrive.py
-youtube_dl/extractor/googleplus.py
+youtube_dl/extractor/googlepodcasts.py
 youtube_dl/extractor/googlesearch.py
 youtube_dl/extractor/goshgay.py
 youtube_dl/extractor/gputechconf.py
@@ -281,6 +284,7 @@ youtube_dl/extractor/huffpost.py
 youtube_dl/extractor/hungama.py
 youtube_dl/extractor/hypem.py
 youtube_dl/extractor/ign.py
+youtube_dl/extractor/iheart.py
 youtube_dl/extractor/imdb.py
 youtube_dl/extractor/imggaming.py
 youtube_dl/extractor/imgur.py
