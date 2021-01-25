@@ -1,4 +1,4 @@
-From 0e2380ea9d9c84900e317b9962c3940ae0cc1015 Mon Sep 17 00:00:00 2001
+From e8c1ae5d700e447d21db95d0be0f64fd634fa9a6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 19 Jun 2019 20:10:09 -0700
 Subject: [PATCH] Only use gcc pragmas with gcc
@@ -8,10 +8,10 @@ Subject: [PATCH] Only use gcc pragmas with gcc
  1 file changed, 4 insertions(+)
 
 diff --git a/pigz.c b/pigz.c
-index bbbfd2c..f1042a9 100644
+index e5a094a..a65e243 100644
 --- a/pigz.c
 +++ b/pigz.c
-@@ -3584,8 +3584,10 @@ local char *justname(char *path) {
+@@ -3800,8 +3800,10 @@ local char *justname(char *path) {
      return p == NULL ? path : p + 1;
  }
  
@@ -22,7 +22,7 @@ index bbbfd2c..f1042a9 100644
  
  // Copy file attributes, from -> to, as best we can. This is best effort, so no
  // errors are reported. The mode bits, including suid, sgid, and the sticky bit
-@@ -3613,7 +3615,9 @@ local void copymeta(char *from, char *to) {
+@@ -3829,7 +3831,9 @@ local void copymeta(char *from, char *to) {
      (void)utimes(to, times);
  }
  
@@ -33,5 +33,5 @@ index bbbfd2c..f1042a9 100644
  // Set the access and modify times of fd to t.
  local void touch(char *path, time_t t) {
 -- 
-2.20.1
+2.30.0
 
