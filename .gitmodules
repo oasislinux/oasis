@@ -204,7 +204,7 @@
 	url = https://github.com/vapier/ncompress.git
 [submodule "pkg/netsurf/src"]
 	path = pkg/netsurf/src
-	url = https://github.com/michaelforney/netsurf
+	url = https://github.com/oasislinux/netsurf
 [submodule "pkg/netsurf/libcss/src"]
 	path = pkg/netsurf/libcss/src
 	url = git://git.netsurf-browser.org/libcss.git
