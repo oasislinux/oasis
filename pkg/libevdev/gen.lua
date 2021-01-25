@@ -1,6 +1,7 @@
 cflags{
 	'-I $dir',
 	'-I $outdir',
+	'-I $srcdir',
 	'-I $srcdir/include',
 	'-isystem $builddir/pkg/linux-headers/include',
 }
@@ -20,5 +21,8 @@ build('eventnames', '$outdir/event-names.h', {
 })
 lib('libevdev.a', {'libevdev/libevdev.c', 'libevdev/libevdev-names.c'}, {'$outdir/event-names.h'})
 file('lib/libevdev.a', '644', '$outdir/libevdev.a')
+
+exe('libevdev-events', {'tools/libevdev-events.c', 'libevdev.a'})
+file('bin/libevdev-events', '755', '$outdir/libevdev-events')
 
 fetch 'git'
