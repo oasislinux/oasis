@@ -375,6 +375,7 @@ youtube_dl/extractor/mgoon.py
 youtube_dl/extractor/mgtv.py
 youtube_dl/extractor/miaopai.py
 youtube_dl/extractor/microsoftvirtualacademy.py
+youtube_dl/extractor/minds.py
 youtube_dl/extractor/ministrygrid.py
 youtube_dl/extractor/minoto.py
 youtube_dl/extractor/miomio.py
@@ -580,6 +581,7 @@ youtube_dl/extractor/spike.py
 youtube_dl/extractor/sport5.py
 youtube_dl/extractor/sportbox.py
 youtube_dl/extractor/sportdeutschland.py
+youtube_dl/extractor/spotify.py
 youtube_dl/extractor/spreaker.py
 youtube_dl/extractor/springboardplatform.py
 youtube_dl/extractor/sprout.py
@@ -646,6 +648,7 @@ youtube_dl/extractor/toutv.py
 youtube_dl/extractor/toypics.py
 youtube_dl/extractor/traileraddict.py
 youtube_dl/extractor/trilulilu.py
+youtube_dl/extractor/trovo.py
 youtube_dl/extractor/trunews.py
 youtube_dl/extractor/trutv.py
 youtube_dl/extractor/tube8.py
