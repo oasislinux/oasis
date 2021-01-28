@@ -172,10 +172,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.3.4"
+#define PACKAGE_STRING "NSD 4.3.5"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.3.4"
+#define PACKAGE_VERSION "4.3.5"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */
@@ -261,7 +261,7 @@
 /* #undef vfork */
 #if (defined(HAVE_PSELECT) && !defined (HAVE_PSELECT_PROTO)) \
 	|| !defined (HAVE_CTIME_R_PROTO) \
-	|| defined (STRPTIME_NEEDS_DEFINES)
+	|| defined (STRPTIME_NEEDS_DEFINES) || defined(REALLOCARRAY_NEEDS_DEFINES)
 #  ifndef _XOPEN_SOURCE
 #    define _XOPEN_SOURCE 600
 #  endif
@@ -293,10 +293,8 @@
 #  endif
 #endif
 #include <sys/types.h>
-#if STDC_HEADERS
 #include <stdlib.h>
 #include <stddef.h>
-#endif
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
