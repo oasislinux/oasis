@@ -18,8 +18,8 @@ exe('catgirl', [[
 	complete.c
 	config.c
 	edit.c
+	filter.c
 	handle.c
-	ignore.c
 	irc.c
 	log.c
 	ui.c

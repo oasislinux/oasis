@@ -1,4 +1,4 @@
-From c955ed7a613b4b5208746a9c88352bf6cdf56d07 Mon Sep 17 00:00:00 2001
+From 05c4bb1ccf5a8d92cbde7df66a9a119ba89e6e78 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 7 May 2020 00:36:14 -0700
 Subject: [PATCH] Revert "Use gnu-case-range and
@@ -7,15 +7,15 @@ Subject: [PATCH] Revert "Use gnu-case-range and
 This reverts commit 75a6aa9258270169f43f56e063f1bfb57eebe56b.
 ---
  Makefile   |  3 +--
- command.c  | 20 +++++++++++---------
+ command.c  | 32 ++++++++++++++++++--------------
  complete.c |  4 ++--
  handle.c   | 45 +++++++++++++++++++++++++++------------------
- ignore.c   |  2 +-
  ui.c       |  7 ++++++-
- 6 files changed, 48 insertions(+), 33 deletions(-)
+ url.c      |  2 +-
+ 6 files changed, 55 insertions(+), 38 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 2c3061d..b844712 100644
+index 5caa3ba..d164315 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -1,8 +1,7 @@
@@ -29,7 +29,7 @@ index 2c3061d..b844712 100644
  
  -include config.mk
 diff --git a/command.c b/command.c
-index 3af1246..1c633f8 100644
+index 998d9a2..27e7f98 100644
 --- a/command.c
 +++ b/command.c
 @@ -69,8 +69,8 @@ static void splitMessage(char *cmd, uint id, char *params) {
@@ -61,7 +61,7 @@ index 3af1246..1c633f8 100644
  }
  
  static void commandNick(uint id, char *params) {
-@@ -232,7 +232,7 @@ static void commandOp(uint id, char *params) {
+@@ -238,7 +238,7 @@ static void commandOp(uint id, char *params) {
  }
  
  static void commandDeop(uint id, char *params) {
@@ -70,7 +70,7 @@ index 3af1246..1c633f8 100644
  }
  
  static void commandVoice(uint id, char *params) {
-@@ -244,7 +244,7 @@ static void commandVoice(uint id, char *params) {
+@@ -250,7 +250,7 @@ static void commandVoice(uint id, char *params) {
  }
  
  static void commandDevoice(uint id, char *params) {
@@ -79,7 +79,40 @@ index 3af1246..1c633f8 100644
  }
  
  static void commandBan(uint id, char *params) {
-@@ -409,11 +409,12 @@ static void commandExec(uint id, char *params) {
+@@ -392,7 +392,8 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
+ 		uiFormat(
+ 			id, Cold, NULL, "%sing \3%02d%s %s %s %s",
+ 			(heat == Hot ? "Highlight" : "Ignor"), Brown, filter.mask,
+-			(filter.cmd ?: ""), (filter.chan ?: ""), (filter.mesg ?: "")
++			(filter.cmd ? filter.cmd : ""), (filter.chan ? filter.chan : ""),
++			(filter.mesg ? filter.mesg : "")
+ 		);
+ 	} else {
+ 		for (size_t i = 0; i < FilterCap && filters[i].mask; ++i) {
+@@ -400,8 +401,9 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
+ 			uiFormat(
+ 				Network, Warm, NULL, "%sing \3%02d%s %s %s %s",
+ 				(heat == Hot ? "Highlight" : "Ignor"), Brown, filters[i].mask,
+-				(filters[i].cmd ?: ""), (filters[i].chan ?: ""),
+-				(filters[i].mesg ?: "")
++				(filters[i].cmd ? filters[i].cmd : ""),
++				(filters[i].chan ? filters[i].chan : ""),
++				(filters[i].mesg ? filters[i].mesg : "")
+ 			);
+ 		}
+ 	}
+@@ -414,8 +416,8 @@ static void commandUnfilter(enum Heat heat, uint id, char *params) {
+ 	uiFormat(
+ 		id, Cold, NULL, "%s %sing \3%02d%s %s %s %s",
+ 		(found ? "No longer" : "Not"), (heat == Hot ? "highlight" : "ignor"),
+-		Brown, filter.mask, (filter.cmd ?: ""), (filter.chan ?: ""),
+-		(filter.mesg ?: "")
++		Brown, filter.mask, (filter.cmd ? filter.cmd : ""),
++		(filter.chan ? filter.chan : ""), (filter.mesg ? filter.mesg : "")
+ 	);
+ }
+ 
+@@ -439,11 +441,12 @@ static void commandExec(uint id, char *params) {
  	if (pid < 0) err(EX_OSERR, "fork");
  	if (pid) return;
  
@@ -91,10 +124,10 @@ index 3af1246..1c633f8 100644
  	dup2(utilPipe[1], STDERR_FILENO);
 -
 -	const char *shell = getenv("SHELL") ?: "/bin/sh";
- 	execlp(shell, shell, "-c", params, NULL);
+ 	execl(shell, shell, "-c", params, NULL);
  	warn("%s", shell);
  	_exit(EX_UNAVAILABLE);
-@@ -434,7 +435,8 @@ static void commandHelp(uint id, char *params) {
+@@ -464,7 +467,8 @@ static void commandHelp(uint id, char *params) {
  	if (pid) return;
  
  	char buf[256];
@@ -127,10 +160,10 @@ index 5835926..0e1de47 100644
  }
  
 diff --git a/handle.c b/handle.c
-index 9c37f34..6a32908 100644
+index ddf43e8..7b3c096 100644
 --- a/handle.c
 +++ b/handle.c
-@@ -280,9 +280,9 @@ static void handleReplyISupport(struct Message *msg) {
+@@ -292,9 +292,9 @@ static void handleReplyISupport(struct Message *msg) {
  			set(&network.setParamModes, setParam);
  			set(&network.channelModes, channel);
  		} else if (!strcmp(key, "EXCEPTS")) {
@@ -142,7 +175,7 @@ index 9c37f34..6a32908 100644
  		}
  	}
  }
-@@ -341,7 +341,7 @@ static void handleJoin(struct Message *msg) {
+@@ -347,7 +347,7 @@ static void handleJoin(struct Message *msg) {
  		"\3%02d%s\3\t%s%s%sarrives in \3%02d%s\3",
  		hash(msg->user), msg->nick,
  		(msg->params[2] ? "(" : ""),
@@ -151,7 +184,7 @@ index 9c37f34..6a32908 100644
  		(msg->params[2] ? ") " : ""),
  		hash(msg->params[0]), msg->params[0]
  	);
-@@ -373,12 +373,14 @@ static void handlePart(struct Message *msg) {
+@@ -379,12 +379,14 @@ static void handlePart(struct Message *msg) {
  		id, heat, tagTime(msg),
  		"\3%02d%s\3\tleaves \3%02d%s\3%s%s",
  		hash(msg->user), msg->nick, hash(msg->params[0]), msg->params[0],
@@ -168,7 +201,7 @@ index 9c37f34..6a32908 100644
  	);
  }
  
-@@ -395,12 +397,14 @@ static void handleKick(struct Message *msg) {
+@@ -401,12 +403,14 @@ static void handleKick(struct Message *msg) {
  		hash(msg->user), msg->nick,
  		completeColor(id, msg->params[1]), msg->params[1],
  		hash(msg->params[0]), msg->params[0],
@@ -185,7 +218,7 @@ index 9c37f34..6a32908 100644
  	);
  	completeRemove(id, msg->params[1]);
  	if (kicked) completeClear(id);
-@@ -439,13 +443,15 @@ static void handleQuit(struct Message *msg) {
+@@ -457,13 +461,15 @@ static void handleQuit(struct Message *msg) {
  			id, heat, tagTime(msg),
  			"\3%02d%s\3\tleaves%s%s",
  			hash(msg->user), msg->nick,
@@ -203,7 +236,7 @@ index 9c37f34..6a32908 100644
  		);
  	}
  	completeRemove(None, msg->nick);
-@@ -693,7 +699,7 @@ static void handleReplyUserModeIs(struct Message *msg) {
+@@ -698,7 +704,7 @@ static void handleReplyUserModeIs(struct Message *msg) {
  	for (char *ch = msg->params[1]; *ch; ++ch) {
  		if (*ch == '+') continue;
  		const char *name = UserModes[(byte)*ch];
@@ -212,7 +245,7 @@ index 9c37f34..6a32908 100644
  	}
  	uiFormat(
  		Network, Warm, tagTime(msg),
-@@ -735,13 +741,13 @@ static void handleReplyChannelModeIs(struct Message *msg) {
+@@ -737,13 +743,13 @@ static void handleReplyChannelModeIs(struct Message *msg) {
  			assert(param < ParamCap);
  			catf(
  				&cat, ", +%c%s%s %s",
@@ -228,7 +261,7 @@ index 9c37f34..6a32908 100644
  			);
  		}
  	}
-@@ -768,7 +774,7 @@ static void handleMode(struct Message *msg) {
+@@ -770,7 +776,7 @@ static void handleMode(struct Message *msg) {
  				hash(msg->user), msg->nick,
  				(set ? "" : "un"),
  				self.color, msg->params[0],
@@ -237,7 +270,7 @@ index 9c37f34..6a32908 100644
  			);
  		}
  		return;
-@@ -925,7 +931,7 @@ static void handleErrorBanListFull(struct Message *msg) {
+@@ -927,7 +933,7 @@ static void handleErrorBanListFull(struct Message *msg) {
  	require(msg, false, 4);
  	uiFormat(
  		idFor(msg->params[1]), Cold, tagTime(msg),
@@ -246,7 +279,7 @@ index 9c37f34..6a32908 100644
  	);
  }
  
-@@ -1058,14 +1064,15 @@ static void handleReplyWhoisIdle(struct Message *msg) {
+@@ -1032,14 +1038,15 @@ static void handleReplyWhoisIdle(struct Message *msg) {
  		}
  	}
  	char signon[sizeof("0000-00-00 00:00:00")];
@@ -264,7 +297,7 @@ index 9c37f34..6a32908 100644
  	);
  }
  
-@@ -1098,7 +1105,9 @@ static void handleReplyWhoisGeneric(struct Message *msg) {
+@@ -1070,7 +1077,9 @@ static void handleReplyWhoisGeneric(struct Message *msg) {
  		Network, Warm, tagTime(msg),
  		"\3%02d%s\3\t%s%s%s",
  		completeColor(Network, msg->params[1]), msg->params[1],
@@ -275,7 +308,7 @@ index 9c37f34..6a32908 100644
  	);
  }
  
-@@ -1151,7 +1160,7 @@ static bool isMention(const struct Message *msg) {
+@@ -1137,7 +1146,7 @@ static bool isMention(const struct Message *msg) {
  	const char *match = msg->params[1];
  	while (NULL != (match = strstr(match, self.nick))) {
  		char a = (match > msg->params[1] ? match[-1] : ' ');
@@ -284,24 +317,11 @@ index 9c37f34..6a32908 100644
  		if ((isspace(a) || ispunct(a)) && (isspace(b) || ispunct(b))) {
  			return true;
  		}
-diff --git a/ignore.c b/ignore.c
-index f8e4d59..73d2d90 100644
---- a/ignore.c
-+++ b/ignore.c
-@@ -79,7 +79,7 @@ enum Heat ignoreCheck(enum Heat heat, uint id, const struct Message *msg) {
- 	snprintf(
- 		match, sizeof(match), "%s!%s@%s %s %s %s",
- 		msg->nick, msg->user, msg->host,
--		msg->cmd, idNames[id], (msg->params[1] ?: "")
-+		msg->cmd, idNames[id], msg->params[1] ? msg->params[1] : ""
- 	);
- 	for (size_t i = 0; i < ignore.len; ++i) {
- 		if (fnmatch(ignore.patterns[i], match, FNM_CASEFOLD)) continue;
 diff --git a/ui.c b/ui.c
-index 2958c30..07a7569 100644
+index e3fd467..ace94bc 100644
 --- a/ui.c
 +++ b/ui.c
-@@ -834,7 +834,6 @@ static void keyCode(int code) {
+@@ -842,7 +842,6 @@ static void keyCode(int code) {
  		break; case KeyMetaGt: windowScroll(window, -BufferCap);
  		break; case KeyMetaLt: windowScroll(window, +BufferCap);
  
@@ -309,7 +329,7 @@ index 2958c30..07a7569 100644
  		break; case KeyMetaA: showAuto();
  		break; case KeyMetaB: edit(id, EditPrevWord, 0);
  		break; case KeyMetaD: edit(id, EditDeleteNextWord, 0);
-@@ -860,6 +859,12 @@ static void keyCode(int code) {
+@@ -868,6 +867,12 @@ static void keyCode(int code) {
  		break; case KEY_SEND: windowScroll(window, -BufferCap);
  		break; case KEY_SHOME: windowScroll(window, +BufferCap);
  		break; case KEY_UP: windowScroll(window, +1);
@@ -322,6 +342,19 @@ index 2958c30..07a7569 100644
  	}
  }
  
+diff --git a/url.c b/url.c
+index 21f946c..1330d36 100644
+--- a/url.c
++++ b/url.c
+@@ -246,7 +246,7 @@ int urlSave(FILE *file) {
+ 		if (!url->url) continue;
+ 		int error = 0
+ 			|| writeString(file, idNames[url->id])
+-			|| writeString(file, (url->nick ?: ""))
++			|| writeString(file, (url->nick ? url->nick : ""))
+ 			|| writeString(file, url->url);
+ 		if (error) return error;
+ 	}
 -- 
-2.29.2
+2.30.0
 
