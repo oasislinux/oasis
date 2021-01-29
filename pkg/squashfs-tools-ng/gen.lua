@@ -1,7 +1,7 @@
 cflags{
 	'-std=c99', '-Wall', '-Wpedantic',
 	'-Wno-maybe-uninitialized',
-	'-D _XOPEN_SOURCE=700',
+	'-D _GNU_SOURCE',
 	'-I $srcdir',
 	'-I $srcdir/include',
 	'-I $dir',
