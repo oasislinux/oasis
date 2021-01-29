@@ -60,13 +60,14 @@
 #define PACKAGE "ld"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "ld"
-#define PACKAGE_STRING "ld 2.35.1"
+#define PACKAGE_STRING "ld 2.36"
 #define PACKAGE_TARNAME "ld"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.35.1"
+#define PACKAGE_VERSION "2.36"
 #define SIZEOF_VOID_P 8
 #define STDC_HEADERS 1
 #define STRING_WITH_STRINGS 1
+#define SUPPORT_ERROR_HANDLING_SCRIPT 1
 /* #undef USE_BINARY_FOPEN */
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
@@ -83,7 +84,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.35.1"
+#define VERSION "2.36"
 /* #undef YYTEXT_POINTER */
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1

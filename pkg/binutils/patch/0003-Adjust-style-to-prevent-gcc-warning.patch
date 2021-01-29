@@ -1,4 +1,4 @@
-From 371a2b62e6bbd53ca5efc1164553a4d334c936ee Mon Sep 17 00:00:00 2001
+From 7e7d7da3e8d453d1125488cc5cd7c42293b62934 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 5 Jun 2020 01:17:51 -0700
 Subject: [PATCH] Adjust style to prevent gcc warning
@@ -10,10 +10,10 @@ elsewhere in this file and prevents a conversion overflow warning.
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/bfd/elf.c b/bfd/elf.c
-index 9ca42e10d8..5ee61ffb24 100644
+index 84a5d94281..5631993d15 100644
 --- a/bfd/elf.c
 +++ b/bfd/elf.c
-@@ -733,8 +733,9 @@ setup_group (bfd *abfd, Elf_Internal_Shdr *hdr, asection *newsect)
+@@ -734,8 +734,9 @@ setup_group (bfd *abfd, Elf_Internal_Shdr *hdr, asection *newsect)
  	      /* If all groups are invalid then fail.  */
  	      if (num_group == 0)
  		{
@@ -25,5 +25,5 @@ index 9ca42e10d8..5ee61ffb24 100644
  		    (_("%pB: no valid group sections found"), abfd);
  		  bfd_set_error (bfd_error_bad_value);
 -- 
-2.28.0
+2.30.0
 

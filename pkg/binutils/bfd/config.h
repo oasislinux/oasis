@@ -41,6 +41,7 @@
 #define HAVE_GETUID 1
 #define HAVE_HIDDEN 1
 #define HAVE_INTTYPES_H 1
+#define HAVE_LIMITS_H 1
 #define HAVE_LONG_DOUBLE 1
 #define HAVE_LONG_LONG 1
 /* #undef HAVE_LWPSTATUS_T */
@@ -96,10 +97,10 @@
 #define PACKAGE "bfd"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "bfd"
-#define PACKAGE_STRING "bfd 2.35.1"
+#define PACKAGE_STRING "bfd 2.36"
 #define PACKAGE_TARNAME "bfd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.35.1"
+#define PACKAGE_VERSION "2.36"
 /* #undef SIZEOF_CHAR */
 #define SIZEOF_INT 4
 #define SIZEOF_LONG 8
@@ -131,7 +132,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.35.1"
+#define VERSION "2.36"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
@@ -140,3 +141,4 @@
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */
+#define _STRUCTURED_PROC 1

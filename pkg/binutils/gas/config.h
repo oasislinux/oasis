@@ -20,7 +20,7 @@
 #define DEFAULT_RISCV_ATTR 0
 /* #undef DEFAULT_RISCV_ISA_SPEC */
 /* #undef DEFAULT_RISCV_PRIV_SPEC */
-#define DEFAULT_X86_USED_NOTE 0
+#define DEFAULT_X86_USED_NOTE 1
 #define EMULATIONS &i386elf,
 /* #undef ENABLE_CHECKING */
 /* #undef ENABLE_NLS */
@@ -90,10 +90,10 @@
 #define PACKAGE "gas"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "gas"
-#define PACKAGE_STRING "gas 2.35.1"
+#define PACKAGE_STRING "gas 2.36"
 #define PACKAGE_TARNAME "gas"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.35.1"
+#define PACKAGE_VERSION "2.36"
 /* #undef STACK_DIRECTION */
 #define STDC_HEADERS 1
 /* #undef STRICTCOFF */
@@ -125,7 +125,7 @@
 # define __EXTENSIONS__ 1
 #endif
 /* #undef USING_CGEN */
-#define VERSION "2.35.1"
+#define VERSION "2.36"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
