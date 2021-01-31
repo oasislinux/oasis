@@ -1,12 +1,4 @@
-local function font(name, styles)
-	for _, style in ipairs(styles) do
-		local path = string.format('share/fonts/%s/%s.otf', name, style)
-		local src = string.format('$srcdir/OTF/%s.otf', style)
-		file(path, '644', src)
-	end
-end
-
-font('source-code-pro', {
+local fonts = {
 	'SourceCodePro-Black',
 	'SourceCodePro-BlackIt',
 	'SourceCodePro-Bold',
@@ -21,30 +13,38 @@ font('source-code-pro', {
 	'SourceCodePro-Regular',
 	'SourceCodePro-Semibold',
 	'SourceCodePro-SemiboldIt',
-})
 
-font('source-sans-pro', {
-	'SourceSansPro-Black',
-	'SourceSansPro-BlackIt',
-	'SourceSansPro-Bold',
-	'SourceSansPro-BoldIt',
-	'SourceSansPro-ExtraLight',
-	'SourceSansPro-ExtraLightIt',
-	'SourceSansPro-It',
-	'SourceSansPro-Light',
-	'SourceSansPro-LightIt',
-	'SourceSansPro-Regular',
-	'SourceSansPro-Semibold',
-	'SourceSansPro-SemiboldIt',
-})
+	'SourceSans3-Black',
+	'SourceSans3-BlackIt',
+	'SourceSans3-Bold',
+	'SourceSans3-BoldIt',
+	'SourceSans3-ExtraLight',
+	'SourceSans3-ExtraLightIt',
+	'SourceSans3-It',
+	'SourceSans3-Light',
+	'SourceSans3-LightIt',
+	'SourceSans3-Regular',
+	'SourceSans3-Semibold',
+	'SourceSans3-SemiboldIt',
 
-font('source-serif-pro', {
-	'SourceSerifPro-Black',
-	'SourceSerifPro-Bold',
-	'SourceSerifPro-ExtraLight',
-	'SourceSerifPro-Light',
-	'SourceSerifPro-Regular',
-	'SourceSerifPro-Semibold',
-})
+	'SourceSerif4-Black',
+	'SourceSerif4-BlackIt',
+	'SourceSerif4-Bold',
+	'SourceSerif4-BoldIt',
+	'SourceSerif4-ExtraLight',
+	'SourceSerif4-ExtraLightIt',
+	'SourceSerif4-It',
+	'SourceSerif4-Light',
+	'SourceSerif4-LightIt',
+	'SourceSerif4-Regular',
+	'SourceSerif4-Semibold',
+	'SourceSerif4-SemiboldIt',
+}
+
+for _, font in ipairs(fonts) do
+	local path = ('share/fonts/%s.otf'):format(font)
+	local src = ('$srcdir/OTF/%s.otf'):format(font)
+	file(path, '644', src)
+end
 
 fetch 'curl'

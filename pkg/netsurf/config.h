@@ -4,14 +4,14 @@
 #define NETSURF_HOMEPAGE "https://lite.duckduckgo.com/lite"
 #define TINY_RESPATH "/share/netsurf:/share/fonts"
 
-#define TINY_FONT_SANS_SERIF "source-sans-pro/SourceSansPro-Regular.otf"
-#define TINY_FONT_SANS_SERIF_BOLD "source-sans-pro/SourceSansPro-Bold.otf"
-#define TINY_FONT_SANS_SERIF_ITALIC "source-sans-pro/SourceSansPro-It.otf"
-#define TINY_FONT_SANS_SERIF_ITALIC_BOLD "source-sans-pro/SourceSansPro-BoldIt.otf"
-#define TINY_FONT_SERIF "source-serif-pro/SourceSerifPro-Regular.otf"
-#define TINY_FONT_SERIF_BOLD "source-serif-pro/SourceSerifPro-Bold.otf"
-#define TINY_FONT_MONOSPACE "source-code-pro/SourceCodePro-Regular.otf"
-#define TINY_FONT_MONOSPACE_BOLD "source-code-pro/SourceCodePro-Bold.otf"
+#define TINY_FONT_SANS_SERIF "SourceSans3-Regular.otf"
+#define TINY_FONT_SANS_SERIF_BOLD "SourceSans3-Bold.otf"
+#define TINY_FONT_SANS_SERIF_ITALIC "SourceSans3-It.otf"
+#define TINY_FONT_SANS_SERIF_ITALIC_BOLD "SourceSans3-BoldIt.otf"
+#define TINY_FONT_SERIF "SourceSerif4-Regular.otf"
+#define TINY_FONT_SERIF_BOLD "SourceSerif4-Bold.otf"
+#define TINY_FONT_MONOSPACE "SourceCodePro-Regular.otf"
+#define TINY_FONT_MONOSPACE_BOLD "SourceCodePro-Bold.otf"
 #define TINY_FONT_CURSIVE TINY_FONT_SANS_SERIF
 #define TINY_FONT_FANTASY TINY_FONT_SANS_SERIF
 #define TINY_DPI 96
