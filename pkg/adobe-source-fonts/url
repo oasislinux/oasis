@@ -1,5 +1,5 @@
-output = "source-sans-pro-3.028R.tar.gz"
-url = "https://github.com/adobe-fonts/source-sans-pro/archive/3.028R.tar.gz"
+output = "source-sans-3.028R.tar.gz"
+url = "https://github.com/adobe-fonts/source-sans/archive/3.028R.tar.gz"
 
 output = "source-serif-4.004R.tar.gz"
 url = "https://github.com/adobe-fonts/source-serif/archive/4.004R.tar.gz"
