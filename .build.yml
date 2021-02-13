@@ -37,9 +37,9 @@ tasks:
     # build everything
     echo 'return {exclude={}}' >fs.lua
     SET=all lua setup.lua
-    ninja out/pkg/texi2mdoc/texi2mdoc out/pkg/mc/bin/6m out/pkg/mc/bin/muse
+    ninja out/pkg/mc/bin/6m out/pkg/mc/bin/muse
     mkdir $HOME/bin
-    cp out/pkg/texi2mdoc/texi2mdoc out/pkg/mc/bin/6m out/pkg/mc/bin/muse $HOME/bin
+    cp out/pkg/mc/bin/6m out/pkg/mc/bin/muse $HOME/bin
     ninja
     # build individual sets
     cat >fs.lua <<EOF
