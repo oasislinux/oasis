@@ -38,8 +38,23 @@ exe('file', {'src/file.c', 'src/seccomp.c', 'libmagic.a', '$builddir/pkg/zlib/li
 file('bin/file', '755', '$outdir/file')
 man{'$outdir/file.1'}
 
-rule('magic', 'cd $outdir && file -C -m magic')
+sub('host.ninja', function()
+	toolchain(config.host)
+	cflags{
+		'-I $outdir/include',
+		'-D HAVE_STDINT_H',
+		'-D HAVE_INTTYPES_H',
+		'-D HAVE_UNISTD_H',
+		'-D COMPILE_ONLY',
+		([[-D 'VERSION="%s"']]):format(version),
+	}
+	set('outdir', '$outdir/host')
+	exe('magic', 'src/(magic.c apprentice.c encoding.c print.c funcs.c cdf_time.c)')
+end)
+
+rule('magic', 'cd $outdir && ./host/magic magic')
 build('magic', '$outdir/magic.mgc', {'|',
+	'$outdir/host/magic',
 	copy('$outdir/magic', '$srcdir/magic/Magdir', lines('magic.txt')),
 	copy('$outdir/magic', '$srcdir/magic', {'Header', 'Localstuff'}),
 })
