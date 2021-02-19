@@ -6,6 +6,7 @@ cflags{
 }
 
 file('bin/sinit', '755', exe('sinit', {'sinit.c'}))
+sym('bin/init', 'sinit')
 man{'sinit.8'}
 
 fetch'git'
