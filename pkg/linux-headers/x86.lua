@@ -31,6 +31,7 @@ return {
 	'asm/ptrace.h',
 	'asm/sembuf.h',
 	'asm/setup.h',
+	'asm/sgx.h',
 	'asm/shmbuf.h',
 	'asm/sigcontext.h',
 	'asm/sigcontext32.h',
