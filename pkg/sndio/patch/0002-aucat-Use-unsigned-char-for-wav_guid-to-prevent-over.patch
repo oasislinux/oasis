@@ -1,4 +1,4 @@
-From 3ae08254ba1f5555e0bfcf71be12d67a3ea2a1b5 Mon Sep 17 00:00:00 2001
+From 7c55a1db6eb0334e3e5902cb52272abd668019df Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 5 Nov 2020 00:58:34 -0800
 Subject: [PATCH] aucat: Use unsigned char for wav_guid to prevent overflow
@@ -9,18 +9,18 @@ Subject: [PATCH] aucat: Use unsigned char for wav_guid to prevent overflow
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/aucat/afile.c b/aucat/afile.c
-index 3e400ce..f1188b5 100644
+index fce69f3..1a37463 100644
 --- a/aucat/afile.c
 +++ b/aucat/afile.c
-@@ -135,7 +135,7 @@ char wav_id_riff[4] = {'R', 'I', 'F', 'F'};
- char wav_id_wave[4] = {'W', 'A', 'V', 'E'};
- char wav_id_data[4] = {'d', 'a', 't', 'a'};
- char wav_id_fmt[4] = {'f', 'm', 't', ' '};
--char wav_guid[14] = {
-+unsigned char wav_guid[14] = {
+@@ -135,7 +135,7 @@ const char wav_id_riff[4] = {'R', 'I', 'F', 'F'};
+ const char wav_id_wave[4] = {'W', 'A', 'V', 'E'};
+ const char wav_id_data[4] = {'d', 'a', 't', 'a'};
+ const char wav_id_fmt[4] = {'f', 'm', 't', ' '};
+-const char wav_guid[14] = {
++const unsigned char wav_guid[14] = {
  	0x00, 0x00, 0x00, 0x00,
  	0x10, 0x00, 0x80, 0x00,
  	0x00, 0xAA, 0x00, 0x38,
 -- 
-2.29.2
+2.30.0
 
