@@ -1,4 +1,4 @@
-From 13e2996b538601f1e4b0ee74beb74a09e56d0a7a Mon Sep 17 00:00:00 2001
+From 20dd0f459d92805cdd33a7622382f118acf3c07d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 3 Mar 2020 14:17:37 -0800
 Subject: [PATCH libevdev] Revert switch to VLAs for multitouch state
@@ -10,10 +10,10 @@ Signed-off-by: Michael Forney <mforney@mforney.org>
  2 files changed, 68 insertions(+), 47 deletions(-)
 
 diff --git a/libevdev/libevdev-int.h b/libevdev/libevdev-int.h
-index 7da5cf0..2743e50 100644
+index 8e2518e..bc291ea 100644
 --- a/libevdev/libevdev-int.h
 +++ b/libevdev/libevdev-int.h
-@@ -24,6 +24,7 @@
+@@ -7,6 +7,7 @@
  #define LIBEVDEV_INT_H
  
  #include "config.h"
@@ -21,7 +21,7 @@ index 7da5cf0..2743e50 100644
  #include <stdio.h>
  #include <stdlib.h>
  #include <stdbool.h>
-@@ -55,6 +56,26 @@ enum SyncState {
+@@ -38,6 +39,26 @@ enum SyncState {
  	SYNC_IN_PROGRESS,
  };
  
@@ -48,7 +48,7 @@ index 7da5cf0..2743e50 100644
  /**
   * Internal only: log data used to send messages to the respective log
   * handler. We re-use the same struct for a global and inside
-@@ -107,6 +128,13 @@ struct libevdev {
+@@ -90,6 +111,13 @@ struct libevdev {
  
  	struct timeval last_event_time;
  
@@ -63,10 +63,10 @@ index 7da5cf0..2743e50 100644
  };
  
 diff --git a/libevdev/libevdev.c b/libevdev/libevdev.c
-index 2b90a6c..c06a595 100644
+index b941cfb..1cc912c 100644
 --- a/libevdev/libevdev.c
 +++ b/libevdev/libevdev.c
-@@ -45,23 +45,7 @@ enum event_filter_status {
+@@ -28,23 +28,7 @@ enum event_filter_status {
  	EVENT_FILTER_DISCARD,	/**< Discard current event */
  };
  
@@ -91,7 +91,7 @@ index 2b90a6c..c06a595 100644
  static int
  update_key_state(struct libevdev *dev, const struct input_event *e);
  
-@@ -220,6 +204,8 @@ libevdev_reset(struct libevdev *dev)
+@@ -203,6 +187,8 @@ libevdev_reset(struct libevdev *dev)
  	free(dev->phys);
  	free(dev->uniq);
  	free(dev->mt_slot_vals);
@@ -100,7 +100,7 @@ index 2b90a6c..c06a595 100644
  	memset(dev, 0, sizeof(*dev));
  	dev->fd = -1;
  	dev->initialized = false;
-@@ -348,7 +334,11 @@ free_slots(struct libevdev *dev)
+@@ -331,7 +317,11 @@ free_slots(struct libevdev *dev)
  {
  	dev->num_slots = -1;
  	free(dev->mt_slot_vals);
@@ -112,7 +112,7 @@ index 2b90a6c..c06a595 100644
  }
  
  static int
-@@ -358,7 +348,11 @@ init_slots(struct libevdev *dev)
+@@ -341,7 +331,11 @@ init_slots(struct libevdev *dev)
  	int rc = 0;
  
  	free(dev->mt_slot_vals);
@@ -124,7 +124,7 @@ index 2b90a6c..c06a595 100644
  
  	/* devices with ABS_RESERVED aren't MT devices,
  	   see the documentation for multitouch-related
-@@ -382,6 +376,19 @@ init_slots(struct libevdev *dev)
+@@ -365,6 +359,19 @@ init_slots(struct libevdev *dev)
  	}
  	dev->current_slot = abs_info->value;
  
@@ -144,7 +144,7 @@ index 2b90a6c..c06a595 100644
  	reset_tracking_ids(dev);
  out:
  	return rc;
-@@ -540,10 +547,8 @@ libevdev_set_fd(struct libevdev* dev, int fd)
+@@ -523,10 +530,8 @@ libevdev_set_fd(struct libevdev* dev, int fd)
  	if (rc != 0)
  		goto out;
  
@@ -157,7 +157,7 @@ index 2b90a6c..c06a595 100644
  
  	rc = init_event_queue(dev);
  	if (rc < 0) {
-@@ -678,33 +683,27 @@ out:
+@@ -661,33 +666,27 @@ out:
  }
  
  static int
@@ -200,7 +200,7 @@ index 2b90a6c..c06a595 100644
  
  			if (axis == ABS_MT_TRACKING_ID) {
  				if (val_before == -1 && val_after != -1) {
-@@ -733,17 +732,12 @@ sync_mt_state(struct libevdev *dev,
+@@ -716,17 +715,12 @@ sync_mt_state(struct libevdev *dev,
  		}
  	}
  
@@ -218,7 +218,7 @@ index 2b90a6c..c06a595 100644
  		int *last_reported_slot)
  {
  	const unsigned int map[] = {BTN_TOOL_FINGER, BTN_TOOL_DOUBLETAP,
-@@ -751,6 +745,7 @@ terminate_slots(struct libevdev *dev,
+@@ -734,6 +728,7 @@ terminate_slots(struct libevdev *dev,
  				    BTN_TOOL_QUINTTAP};
  	bool touches_stopped = false;
  	int ntouches_before = 0, ntouches_after = 0;
@@ -226,7 +226,7 @@ index 2b90a6c..c06a595 100644
  
  	/* For BTN_TOOL_* emulation, we need to know how many touches we had
  	 * before and how many we have left once we terminate all the ones
-@@ -814,10 +809,10 @@ terminate_slots(struct libevdev *dev,
+@@ -797,10 +792,10 @@ terminate_slots(struct libevdev *dev,
  
  static int
  push_mt_sync_events(struct libevdev *dev,
@@ -238,7 +238,7 @@ index 2b90a6c..c06a595 100644
  	int rc;
  
  	for (int slot = 0; slot < dev->num_slots;  slot++) {
-@@ -926,8 +921,6 @@ sync_state(struct libevdev *dev)
+@@ -909,8 +904,6 @@ sync_state(struct libevdev *dev)
  	int rc = 0;
  	bool want_mt_sync = false;
  	int last_reported_slot = 0;
@@ -247,7 +247,7 @@ index 2b90a6c..c06a595 100644
  
  	 /* see section "Discarding events before synchronizing" in
  	  * libevdev/libevdev.h */
-@@ -945,9 +938,9 @@ sync_state(struct libevdev *dev)
+@@ -928,9 +921,9 @@ sync_state(struct libevdev *dev)
  	if (dev->num_slots > -1 &&
  	    libevdev_has_event_code(dev, EV_ABS, ABS_MT_SLOT)) {
  		want_mt_sync = true;
@@ -259,7 +259,7 @@ index 2b90a6c..c06a595 100644
  		else
  			want_mt_sync = false;
  	}
-@@ -961,7 +954,7 @@ sync_state(struct libevdev *dev)
+@@ -944,7 +937,7 @@ sync_state(struct libevdev *dev)
  	if (rc == 0 && libevdev_has_event_type(dev, EV_ABS))
  		rc = sync_abs_state(dev);
  	if (rc == 0 && want_mt_sync)
@@ -269,5 +269,5 @@ index 2b90a6c..c06a595 100644
  	dev->queue_nsync = queue_num_elements(dev);
  
 -- 
-2.29.0
+2.30.0
 
