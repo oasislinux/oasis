@@ -1,19 +1,19 @@
-From 8f8487a1c0e9be10746b255383fc892095174aac Mon Sep 17 00:00:00 2001
+From 55ff71bf1e559974132c313181134f8a24625fcc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 26 Sep 2020 16:30:33 -0700
 Subject: [PATCH] Prevent zero-sized arrays
 
 ---
- xlat/btrfs_features_compat.h | 3 ++-
- xlat/mq_attr_flags.h         | 3 ++-
- xlat/sigprof_codes.h         | 3 ++-
- xlat/sock_ipx_options.h      | 3 ++-
+ src/xlat/btrfs_features_compat.h | 3 ++-
+ src/xlat/mq_attr_flags.h         | 3 ++-
+ src/xlat/sigprof_codes.h         | 3 ++-
+ src/xlat/sock_ipx_options.h      | 3 ++-
  4 files changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/xlat/btrfs_features_compat.h b/xlat/btrfs_features_compat.h
-index d74af31..70331b1 100644
---- a/xlat/btrfs_features_compat.h
-+++ b/xlat/btrfs_features_compat.h
+diff --git a/src/xlat/btrfs_features_compat.h b/src/xlat/btrfs_features_compat.h
+index 44d99a5..f20e7c4 100644
+--- a/src/xlat/btrfs_features_compat.h
++++ b/src/xlat/btrfs_features_compat.h
 @@ -13,13 +13,14 @@ extern const struct xlat btrfs_features_compat[];
  # else
  
@@ -30,10 +30,10 @@ index d74af31..70331b1 100644
   .type = XT_NORMAL,
   .flags_mask = 0
    ,
-diff --git a/xlat/mq_attr_flags.h b/xlat/mq_attr_flags.h
-index 9dfbe94..84ec9cd 100644
---- a/xlat/mq_attr_flags.h
-+++ b/xlat/mq_attr_flags.h
+diff --git a/src/xlat/mq_attr_flags.h b/src/xlat/mq_attr_flags.h
+index c8593a6..3534c0e 100644
+--- a/src/xlat/mq_attr_flags.h
++++ b/src/xlat/mq_attr_flags.h
 @@ -18,13 +18,14 @@ static const struct xlat_data mq_attr_flags_xdata[] = {
   #define XLAT_VAL_0 ((unsigned) (O_NONBLOCK))
   #define XLAT_STR_0 STRINGIFY(O_NONBLOCK)
@@ -50,10 +50,10 @@ index 9dfbe94..84ec9cd 100644
   .type = XT_NORMAL,
   .flags_mask = 0
  #  ifdef XLAT_VAL_0
-diff --git a/xlat/sigprof_codes.h b/xlat/sigprof_codes.h
-index 65614dc..a173d59 100644
---- a/xlat/sigprof_codes.h
-+++ b/xlat/sigprof_codes.h
+diff --git a/src/xlat/sigprof_codes.h b/src/xlat/sigprof_codes.h
+index 5147a5f..019edf3 100644
+--- a/src/xlat/sigprof_codes.h
++++ b/src/xlat/sigprof_codes.h
 @@ -18,13 +18,14 @@ static const struct xlat_data sigprof_codes_xdata[] = {
   #define XLAT_VAL_0 ((unsigned) (PROF_SIG))
   #define XLAT_STR_0 STRINGIFY(PROF_SIG)
@@ -70,10 +70,10 @@ index 65614dc..a173d59 100644
   .type = XT_NORMAL,
   .flags_mask = 0
  #  ifdef XLAT_VAL_0
-diff --git a/xlat/sock_ipx_options.h b/xlat/sock_ipx_options.h
-index 166d010..527089b 100644
---- a/xlat/sock_ipx_options.h
-+++ b/xlat/sock_ipx_options.h
+diff --git a/src/xlat/sock_ipx_options.h b/src/xlat/sock_ipx_options.h
+index 653d4dc..2f259ba 100644
+--- a/src/xlat/sock_ipx_options.h
++++ b/src/xlat/sock_ipx_options.h
 @@ -18,11 +18,12 @@ static const struct xlat_data sock_ipx_options_xdata[] = {
   #define XLAT_VAL_0 ((unsigned) (IPX_TYPE))
   #define XLAT_STR_0 STRINGIFY(IPX_TYPE)
@@ -89,5 +89,5 @@ index 166d010..527089b 100644
   .flags_mask = 0
  #  ifdef XLAT_VAL_0
 -- 
-2.28.0
+2.30.0
 

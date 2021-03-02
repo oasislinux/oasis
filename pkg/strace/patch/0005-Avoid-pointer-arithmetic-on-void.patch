@@ -1,41 +1,41 @@
-From a5642a0735182fca95b8a1191df91233f88393a0 Mon Sep 17 00:00:00 2001
+From 39bde60243deec54676cd119f08192a1c8f7b06b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
 
 ---
- netlink_smc_diag.c | 4 ++--
- print_timespec.h   | 6 ++++--
- sockaddr.c         | 2 +-
- ucopy.c            | 8 ++++----
- 4 files changed, 11 insertions(+), 9 deletions(-)
+ src/netlink_smc_diag.c |  4 ++--
+ src/print_timespec.h   |  6 ++++--
+ src/sockaddr.c         |  2 +-
+ src/ucopy.c            | 10 +++++-----
+ 4 files changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/netlink_smc_diag.c b/netlink_smc_diag.c
-index 16815fde..09a748a8 100644
---- a/netlink_smc_diag.c
-+++ b/netlink_smc_diag.c
+diff --git a/src/netlink_smc_diag.c b/src/netlink_smc_diag.c
+index 7d2872dc9..fd6c276cb 100644
+--- a/src/netlink_smc_diag.c
++++ b/src/netlink_smc_diag.c
 @@ -41,7 +41,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_req)
  	if (len >= sizeof(req)) {
  		if (!umoven_or_printaddr(tcp, addr + offset,
  					 sizeof(req) - offset,
 -					 (void *) &req + offset)) {
 +					 (char *) &req + offset)) {
- 			PRINT_FIELD_FLAGS("", req, diag_ext,
+ 			PRINT_FIELD_FLAGS(req, diag_ext,
  					  smc_diag_extended_flags,
  					  "1<<SMC_DIAG_\?\?\?-1");
-@@ -212,7 +212,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_msg)
+@@ -250,7 +250,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_msg)
  	if (len >= sizeof(msg)) {
  		if (!umoven_or_printaddr(tcp, addr + offset,
  					 sizeof(msg) - offset,
 -					 (void *) &msg + offset)) {
 +					 (char *) &msg + offset)) {
- 			PRINT_FIELD_XVAL("", msg, diag_state,
+ 			PRINT_FIELD_XVAL(msg, diag_state,
  					 smc_states, "SMC_???");
- 			PRINT_FIELD_XVAL(", ", msg, diag_fallback,
-diff --git a/print_timespec.h b/print_timespec.h
-index 0f0e296d..4449f857 100644
---- a/print_timespec.h
-+++ b/print_timespec.h
+ 			tprint_struct_next();
+diff --git a/src/print_timespec.h b/src/print_timespec.h
+index feb6599f1..3351755cb 100644
+--- a/src/print_timespec.h
++++ b/src/print_timespec.h
 @@ -67,6 +67,8 @@ bool
  PRINT_TIMESPEC_ARRAY_DATA_SIZE(const void *arg, const unsigned int nmemb,
  			       const size_t size)
@@ -58,11 +58,11 @@ index 0f0e296d..4449f857 100644
  	}
  
  	tprints("]");
-diff --git a/sockaddr.c b/sockaddr.c
-index b0046331..35e36392 100644
---- a/sockaddr.c
-+++ b/sockaddr.c
-@@ -481,7 +481,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
+diff --git a/src/sockaddr.c b/src/sockaddr.c
+index ca8c86ce8..1f2ee0122 100644
+--- a/src/sockaddr.c
++++ b/src/sockaddr.c
+@@ -497,7 +497,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
  static void
  print_sockaddr_data_raw(const void *const buf, const int addrlen)
  {
@@ -70,12 +70,12 @@ index b0046331..35e36392 100644
 +	const char *const data = (const char *)buf + SIZEOF_SA_FAMILY;
  	const int datalen = addrlen - SIZEOF_SA_FAMILY;
  
- 	tprints("sa_data=");
-diff --git a/ucopy.c b/ucopy.c
-index 59af8641..3ff59781 100644
---- a/ucopy.c
-+++ b/ucopy.c
-@@ -165,7 +165,7 @@ vm_read_mem(const pid_t pid, void *laddr,
+ 	tprints_field_name("sa_data");
+diff --git a/src/ucopy.c b/src/ucopy.c
+index 6cebb8e26..e8ca2ad5d 100644
+--- a/src/ucopy.c
++++ b/src/ucopy.c
+@@ -186,7 +186,7 @@ vm_read_mem(const pid_t pid, void *laddr,
  			break;
  
  		len = next_len;
@@ -84,7 +84,7 @@ index 59af8641..3ff59781 100644
  		page_start += page_size;
  		taddr = page_start;
  	}
-@@ -227,7 +227,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+@@ -278,7 +278,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
  		memcpy(laddr, &u.x[residue], m);
  		residue = 0;
  		addr += sizeof(long);
@@ -93,7 +93,7 @@ index 59af8641..3ff59781 100644
  		nread += m;
  		len -= m;
  	}
-@@ -324,10 +324,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+@@ -375,10 +375,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
  		memcpy(laddr, &u.x[residue], m);
  		while (residue < sizeof(long))
  			if (u.x[residue++] == '\0')
@@ -106,6 +106,15 @@ index 59af8641..3ff59781 100644
  		nread += m;
  		len -= m;
  	}
+@@ -509,7 +509,7 @@ upoken_pokedata(const int pid, kernel_ulong_t addr, unsigned int len,
+ 
+ 		addr += sizeof(long);
+ 		nwritten += sizeof(long);
+-		our_addr += sizeof(long);
++		our_addr = (char *)our_addr + sizeof(long);
+ 		len -= sizeof(long);
+ 	}
+ 
 -- 
-2.28.0
+2.30.0
 

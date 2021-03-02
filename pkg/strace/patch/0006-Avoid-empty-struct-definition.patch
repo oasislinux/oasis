@@ -1,16 +1,16 @@
-From 9373bbf0bc3d17265f165845eb16c85843e92cf6 Mon Sep 17 00:00:00 2001
+From 4abe148a0e2dc930a5cdb8d92e88af203898368a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:50:31 -0700
 Subject: [PATCH] Avoid empty struct definition
 
 ---
- fetch_struct_stat64.c | 8 +-------
+ src/fetch_struct_stat64.c | 8 +-------
  1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/fetch_struct_stat64.c b/fetch_struct_stat64.c
-index 8b445ba3..5b7641a1 100644
---- a/fetch_struct_stat64.c
-+++ b/fetch_struct_stat64.c
+diff --git a/src/fetch_struct_stat64.c b/src/fetch_struct_stat64.c
+index b5125d420..b45a48da5 100644
+--- a/src/fetch_struct_stat64.c
++++ b/src/fetch_struct_stat64.c
 @@ -32,12 +32,6 @@
  # endif /* HAVE_MX32_STRUCT_STAT64 */
  #endif /* MPERS_IS_m32 || MPERS_IS_mx32 */
@@ -34,5 +34,5 @@ index 8b445ba3..5b7641a1 100644
  		return false;
  
 -- 
-2.22.0
+2.30.0
 

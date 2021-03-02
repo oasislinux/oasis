@@ -1,19 +1,19 @@
-From 1d0a51b8e89231e92b0b3280dd850eccfa6cf143 Mon Sep 17 00:00:00 2001
+From 2aafc896306daf6fc8a470993ffd6d300d2e410c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
 
 ---
- open.c   | 5 +++--
- prctl.c  | 2 +-
- strace.c | 6 +++---
+ src/open.c   | 5 +++--
+ src/prctl.c  | 2 +-
+ src/strace.c | 6 +++---
  3 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/open.c b/open.c
-index eb6af088..16e64946 100644
---- a/open.c
-+++ b/open.c
-@@ -77,8 +77,9 @@ sprint_open_modes64(uint64_t flags)
+diff --git a/src/open.c b/src/open.c
+index 4af4320b0..8191470ed 100644
+--- a/src/open.c
++++ b/src/open.c
+@@ -63,8 +63,9 @@ sprint_open_modes64(uint64_t flags)
  	}
  	*p = '\0';
  
@@ -25,10 +25,10 @@ index eb6af088..16e64946 100644
  }
  
  const char *
-diff --git a/prctl.c b/prctl.c
-index b904fa34..1366a89e 100644
---- a/prctl.c
-+++ b/prctl.c
+diff --git a/src/prctl.c b/src/prctl.c
+index 58b644946..6147082eb 100644
+--- a/src/prctl.c
++++ b/src/prctl.c
 @@ -76,7 +76,7 @@ sprint_sve_val(kernel_ulong_t arg)
  	const char *flags_str = sprintflags("", pr_sve_vl_flags, flags);
  
@@ -38,11 +38,11 @@ index b904fa34..1366a89e 100644
  
  	return out;
  }
-diff --git a/strace.c b/strace.c
-index 280f1a68..11a3d9dd 100644
---- a/strace.c
-+++ b/strace.c
-@@ -2251,7 +2251,7 @@ init(int argc, char *argv[])
+diff --git a/src/strace.c b/src/strace.c
+index 24180a15f..a71860e55 100644
+--- a/src/strace.c
++++ b/src/strace.c
+@@ -2257,7 +2257,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -51,7 +51,7 @@ index 280f1a68..11a3d9dd 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2351,10 +2351,10 @@ init(int argc, char *argv[])
+@@ -2357,10 +2357,10 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
  			break;
  		case GETOPT_QUAL_QUIET:
@@ -65,5 +65,5 @@ index 280f1a68..11a3d9dd 100644
  		default:
  			error_msg_and_help(NULL);
 -- 
-2.28.0
+2.30.0
 

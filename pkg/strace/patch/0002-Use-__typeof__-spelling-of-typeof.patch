@@ -1,63 +1,94 @@
-From 4df6fee4836c6ecceb33221ec93f36592973bd12 Mon Sep 17 00:00:00 2001
+From 62a54ba2c7356ade3e2eb7f66647410daafc5718 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:33:01 -0700
 Subject: [PATCH] Use __typeof__ spelling of typeof
 
 ---
- btrfs.c              |  8 ++++----
- defs.h               |  4 ++--
- file_ioctl.c         |  4 ++--
- gcc_compat.h         |  2 +-
- list.h               | 10 +++++-----
+ src/btrfs.c          | 12 ++++++------
+ src/defs.h           |  6 +++---
+ src/fs_0x94_ioctl.c  |  2 +-
+ src/fs_f_ioctl.c     |  2 +-
+ src/gcc_compat.h     |  2 +-
+ src/list.h           | 10 +++++-----
+ src/macros.h         |  2 +-
+ src/net.c            |  2 +-
+ src/ubi.c            |  2 +-
  tests/btrfs.c        |  2 +-
  tests/fcntl-common.c |  2 +-
- 7 files changed, 16 insertions(+), 16 deletions(-)
+ 11 files changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/btrfs.c b/btrfs.c
-index 77ce151f..6e6cb721 100644
---- a/btrfs.c
-+++ b/btrfs.c
-@@ -248,7 +248,7 @@ btrfs_print_logical_ino_container(struct tcb *tcp,
- 		tprints(", ...");
+diff --git a/src/btrfs.c b/src/btrfs.c
+index eb6f7e02b..819fcf084 100644
+--- a/src/btrfs.c
++++ b/src/btrfs.c
+@@ -214,7 +214,7 @@ btrfs_print_logical_ino_container(struct tcb *tcp,
+ 		tprint_more_data_follows();
  	} else {
  		const uint64_t val_addr =
 -			inodes_addr + offsetof(typeof(container), val);
 +			inodes_addr + offsetof(__typeof__(container), val);
  		uint64_t record[3];
- 		tprints(", val=");
- 		print_array(tcp, val_addr, container.elem_cnt / 3,
-@@ -287,7 +287,7 @@ btrfs_print_ino_path_container(struct tcb *tcp,
- 		tprints(", ...");
+ 		tprint_struct_next();
+ 		tprints_field_name("val");
+@@ -255,7 +255,7 @@ btrfs_print_ino_path_container(struct tcb *tcp,
+ 		tprint_more_data_follows();
  	} else {
  		uint64_t val_addr =
 -			fspath_addr + offsetof(typeof(container), val);
 +			fspath_addr + offsetof(__typeof__(container), val);
  		uint64_t offset;
- 		tprints(", val=");
- 		print_array(tcp, val_addr, container.elem_cnt,
-@@ -320,7 +320,7 @@ btrfs_print_qgroup_inherit(struct tcb *const tcp, const kernel_ulong_t qgi_addr)
- 	} else {
+ 		tprint_struct_next();
+ 		tprints_field_name("val");
+@@ -296,7 +296,7 @@ btrfs_print_qgroup_inherit(struct tcb *const tcp, const kernel_ulong_t qgi_addr)
  		uint64_t record;
- 		tprints(", qgroups=");
+ 		tprint_struct_next();
+ 		tprints_field_name("qgroups");
 -		print_array(tcp, qgi_addr + offsetof(typeof(inherit), qgroups),
 +		print_array(tcp, qgi_addr + offsetof(__typeof__(inherit), qgroups),
  			    inherit.num_qgroups, &record, sizeof(record),
  			    tfetch_mem, print_uint64_array_member, 0);
  	}
-@@ -1139,7 +1139,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
- 		} else {
+@@ -1137,7 +1137,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+ 		PRINT_FIELD_OBJ_PTR(args, key,
+ 				    print_btrfs_ioctl_search_key,
+ 				    entering(tcp), !abbrev(tcp));
+-		decode_search_arg_buf(tcp, arg + offsetof(typeof(args), buf),
++		decode_search_arg_buf(tcp, arg + offsetof(__typeof__(args), buf),
+ 				      sizeof(args.buf), args.key.nr_items);
+ 		tprint_struct_end();
+ 		if (entering(tcp))
+@@ -1173,7 +1173,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+ 				    entering(tcp), !abbrev(tcp));
+ 		tprint_struct_next();
+ 		PRINT_FIELD_U(args, buf_size);
+-		decode_search_arg_buf(tcp, arg + offsetof(typeof(args), buf),
++		decode_search_arg_buf(tcp, arg + offsetof(__typeof__(args), buf),
+ 				      args.buf_size, args.key.nr_items);
+ 		tprint_struct_end();
+ 		if (entering(tcp))
+@@ -1250,7 +1250,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
  			struct btrfs_ioctl_space_info info;
- 			tprints(", spaces=");
+ 			tprint_struct_next();
+ 			tprints_field_name("spaces");
 -			print_array(tcp, arg + offsetof(typeof(args), spaces),
 +			print_array(tcp, arg + offsetof(__typeof__(args), spaces),
  				    args.total_spaces,
  				    &info, sizeof(info), tfetch_mem,
  				    print_btrfs_ioctl_space_info, 0);
-diff --git a/defs.h b/defs.h
-index 656c04a5..732542e4 100644
---- a/defs.h
-+++ b/defs.h
-@@ -1760,8 +1760,8 @@ scno_is_valid(kernel_ulong_t scno)
+diff --git a/src/defs.h b/src/defs.h
+index 518e57346..00a36249e 100644
+--- a/src/defs.h
++++ b/src/defs.h
+@@ -1039,7 +1039,7 @@ print_local_array_ex(struct tcb *tcp,
+ # define print_local_array_upto(tcp_, start_addr_, upto_, print_func_)	     \
+ 	print_local_array_ex((tcp_), (start_addr_),			     \
+ 			     CLAMP((upto_), 0,				     \
+-				   (typeof(upto_)) ARRAY_SIZE(start_addr_)), \
++				   (__typeof__(upto_)) ARRAY_SIZE(start_addr_)), \
+ 			     sizeof((start_addr_)[0]), (print_func_),        \
+ 			     NULL, 0, NULL, NULL)
+ 
+@@ -1805,8 +1805,8 @@ scno_is_valid(kernel_ulong_t scno)
  
  # define ILOG2_ITER_(val_, ret_, bit_)					\
  	do {								\
@@ -68,32 +99,36 @@ index 656c04a5..732542e4 100644
  				   << (1 << (bit_))) - 1)) << (bit_);	\
  		(val_) >>= shift_;					\
  		(ret_) |= shift_;					\
-diff --git a/file_ioctl.c b/file_ioctl.c
-index d9a07ab0..63c2bcb3 100644
---- a/file_ioctl.c
-+++ b/file_ioctl.c
-@@ -157,7 +157,7 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
- 		if (abbrev(tcp) && args.dest_count > count)
- 			limit = &count;
+diff --git a/src/fs_0x94_ioctl.c b/src/fs_0x94_ioctl.c
+index f42ec2f0c..65381ec1b 100644
+--- a/src/fs_0x94_ioctl.c
++++ b/src/fs_0x94_ioctl.c
+@@ -95,7 +95,7 @@ decode_file_dedupe_range(struct tcb *const tcp, const kernel_ulong_t arg)
+ 	if (abbrev(tcp) && range.dest_count > count)
+ 		limit = &count;
  
--		rc = print_array(tcp, arg + offsetof(typeof(args), info),
-+		rc = print_array(tcp, arg + offsetof(__typeof__(args), info),
- 				 args.dest_count, &info, sizeof(info),
- 				 tfetch_mem,
- 				 print_file_dedupe_range_info, limit);
-@@ -202,7 +202,7 @@ file_ioctl(struct tcb *const tcp, const unsigned int code,
- 			struct fiemap_extent fe;
- 			tprints(", fm_extents=");
- 			print_array(tcp,
--				    arg + offsetof(typeof(args), fm_extents),
-+				    arg + offsetof(__typeof__(args), fm_extents),
- 				    args.fm_mapped_extents, &fe, sizeof(fe),
- 				    tfetch_mem,
- 				    print_fiemap_extent, 0);
-diff --git a/gcc_compat.h b/gcc_compat.h
-index 4c23ebc9..8eaa54bf 100644
---- a/gcc_compat.h
-+++ b/gcc_compat.h
+-	rc = print_array(tcp, arg + offsetof(typeof(range), info),
++	rc = print_array(tcp, arg + offsetof(__typeof__(range), info),
+ 			 range.dest_count, &info, sizeof(info),
+ 			 tfetch_mem,
+ 			 print_file_dedupe_range_info, limit);
+diff --git a/src/fs_f_ioctl.c b/src/fs_f_ioctl.c
+index 4509f3d58..f763cad8d 100644
+--- a/src/fs_f_ioctl.c
++++ b/src/fs_f_ioctl.c
+@@ -72,7 +72,7 @@ decode_fiemap(struct tcb *const tcp, const kernel_ulong_t arg)
+ 		struct fiemap_extent fe;
+ 		tprint_struct_next();
+ 		tprints_field_name("fm_extents");
+-		print_array(tcp, arg + offsetof(typeof(args), fm_extents),
++		print_array(tcp, arg + offsetof(__typeof__(args), fm_extents),
+ 			    args.fm_mapped_extents, &fe, sizeof(fe),
+ 			    tfetch_mem, print_fiemap_extent, 0);
+ 	}
+diff --git a/src/gcc_compat.h b/src/gcc_compat.h
+index 9b9bc9389..65f47f73f 100644
+--- a/src/gcc_compat.h
++++ b/src/gcc_compat.h
 @@ -59,7 +59,7 @@
  # endif
  
@@ -103,10 +138,10 @@ index 4c23ebc9..8eaa54bf 100644
  #  define FAIL_BUILD_ON_ZERO(expr) (sizeof(int[-1 + 2 * !!(expr)]) * 0)
  /* &(a)[0] is a pointer and not an array, shouldn't be treated as the same */
  #  define MUST_BE_ARRAY(a) FAIL_BUILD_ON_ZERO(!SAME_TYPE((a), &(a)[0]))
-diff --git a/list.h b/list.h
-index ddaf33ca..bf747a4b 100644
---- a/list.h
-+++ b/list.h
+diff --git a/src/list.h b/src/list.h
+index 4de4cb3be..f4ec11f0e 100644
+--- a/src/list.h
++++ b/src/list.h
 @@ -158,7 +158,7 @@ list_is_empty(const struct list_item *l)
   * @param field Name of the field that holds the respective struct list_item.
   */
@@ -145,11 +180,50 @@ index ddaf33ca..bf747a4b 100644
  	    &var_->field_ != head_; var_ = _tmp, _tmp = list_next(_tmp, field_))
  
  #endif /* !STRACE_LIST_H */
+diff --git a/src/macros.h b/src/macros.h
+index 467f5d042..be54782bf 100644
+--- a/src/macros.h
++++ b/src/macros.h
+@@ -39,7 +39,7 @@
+ 
+ # define sizeof_field(type_, member_) (sizeof(((type_ *)0)->member_))
+ 
+-# define typeof_field(type_, member_) typeof(((type_ *)0)->member_)
++# define typeof_field(type_, member_) __typeof__(((type_ *)0)->member_)
+ 
+ # ifndef offsetofend
+ #  define offsetofend(type_, member_)	\
+diff --git a/src/net.c b/src/net.c
+index 9942df21a..dc62e59cb 100644
+--- a/src/net.c
++++ b/src/net.c
+@@ -459,7 +459,7 @@ SYS_FUNC(socketpair)
+ #define MAYBE_PRINT_FIELD_LEN(print_prefix_, where_, field_, 		\
+ 			len_, print_func_, ...)				\
+ 	do {								\
+-		unsigned int start = offsetof(typeof(where_), field_);	\
++		unsigned int start = offsetof(__typeof__(where_), field_); \
+ 		unsigned int end = start + sizeof(where_.field_);	\
+ 		if (len_ > start) {					\
+ 			print_prefix_;					\
+diff --git a/src/ubi.c b/src/ubi.c
+index 93cec79c4..9047df640 100644
+--- a/src/ubi.c
++++ b/src/ubi.c
+@@ -84,7 +84,7 @@ static bool
+ print_ubi_rnvol_req_ent_array_member(struct tcb *tcp, void *elem_buf,
+ 				     size_t elem_size, void *data)
+ {
+-	typeof(&((struct ubi_rnvol_req *) NULL)->ents[0]) p = elem_buf;
++	__typeof__(&((struct ubi_rnvol_req *) NULL)->ents[0]) p = elem_buf;
+ 
+ 	tprint_struct_begin();
+ 	PRINT_FIELD_D(*p, vol_id);
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index 2a474dc4..2423f65e 100644
+index fd240259c..6d98c0b9c 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
-@@ -954,7 +954,7 @@ btrfs_print_tree_search_buf(struct btrfs_ioctl_search_key *key,
+@@ -849,7 +849,7 @@ btrfs_print_tree_search_buf(struct btrfs_ioctl_search_key *key,
  		printf("buf=[");
  		for (i = 0; i < key->nr_items; i++) {
  			struct btrfs_ioctl_search_header *sh;
@@ -159,7 +233,7 @@ index 2a474dc4..2423f65e 100644
  				printf(", ");
  			printf("{transid=%" PRI__u64 ", objectid=",
 diff --git a/tests/fcntl-common.c b/tests/fcntl-common.c
-index ec18aa79..637bb405 100644
+index 155166617..ebc2e07aa 100644
 --- a/tests/fcntl-common.c
 +++ b/tests/fcntl-common.c
 @@ -22,7 +22,7 @@
@@ -172,5 +246,5 @@ index ec18aa79..637bb405 100644
  # define TYPEOF_FLOCK_OFF_T off_t
  #endif
 -- 
-2.28.0
+2.30.0
 

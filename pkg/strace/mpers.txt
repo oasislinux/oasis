@@ -1,4 +1,4 @@
-# 2,<awk '/^mpers_source_files =/ {for (i=3; i<=NF; ++i) print $i}' src/mpers.am
+# 2,<awk '/^mpers_source_files =/ {for (i=3; i<=NF; ++i) print $i}' src/src/mpers.am
 block.c
 btrfs.c
 dirent.c
@@ -19,7 +19,7 @@ ipc_shmctl.c
 loop.c
 mtd.c
 perf_ioctl.c
-print_aio_sigset.c
+print_kernel_sigset.c
 print_group_req.c
 print_mq_attr.c
 print_msgbuf.c

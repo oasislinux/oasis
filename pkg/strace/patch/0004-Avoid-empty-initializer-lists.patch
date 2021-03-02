@@ -1,14 +1,14 @@
-From d57542b29ffe81ac355c2889aa5cf326b60e7d67 Mon Sep 17 00:00:00 2001
+From d98579a234b81512a4def2bc740457fcd0637ac2 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
 
 ---
- bpf.c                   | 4 ++--
- net.c                   | 2 +-
- sched.c                 | 2 +-
- signal.c                | 2 +-
- strace.c                | 2 +-
+ src/bpf.c               | 4 ++--
+ src/net.c               | 2 +-
+ src/sched.c             | 2 +-
+ src/signal.c            | 2 +-
+ src/strace.c            | 2 +-
  tests/btrfs.c           | 8 ++++----
  tests/clock_nanosleep.c | 2 +-
  tests/nanosleep.c       | 2 +-
@@ -19,11 +19,11 @@ Subject: [PATCH] Avoid empty initializer lists
  tests/waitid.c          | 2 +-
  13 files changed, 17 insertions(+), 17 deletions(-)
 
-diff --git a/bpf.c b/bpf.c
-index 0ec33ba4..16cbf257 100644
---- a/bpf.c
-+++ b/bpf.c
-@@ -43,7 +43,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
+diff --git a/src/bpf.c b/src/bpf.c
+index 7d2f4b85d..4e8bbe09a 100644
+--- a/src/bpf.c
++++ b/src/bpf.c
+@@ -42,7 +42,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
  #define BEGIN_BPF_CMD_DECODER(bpf_cmd)					\
  	static DECL_BPF_CMD_DECODER(decode_ ## bpf_cmd)			\
  	{								\
@@ -32,7 +32,7 @@ index 0ec33ba4..16cbf257 100644
  		const size_t attr_size = bpf_cmd ## _struct_size;	\
  		const unsigned int len = MIN(size, attr_size);		\
  		memcpy(&attr, data, len);				\
-@@ -150,7 +150,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
+@@ -153,7 +153,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
  	if (abbrev(tcp)) {
  		printaddr(addr);
  	} else {
@@ -41,11 +41,11 @@ index 0ec33ba4..16cbf257 100644
  		struct ebpf_insn insn;
  
  		print_array(tcp, addr, len, &insn, sizeof(insn),
-diff --git a/net.c b/net.c
-index 2099f0ac..316cecf2 100644
---- a/net.c
-+++ b/net.c
-@@ -655,7 +655,7 @@ print_tpacket_stats(struct tcb *const tcp, const kernel_ulong_t addr,
+diff --git a/src/net.c b/src/net.c
+index dc62e59cb..c80958500 100644
+--- a/src/net.c
++++ b/src/net.c
+@@ -681,7 +681,7 @@ print_tpacket_stats(struct tcb *const tcp, const kernel_ulong_t addr,
  static void
  print_icmp_filter(struct tcb *const tcp, const kernel_ulong_t addr, int len)
  {
@@ -54,11 +54,11 @@ index 2099f0ac..316cecf2 100644
  
  	if (len > (int) sizeof(filter))
  		len = sizeof(filter);
-diff --git a/sched.c b/sched.c
-index ff427e48..2f46a836 100644
---- a/sched.c
-+++ b/sched.c
-@@ -99,7 +99,7 @@ static void
+diff --git a/src/sched.c b/src/sched.c
+index a9bbe64ff..661077e2f 100644
+--- a/src/sched.c
++++ b/src/sched.c
+@@ -97,7 +97,7 @@ static void
  print_sched_attr(struct tcb *const tcp, const kernel_ulong_t addr,
  		 unsigned int usize)
  {
@@ -67,11 +67,11 @@ index ff427e48..2f46a836 100644
  	unsigned int size;
  	bool is_set = false;
  
-diff --git a/signal.c b/signal.c
-index 49b4ebd5..a809d260 100644
---- a/signal.c
-+++ b/signal.c
-@@ -246,7 +246,7 @@ print_sigset_addr_len_limit(struct tcb *const tcp, const kernel_ulong_t addr,
+diff --git a/src/signal.c b/src/signal.c
+index 5fc0789c3..cdea7f5b8 100644
+--- a/src/signal.c
++++ b/src/signal.c
+@@ -249,7 +249,7 @@ print_sigset_addr_len_limit(struct tcb *const tcp, const kernel_ulong_t addr,
  		printaddr(addr);
  		return;
  	}
@@ -80,11 +80,11 @@ index 49b4ebd5..a809d260 100644
  	if (umoven_or_printaddr(tcp, addr, len, mask))
  		return;
  	tprints(sprintsigmask_n("", mask, len));
-diff --git a/strace.c b/strace.c
-index 2897195c..280f1a68 100644
---- a/strace.c
-+++ b/strace.c
-@@ -3381,7 +3381,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+diff --git a/src/strace.c b/src/strace.c
+index ab82a9908..24180a15f 100644
+--- a/src/strace.c
++++ b/src/strace.c
+@@ -3387,7 +3387,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -94,10 +94,10 @@ index 2897195c..280f1a68 100644
  		if (res != 0) {
  			res = syscall_exiting_trace(tcp, &ts, res);
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index 2423f65e..3b5ade66 100644
+index 6d98c0b9c..a0e587479 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
-@@ -382,7 +382,7 @@ btrfs_test_subvol_ioctls(void)
+@@ -279,7 +279,7 @@ btrfs_test_subvol_ioctls(void)
  	char *long_subvol_name;
  	void *bad_pointer = (void *) (unsigned long) 0xdeadbeeffffffeedULL;
  	uint64_t u64val = 0xdeadbeefbadc0dedULL;
@@ -106,7 +106,7 @@ index 2423f65e..3b5ade66 100644
  	struct btrfs_ioctl_vol_args_v2 vol_args_v2 = {
  		.fd = 2,
  		.flags = max_flags_plus_one(2),
-@@ -629,7 +629,7 @@ btrfs_test_balance_ioctls(void)
+@@ -526,7 +526,7 @@ btrfs_test_balance_ioctls(void)
  			.devid = 1,
  		},
  	};
@@ -115,7 +115,7 @@ index 2423f65e..3b5ade66 100644
  
  	ioctl(-1, BTRFS_IOC_BALANCE_CTL, 1);
  	printf("ioctl(-1, %s, %sBTRFS_BALANCE_CTL_PAUSE%s) = -1 EBADF (%m)\n",
-@@ -841,7 +841,7 @@ btrfs_print_defrag_range_args(struct btrfs_ioctl_defrag_range_args *args,
+@@ -736,7 +736,7 @@ btrfs_print_defrag_range_args(struct btrfs_ioctl_defrag_range_args *args,
  static void
  btrfs_test_defrag_ioctls(void)
  {
@@ -124,7 +124,7 @@ index 2423f65e..3b5ade66 100644
  	struct btrfs_ioctl_defrag_range_args args = {
  		.start = 0,
  		.len = -1ULL,
-@@ -1170,7 +1170,7 @@ btrfs_test_ino_lookup_ioctl(void)
+@@ -1065,7 +1065,7 @@ btrfs_test_ino_lookup_ioctl(void)
  static void
  btrfs_test_space_info_ioctl(void)
  {
@@ -134,7 +134,7 @@ index 2423f65e..3b5ade66 100644
  	ioctl(-1, BTRFS_IOC_SPACE_INFO, NULL);
  	printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n",
 diff --git a/tests/clock_nanosleep.c b/tests/clock_nanosleep.c
-index 854fdb3f..0de48963 100644
+index 51bd0d7f7..a1053fd1e 100644
 --- a/tests/clock_nanosleep.c
 +++ b/tests/clock_nanosleep.c
 @@ -39,7 +39,7 @@ main(void)
@@ -147,7 +147,7 @@ index 854fdb3f..0de48963 100644
  	const struct itimerval itv = {
  		.it_interval.tv_usec = 222222,
 diff --git a/tests/nanosleep.c b/tests/nanosleep.c
-index d55b395c..e41b6b1f 100644
+index 8ff6a86b8..6377f38ee 100644
 --- a/tests/nanosleep.c
 +++ b/tests/nanosleep.c
 @@ -53,7 +53,7 @@ main(void)
@@ -160,7 +160,7 @@ index d55b395c..e41b6b1f 100644
  	const struct itimerval itv = { .it_value.tv_usec = 111111 };
  
 diff --git a/tests/restart_syscall.c b/tests/restart_syscall.c
-index a42d3b9b..3e48b1c1 100644
+index e4e83dc09..da83d1dc7 100644
 --- a/tests/restart_syscall.c
 +++ b/tests/restart_syscall.c
 @@ -26,7 +26,7 @@ main(void)
@@ -173,7 +173,7 @@ index a42d3b9b..3e48b1c1 100644
  	const struct itimerval itv = { .it_value.tv_usec = 111111 };
  	const struct timespec req = { .tv_nsec = 222222222 };
 diff --git a/tests/setrlimit.c b/tests/setrlimit.c
-index 886cf65a..89ed1077 100644
+index d4953f6f8..60d54fbd8 100644
 --- a/tests/setrlimit.c
 +++ b/tests/setrlimit.c
 @@ -39,7 +39,7 @@ main(void)
@@ -186,7 +186,7 @@ index 886cf65a..89ed1077 100644
  			continue;
  		rlimit[0] = libc_rlim.rlim_cur;
 diff --git a/tests/timer_create.c b/tests/timer_create.c
-index 2c4dae19..59bc2dd0 100644
+index 1059a01d8..692eecf03 100644
 --- a/tests/timer_create.c
 +++ b/tests/timer_create.c
 @@ -26,7 +26,7 @@ main(void)
@@ -199,7 +199,7 @@ index 2c4dae19..59bc2dd0 100644
  		.sigev_notify = 0xdefaced,
  		.sigev_signo = 0xfacefeed,
 diff --git a/tests/wait4.c b/tests/wait4.c
-index 048e6225..b7bf7c8a 100644
+index faf9423f8..eacee2366 100644
 --- a/tests/wait4.c
 +++ b/tests/wait4.c
 @@ -89,7 +89,7 @@ k_wait4(const unsigned int pid, void const *wstatus,
@@ -212,7 +212,7 @@ index 048e6225..b7bf7c8a 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 diff --git a/tests/waitid.c b/tests/waitid.c
-index 8716fa08..4ec091f4 100644
+index a14899530..b08881ae7 100644
 --- a/tests/waitid.c
 +++ b/tests/waitid.c
 @@ -130,7 +130,7 @@ do_waitid(const unsigned int idtype,
@@ -225,5 +225,5 @@ index 8716fa08..4ec091f4 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.28.0
+2.30.0
 

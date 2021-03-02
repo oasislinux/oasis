@@ -1,17 +1,17 @@
-From 0ad7047e306f4aef8f4a6346e9dfff8079b1c571 Mon Sep 17 00:00:00 2001
+From 4a468614678d3ae7b58e95428352268c975d1812 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 30 Jan 2020 21:57:34 -0800
 Subject: [PATCH] Use alloca when VLAs aren't available
 
 ---
- evdev.c | 14 +++++++++++---
+ src/evdev.c | 14 +++++++++++---
  1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/evdev.c b/evdev.c
-index 1d4e9aef..58e705ae 100644
---- a/evdev.c
-+++ b/evdev.c
-@@ -181,9 +181,13 @@ decode_bitset(struct tcb *const tcp, const kernel_ulong_t arg,
+diff --git a/src/evdev.c b/src/evdev.c
+index 198d799f3..f74ab9a71 100644
+--- a/src/evdev.c
++++ b/src/evdev.c
+@@ -169,9 +169,13 @@ decode_bitset(struct tcb *const tcp, const kernel_ulong_t arg,
  		return RVAL_IOCTL_DECODED;
  	}
  
@@ -26,7 +26,7 @@ index 1d4e9aef..58e705ae 100644
  		return RVAL_IOCTL_DECODED;
  
  	if (xlat_verbose(xlat_verbosity) != XLAT_STYLE_RAW) {
-@@ -238,9 +242,13 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
+@@ -227,9 +231,13 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
  		return RVAL_IOCTL_DECODED;
  	}
  
@@ -37,19 +37,19 @@ index 1d4e9aef..58e705ae 100644
 +#endif
  
 -	if (umove_or_printaddr(tcp, arg, &buffer))
-+	if (umoven_or_printaddr(tcp, arg, size * sizeof(int), &buffer))
++	if (umoven_or_printaddr(tcp, arg, size * sizeof(int), buffer))
  		return RVAL_IOCTL_DECODED;
  
- 	tprints("{code=");
-@@ -249,7 +257,7 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
- 	tprints(", values=[");
+ 	tprint_struct_begin();
+@@ -241,7 +249,7 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
+ 	tprints("[");
  
  	unsigned int i;
 -	for (i = 1; i < ARRAY_SIZE(buffer); i++)
 +	for (i = 1; i < size; i++)
  		tprintf("%s%d", i > 1 ? ", " : "", buffer[i]);
  
- 	tprints("]}");
+ 	tprints("]");
 -- 
-2.28.0
+2.30.0
 
