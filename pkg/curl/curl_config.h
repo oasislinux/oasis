@@ -109,6 +109,7 @@
 /* #undef HAVE_GSSGNU */
 /* #undef HAVE_GSSHEIMDAL */
 /* #undef HAVE_GSSMIT */
+/* #undef HAVE_HYPER_H */
 /* #undef HAVE_IDN2_H */
 #define HAVE_IFADDRS_H 1
 #define HAVE_IF_NAMETOINDEX 1
@@ -329,6 +330,7 @@
 /* #undef USE_GNUTLS */
 /* #undef USE_GNUTLS_NETTLE */
 /* #undef USE_HSTS */
+/* #undef USE_HYPER */
 /* #undef USE_LIBPSL */
 /* #undef USE_LIBRTMP */
 /* #undef USE_LIBSSH */
