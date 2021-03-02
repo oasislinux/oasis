@@ -1,6 +1,4 @@
 # libxkbcommon
-Upstream tar archives are used over git because the parser
-(src/xkbcomp/parser.y) uses various GNU extensions.
 
 ## config.h
 Generated with
