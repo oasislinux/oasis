@@ -1,4 +1,4 @@
-From d38b4d1d39784aefebb585ed955d16bb674bd2ff Mon Sep 17 00:00:00 2001
+From 651393ea7aeb6e0a14cd35e72ca2350656388dc4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 1 Jul 2019 22:52:11 -0700
 Subject: [PATCH] Use __attribute__ consistently
@@ -8,11 +8,11 @@ Subject: [PATCH] Use __attribute__ consistently
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/src/common.h b/src/common.h
-index e2c398c..03f6984 100644
+index 9a68531..0e13fb3 100644
 --- a/src/common.h
 +++ b/src/common.h
-@@ -24,12 +24,12 @@
- #define _COMMON_H
+@@ -41,12 +41,12 @@ extern int atari_format;	/* Use Atari variation of MS-DOS FS format */
+ extern const char *program_name;
  
  void die(const char *msg, ...)
 -    __attribute((noreturn, format(printf, 1, 2)));
@@ -27,5 +27,5 @@ index e2c398c..03f6984 100644
  /* Like die, but appends an error message according to the state of errno. */
  
 -- 
-2.22.0
+2.30.0
 
