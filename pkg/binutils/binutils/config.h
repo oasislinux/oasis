@@ -66,10 +66,10 @@
 #define PACKAGE "binutils"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "binutils"
-#define PACKAGE_STRING "binutils 2.36"
+#define PACKAGE_STRING "binutils 2.36.1"
 #define PACKAGE_TARNAME "binutils"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.36"
+#define PACKAGE_VERSION "2.36.1"
 #define SIZEOF_LONG 8
 #define SIZEOF_LONG_LONG 8
 /* #undef STACK_DIRECTION */
@@ -93,7 +93,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.36"
+#define VERSION "2.36.1"
 /* #undef YYTEXT_POINTER */
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1

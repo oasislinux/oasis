@@ -90,10 +90,10 @@
 #define PACKAGE "gas"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "gas"
-#define PACKAGE_STRING "gas 2.36"
+#define PACKAGE_STRING "gas 2.36.1"
 #define PACKAGE_TARNAME "gas"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.36"
+#define PACKAGE_VERSION "2.36.1"
 /* #undef STACK_DIRECTION */
 #define STDC_HEADERS 1
 /* #undef STRICTCOFF */
@@ -125,7 +125,7 @@
 # define __EXTENSIONS__ 1
 #endif
 /* #undef USING_CGEN */
-#define VERSION "2.36"
+#define VERSION "2.36.1"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

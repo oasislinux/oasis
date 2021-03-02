@@ -1,4 +1,4 @@
-local version = setmetatable({2, 36}, {__index=function() return 0 end})
+local version = setmetatable({2, 36, 1}, {__index=function() return 0 end})
 local defvec = 'x86_64_elf64_vec'
 local selvecs = {[defvec]=true, i386_elf32_vec=true}
 local selarchs = {i386=true}
