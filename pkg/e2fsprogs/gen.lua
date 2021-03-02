@@ -1,8 +1,9 @@
-set('version', '1.45.7')
+set('version', '1.46.2')
 cflags{
 	'-std=c99', '-Wall',
-	'-Wno-address-of-packed-member', '-Wno-format-truncation', '-Wno-format-overflow',
-	'-Wno-pointer-sign', '-Wno-maybe-uninitialized',
+        '-Wno-address-of-packed-member', '-Wno-format-truncation',
+        '-Wno-unused-variable', '-Wno-stringop-truncation',
+        '-Wno-stringop-overflow', '-Wno-unused-label',
 	'-D HAVE_CONFIG_H',
 	'-I $outdir',
 	'-I $outdir/include',
@@ -22,7 +23,7 @@ build('cat', '$outdir/config.h', {
 
 set('subst', {
 	'-e s,@E2FSPROGS_VERSION@,$version,',
-	'-e s,@E2FSPROGS_MONTH@,Jan,',
+	'-e s,@E2FSPROGS_MONTH@,Feb,',
 	'-e s,@E2FSPROGS_YEAR@,2021,',
 	'-e s,@JDEV@,,',
 })
@@ -93,7 +94,7 @@ lib('libe2p.a', [[lib/e2p/(
 	getflags.c getversion.c hashstr.c iod.c ls.c ljs.c mntopts.c
 	parse_num.c pe.c pf.c ps.c setflags.c setversion.c uuid.c
 	ostype.c percent.c crypto_mode.c fgetproject.c fsetproject.c
-	encoding.c
+	encoding.c errcode.c
 )]])
 lib('libext2fs.a', [[$outdir/ext2_err.c lib/ext2fs/(
 	alloc.c
@@ -195,7 +196,7 @@ exe('bin/e2fsck', [[
 		dx_dirinfo.c ehandler.c problem.c message.c quota.c recovery.c
 		region.c revoke.c ea_refcount.c rehash.c
 		logfile.c sigcatcher.c readahead.c
-		extents.c
+		extents.c encrypted_files.c
 	)
 	libsupport.a libext2fs.a libe2p.a libblkid.a libcomm_err.a
 	$builddir/pkg/util-linux/libuuid.a.d

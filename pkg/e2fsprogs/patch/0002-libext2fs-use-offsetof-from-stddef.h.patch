@@ -1,0 +1,40 @@
+From 54cdf16b2e2f662635accdd2f1987068686ee553 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Mar 2021 14:37:20 -0800
+Subject: [PATCH] libext2fs: use offsetof() from stddef.h
+
+offsetof is a standard C feature available from stddef.h, going
+back all the way to ANSI C.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ lib/ext2fs/compiler.h | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
+
+diff --git a/lib/ext2fs/compiler.h b/lib/ext2fs/compiler.h
+index 9aa9b4ec..49fe025e 100644
+--- a/lib/ext2fs/compiler.h
++++ b/lib/ext2fs/compiler.h
+@@ -1,18 +1,7 @@
+ #ifndef _EXT2FS_COMPILER_H
+ #define _EXT2FS_COMPILER_H
+ 
+-#ifndef __has_builtin
+-#define __has_builtin(x) 0
+-#endif
+-
+-#undef offsetof
+-#if __has_builtin(__builtin_offsetof)
+-#define offsetof(TYPE, MEMBER) __builtin_offsetof(TYPE, MEMBER)
+-#elif defined(__compiler_offsetof)
+-#define offsetof(TYPE,MEMBER) __compiler_offsetof(TYPE,MEMBER)
+-#else
+-#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+-#endif
++#include <stddef.h>
+ 
+ #define container_of(ptr, type, member) ({			\
+ 	const __typeof__( ((type *)0)->member ) *__mptr = (ptr);	\
+-- 
+2.30.0
+

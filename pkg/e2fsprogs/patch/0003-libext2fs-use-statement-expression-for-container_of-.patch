@@ -1,0 +1,40 @@
+From ced6ce86e63fcbc7612253a60b6c87dfb173bd91 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Mar 2021 14:42:53 -0800
+Subject: [PATCH] libext2fs: use statement-expression for container_of only on
+ GNU-compatible compilers
+
+Functionally, the statement-expression is not necessary here; it
+just gives a bit of type-safety to make sure the pointer really
+does have a compatible type with the specified member of the struct.
+
+When statement expressions are not available, we can just use a
+portable fallback macro that skips this member type check.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ lib/ext2fs/compiler.h | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/lib/ext2fs/compiler.h b/lib/ext2fs/compiler.h
+index 49fe025e..42faa61c 100644
+--- a/lib/ext2fs/compiler.h
++++ b/lib/ext2fs/compiler.h
+@@ -3,9 +3,14 @@
+ 
+ #include <stddef.h>
+ 
++#ifdef __GNUC__
+ #define container_of(ptr, type, member) ({			\
+ 	const __typeof__( ((type *)0)->member ) *__mptr = (ptr);	\
+ 	(type *)( (char *)__mptr - offsetof(type,member) );})
++#else
++#define container_of(ptr, type, member)				\
++	((type *)((char *)(ptr) - offsetof(type, member)))
++#endif
+ 
+ 
+ #endif /* _EXT2FS_COMPILER_H */
+-- 
+2.30.0
+
