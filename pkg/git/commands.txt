@@ -50,6 +50,7 @@ git-fetch.txt
 git-filter-branch.txt
 git-fmt-merge-msg.txt
 git-for-each-ref.txt
+git-for-each-repo.txt
 git-format-patch.txt
 git-fsck-objects.txt
 git-fsck.txt
@@ -93,7 +94,6 @@ git-p4.txt
 git-pack-objects.txt
 git-pack-redundant.txt
 git-pack-refs.txt
-git-parse-remote.txt
 git-patch-id.txt
 git-prune-packed.txt
 git-prune.txt

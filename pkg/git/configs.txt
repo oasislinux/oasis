@@ -11,6 +11,7 @@ config/branch.txt
 config/browser.txt
 config/checkout.txt
 config/clean.txt
+config/clone.txt
 config/color.txt
 config/column.txt
 config/commit.txt
