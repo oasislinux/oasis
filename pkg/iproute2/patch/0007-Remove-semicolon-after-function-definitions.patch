@@ -1,4 +1,4 @@
-From f75cda0aa33f331ce78eb3a5f9ef150a474534c6 Mon Sep 17 00:00:00 2001
+From 1b949a2da0e4fa94625faebeb3f0e62246be39d0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:04 -0700
 Subject: [PATCH] Remove semicolon after function definitions
@@ -8,10 +8,10 @@ Subject: [PATCH] Remove semicolon after function definitions
  1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/lib/json_print.c b/lib/json_print.c
-index fe0705bf..ecaab98b 100644
+index 994a2f8d..9bc77e3c 100644
 --- a/lib/json_print.c
 +++ b/lib/json_print.c
-@@ -140,15 +140,15 @@ void close_json_array(enum output_type type, const char *str)
+@@ -137,15 +137,15 @@ void close_json_array(enum output_type type, const char *str)
  		}							\
  		return ret;						\
  	}
@@ -36,7 +36,7 @@ index fe0705bf..ecaab98b 100644
  #undef _PRINT_FUNC
  
  #define _PRINT_NAME_VALUE_FUNC(type_name, type, format_char)		 \
-@@ -160,8 +160,8 @@ _PRINT_FUNC(float, double);
+@@ -157,8 +157,8 @@ _PRINT_FUNC(float, double);
  			 "%s %%"#format_char, name);			 \
  		print_##type_name(PRINT_ANY, name, format, value);	 \
  	}
@@ -48,5 +48,5 @@ index fe0705bf..ecaab98b 100644
  
  int print_color_string(enum output_type type,
 -- 
-2.27.0
+2.30.0
 

@@ -1,4 +1,4 @@
-From 9a6fd13d2d2a51ea1f0dd42f8f3d7306a3711180 Mon Sep 17 00:00:00 2001
+From 566697dc815cbc6121892303dc9588fcd77a1ace Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 16:03:55 -0700
 Subject: [PATCH] ip: Fix get_link_kind when linked statically
@@ -8,10 +8,10 @@ Subject: [PATCH] ip: Fix get_link_kind when linked statically
  1 file changed, 86 insertions(+), 10 deletions(-)
 
 diff --git a/ip/iplink.c b/ip/iplink.c
-index 4bd8c3cd..f40c8ccc 100644
+index 1a88c8be..caa8aa01 100644
 --- a/ip/iplink.c
 +++ b/ip/iplink.c
-@@ -144,7 +144,6 @@ static int on_off(const char *msg, const char *realval)
+@@ -141,7 +141,6 @@ static int on_off(const char *msg, const char *realval)
  	return -1;
  }
  
@@ -19,7 +19,7 @@ index 4bd8c3cd..f40c8ccc 100644
  static struct link_util *linkutil_list;
  
  struct link_util *get_link_kind(const char *id)
-@@ -153,21 +152,98 @@ struct link_util *get_link_kind(const char *id)
+@@ -150,21 +149,98 @@ struct link_util *get_link_kind(const char *id)
  	char buf[256];
  	struct link_util *l;
  
@@ -111,7 +111,7 @@ index 4bd8c3cd..f40c8ccc 100644
  		if (strcmp(l->id, id) == 0)
  			return l;
  
- 	snprintf(buf, sizeof(buf), LIBDIR "/ip/link_%s.so", id);
+ 	snprintf(buf, sizeof(buf), "%s/link_%s.so", get_ip_lib_dir(), id);
  	dlh = dlopen(buf, RTLD_LAZY);
 -	if (dlh == NULL) {
 -		/* look in current binary, only open once */
@@ -128,5 +128,5 @@ index 4bd8c3cd..f40c8ccc 100644
  	snprintf(buf, sizeof(buf), "%s_link_util", id);
  	l = dlsym(dlh, buf);
 -- 
-2.29.2
+2.30.0
 

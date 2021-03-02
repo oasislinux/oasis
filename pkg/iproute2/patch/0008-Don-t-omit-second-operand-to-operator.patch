@@ -1,4 +1,4 @@
-From 2157d8d8a8195c693b33715b4473920a5d5a0574 Mon Sep 17 00:00:00 2001
+From 60fe0f1fee7ddc97eb6a136beaaeb218cb497441 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:40 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -7,13 +7,13 @@ Subject: [PATCH] Don't omit second operand to '?' operator
  ip/iproute_lwtunnel.c |  4 ++--
  ip/iptunnel.c         |  7 ++++++-
  ip/iptuntap.c         |  2 +-
- lib/bpf.c             |  2 +-
+ lib/bpf_legacy.c      |  2 +-
  lib/utils.c           |  7 +++++--
  misc/ss.c             | 26 ++++++++++++++++++--------
  6 files changed, 33 insertions(+), 15 deletions(-)
 
 diff --git a/ip/iproute_lwtunnel.c b/ip/iproute_lwtunnel.c
-index 9b4f0885..81d55521 100644
+index 566fc7ea..df9df4ca 100644
 --- a/ip/iproute_lwtunnel.c
 +++ b/ip/iproute_lwtunnel.c
 @@ -227,7 +227,7 @@ static const char *format_action_type(int action)
@@ -57,7 +57,7 @@ index 92b86c17..6a2da548 100644
  
  static void print_tunnel(const void *t)
 diff --git a/ip/iptuntap.c b/ip/iptuntap.c
-index f1bf0b18..41fa1649 100644
+index 061a3312..4d1fd55f 100644
 --- a/ip/iptuntap.c
 +++ b/ip/iptuntap.c
 @@ -348,7 +348,7 @@ static void show_processes(const char *name)
@@ -69,11 +69,11 @@ index f1bf0b18..41fa1649 100644
  
  				print_uint(PRINT_ANY, "pid",
  					   "(%d)", pid);
-diff --git a/lib/bpf.c b/lib/bpf.c
-index 5d620f40..223fb232 100644
---- a/lib/bpf.c
-+++ b/lib/bpf.c
-@@ -771,7 +771,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
+diff --git a/lib/bpf_legacy.c b/lib/bpf_legacy.c
+index 86790fe8..05824e52 100644
+--- a/lib/bpf_legacy.c
++++ b/lib/bpf_legacy.c
+@@ -765,7 +765,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
  		mnt = bpf_find_mntpt("bpf", BPF_FS_MAGIC, bpf_tmp,
  				     sizeof(bpf_tmp), bpf_known_mnts);
  	if (!mnt) {
@@ -83,7 +83,7 @@ index 5d620f40..223fb232 100644
  		if (!ret)
  			ret = bpf_mnt_fs(mnt);
 diff --git a/lib/utils.c b/lib/utils.c
-index 063a0611..b863af6f 100644
+index b324096a..b2338cfd 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
 @@ -943,8 +943,10 @@ int __get_hz(void)
@@ -108,7 +108,7 @@ index 063a0611..b863af6f 100644
  		return hz;
  	return HZ;
 diff --git a/misc/ss.c b/misc/ss.c
-index 8c7fcb0c..1a6a4a80 100644
+index 8dbb5d75..c4f37660 100644
 --- a/misc/ss.c
 +++ b/misc/ss.c
 @@ -482,7 +482,9 @@ static FILE *generic_proc_open(const char *env, const char *name)
@@ -154,7 +154,7 @@ index 8c7fcb0c..1a6a4a80 100644
  	}
  
  	if (is_port)
-@@ -3962,9 +3971,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
+@@ -3970,9 +3979,9 @@ static void unix_stats_print(struct sockstat *s, struct filter *f)
  
  	sock_state_print(s);
  
@@ -166,7 +166,7 @@ index 8c7fcb0c..1a6a4a80 100644
  			int_to_str(s->rport, port_name), NULL);
  
  	proc_ctx_print(s);
-@@ -4167,7 +4176,7 @@ static int unix_show(struct filter *f)
+@@ -4175,7 +4184,7 @@ static int unix_show(struct filter *f)
  			if (!p)
  				u->peer_name = "?";
  			else
@@ -175,7 +175,7 @@ index 8c7fcb0c..1a6a4a80 100644
  		}
  
  		if (f->f) {
-@@ -4671,9 +4680,10 @@ static int netlink_show_one(struct filter *f,
+@@ -4679,9 +4688,10 @@ static int netlink_show_one(struct filter *f,
  			strncpy(procname, "kernel", 7);
  		} else if (pid > 0) {
  			FILE *fp;
@@ -187,7 +187,7 @@ index 8c7fcb0c..1a6a4a80 100644
  			if ((fp = fopen(procname, "r")) != NULL) {
  				if (fscanf(fp, "%*d (%[^)])", procname) == 1) {
  					snprintf(procname+strlen(procname),
-@@ -4716,7 +4726,7 @@ static int netlink_show_one(struct filter *f,
+@@ -4724,7 +4734,7 @@ static int netlink_show_one(struct filter *f,
  		else if (pid > 0)
  			getpidcon(pid, &pid_context);
  
@@ -197,5 +197,5 @@ index 8c7fcb0c..1a6a4a80 100644
  	}
  
 -- 
-2.29.2
+2.30.0
 
