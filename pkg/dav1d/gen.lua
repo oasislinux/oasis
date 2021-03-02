@@ -74,24 +74,26 @@ local srcs = paths[[
 
 		@x86_64 x86/(
 			cpu.c msac_init.c
-			cpuid.asm msac.asm
+			cpuid.asm msac.asm cdef_avx2.asm cdef_sse.asm
 
 			cdef_avx512.asm
 			mc_avx512.asm
-			cdef_avx2.asm
 			mc_avx2.asm
 			film_grain.asm
 			ipred.asm
 			itx.asm
 			loopfilter.asm
 			looprestoration.asm
-			cdef_sse.asm
 			film_grain_ssse3.asm
 			ipred_ssse3.asm
 			itx_ssse3.asm
 			loopfilter_ssse3.asm
 			looprestoration_sse.asm
 			mc_sse.asm
+
+			cdef16_avx2.asm
+			cdef16_sse.asm
+			looprestoration16_avx2.asm
 		)
 	)
 ]]
