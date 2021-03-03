@@ -62,6 +62,7 @@ youtube_dl/extractor/awaan.py
 youtube_dl/extractor/aws.py
 youtube_dl/extractor/azmedien.py
 youtube_dl/extractor/baidu.py
+youtube_dl/extractor/bandaichannel.py
 youtube_dl/extractor/bandcamp.py
 youtube_dl/extractor/bbc.py
 youtube_dl/extractor/beatport.py
@@ -245,6 +246,7 @@ youtube_dl/extractor/gamestar.py
 youtube_dl/extractor/gaskrank.py
 youtube_dl/extractor/gazeta.py
 youtube_dl/extractor/gdcvault.py
+youtube_dl/extractor/gedidigital.py
 youtube_dl/extractor/generic.py
 youtube_dl/extractor/gfycat.py
 youtube_dl/extractor/giantbomb.py
@@ -542,6 +544,7 @@ youtube_dl/extractor/rutv.py
 youtube_dl/extractor/ruutu.py
 youtube_dl/extractor/ruv.py
 youtube_dl/extractor/safari.py
+youtube_dl/extractor/samplefocus.py
 youtube_dl/extractor/sapo.py
 youtube_dl/extractor/savefrom.py
 youtube_dl/extractor/sbs.py
@@ -559,6 +562,7 @@ youtube_dl/extractor/seznamzpravy.py
 youtube_dl/extractor/shahid.py
 youtube_dl/extractor/shared.py
 youtube_dl/extractor/showroomlive.py
+youtube_dl/extractor/simplecast.py
 youtube_dl/extractor/sina.py
 youtube_dl/extractor/sixplay.py
 youtube_dl/extractor/sky.py
@@ -590,6 +594,7 @@ youtube_dl/extractor/srmediathek.py
 youtube_dl/extractor/stanfordoc.py
 youtube_dl/extractor/steam.py
 youtube_dl/extractor/stitcher.py
+youtube_dl/extractor/storyfire.py
 youtube_dl/extractor/streamable.py
 youtube_dl/extractor/streamcloud.py
 youtube_dl/extractor/streamcz.py
@@ -719,7 +724,6 @@ youtube_dl/extractor/videopress.py
 youtube_dl/extractor/vidio.py
 youtube_dl/extractor/vidlii.py
 youtube_dl/extractor/vidme.py
-youtube_dl/extractor/vidzi.py
 youtube_dl/extractor/vier.py
 youtube_dl/extractor/viewlift.py
 youtube_dl/extractor/viidea.py
@@ -741,6 +745,7 @@ youtube_dl/extractor/vrak.py
 youtube_dl/extractor/vrt.py
 youtube_dl/extractor/vrv.py
 youtube_dl/extractor/vshare.py
+youtube_dl/extractor/vtm.py
 youtube_dl/extractor/vube.py
 youtube_dl/extractor/vuclip.py
 youtube_dl/extractor/vvvvid.py
@@ -792,6 +797,7 @@ youtube_dl/extractor/youtube.py
 youtube_dl/extractor/zapiks.py
 youtube_dl/extractor/zattoo.py
 youtube_dl/extractor/zdf.py
+youtube_dl/extractor/zhihu.py
 youtube_dl/extractor/zingmp3.py
 youtube_dl/extractor/zype.py
 youtube_dl/jsinterp.py
