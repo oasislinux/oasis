@@ -151,6 +151,7 @@
 /* #undef HAVE_ETC_DEFAULT_LOGIN */
 #define HAVE_EXIT_IN_UTMP 1
 #define HAVE_EXPLICIT_BZERO 1
+/* #undef HAVE_EXPLICIT_MEMSET */
 #define HAVE_FCHMOD 1
 #define HAVE_FCHMODAT 1
 #define HAVE_FCHOWN 1
@@ -268,6 +269,7 @@
 /* #undef HAVE_LOGIN */
 /* #undef HAVE_LOGIN_CAP_H */
 /* #undef HAVE_LOGIN_GETCAPBOOL */
+/* #undef HAVE_LOGIN_GETPWCLASS */
 /* #undef HAVE_LOGIN_H */
 /* #undef HAVE_LOGOUT */
 /* #undef HAVE_LOGWTMP */
@@ -281,7 +283,6 @@
 /* #undef HAVE_MD5_PASSWORDS */
 #define HAVE_MEMMEM 1
 #define HAVE_MEMMOVE 1
-#define HAVE_MEMORY_H 1
 /* #undef HAVE_MEMSET_S */
 #define HAVE_MKDTEMP 1
 #define HAVE_MODE_T 1
@@ -381,12 +382,12 @@
 #define HAVE_STATVFS 1
 #define HAVE_STDDEF_H 1
 #define HAVE_STDINT_H 1
+#define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRCASESTR 1
 #define HAVE_STRDUP 1
 #define HAVE_STRERROR 1
 #define HAVE_STRFTIME 1
-#define HAVE_STRICT_MKSTEMP 1
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
 #define HAVE_STRLCAT 1
@@ -556,7 +557,6 @@
 /* #undef SIZEOF_LONG_INT */
 /* #undef SIZEOF_LONG_LONG_INT */
 /* #undef SIZEOF_SHORT_INT */
-/* #undef SIZEOF_SIZE_T */
 #define SNPRINTF_CONST const
 #define SPT_TYPE SPT_REUSEARGV
 /* #undef SSHD_ACQUIRES_CTTY */
@@ -575,7 +575,6 @@
 /* #undef SUPERUSER_PATH */
 /* #undef SYSLOG_R_SAFE_IN_SIGHAND */
 #define SYS_RDOMAIN_LINUX 1
-#define TIME_WITH_SYS_TIME 1
 /* #undef UNIXWARE_LONG_PASSWORDS */
 #define USER_PATH "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
 /* #undef USE_AFS */
@@ -588,6 +587,7 @@
 /* #undef USE_SOLARIS_PRIVS */
 /* #undef USE_SOLARIS_PROCESS_CONTRACTS */
 /* #undef USE_SOLARIS_PROJECTS */
+/* #undef VARIABLE_LENGTH_ARRAYS */
 /* #undef WITH_ABBREV_NO_TTY */
 /* #undef WITH_AIXAUTHENTICATE */
 #define WITH_BEARSSL 1
@@ -607,9 +607,6 @@
 # endif
 #endif
 /* #undef XAUTH_PATH */
-#ifndef _DARWIN_USE_64_BIT_INODE
-# define _DARWIN_USE_64_BIT_INODE 1
-#endif
 /* #undef _FILE_OFFSET_BITS */
 /* #undef _LARGE_FILES */
 /* #undef __res_state */
