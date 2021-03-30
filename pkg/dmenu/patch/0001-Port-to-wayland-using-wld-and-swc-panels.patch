@@ -1,4 +1,4 @@
-From 6d06d5b4a14c7ece154404f4f1b2e4b5e29ec1fb Mon Sep 17 00:00:00 2001
+From d186aa8891ca777615b8138416c95565c05e0a09 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 27 Oct 2016 21:04:23 -0700
 Subject: [PATCH] Port to wayland using wld and swc panels
@@ -6,10 +6,10 @@ Subject: [PATCH] Port to wayland using wld and swc panels
 ---
  Makefile  |  16 +-
  config.mk |  20 +-
- dmenu.c   | 563 ++++++++++++++++++++++++++++--------------------------
+ dmenu.c   | 566 ++++++++++++++++++++++++++++--------------------------
  drw.c     | 130 ++++++-------
  drw.h     |  26 ++-
- 5 files changed, 378 insertions(+), 377 deletions(-)
+ 5 files changed, 381 insertions(+), 377 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index a03a95c..4046899 100644
@@ -82,7 +82,7 @@ index 0929b4a..7e747ff 100644
  LDFLAGS  = $(LIBS)
  
 diff --git a/dmenu.c b/dmenu.c
-index 6b8f51b..d1d60b2 100644
+index 6b8f51b..877c459 100644
 --- a/dmenu.c
 +++ b/dmenu.c
 @@ -5,19 +5,18 @@
@@ -510,7 +510,7 @@ index 6b8f51b..d1d60b2 100644
  }
  
  static void
-@@ -550,148 +528,204 @@ readstdin(void)
+@@ -550,148 +528,207 @@ readstdin(void)
  static void
  run(void)
  {
@@ -561,9 +561,9 @@ index 6b8f51b..d1d60b2 100644
 +	else if (strcmp(interface, "swc_screen") == 0) {
 +		if (mon != -1 && mon-- == 0)
 +			screen = wl_registry_bind(r, name, &swc_screen_interface, 1);
-+	}
-+}
-+
+ 	}
+ }
+ 
 +static void
 +regglobalremove(void *d, struct wl_registry *reg, uint32_t name)
 +{
@@ -581,6 +581,9 @@ index 6b8f51b..d1d60b2 100644
 +kbdleave(void *d, struct wl_keyboard *kbd, uint32_t serial,
 +         struct wl_surface *surface)
 +{
++	/* XXX: swc doesn't handle refocusing panels, so just exit for now */
++	cleanup();
++	exit(1);
 +}
 +
 +/* kbdkey is defined above to reduce merge conflicts */
@@ -600,7 +603,7 @@ index 6b8f51b..d1d60b2 100644
 +	if (string == MAP_FAILED) {
 +		close(fd);
 +		return;
- 	}
++	}
 +
 +	xkb.keymap = xkb_keymap_new_from_string(xkb.context, string,
 +						XKB_KEYMAP_FORMAT_TEXT_V1, 0);
@@ -655,8 +658,8 @@ index 6b8f51b..d1d60b2 100644
 +datadevmotion(void *d, struct wl_data_device *datadev, uint32_t time,
 +              wl_fixed_t x, wl_fixed_t y)
 +{
- }
- 
++}
++
 +static void
 +datadevdrop(void *d, struct wl_data_device *datadev)
 +{
@@ -827,7 +830,7 @@ index 6b8f51b..d1d60b2 100644
  
  	for (i = 1; i < argc; i++)
  		/* these options take no arguments */
-@@ -700,8 +734,6 @@ main(int argc, char *argv[])
+@@ -700,8 +737,6 @@ main(int argc, char *argv[])
  			exit(0);
  		} else if (!strcmp(argv[i], "-b")) /* appears at the bottom of the screen */
  			topbar = 0;
@@ -836,7 +839,7 @@ index 6b8f51b..d1d60b2 100644
  		else if (!strcmp(argv[i], "-i")) { /* case-insensitive item matching */
  			fstrncmp = strncasecmp;
  			fstrstr = cistrstr;
-@@ -724,41 +756,28 @@ main(int argc, char *argv[])
+@@ -724,41 +759,28 @@ main(int argc, char *argv[])
  			colors[SchemeSel][ColBg] = argv[++i];
  		else if (!strcmp(argv[i], "-sf"))  /* selected foreground color */
  			colors[SchemeSel][ColFg] = argv[++i];
@@ -1278,5 +1281,5 @@ index 4c67419..1f1967e 100644
 -void drw_map(Drw *drw, Window win, int x, int y, unsigned int w, unsigned int h);
 +void drw_map(Drw *drw, struct wl_surface *surface, int x, int y, unsigned int w, unsigned int h);
 -- 
-2.22.0
+2.30.1
 
