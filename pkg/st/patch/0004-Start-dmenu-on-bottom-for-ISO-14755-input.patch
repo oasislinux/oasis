@@ -1,0 +1,25 @@
+From 1c67839b8a0eb410cef454b289405b6de3b7500f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 29 Mar 2021 18:21:29 -0700
+Subject: [PATCH] Start dmenu on bottom for ISO 14755 input
+
+---
+ st.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/st.c b/st.c
+index 02d5397..a319c7f 100644
+--- a/st.c
++++ b/st.c
+@@ -97,7 +97,7 @@ char *argv0;
+ #define TRUEBLUE(x)		(((x) & 0xff) << 8)
+ 
+ /* constants */
+-#define ISO14755CMD		"dmenu -p codepoint: </dev/null"
++#define ISO14755CMD		"dmenu -b -p codepoint: </dev/null"
+ 
+ enum glyph_attribute {
+ 	ATTR_NULL       = 0,
+-- 
+2.30.1
+
