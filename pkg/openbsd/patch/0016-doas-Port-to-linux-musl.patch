@@ -1,4 +1,4 @@
-From 6d212c71ee3f1a2068793cc416afbeabc0002184 Mon Sep 17 00:00:00 2001
+From 9e07250958968c674c1b1041d8b2887c9e1edfc3 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -63,7 +63,7 @@ index fc769bdb336..c7196e347a9 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index a723c67a3eb..857c8202c39 100644
+index a723c67a3eb..8b0c2931f92 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -20,8 +20,6 @@
@@ -308,11 +308,11 @@ index a723c67a3eb..857c8202c39 100644
 -	    LOGIN_SETPRIORITY | LOGIN_SETRESOURCES | LOGIN_SETUMASK |
 -	    LOGIN_SETUSER) != 0)
 -		errx(1, "failed to set user context for target");
-+	if (initgroups(targpw->pw_name, targpw->pw_gid) < 0)
++	if (initgroups(targpw->pw_name, targpw->pw_gid) == -1)
 +		err(1, "initgroups");
-+	if (setgid(targpw->pw_gid) < 0)
++	if (setgid(targpw->pw_gid) == -1)
 +		err(1, "setgid");
-+	if (setuid(targpw->pw_uid) < 0)
++	if (setuid(targpw->pw_uid) == -1)
 +		err(1, "setuid");
  
  	if (pledge("stdio rpath exec", NULL) == -1)
