@@ -1,5 +1,5 @@
 cflags{
-	'-std=c99', '-Wall', '-Wpedantic',
+	'-std=c99', '-Wall', '-Wpedantic', '-Wno-maybe-uninitialized',
 	'-D _XOPEN_SOURCE=700',
 	[[-D 'SFEED_THEME="themes/mono.h"']],
 	'-isystem $builddir/pkg/ncurses/include',
