@@ -67,16 +67,16 @@ lib('libcurl.a', [[
 		urlapi.c version.c version_win32.c warnless.c wildcard.c
 		x509asn1.c
 		vauth/(
-			cleartext.c cram.c digest.c
-			digest_sspi.c krb5_gssapi.c krb5_sspi.c ntlm.c
-			ntlm_sspi.c oauth2.c spnego_gssapi.c spnego_sspi.c
-			vauth.c
+			cleartext.c cram.c digest.c digest_sspi.c
+			gsasl.c krb5_gssapi.c krb5_sspi.c ntlm.c
+			ntlm_sspi.c oauth2.c spnego_gssapi.c
+			spnego_sspi.c vauth.c
 		)
 		vtls/(
-			bearssl.c gskit.c gtls.c keylog.c
-			mbedtls.c mbedtls_threadlock.c mesalink.c nss.c
-			openssl.c schannel.c schannel_verify.c sectransp.c
-			vtls.c wolfssl.c
+			bearssl.c gskit.c gtls.c keylog.c mbedtls.c
+			mbedtls_threadlock.c mesalink.c nss.c
+			openssl.c rustls.c schannel.c schannel_verify.c
+			sectransp.c vtls.c wolfssl.c
 		)
 		vquic/(ngtcp2.c quiche.c vquic.c)
 		vssh/(libssh.c libssh2.c wolfssh.c)

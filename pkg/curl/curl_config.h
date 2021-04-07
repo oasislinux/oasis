@@ -224,7 +224,6 @@
 /* #undef HAVE_STRICMP */
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
-#define HAVE_STRNCASECMP 1
 /* #undef HAVE_STRNCMPI */
 /* #undef HAVE_STRNICMP */
 #define HAVE_STROPTS_H 1
@@ -262,6 +261,7 @@
 #define HAVE_VARIADIC_MACROS_C99 1
 #define HAVE_VARIADIC_MACROS_GCC 1
 /* #undef HAVE_WINBER_H */
+/* #undef HAVE_WINCRYPT_H */
 /* #undef HAVE_WINDOWS_H */
 /* #undef HAVE_WINLDAP_H */
 /* #undef HAVE_WINSOCK2_H */
@@ -328,7 +328,7 @@
 #define USE_BEARSSL 1
 /* #undef USE_ECH */
 /* #undef USE_GNUTLS */
-/* #undef USE_GNUTLS_NETTLE */
+/* #undef USE_GSASL */
 /* #undef USE_HSTS */
 /* #undef USE_HYPER */
 /* #undef USE_LIBPSL */
@@ -348,12 +348,14 @@
 /* #undef USE_OPENLDAP */
 /* #undef USE_OPENSSL */
 /* #undef USE_QUICHE */
+/* #undef USE_RUSTLS */
 /* #undef USE_SCHANNEL */
 /* #undef USE_SECTRANSP */
 #define USE_THREADS_POSIX 1
 /* #undef USE_THREADS_WIN32 */
 /* #undef USE_TLS_SRP */
 #define USE_UNIX_SOCKETS 1
+/* #undef USE_WIN32_CRYPTO */
 /* #undef USE_WIN32_IDN */
 /* #undef USE_WIN32_LARGE_FILES */
 /* #undef USE_WIN32_LDAP */
