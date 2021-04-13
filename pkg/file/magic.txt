@@ -2,6 +2,7 @@
 acorn
 adi
 adventure
+aes
 algol68
 allegro
 alliant
@@ -23,6 +24,7 @@ assembler
 asterix
 att3b
 audio
+avm
 basis
 beetle
 ber
@@ -34,6 +36,7 @@ blackberry
 blcr
 blender
 blit
+bm
 bout
 bsdi
 bsi
@@ -59,6 +62,7 @@ console
 convex
 coverage
 cracklib
+crypto
 ctags
 ctf
 cubemap
@@ -139,12 +143,14 @@ keepass
 kerberos
 kicad
 kml
+lammps
 lecter
 lex
 lif
 linux
 lisp
 llvm
+locoscript
 lua
 luks
 m4
@@ -212,11 +218,13 @@ pbf
 pbm
 pc88
 pc98
+pcjr
 pdf
 pdp
 perl
 pgf
 pgp
+pgp-binary-keys
 pkgadd
 plan9
 plus5
@@ -264,6 +272,7 @@ spectrum
 sql
 ssh
 ssl
+statistics
 sun
 sylk
 symbos

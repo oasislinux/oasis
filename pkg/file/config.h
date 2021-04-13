@@ -39,6 +39,7 @@
 #define HAVE_MKSTEMP 1
 #define HAVE_MMAP 1
 #define HAVE_NEWLOCALE 1
+#define HAVE_PIPE2 1
 #define HAVE_PREAD 1
 #define HAVE_SIG_T 1
 #define HAVE_STDINT_H 1
@@ -88,10 +89,10 @@
 #define PACKAGE "file"
 #define PACKAGE_BUGREPORT "christos@astron.com"
 #define PACKAGE_NAME "file"
-#define PACKAGE_STRING "file 5.39"
+#define PACKAGE_STRING "file 5.40"
 #define PACKAGE_TARNAME "file"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "5.39"
+#define PACKAGE_VERSION "5.40"
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
 #ifndef _ALL_SOURCE
@@ -109,7 +110,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.39"
+#define VERSION "5.40"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
