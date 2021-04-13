@@ -49,7 +49,7 @@ sub('host.ninja', function()
 		([[-D 'VERSION="%s"']]):format(version),
 	}
 	set('outdir', '$outdir/host')
-	exe('magic', 'src/(magic.c apprentice.c encoding.c print.c funcs.c cdf_time.c)')
+	exe('magic', 'src/(magic.c apprentice.c encoding.c print.c funcs.c cdf_time.c strlcpy.c)')
 end)
 
 rule('magic', 'cd $outdir && ./host/magic magic')
