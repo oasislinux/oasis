@@ -8,9 +8,9 @@
 #define HAVE_GETRANDOM 1
 #define HAVE_INTTYPES_H 1
 /* #undef HAVE_LIBBSD */
-#define HAVE_MEMORY_H 1
 #define HAVE_MMAP 1
 #define HAVE_STDINT_H 1
+#define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
@@ -23,12 +23,12 @@
 #define PACKAGE "expat"
 #define PACKAGE_BUGREPORT "expat-bugs@libexpat.org"
 #define PACKAGE_NAME "expat"
-#define PACKAGE_STRING "expat 2.2.10"
+#define PACKAGE_STRING "expat 2.3.0"
 #define PACKAGE_TARNAME "expat"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.2.10"
+#define PACKAGE_VERSION "2.3.0"
 #define STDC_HEADERS 1
-#define VERSION "2.2.10"
+#define VERSION "2.3.0"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
