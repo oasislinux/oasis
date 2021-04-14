@@ -53,6 +53,7 @@ lib('libgit.a', [[
 	cache-tree.c
 	chdir-notify.c
 	checkout.c
+	chunk-format.c
 	color.c
 	column.c
 	combine-diff.c
@@ -74,15 +75,17 @@ lib('libgit.a', [[
 	date.c
 	decorate.c
 	delta-islands.c
+	diff-delta.c
+	diff-merges.c
+	diff-lib.c
+	diff-no-index.c
+	diff.c
 	diffcore-break.c
 	diffcore-delta.c
 	diffcore-order.c
 	diffcore-pickaxe.c
 	diffcore-rename.c
-	diff-delta.c
-	diff-lib.c
-	diff-no-index.c
-	diff.c
+	diffcore-rotate.c
 	dir-iterator.c
 	dir.c
 	editor.c
@@ -102,6 +105,7 @@ lib('libgit.a', [[
 	gpg-interface.c
 	graph.c
 	grep.c
+	hash-lookup.c
 	hashmap.c
 	help.c
 	hex.c
@@ -138,6 +142,8 @@ lib('libgit.a', [[
 	notes-merge.c
 	notes-utils.c
 	notes.c
+	object-file.c
+	object-name.c
 	object.c
 	oid-array.c
 	oidmap.c
@@ -194,9 +200,6 @@ lib('libgit.a', [[
 	serve.c
 	server-info.c
 	setup.c
-	sha1-file.c
-	sha1-lookup.c
-	sha1-name.c
 	shallow.c
 	sideband.c
 	sigchain.c
