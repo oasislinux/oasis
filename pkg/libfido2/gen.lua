@@ -2,6 +2,7 @@ cflags{
 	'-std=c11', '-Wall', '-Wpedantic',
 	'-Wno-overflow',  -- ioctl opcode conversion
 	'-include $outdir/config.h',
+	'-D _GNU_SOURCE',
 	'-D _DEFAULT_SOURCE',
 	'-D _FIDO_INTERNAL',
 	'-I $srcdir/src',
@@ -9,6 +10,7 @@ cflags{
 	'-isystem $builddir/pkg/bearssl/include',
 	'-isystem $builddir/pkg/libcbor/include',
 	'-isystem $builddir/pkg/linux-headers/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/src', {
@@ -23,6 +25,7 @@ pkg.deps = {
 	'pkg/bearssl/headers',
 	'pkg/libcbor/headers',
 	'pkg/linux-headers/headers',
+	'pkg/zlib/headers',
 }
 
 build('cat', '$outdir/config.h', {
@@ -39,6 +42,8 @@ lib('libfido2.a', [[
 		blob.c
 		buf.c
 		cbor.c
+		compress.c
+		config.c
 		cred.c
 		credman.c
 		dev.c
@@ -50,6 +55,7 @@ lib('libfido2.a', [[
 		info.c
 		io.c
 		iso7816.c
+		largeblob.c
 		log.c
 		pin.c
 		random.c
@@ -63,6 +69,7 @@ lib('libfido2.a', [[
 	$builddir/pkg/bearssl/libbearssl.a
 	$builddir/pkg/libcbor/libcbor.a
 	$builddir/pkg/openbsd/libbsd.a
+	$builddir/pkg/zlib/libz.a
 ]])
 
 lib('libcommon.a', [[tools/(base64.c util.c)]])
@@ -83,7 +90,9 @@ exe('fido2-token', [[
 	tools/(
 		fido2-token.c
 		bio.c
+		config.c
 		credman.c
+		largeblob.c
 		pin.c
 		token.c
 	)
