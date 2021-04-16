@@ -1,4 +1,4 @@
-#define GPIOD_VERSION_STR "1.6.2"
+#define GPIOD_VERSION_STR "1.6.3"
 /* #undef HAVE_CATCH2_CATCH_HPP */
 /* #undef HAVE_CXX11 */
 #define HAVE_DIRENT_H 1
@@ -24,11 +24,11 @@
 #define PACKAGE "libgpiod"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "libgpiod"
-#define PACKAGE_STRING "libgpiod 1.6.2"
+#define PACKAGE_STRING "libgpiod 1.6.3"
 #define PACKAGE_TARNAME "libgpiod"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.6.2"
+#define PACKAGE_VERSION "1.6.3"
 #define STDC_HEADERS 1
-#define VERSION "1.6.2"
+#define VERSION "1.6.3"
 #define _GNU_SOURCE /**/
 /* #undef malloc */
