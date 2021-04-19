@@ -6,6 +6,8 @@ cflags{
 	'-D XXH_NAMESPACE=ZSTD_',
 	'-D ZSTD_NOBENCH',
 	'-D ZSTD_NODICT',
+	'-D ZSTD_NOTRACE',
+	'-D ZSTD_TRACE=0',
 }
 
 pkg.hdrs = {
