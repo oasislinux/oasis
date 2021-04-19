@@ -50,6 +50,7 @@ youtube_dl/extractor/archiveorg.py
 youtube_dl/extractor/arcpublishing.py
 youtube_dl/extractor/ard.py
 youtube_dl/extractor/arkena.py
+youtube_dl/extractor/arnes.py
 youtube_dl/extractor/arte.py
 youtube_dl/extractor/asiancrush.py
 youtube_dl/extractor/atresplayer.py
@@ -358,6 +359,7 @@ youtube_dl/extractor/mailru.py
 youtube_dl/extractor/malltv.py
 youtube_dl/extractor/mangomolo.py
 youtube_dl/extractor/manyvids.py
+youtube_dl/extractor/maoritv.py
 youtube_dl/extractor/markiza.py
 youtube_dl/extractor/massengeschmacktv.py
 youtube_dl/extractor/matchtv.py
@@ -459,6 +461,7 @@ youtube_dl/extractor/ora.py
 youtube_dl/extractor/orf.py
 youtube_dl/extractor/outsidetv.py
 youtube_dl/extractor/packtpub.py
+youtube_dl/extractor/palcomp3.py
 youtube_dl/extractor/pandoratv.py
 youtube_dl/extractor/parliamentliveuk.py
 youtube_dl/extractor/patreon.py
@@ -799,6 +802,7 @@ youtube_dl/extractor/zattoo.py
 youtube_dl/extractor/zdf.py
 youtube_dl/extractor/zhihu.py
 youtube_dl/extractor/zingmp3.py
+youtube_dl/extractor/zoom.py
 youtube_dl/extractor/zype.py
 youtube_dl/jsinterp.py
 youtube_dl/options.py
