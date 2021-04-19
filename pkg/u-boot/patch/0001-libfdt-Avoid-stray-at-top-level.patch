@@ -1,0 +1,47 @@
+From 18c6b4251594f8e8e79a25a3c83a5294e81b649e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 9 Apr 2021 22:48:27 -0700
+Subject: [PATCH] libfdt: Avoid stray ';' at top-level
+
+Function definitions do not require a semicolon, and stray semicolons
+at top-level are not allowed in ISO C.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ scripts/dtc/libfdt/libfdt.h | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/scripts/dtc/libfdt/libfdt.h b/scripts/dtc/libfdt/libfdt.h
+index 421f90ad93..947e8b31cf 100644
+--- a/scripts/dtc/libfdt/libfdt.h
++++ b/scripts/dtc/libfdt/libfdt.h
+@@ -219,16 +219,16 @@ int fdt_next_subnode(const void *fdt, int offset);
+ 		struct fdt_header *fdth = (struct fdt_header *)fdt; \
+ 		fdth->name = cpu_to_fdt32(val); \
+ 	}
+-fdt_set_hdr_(magic);
+-fdt_set_hdr_(totalsize);
+-fdt_set_hdr_(off_dt_struct);
+-fdt_set_hdr_(off_dt_strings);
+-fdt_set_hdr_(off_mem_rsvmap);
+-fdt_set_hdr_(version);
+-fdt_set_hdr_(last_comp_version);
+-fdt_set_hdr_(boot_cpuid_phys);
+-fdt_set_hdr_(size_dt_strings);
+-fdt_set_hdr_(size_dt_struct);
++fdt_set_hdr_(magic)
++fdt_set_hdr_(totalsize)
++fdt_set_hdr_(off_dt_struct)
++fdt_set_hdr_(off_dt_strings)
++fdt_set_hdr_(off_mem_rsvmap)
++fdt_set_hdr_(version)
++fdt_set_hdr_(last_comp_version)
++fdt_set_hdr_(boot_cpuid_phys)
++fdt_set_hdr_(size_dt_strings)
++fdt_set_hdr_(size_dt_struct)
+ #undef fdt_set_hdr_
+ 
+ /**
+-- 
+2.30.1
+
