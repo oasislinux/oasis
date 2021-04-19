@@ -63,6 +63,7 @@
 #define HAVE_GRP_H 1
 /* #undef HAVE_HMAC_CTX_NEW */
 /* #undef HAVE_HMAC_CTX_RESET */
+#define HAVE_IFADDRS_H 1
 #define HAVE_INET_ATON 1
 #define HAVE_INET_NTOP 1
 #define HAVE_INET_PTON 1
@@ -134,6 +135,7 @@
 #define HAVE_STRUCT_TIMESPEC 1
 #define HAVE_SYSCONF 1
 /* #undef HAVE_SYSLOG_H */
+/* #undef HAVE_SYSTEMD */
 /* #undef HAVE_SYS_BITYPES_H */
 /* #undef HAVE_SYS_CPUSET_H */
 /* #undef HAVE_SYS_MMAN_H */
@@ -172,10 +174,10 @@
 /* #undef NSEC3 */
 #define PACKAGE_BUGREPORT "nsd-bugs@nlnetlabs.nl"
 #define PACKAGE_NAME "NSD"
-#define PACKAGE_STRING "NSD 4.3.5"
+#define PACKAGE_STRING "NSD 4.3.6"
 #define PACKAGE_TARNAME "nsd"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "4.3.5"
+#define PACKAGE_VERSION "4.3.6"
 /* #undef PACKED_STRUCTS */
 #define PIDFILE "/run/nsd.pid"
 /* #undef RATELIMIT */

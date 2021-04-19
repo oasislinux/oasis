@@ -1,4 +1,4 @@
-From d3614f9764fe1a3f248eefc4af7e2553809b7ab7 Mon Sep 17 00:00:00 2001
+From abaf88fc017d36c733a6ecc69f709085abdbed12 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 14 Oct 2017 01:00:22 -0700
 Subject: [PATCH] Remove quotes from @dbfile@ in man pages
@@ -31,7 +31,7 @@ index 5e488958..babaa06a 100644
  .B NSD
  database
 diff --git a/nsd.conf.5.in b/nsd.conf.5.in
-index 66b90380..27d95322 100644
+index a873d9f7..91dd77f3 100644
 --- a/nsd.conf.5.in
 +++ b/nsd.conf.5.in
 @@ -202,7 +202,7 @@ If yes, NSD listens to IPv6 connections.  Default yes.
@@ -43,7 +43,7 @@ index 66b90380..27d95322 100644
  is used. The specified file is used to store the compiled 
  zone information. Same as commandline option 
  .BR \-f.
-@@ -963,7 +963,7 @@ also function as a resolver or cache. The configuration options that
+@@ -1022,7 +1022,7 @@ also function as a resolver or cache. The configuration options that
  BIND9 has for the resolver or caching thus have no equivalents for NSD.
  .SH "FILES"
  .TP
@@ -53,5 +53,5 @@ index 66b90380..27d95322 100644
  .B NSD
  database
 -- 
-2.29.0
+2.31.1
 
