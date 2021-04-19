@@ -251,7 +251,6 @@
 #define HAVE_SYS_XATTR_H 1
 #define HAVE_TERMIOS_H 1
 /* #undef HAVE_TERMIO_H */
-#define HAVE_TIME_H 1
 /* #undef HAVE_TIME_T_UNSIGNED */
 #define HAVE_UNISTD_H 1
 #define HAVE_USLEEP 1
@@ -300,7 +299,6 @@
 #define RECV_TYPE_ARG3 size_t
 #define RECV_TYPE_ARG4 int
 #define RECV_TYPE_RETV ssize_t
-#define RETSIGTYPE void
 #define SELECT_QUAL_ARG5 
 #define SELECT_TYPE_ARG1 int
 #define SELECT_TYPE_ARG234 fd_set *
@@ -322,7 +320,6 @@
 /* probe SIZEOF_TIME_T */
 #define STDC_HEADERS 1
 #define STRERROR_R_TYPE_ARG3 size_t
-#define TIME_WITH_SYS_TIME 1
 /* #undef USE_AMISSL */
 /* #undef USE_ARES */
 #define USE_BEARSSL 1

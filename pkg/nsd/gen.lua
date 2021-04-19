@@ -52,6 +52,7 @@ local subst = {
 	'-e s,@zonelistfile@,'..cfg.zonelistfile..',g',
 	'-e s,@nsdconfigfile@,'..cfg.configfile..',g',
 	'-e s,@ratelimit_default@,'..cfg.ratelimit_default..',g',
+	'-e s,@dnstap_socket_path@,,g',
 	'-e s,@user@,'..cfg.user..',g',
 }
 if not cfg.ratelimit then
