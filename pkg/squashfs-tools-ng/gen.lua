@@ -31,14 +31,15 @@ local srcs = paths[[
 		xattr/xattr_writer_flush.c
 		xattr/xattr_writer_record.c
 		write_super.c data_reader.c
-		block_processor/common.c
 		block_processor/frontend.c
+		block_processor/block_processor.c
+		block_processor/backend.c
 		frag_table.c
 		block_writer.c
 
 		unix/io_file.c
-		block_processor/winpthread.c
 	)
+	lib/util/threadpool.c
 	libutil.a
 ]]
 
@@ -64,18 +65,43 @@ lib('libsquashfs.a', srcs)
 
 lib('libcommon.a', [[
 	lib/common/(
-		serialize_fstree.c statistics.c
 		inode_stat.c hardlink.c
 		print_version.c data_reader_dump.c
 		compress.c comp_opt.c
 		data_writer.c
-		get_path.c io_stdin.c
-		writer.c perror.c
+		get_path.c data_writer_ostream.c
+		perror.c
 		mkdir_p.c parse_size.c
 		print_size.c
+		writer/(
+			init.c cleanup.c
+			serialize_fstree.c
+			finish.c
+		)
 	)
 	libsquashfs.a.d
-	libfstree.a
+	libfstream.a
+	libfstree.a.d
+]])
+
+lib('libfstream.a', [[
+	lib/fstream/(
+		ostream.c printf.c
+		istream.c get_line.c
+		compressor.c
+		compress/(
+			ostream_compressor.c
+			gzip.c
+			zstd.c
+		)
+		uncompress/(
+			istream_compressor.c
+			autodetect.c
+			gzip.c
+			zstd.c
+		)
+		unix/(ostream.c istream.c)
+	)
 ]])
 
 lib('libfstree.a', [[
@@ -83,23 +109,23 @@ lib('libfstree.a', [[
 		fstree.c fstree_from_file.c
 		fstree_sort.c hardlink.c
 		post_process.c get_path.c
-		mknode.c
+		mknode.c fstree_from_dir.c
 		add_by_path.c get_by_path.c
 		source_date_epoch.c
 		canonicalize_name.c
 		filename_sane.c
 	)
+	libfstream.a
 ]])
 
 lib('libtar.a', [[
 	lib/tar/(
-		read_header.c write_header.c skip.c
+		read_header.c write_header.c
 		number.c checksum.c cleanup.c
 		read_sparse_map.c read_sparse_map_old.c
 		base64.c urldecode.c
-		padd_file.c read_retry.c
-		write_retry.c pax_header.c
-		read_sparse_map_new.c
+		padd_file.c record_to_memory.c
+		pax_header.c read_sparse_map_new.c
 	)
 ]])
 
@@ -107,12 +133,15 @@ lib('libutil.a', [[
 	lib/util/(
 		str_table.c alloc.c
 		rbtree.c
+		array.c
 		xxhash.c hash_table.c
+		threadpool_serial.c
+		is_memory_zero.c
 	)
 ]])
 
 exe('gensquashfs', [[
-	bin/gensquashfs/(mkfs.c options.c selinux.c dirscan.c dirscan_xattr.c)
+	bin/gensquashfs/(mkfs.c options.c selinux.c dirscan_xattr.c)
 	libcommon.a.d
 ]])
 file('bin/gensquashfs', '755', '$outdir/gensquashfs')

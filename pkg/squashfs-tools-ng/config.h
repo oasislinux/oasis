@@ -1,9 +1,13 @@
 #define WITH_GZIP 1
 #define WITH_ZSTD 1
+#define NO_CUSTOM_ALLOC 1
 
 #define HAVE_ALLOCA_H 1
+/* #undef HAVE_BZLIB_H */
 #define HAVE_DLFCN_H 1
-#define HAVE_GETLINE 1
+#define HAVE_FNMATCH 1
+#define HAVE_GETOPT 1
+#define HAVE_GETOPT_LONG 1
 #define HAVE_GETSUBOPT 1
 #define HAVE_INTTYPES_H 1
 #define HAVE_MEMORY_H 1
@@ -20,17 +24,18 @@
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_XATTR_H 1
 #define HAVE_UNISTD_H 1
+#define HAVE_ZSTD_STREAM 1
 #define LT_OBJDIR ".libs/"
 #define PACKAGE "squashfs-tools-ng"
 #define PACKAGE_BUGREPORT "goliath@infraroot.at"
 #define PACKAGE_NAME "squashfs-tools-ng"
-#define PACKAGE_STRING "squashfs-tools-ng 1.0.4"
+#define PACKAGE_STRING "squashfs-tools-ng 1.1.0"
 #define PACKAGE_TARNAME "squashfs-tools-ng"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.0.4"
+#define PACKAGE_VERSION "1.1.0"
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define STDC_HEADERS 1
-#define VERSION "1.0.4"
+#define VERSION "1.1.0"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif

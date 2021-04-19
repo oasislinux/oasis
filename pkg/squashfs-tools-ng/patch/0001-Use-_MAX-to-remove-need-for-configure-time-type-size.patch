@@ -1,4 +1,4 @@
-From d54a0ed7e31670d941ef2bae62c2ed15ae39b5f9 Mon Sep 17 00:00:00 2001
+From 3bc8305b275f4551e8af817916108d27927e559f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 30 May 2020 01:23:59 -0700
 Subject: [PATCH] Use *_MAX to remove need for configure-time type size checks
@@ -11,10 +11,10 @@ Subject: [PATCH] Use *_MAX to remove need for configure-time type size checks
  delete mode 100644 m4/ax_compile_check_sizeof.m4
 
 diff --git a/configure.ac b/configure.ac
-index 54d43f1..7e61de1 100644
+index 71dc54b..4d4bc0f 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -233,11 +233,6 @@ PKG_CHECK_MODULES(READLINE, [readline], [have_readline="yes"],
+@@ -260,11 +260,6 @@ PKG_CHECK_MODULES(READLINE, [readline], [have_readline="yes"],
  AM_CONDITIONAL([WITH_READLINE], [test "x$have_readline" = "xyes"])
  
  ##### additional checks #####
@@ -27,12 +27,12 @@ index 54d43f1..7e61de1 100644
  AC_CHECK_HEADERS([sys/sysinfo.h], [], [])
  AC_CHECK_HEADERS([alloca.h], [], [])
 diff --git a/include/compat.h b/include/compat.h
-index ee47ef9..20c8ab2 100644
+index 8a2522e..e82f2ad 100644
 --- a/include/compat.h
 +++ b/include/compat.h
-@@ -9,17 +9,19 @@
- 
+@@ -10,17 +10,19 @@
  #include "sqfs/predef.h"
+ #include "config.h"
  
 +#include <limits.h>
 +
@@ -53,7 +53,7 @@ index ee47ef9..20c8ab2 100644
  #		define SZ_ADD_OV __builtin_uaddll_overflow
  #		define SZ_MUL_OV __builtin_umulll_overflow
  #	else
-@@ -50,11 +52,11 @@ static inline int _sz_mul_overflow(size_t a, size_t b, size_t *res)
+@@ -51,11 +53,11 @@ static inline int _sz_mul_overflow(size_t a, size_t b, size_t *res)
  #	define PRI_U32 "%" PRIu32
  #endif
  
@@ -190,5 +190,5 @@ index f834df6..0000000
 -undefine([AC_CV_NAME])dnl
 -])
 -- 
-2.27.0
+2.31.1
 
