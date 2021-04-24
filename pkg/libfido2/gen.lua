@@ -1,5 +1,5 @@
 cflags{
-	'-std=c11', '-Wall', '-Wpedantic',
+	'-std=c11', '-Wall', '-Wextra', '-Wpedantic',
 	'-Wno-overflow',  -- ioctl opcode conversion
 	'-include $outdir/config.h',
 	'-D _GNU_SOURCE',
