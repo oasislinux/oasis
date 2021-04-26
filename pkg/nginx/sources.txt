@@ -98,6 +98,7 @@ mail_imap mail/ngx_mail_imap_module.c mail/ngx_mail_imap_handler.c
 mail_smtp mail/ngx_mail_smtp_module.c mail/ngx_mail_smtp_handler.c
 mail_auth_http mail/ngx_mail_auth_http_module.c
 mail_proxy mail/ngx_mail_proxy_module.c
+mail_realip mail/ngx_mail_realip_module.c
 
 # STREAM_MODULES
 stream stream/ngx_stream.c stream/ngx_stream_variables.c stream/ngx_stream_script.c stream/ngx_stream_handler.c
@@ -117,6 +118,7 @@ stream_map stream/ngx_stream_map_module.c
 stream_split_clients stream/ngx_stream_split_clients_module.c
 stream_return stream/ngx_stream_return_module.c
 stream_upstream_hash stream/ngx_stream_upstream_hash_module.c
+stream_set stream/ngx_stream_set_module.c
 stream_upstream_least_conn stream/ngx_stream_upstream_least_conn_module.c
 stream_upstream_random_module stream/ngx_stream_upstream_random_module.c
 stream_upstream_zone stream/ngx_stream_upstream_zone_module.c

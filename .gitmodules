@@ -238,7 +238,6 @@
 [submodule "pkg/nginx/src"]
 	path = pkg/nginx/src
 	url = https://github.com/nginx/nginx
-	ignore = all
 [submodule "pkg/oksh/src"]
 	path = pkg/oksh/src
 	url = https://github.com/ibara/oksh.git

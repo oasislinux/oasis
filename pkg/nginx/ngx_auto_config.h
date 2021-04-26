@@ -8,6 +8,7 @@
 
 /* auto/os/linux */
 #define NGX_HAVE_EPOLL 1
+#define NGX_HAVE_EVENTFD 1
 #define NGX_HAVE_CLEAR_EVENT 1
 #define NGX_HAVE_EPOLLRDHUP 1
 #define NGX_HAVE_EPOLLEXCLUSIVE 1
@@ -42,7 +43,6 @@
 #define NGX_HAVE_TCP_FASTOPEN 1
 #define NGX_HAVE_TCP_INFO 1
 #define NGX_HAVE_ACCEPT4 1
-#define NGX_HAVE_EVENTFD 1
 #define NGX_HAVE_SYS_EVENTFD_H 1
 #define NGX_HAVE_UNIX_DOMAIN 1
 #define NGX_PTR_SIZE 8
