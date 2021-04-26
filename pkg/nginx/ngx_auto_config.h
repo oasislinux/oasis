@@ -104,7 +104,8 @@
 #define NGX_CONF_PATH "/etc/nginx/nginx.conf"
 #define NGX_PID_PATH "nginx.pid"
 #define NGX_LOCK_PATH "nginx.lock"
-#define NGX_ERROR_LOG_PATH "/var/log/nginx/error.log"
+#define NGX_ERROR_LOG_PATH ""
+#define NGX_ERROR_LOG_STDERR 1
 #define NGX_HTTP_LOG_PATH "/var/log/nginx/access.log"
 #define NGX_HTTP_CLIENT_TEMP_PATH "client_body_temp"
 #define NGX_HTTP_PROXY_TEMP_PATH "proxy_temp"
