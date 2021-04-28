@@ -4,7 +4,7 @@ cflags{
 	'-D CONFIG_RISCV_MAX_XLEN=64',
 	'-D CONFIG_SLIRP',
 	'-D CONFIG_X86EMU',
-	[[-D 'CONFIG_VERSION="2019-02-10"']],
+	[[-D 'CONFIG_VERSION="2019-12-21"']],
 	'-isystem $builddir/pkg/bearssl/include',
 	'-isystem $builddir/pkg/curl/include',
 	'-isystem $builddir/pkg/linux-headers/include',
