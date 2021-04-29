@@ -1,6 +1,6 @@
 cflags{
 	'-Wall', '-Wpedantic',
-	'-I $dir',
+	'-I $outdir/include',
 	'-I $srcdir/common',
 	'-I $srcdir/libelf',
 	'-isystem $builddir/pkg/openbsd/include',
@@ -9,14 +9,18 @@ cflags{
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/libelf', {'libelf.h', 'gelf.h'}),
 	copy('$outdir/include', '$srcdir/common', {'elfdefinitions.h'}),
+	'$outdir/include/sys/elfdefinitions.h',
 	install=true,
 }
-pkg.deps = {'pkg/openbsd/headers'}
+pkg.deps = {'$gendir/headers', 'pkg/openbsd/headers'}
 
-rule('m4', 'm4 -D SRCDIR=$srcdir/libelf $in >$out')
+rule('m4', 'm4 $m4flags -D SRCDIR=$srcdir/libelf $in >$out')
 build('m4', '$outdir/libelf_convert.c', {'$srcdir/libelf/libelf_convert.m4', '|', '$srcdir/libelf/elf_types.m4'})
 build('m4', '$outdir/libelf_fsize.c', {'$srcdir/libelf/libelf_fsize.m4', '|', '$srcdir/libelf/elf_types.m4'})
 build('m4', '$outdir/libelf_msize.c', {'$srcdir/libelf/libelf_msize.m4', '|', '$srcdir/libelf/elf_types.m4'})
+build('m4', '$outdir/include/sys/elfdefinitions.h', {'$srcdir/common/sys/elfdefinitions.m4', '|', '$srcdir/common/sys/elfconstants.m4'}, {
+	m4flags='-I $srcdir/common/sys'
+})
 
 lib('libelf.a', [[
 	libelf/(
@@ -31,6 +35,7 @@ lib('libelf.a', [[
 		elf_getarsym.c
 		elf_getbase.c
 		elf_getident.c
+		elf_getversion.c
 		elf_hash.c
 		elf_kind.c
 		elf_memory.c
@@ -67,6 +72,7 @@ lib('libelf.a', [[
 		libelf_checksum.c
 		libelf_data.c
 		libelf_ehdr.c
+		libelf_elfmachine.c
 		libelf_extended.c
 		libelf_memory.c
 		libelf_open.c
@@ -78,4 +84,4 @@ lib('libelf.a', [[
 ]])
 file('lib/libelf.a', '644', '$outdir/libelf.a')
 
-fetch 'curl'
+fetch 'git'

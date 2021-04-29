@@ -1,17 +1,17 @@
-From 642824dea853e98be336bea496e7e5301c70c3a1 Mon Sep 17 00:00:00 2001
+From 7233abcc2902766760f9dd26217df159d4e6340a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 2 Jul 2019 23:54:25 -0700
 Subject: [PATCH] Use _Alignof when built as C11
 
 ---
- libelf/libelf_align.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+ libelf/libelf_align.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
 diff --git a/libelf/libelf_align.c b/libelf/libelf_align.c
-index f74789f5..9ddf172e 100644
+index c0cdce97..2150fea7 100644
 --- a/libelf/libelf_align.c
 +++ b/libelf/libelf_align.c
-@@ -37,19 +37,32 @@ struct align {
+@@ -39,25 +39,38 @@ struct align {
  	unsigned int a64;
  };
  
@@ -44,9 +44,16 @@ index f74789f5..9ddf172e 100644
  		.a64 = __alignof__(int64_t)			\
 -	    }
 +	}
+ #elif defined(__lint__)
+ #define MALIGN(N)	{ .a32 = 0, .a64 = 0 }
+ #define MALIGN64(N)	{ .a32 = 0, .a64 = 0 }
+ #define MALIGN_WORD(N)	{ .a32 = 0, .a64 = 0 }
  #else
- #error	Need the __alignof__ builtin.
+-#error	Need the __alignof__ builtin.
++#error	Need C11 _Alignof, or the __alignof__ builtin.
  #endif
+ #define	UNSUPPORTED()	{					\
+ 		.a32 = 0,					\
 -- 
-2.22.0
+2.31.1
 

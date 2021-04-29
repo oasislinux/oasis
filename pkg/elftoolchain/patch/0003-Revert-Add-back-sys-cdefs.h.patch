@@ -1,0 +1,834 @@
+From a2b4fa9da830e1345df70c3372d6cfc14faf8f07 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 29 Apr 2021 12:09:05 -0700
+Subject: [PATCH] Revert "Add back <sys/cdefs.h>."
+
+This reverts commit 301fff723d18730ade4ef4034ed36fd6369f1886.
+---
+ libelf/elf.c               | 2 --
+ libelf/elf_begin.c         | 2 --
+ libelf/elf_cntl.c          | 2 --
+ libelf/elf_data.c          | 2 --
+ libelf/elf_end.c           | 2 --
+ libelf/elf_errmsg.c        | 2 --
+ libelf/elf_errno.c         | 2 --
+ libelf/elf_fill.c          | 2 --
+ libelf/elf_flag.c          | 2 --
+ libelf/elf_getarhdr.c      | 2 --
+ libelf/elf_getarsym.c      | 2 --
+ libelf/elf_getbase.c       | 2 --
+ libelf/elf_getident.c      | 2 --
+ libelf/elf_getversion.c    | 2 --
+ libelf/elf_hash.c          | 2 --
+ libelf/elf_kind.c          | 2 --
+ libelf/elf_memory.c        | 2 --
+ libelf/elf_next.c          | 2 --
+ libelf/elf_open.c          | 2 --
+ libelf/elf_phnum.c         | 2 --
+ libelf/elf_rand.c          | 2 --
+ libelf/elf_rawfile.c       | 2 --
+ libelf/elf_scn.c           | 1 -
+ libelf/elf_shnum.c         | 2 --
+ libelf/elf_shstrndx.c      | 2 --
+ libelf/elf_strptr.c        | 1 -
+ libelf/elf_update.c        | 1 -
+ libelf/elf_version.c       | 2 --
+ libelf/gelf_cap.c          | 2 --
+ libelf/gelf_checksum.c     | 2 --
+ libelf/gelf_dyn.c          | 2 --
+ libelf/gelf_ehdr.c         | 2 --
+ libelf/gelf_fsize.c        | 2 --
+ libelf/gelf_getclass.c     | 2 --
+ libelf/gelf_move.c         | 2 --
+ libelf/gelf_phdr.c         | 2 --
+ libelf/gelf_rel.c          | 2 --
+ libelf/gelf_rela.c         | 2 --
+ libelf/gelf_shdr.c         | 2 --
+ libelf/gelf_sym.c          | 2 --
+ libelf/gelf_syminfo.c      | 2 --
+ libelf/gelf_symshndx.c     | 2 --
+ libelf/gelf_xlate.c        | 2 --
+ libelf/libelf_allocate.c   | 2 --
+ libelf/libelf_ar.c         | 2 --
+ libelf/libelf_ar_util.c    | 2 --
+ libelf/libelf_checksum.c   | 2 --
+ libelf/libelf_convert.m4   | 2 --
+ libelf/libelf_data.c       | 2 --
+ libelf/libelf_ehdr.c       | 2 --
+ libelf/libelf_elfmachine.c | 2 --
+ libelf/libelf_extended.c   | 2 --
+ libelf/libelf_fsize.m4     | 2 --
+ libelf/libelf_memory.c     | 2 --
+ libelf/libelf_msize.m4     | 2 --
+ libelf/libelf_open.c       | 1 -
+ libelf/libelf_phdr.c       | 2 --
+ libelf/libelf_shdr.c       | 2 --
+ libelf/libelf_xlate.c      | 2 --
+ 59 files changed, 114 deletions(-)
+
+diff --git a/libelf/elf.c b/libelf/elf.c
+index 3eac4f47..b391c43a 100644
+--- a/libelf/elf.c
++++ b/libelf/elf.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_begin.c b/libelf/elf_begin.c
+index f7b1b552..0eccc5f8 100644
+--- a/libelf/elf_begin.c
++++ b/libelf/elf_begin.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_cntl.c b/libelf/elf_cntl.c
+index 92efa3b4..0f892fd4 100644
+--- a/libelf/elf_cntl.c
++++ b/libelf/elf_cntl.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_data.c b/libelf/elf_data.c
+index 9101c1ac..0a380464 100644
+--- a/libelf/elf_data.c
++++ b/libelf/elf_data.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <errno.h>
+ #include <libelf.h>
+diff --git a/libelf/elf_end.c b/libelf/elf_end.c
+index c5920c11..8e483236 100644
+--- a/libelf/elf_end.c
++++ b/libelf/elf_end.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <libelf.h>
+ #include <stdlib.h>
+diff --git a/libelf/elf_errmsg.c b/libelf/elf_errmsg.c
+index de242828..e5f54762 100644
+--- a/libelf/elf_errmsg.c
++++ b/libelf/elf_errmsg.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ #include <stdio.h>
+ #include <string.h>
+diff --git a/libelf/elf_errno.c b/libelf/elf_errno.c
+index baf6c0d7..056f129e 100644
+--- a/libelf/elf_errno.c
++++ b/libelf/elf_errno.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_fill.c b/libelf/elf_fill.c
+index a6499182..bddec5d1 100644
+--- a/libelf/elf_fill.c
++++ b/libelf/elf_fill.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_flag.c b/libelf/elf_flag.c
+index 0e68ef08..9c56cfac 100644
+--- a/libelf/elf_flag.c
++++ b/libelf/elf_flag.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_getarhdr.c b/libelf/elf_getarhdr.c
+index 139ff36d..1a33171e 100644
+--- a/libelf/elf_getarhdr.c
++++ b/libelf/elf_getarhdr.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_getarsym.c b/libelf/elf_getarsym.c
+index e9bd479e..4bfaf7f7 100644
+--- a/libelf/elf_getarsym.c
++++ b/libelf/elf_getarsym.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_getbase.c b/libelf/elf_getbase.c
+index fe378afa..c42c0649 100644
+--- a/libelf/elf_getbase.c
++++ b/libelf/elf_getbase.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_getident.c b/libelf/elf_getident.c
+index 701b1f20..c7d33a28 100644
+--- a/libelf/elf_getident.c
++++ b/libelf/elf_getident.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <ar.h>
+ #include <assert.h>
+ #include <libelf.h>
+diff --git a/libelf/elf_getversion.c b/libelf/elf_getversion.c
+index 24e68e6d..b967453c 100644
+--- a/libelf/elf_getversion.c
++++ b/libelf/elf_getversion.c
+@@ -24,8 +24,6 @@
+  * THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_hash.c b/libelf/elf_hash.c
+index 8d20acbd..f61e8268 100644
+--- a/libelf/elf_hash.c
++++ b/libelf/elf_hash.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_kind.c b/libelf/elf_kind.c
+index d182c37b..45989800 100644
+--- a/libelf/elf_kind.c
++++ b/libelf/elf_kind.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_memory.c b/libelf/elf_memory.c
+index 21cf2d2d..0544998c 100644
+--- a/libelf/elf_memory.c
++++ b/libelf/elf_memory.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_next.c b/libelf/elf_next.c
+index 66fd2e22..e2fe9a2b 100644
+--- a/libelf/elf_next.c
++++ b/libelf/elf_next.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <ar.h>
+ #include <assert.h>
+ #include <libelf.h>
+diff --git a/libelf/elf_open.c b/libelf/elf_open.c
+index 577bcc7f..adad0610 100644
+--- a/libelf/elf_open.c
++++ b/libelf/elf_open.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_phnum.c b/libelf/elf_phnum.c
+index 3ade2c45..3d2b1bcd 100644
+--- a/libelf/elf_phnum.c
++++ b/libelf/elf_phnum.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <ar.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/elf_rand.c b/libelf/elf_rand.c
+index 6946fa6a..eafb0686 100644
+--- a/libelf/elf_rand.c
++++ b/libelf/elf_rand.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <ar.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/elf_rawfile.c b/libelf/elf_rawfile.c
+index cd048e3a..5a5452b5 100644
+--- a/libelf/elf_rawfile.c
++++ b/libelf/elf_rawfile.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/elf_scn.c b/libelf/elf_scn.c
+index 2557581a..dfa77f53 100644
+--- a/libelf/elf_scn.c
++++ b/libelf/elf_scn.c
+@@ -24,7 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+ #include <sys/queue.h>
+ 
+ #include <assert.h>
+diff --git a/libelf/elf_shnum.c b/libelf/elf_shnum.c
+index 4319a249..fbc0d0d5 100644
+--- a/libelf/elf_shnum.c
++++ b/libelf/elf_shnum.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <ar.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/elf_shstrndx.c b/libelf/elf_shstrndx.c
+index 90c4b57a..ef62285d 100644
+--- a/libelf/elf_shstrndx.c
++++ b/libelf/elf_shstrndx.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <ar.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/elf_strptr.c b/libelf/elf_strptr.c
+index 6a9e7c5d..5c594b45 100644
+--- a/libelf/elf_strptr.c
++++ b/libelf/elf_strptr.c
+@@ -24,7 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+ #include <sys/param.h>
+ 
+ #include <assert.h>
+diff --git a/libelf/elf_update.c b/libelf/elf_update.c
+index baf64809..3e19b78a 100644
+--- a/libelf/elf_update.c
++++ b/libelf/elf_update.c
+@@ -24,7 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+ #include <sys/param.h>
+ #include <sys/stat.h>
+ 
+diff --git a/libelf/elf_version.c b/libelf/elf_version.c
+index 4d4d9e06..f2037a16 100644
+--- a/libelf/elf_version.c
++++ b/libelf/elf_version.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/gelf_cap.c b/libelf/gelf_cap.c
+index ed63d793..2e82fdf2 100644
+--- a/libelf/gelf_cap.c
++++ b/libelf/gelf_cap.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <limits.h>
+diff --git a/libelf/gelf_checksum.c b/libelf/gelf_checksum.c
+index ae1f1015..d29dd25f 100644
+--- a/libelf/gelf_checksum.c
++++ b/libelf/gelf_checksum.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <gelf.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/gelf_dyn.c b/libelf/gelf_dyn.c
+index 950b9a72..653d39a5 100644
+--- a/libelf/gelf_dyn.c
++++ b/libelf/gelf_dyn.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <limits.h>
+diff --git a/libelf/gelf_ehdr.c b/libelf/gelf_ehdr.c
+index 30983333..d6b42c7c 100644
+--- a/libelf/gelf_ehdr.c
++++ b/libelf/gelf_ehdr.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <libelf.h>
+diff --git a/libelf/gelf_fsize.c b/libelf/gelf_fsize.c
+index 8cfeb7cc..3eeeb80c 100644
+--- a/libelf/gelf_fsize.c
++++ b/libelf/gelf_fsize.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <gelf.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/gelf_getclass.c b/libelf/gelf_getclass.c
+index eb8bfd4e..3e5bf4f3 100644
+--- a/libelf/gelf_getclass.c
++++ b/libelf/gelf_getclass.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <gelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/gelf_move.c b/libelf/gelf_move.c
+index d3f2011e..20bc0d86 100644
+--- a/libelf/gelf_move.c
++++ b/libelf/gelf_move.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <limits.h>
+diff --git a/libelf/gelf_phdr.c b/libelf/gelf_phdr.c
+index 0ac2c8bf..5996910d 100644
+--- a/libelf/gelf_phdr.c
++++ b/libelf/gelf_phdr.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <gelf.h>
+ #include <libelf.h>
+ #include <limits.h>
+diff --git a/libelf/gelf_rel.c b/libelf/gelf_rel.c
+index 1a1459ab..60332597 100644
+--- a/libelf/gelf_rel.c
++++ b/libelf/gelf_rel.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <limits.h>
+diff --git a/libelf/gelf_rela.c b/libelf/gelf_rela.c
+index 40f94da7..40462248 100644
+--- a/libelf/gelf_rela.c
++++ b/libelf/gelf_rela.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <limits.h>
+diff --git a/libelf/gelf_shdr.c b/libelf/gelf_shdr.c
+index 9150776b..2248551e 100644
+--- a/libelf/gelf_shdr.c
++++ b/libelf/gelf_shdr.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <libelf.h>
+diff --git a/libelf/gelf_sym.c b/libelf/gelf_sym.c
+index a8422395..998bfda2 100644
+--- a/libelf/gelf_sym.c
++++ b/libelf/gelf_sym.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <limits.h>
+diff --git a/libelf/gelf_syminfo.c b/libelf/gelf_syminfo.c
+index ae6c8473..d97ab291 100644
+--- a/libelf/gelf_syminfo.c
++++ b/libelf/gelf_syminfo.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ 
+diff --git a/libelf/gelf_symshndx.c b/libelf/gelf_symshndx.c
+index ab6e8519..0ba1cc08 100644
+--- a/libelf/gelf_symshndx.c
++++ b/libelf/gelf_symshndx.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ 
+diff --git a/libelf/gelf_xlate.c b/libelf/gelf_xlate.c
+index 228b17bf..af539a5a 100644
+--- a/libelf/gelf_xlate.c
++++ b/libelf/gelf_xlate.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <gelf.h>
+ #include <libelf.h>
+ #include <string.h>
+diff --git a/libelf/libelf_allocate.c b/libelf/libelf_allocate.c
+index 1387568e..3cf58ae7 100644
+--- a/libelf/libelf_allocate.c
++++ b/libelf/libelf_allocate.c
+@@ -28,8 +28,6 @@
+  * Internal APIs
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <errno.h>
+ #include <libelf.h>
+diff --git a/libelf/libelf_ar.c b/libelf/libelf_ar.c
+index 2a8b834b..26632c86 100644
+--- a/libelf/libelf_ar.c
++++ b/libelf/libelf_ar.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <ctype.h>
+ #include <libelf.h>
+diff --git a/libelf/libelf_ar_util.c b/libelf/libelf_ar_util.c
+index 601036fa..f98e7258 100644
+--- a/libelf/libelf_ar_util.c
++++ b/libelf/libelf_ar_util.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <libelf.h>
+ #include <stdlib.h>
+diff --git a/libelf/libelf_checksum.c b/libelf/libelf_checksum.c
+index 84ab3370..d573bc20 100644
+--- a/libelf/libelf_checksum.c
++++ b/libelf/libelf_checksum.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <gelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/libelf_convert.m4 b/libelf/libelf_convert.m4
+index c9e3c28a..e9eb743b 100644
+--- a/libelf/libelf_convert.m4
++++ b/libelf/libelf_convert.m4
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <libelf.h>
+ #include <string.h>
+diff --git a/libelf/libelf_data.c b/libelf/libelf_data.c
+index 3f921a00..6b8f50ae 100644
+--- a/libelf/libelf_data.c
++++ b/libelf/libelf_data.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/libelf_ehdr.c b/libelf/libelf_ehdr.c
+index 75b3dd00..813e4e17 100644
+--- a/libelf/libelf_ehdr.c
++++ b/libelf/libelf_ehdr.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <libelf.h>
+diff --git a/libelf/libelf_elfmachine.c b/libelf/libelf_elfmachine.c
+index 5b8244f4..c7e44b39 100644
+--- a/libelf/libelf_elfmachine.c
++++ b/libelf/libelf_elfmachine.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/libelf_extended.c b/libelf/libelf_extended.c
+index 2ddac923..2cde9fad 100644
+--- a/libelf/libelf_extended.c
++++ b/libelf/libelf_extended.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/libelf_fsize.m4 b/libelf/libelf_fsize.m4
+index 256a856a..0192b7ed 100644
+--- a/libelf/libelf_fsize.m4
++++ b/libelf/libelf_fsize.m4
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <libelf.h>
+ 
+ #include "_libelf.h"
+diff --git a/libelf/libelf_memory.c b/libelf/libelf_memory.c
+index 9aad49b8..e2b6bd22 100644
+--- a/libelf/libelf_memory.c
++++ b/libelf/libelf_memory.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <ar.h>
+ #include <assert.h>
+ #include <string.h>
+diff --git a/libelf/libelf_msize.m4 b/libelf/libelf_msize.m4
+index b4cc8634..b6bfb80d 100644
+--- a/libelf/libelf_msize.m4
++++ b/libelf/libelf_msize.m4
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <libelf.h>
+ #include <string.h>
+diff --git a/libelf/libelf_open.c b/libelf/libelf_open.c
+index 7216df14..4b0cec72 100644
+--- a/libelf/libelf_open.c
++++ b/libelf/libelf_open.c
+@@ -24,7 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ 
+diff --git a/libelf/libelf_phdr.c b/libelf/libelf_phdr.c
+index ac92679f..88cac8aa 100644
+--- a/libelf/libelf_phdr.c
++++ b/libelf/libelf_phdr.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <gelf.h>
+ #include <libelf.h>
+diff --git a/libelf/libelf_shdr.c b/libelf/libelf_shdr.c
+index 463a0ed0..604a6701 100644
+--- a/libelf/libelf_shdr.c
++++ b/libelf/libelf_shdr.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <gelf.h>
+ #include <libelf.h>
+ 
+diff --git a/libelf/libelf_xlate.c b/libelf/libelf_xlate.c
+index 003f9532..f8a7967c 100644
+--- a/libelf/libelf_xlate.c
++++ b/libelf/libelf_xlate.c
+@@ -24,8 +24,6 @@
+  * SUCH DAMAGE.
+  */
+ 
+-#include <sys/cdefs.h>
+-
+ #include <assert.h>
+ #include <libelf.h>
+ 
+-- 
+2.31.1
+

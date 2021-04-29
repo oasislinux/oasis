@@ -67,6 +67,10 @@
 	path = pkg/efivar/src
 	url = https://github.com/rhinstaller/efivar
 	ignore = all
+[submodule "pkg/elftoolchain/elftoolchain"]
+	path = pkg/elftoolchain/src
+	url = https://github.com/elftoolchain/elftoolchain.git
+	ignore = all
 [submodule "pkg/expat/src"]
 	path = pkg/expat/src
 	url = https://github.com/libexpat/libexpat

@@ -1,0 +1,25 @@
+From 1f3cf2b7c4232f82ae37a62bcccccaa1398d834b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 2 Jul 2019 23:49:18 -0700
+Subject: [PATCH] Prevent empty top-level declarations
+
+---
+ common/_elftc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/common/_elftc.h b/common/_elftc.h
+index 5c4cf610..8c391fb5 100644
+--- a/common/_elftc.h
++++ b/common/_elftc.h
+@@ -305,7 +305,7 @@ struct name {							\
+ #if defined(__GNUC__)
+ #define	ELFTC_VCSID(ID)		__asm__(".ident\t\"" ID "\"")
+ #else
+-#define	ELFTC_VCSID(ID)		/**/
++#define	ELFTC_VCSID(ID)		_Static_assert(1, "")
+ #endif
+ 
+ #endif
+-- 
+2.31.1
+

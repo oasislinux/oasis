@@ -1,0 +1,26 @@
+From ddc7be75561caab4927241df5473561eacc4cca4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 29 Apr 2021 12:20:12 -0700
+Subject: [PATCH] readelf: remove unnecessary ';' after function definition
+
+This is not allowed by the ISO C grammar.
+---
+ readelf/readelf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/readelf/readelf.c b/readelf/readelf.c
+index d3b1bb51..7dafd341 100644
+--- a/readelf/readelf.c
++++ b/readelf/readelf.c
+@@ -458,7 +458,7 @@ elf_osabi(unsigned int abi)
+ 		snprintf(s_abi, sizeof(s_abi), "<unknown: %#x>", abi);
+ 		return (s_abi);
+ 	}
+-};
++}
+ 
+ static const char *
+ elf_machine(unsigned int mach)
+-- 
+2.31.1
+
