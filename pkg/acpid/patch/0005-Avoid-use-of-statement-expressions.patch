@@ -1,0 +1,299 @@
+From 7c59db620d4787759dd201e2ac20998c1d116ab9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 30 Apr 2021 20:02:41 -0700
+Subject: [PATCH] Avoid use of statement-expressions
+
+---
+ Makefile.am   |  2 +-
+ acpi_listen.c |  6 +++---
+ acpid.c       |  4 ++--
+ event.c       |  5 +++--
+ input_layer.c |  4 ++--
+ libc_compat.h | 40 ----------------------------------------
+ libnetlink.c  | 17 +++++++++--------
+ netlink.c     |  4 ++--
+ proc.c        |  5 +++--
+ ud_socket.c   |  5 +++--
+ 10 files changed, 28 insertions(+), 64 deletions(-)
+ delete mode 100644 libc_compat.h
+
+diff --git a/Makefile.am b/Makefile.am
+index 417528f..1c80ca4 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -14,7 +14,7 @@ bin_PROGRAMS = acpi_listen
+ 
+ acpid_SOURCES = acpid.c acpi_ids.c connection_list.c event.c input_layer.c inotify_handler.c libnetlink.c log.c netlink.c proc.c sock.c ud_socket.c \
+ 				acpid.h  acpi_genetlink.h  acpi_ids.h  config.h  connection_list.h  event.h  genetlink.h  inotify_handler.h  input_layer.h  \
+-				libnetlink.h  log.h  netlink.h  proc.h  sock.h  ud_socket.h  libc_compat.h
++				libnetlink.h  log.h  netlink.h  proc.h  sock.h  ud_socket.h
+ 
+ acpi_listen_SOURCES = acpi_listen.c log.c ud_socket.c
+ 
+diff --git a/acpi_listen.c b/acpi_listen.c
+index 63a1cc3..674cc80 100644
+--- a/acpi_listen.c
++++ b/acpi_listen.c
+@@ -39,8 +39,6 @@
+ #include "acpid.h"
+ #include "ud_socket.h"
+ 
+-#include "libc_compat.h"
+-
+ static int handle_cmdline(int *argc, char ***argv);
+ static char *read_line(int fd);
+ 
+@@ -217,8 +215,10 @@ read_line(int fd)
+ 		memset(buf+i, 0, buflen-i);
+ 
+ 		while (i < buflen) {
+-			r = TEMP_FAILURE_RETRY (read(fd, buf+i, 1) );
++			r = read(fd, buf+i, 1);
+ 			if (r < 0) {
++				if (errno == EINTR)
++					continue;
+ 				/* we should do something with the data */
+ 				fprintf(stderr, "ERR: read(): %s\n",
+ 					strerror(errno));
+diff --git a/acpid.c b/acpid.c
+index cb1875a..6538578 100644
+--- a/acpid.c
++++ b/acpid.c
+@@ -41,7 +41,6 @@
+ #include "input_layer.h"
+ #include "inotify_handler.h"
+ #include "netlink.h"
+-#include "libc_compat.h"
+ 
+ static int handle_cmdline(int *argc, char ***argv);
+ static void close_fds(void);
+@@ -153,7 +152,8 @@ main(int argc, char **argv)
+ 		readfds = *get_fdset();
+ 
+ 		/* wait on data */
+-		nready = TEMP_FAILURE_RETRY(select(get_highestfd() + 1, &readfds, NULL, NULL, NULL));
++		do nready = select(get_highestfd() + 1, &readfds, NULL, NULL, NULL);
++		while (nready == -1 && errno == EINTR);
+ 
+ 		if (nready < 0) {
+ 			acpid_log(LOG_ERR, "select(): %s", strerror(errno));
+diff --git a/event.c b/event.c
+index 6c67062..033466e 100644
+--- a/event.c
++++ b/event.c
+@@ -39,7 +39,6 @@
+ #include "log.h"
+ #include "sock.h"
+ #include "ud_socket.h"
+-#include "libc_compat.h"
+ 
+ #include "event.h"
+ /*
+@@ -754,8 +753,10 @@ safe_write(int fd, const char *buf, int len)
+ 	int ntries = NTRIES;
+ 
+ 	do {
+-		r = TEMP_FAILURE_RETRY (write(fd, buf+ttl, len-ttl) );
++		r = write(fd, buf+ttl, len-ttl);
+ 		if (r < 0) {
++			if (errno == EINTR)
++				continue;
+ 			if (errno != EAGAIN) {
+ 				/* a legit error */
+ 				return r;
+diff --git a/input_layer.c b/input_layer.c
+index 5f050db..6e6cc26 100644
+--- a/input_layer.c
++++ b/input_layer.c
+@@ -42,7 +42,6 @@
+ #include "log.h"
+ #include "connection_list.h"
+ #include "event.h"
+-#include "libc_compat.h"
+ 
+ #include "input_layer.h"
+ 
+@@ -298,7 +297,8 @@ static void process_input(int fd)
+ 	struct connection *c;
+ 	char str2[100];
+ 
+-	nbytes = TEMP_FAILURE_RETRY ( read(fd, &event, sizeof(event)) );
++	do nbytes = read(fd, &event, sizeof(event));
++	while (nbytes == -1 && errno == EINTR);
+ 
+ 	if (nbytes == 0) {
+ 		acpid_log(LOG_WARNING, "input layer connection closed");
+diff --git a/libc_compat.h b/libc_compat.h
+deleted file mode 100644
+index 39f2336..0000000
+--- a/libc_compat.h
++++ /dev/null
+@@ -1,40 +0,0 @@
+-/*
+- *  libc_compat.h - implement defs/macros missing from some libcs
+- *
+- *  Copyright (C) 1999-2000 Andrew Henroid
+- *  Copyright (C) 2001 Sun Microsystems
+- *  Portions Copyright (C) 2004 Tim Hockin (thockin@hockin.org)
+- *
+- *  This program is free software; you can redistribute it and/or modify
+- *  it under the terms of the GNU General Public License as published by
+- *  the Free Software Foundation; either version 2 of the License, or
+- *  (at your option) any later version.
+- *
+- *  This program is distributed in the hope that it will be useful,
+- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- *  GNU General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License
+- *  along with this program; if not, write to the Free Software
+- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+- */
+-
+-#ifndef LIBC_COMPAT_H__
+-#define LIBC_COMPAT_H__
+-
+-/* Evaluate EXPRESSION, and repeat as long as it returns -1 with `errno'
+-   set to EINTR. This macro is present on glibc/uclibc but may not be in other cases.  */
+-
+-#ifndef ____GLIBC__
+-#ifndef TEMP_FAILURE_RETRY
+-#define TEMP_FAILURE_RETRY(expression) \
+-  (__extension__                                                             \
+-    ({ long int __result;                                                    \
+-       do __result = (long int) (expression);                                \
+-       while (__result == -1L && errno == EINTR);                            \
+-       __result; }))
+-#endif
+-#endif /* __GLIBC__ */
+-
+-#endif /* LIBC_COMPAT_H__ */
+diff --git a/libnetlink.c b/libnetlink.c
+index 5546ccb..1478e28 100644
+--- a/libnetlink.c
++++ b/libnetlink.c
+@@ -24,8 +24,6 @@
+ #include <time.h>
+ #include <sys/uio.h>
+ 
+-#include "libc_compat.h"
+-
+ #include "libnetlink.h"
+ 
+ void rtnl_close(struct rtnl_handle *rth)
+@@ -173,10 +171,11 @@ int rtnl_dump_filter(struct rtnl_handle *rth,
+ 		struct nlmsghdr *h;
+ 
+ 		iov.iov_len = sizeof(buf);
+-		status = TEMP_FAILURE_RETRY ( recvmsg(rth->fd, &msg, MSG_CMSG_CLOEXEC) );
++		status = recvmsg(rth->fd, &msg, MSG_CMSG_CLOEXEC);
+ 
+ 		if (status < 0) {
+-			perror("OVERRUN");
++			if (errno != EINTR)
++				perror("OVERRUN");
+ 			continue;
+ 		}
+ 
+@@ -274,10 +273,11 @@ int rtnl_talk(struct rtnl_handle *rtnl, struct nlmsghdr *n, pid_t peer,
+ 
+ 	while (1) {
+ 		iov.iov_len = sizeof(buf);
+-		status = TEMP_FAILURE_RETRY ( recvmsg(rtnl->fd, &msg, MSG_CMSG_CLOEXEC) );
++		status = recvmsg(rtnl->fd, &msg, MSG_CMSG_CLOEXEC);
+ 
+ 		if (status < 0) {
+-			perror("OVERRUN");
++			if (errno != EINTR)
++				perror("OVERRUN");
+ 			continue;
+ 		}
+ 		if (status == 0) {
+@@ -376,10 +376,11 @@ int rtnl_listen(struct rtnl_handle *rtnl,
+ 	iov.iov_base = buf;
+ 	while (1) {
+ 		iov.iov_len = sizeof(buf);
+-		status = TEMP_FAILURE_RETRY ( recvmsg(rtnl->fd, &msg, MSG_CMSG_CLOEXEC) );
++		status = recvmsg(rtnl->fd, &msg, MSG_CMSG_CLOEXEC);
+ 
+ 		if (status < 0) {
+-			perror("OVERRUN");
++			if (errno != EINTR)
++				perror("OVERRUN");
+ 			continue;
+ 		}
+ 		if (status == 0) {
+diff --git a/netlink.c b/netlink.c
+index 27e3536..d89d280 100644
+--- a/netlink.c
++++ b/netlink.c
+@@ -41,7 +41,6 @@
+ #include "libnetlink.h"
+ #include "genetlink.h"
+ #include "acpi_genetlink.h"
+-#include "libc_compat.h"
+ 
+ #include "acpi_ids.h"
+ #include "connection_list.h"
+@@ -144,7 +143,8 @@ process_netlink(int fd)
+ 	iov.iov_len = sizeof(buf);
+ 	
+ 	/* read the data into the buffer */
+-	status = TEMP_FAILURE_RETRY ( recvmsg(fd, &msg, MSG_CMSG_CLOEXEC) );
++	do status = recvmsg(fd, &msg, MSG_CMSG_CLOEXEC);
++	while (status == -1 && errno == EINTR);
+ 
+ 	/* if there was a problem, print a message and keep trying */
+ 	if (status < 0) {
+diff --git a/proc.c b/proc.c
+index f96b913..295cb73 100644
+--- a/proc.c
++++ b/proc.c
+@@ -31,7 +31,6 @@
+ #include "log.h"
+ #include "event.h"
+ #include "connection_list.h"
+-#include "libc_compat.h"
+ 
+ #include "proc.h"
+ 
+@@ -137,8 +136,10 @@ read_line(int fd)
+ 
+ 		/* only go to BUFLEN-1 so there will always be a 0 at the end */
+ 		while (i < BUFLEN-1) {
+-			r = TEMP_FAILURE_RETRY(read(fd, buf+i, 1));
++			r = read(fd, buf+i, 1);
+ 			if (r < 0) {
++				if (errno == EINTR)
++					continue;
+ 				/* we should do something with the data */
+ 				acpid_log(LOG_ERR, "read(): %s",
+ 					strerror(errno));
+diff --git a/ud_socket.c b/ud_socket.c
+index 83b2aa9..15a3b4a 100644
+--- a/ud_socket.c
++++ b/ud_socket.c
+@@ -21,7 +21,6 @@
+ #include "acpid.h"
+ #include "log.h"
+ #include "ud_socket.h"
+-#include "libc_compat.h"
+ 
+ int
+ ud_create_socket(const char *name, mode_t socketmode)
+@@ -87,8 +86,10 @@ ud_accept(int listenfd, struct ucred *cred)
+ 		struct sockaddr_un cliaddr;
+ 		socklen_t len = sizeof(struct sockaddr_un);
+ 
+-		newsock = TEMP_FAILURE_RETRY (accept4(listenfd, (struct sockaddr *)&cliaddr, &len, SOCK_CLOEXEC|SOCK_NONBLOCK));
++		newsock = accept4(listenfd, (struct sockaddr *)&cliaddr, &len, SOCK_CLOEXEC|SOCK_NONBLOCK);
+ 		if (newsock < 0) {
++			if (errno == EINTR)
++				continue;
+ 			return newsock;
+ 		}
+ 		if (cred) {
+-- 
+2.31.1
+

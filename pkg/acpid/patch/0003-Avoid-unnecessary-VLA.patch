@@ -1,0 +1,36 @@
+From 4e30a1cc8fb347d24861fd1a702c56b5644b9431 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 30 Apr 2021 19:43:25 -0700
+Subject: [PATCH] Avoid unnecessary VLA
+
+This VLA has a constant size, so just use a regular array instead.
+---
+ inotify_handler.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/inotify_handler.c b/inotify_handler.c
+index bb4ee14..ea64955 100644
+--- a/inotify_handler.c
++++ b/inotify_handler.c
+@@ -67,8 +67,7 @@ static void process_inotify(int fd)
+ 		return;
+ 	}
+ 
+-	const int dnsize = NAME_MAX + 1;
+-	char devname[dnsize];
++	char devname[NAME_MAX + 1];
+ 
+ 	/* while there are still messages in eventbuf */
+ 	while (processed_bytes < bytes) {
+@@ -82,7 +81,7 @@ static void process_inotify(int fd)
+ 			/* devname = ACPID_INPUTLAYERDIR + "/" + pevent -> name */
+ 			strcpy(devname, ACPID_INPUTLAYERDIR);
+ 			strcat(devname, "/");
+-			strncat(devname, curevent->name, dnsize - strlen(devname) - 1);
++			strncat(devname, curevent->name, sizeof(devname) - strlen(devname) - 1);
+ 		}
+ 
+ 		/* if this is a create */
+-- 
+2.31.1
+

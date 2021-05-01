@@ -1,0 +1,82 @@
+From 2dfa73cf8b3be174696423996c17e4b30b4f1487 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 1 May 2021 00:23:39 -0700
+Subject: [PATCH] Fix fread error checking
+
+fread returns size_t, an unsigned type, so the error check and
+TEMP_FAILURE_RETRY had no effect.
+
+Instead, errors can be detected when fread returns a partial amount
+and the ferror flag is set.
+---
+ libnetlink.c | 27 ++++++++++++++-------------
+ 1 file changed, 14 insertions(+), 13 deletions(-)
+
+diff --git a/libnetlink.c b/libnetlink.c
+index b1760ba..5546ccb 100644
+--- a/libnetlink.c
++++ b/libnetlink.c
+@@ -425,7 +425,7 @@ int rtnl_listen(struct rtnl_handle *rtnl,
+ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
+ 		   void *jarg)
+ {
+-	int status;
++	size_t status;
+ 	struct sockaddr_nl nladdr;
+ 	char   buf[8192];
+ 	struct nlmsghdr *h = (void*)buf;
+@@ -435,18 +435,19 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
+ 	nladdr.nl_pid = 0;
+ 	nladdr.nl_groups = 0;
+ 
+-	while (1) {
++	while (!feof(rtnl)) {
+ 		int err, len;
+ 		int l;
+ 
+-		status = TEMP_FAILURE_RETRY ( fread(&buf, 1, sizeof(*h), rtnl) );
++		status = fread(&buf, 1, sizeof(*h), rtnl);
+ 
+-		if (status < 0) {
+-			perror("rtnl_from_file: fread");
++		if (status < sizeof(*h)) {
++			if (ferror(rtnl))
++				perror("rtnl_from_file: fread");
++			else
++				fprintf(stderr, "rtnl_from_file: truncated message\n");
+ 			return -1;
+ 		}
+-		if (status == 0)
+-			return 0;
+ 
+ 		len = h->nlmsg_len;
+ 		l = len - sizeof(*h);
+@@ -459,12 +460,11 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
+ 
+ 		status = fread(NLMSG_DATA(h), 1, NLMSG_ALIGN(l), rtnl);
+ 
+-		if (status < 0) {
+-			perror("rtnl_from_file: fread");
+-			return -1;
+-		}
+-		if (status < l) {
+-			fprintf(stderr, "rtnl-from_file: truncated message\n");
++		if (status < NLMSG_ALIGN(l)) {
++			if (ferror(rtnl))
++				perror("rtnl_from_file: fread");
++			else
++				fprintf(stderr, "rtnl_from_file: truncated message\n");
+ 			return -1;
+ 		}
+ 
+@@ -472,6 +472,7 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
+ 		if (err < 0)
+ 			return err;
+ 	}
++	return 0;
+ }
+ 
+ int addattr32(struct nlmsghdr *n, int maxlen, int type, __u32 data)
+-- 
+2.31.1
+
