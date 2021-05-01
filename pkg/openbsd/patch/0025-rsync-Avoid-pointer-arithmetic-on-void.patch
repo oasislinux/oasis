@@ -1,4 +1,4 @@
-From bae6ab2cb50b4c5784dcd17207f145707c77f317 Mon Sep 17 00:00:00 2001
+From 56fcd604ca9bf0ae936307c3e56d232a3daef919 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 Jun 2019 20:06:13 -0700
 Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
@@ -7,8 +7,8 @@ Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
  usr.bin/rsync/blocks.c     |  8 ++++----
  usr.bin/rsync/downloader.c |  2 +-
  usr.bin/rsync/io.c         | 12 ++++++------
- usr.bin/rsync/sender.c     |  4 ++--
- 4 files changed, 13 insertions(+), 13 deletions(-)
+ usr.bin/rsync/sender.c     |  5 +++--
+ 4 files changed, 14 insertions(+), 13 deletions(-)
 
 diff --git a/usr.bin/rsync/blocks.c b/usr.bin/rsync/blocks.c
 index 4f21a41833d..242590e5bae 100644
@@ -64,7 +64,7 @@ index 9ddb8600a73..36b086f74c8 100644
  		/*
  		 * Now we read from our block.
 diff --git a/usr.bin/rsync/io.c b/usr.bin/rsync/io.c
-index 8d113d6d013..181458ced08 100644
+index 27beba693d4..847af4c4c1b 100644
 --- a/usr.bin/rsync/io.c
 +++ b/usr.bin/rsync/io.c
 @@ -117,7 +117,7 @@ io_write_blocking(int fd, const void *buf, size_t sz)
@@ -122,7 +122,7 @@ index 8d113d6d013..181458ced08 100644
  }
  
 diff --git a/usr.bin/rsync/sender.c b/usr.bin/rsync/sender.c
-index 5f9850ee9d2..d6a1f55d1a9 100644
+index 00add6b4e6c..0ac8226816f 100644
 --- a/usr.bin/rsync/sender.c
 +++ b/usr.bin/rsync/sender.c
 @@ -128,7 +128,7 @@ send_up_fsm(struct sess *sess, size_t *phase,
@@ -134,15 +134,16 @@ index 5f9850ee9d2..d6a1f55d1a9 100644
  
  		up->stat.curpos += sz;
  		if (up->stat.curpos == up->stat.curlen)
-@@ -569,7 +569,7 @@ rsync_sender(struct sess *sess, int fdin,
+@@ -568,7 +568,8 @@ rsync_sender(struct sess *sess, int fdin,
+ 		if ((pfd[1].revents & POLLOUT) && wbufsz > 0) {
  			assert(pfd[2].fd == -1);
  			assert(wbufsz - wbufpos);
- 			ssz = write(fdout,
--				wbuf + wbufpos, wbufsz - wbufpos);
+-			ssz = write(fdout, wbuf + wbufpos, wbufsz - wbufpos);
++			ssz = write(fdout,
 +				(char *)wbuf + wbufpos, wbufsz - wbufpos);
  			if (ssz == -1) {
  				ERR("write");
  				goto out;
 -- 
-2.23.0
+2.31.1
 
