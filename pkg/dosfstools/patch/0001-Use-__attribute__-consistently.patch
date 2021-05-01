@@ -1,14 +1,14 @@
-From 651393ea7aeb6e0a14cd35e72ca2350656388dc4 Mon Sep 17 00:00:00 2001
+From ff921b142f8df1ec718a7d1b398821eaaa8c6aac Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 1 Jul 2019 22:52:11 -0700
 Subject: [PATCH] Use __attribute__ consistently
 
 ---
- src/common.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/common.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/src/common.h b/src/common.h
-index 9a68531..0e13fb3 100644
+index 9a68531..2cc4559 100644
 --- a/src/common.h
 +++ b/src/common.h
 @@ -41,12 +41,12 @@ extern int atari_format;	/* Use Atari variation of MS-DOS FS format */
@@ -26,6 +26,15 @@ index 9a68531..0e13fb3 100644
  
  /* Like die, but appends an error message according to the state of errno. */
  
+@@ -68,7 +68,7 @@ int min(int a, int b);
+ /* Returns the smaller integer value of a and b. */
+ 
+ int xasprintf(char **strp, const char *fmt, ...)
+-    __attribute((format(printf, 2, 3)));
++    __attribute__ ((format(printf, 2, 3)));
+ 
+ /* Runs asprintf() and terminates the program if it fails. */
+ 
 -- 
-2.30.0
+2.31.1
 
