@@ -1,0 +1,48 @@
+From 40df4efea0f6c964d1b35fa63737d53411e806e6 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 1 May 2021 01:38:52 -0700
+Subject: [PATCH] Remove use of statement-expressions
+
+This is a GNU C extension.
+---
+ tools/zynqmpbif.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
+
+diff --git a/tools/zynqmpbif.c b/tools/zynqmpbif.c
+index fbba768ed8..4d529ed785 100644
+--- a/tools/zynqmpbif.c
++++ b/tools/zynqmpbif.c
+@@ -810,13 +810,6 @@ static const struct bif_file_type *get_file_type(struct bif_entry *entry)
+ 	return NULL;
+ }
+ 
+-#define NEXT_CHAR(str, chr) ({		\
+-	char *_n = strchr(str, chr);	\
+-	if (!_n)			\
+-		goto err;		\
+-	_n;				\
+-})
+-
+ static char *skip_whitespace(char *str)
+ {
+ 	while (*str == ' ' || *str == '\t')
+@@ -848,11 +841,14 @@ int zynqmpbif_copy_image(int outfd, struct image_tool_params *mparams)
+ 	bifp = bif;
+ 
+ 	/* A bif description starts with a { section */
+-	bifp = NEXT_CHAR(bifp, '{') + 1;
++	if (!(bifp = strchr(bifp, '{')))
++		goto err;
++	++bifp;
+ 
+ 	/* Read every line */
+ 	while (1) {
+-		bifpn = NEXT_CHAR(bifp, '\n');
++		if (!(bifp = strchr(bifp, '\n')))
++			goto err;
+ 
+ 		if (bifpn[-1] == '\r')
+ 			bifpn[-1] = '\0';
+-- 
+2.31.1
+

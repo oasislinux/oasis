@@ -1,0 +1,269 @@
+From 2bb631b109219f0e9bea49294b9408269ce9b5ee Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 1 May 2021 01:37:10 -0700
+Subject: [PATCH] Avoid pointer arithmetic on `void *`
+
+void is an incomplete type, so cannot be used in pointer arithmetic.
+---
+ tools/aisimage.c      |  2 +-
+ tools/default_image.c |  4 ++--
+ tools/mtk_image.c     |  6 +++---
+ tools/omapimage.c     | 10 +++++-----
+ tools/rkcommon.c      | 10 +++++-----
+ tools/rkspi.c         |  6 +++---
+ tools/socfpgaimage.c  |  2 +-
+ tools/stm32image.c    |  2 +-
+ tools/zynqmpbif.c     |  8 ++++----
+ tools/zynqmpimage.c   |  8 ++++----
+ 10 files changed, 29 insertions(+), 29 deletions(-)
+
+diff --git a/tools/aisimage.c b/tools/aisimage.c
+index b8b3ee3207..58eb596844 100644
+--- a/tools/aisimage.c
++++ b/tools/aisimage.c
+@@ -148,7 +148,7 @@ static void aisimage_print_header(const void *hdr)
+ 		fprintf(stdout, "AIS cmd   :   %s\n",
+ 			get_table_entry_name(aisimage_cmds, NULL, id));
+ 		ptr += cmd_table[id].nargs + IS_FNC_EXEC(id) + 1;
+-		if (((void *)ptr - hdr) > ais_img_size) {
++		if ((char *)ptr - (char *)hdr > ais_img_size) {
+ 			fprintf(stderr,
+ 				"AIS Image not terminated by JMPCLOSE\n");
+ 			return;
+diff --git a/tools/default_image.c b/tools/default_image.c
+index e164c0c27d..d2e3688908 100644
+--- a/tools/default_image.c
++++ b/tools/default_image.c
+@@ -98,8 +98,8 @@ static void image_set_header(void *ptr, struct stat *sbuf, int ifd,
+ 	image_header_t * hdr = (image_header_t *)ptr;
+ 
+ 	checksum = crc32(0,
+-			(const unsigned char *)(ptr +
+-				sizeof(image_header_t)),
++			(const unsigned char *)ptr +
++				sizeof(image_header_t),
+ 			sbuf->st_size - sizeof(image_header_t));
+ 
+ 	time = imagetool_get_source_date(params->cmdname, sbuf->st_mtime);
+diff --git a/tools/mtk_image.c b/tools/mtk_image.c
+index bde1e5da4b..3038402413 100644
+--- a/tools/mtk_image.c
++++ b/tools/mtk_image.c
+@@ -688,7 +688,7 @@ static void mtk_image_set_gen_header(void *ptr, off_t filesize,
+ 	hdr->brlyt.total_size_2 = hdr->brlyt.total_size;
+ 
+ 	/* GFH header */
+-	gfh = (struct gfh_header *)(ptr + sizeof(struct gen_device_header));
++	gfh = (struct gfh_header *)((char *)ptr + sizeof(struct gen_device_header));
+ 	put_ghf_header(gfh, filesize, sizeof(struct gen_device_header),
+ 		       loadaddr, GFH_FLASH_TYPE_GEN);
+ 
+@@ -714,7 +714,7 @@ static void mtk_image_set_nand_header(void *ptr, off_t filesize,
+ 	payload_pages = (filesize + le16_to_cpu(hdr_nand->pagesize) - 1) /
+ 			le16_to_cpu(hdr_nand->pagesize);
+ 	brlyt = (struct brom_layout_header *)
+-		(ptr + le16_to_cpu(hdr_nand->pagesize));
++		((char *)ptr + le16_to_cpu(hdr_nand->pagesize));
+ 	put_brom_layout_header(brlyt, hdr_media);
+ 	brlyt->header_size = cpu_to_le32(2);
+ 	brlyt->total_size = cpu_to_le32(payload_pages);
+@@ -723,7 +723,7 @@ static void mtk_image_set_nand_header(void *ptr, off_t filesize,
+ 	brlyt->unused = cpu_to_le32(1);
+ 
+ 	/* GFH header */
+-	gfh = (struct gfh_header *)(ptr + 2 * le16_to_cpu(hdr_nand->pagesize));
++	gfh = (struct gfh_header *)((char *)ptr + 2 * le16_to_cpu(hdr_nand->pagesize));
+ 	put_ghf_header(gfh, filesize, 2 * le16_to_cpu(hdr_nand->pagesize),
+ 		       loadaddr, GFH_FLASH_TYPE_NAND);
+ 
+diff --git a/tools/omapimage.c b/tools/omapimage.c
+index c59cdcc79b..90c279fb05 100644
+--- a/tools/omapimage.c
++++ b/tools/omapimage.c
+@@ -89,7 +89,7 @@ static void omapimage_print_header(const void *ptr)
+ {
+ 	const struct ch_toc *toc = (struct ch_toc *)ptr;
+ 	const struct gp_header *gph =
+-			(struct gp_header *)(ptr+OMAP_CH_HDR_SIZE);
++			(struct gp_header *)((char *)ptr+OMAP_CH_HDR_SIZE);
+ 	uint32_t offset, size;
+ 
+ 	while (toc->section_offset != 0xffffffff
+@@ -111,7 +111,7 @@ static void omapimage_print_header(const void *ptr)
+ 			toc->section_offset,
+ 			toc->section_size);
+ 
+-		omapimage_print_section((struct ch_settings *)(ptr+offset));
++		omapimage_print_section((struct ch_settings *)((char *)ptr+offset));
+ 		toc++;
+ 	}
+ 
+@@ -120,7 +120,7 @@ static void omapimage_print_header(const void *ptr)
+ 
+ static int toc_offset(void *hdr, void *member)
+ {
+-	return member - hdr;
++	return (char *)member - (char *)hdr;
+ }
+ 
+ static void omapimage_set_header(void *ptr, struct stat *sbuf, int ifd,
+@@ -128,8 +128,8 @@ static void omapimage_set_header(void *ptr, struct stat *sbuf, int ifd,
+ {
+ 	struct ch_toc *toc = (struct ch_toc *)ptr;
+ 	struct ch_settings *chs = (struct ch_settings *)
+-					(ptr + 2 * sizeof(*toc));
+-	struct gp_header *gph = (struct gp_header *)(ptr + OMAP_CH_HDR_SIZE);
++					((char *)ptr + 2 * sizeof(*toc));
++	struct gp_header *gph = (struct gp_header *)((char *)ptr + OMAP_CH_HDR_SIZE);
+ 
+ 	toc->section_offset = toc_offset(ptr, chs);
+ 	toc->section_size = sizeof(struct ch_settings);
+diff --git a/tools/rkcommon.c b/tools/rkcommon.c
+index d55cd2c2d5..8853b2560c 100644
+--- a/tools/rkcommon.c
++++ b/tools/rkcommon.c
+@@ -249,7 +249,7 @@ static void rkcommon_set_header0(void *buf, struct image_tool_params *params)
+ void rkcommon_set_header(void *buf,  struct stat *sbuf,  int ifd,
+ 			 struct image_tool_params *params)
+ {
+-	struct header1_info *hdr = buf + RK_SPL_HDR_START;
++	struct header1_info *hdr = (void *)((char *)buf + RK_SPL_HDR_START);
+ 
+ 	rkcommon_set_header0(buf, params);
+ 
+@@ -262,7 +262,7 @@ void rkcommon_set_header(void *buf,  struct stat *sbuf,  int ifd,
+ 
+ 	if (spl_params.boot_file) {
+ 		if (rkcommon_need_rc4_spl(params))
+-			rkcommon_rc4_encode_spl(buf + RK_SPL_HDR_START,
++			rkcommon_rc4_encode_spl((char *)buf + RK_SPL_HDR_START,
+ 						spl_params.init_size,
+ 						spl_params.boot_size);
+ 	}
+@@ -302,8 +302,8 @@ static int rkcommon_parse_header(const void *buf, struct header0_info *header0,
+ 		return -ENOSYS;
+ 
+ 	hdr1_offset = le16_to_cpu(header0->init_offset) * RK_BLK_SIZE;
+-	hdr1_sdmmc = (struct header1_info *)(buf + hdr1_offset);
+-	hdr1_spi = (struct header1_info *)(buf +
++	hdr1_sdmmc = (struct header1_info *)((char *)buf + hdr1_offset);
++	hdr1_spi = (struct header1_info *)((char *)buf +
+ 					   rkcommon_offset_to_spi(hdr1_offset));
+ 
+ 	for (i = 0; i < ARRAY_SIZE(spl_infos); i++) {
+@@ -392,7 +392,7 @@ void rkcommon_rc4_encode_spl(void *buf, unsigned int offset, unsigned int size)
+ 	while (remaining > 0) {
+ 		int step = (remaining > RK_BLK_SIZE) ? RK_BLK_SIZE : remaining;
+ 
+-		rc4_encode(buf + offset, step, rc4_key);
++		rc4_encode((char *)buf + offset, step, rc4_key);
+ 		offset += RK_BLK_SIZE;
+ 		remaining -= step;
+ 	}
+diff --git a/tools/rkspi.c b/tools/rkspi.c
+index f2530f7bde..7bd13f3749 100644
+--- a/tools/rkspi.c
++++ b/tools/rkspi.c
+@@ -37,10 +37,10 @@ static void rkspi_set_header(void *buf, struct stat *sbuf, int ifd,
+ 
+ 	for (sector = size / RKSPI_SECT_LEN - 1; sector >= 0; sector--) {
+ 		debug("sector %u\n", sector);
+-		memmove(buf + sector * RKSPI_SECT_LEN * 2,
+-			buf + sector * RKSPI_SECT_LEN,
++		memmove((char *)buf + sector * RKSPI_SECT_LEN * 2,
++			(char *)buf + sector * RKSPI_SECT_LEN,
+ 			RKSPI_SECT_LEN);
+-		memset(buf + sector * RKSPI_SECT_LEN * 2 + RKSPI_SECT_LEN,
++		memset((char *)buf + sector * RKSPI_SECT_LEN * 2 + RKSPI_SECT_LEN,
+ 		       '\0', RKSPI_SECT_LEN);
+ 	}
+ }
+diff --git a/tools/socfpgaimage.c b/tools/socfpgaimage.c
+index eba812fec9..a206323d6c 100644
+--- a/tools/socfpgaimage.c
++++ b/tools/socfpgaimage.c
+@@ -315,7 +315,7 @@ static void socfpgaimage_print_header_v1(struct socfpga_header_v1 *header)
+ 
+ static void socfpgaimage_print_header(const void *ptr)
+ {
+-	const void *header = ptr + HEADER_OFFSET;
++	const void *header = (char *)ptr + HEADER_OFFSET;
+ 	struct socfpga_header_v0 *header_v0;
+ 
+ 	if (sfp_verify_buffer(ptr) == 0) {
+diff --git a/tools/stm32image.c b/tools/stm32image.c
+index 18357c0518..9252362654 100644
+--- a/tools/stm32image.c
++++ b/tools/stm32image.c
+@@ -58,7 +58,7 @@ static uint32_t stm32image_checksum(void *start, uint32_t len)
+ 	if (len < hdr_len)
+ 		return 0;
+ 
+-	p = start + hdr_len;
++	p = (uint8_t *)((char *)start + hdr_len);
+ 	len -= hdr_len;
+ 
+ 	while (len > 0) {
+diff --git a/tools/zynqmpbif.c b/tools/zynqmpbif.c
+index 82ce0ac1a5..04325afa20 100644
+--- a/tools/zynqmpbif.c
++++ b/tools/zynqmpbif.c
+@@ -262,7 +262,7 @@ static int bif_add_blob(const void *data, size_t len, size_t *offset)
+ 
+ 	new_size = ROUND(bif_output.data_len + len, 64);
+ 	new_data = realloc(bif_output.data, new_size);
+-	memcpy(new_data + bif_output.data_len, data, len);
++	memcpy((char *)new_data + bif_output.data_len, data, len);
+ 	if (offset)
+ 		*offset = bif_output.data_len;
+ 	bif_output.data = new_data;
+@@ -270,11 +270,11 @@ static int bif_add_blob(const void *data, size_t len, size_t *offset)
+ 
+ 	/* Readjust internal pointers */
+ 	if (bif_output.header)
+-		bif_output.header = new_data + header_off;
++		bif_output.header = (void *)((char *)new_data + header_off);
+ 	if (bif_output.last_part)
+-		bif_output.last_part = new_data + last_part_off;
++		bif_output.last_part = (void *)((char *)new_data + last_part_off);
+ 	if (bif_output.imgheader)
+-		bif_output.imgheader = new_data + imgheader_off;
++		bif_output.imgheader = (void *)((char *)new_data + imgheader_off);
+ 
+ 	return 0;
+ }
+diff --git a/tools/zynqmpimage.c b/tools/zynqmpimage.c
+index 19b2f02ff1..20122d1320 100644
+--- a/tools/zynqmpimage.c
++++ b/tools/zynqmpimage.c
+@@ -250,15 +250,15 @@ void zynqmpimage_print_header(const void *ptr)
+ 	}
+ 
+ 	if (zynqhdr->image_header_table_offset) {
+-		struct image_header_table *iht = (void *)ptr +
+-			zynqhdr->image_header_table_offset;
++		struct image_header_table *iht = (void *)((char *)ptr +
++			zynqhdr->image_header_table_offset);
+ 		struct partition_header *ph;
+ 		uint32_t ph_offset;
+ 		uint32_t next;
+ 		int i;
+ 
+ 		ph_offset = le32_to_cpu(iht->partition_header_offset) * 4;
+-		ph = (void *)ptr + ph_offset;
++		ph = (void *)((char *)ptr + ph_offset);
+ 		for (i = 0; i < le32_to_cpu(iht->nr_parts); i++) {
+ 			next = le32_to_cpu(ph->next_partition_offset) * 4;
+ 
+@@ -266,7 +266,7 @@ void zynqmpimage_print_header(const void *ptr)
+ 			if (i)
+ 				print_partition(ptr, ph);
+ 
+-			ph = (void *)ptr + next;
++			ph = (void *)((char *)ptr + next);
+ 		}
+ 	}
+ 
+-- 
+2.31.1
+

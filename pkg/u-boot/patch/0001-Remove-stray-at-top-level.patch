@@ -1,15 +1,13 @@
-From 18c6b4251594f8e8e79a25a3c83a5294e81b649e Mon Sep 17 00:00:00 2001
+From 3acc8649522bc55999ddab0e3ccd073070adce74 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
-Date: Fri, 9 Apr 2021 22:48:27 -0700
-Subject: [PATCH] libfdt: Avoid stray ';' at top-level
+Date: Sat, 1 May 2021 01:37:46 -0700
+Subject: [PATCH] Remove stray ';' at top-level
 
-Function definitions do not require a semicolon, and stray semicolons
-at top-level are not allowed in ISO C.
-
-Signed-off-by: Michael Forney <mforney@mforney.org>
+This is not allowed by the ISO C grammar.
 ---
  scripts/dtc/libfdt/libfdt.h | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ tools/pblimage.c            |  2 +-
+ 2 files changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/scripts/dtc/libfdt/libfdt.h b/scripts/dtc/libfdt/libfdt.h
 index 421f90ad93..947e8b31cf 100644
@@ -42,6 +40,19 @@ index 421f90ad93..947e8b31cf 100644
  #undef fdt_set_hdr_
  
  /**
+diff --git a/tools/pblimage.c b/tools/pblimage.c
+index 3c823e96cf..4c448c2111 100644
+--- a/tools/pblimage.c
++++ b/tools/pblimage.c
+@@ -311,7 +311,7 @@ int pblimage_check_params(struct image_tool_params *params)
+ 
+ 	next_pbl_cmd = pbl_cmd_initaddr;
+ 	return 0;
+-};
++}
+ 
+ /* pblimage parameters */
+ U_BOOT_IMAGE_TYPE(
 -- 
-2.30.1
+2.31.1
 
