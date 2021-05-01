@@ -1,0 +1,28 @@
+From adc84eef824bd6d685848965bc1271272a723727 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 30 Apr 2021 18:14:07 -0700
+Subject: [PATCH] Remove unneeded ';' at top level
+
+This is not allowed in the ISO C grammar.
+---
+ crypto/x509/x509_issuer_cache.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/crypto/x509/x509_issuer_cache.c b/crypto/x509/x509_issuer_cache.c
+index 26cde17..d1af24a 100644
+--- a/crypto/x509/x509_issuer_cache.c
++++ b/crypto/x509/x509_issuer_cache.c
+@@ -53,8 +53,8 @@ static TAILQ_HEAD(lruqueue, x509_issuer) x509_issuer_lru =
+     TAILQ_HEAD_INITIALIZER(x509_issuer_lru);
+ static pthread_mutex_t x509_issuer_tree_mutex = PTHREAD_MUTEX_INITIALIZER;
+ 
+-RB_PROTOTYPE(x509_issuer_tree, x509_issuer, entry, x509_issuer_cmp);
+-RB_GENERATE(x509_issuer_tree, x509_issuer, entry, x509_issuer_cmp);
++RB_PROTOTYPE(x509_issuer_tree, x509_issuer, entry, x509_issuer_cmp)
++RB_GENERATE(x509_issuer_tree, x509_issuer, entry, x509_issuer_cmp)
+ 
+ /*
+  * Set the maximum number of cached entries. On additions to the cache
+-- 
+2.31.1
+
