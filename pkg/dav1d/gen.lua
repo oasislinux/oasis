@@ -1,5 +1,6 @@
 cflags{
 	'-Wall', '-Wno-maybe-uninitialized',
+	'-D _XOPEN_SOURCE=700',
 	'-I $srcdir',
 	'-I $srcdir/include',
 	'-I $srcdir/tools',

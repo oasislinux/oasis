@@ -1,0 +1,134 @@
+From a7ce75a62e03efde6c2d603a226b1878bec781b9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 30 Apr 2021 18:56:27 -0700
+Subject: [PATCH] Remove invalid ';' at top-level
+
+This is not allowed in the ISO C grammar.
+---
+ src/cdef_tmpl.c                     |  6 +++---
+ src/film_grain_tmpl.c               | 12 ++++++------
+ src/looprestoration.h               |  4 ++--
+ src/mc_tmpl.c                       |  6 +++---
+ src/x86/looprestoration_init_tmpl.c | 10 +++++-----
+ 5 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/src/cdef_tmpl.c b/src/cdef_tmpl.c
+index 41e3fe6..53130e2 100644
+--- a/src/cdef_tmpl.c
++++ b/src/cdef_tmpl.c
+@@ -222,9 +222,9 @@ static void cdef_filter_block_##w##x##h##_c(pixel *const dst, \
+                         dir, damping, w, h, edges HIGHBD_TAIL_SUFFIX); \
+ }
+ 
+-cdef_fn(4, 4);
+-cdef_fn(4, 8);
+-cdef_fn(8, 8);
++cdef_fn(4, 4)
++cdef_fn(4, 8)
++cdef_fn(8, 8)
+ 
+ static int cdef_find_dir_c(const pixel *img, const ptrdiff_t stride,
+                            unsigned *const var HIGHBD_DECL_SUFFIX)
+diff --git a/src/film_grain_tmpl.c b/src/film_grain_tmpl.c
+index 90a03a4..1e8661f 100644
+--- a/src/film_grain_tmpl.c
++++ b/src/film_grain_tmpl.c
+@@ -149,9 +149,9 @@ static decl_generate_grain_uv_fn(generate_grain_uv_##nm##_c) { \
+     generate_grain_uv_c(buf, buf_y, data, uv, ss_x, ss_y HIGHBD_TAIL_SUFFIX); \
+ }
+ 
+-gnuv_ss_fn(420, 1, 1);
+-gnuv_ss_fn(422, 1, 0);
+-gnuv_ss_fn(444, 0, 0);
++gnuv_ss_fn(420, 1, 1)
++gnuv_ss_fn(422, 1, 0)
++gnuv_ss_fn(444, 0, 0)
+ 
+ // samples from the correct block of a grain LUT, while taking into account the
+ // offsets provided by the offsets cache
+@@ -416,9 +416,9 @@ static decl_fguv_32x32xn_fn(fguv_32x32xn_##nm##_c) { \
+                    HIGHBD_TAIL_SUFFIX); \
+ }
+ 
+-fguv_ss_fn(420, 1, 1);
+-fguv_ss_fn(422, 1, 0);
+-fguv_ss_fn(444, 0, 0);
++fguv_ss_fn(420, 1, 1)
++fguv_ss_fn(422, 1, 0)
++fguv_ss_fn(444, 0, 0)
+ 
+ COLD void bitfn(dav1d_film_grain_dsp_init)(Dav1dFilmGrainDSPContext *const c) {
+     c->generate_grain_y = generate_grain_y_c;
+diff --git a/src/looprestoration.h b/src/looprestoration.h
+index 0b7defc..9be2dcb 100644
+--- a/src/looprestoration.h
++++ b/src/looprestoration.h
+@@ -66,8 +66,8 @@ void (name)(pixel *dst, ptrdiff_t dst_stride, \
+             const_left_pixel_row left, \
+             const pixel *lpf, ptrdiff_t lpf_stride, \
+             int w, int h, const LooprestorationParams *params, \
+-            enum LrEdgeFlags edges HIGHBD_DECL_SUFFIX)
+-typedef decl_lr_filter_fn(*looprestorationfilter_fn);
++            enum LrEdgeFlags edges HIGHBD_DECL_SUFFIX);
++typedef decl_lr_filter_fn(*looprestorationfilter_fn)
+ 
+ typedef struct Dav1dLoopRestorationDSPContext {
+     looprestorationfilter_fn wiener[2]; /* 7-tap, 5-tap */
+diff --git a/src/mc_tmpl.c b/src/mc_tmpl.c
+index 84eb988..5cf4f31 100644
+--- a/src/mc_tmpl.c
++++ b/src/mc_tmpl.c
+@@ -735,9 +735,9 @@ static void w_mask_##ssn##_c(pixel *const dst, const ptrdiff_t dst_stride, \
+              HIGHBD_TAIL_SUFFIX); \
+ }
+ 
+-w_mask_fns(444, 0, 0);
+-w_mask_fns(422, 1, 0);
+-w_mask_fns(420, 1, 1);
++w_mask_fns(444, 0, 0)
++w_mask_fns(422, 1, 0)
++w_mask_fns(420, 1, 1)
+ 
+ #undef w_mask_fns
+ 
+diff --git a/src/x86/looprestoration_init_tmpl.c b/src/x86/looprestoration_init_tmpl.c
+index 52de0fa..7bed814 100644
+--- a/src/x86/looprestoration_init_tmpl.c
++++ b/src/x86/looprestoration_init_tmpl.c
+@@ -57,11 +57,11 @@ static void BF(name, ext)(pixel *const dst, const ptrdiff_t dst_stride, \
+     BF(name##_v, ext)(dst, dst_stride, mid, params->filter[1], w, h, edges HIGHBD_TAIL_SUFFIX); \
+ }
+ #define decl_wiener_filter_fns(ext) \
+-decl_wiener_filter_fn(dav1d_wiener_filter7, ext); \
++decl_wiener_filter_fn(dav1d_wiener_filter7, ext) \
+ decl_wiener_filter_fn(dav1d_wiener_filter5, ext)
+ #else
+ #define decl_wiener_filter_fns(ext) \
+-decl_lr_filter_fn(BF(dav1d_wiener_filter7, ext)); \
++decl_lr_filter_fn(BF(dav1d_wiener_filter7, ext)) \
+ decl_lr_filter_fn(BF(dav1d_wiener_filter5, ext))
+ #endif
+ 
+@@ -220,8 +220,8 @@ static void BF(sgr_filter_mix, ext)(pixel *const dst, const ptrdiff_t dst_stride
+ }
+ 
+ #if BITDEPTH == 8
+-decl_wiener_filter_fns(sse2);
+-decl_wiener_filter_fns(ssse3);
++decl_wiener_filter_fns(sse2)
++decl_wiener_filter_fns(ssse3)
+ SGR_FILTER_OLD(ssse3)
+ # if ARCH_X86_64
+ decl_sgr_filter_fns(avx2)
+@@ -229,7 +229,7 @@ decl_sgr_filter_fns(avx2)
+ #endif
+ 
+ #if ARCH_X86_64
+-decl_wiener_filter_fns(avx2);
++decl_wiener_filter_fns(avx2)
+ #endif
+ 
+ COLD void bitfn(dav1d_loop_restoration_dsp_init_x86)(Dav1dLoopRestorationDSPContext *const c) {
+-- 
+2.31.1
+
