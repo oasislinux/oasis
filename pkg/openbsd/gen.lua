@@ -27,7 +27,7 @@ lib('libbsd.a', [[
 		crypt/(arc4random.c.o arc4random_uniform.c)
 		gen/(fts.c getprogname.c pwcache.c readpassphrase.c setprogname.c unvis.c vis.c warnc.c vwarnc.c)
 		net/base64.c
-		stdlib/(freezero.c reallocarray.c recallocarray.c strtonum.c)
+		stdlib/(freezero.c recallocarray.c strtonum.c)
 		string/(strmode.c timingsafe_bcmp.c timingsafe_memcmp.c)
 	)
 	lib/libutil/ohash.c
