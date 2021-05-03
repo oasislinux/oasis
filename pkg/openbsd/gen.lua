@@ -91,17 +91,15 @@ sym('bin/cpio', 'pax')
 man{'bin/pax/pax.1', 'bin/pax/tar.1', 'bin/pax/cpio.1'}
 
 -- rsync
-sub('rsync.ninja', function()
-	exe('rsync', [[
-		usr.bin/rsync/(
-			blocks.c client.c downloader.c fargs.c flist.c hash.c ids.c
-			io.c log.c mkpath.c mktemp.c receiver.c sender.c server.c session.c
-			socket.c symlinks.c uploader.c main.c misc.c md4.c
-		)
-		libbsd.a
-	]])
-	file('bin/rsync', '755', '$outdir/rsync')
-	man{'usr.bin/rsync/rsync.1', 'usr.bin/rsync/rsync.5', 'usr.bin/rsync/rsyncd.5'}
-end)
+exe('rsync', [[
+	usr.bin/rsync/(
+		blocks.c client.c downloader.c fargs.c flist.c hash.c ids.c
+		io.c log.c mkpath.c mktemp.c receiver.c sender.c server.c session.c
+		socket.c symlinks.c uploader.c main.c misc.c md4.c
+	)
+	libbsd.a
+]])
+file('bin/rsync', '755', '$outdir/rsync')
+man{'usr.bin/rsync/rsync.1', 'usr.bin/rsync/rsync.5', 'usr.bin/rsync/rsyncd.5'}
 
 fetch 'local'
