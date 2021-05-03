@@ -11,7 +11,7 @@ exe('ksh', [[
 	emacs.c eval.c exec.c expr.c history.c io.c jobs.c lex.c mail.c
 	main.c misc.c path.c shf.c syn.c table.c trap.c tree.c tty.c var.c
 	version.c vi.c confstr.c reallocarray.c siglist.c signame.c
-	strlcat.c strlcpy.c strtonum.c unvis.c vis.c
+	strlcat.c strlcpy.c strtonum.c unvis.c vis.c issetugid.c
 ]])
 file('bin/ksh', '755', '$outdir/ksh')
 sym('bin/sh', 'ksh')
