@@ -222,6 +222,7 @@ sub('binutils.ninja', function()
 
 	for _, tool in ipairs{'size', 'objcopy', 'strings', 'readelf', 'elfedit', 'strip', 'nm', 'objdump', 'ar', 'ranlib'} do
 		file('bin/'..tool, '755', '$outdir/bin/'..tool)
+		man{'binutils/doc/'..tool..'.1'}
 		sym(string.format('bin/%s-%s', config.target.platform, tool), tool)
 	end
 end)
