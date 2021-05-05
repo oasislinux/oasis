@@ -351,6 +351,9 @@
 [submodule "pkg/wld/src"]
 	path = pkg/wld/src
 	url = https://github.com/michaelforney/wld
+[submodule "pkg/x509cert/src"]
+	path = pkg/x509cert/src
+	url = https://git.sr.ht/~mcf/x509cert
 [submodule "pkg/xkeyboard-config/src"]
 	path = pkg/xkeyboard-config/src
 	url = https://anongit.freedesktop.org/git/xkeyboard-config.git
