@@ -1,4 +1,4 @@
-From 639eeb5958345cbe9db6a53dd2429a0d5157e0fd Mon Sep 17 00:00:00 2001
+From 7701b90a015c4e4c2b6af6e8b53315dce1f6c780 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 29 Mar 2020 13:07:39 -0700
 Subject: [PATCH] Use patched bearssl method to retrieve validity period
@@ -8,10 +8,10 @@ Subject: [PATCH] Use patched bearssl method to retrieve validity period
  1 file changed, 18 insertions(+), 4 deletions(-)
 
 diff --git a/tls_conninfo.c b/tls_conninfo.c
-index d3a6844..1c7c686 100644
+index ccce70d..1e9b57e 100644
 --- a/tls_conninfo.c
 +++ b/tls_conninfo.c
-@@ -164,10 +164,24 @@ static int
+@@ -162,10 +162,24 @@ static int
  tls_get_peer_cert_times(struct tls *ctx, time_t *notbefore,
      time_t *notafter)
  {
@@ -41,5 +41,5 @@ index d3a6844..1c7c686 100644
  	return (0);
  }
 -- 
-2.26.0
+2.31.1
 
