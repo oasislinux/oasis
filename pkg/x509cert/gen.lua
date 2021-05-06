@@ -1,15 +1,15 @@
 cflags{
-	'-std=c99', '-Wall', '-Wpedantic', '-Wno-format-truncation',
+	'-std=c99', '-Wall', '-Wpedantic',
 	'-I $srcdir',
 	'-I $builddir/pkg/bearssl/include',
 }
 
 pkg.deps = {'pkg/bearssl/headers'}
-pkg.hdrs = copy('$outdir/include', '$srcdir', {'asn1.h', 'x509cert.h'})
+pkg.hdrs = copy('$outdir/include', '$srcdir', {'x509cert.h'})
 
 lib('libx509cert.a', {
-	'asn1.c',
 	'cert.c',
+	'der.c',
 	'dn.c',
 	'dn_string.c',
 	'oid.c',
@@ -17,9 +17,10 @@ lib('libx509cert.a', {
 	'req.c',
 	'san.c',
 	'sign.c',
+	'$builddir/pkg/bearssl/libbearssl.a',
 })
 
-exe('x509cert', {'x509cert.c', 'libx509cert.a', '$builddir/pkg/bearssl/libbearssl.a'})
+exe('x509cert', {'x509cert.c', 'libx509cert.a.d'})
 file('bin/x509cert', '755', '$outdir/x509cert')
 man{'x509cert.1'}
 
