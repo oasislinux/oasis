@@ -5,6 +5,7 @@ cflags{
 }
 
 pkg.deps = {'pkg/bearssl/headers'}
+pkg.hdrs = copy('$outdir/include', '$srcdir', {'asn1.h', 'x509cert.h'})
 
 lib('libx509cert.a', {
 	'asn1.c',
