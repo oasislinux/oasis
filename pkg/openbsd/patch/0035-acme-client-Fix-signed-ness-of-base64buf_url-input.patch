@@ -1,0 +1,159 @@
+From 710536e5ddcb952ccbb9d1611b2a913c1ed3b69d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 23 Apr 2021 20:10:05 -0700
+Subject: [PATCH] acme-client: Fix signed-ness of base64buf_url input
+
+This make most of the pointer casts unnecessary.
+---
+ usr.sbin/acme-client/acctproc.c   | 17 +++++++++--------
+ usr.sbin/acme-client/base64.c     |  2 +-
+ usr.sbin/acme-client/extern.h     |  2 +-
+ usr.sbin/acme-client/keyproc.c    |  5 +++--
+ usr.sbin/acme-client/revokeproc.c |  5 +++--
+ 5 files changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
+index a07f9d07021..d01efa848d6 100644
+--- a/usr.sbin/acme-client/acctproc.c
++++ b/usr.sbin/acme-client/acctproc.c
+@@ -40,8 +40,9 @@
+ static char *
+ bn2string(const BIGNUM *bn)
+ {
+-	int	 len;
+-	char	*buf, *bbuf;
++	int		 len;
++	unsigned char	*buf;
++	char		*bbuf;
+ 
+ 	/* Extract big-endian representation of BIGNUM. */
+ 
+@@ -49,7 +50,7 @@ bn2string(const BIGNUM *bn)
+ 	if ((buf = malloc(len)) == NULL) {
+ 		warn("malloc");
+ 		return NULL;
+-	} else if (len != BN_bn2bin(bn, (unsigned char *)buf)) {
++	} else if (len != BN_bn2bin(bn, buf)) {
+ 		warnx("BN_bn2bin");
+ 		free(buf);
+ 		return NULL;
+@@ -176,7 +177,7 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
+ 	} else if (!EVP_DigestFinal_ex(ctx, dig, &digsz)) {
+ 		warnx("EVP_SignFinal");
+ 		goto out;
+-	} else if ((dig64 = base64buf_url((char *)dig, digsz)) == NULL) {
++	} else if ((dig64 = base64buf_url(dig, digsz)) == NULL) {
+ 		warnx("base64buf_url");
+ 		goto out;
+ 	} else if (writestr(fd, COMM_THUMB, dig64) < 0)
+@@ -292,7 +293,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 
+ 	/* Base64-encode the payload. */
+ 
+-	if ((pay64 = base64buf_url(pay, strlen(pay))) == NULL) {
++	if ((pay64 = base64buf_url((unsigned char *)pay, strlen(pay))) == NULL) {
+ 		warnx("base64buf_url");
+ 		goto out;
+ 	}
+@@ -335,7 +336,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 
+ 	/* The header combined with the nonce, base64. */
+ 
+-	if ((prot64 = base64buf_url(prot, strlen(prot))) == NULL) {
++	if ((prot64 = base64buf_url((unsigned char *)prot, strlen(prot))) == NULL) {
+ 		warnx("base64buf_url");
+ 		goto out;
+ 	}
+@@ -375,7 +376,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 
+ 	switch (EVP_PKEY_type(pkey->type)) {
+ 	case EVP_PKEY_RSA:
+-		if ((dig64 = base64buf_url((char *)dig, digsz)) == NULL) {
++		if ((dig64 = base64buf_url(dig, digsz)) == NULL) {
+ 			warnx("base64buf_url");
+ 			goto out;
+ 		}
+@@ -414,7 +415,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 		BN_bn2bin(ec_sig_r, buf + bn_len - r_len);
+ 		BN_bn2bin(ec_sig_s, buf + bufsz - s_len);
+ 
+-		if ((dig64 = base64buf_url((char *)buf, bufsz)) == NULL) {
++		if ((dig64 = base64buf_url(buf, bufsz)) == NULL) {
+ 			warnx("base64buf_url");
+ 			goto out;
+ 		}
+diff --git a/usr.sbin/acme-client/base64.c b/usr.sbin/acme-client/base64.c
+index 2b6377f0d81..0d84ad4b458 100644
+--- a/usr.sbin/acme-client/base64.c
++++ b/usr.sbin/acme-client/base64.c
+@@ -39,7 +39,7 @@ base64len(size_t len)
+  * Returns NULL on allocation failure (not logged).
+  */
+ char *
+-base64buf_url(const char *data, size_t len)
++base64buf_url(const unsigned char *data, size_t len)
+ {
+ 	size_t	 i, sz;
+ 	char	*buf;
+diff --git a/usr.sbin/acme-client/extern.h b/usr.sbin/acme-client/extern.h
+index 32d4b4b3d85..701733df786 100644
+--- a/usr.sbin/acme-client/extern.h
++++ b/usr.sbin/acme-client/extern.h
+@@ -245,7 +245,7 @@ int		 checkexit_ext(int *, pid_t, enum comp);
+  */
+ size_t		 base64buf(char *, const char *, size_t);
+ size_t		 base64len(size_t);
+-char		*base64buf_url(const char *, size_t);
++char		*base64buf_url(const unsigned char *, size_t);
+ 
+ /*
+  * JSON parsing routines.
+diff --git a/usr.sbin/acme-client/keyproc.c b/usr.sbin/acme-client/keyproc.c
+index 1b58b4575c8..157e4947667 100644
+--- a/usr.sbin/acme-client/keyproc.c
++++ b/usr.sbin/acme-client/keyproc.c
+@@ -77,7 +77,8 @@ int
+ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+     enum keytype keytype)
+ {
+-	char		*der64 = NULL, *der = NULL, *dercp;
++	char		*der64 = NULL;
++	unsigned char	*der = NULL, *dercp;
+ 	char		*sans = NULL, *san = NULL;
+ 	FILE		*f;
+ 	size_t		 i, sansz;
+@@ -237,7 +238,7 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+ 	} else if ((der = dercp = malloc(len)) == NULL) {
+ 		warn("malloc");
+ 		goto out;
+-	} else if (len != i2d_X509_REQ(x, (u_char **)&dercp)) {
++	} else if (len != i2d_X509_REQ(x, &dercp)) {
+ 		warnx("i2d_X509");
+ 		goto out;
+ 	} else if ((der64 = base64buf_url(der, len)) == NULL) {
+diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
+index e3cab0cd5a2..6b32205b31b 100644
+--- a/usr.sbin/acme-client/revokeproc.c
++++ b/usr.sbin/acme-client/revokeproc.c
+@@ -94,7 +94,8 @@ int
+ revokeproc(int fd, const char *certfile, int force,
+     int revocate, const char *const *alts, size_t altsz)
+ {
+-	char		*der = NULL, *dercp, *der64 = NULL;
++	unsigned char	*der = NULL, *dercp;
++	char		*der64 = NULL;
+ 	char		*san = NULL, *str, *tok;
+ 	int		 rc = 0, cc, i, extsz, ssz, len;
+ 	size_t		*found = NULL;
+@@ -283,7 +284,7 @@ revokeproc(int fd, const char *certfile, int force,
+ 		} else if ((der = dercp = malloc(len)) == NULL) {
+ 			warn("malloc");
+ 			goto out;
+-		} else if (len != i2d_X509(x, (u_char **)&dercp)) {
++		} else if (len != i2d_X509(x, &dercp)) {
+ 			warnx("i2d_X509");
+ 			goto out;
+ 		} else if ((der64 = base64buf_url(der, len)) == NULL) {
+-- 
+2.31.1
+

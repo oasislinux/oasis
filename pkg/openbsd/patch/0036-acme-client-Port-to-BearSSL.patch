@@ -1,0 +1,1616 @@
+From 298043bfa88cf41849c7b11d8307e419cd50bfdd Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 23 Apr 2021 23:14:16 -0700
+Subject: [PATCH] acme-client: Port to BearSSL
+
+---
+ usr.sbin/acme-client/acctproc.c   | 305 ++++++++------------------
+ usr.sbin/acme-client/certproc.c   |   5 -
+ usr.sbin/acme-client/key.c        | 342 ++++++++++++++++++++++++------
+ usr.sbin/acme-client/key.h        |  22 +-
+ usr.sbin/acme-client/keyproc.c    | 194 +++++------------
+ usr.sbin/acme-client/revokeproc.c | 280 ++++++++++--------------
+ 6 files changed, 558 insertions(+), 590 deletions(-)
+
+diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
+index d01efa848d6..24a31ed19ad 100644
+--- a/usr.sbin/acme-client/acctproc.c
++++ b/usr.sbin/acme-client/acctproc.c
+@@ -18,72 +18,30 @@
+ #include <sys/stat.h>
+ 
+ #include <err.h>
++#include <errno.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+ 
+-#include <openssl/pem.h>
+-#include <openssl/evp.h>
+-#include <openssl/rsa.h>
+-#include <openssl/rand.h>
+-#include <openssl/err.h>
++#include <bearssl.h>
+ 
+ #include "extern.h"
+ #include "key.h"
+ 
+-/*
+- * Converts a BIGNUM to the form used in JWK.
+- * This is essentially a base64-encoded big-endian binary string
+- * representation of the number.
+- */
+-static char *
+-bn2string(const BIGNUM *bn)
+-{
+-	int		 len;
+-	unsigned char	*buf;
+-	char		*bbuf;
+-
+-	/* Extract big-endian representation of BIGNUM. */
+-
+-	len = BN_num_bytes(bn);
+-	if ((buf = malloc(len)) == NULL) {
+-		warn("malloc");
+-		return NULL;
+-	} else if (len != BN_bn2bin(bn, buf)) {
+-		warnx("BN_bn2bin");
+-		free(buf);
+-		return NULL;
+-	}
+-
+-	/* Convert to base64url. */
+-
+-	if ((bbuf = base64buf_url(buf, len)) == NULL) {
+-		warnx("base64buf_url");
+-		free(buf);
+-		return NULL;
+-	}
+-
+-	free(buf);
+-	return bbuf;
+-}
+-
+ /*
+  * Extract the relevant RSA components from the key and create the JSON
+  * thumbprint from them.
+  */
+ static char *
+-op_thumb_rsa(EVP_PKEY *pkey)
++op_thumb_rsa(struct key *key)
+ {
+ 	char	*exp = NULL, *mod = NULL, *json = NULL;
+-	RSA	*r;
+-
+-	if ((r = EVP_PKEY_get0_RSA(pkey)) == NULL)
+-		warnx("EVP_PKEY_get0_RSA");
+-	else if ((mod = bn2string(r->n)) == NULL)
+-		warnx("bn2string");
+-	else if ((exp = bn2string(r->e)) == NULL)
+-		warnx("bn2string");
++
++	if ((mod = base64buf_url(key->rsa.pk.n, key->rsa.pk.nlen)) == NULL)
++		warnx("base64buf_url");
++	else if ((exp = base64buf_url(key->rsa.pk.e, key->rsa.pk.elen)) == NULL)
++		warnx("base64buf_url");
+ 	else if ((json = json_fmt_thumb_rsa(exp, mod)) == NULL)
+ 		warnx("json_fmt_thumb_rsa");
+ 
+@@ -97,31 +55,23 @@ op_thumb_rsa(EVP_PKEY *pkey)
+  * thumbprint from them.
+  */
+ static char *
+-op_thumb_ec(EVP_PKEY *pkey)
++op_thumb_ec(struct key *key)
+ {
+-	BIGNUM	*X = NULL, *Y = NULL;
+-	EC_KEY	*ec = NULL;
++	size_t	len;
+ 	char	*x = NULL, *y = NULL;
+ 	char	*json = NULL;
+ 
+-	if ((ec = EVP_PKEY_get0_EC_KEY(pkey)) == NULL)
+-		warnx("EVP_PKEY_get0_EC_KEY");
+-	else if ((X = BN_new()) == NULL)
+-		warnx("BN_new");
+-	else if ((Y = BN_new()) == NULL)
+-		warnx("BN_new");
+-	else if (!EC_POINT_get_affine_coordinates_GFp(EC_KEY_get0_group(ec),
+-	    EC_KEY_get0_public_key(ec), X, Y, NULL))
+-		warnx("EC_POINT_get_affine_coordinates_GFp");
+-	else if ((x = bn2string(X)) == NULL)
+-		warnx("bn2string");
+-	else if ((y = bn2string(Y)) == NULL)
+-		warnx("bn2string");
++	/* Points are stored in uncompressed format. */
++	len = key->ec.pk.qlen / 2;
++	if (key->ec.pk.qlen % 2 != 1 || key->ec.pk.q[0] != 0x04)
++		warnx("invalid EC public key");
++	else if ((x = base64buf_url(key->ec.pk.q + 1, len)) == NULL)
++		warnx("base64buf_url");
++	else if ((y = base64buf_url(key->ec.pk.q + 1 + len, len)) == NULL)
++		warnx("base64buf_url");
+ 	else if ((json = json_fmt_thumb_ec(x, y)) == NULL)
+ 		warnx("json_fmt_thumb_rsa");
+ 
+-	BN_free(X);
+-	BN_free(Y);
+ 	free(x);
+ 	free(y);
+ 	return json;
+@@ -131,27 +81,26 @@ op_thumb_ec(EVP_PKEY *pkey)
+  * The thumbprint operation is used for the challenge sequence.
+  */
+ static int
+-op_thumbprint(int fd, EVP_PKEY *pkey)
++op_thumbprint(int fd, struct key *pkey)
+ {
+-	char		*thumb = NULL, *dig64 = NULL;
+-	EVP_MD_CTX	*ctx = NULL;
+-	unsigned char	*dig = NULL;
+-	unsigned int	 digsz;
+-	int		 rc = 0;
++	char			*thumb = NULL, *dig64 = NULL;
++	br_sha256_context	 ctx;
++	unsigned char		 dig[br_sha256_SIZE];
++	int			 rc = 0;
+ 
+ 	/* Construct the thumbprint input itself. */
+ 
+-	switch (EVP_PKEY_type(pkey->type)) {
+-	case EVP_PKEY_RSA:
++	switch (pkey->type) {
++	case BR_KEYTYPE_RSA:
+ 		if ((thumb = op_thumb_rsa(pkey)) != NULL)
+ 			break;
+ 		goto out;
+-	case EVP_PKEY_EC:
++	case BR_KEYTYPE_EC:
+ 		if ((thumb = op_thumb_ec(pkey)) != NULL)
+ 			break;
+ 		goto out;
+ 	default:
+-		warnx("EVP_PKEY_type: unknown key type");
++		warnx("unknown key type");
+ 		goto out;
+ 	}
+ 
+@@ -162,22 +111,10 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
+ 	 * it up in the read loop).
+ 	 */
+ 
+-	if ((dig = malloc(EVP_MAX_MD_SIZE)) == NULL) {
+-		warn("malloc");
+-		goto out;
+-	} else if ((ctx = EVP_MD_CTX_new()) == NULL) {
+-		warnx("EVP_MD_CTX_new");
+-		goto out;
+-	} else if (!EVP_DigestInit_ex(ctx, EVP_sha256(), NULL)) {
+-		warnx("EVP_SignInit_ex");
+-		goto out;
+-	} else if (!EVP_DigestUpdate(ctx, thumb, strlen(thumb))) {
+-		warnx("EVP_SignUpdate");
+-		goto out;
+-	} else if (!EVP_DigestFinal_ex(ctx, dig, &digsz)) {
+-		warnx("EVP_SignFinal");
+-		goto out;
+-	} else if ((dig64 = base64buf_url(dig, digsz)) == NULL) {
++	br_sha256_init(&ctx);
++	br_sha256_update(&ctx, thumb, strlen(thumb));
++	br_sha256_out(&ctx, dig);
++	if ((dig64 = base64buf_url(dig, sizeof(dig))) == NULL) {
+ 		warnx("base64buf_url");
+ 		goto out;
+ 	} else if (writestr(fd, COMM_THUMB, dig64) < 0)
+@@ -185,19 +122,16 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
+ 
+ 	rc = 1;
+ out:
+-	EVP_MD_CTX_free(ctx);
+ 	free(thumb);
+-	free(dig);
+ 	free(dig64);
+ 	return rc;
+ }
+ 
+ static int
+-op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
++op_sign_rsa(char **prot, struct key *key, const char *nonce, const char *url)
+ {
+ 	char	*exp = NULL, *mod = NULL;
+ 	int	rc = 0;
+-	RSA	*r;
+ 
+ 	*prot = NULL;
+ 
+@@ -206,12 +140,10 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+ 	 * Finally, format the header combined with the nonce.
+ 	 */
+ 
+-	if ((r = EVP_PKEY_get0_RSA(pkey)) == NULL)
+-		warnx("EVP_PKEY_get0_RSA");
+-	else if ((mod = bn2string(r->n)) == NULL)
+-		warnx("bn2string");
+-	else if ((exp = bn2string(r->e)) == NULL)
+-		warnx("bn2string");
++	if ((mod = base64buf_url(key->rsa.pk.n, key->rsa.pk.nlen)) == NULL)
++		warnx("base64buf_url");
++	else if ((exp = base64buf_url(key->rsa.pk.e, key->rsa.pk.elen)) == NULL)
++		warnx("base64buf_url");
+ 	else if ((*prot = json_fmt_protected_rsa(exp, mod, nonce, url)) == NULL)
+ 		warnx("json_fmt_protected_rsa");
+ 	else
+@@ -223,35 +155,27 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+ }
+ 
+ static int
+-op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
++op_sign_ec(char **prot, struct key *key, const char *nonce, const char *url)
+ {
+-	BIGNUM	*X = NULL, *Y = NULL;
+-	EC_KEY	*ec = NULL;
++	size_t	len;
+ 	char	*x = NULL, *y = NULL;
+ 	int	rc = 0;
+ 
+ 	*prot = NULL;
+ 
+-	if ((ec = EVP_PKEY_get0_EC_KEY(pkey)) == NULL)
+-		warnx("EVP_PKEY_get0_EC_KEY");
+-	else if ((X = BN_new()) == NULL)
+-		warnx("BN_new");
+-	else if ((Y = BN_new()) == NULL)
+-		warnx("BN_new");
+-	else if (!EC_POINT_get_affine_coordinates_GFp(EC_KEY_get0_group(ec),
+-	    EC_KEY_get0_public_key(ec), X, Y, NULL))
+-		warnx("EC_POINT_get_affine_coordinates_GFp");
+-	else if ((x = bn2string(X)) == NULL)
+-		warnx("bn2string");
+-	else if ((y = bn2string(Y)) == NULL)
+-		warnx("bn2string");
++	/* Points are stored in uncompressed format. */
++	len = key->ec.pk.qlen / 2;
++	if (key->ec.pk.qlen % 2 != 1 || key->ec.pk.q[0] != 0x04)
++		warnx("invalid EC public key");
++	else if ((x = base64buf_url(key->ec.pk.q + 1, len)) == NULL)
++		warnx("base64buf_url");
++	else if ((y = base64buf_url(key->ec.pk.q + 1 + len, len)) == NULL)
++		warnx("base64buf_url");
+ 	else if ((*prot = json_fmt_protected_ec(x, y, nonce, url)) == NULL)
+ 		warnx("json_fmt_protected_ec");
+ 	else
+ 		rc = 1;
+ 
+-	BN_free(X);
+-	BN_free(Y);
+ 	free(x);
+ 	free(y);
+ 	return rc;
+@@ -262,21 +186,18 @@ op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+  * This requires the sender ("fd") to provide the payload and a nonce.
+  */
+ static int
+-op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
++op_sign(int fd, struct key *key, enum acctop op)
+ {
+-	EVP_MD_CTX		*ctx = NULL;
+-	const EVP_MD		*evp_md = NULL;
+-	EC_KEY			*ec;
+-	ECDSA_SIG		*ec_sig = NULL;
+-	const BIGNUM		*ec_sig_r = NULL, *ec_sig_s = NULL;
++	br_hash_compat_context	 ctx;
+ 	int			 cc, rc = 0;
+-	unsigned int		 digsz, bufsz, degree, bn_len, r_len, s_len;
++	unsigned int		 digsz, sigsz;
+ 	char			*nonce = NULL, *pay = NULL, *pay64 = NULL;
+ 	char			*prot = NULL, *prot64 = NULL;
+-	char			*sign = NULL, *dig64 = NULL, *fin = NULL;
++	char			*sign = NULL, *sig64 = NULL, *fin = NULL;
+ 	char			*url = NULL, *kid = NULL, *alg = NULL;
+-	unsigned char		*dig = NULL, *buf = NULL;
+-	const unsigned char	*digp;
++	unsigned char		 dig[64];
++	unsigned char		*sig = NULL;
++	const unsigned char	*oid = NULL;
+ 
+ 	/* Read our payload and nonce from the requestor. */
+ 
+@@ -293,19 +214,22 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 
+ 	/* Base64-encode the payload. */
+ 
+-	if ((pay64 = base64buf_url((unsigned char *)pay, strlen(pay))) == NULL) {
++	if ((pay64 = base64buf_url(pay, strlen(pay))) == NULL) {
+ 		warnx("base64buf_url");
+ 		goto out;
+ 	}
+ 
+-	switch (EVP_PKEY_type(pkey->type)) {
+-	case EVP_PKEY_RSA:
++	switch (key->type) {
++	case BR_KEYTYPE_RSA:
+ 		alg = "RS256";
+-		evp_md = EVP_sha256();
++		ctx.vtable = &br_sha256_vtable;
++		oid = BR_HASH_OID_SHA256;
++		sigsz = (key->rsa.sk.n_bitlen + 7) / 8;
+ 		break;
+-	case EVP_PKEY_EC:
++	case BR_KEYTYPE_EC:
+ 		alg = "ES384";
+-		evp_md = EVP_sha384();
++		ctx.vtable = &br_sha384_vtable;
++		sigsz = 96;
+ 		break;
+ 	default:
+ 		warnx("unknown account key type");
+@@ -319,17 +243,17 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 			goto out;
+ 		}
+ 	} else {
+-		switch (EVP_PKEY_type(pkey->type)) {
+-		case EVP_PKEY_RSA:
+-			if (!op_sign_rsa(&prot, pkey, nonce, url))
++		switch (key->type) {
++		case BR_KEYTYPE_RSA:
++			if (!op_sign_rsa(&prot, key, nonce, url))
+ 				goto out;
+ 			break;
+-		case EVP_PKEY_EC:
+-			if (!op_sign_ec(&prot, pkey, nonce, url))
++		case BR_KEYTYPE_EC:
++			if (!op_sign_ec(&prot, key, nonce, url))
+ 				goto out;
+ 			break;
+ 		default:
+-			warnx("EVP_PKEY_type");
++			warnx("unknown key type");
+ 			goto out;
+ 		}
+ 	}
+@@ -350,7 +274,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 		goto out;
+ 	}
+ 
+-	if ((dig = malloc(EVP_PKEY_size(pkey))) == NULL) {
++	if ((sig = malloc(sigsz)) == NULL) {
+ 		warn("malloc");
+ 		goto out;
+ 	}
+@@ -360,69 +284,29 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 	 * sign a SHA256 digest of our message.
+ 	 */
+ 
+-	if ((ctx = EVP_MD_CTX_new()) == NULL) {
+-		warnx("EVP_MD_CTX_new");
+-		goto out;
+-	} else if (!EVP_SignInit_ex(ctx, evp_md, NULL)) {
+-		warnx("EVP_SignInit_ex");
+-		goto out;
+-	} else if (!EVP_SignUpdate(ctx, sign, strlen(sign))) {
+-		warnx("EVP_SignUpdate");
+-		goto out;
+-	} else if (!EVP_SignFinal(ctx, dig, &digsz, pkey)) {
+-		warnx("EVP_SignFinal");
+-		goto out;
+-	}
++	ctx.vtable->init(&ctx.vtable);
++	ctx.vtable->update(&ctx.vtable, sign, strlen(sign));
++	ctx.vtable->out(&ctx.vtable, dig);
++	digsz = ctx.vtable->desc >> BR_HASHDESC_OUT_OFF & BR_HASHDESC_OUT_MASK;
+ 
+-	switch (EVP_PKEY_type(pkey->type)) {
+-	case EVP_PKEY_RSA:
+-		if ((dig64 = base64buf_url(dig, digsz)) == NULL) {
+-			warnx("base64buf_url");
++	switch (key->type) {
++	case BR_KEYTYPE_RSA:
++		if (!br_rsa_pkcs1_sign_get_default()(oid, dig, digsz,
++		    &key->rsa.sk, sig)) {
++			warnx("br_rsa_pkcs1_sign");
+ 			goto out;
+ 		}
+ 		break;
+-	case EVP_PKEY_EC:
+-		if ((ec = EVP_PKEY_get0_EC_KEY(pkey)) == NULL) {
+-			warnx("EVP_PKEY_get0_EC_KEY");
+-			goto out;
+-		}
+-		degree = EC_GROUP_get_degree(EC_KEY_get0_group(ec));
+-		bn_len = (degree + 7) / 8;
+-
+-		digp = dig; /* d2i_ECDSA_SIG advances digp */
+-		if ((ec_sig = d2i_ECDSA_SIG(NULL, &digp, digsz)) == NULL) {
+-			warnx("d2i_ECDSA_SIG");
+-			goto out;
+-		}
+-
+-		ECDSA_SIG_get0(ec_sig, &ec_sig_r, &ec_sig_s);
+-
+-		r_len = BN_num_bytes(ec_sig_r);
+-		s_len = BN_num_bytes(ec_sig_s);
+-
+-		if((r_len > bn_len) || (s_len > bn_len)) {
+-			warnx("ECDSA_SIG_get0");
+-			goto out;
+-		}
+-
+-		bufsz = 2 * bn_len;
+-		if ((buf = calloc(1, bufsz)) == NULL) {
+-			warnx("calloc");
+-			goto out;
+-		}
+-
+-		/* put r and s in with leading zeros if any */
+-		BN_bn2bin(ec_sig_r, buf + bn_len - r_len);
+-		BN_bn2bin(ec_sig_s, buf + bufsz - s_len);
+-
+-		if ((dig64 = base64buf_url(buf, bufsz)) == NULL) {
+-			warnx("base64buf_url");
++	case BR_KEYTYPE_EC:
++		sigsz = br_ecdsa_sign_raw_get_default()(br_ec_get_default(),
++		    ctx.vtable, dig, &key->ec.sk, sig);
++		if (sigsz == 0 || sigsz % 2 != 0) {
++			warnx("br_ecdsa_sign_raw");
+ 			goto out;
+ 		}
+-
+ 		break;
+ 	default:
+-		warnx("EVP_PKEY_type");
++		warnx("unknown key type");
+ 		goto out;
+ 	}
+ 
+@@ -432,7 +316,11 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 	 * when we next enter the read loop).
+ 	 */
+ 
+-	if ((fin = json_fmt_signed(prot64, pay64, dig64)) == NULL) {
++	if ((sig64 = base64buf_url(sig, sigsz)) == NULL) {
++		warnx("base64buf_url");
++		goto out;
++	}
++	if ((fin = json_fmt_signed(prot64, pay64, sig64)) == NULL) {
+ 		warnx("json_fmt_signed");
+ 		goto out;
+ 	} else if (writestr(fd, COMM_REQ, fin) < 0)
+@@ -440,7 +328,6 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 
+ 	rc = 1;
+ out:
+-	EVP_MD_CTX_free(ctx);
+ 	free(pay);
+ 	free(sign);
+ 	free(pay64);
+@@ -449,10 +336,9 @@ out:
+ 	free(kid);
+ 	free(prot);
+ 	free(prot64);
+-	free(dig);
+-	free(dig64);
++	free(sig);
++	free(sig64);
+ 	free(fin);
+-	free(buf);
+ 	return rc;
+ }
+ 
+@@ -460,7 +346,7 @@ int
+ acctproc(int netsock, const char *acctkey, enum keytype keytype)
+ {
+ 	FILE		*f = NULL;
+-	EVP_PKEY	*pkey = NULL;
++	struct key	*pkey = NULL;
+ 	long		 lval;
+ 	enum acctop	 op;
+ 	int		 rc = 0, cc, newacct = 0;
+@@ -486,8 +372,6 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype)
+ 
+ 	/* File-system, user, and sandbox jailing. */
+ 
+-	ERR_load_crypto_strings();
+-
+ 	if (pledge("stdio", NULL) == -1) {
+ 		warn("pledge");
+ 		goto out;
+@@ -565,8 +449,7 @@ out:
+ 	close(netsock);
+ 	if (f != NULL)
+ 		fclose(f);
+-	EVP_PKEY_free(pkey);
+-	ERR_print_errors_fp(stderr);
+-	ERR_free_strings();
++	if (pkey != NULL)
++		freezero(pkey, sizeof(*pkey) + pkey->datasz);
+ 	return rc;
+ }
+diff --git a/usr.sbin/acme-client/certproc.c b/usr.sbin/acme-client/certproc.c
+index f443d573675..85c3897a4b8 100644
+--- a/usr.sbin/acme-client/certproc.c
++++ b/usr.sbin/acme-client/certproc.c
+@@ -21,11 +21,6 @@
+ #include <string.h>
+ #include <unistd.h>
+ 
+-#include <openssl/pem.h>
+-#include <openssl/x509.h>
+-#include <openssl/x509v3.h>
+-#include <openssl/err.h>
+-
+ #include "extern.h"
+ 
+ #define BEGIN_MARKER "-----BEGIN CERTIFICATE-----"
+diff --git a/usr.sbin/acme-client/key.c b/usr.sbin/acme-client/key.c
+index 1bc1eee8f59..5a74fba5b3c 100644
+--- a/usr.sbin/acme-client/key.c
++++ b/usr.sbin/acme-client/key.c
+@@ -17,15 +17,11 @@
+  */
+ 
+ #include <err.h>
++#include <stdio.h>
+ #include <stdlib.h>
+ #include <unistd.h>
+ 
+-#include <openssl/evp.h>
+-#include <openssl/pem.h>
+-#include <openssl/rsa.h>
+-#include <openssl/ecdsa.h>
+-#include <openssl/ec.h>
+-#include <openssl/obj_mac.h>
++#include <bearssl.h>
+ 
+ #include "key.h"
+ 
+@@ -33,114 +29,320 @@
+  * Default number of bits when creating a new RSA key.
+  */
+ #define	KBITS 4096
+-#define ECCTYPE NID_secp384r1
++#define ECCTYPE BR_EC_secp384r1
++
++static void
++prng_init(const br_prng_class **ctx, const void *params, const void *seed, size_t len)
++{
++}
++
++static void
++prng_generate(const br_prng_class **ctx, void *out, size_t len)
++{
++	arc4random_buf(out, len);
++}
++
++static void
++prng_update(const br_prng_class **ctx, const void *seed, size_t len)
++{
++}
++
++static const br_prng_class prng_class = {
++	0, prng_init, prng_generate, prng_update
++}, *prng = &prng_class;
+ 
+ /*
+  * Create an RSA key with the default KBITS number of bits.
+  */
+-EVP_PKEY *
++struct key *
+ rsa_key_create(FILE *f, const char *fname)
+ {
+-	EVP_PKEY_CTX	*ctx = NULL;
+-	EVP_PKEY	*pkey = NULL;
++	struct key	*key = NULL;
++	size_t		 slen, plen;
++	unsigned char	*sbuf, *pbuf;
++	unsigned char	 d[KBITS / 8];
++	unsigned char	*der = NULL, *pem = NULL;
++	size_t		 derlen, pemlen;
+ 
+-	/* First, create the context and the key. */
++	/* First, allocate and generate the key. */
+ 
+-	if ((ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL)) == NULL) {
+-		warnx("EVP_PKEY_CTX_new_id");
+-		goto err;
+-	} else if (EVP_PKEY_keygen_init(ctx) <= 0) {
+-		warnx("EVP_PKEY_keygen_init");
++	slen = BR_RSA_KBUF_PRIV_SIZE(KBITS);
++	plen = BR_RSA_KBUF_PUB_SIZE(KBITS);
++	if ((key = malloc(sizeof(*key) + slen + plen)) == NULL) {
++		warnx("malloc");
+ 		goto err;
+-	} else if (EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, KBITS) <= 0) {
+-		warnx("EVP_PKEY_set_rsa_keygen_bits");
++	}
++	key->type = BR_KEYTYPE_RSA;
++	key->datasz = slen + plen;
++	sbuf = key->data;
++	pbuf = key->data + slen;
++	if (!br_rsa_keygen_get_default()(&prng, &key->rsa.sk, sbuf,
++	    &key->rsa.pk, pbuf, KBITS, 0x10001)) {
++		warnx("br_rsa_keygen");
+ 		goto err;
+-	} else if (EVP_PKEY_keygen(ctx, &pkey) <= 0) {
+-		warnx("EVP_PKEY_keygen");
++	}
++
++	/* Compute the private exponent. */
++
++	if (!br_rsa_compute_privexp_get_default()(d, &key->rsa.sk, 0x10001)) {
++		warnx("br_rsa_compute_modulus");
+ 		goto err;
+ 	}
+ 
+-	/* Serialise the key to the disc. */
++	/* Serialise the key to the disk. */
+ 
+-	if (PEM_write_PrivateKey(f, pkey, NULL, NULL, 0, NULL, NULL))
++	derlen = br_encode_rsa_raw_der(NULL, &key->rsa.sk, &key->rsa.pk,
++	    d, sizeof(d));
++	if ((der = malloc(derlen)) == NULL) {
++		warn("malloc");
++		goto err;
++	}
++	br_encode_rsa_raw_der(der, &key->rsa.sk, &key->rsa.pk, d, sizeof(d));
++	pemlen = br_pem_encode(NULL, der, derlen, BR_ENCODE_PEM_RSA_RAW, 0);
++	if ((pem = malloc(pemlen)) == NULL) {
++		warn("malloc");
++		goto err;
++	}
++	br_pem_encode(pem, der, derlen, BR_ENCODE_PEM_RSA_RAW, 0);
++	if (fwrite(pem, 1, pemlen, f) == pemlen)
+ 		goto out;
+ 
+-	warnx("%s: PEM_write_PrivateKey", fname);
++	warn("write private key");
+ 
+ err:
+-	EVP_PKEY_free(pkey);
+-	pkey = NULL;
++	free(key);
++	key = NULL;
+ out:
+-	EVP_PKEY_CTX_free(ctx);
+-	return pkey;
++	free(der);
++	free(pem);
++	return key;
+ }
+ 
+-EVP_PKEY *
++struct key *
+ ec_key_create(FILE *f, const char *fname)
+ {
+-	EC_KEY		*eckey = NULL;
+-	EVP_PKEY	*pkey = NULL;
++	struct key 		*key = NULL;
++	const br_ec_impl	*ec;
++	size_t			 slen, plen;
++	unsigned char		*sbuf, *pbuf;
++	unsigned char		*der = NULL, *pem = NULL;
++	size_t			 derlen, pemlen;
+ 
+-	if ((eckey = EC_KEY_new_by_curve_name(ECCTYPE)) == NULL ) {
+-		warnx("EC_KEY_new_by_curve_name");
++	slen = BR_EC_KBUF_PRIV_MAX_SIZE;
++	plen = BR_EC_KBUF_PUB_MAX_SIZE;
++	if ((key = malloc(sizeof(*key) + slen + plen)) == NULL) {
++		warn("malloc");
+ 		goto err;
+ 	}
++	key->type = BR_KEYTYPE_EC;
++	key->datasz = slen + plen;
++	sbuf = key->data;
++	pbuf = key->data + slen;
+ 
+-	if (!EC_KEY_generate_key(eckey)) {
+-		warnx("EC_KEY_generate_key");
++	ec = br_ec_get_default();
++	if (br_ec_keygen(&prng, ec, &key->ec.sk, sbuf, ECCTYPE) == 0) {
++		warnx("br_ec_keygen");
+ 		goto err;
+ 	}
+-	
+-	/* set OPENSSL_EC_NAMED_CURVE to be able to load the key */
+-
+-	EC_KEY_set_asn1_flag(eckey, OPENSSL_EC_NAMED_CURVE);
+-
+-	/* Serialise the key to the disc in EC format */
+-
+-	if (!PEM_write_ECPrivateKey(f, eckey, NULL, NULL, 0, NULL, NULL)) {
+-		warnx("PEM_write_ECPrivateKey");
++	if (br_ec_compute_pub(ec, &key->ec.pk, pbuf, &key->ec.sk) == 0) {
++		warnx("br_ec_compute_pub");
+ 		goto err;
+ 	}
+ 
+-	/* Convert the EC key into a PKEY structure */
++	/* Serialise the key to the disk in EC format */
+ 
+-	if ((pkey=EVP_PKEY_new()) == NULL) {
+-		warnx("EVP_PKEY_new");
++	if ((derlen = br_encode_ec_raw_der(NULL, &key->ec.sk,
++	    &key->ec.pk)) == 0) {
++		warnx("br_encode_ec_raw_der");
+ 		goto err;
+ 	}
+-	if (!EVP_PKEY_set1_EC_KEY(pkey, eckey)) {
+-		warnx("EVP_PKEY_assign_EC_KEY");
++	if ((der = malloc(derlen)) == NULL) {
++		warn("malloc");
+ 		goto err;
+ 	}
++	br_encode_ec_raw_der(der, &key->ec.sk, &key->ec.pk);
++	pemlen = br_pem_encode(NULL, der, derlen, BR_ENCODE_PEM_EC_RAW, 0);
++	if ((pem = malloc(pemlen)) == NULL) {
++		warn("malloc");
++		goto err;
++	}
++	br_pem_encode(pem, der, derlen, BR_ENCODE_PEM_EC_RAW, 0);
++	if (fwrite(pem, 1, pemlen, f) == pemlen)
++		goto out;
+ 
+-	warnx("%s: PEM_write_ECPrivateKey", fname);
+-
+-	goto out;
++	warn("write private key");
+ 
+ err:
+-	EC_KEY_free(eckey);
+-	EVP_PKEY_free(pkey);
+-	pkey = NULL;
++	free(key);
++	key = NULL;
+ out:
+-	return pkey;
++	free(der);
++	free(pem);
++	return key;
+ }
+ 
++static void
++append_skey(void *ctx, const void *src, size_t len)
++{
++	br_skey_decoder_push(ctx, src, len);
++}
+ 
+-
+-EVP_PKEY *
++struct key *
+ key_load(FILE *f, const char *fname)
+ {
+-	EVP_PKEY	*pkey;
+-
+-	pkey = PEM_read_PrivateKey(f, NULL, NULL, NULL);
+-	if (pkey == NULL) {
+-		warnx("%s: PEM_read_PrivateKey", fname);
+-		return NULL;
+-	} else if (EVP_PKEY_type(pkey->type) == EVP_PKEY_RSA ||
+-		   EVP_PKEY_type(pkey->type) == EVP_PKEY_EC )
+-		return pkey;
+-
+-	warnx("%s: unsupported key type", fname);
+-	EVP_PKEY_free(pkey);
+-	return NULL;
++	struct key			*key = NULL;
++	size_t				 datasz, len = 0, n;
++	int				 type = 0, err;
++	unsigned char			 buf[8192], *pos;
++	br_pem_decoder_context		 pemctx;
++	br_skey_decoder_context		 keyctx;
++	br_rsa_compute_modulus		 compute_modulus;
++	br_rsa_compute_pubexp		 compute_pubexp;
++	const br_ec_impl		*ecimpl;
++	const br_rsa_private_key	*rsa;
++	const br_ec_private_key		*ec;
++	const char			*name = NULL;
++	uint32_t			 pubexp;
++
++	br_pem_decoder_init(&pemctx);
++	br_skey_decoder_init(&keyctx);
++	while (type == 0) {
++		if (len == 0) {
++			if (feof(f)) {
++				warnx("%s: missing private key", fname);
++				break;
++			}
++			len = fread(buf, 1, sizeof(buf), f);
++			if (ferror(f)) {
++				warn("%s: read", fname);
++				goto err;
++			}
++			pos = buf;
++		}
++		n = br_pem_decoder_push(&pemctx, pos, len);
++		pos += n;
++		len -= n;
++		switch (br_pem_decoder_event(&pemctx)) {
++		case BR_PEM_BEGIN_OBJ:
++			name = br_pem_decoder_name(&pemctx);
++			if (strcmp(name, BR_ENCODE_PEM_PKCS8) != 0 &&
++			    strcmp(name, BR_ENCODE_PEM_RSA_RAW) != 0 &&
++			    strcmp(name, BR_ENCODE_PEM_EC_RAW) != 0) {
++				name = NULL;
++				break;
++			}
++			br_pem_decoder_setdest(&pemctx, append_skey, &keyctx);
++			break;
++		case BR_PEM_END_OBJ:
++			if (name == NULL)
++				break;
++			if ((err = br_skey_decoder_last_error(&keyctx)) != 0) {
++				warnx("%s: br_skey_decoder: %d", fname, err);
++				goto err;
++			}
++			type = br_skey_decoder_key_type(&keyctx);
++			break;
++		case 0:
++			break;
++		default:
++			warnx("%s: PEM decoding failed", fname);
++			goto err;
++		}
++	}
++
++	switch (type) {
++	case BR_KEYTYPE_RSA:
++		rsa = br_skey_decoder_get_rsa(&keyctx);
++		compute_modulus = br_rsa_compute_modulus_get_default();
++		compute_pubexp = br_rsa_compute_pubexp_get_default();
++
++		/* Compute public modulus size. This will fail if
++		 * p or q is not 3 mod 4. */
++		if ((datasz = compute_modulus(NULL, rsa)) == 0) {
++			warnx("%s: br_rsa_compute_modulus", fname);
++			goto err;
++		}
++		datasz += 4 + rsa->plen + rsa->qlen + rsa->dplen + rsa->dqlen +
++		    rsa->iqlen;
++
++		if ((key = malloc(sizeof(*key) + datasz)) == NULL) {
++			warn("malloc");
++			goto err;
++		}
++		key->type = BR_KEYTYPE_RSA;
++		key->datasz = datasz;
++
++		if ((pubexp = compute_pubexp(rsa)) == 0) {
++			warnx("%s: br_rsa_compute_pubexp", fname);
++			goto err;
++		}
++
++		/* Copy private key. */
++		key->rsa.sk.n_bitlen = rsa->n_bitlen;
++		key->rsa.sk.p = key->data;
++		key->rsa.sk.plen = rsa->plen;
++		key->rsa.sk.q = key->rsa.sk.p + rsa->plen;
++		key->rsa.sk.qlen = rsa->qlen;
++		key->rsa.sk.dp = key->rsa.sk.q + rsa->qlen;
++		key->rsa.sk.dplen = rsa->dplen;
++		key->rsa.sk.dq = key->rsa.sk.dp + rsa->dplen;
++		key->rsa.sk.dqlen = rsa->dqlen;
++		key->rsa.sk.iq = key->rsa.sk.dq + rsa->dqlen;
++		key->rsa.sk.iqlen = rsa->iqlen;
++		memcpy(key->rsa.sk.p, rsa->p, rsa->plen);
++		memcpy(key->rsa.sk.q, rsa->q, rsa->qlen);
++		memcpy(key->rsa.sk.dp, rsa->dp, rsa->dplen);
++		memcpy(key->rsa.sk.dq, rsa->dq, rsa->dqlen);
++		memcpy(key->rsa.sk.iq, rsa->iq, rsa->iqlen);
++
++		/* Compute public modulus and encode public exponent. */
++		key->rsa.pk.n = key->rsa.sk.iq + rsa->iqlen;
++		key->rsa.pk.nlen = compute_modulus(key->rsa.pk.n, rsa);
++		key->rsa.pk.elen = 4;
++		key->rsa.pk.e = key->rsa.pk.n + key->rsa.pk.nlen;
++		key->rsa.pk.e[0] = pubexp >> 24;
++		key->rsa.pk.e[1] = pubexp >> 16;
++		key->rsa.pk.e[2] = pubexp >> 8;
++		key->rsa.pk.e[3] = pubexp;
++
++		/* Trim leading zeros. */
++		while (key->rsa.pk.elen > 0 && key->rsa.pk.e[0] == 0) {
++			--key->rsa.pk.elen;
++			++key->rsa.pk.e;
++		}
++		goto out;
++	case BR_KEYTYPE_EC:
++		ec = br_skey_decoder_get_ec(&keyctx);
++		ecimpl = br_ec_get_default();
++		if ((datasz = br_ec_compute_pub(ecimpl, NULL, NULL, ec)) == 0) {
++			warnx("%s: br_ec_compute_pub", fname);
++			goto err;
++		}
++		datasz += ec->xlen;
++
++		if ((key = malloc(sizeof(*key) + datasz)) == NULL) {
++			warn("malloc");
++			goto err;
++		}
++		key->type = BR_KEYTYPE_EC;
++		key->datasz = datasz;
++
++		key->ec.sk.curve = ec->curve;
++		key->ec.sk.x = key->data;
++		key->ec.sk.xlen = ec->xlen;
++		memcpy(key->ec.sk.x, ec->x, ec->xlen);
++		br_ec_compute_pub(ecimpl, &key->ec.pk,
++		    key->ec.sk.x + key->ec.sk.xlen, &key->ec.sk);
++		goto out;
++	}
++
++	warnx("%s: missing private key", fname);
++
++err:
++	free(key);
++	key = NULL;
++out:
++	explicit_bzero(&pemctx, sizeof(pemctx));
++	explicit_bzero(&keyctx, sizeof(keyctx));
++	return key;
+ }
+diff --git a/usr.sbin/acme-client/key.h b/usr.sbin/acme-client/key.h
+index 272d36eb09a..12abdec813c 100644
+--- a/usr.sbin/acme-client/key.h
++++ b/usr.sbin/acme-client/key.h
+@@ -18,8 +18,24 @@
+ #ifndef KEY_H
+ #define KEY_H
+ 
+-EVP_PKEY	*rsa_key_create(FILE *, const char *);
+-EVP_PKEY	*ec_key_create(FILE *, const char *);
+-EVP_PKEY	*key_load(FILE *, const char *);
++struct key {
++	int type;
++	union {
++		struct {
++			br_rsa_public_key pk;
++			br_rsa_private_key sk;
++		} rsa;
++		struct {
++			br_ec_public_key pk;
++			br_ec_private_key sk;
++		} ec;
++	};
++	size_t datasz;
++	unsigned char data[];
++};
++
++struct key	*rsa_key_create(FILE *, const char *);
++struct key	*ec_key_create(FILE *, const char *);
++struct key	*key_load(FILE *, const char *);
+ 
+ #endif /* ! KEY_H */
+diff --git a/usr.sbin/acme-client/keyproc.c b/usr.sbin/acme-client/keyproc.c
+index 157e4947667..80e3dc1e147 100644
+--- a/usr.sbin/acme-client/keyproc.c
++++ b/usr.sbin/acme-client/keyproc.c
+@@ -18,55 +18,18 @@
+ #include <sys/stat.h>
+ 
+ #include <err.h>
++#include <errno.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include <unistd.h>
+ 
+-#include <openssl/pem.h>
+-#include <openssl/err.h>
+-#include <openssl/rand.h>
+-#include <openssl/x509.h>
+-#include <openssl/x509v3.h>
++#include <bearssl.h>
++#include <x509cert.h>
+ 
+ #include "extern.h"
+ #include "key.h"
+ 
+-/*
+- * This was lifted more or less directly from demos/x509/mkreq.c of the
+- * OpenSSL source code.
+- */
+-static int
+-add_ext(STACK_OF(X509_EXTENSION) *sk, int nid, const char *value)
+-{
+-	X509_EXTENSION	*ex;
+-	char		*cp;
+-
+-	/*
+-	 * XXX: I don't like this at all.
+-	 * There's no documentation for X509V3_EXT_conf_nid, so I'm not
+-	 * sure if the "value" parameter is ever written to, touched,
+-	 * etc.
+-	 * The 'official' examples suggest not (they use a string
+-	 * literal as the input), but to be safe, I'm doing an
+-	 * allocation here and just letting it go.
+-	 * This leaks memory, but bounded to the number of SANs.
+-	 */
+-
+-	if ((cp = strdup(value)) == NULL) {
+-		warn("strdup");
+-		return (0);
+-	}
+-	ex = X509V3_EXT_conf_nid(NULL, NULL, nid, cp);
+-	if (ex == NULL) {
+-		warnx("X509V3_EXT_conf_nid");
+-		free(cp);
+-		return (0);
+-	}
+-	sk_X509_EXTENSION_push(sk, ex);
+-	return (1);
+-}
+-
+ /*
+  * Create an X509 certificate from the private key we have on file.
+  * To do this, we first open the key file, then jail ourselves.
+@@ -77,18 +40,18 @@ int
+ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+     enum keytype keytype)
+ {
+-	char		*der64 = NULL;
+-	unsigned char	*der = NULL, *dercp;
+-	char		*sans = NULL, *san = NULL;
+-	FILE		*f;
+-	size_t		 i, sansz;
+-	void		*pp;
+-	EVP_PKEY	*pkey = NULL;
+-	X509_REQ	*x = NULL;
+-	X509_NAME	*name = NULL;
+-	int		 len, rc = 0, cc, nid, newkey = 0;
+-	mode_t		 prev;
+-	STACK_OF(X509_EXTENSION) *exts = NULL;
++	char			*der64 = NULL;
++	unsigned char		*der = NULL;
++	FILE			*f;
++	size_t			 i;
++	struct key		*pkey = NULL;
++	struct x509cert_req	 req;
++	struct x509cert_skey	 skey;
++	struct x509cert_dn	 dn;
++	struct x509cert_rdn	 rdn;
++	struct x509cert_item	 item, *sans = NULL;
++	int			 len, rc = 0, newkey = 0;
++	mode_t			 prev;
+ 
+ 	/*
+ 	 * First, open our private key file read-only or write-only if
+@@ -110,8 +73,6 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+ 
+ 	/* File-system, user, and sandbox jail. */
+ 
+-	ERR_load_crypto_strings();
+-
+ 	if (pledge("stdio", NULL) == -1) {
+ 		warn("pledge");
+ 		goto out;
+@@ -145,101 +106,66 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+ 	 * Then set it as the X509 requester's key.
+ 	 */
+ 
+-	if ((x = X509_REQ_new()) == NULL) {
+-		warnx("X509_new");
+-		goto out;
+-	} else if (!X509_REQ_set_pubkey(x, pkey)) {
+-		warnx("X509_set_pubkey");
+-		goto out;
++	req.pkey.key_type = pkey->type;
++	skey.type = pkey->type;
++	switch (pkey->type) {
++	case BR_KEYTYPE_RSA:
++		req.pkey.key.rsa = pkey->rsa.pk;
++		skey.u.rsa = &pkey->rsa.sk;
++		break;
++	case BR_KEYTYPE_EC:
++		req.pkey.key.ec = pkey->ec.pk;
++		skey.u.ec = &pkey->ec.sk;
++		break;
+ 	}
+ 
+ 	/* Now specify the common name that we'll request. */
+ 
+-	if ((name = X509_NAME_new()) == NULL) {
+-		warnx("X509_NAME_new");
+-		goto out;
+-	} else if (!X509_NAME_add_entry_by_txt(name, "CN",
+-		MBSTRING_ASC, (u_char *)alts[0], -1, -1, 0)) {
+-		warnx("X509_NAME_add_entry_by_txt: CN=%s", alts[0]);
+-		goto out;
+-	} else if (!X509_REQ_set_subject_name(x, name)) {
+-		warnx("X509_req_set_issuer_name");
+-		goto out;
+-	}
++	rdn.oid = x509cert_oid_CN;
++	rdn.val.tag = X509CERT_ASN1_UTF8STRING;
++	rdn.val.val = alts[0];
++	rdn.val.len = strlen(alts[0]);
++	rdn.val.enc = NULL;
++	dn.rdn = &rdn;
++	dn.rdn_len = 1;
++	req.subject.enc = x509cert_dn_encoder;
++	req.subject.val = &dn;
++	req.alts_len = 0;
+ 
+-	/*
+-	 * Now add the SAN extensions.
+-	 * This was lifted more or less directly from demos/x509/mkreq.c
+-	 * of the OpenSSL source code.
+-	 * (The zeroth altname is the domain name.)
+-	 * TODO: is this the best way of doing this?
+-	 */
++	/* Now add the SAN extension. */
+ 
+ 	if (altsz > 1) {
+-		nid = NID_subject_alt_name;
+-		if ((exts = sk_X509_EXTENSION_new_null()) == NULL) {
+-			warnx("sk_X509_EXTENSION_new_null");
++		sans = calloc(altsz, sizeof(sans[0]));
++		if (sans == NULL) {
++			warn("calloc");
+ 			goto out;
+ 		}
+-		/* Initialise to empty string. */
+-		if ((sans = strdup("")) == NULL) {
+-			warn("strdup");
+-			goto out;
+-		}
+-		sansz = strlen(sans) + 1;
+ 
+-		/*
+-		 * For each SAN entry, append it to the string.
+-		 * We need a single SAN entry for all of the SAN
+-		 * domains: NOT an entry per domain!
+-		 */
++		/* Add a dNSName SAN entry for each alternate name. */
+ 
+-		for (i = 1; i < altsz; i++) {
+-			cc = asprintf(&san, "%sDNS:%s",
+-			    i > 1 ? "," : "", alts[i]);
+-			if (cc == -1) {
+-				warn("asprintf");
+-				goto out;
+-			}
+-			pp = recallocarray(sans, sansz, sansz + strlen(san), 1);
+-			if (pp == NULL) {
+-				warn("recallocarray");
+-				goto out;
+-			}
+-			sans = pp;
+-			sansz += strlen(san);
+-			strlcat(sans, san, sansz);
+-			free(san);
+-			san = NULL;
++		for (i = 0; i < altsz; i++) {
++			sans[i].tag = 0x82;
++			sans[i].val = alts[i];
++			sans[i].len = strlen(alts[i]);
+ 		}
+ 
+-		if (!add_ext(exts, nid, sans)) {
+-			warnx("add_ext");
+-			goto out;
+-		} else if (!X509_REQ_add_extensions(x, exts)) {
+-			warnx("X509_REQ_add_extensions");
+-			goto out;
+-		}
+-		sk_X509_EXTENSION_pop_free(exts, X509_EXTENSION_free);
+-	}
+-
+-	/* Sign the X509 request using SHA256. */
+-
+-	if (!X509_REQ_sign(x, pkey, EVP_sha256())) {
+-		warnx("X509_sign");
+-		goto out;
++		req.alts = sans;
++		req.alts_len = altsz;
+ 	}
+ 
+-	/* Now, serialise to DER, then base64. */
++	/* Sign the X.509 request using SHA256, and serialise to
++	 * DER then base64. */
+ 
+-	if ((len = i2d_X509_REQ(x, NULL)) < 0) {
+-		warnx("i2d_X509");
++	item.enc = x509cert_req_encoder;
++	item.val = &req;
++	if ((len = x509cert_sign(&item, &skey, &br_sha256_vtable, NULL)) == 0) {
++		warnx("x509cert_sign");
+ 		goto out;
+-	} else if ((der = dercp = malloc(len)) == NULL) {
++	} else if ((der = malloc(len)) == NULL) {
+ 		warn("malloc");
+ 		goto out;
+-	} else if (len != i2d_X509_REQ(x, &dercp)) {
+-		warnx("i2d_X509");
++	} else if ((len = x509cert_sign(&item, &skey, &br_sha256_vtable, der)) == 0) {
++		warnx("x509cert_sign");
+ 		goto out;
+ 	} else if ((der64 = base64buf_url(der, len)) == NULL) {
+ 		warnx("base64buf_url");
+@@ -265,11 +191,7 @@ out:
+ 	free(der);
+ 	free(der64);
+ 	free(sans);
+-	free(san);
+-	X509_REQ_free(x);
+-	X509_NAME_free(name);
+-	EVP_PKEY_free(pkey);
+-	ERR_print_errors_fp(stderr);
+-	ERR_free_strings();
++	if (pkey != NULL)
++		freezero(pkey, pkey->datasz);
+ 	return rc;
+ }
+diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
+index 6b32205b31b..122dcda0620 100644
+--- a/usr.sbin/acme-client/revokeproc.c
++++ b/usr.sbin/acme-client/revokeproc.c
+@@ -22,92 +22,53 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <time.h>
+ #include <unistd.h>
+ 
+-#include <openssl/pem.h>
+-#include <openssl/x509.h>
+-#include <openssl/x509v3.h>
+-#include <openssl/err.h>
++#include <bearssl.h>
+ 
+ #include "extern.h"
+ 
+ #define	RENEW_ALLOW (30 * 24 * 60 * 60)
+ 
+-/*
+- * Convert the X509's expiration time (which is in ASN1_TIME format)
+- * into a time_t value.
+- * There are lots of suggestions on the Internet on how to do this and
+- * they're really, really unsafe.
+- * Adapt those poor solutions to a safe one.
+- */
+-static time_t
+-X509expires(X509 *x)
++static void
++append_cert(void *ctx, const void *buf, size_t len)
+ {
+-	ASN1_TIME	*atim;
+-	struct tm	 t;
+-	unsigned char	*str;
+-	size_t		 i = 0;
+-
+-	atim = X509_get_notAfter(x);
+-	str = atim->data;
+-	memset(&t, 0, sizeof(t));
+-
+-	/* Account for 2 and 4-digit time. */
+-
+-	if (atim->type == V_ASN1_UTCTIME) {
+-		if (atim->length <= 2) {
+-			warnx("invalid ASN1_TIME");
+-			return (time_t)-1;
+-		}
+-		t.tm_year = (str[0] - '0') * 10 + (str[1] - '0');
+-		if (t.tm_year < 70)
+-			t.tm_year += 100;
+-		i = 2;
+-	} else if (atim->type == V_ASN1_GENERALIZEDTIME) {
+-		if (atim->length <= 4) {
+-			warnx("invalid ASN1_TIME");
+-			return (time_t)-1;
+-		}
+-		t.tm_year = (str[0] - '0') * 1000 + (str[1] - '0') * 100 +
+-		    (str[2] - '0') * 10 + (str[3] - '0');
+-		t.tm_year -= 1900;
+-		i = 4;
++	br_x509_certificate *cert = ctx;
++	size_t newlen;
++	unsigned char *newdata;
++
++	if (cert->data_len == -1)
++		return;
++	newlen = cert->data_len + len;
++	if ((newdata = realloc(cert->data, newlen)) != NULL) {
++		memcpy(newdata + cert->data_len, buf, len);
++		cert->data = newdata;
++		cert->data_len = newlen;
++	} else {
++		warn("realloc");
++		cert->data_len = -1;
+ 	}
+-
+-	/* Now the post-year parts. */
+-
+-	if (atim->length <= (int)i + 10) {
+-		warnx("invalid ASN1_TIME");
+-		return (time_t)-1;
+-	}
+-
+-	t.tm_mon = ((str[i + 0] - '0') * 10 + (str[i + 1] - '0')) - 1;
+-	t.tm_mday = (str[i + 2] - '0') * 10 + (str[i + 3] - '0');
+-	t.tm_hour = (str[i + 4] - '0') * 10 + (str[i + 5] - '0');
+-	t.tm_min  = (str[i + 6] - '0') * 10 + (str[i + 7] - '0');
+-	t.tm_sec  = (str[i + 8] - '0') * 10 + (str[i + 9] - '0');
+-
+-	return mktime(&t);
+ }
+ 
+ int
+ revokeproc(int fd, const char *certfile, int force,
+     int revocate, const char *const *alts, size_t altsz)
+ {
+-	unsigned char	*der = NULL, *dercp;
+-	char		*der64 = NULL;
+-	char		*san = NULL, *str, *tok;
+-	int		 rc = 0, cc, i, extsz, ssz, len;
+-	size_t		*found = NULL;
+-	BIO		*bio = NULL;
+-	FILE		*f = NULL;
+-	X509		*x = NULL;
+-	long		 lval;
+-	enum revokeop	 op, rop;
+-	time_t		 t;
+-	X509_EXTENSION	*ex;
+-	ASN1_OBJECT	*obj;
+-	size_t		 j;
++	static const unsigned char dnsname[] = {0, 2};
++	char			 buf[8192], *pos, *sans = NULL, *der64 = NULL;
++	int			 rc = 0, cc, state, err;
++	size_t			 i, j, n, len = 0, altlen, altmax, eltsz;
++	FILE			*f = NULL;
++	br_pem_decoder_context	 pc;
++	br_x509_decoder_context	 xd;
++	br_x509_minimal_context	 xc;
++	br_x509_certificate	 cert = {0};
++	br_name_element		*elts = NULL;
++	uint32_t		 days, secs;
++	long			 lval;
++	enum revokeop		 op, rop;
++	time_t			 t;
+ 
+ 	/*
+ 	 * First try to open the certificate before we drop privileges
+@@ -122,8 +83,6 @@ revokeproc(int fd, const char *certfile, int force,
+ 
+ 	/* File-system and sandbox jailing. */
+ 
+-	ERR_load_crypto_strings();
+-
+ 	if (pledge("stdio", NULL) == -1) {
+ 		warn("pledge");
+ 		goto out;
+@@ -147,17 +106,54 @@ revokeproc(int fd, const char *certfile, int force,
+ 		goto out;
+ 	}
+ 
+-	if ((x = PEM_read_X509(f, NULL, NULL, NULL)) == NULL) {
+-		warnx("PEM_read_X509");
+-		goto out;
++	br_pem_decoder_init(&pc);
++	for (state = 0; state != 2;) {
++		if (len == 0) {
++			if (feof(f)) {
++				warnx("%s: truncated certificate", certfile);
++				goto out;
++			}
++			len = fread(buf, 1, sizeof(buf), f);
++			if (ferror(f)) {
++				warn("fread");
++				goto out;
++			}
++			pos = buf;
++		}
++		n = br_pem_decoder_push(&pc, pos, len);
++		pos += n;
++		len -= n;
++		switch (br_pem_decoder_event(&pc)) {
++		case BR_PEM_BEGIN_OBJ:
++			if (strcmp(br_pem_decoder_name(&pc), "CERTIFICATE") == 0) {
++				br_pem_decoder_setdest(&pc, append_cert, &cert);
++				state = 1;
++			}
++			break;
++		case BR_PEM_END_OBJ:
++			if (state == 1)
++				state = 2;
++			break;
++		case 0:
++			break;
++		default:
++			warnx("%s: PEM decoding error", certfile);
++			goto out;
++		}
+ 	}
++	if (cert.data_len == -1)
++		goto out;
+ 
+ 	/* Read out the expiration date. */
+ 
+-	if ((t = X509expires(x)) == (time_t)-1) {
+-		warnx("X509expires");
++	br_x509_decoder_init(&xd, NULL, NULL);
++	br_x509_decoder_push(&xd, cert.data, cert.data_len);
++	if ((err = br_x509_decoder_last_error(&xd)) != 0) {
++		warnx("%s: X.509 decoding error %d", certfile, err);
+ 		goto out;
+ 	}
++	br_x509_decoder_get_notafter(&xd, &days, &secs);
++	t = 86400ll * (days - 719528) + 86400;
+ 
+ 	/*
+ 	 * Next, the long process to make sure that the SAN entries
+@@ -165,99 +161,66 @@ revokeproc(int fd, const char *certfile, int force,
+ 	 * command line.
+ 	 */
+ 
+-	extsz = x->cert_info->extensions != NULL ?
+-		sk_X509_EXTENSION_num(x->cert_info->extensions) : 0;
+-
+-	/* Scan til we find the SAN NID. */
+-
+-	for (i = 0; i < extsz; i++) {
+-		ex = sk_X509_EXTENSION_value(x->cert_info->extensions, i);
+-		assert(ex != NULL);
+-		obj = X509_EXTENSION_get_object(ex);
+-		assert(obj != NULL);
+-		if (NID_subject_alt_name != OBJ_obj2nid(obj))
+-			continue;
+-
+-		if (san != NULL) {
+-			warnx("%s: two SAN entries", certfile);
+-			goto out;
+-		}
+-
+-		bio = BIO_new(BIO_s_mem());
+-		if (bio == NULL) {
+-			warnx("BIO_new");
+-			goto out;
+-		} else if (!X509V3_EXT_print(bio, ex, 0, 0)) {
+-			warnx("X509V3_EXT_print");
+-			goto out;
+-		} else if ((san = calloc(1, bio->num_write + 1)) == NULL) {
+-			warn("calloc");
+-			goto out;
+-		}
+-		ssz = BIO_read(bio, san, bio->num_write);
+-		if (ssz < 0 || (unsigned)ssz != bio->num_write) {
+-			warnx("BIO_read");
+-			goto out;
+-		}
++	for (i = 0, altmax = 0; i < altsz; ++i) {
++		altlen = strlen(alts[i]) + 1;
++		if (altlen > altmax)
++			altmax = altlen;
+ 	}
+-
+-	if (san == NULL) {
+-		warnx("%s: does not have a SAN entry", certfile);
+-		if (revocate)
+-			goto out;
+-		force = 2;
++	eltsz = altsz + 1;
++	if ((elts = calloc(eltsz, sizeof(elts[0]))) == NULL ||
++	    (sans = calloc(eltsz, altmax)) == NULL) {
++		warn("calloc");
++		goto out;
++	}
++	for (i = 0; i < eltsz; ++i) {
++		elts[i].oid = dnsname;
++		elts[i].buf = sans + i * altmax;
++		elts[i].len = altmax;
+ 	}
+ 
+-	/* An array of buckets: the number of entries found. */
+-
+-	if ((found = calloc(altsz, sizeof(size_t))) == NULL) {
+-		warn("calloc");
++	br_x509_minimal_init(&xc, &br_sha256_vtable, NULL, 0);
++	br_x509_minimal_set_hash(&xc, br_sha256_ID, &br_sha256_vtable);
++	br_x509_minimal_set_name_elements(&xc, elts, eltsz);
++	xc.vtable->start_chain(&xc.vtable, NULL);
++	xc.vtable->start_cert(&xc.vtable, cert.data_len);
++	xc.vtable->append(&xc.vtable, cert.data, cert.data_len);
++	xc.vtable->end_cert(&xc.vtable);
++	err = xc.vtable->end_chain(&xc.vtable);
++	if (err != BR_ERR_X509_NOT_TRUSTED) {
++		warnx("%s: X.509 engine error %d", certfile, err);
+ 		goto out;
+ 	}
+ 
+ 	/*
+-	 * Parse the SAN line.
+ 	 * Make sure that all of the domains are represented only once.
+ 	 */
+ 
+-	str = san;
+-	while ((tok = strsep(&str, ",")) != NULL) {
+-		if (*tok == '\0')
+-			continue;
+-		while (isspace((int)*tok))
+-			tok++;
+-		if (strncmp(tok, "DNS:", 4))
+-			continue;
+-		tok += 4;
+-		for (j = 0; j < altsz; j++)
+-			if (strcmp(tok, alts[j]) == 0)
++	for (i = 0; i < altsz; ++i) {
++		for (j = 0; j < eltsz; ++j) {
++			if (elts[j].status == 1 &&
++			    strcmp(alts[i], elts[j].buf) == 0) {
++				elts[j].status = 0;
+ 				break;
+-		if (j == altsz) {
++			}
++		}
++		if (j == eltsz) {
+ 			if (revocate) {
+-				warnx("%s: unknown SAN entry: %s", certfile, tok);
++				warnx("%s: domain not listed: %s", certfile, alts[i]);
+ 				goto out;
+ 			}
+ 			force = 2;
+ 		}
+-		if (found[j]++) {
++	}
++	for (i = 0; i < eltsz; ++i) {
++		if (elts[i].status != 0) {
+ 			if (revocate) {
+-				warnx("%s: duplicate SAN entry: %s", certfile, tok);
++				warnx("%s: unknown SAN entry: %s", certfile, elts[i].buf);
+ 				goto out;
+ 			}
+ 			force = 2;
+ 		}
+ 	}
+ 
+-	for (j = 0; j < altsz; j++) {
+-		if (found[j])
+-			continue;
+-		if (revocate) {
+-			warnx("%s: domain not listed: %s", certfile, alts[j]);
+-			goto out;
+-		}
+-		force = 2;
+-	}
+-
+ 	/*
+ 	 * If we're going to revoke, write the certificate to the
+ 	 * netproc in DER and base64-encoded format.
+@@ -278,16 +241,7 @@ revokeproc(int fd, const char *certfile, int force,
+ 		if (cc <= 0)
+ 			goto out;
+ 
+-		if ((len = i2d_X509(x, NULL)) < 0) {
+-			warnx("i2d_X509");
+-			goto out;
+-		} else if ((der = dercp = malloc(len)) == NULL) {
+-			warn("malloc");
+-			goto out;
+-		} else if (len != i2d_X509(x, &dercp)) {
+-			warnx("i2d_X509");
+-			goto out;
+-		} else if ((der64 = base64buf_url(der, len)) == NULL) {
++		if ((der64 = base64buf_url(cert.data, cert.data_len)) == NULL) {
+ 			warnx("base64buf_url");
+ 			goto out;
+ 		} else if (writestr(fd, COMM_CSR, der64) >= 0)
+@@ -340,13 +294,9 @@ out:
+ 	close(fd);
+ 	if (f != NULL)
+ 		fclose(f);
+-	X509_free(x);
+-	BIO_free(bio);
+-	free(san);
+-	free(der);
+-	free(found);
++	free(cert.data);
++	free(sans);
++	free(elts);
+ 	free(der64);
+-	ERR_print_errors_fp(stderr);
+-	ERR_free_strings();
+ 	return rc;
+ }
+-- 
+2.31.1
+
