@@ -17,8 +17,8 @@ lib('libcommon.a', {
 })
 
 for _, tool in ipairs{'ds', 'dnskey', 'nsec', 'rrsig'} do
-	exe('dnssec-'..tool, {tool..'.c', 'libcommon.a', '$builddir/pkg/bearssl/libbearssl.a'})
-	file('bin/dnssec-'..tool, '755', '$outdir/dnssec-'..tool)
+	exe(tool, {tool..'.c', 'libcommon.a', '$builddir/pkg/bearssl/libbearssl.a'})
+	file('bin/'..tool, '755', '$outdir/'..tool)
 end
 
 fetch 'git'
