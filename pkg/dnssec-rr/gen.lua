@@ -16,7 +16,7 @@ lib('libcommon.a', {
 	'zone.c',
 })
 
-for _, tool in ipairs{'ds', 'dnskey', 'nsec', 'rrsig'} do
+for _, tool in ipairs{'ds', 'dnskey', 'nsec', 'rrsig', 'tlsa'} do
 	exe(tool, {tool..'.c', 'libcommon.a', '$builddir/pkg/bearssl/libbearssl.a'})
 	file('bin/'..tool, '755', '$outdir/'..tool)
 end
