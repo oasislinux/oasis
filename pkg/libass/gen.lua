@@ -10,16 +10,17 @@ nasmflags{
 	'-D private_prefix=ass',
 	'-i $srcdir/libass/',
 	'-f elf64',
+	'-P $outdir/PIC.asm',
 }
-if config.target.pie then
-	nasmflags{'-D PIC'}
-end
 
 pkg.hdrs = copy('$outdir/include/ass', '$srcdir/libass', {'ass.h', 'ass_types.h'})
 pkg.deps = {
 	'pkg/freetype/headers',
 	'pkg/fribidi/headers',
+	'$outdir/PIC.asm',
 }
+
+build('sed', '$outdir/PIC.asm', '$builddir/probe/PIC', {expr='s,#define,%define,'})
 
 lib('libass.a', [[
 	libass/(
