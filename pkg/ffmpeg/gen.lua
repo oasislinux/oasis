@@ -3,7 +3,7 @@ cflags{
 	'-Wno-deprecated-declarations',
 	'-Wno-discarded-qualifiers',
 	'-D HAVE_AV_CONFIG_H',
-	'-I $dir',
+	'-I $outdir',
 	'-I $outdir/include',
 	'-I $outdir/internal',
 	'-I $srcdir',
@@ -15,10 +15,6 @@ nasmflags{
 	'-f elf64',
 	'-P $outdir/config.asm',
 }
-if config.target.pie then
-	cflags{'-D PIC'}
-	nasmflags{'-D PIC'}
-end
 
 -- TODO: Copy the rest of the headers.
 pkg.hdrs = {
@@ -27,22 +23,24 @@ pkg.hdrs = {
 }
 pkg.deps = {
 	'$outdir/config.asm',
+	'$outdir/config.h',
 	'$gendir/headers',
 }
 
-build('awk', '$outdir/config.asm', '$dir/options.h', {
+build('cat', '$outdir/config.h', {'$dir/config-head.h', '$dir/config.h', '$builddir/probe/PIC', '$dir/config-tail.h'})
+build('awk', '$outdir/config.asm', {'$dir/config.h', '$builddir/probe/PIC'}, {
 	expr=[['{print "%define " substr($$0, length("#define ") + 1)}']],
 })
-build('awk', '$outdir/config.texi', '$dir/options.h', {
+build('awk', '$outdir/config.texi', '$dir/config.h', {
 	expr=[['$$3 == "1" {gsub("_", "-", $$2); print "@set", tolower($$2), "yes"}']],
 })
-build('awk', '$outdir/include/libavutil/avconfig.h', {'$dir/options.h', '|', '$dir/avconfig.awk'}, {
+build('awk', '$outdir/include/libavutil/avconfig.h', {'$dir/config.h', '|', '$dir/avconfig.awk'}, {
 	expr='-f $dir/avconfig.awk',
 })
 
-rule('genlist', 'lua $dir/list.lua $dir/options.h $type $var <$in >$out')
+rule('genlist', 'lua $dir/list.lua $dir/config.h $type $var <$in >$out')
 local function genlist(out, src, type, var)
-	build('genlist', out, {src, '|', '$dir/list.lua', '$dir/options.h'}, {type=type, var=var})
+	build('genlist', out, {src, '|', '$dir/list.lua', '$dir/config.h'}, {type=type, var=var})
 	table.insert(pkg.deps, out)
 end
 genlist('$outdir/internal/libavfilter/filter_list.c', '$srcdir/libavfilter/allfilters.c', 'AVFilter', 'filter_list')
@@ -60,7 +58,7 @@ build('awk', '$outdir/include/libavutil/ffversion.h', {'$dir/ver'}, {
 })
 
 local options = {}
-for line in iterlines('options.h', 1) do
+for line in iterlines('config.h', 1) do
 	local cfg, val = line:match('^#define ([^ ]+) ([^ ]+)')
 	if cfg then
 		options[cfg] = val == '1'

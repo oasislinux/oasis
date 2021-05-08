@@ -10,6 +10,7 @@ probe('HAVE___BUILTIN_CHOOSE_EXPR')
 probe('HAVE___BUILTIN_CLZ')
 probe('HAVE___BUILTIN_CTZL')
 probe('HAVE___BUILTIN_POPCOUNT')
+probe('PIC')
 
 local function probesize(var)
 	build('probe-size', '$outdir/'..var, {'$dir/'..var, '|', '$basedir/scripts/probe-size.sh'}, {var=var})

@@ -1,0 +1,3 @@
+int main(void) {
+	return __PIC__ == 0;
+}
