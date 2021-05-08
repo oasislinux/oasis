@@ -25,7 +25,6 @@ return {
 		platform='x86_64-linux-musl',
 		cflags='-Os -fPIE -pipe',
 		ldflags='-s -static-pie',
-		pie=true,
 	},
 
 	-- host toolchain and flags
