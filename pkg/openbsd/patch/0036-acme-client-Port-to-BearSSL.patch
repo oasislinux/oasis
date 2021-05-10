@@ -1,4 +1,4 @@
-From 298043bfa88cf41849c7b11d8307e419cd50bfdd Mon Sep 17 00:00:00 2001
+From 8874beb0ee8741d4de4acabdd55c3dcc886b7585 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 23:14:16 -0700
 Subject: [PATCH] acme-client: Port to BearSSL
@@ -8,9 +8,9 @@ Subject: [PATCH] acme-client: Port to BearSSL
  usr.sbin/acme-client/certproc.c   |   5 -
  usr.sbin/acme-client/key.c        | 342 ++++++++++++++++++++++++------
  usr.sbin/acme-client/key.h        |  22 +-
- usr.sbin/acme-client/keyproc.c    | 194 +++++------------
+ usr.sbin/acme-client/keyproc.c    | 198 ++++++-----------
  usr.sbin/acme-client/revokeproc.c | 280 ++++++++++--------------
- 6 files changed, 558 insertions(+), 590 deletions(-)
+ 6 files changed, 560 insertions(+), 592 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
 index d01efa848d6..24a31ed19ad 100644
@@ -982,7 +982,7 @@ index 272d36eb09a..12abdec813c 100644
  
  #endif /* ! KEY_H */
 diff --git a/usr.sbin/acme-client/keyproc.c b/usr.sbin/acme-client/keyproc.c
-index 157e4947667..80e3dc1e147 100644
+index 157e4947667..93c758fdc56 100644
 --- a/usr.sbin/acme-client/keyproc.c
 +++ b/usr.sbin/acme-client/keyproc.c
 @@ -18,55 +18,18 @@
@@ -1044,7 +1044,7 @@ index 157e4947667..80e3dc1e147 100644
  /*
   * Create an X509 certificate from the private key we have on file.
   * To do this, we first open the key file, then jail ourselves.
-@@ -77,18 +40,18 @@ int
+@@ -77,18 +40,20 @@ int
  keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
      enum keytype keytype)
  {
@@ -1069,13 +1069,15 @@ index 157e4947667..80e3dc1e147 100644
 +	struct x509cert_skey	 skey;
 +	struct x509cert_dn	 dn;
 +	struct x509cert_rdn	 rdn;
-+	struct x509cert_item	 item, *sans = NULL;
++	struct x509cert_item	 item;
 +	int			 len, rc = 0, newkey = 0;
 +	mode_t			 prev;
++
++	req.alts = NULL;
  
  	/*
  	 * First, open our private key file read-only or write-only if
-@@ -110,8 +73,6 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+@@ -110,8 +75,6 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
  
  	/* File-system, user, and sandbox jail. */
  
@@ -1084,7 +1086,7 @@ index 157e4947667..80e3dc1e147 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -145,101 +106,66 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+@@ -145,101 +108,64 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
  	 * Then set it as the X509 requester's key.
  	 */
  
@@ -1144,8 +1146,9 @@ index 157e4947667..80e3dc1e147 100644
 -		nid = NID_subject_alt_name;
 -		if ((exts = sk_X509_EXTENSION_new_null()) == NULL) {
 -			warnx("sk_X509_EXTENSION_new_null");
-+		sans = calloc(altsz, sizeof(sans[0]));
-+		if (sans == NULL) {
++		req.alts_len = altsz;
++		req.alts = calloc(altsz, sizeof(req.alts[0]));
++		if (req.alts == NULL) {
 +			warn("calloc");
  			goto out;
  		}
@@ -1161,8 +1164,7 @@ index 157e4947667..80e3dc1e147 100644
 -		 * We need a single SAN entry for all of the SAN
 -		 * domains: NOT an entry per domain!
 -		 */
-+		/* Add a dNSName SAN entry for each alternate name. */
- 
+-
 -		for (i = 1; i < altsz; i++) {
 -			cc = asprintf(&san, "%sDNS:%s",
 -			    i > 1 ? "," : "", alts[i]);
@@ -1180,11 +1182,8 @@ index 157e4947667..80e3dc1e147 100644
 -			strlcat(sans, san, sansz);
 -			free(san);
 -			san = NULL;
-+		for (i = 0; i < altsz; i++) {
-+			sans[i].tag = 0x82;
-+			sans[i].val = alts[i];
-+			sans[i].len = strlen(alts[i]);
- 		}
+-		}
++		/* Add a dNSName SAN entry for each alternate name. */
  
 -		if (!add_ext(exts, nid, sans)) {
 -			warnx("add_ext");
@@ -1192,7 +1191,11 @@ index 157e4947667..80e3dc1e147 100644
 -		} else if (!X509_REQ_add_extensions(x, exts)) {
 -			warnx("X509_REQ_add_extensions");
 -			goto out;
--		}
++		for (i = 0; i < altsz; i++) {
++			req.alts[i].tag = X509CERT_SAN_DNSNAME;
++			req.alts[i].val = alts[i];
++			req.alts[i].len = strlen(alts[i]);
+ 		}
 -		sk_X509_EXTENSION_pop_free(exts, X509_EXTENSION_free);
 -	}
 -
@@ -1201,8 +1204,6 @@ index 157e4947667..80e3dc1e147 100644
 -	if (!X509_REQ_sign(x, pkey, EVP_sha256())) {
 -		warnx("X509_sign");
 -		goto out;
-+		req.alts = sans;
-+		req.alts_len = altsz;
  	}
  
 -	/* Now, serialise to DER, then base64. */
@@ -1227,16 +1228,18 @@ index 157e4947667..80e3dc1e147 100644
  		goto out;
  	} else if ((der64 = base64buf_url(der, len)) == NULL) {
  		warnx("base64buf_url");
-@@ -265,11 +191,7 @@ out:
+@@ -264,12 +190,8 @@ out:
+ 		fclose(f);
  	free(der);
  	free(der64);
- 	free(sans);
+-	free(sans);
 -	free(san);
 -	X509_REQ_free(x);
 -	X509_NAME_free(name);
 -	EVP_PKEY_free(pkey);
 -	ERR_print_errors_fp(stderr);
 -	ERR_free_strings();
++	free(req.alts);
 +	if (pkey != NULL)
 +		freezero(pkey, pkey->datasz);
  	return rc;
