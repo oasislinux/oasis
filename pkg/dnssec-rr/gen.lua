@@ -19,6 +19,7 @@ lib('libcommon.a', {
 for _, tool in ipairs{'ds', 'dnskey', 'nsec', 'rrsig', 'tlsa'} do
 	exe(tool, {tool..'.c', 'libcommon.a', '$builddir/pkg/bearssl/libbearssl.a'})
 	file('bin/'..tool, '755', '$outdir/'..tool)
+	man{tool..'.1'}
 end
 
 fetch 'git'
