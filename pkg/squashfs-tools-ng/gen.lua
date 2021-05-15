@@ -36,6 +36,7 @@ local srcs = paths[[
 		block_processor/backend.c
 		frag_table.c
 		block_writer.c
+		misc.c
 
 		unix/io_file.c
 	)
