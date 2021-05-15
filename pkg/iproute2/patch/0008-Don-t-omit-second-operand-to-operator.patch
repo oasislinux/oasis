@@ -1,4 +1,4 @@
-From 60fe0f1fee7ddc97eb6a136beaaeb218cb497441 Mon Sep 17 00:00:00 2001
+From d7213f2fd2ea8338fa6b000656108e6ffd5d6128 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:40 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -35,10 +35,10 @@ index 566fc7ea..df9df4ca 100644
  		fprintf(fp, "%s ", str);
  		if (progname)
 diff --git a/ip/iptunnel.c b/ip/iptunnel.c
-index 92b86c17..6a2da548 100644
+index b38265d4..3433b588 100644
 --- a/ip/iptunnel.c
 +++ b/ip/iptunnel.c
-@@ -278,11 +278,16 @@ static int do_add(int cmd, int argc, char **argv)
+@@ -279,11 +279,16 @@ static int do_add(int cmd, int argc, char **argv)
  static int do_del(int argc, char **argv)
  {
  	struct ip_tunnel_parm p;
@@ -70,7 +70,7 @@ index 061a3312..4d1fd55f 100644
  				print_uint(PRINT_ANY, "pid",
  					   "(%d)", pid);
 diff --git a/lib/bpf_legacy.c b/lib/bpf_legacy.c
-index 86790fe8..05824e52 100644
+index 398540d1..ea5c54f9 100644
 --- a/lib/bpf_legacy.c
 +++ b/lib/bpf_legacy.c
 @@ -765,7 +765,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
@@ -83,7 +83,7 @@ index 86790fe8..05824e52 100644
  		if (!ret)
  			ret = bpf_mnt_fs(mnt);
 diff --git a/lib/utils.c b/lib/utils.c
-index b324096a..b2338cfd 100644
+index 33cf199e..bb2e223b 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
 @@ -943,8 +943,10 @@ int __get_hz(void)
@@ -108,7 +108,7 @@ index b324096a..b2338cfd 100644
  		return hz;
  	return HZ;
 diff --git a/misc/ss.c b/misc/ss.c
-index 8dbb5d75..c4f37660 100644
+index e9c29d73..3c99a5f2 100644
 --- a/misc/ss.c
 +++ b/misc/ss.c
 @@ -482,7 +482,9 @@ static FILE *generic_proc_open(const char *env, const char *name)
@@ -197,5 +197,5 @@ index 8dbb5d75..c4f37660 100644
  	}
  
 -- 
-2.30.0
+2.31.1
 

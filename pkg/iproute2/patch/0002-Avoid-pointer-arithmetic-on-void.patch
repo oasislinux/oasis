@@ -1,4 +1,4 @@
-From 0ac115c6e107846e43aa98fe6358cfdf08db479d Mon Sep 17 00:00:00 2001
+From f39fa1708153aa739570688d5a4d7f69737cc7f5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -50,10 +50,10 @@ index 9c697770..539e7ab7 100644
  	open_json_object(NULL);
  	if (tb[FOU_ATTR_PORT])
 diff --git a/ip/ipila.c b/ip/ipila.c
-index 739ee4e1..50c8c300 100644
+index 475c35b5..0540d1d9 100644
 --- a/ip/ipila.c
 +++ b/ip/ipila.c
-@@ -95,7 +95,7 @@ static int print_ila_mapping(struct nlmsghdr *n, void *arg)
+@@ -96,7 +96,7 @@ static int print_ila_mapping(struct nlmsghdr *n, void *arg)
  		return -1;
  
  	ghdr = NLMSG_DATA(n);
@@ -163,7 +163,7 @@ index c958aa57..5585c27f 100644
  	}
  	memset(tb, 0, sizeof(struct rtattr *) * (max + 1));
 diff --git a/lib/utils.c b/lib/utils.c
-index c98021d6..063a0611 100644
+index 93ae0c55..33cf199e 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
 @@ -1532,7 +1532,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
@@ -176,5 +176,5 @@ index c98021d6..063a0611 100644
  		len = size;
  
 -- 
-2.29.2
+2.31.1
 
