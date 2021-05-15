@@ -1,0 +1,29 @@
+From ce2e99a74f9216fa5783a6bc943c228788fd469c Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 13 May 2021 22:17:56 -0700
+Subject: [PATCH] Use patched bearssl flag to force CertificateRequest
+
+---
+ tls_server.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
+
+diff --git a/tls_server.c b/tls_server.c
+index 2436036..7f578b8 100644
+--- a/tls_server.c
++++ b/tls_server.c
+@@ -339,11 +339,7 @@ tls_accept_common(struct tls *ctx)
+ 		if (tls_configure_x509(conn_ctx) != 0)
+ 			goto err;
+ 
+-		if (ctx->config->ca_len == 0) {
+-			tls_set_errorx(ctx, "cannot verify client without trust anchors");
+-			goto err;
+-		}
+-
++		flags |= BR_OPT_REQUEST_CLIENT_CERT;
+ 		br_ssl_server_set_trust_anchor_names_alt(&conn_ctx->conn->u.server,
+ 		    ctx->config->ca, ctx->config->ca_len);
+ 
+-- 
+2.31.1
+
