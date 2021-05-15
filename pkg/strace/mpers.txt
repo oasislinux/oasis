@@ -19,8 +19,8 @@ ipc_shmctl.c
 loop.c
 mtd.c
 perf_ioctl.c
-print_kernel_sigset.c
 print_group_req.c
+print_kernel_sigset.c
 print_mq_attr.c
 print_msgbuf.c
 print_sg_req_info.c

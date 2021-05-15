@@ -1,4 +1,4 @@
-From 2aafc896306daf6fc8a470993ffd6d300d2e410c Mon Sep 17 00:00:00 2001
+From bf1b06786d4a813efd06e179ce0db5a991312400 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -10,7 +10,7 @@ Subject: [PATCH] Don't omit second operand to '?' operator
  3 files changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/src/open.c b/src/open.c
-index 4af4320b0..8191470ed 100644
+index 1dd79e9dc..9aaff9ec9 100644
 --- a/src/open.c
 +++ b/src/open.c
 @@ -63,8 +63,9 @@ sprint_open_modes64(uint64_t flags)
@@ -26,10 +26,10 @@ index 4af4320b0..8191470ed 100644
  
  const char *
 diff --git a/src/prctl.c b/src/prctl.c
-index 58b644946..6147082eb 100644
+index 62e79510e..cb4379e57 100644
 --- a/src/prctl.c
 +++ b/src/prctl.c
-@@ -76,7 +76,7 @@ sprint_sve_val(kernel_ulong_t arg)
+@@ -67,7 +67,7 @@ sprint_sve_val(kernel_ulong_t arg)
  	const char *flags_str = sprintflags("", pr_sve_vl_flags, flags);
  
  	xsprintf(out, "%s%s%#" PRI_klx,
@@ -39,10 +39,10 @@ index 58b644946..6147082eb 100644
  	return out;
  }
 diff --git a/src/strace.c b/src/strace.c
-index 24180a15f..a71860e55 100644
+index e67121d9a..6e9425272 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -2257,7 +2257,7 @@ init(int argc, char *argv[])
+@@ -2290,7 +2290,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -51,7 +51,7 @@ index 24180a15f..a71860e55 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2357,10 +2357,10 @@ init(int argc, char *argv[])
+@@ -2401,10 +2401,10 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
  			break;
  		case GETOPT_QUAL_QUIET:
@@ -65,5 +65,5 @@ index 24180a15f..a71860e55 100644
  		default:
  			error_msg_and_help(NULL);
 -- 
-2.30.0
+2.31.1
 

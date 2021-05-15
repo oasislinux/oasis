@@ -1,4 +1,4 @@
-From d98579a234b81512a4def2bc740457fcd0637ac2 Mon Sep 17 00:00:00 2001
+From d34216667b2ae3823893e80e98e5b7cc0a37c166 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/src/bpf.c b/src/bpf.c
-index 7d2f4b85d..4e8bbe09a 100644
+index 3d25a8b90..b53dd98a2 100644
 --- a/src/bpf.c
 +++ b/src/bpf.c
 @@ -42,7 +42,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -32,7 +32,7 @@ index 7d2f4b85d..4e8bbe09a 100644
  		const size_t attr_size = bpf_cmd ## _struct_size;	\
  		const unsigned int len = MIN(size, attr_size);		\
  		memcpy(&attr, data, len);				\
-@@ -153,7 +153,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
+@@ -154,7 +154,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
  	if (abbrev(tcp)) {
  		printaddr(addr);
  	} else {
@@ -42,10 +42,10 @@ index 7d2f4b85d..4e8bbe09a 100644
  
  		print_array(tcp, addr, len, &insn, sizeof(insn),
 diff --git a/src/net.c b/src/net.c
-index dc62e59cb..c80958500 100644
+index 9790943be..ea2b71df8 100644
 --- a/src/net.c
 +++ b/src/net.c
-@@ -681,7 +681,7 @@ print_tpacket_stats(struct tcb *const tcp, const kernel_ulong_t addr,
+@@ -752,7 +752,7 @@ print_tpacket_stats(struct tcb *const tcp, const kernel_ulong_t addr,
  static void
  print_icmp_filter(struct tcb *const tcp, const kernel_ulong_t addr, int len)
  {
@@ -55,10 +55,10 @@ index dc62e59cb..c80958500 100644
  	if (len > (int) sizeof(filter))
  		len = sizeof(filter);
 diff --git a/src/sched.c b/src/sched.c
-index a9bbe64ff..661077e2f 100644
+index acd4d32cf..d7de19ada 100644
 --- a/src/sched.c
 +++ b/src/sched.c
-@@ -97,7 +97,7 @@ static void
+@@ -111,7 +111,7 @@ static void
  print_sched_attr(struct tcb *const tcp, const kernel_ulong_t addr,
  		 unsigned int usize)
  {
@@ -81,10 +81,10 @@ index 5fc0789c3..cdea7f5b8 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/src/strace.c b/src/strace.c
-index ab82a9908..24180a15f 100644
+index 61a598cb1..e67121d9a 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -3387,7 +3387,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -3436,7 +3436,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -225,5 +225,5 @@ index a14899530..b08881ae7 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.30.0
+2.31.1
 

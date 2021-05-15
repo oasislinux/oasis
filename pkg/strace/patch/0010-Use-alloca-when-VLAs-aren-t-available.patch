@@ -1,17 +1,17 @@
-From 4a468614678d3ae7b58e95428352268c975d1812 Mon Sep 17 00:00:00 2001
+From 1c1cc6c87f4388ef1e7259fee347a0c36fe11bac Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 30 Jan 2020 21:57:34 -0800
 Subject: [PATCH] Use alloca when VLAs aren't available
 
 ---
- src/evdev.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ src/evdev.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/src/evdev.c b/src/evdev.c
-index 198d799f3..f74ab9a71 100644
+index 08d5d9034..01b87ca3e 100644
 --- a/src/evdev.c
 +++ b/src/evdev.c
-@@ -169,9 +169,13 @@ decode_bitset(struct tcb *const tcp, const kernel_ulong_t arg,
+@@ -161,9 +161,13 @@ decode_bitset(struct tcb *const tcp, const kernel_ulong_t arg,
  		return RVAL_IOCTL_DECODED;
  	}
  
@@ -26,30 +26,6 @@ index 198d799f3..f74ab9a71 100644
  		return RVAL_IOCTL_DECODED;
  
  	if (xlat_verbose(xlat_verbosity) != XLAT_STYLE_RAW) {
-@@ -227,9 +231,13 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
- 		return RVAL_IOCTL_DECODED;
- 	}
- 
-+#ifndef __STDC_NO_VLA__
- 	int buffer[size];
-+#else
-+	int *buffer = alloca(size * sizeof(int));
-+#endif
- 
--	if (umove_or_printaddr(tcp, arg, &buffer))
-+	if (umoven_or_printaddr(tcp, arg, size * sizeof(int), buffer))
- 		return RVAL_IOCTL_DECODED;
- 
- 	tprint_struct_begin();
-@@ -241,7 +249,7 @@ mtslots_ioctl(struct tcb *const tcp, const unsigned int code,
- 	tprints("[");
- 
- 	unsigned int i;
--	for (i = 1; i < ARRAY_SIZE(buffer); i++)
-+	for (i = 1; i < size; i++)
- 		tprintf("%s%d", i > 1 ? ", " : "", buffer[i]);
- 
- 	tprints("]");
 -- 
-2.30.0
+2.31.1
 

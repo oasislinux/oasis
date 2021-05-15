@@ -1,4 +1,4 @@
-From ac6d6953ee3bbb0a2717bb814c78f5671a993407 Mon Sep 17 00:00:00 2001
+From 6fcedfbc61c7f5b8896635407f0d6f4da1fea06b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:58:46 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
@@ -25,7 +25,7 @@ index afd4b3758..c1ed46588 100644
  		const size_t c = columns[i];
  
 diff --git a/src/nlattr.c b/src/nlattr.c
-index 8ac034031..648181ac8 100644
+index c007cc8b5..bc8287c1c 100644
 --- a/src/nlattr.c
 +++ b/src/nlattr.c
 @@ -344,7 +344,7 @@ decode_nla_hwaddr(struct tcb *const tcp,
@@ -60,10 +60,10 @@ index 40a8c1991..1482787ff 100644
  		if (!inet_ntop(diag_msg->idiag_family, diag_msg->id.idiag_dst,
  			       dst_buf, text_size))
 diff --git a/src/syscall.c b/src/syscall.c
-index 52f2f29f6..cbb51fff4 100644
+index ebe5dd9b6..dc5997a94 100644
 --- a/src/syscall.c
 +++ b/src/syscall.c
-@@ -303,7 +303,7 @@ decode_socket_subcall(struct tcb *tcp)
+@@ -304,7 +304,7 @@ decode_socket_subcall(struct tcb *tcp)
  
  	const kernel_ulong_t scno = SYS_socket_subcall + call;
  	const unsigned int nargs = sysent[scno].nargs;
@@ -73,10 +73,10 @@ index 52f2f29f6..cbb51fff4 100644
  	if (umoven(tcp, tcp->u_arg[1], nargs * current_wordsize, buf) < 0)
  		return;
 diff --git a/src/util.c b/src/util.c
-index 31b3876a3..8e12df0f1 100644
+index e87ac94b0..063db0382 100644
 --- a/src/util.c
 +++ b/src/util.c
-@@ -493,8 +493,7 @@ enum sock_proto
+@@ -508,8 +508,7 @@ enum sock_proto
  getfdproto(struct tcb *tcp, int fd)
  {
  #ifdef HAVE_SYS_XATTR_H
@@ -86,7 +86,7 @@ index 31b3876a3..8e12df0f1 100644
  	ssize_t r;
  	char path[sizeof("/proc/%u/fd/%u") + 2 * sizeof(int)*3];
  
-@@ -502,7 +501,7 @@ getfdproto(struct tcb *tcp, int fd)
+@@ -517,7 +516,7 @@ getfdproto(struct tcb *tcp, int fd)
  		return SOCK_PROTO_UNKNOWN;
  
  	xsprintf(path, "/proc/%u/fd/%u", get_proc_pid(tcp), fd);
@@ -96,5 +96,5 @@ index 31b3876a3..8e12df0f1 100644
  		return SOCK_PROTO_UNKNOWN;
  	else {
 -- 
-2.30.0
+2.31.1
 

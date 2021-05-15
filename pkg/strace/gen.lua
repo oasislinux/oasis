@@ -1,5 +1,6 @@
 cflags{
 	'-D HAVE_CONFIG_H',
+	'-D IN_STRACE',
 	-- it is important that the arch-specific directory is searched first
 	'-I $srcdir/src/linux/x86_64',
 	'-I $srcdir/src/linux/generic',
@@ -34,7 +35,7 @@ sub('tools.ninja', function()
 		})
 		build('cc', '$outdir/ioctlsort'..i..'.c.o', {
 			'$srcdir/src/ioctlsort.c',
-			'|', '$outdir/ioctl_iocdef.h', '$outdir/ioctls_all'..i..'.h',
+			'|', '$outdir/ioctl_iocdef.h', '$srcdir/ioctls_zfs.h', '$outdir/ioctls_all'..i..'.h',
 		}, {cflags=string.format([[$cflags -D 'IOCTLSORT_INC="ioctls_all%d.h"']], i)})
 		exe('ioctlsort'..i, {'ioctlsort'..i..'.c.o'})
 		rule('ioctlsort'..i, '$outdir/ioctlsort'..i..' >$out')
@@ -188,6 +189,7 @@ local srcs = paths[[src/(
 	mmap_notify.c
 	mmsghdr.c
 	mount.c
+	mount_setattr.c
 	move_mount.c
 	mq.c
 	msghdr.c
@@ -225,11 +227,11 @@ local srcs = paths[[src/(
 	poke.c
 	poll.c
 	prctl.c
-	print_kernel_sigset.c
 	print_dev_t.c
 	print_group_req.c
 	print_ifindex.c
 	print_instruction_pointer.c
+	print_kernel_sigset.c
 	print_kernel_version.c
 	print_mac.c
 	print_mq_attr.c
