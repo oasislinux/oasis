@@ -15,7 +15,12 @@ if modules._ctypes then
 	table.insert(pkg.deps, 'pkg/libffi/headers')
 	table.insert(libs, 'libffi/libffi.a')
 end
-if modules._hashlib or modules._ssl then
+if modules._hashlib then
+	cflags{'-isystem $builddir/pkg/bearssl/include'}
+	table.insert(pkg.deps, 'pkg/bearssl/headers')
+	table.insert(libs, 'bearssl/libbearssl.a')
+end
+if modules._ssl then
 	cflags{'-isystem $builddir/pkg/libressl/include'}
 	table.insert(pkg.deps, 'pkg/libressl/headers')
 	table.insert(libs, {

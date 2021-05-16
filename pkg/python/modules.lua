@@ -105,7 +105,7 @@ return {
 	--_ctypes_test={'_ctypes/_ctypes_test.c'},
 	--_decimal={'_decimal/_decimal.c'},
 	_ssl={'_ssl.c'},
-	_hashlib={'_hashopenssl.c'},
+	_hashlib={'_hashbearssl.c'},
 	--_sha256={'sha256module.c'},
 	--_sha512={'sha512module.c'},
 	--_md5={'md5module.c'},
