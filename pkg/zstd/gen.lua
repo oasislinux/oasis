@@ -9,11 +9,10 @@ cflags{
 	'-D ZSTD_NOTRACE',
 	'-D ZSTD_TRACE=0',
 }
+set('ldflags', '-static')
 
 pkg.hdrs = {
-	copy('$outdir/include', '$srcdir/lib', {'zstd.h'}),
-	copy('$outdir/include', '$srcdir/lib/common', {'zstd_errors.h'}),
-	copy('$outdir/include', '$srcdir/lib/dictBuilder', {'zdict.h'}),
+	copy('$outdir/include', '$srcdir/lib', {'zstd.h', 'zdict.h', 'zstd_errors.h'}),
 }
 pkg.deps = {
 	'$gendir/headers',
