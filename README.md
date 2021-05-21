@@ -162,4 +162,4 @@ likely still install it via pkgsrc or nix.
 ## Contact
 
 Feel free to contact me with any questions over email (address in commit
-log), or IRC at #oasislinux on Freenode.
+log), or IRC at #oasis on [libera.chat](ircs://irc.libera.chat:6697).
