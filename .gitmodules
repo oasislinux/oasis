@@ -263,6 +263,9 @@
 [submodule "pkg/pounce/src"]
 	path = pkg/pounce/src
 	url = https://git.causal.agency/pounce
+[submodule "pkg/pwgen/src"]
+	path = pkg/pwgen/src
+	url = https://github.com/tytso/pwgen.git
 [submodule "pkg/qbe/src"]
 	path = pkg/qbe/src
 	url = git://c9x.me/qbe.git
