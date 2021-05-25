@@ -18,7 +18,7 @@ subgen 'probe'
 subgen 'pkg'
 subgen 'src'
 
-build('awk', '$outdir/root.perms', {'$outdir/root.fspec', '|', '$basedir/scripts/perms.awk'}, {
+build('awk', '$outdir/root.perms', {'$outdir/tree.fspec', '|', '$basedir/scripts/perms.awk'}, {
 	expr='-f $basedir/scripts/perms.awk',
 })
 gitfile('.perms', '644', '$outdir/root.perms')
@@ -28,8 +28,8 @@ build('git-tree', '$outdir/root.tree', {'$outdir/root.index', '|', '$basedir/scr
 build('git-commit', '$outdir/root.commit', {'|', '$outdir/root.tree'})
 build('phony', 'commit', '$builddir/root.commit')
 
-build('fspec-sort', '$outdir/root-sorted.fspec', {'$outdir/root.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-sort'})
-build('fspec-tar', '$outdir/root.tar', {'$outdir/root-sorted.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-tar'})
+build('fspec-sort', '$outdir/root.fspec', {'$outdir/tree.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-sort'})
+build('fspec-tar', '$outdir/root.tar', {'$outdir/root.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-tar'})
 
 build('phony', 'build.ninja', 'ninja', {generator='1'})
 

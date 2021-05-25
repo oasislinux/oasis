@@ -110,11 +110,11 @@ local function gen(gendir)
 		build('empty', '$outdir/root.index')
 	end
 	if next(pkg.inputs.fspec) then
-		build('cat', '$outdir/root.fspec', pkg.inputs.fspec, {
-			description = '	FSPEC	$outdir/root.fspec',
+		build('cat', '$outdir/tree.fspec', pkg.inputs.fspec, {
+			description = '	FSPEC	$outdir/tree.fspec',
 		})
 	else
-		build('empty', '$outdir/root.fspec')
+		build('empty', '$outdir/tree.fspec')
 	end
 	build('phony', '$dir/root', pkg.inputs.root)
 	io.close()
@@ -129,7 +129,7 @@ function subgen(dir)
 	subninja(file)
 	table.insert(pkg.inputs.ninja, '$gendir/'..dir..'/ninja')
 	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
-	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/root.fspec')
+	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/tree.fspec')
 	local cmd = ('exec test -f %s/%s/local.ninja'):format(pkg.gendir, dir)
 	if recurse or not os.execute(cmd) then
 		local oldpkg, oldout = pkg, io.output()
