@@ -44,8 +44,8 @@ pkg.deps = {
 -- src/lib/Makefile.inc:/^CSOURCES
 lib('libcurl.a', [[
 	lib/(
-		altsvc.c amigaos.c asyn-ares.c asyn-thread.c base64.c c-hyper.c
-		conncache.c connect.c content_encoding.c cookie.c
+		altsvc.c amigaos.c asyn-ares.c asyn-thread.c base64.c bufref.c
+		c-hyper.c conncache.c connect.c content_encoding.c cookie.c
 		curl_addrinfo.c curl_ctype.c curl_des.c curl_endian.c
 		curl_fnmatch.c curl_get_line.c curl_gethostname.c curl_gssapi.c
 		curl_memrchr.c curl_multibyte.c curl_ntlm_core.c curl_ntlm_wb.c
