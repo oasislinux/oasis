@@ -1,15 +1,6 @@
 cflags{
 	'-Wall', '-Wextra', '-Wpedantic',
-	'-D ZSTD_LEGACY_SUPPORT=0',
-	'-D ZSTD_NO_UNUSED_FUNCTIONS',
-	'-D ZSTD_MULTITHREAD',
-	'-D XXH_NAMESPACE=ZSTD_',
-	'-D ZSTD_NOBENCH',
-	'-D ZSTD_NODICT',
-	'-D ZSTD_NOTRACE',
-	'-D ZSTD_TRACE=0',
-	'-D ZSTD_DISABLE_DEPRECATE_WARNINGS',
-	'-D ZDICT_DISABLE_DEPRECATE_WARNINGS',
+	'-include $dir/config.h',
 }
 
 pkg.hdrs = {
@@ -17,6 +8,7 @@ pkg.hdrs = {
 }
 pkg.deps = {
 	'$gendir/headers',
+	'$dir/config.h',
 }
 
 lib('libzstd.a', [[lib/(
