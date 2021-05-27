@@ -20,9 +20,10 @@ lib('libblake3.a', [[
 	blake3_dispatch.c
 	blake3_portable.c
 	@x86_64 (
-		blake3_cpu_features.S
+		blake3_cpuid.S
 		blake3_avx2_x86-64_unix.S
 		blake3_avx512_x86-64_unix.S
+		blake3_sse2_x86-64_unix.S
 		blake3_sse41_x86-64_unix.S
 	)
 ]])
