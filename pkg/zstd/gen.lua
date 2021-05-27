@@ -8,8 +8,9 @@ cflags{
 	'-D ZSTD_NODICT',
 	'-D ZSTD_NOTRACE',
 	'-D ZSTD_TRACE=0',
+	'-D ZSTD_DISABLE_DEPRECATE_WARNINGS',
+	'-D ZDICT_DISABLE_DEPRECATE_WARNINGS',
 }
-set('ldflags', '-static')
 
 pkg.hdrs = {
 	copy('$outdir/include', '$srcdir/lib', {'zstd.h', 'zdict.h', 'zstd_errors.h'}),
