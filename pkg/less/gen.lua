@@ -1,6 +1,6 @@
 cflags{
 	'-I $dir',
-	'-isystem $builddir/pkg/ncurses/include',
+	'-isystem $builddir/pkg/netbsd-curses/include',
 }
 
 cc('version.c')
@@ -12,8 +12,8 @@ exe('less', [[
 	lsystem.c mark.c optfunc.c option.c opttbl.c os.c
 	output.c pattern.c position.c prompt.c search.c signal.c
 	tags.c ttyin.c version.c.o
-	$builddir/pkg/ncurses/libncurses.a
-]], {'pkg/ncurses/headers'})
+	$builddir/pkg/netbsd-curses/libcurses.a.d
+]], {'pkg/netbsd-curses/headers'})
 file('bin/less', '755', '$outdir/less')
 
 exe('lessecho', {'lessecho.c', 'version.c.o'})
