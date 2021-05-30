@@ -16,7 +16,7 @@ cflags{
 	'-I $outdir',
 	'-isystem $builddir/pkg/libtermkey/include',
 	'-isystem $builddir/pkg/lua/include',
-	'-isystem $builddir/pkg/ncurses/include',
+	'-isystem $builddir/pkg/netbsd-curses/include',
 }
 
 build('copy', '$outdir/config.h', '$srcdir/config.def.h')
@@ -25,7 +25,7 @@ pkg.deps = {
 	'$outdir/config.h',
 	'pkg/libtermkey/headers',
 	'pkg/lua/headers',
-	'pkg/ncurses/headers',
+	'pkg/netbsd-curses/headers',
 }
 
 exe('vis', [[
@@ -57,7 +57,7 @@ exe('vis', [[
 	$builddir/pkg/libtermkey/libtermkey.a.d
 	$builddir/pkg/lpeg/liblpeg.a
 	$builddir/pkg/lua/liblua.a
-	$builddir/pkg/ncurses/libncurses.a
+	$builddir/pkg/netbsd-curses/libcurses.a.d
 ]])
 file('bin/vis', '755', '$outdir/vis')
 

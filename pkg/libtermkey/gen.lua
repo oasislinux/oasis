@@ -1,16 +1,16 @@
 cflags{
 	'-std=c99', '-Wall',
-	'-isystem $builddir/pkg/ncurses/include',
+	'-isystem $builddir/pkg/netbsd-curses/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir', {'termkey.h'})
-pkg.deps = {'pkg/ncurses/headers'}
+pkg.deps = {'pkg/netbsd-curses/headers'}
 
 lib('libtermkey.a', {
 	'termkey.c',
 	'driver-csi.c',
 	'driver-ti.c',
-	'$builddir/pkg/ncurses/libncurses.a',
+	'$builddir/pkg/netbsd-curses/libcurses.a.d',
 })
 
 fetch 'curl'
