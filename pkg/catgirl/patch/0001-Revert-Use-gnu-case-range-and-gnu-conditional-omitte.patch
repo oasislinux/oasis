@@ -1,4 +1,4 @@
-From fec230650b9a3f7b13add70a54105719850eb826 Mon Sep 17 00:00:00 2001
+From 8be1eb6a19a8f467abadc6e9501c18db68b76863 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 7 May 2020 00:36:14 -0700
 Subject: [PATCH] Revert "Use gnu-case-range and
@@ -7,29 +7,29 @@ Subject: [PATCH] Revert "Use gnu-case-range and
 This reverts commit 75a6aa9258270169f43f56e063f1bfb57eebe56b.
 ---
  Makefile   |  3 +--
- command.c  | 30 +++++++++++++++++-------------
+ command.c  | 34 +++++++++++++++++++---------------
  complete.c |  4 ++--
  handle.c   | 45 +++++++++++++++++++++++++++------------------
  ui.c       |  9 +++++++--
  url.c      |  2 +-
- 6 files changed, 55 insertions(+), 38 deletions(-)
+ 6 files changed, 57 insertions(+), 40 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 5caa3ba..d164315 100644
+index b285e8c..7d6e43d 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1,8 +1,7 @@
- PREFIX ?= /usr/local
- MANDIR ?= ${PREFIX}/share/man
+@@ -2,8 +2,7 @@ PREFIX ?= /usr/local
+ BINDIR ?= ${PREFIX}/bin
+ MANDIR ?= ${PREFIX}/man
  
 -CEXTS = gnu-case-range gnu-conditional-omitted-operand
 -CFLAGS += -std=c11 -Wall -Wextra -Wpedantic ${CEXTS:%=-Wno-%}
 +CFLAGS += -std=c11 -Wall -Wextra -Wpedantic
- LDLIBS = -lncursesw -ltls
+ LDADD.libtls = -ltls
+ LDADD.ncursesw = -lncursesw
  
- -include config.mk
 diff --git a/command.c b/command.c
-index 0aefb2b..ccdf2ff 100644
+index 4c290fc..e566a13 100644
 --- a/command.c
 +++ b/command.c
 @@ -68,8 +68,8 @@ static int splitChunk(const char *cmd, uint id) {
@@ -43,7 +43,7 @@ index 0aefb2b..ccdf2ff 100644
  		cmd, idNames[id]
  	);
  	assert(overhead > 0 && overhead < 512);
-@@ -161,7 +161,7 @@ static void commandPart(uint id, char *params) {
+@@ -170,7 +170,7 @@ static void commandPart(uint id, char *params) {
  
  static void commandQuit(uint id, char *params) {
  	(void)id;
@@ -52,7 +52,7 @@ index 0aefb2b..ccdf2ff 100644
  }
  
  static void commandNick(uint id, char *params) {
-@@ -259,7 +259,7 @@ static void commandOp(uint id, char *params) {
+@@ -268,7 +268,7 @@ static void commandOp(uint id, char *params) {
  }
  
  static void commandDeop(uint id, char *params) {
@@ -61,7 +61,7 @@ index 0aefb2b..ccdf2ff 100644
  }
  
  static void commandVoice(uint id, char *params) {
-@@ -271,7 +271,7 @@ static void commandVoice(uint id, char *params) {
+@@ -280,7 +280,7 @@ static void commandVoice(uint id, char *params) {
  }
  
  static void commandDevoice(uint id, char *params) {
@@ -70,7 +70,22 @@ index 0aefb2b..ccdf2ff 100644
  }
  
  static void commandBan(uint id, char *params) {
-@@ -413,7 +413,8 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
+@@ -355,12 +355,12 @@ static void commandWhowas(uint id, char *params) {
+ 
+ static void commandNS(uint id, char *params) {
+ 	(void)id;
+-	ircFormat("PRIVMSG NickServ :%s\r\n", (params ?: "HELP"));
++	ircFormat("PRIVMSG NickServ :%s\r\n", (params ? params : "HELP"));
+ }
+ 
+ static void commandCS(uint id, char *params) {
+ 	(void)id;
+-	ircFormat("PRIVMSG ChanServ :%s\r\n", (params ?: "HELP"));
++	ircFormat("PRIVMSG ChanServ :%s\r\n", (params ? params : "HELP"));
+ }
+ 
+ static void commandQuery(uint id, char *params) {
+@@ -425,7 +425,8 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
  		uiFormat(
  			id, Cold, NULL, "%sing \3%02d%s %s %s %s",
  			(heat == Hot ? "Highlight" : "Ignor"), Brown, filter.mask,
@@ -80,7 +95,7 @@ index 0aefb2b..ccdf2ff 100644
  		);
  	} else {
  		for (size_t i = 0; i < FilterCap && filters[i].mask; ++i) {
-@@ -421,8 +422,9 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
+@@ -433,8 +434,9 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
  			uiFormat(
  				Network, Warm, NULL, "%sing \3%02d%s %s %s %s",
  				(heat == Hot ? "Highlight" : "Ignor"), Brown, filters[i].mask,
@@ -92,7 +107,7 @@ index 0aefb2b..ccdf2ff 100644
  			);
  		}
  	}
-@@ -435,8 +437,8 @@ static void commandUnfilter(enum Heat heat, uint id, char *params) {
+@@ -447,8 +449,8 @@ static void commandUnfilter(enum Heat heat, uint id, char *params) {
  	uiFormat(
  		id, Cold, NULL, "%s %sing \3%02d%s %s %s %s",
  		(found ? "No longer" : "Not"), (heat == Hot ? "highlight" : "ignor"),
@@ -103,7 +118,7 @@ index 0aefb2b..ccdf2ff 100644
  	);
  }
  
-@@ -460,11 +462,12 @@ static void commandExec(uint id, char *params) {
+@@ -472,11 +474,12 @@ static void commandExec(uint id, char *params) {
  	if (pid < 0) err(EX_OSERR, "fork");
  	if (pid) return;
  
@@ -118,7 +133,7 @@ index 0aefb2b..ccdf2ff 100644
  	execl(shell, shell, "-c", params, NULL);
  	warn("%s", shell);
  	_exit(EX_UNAVAILABLE);
-@@ -489,7 +492,8 @@ static void commandHelp(uint id, char *params) {
+@@ -501,7 +504,8 @@ static void commandHelp(uint id, char *params) {
  	if (pid) return;
  
  	char buf[256];
@@ -151,10 +166,10 @@ index 5835926..0e1de47 100644
  }
  
 diff --git a/handle.c b/handle.c
-index d889f8e..ee45ed8 100644
+index 2607420..c25c7c0 100644
 --- a/handle.c
 +++ b/handle.c
-@@ -292,9 +292,9 @@ static void handleReplyISupport(struct Message *msg) {
+@@ -295,9 +295,9 @@ static void handleReplyISupport(struct Message *msg) {
  			set(&network.setParamModes, setParam);
  			set(&network.channelModes, channel);
  		} else if (!strcmp(key, "EXCEPTS")) {
@@ -166,16 +181,16 @@ index d889f8e..ee45ed8 100644
  		}
  	}
  }
-@@ -347,7 +347,7 @@ static void handleJoin(struct Message *msg) {
+@@ -350,7 +350,7 @@ static void handleJoin(struct Message *msg) {
  		"\3%02d%s\3\t%s%s%sarrives in \3%02d%s\3",
  		hash(msg->user), msg->nick,
  		(msg->params[2] ? "(" : ""),
 -		(msg->params[2] ?: ""),
 +		(msg->params[2] ? msg->params[2] : ""),
- 		(msg->params[2] ? ") " : ""),
+ 		(msg->params[2] ? "\17) " : ""),
  		hash(msg->params[0]), msg->params[0]
  	);
-@@ -379,12 +379,14 @@ static void handlePart(struct Message *msg) {
+@@ -382,12 +382,14 @@ static void handlePart(struct Message *msg) {
  		id, heat, tagTime(msg),
  		"\3%02d%s\3\tleaves \3%02d%s\3%s%s",
  		hash(msg->user), msg->nick, hash(msg->params[0]), msg->params[0],
@@ -192,7 +207,7 @@ index d889f8e..ee45ed8 100644
  	);
  }
  
-@@ -401,12 +403,14 @@ static void handleKick(struct Message *msg) {
+@@ -404,12 +406,14 @@ static void handleKick(struct Message *msg) {
  		hash(msg->user), msg->nick,
  		completeColor(id, msg->params[1]), msg->params[1],
  		hash(msg->params[0]), msg->params[0],
@@ -209,7 +224,7 @@ index d889f8e..ee45ed8 100644
  	);
  	completeRemove(id, msg->params[1]);
  	if (kicked) completeClear(id);
-@@ -457,13 +461,15 @@ static void handleQuit(struct Message *msg) {
+@@ -460,13 +464,15 @@ static void handleQuit(struct Message *msg) {
  			id, heat, tagTime(msg),
  			"\3%02d%s\3\tleaves%s%s",
  			hash(msg->user), msg->nick,
@@ -227,7 +242,7 @@ index d889f8e..ee45ed8 100644
  		);
  	}
  	completeRemove(None, msg->nick);
-@@ -711,7 +717,7 @@ static void handleReplyUserModeIs(struct Message *msg) {
+@@ -718,7 +724,7 @@ static void handleReplyUserModeIs(struct Message *msg) {
  	for (char *ch = msg->params[1]; *ch; ++ch) {
  		if (*ch == '+') continue;
  		const char *name = UserModes[(byte)*ch];
@@ -236,7 +251,7 @@ index d889f8e..ee45ed8 100644
  	}
  	uiFormat(
  		Network, Warm, tagTime(msg),
-@@ -750,13 +756,13 @@ static void handleReplyChannelModeIs(struct Message *msg) {
+@@ -757,13 +763,13 @@ static void handleReplyChannelModeIs(struct Message *msg) {
  			assert(param < ParamCap);
  			catf(
  				&cat, ", +%c%s%s %s",
@@ -252,7 +267,7 @@ index d889f8e..ee45ed8 100644
  			);
  		}
  	}
-@@ -783,7 +789,7 @@ static void handleMode(struct Message *msg) {
+@@ -790,7 +796,7 @@ static void handleMode(struct Message *msg) {
  				hash(msg->user), msg->nick,
  				(set ? "" : "un"),
  				self.color, msg->params[0],
@@ -261,7 +276,7 @@ index d889f8e..ee45ed8 100644
  			);
  		}
  		return;
-@@ -940,7 +946,7 @@ static void handleErrorBanListFull(struct Message *msg) {
+@@ -947,7 +953,7 @@ static void handleErrorBanListFull(struct Message *msg) {
  	require(msg, false, 4);
  	uiFormat(
  		idFor(msg->params[1]), Warm, tagTime(msg),
@@ -270,7 +285,7 @@ index d889f8e..ee45ed8 100644
  	);
  }
  
-@@ -1045,14 +1051,15 @@ static void handleReplyWhoisIdle(struct Message *msg) {
+@@ -1052,14 +1058,15 @@ static void handleReplyWhoisIdle(struct Message *msg) {
  		}
  	}
  	char signon[sizeof("0000-00-00 00:00:00")];
@@ -288,7 +303,7 @@ index d889f8e..ee45ed8 100644
  	);
  }
  
-@@ -1083,7 +1090,9 @@ static void handleReplyWhoisGeneric(struct Message *msg) {
+@@ -1090,7 +1097,9 @@ static void handleReplyWhoisGeneric(struct Message *msg) {
  		Network, Warm, tagTime(msg),
  		"\3%02d%s\3\t%s%s%s",
  		completeColor(Network, msg->params[1]), msg->params[1],
@@ -299,7 +314,7 @@ index d889f8e..ee45ed8 100644
  	);
  }
  
-@@ -1150,7 +1159,7 @@ static bool isMention(const struct Message *msg) {
+@@ -1157,7 +1166,7 @@ static bool isMention(const struct Message *msg) {
  	const char *match = msg->params[1];
  	while (NULL != (match = strstr(match, self.nick))) {
  		char a = (match > msg->params[1] ? match[-1] : ' ');
@@ -309,7 +324,7 @@ index d889f8e..ee45ed8 100644
  			return true;
  		}
 diff --git a/ui.c b/ui.c
-index add6eb3..4673071 100644
+index 6449e27..aa8c376 100644
 --- a/ui.c
 +++ b/ui.c
 @@ -476,7 +476,7 @@ static size_t windowTop(const struct Window *window) {
@@ -321,7 +336,7 @@ index add6eb3..4673071 100644
  	if (window->scroll) bottom -= SplitLines + MarkerLines;
  	return bottom;
  }
-@@ -948,7 +948,6 @@ static void keyCode(int code) {
+@@ -958,7 +958,6 @@ static void keyCode(int code) {
  		break; case KeyMetaGt: scrollTo(window, 0);
  		break; case KeyMetaLt: scrollTop(window);
  
@@ -329,7 +344,7 @@ index add6eb3..4673071 100644
  		break; case KeyMetaA: showAuto();
  		break; case KeyMetaB: edit(id, EditPrevWord, 0);
  		break; case KeyMetaD: edit(id, EditDeleteNextWord, 0);
-@@ -978,6 +977,12 @@ static void keyCode(int code) {
+@@ -988,6 +987,12 @@ static void keyCode(int code) {
  		break; case KEY_SEND: scrollTo(window, 0);
  		break; case KEY_SHOME: scrollTo(window, BufferCap);
  		break; case KEY_UP: windowScroll(window, +1);
@@ -356,5 +371,5 @@ index 21f946c..1330d36 100644
  		if (error) return error;
  	}
 -- 
-2.30.1
+2.31.1
 
