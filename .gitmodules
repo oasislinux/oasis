@@ -206,6 +206,10 @@
 [submodule "pkg/ncompress/src"]
 	path = pkg/ncompress/src
 	url = https://github.com/vapier/ncompress.git
+[submodule "pkg/netbsd-curses/src"]
+	path = pkg/netbsd-curses/src
+	url = https://github.com/oasislinux/netbsd-curses.git
+	ignore = all
 [submodule "pkg/netsurf/src"]
 	path = pkg/netsurf/src
 	url = https://github.com/oasislinux/netsurf

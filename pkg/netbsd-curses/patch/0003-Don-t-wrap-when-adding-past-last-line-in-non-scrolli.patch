@@ -1,0 +1,65 @@
+From 5b5cbce58a6ff85174abbdf57ba56db501fe816d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 3 Jun 2021 00:32:57 -0700
+Subject: [PATCH] Don't wrap when adding past last line in non-scrolling window
+
+X/Open curses says
+
+> If scrolling is disabled, any characters that would extend beyond
+> the last column of the last line are truncated.
+
+However, currently libcurses wraps the cursor back to the beginning
+of the last line.
+
+To fix this, when we try to add a character that would go past the
+end of the last line, leave the cursor where it is. If the character
+goes exactly to the end of the last line, add the character but set
+the cursor to the last column (to match ncurses behavior).
+
+[0] https://pubs.opengroup.org/onlinepubs/7908799/xcurses/intov.html#tag_001_004_002_002
+---
+ lib/libcurses/addbytes.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/lib/libcurses/addbytes.c b/lib/libcurses/addbytes.c
+index 9fd917c..7f88487 100644
+--- a/lib/libcurses/addbytes.c
++++ b/lib/libcurses/addbytes.c
+@@ -459,7 +459,6 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
+ 		if (newx > *(*lnp)->lastchp)
+ 			*(*lnp)->lastchp = newx;
+ 		__touchline(win, *y, sx, (int) win->maxx - 1);
+-		sx = *x = 0;
+ 		if (*y == win->scr_b) {
+ 			if (!(win->flags & __SCROLLOK))
+ 				return ERR;
+@@ -467,6 +466,7 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
+ 		} else {
+ 			(*y)++;
+ 		}
++		sx = *x = 0;
+ 		lp = &win->alines[*y]->line[0];
+ 		(*lnp) = win->alines[*y];
+ 	}
+@@ -547,14 +547,16 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
+ 		if (newx > *(*lnp)->lastchp)
+ 			*(*lnp)->lastchp = newx;
+ 		__touchline(win, *y, sx, (int) win->maxx - 1);
+-		*x = sx = 0;
+ 		if (*y == win->scr_b) {
+-			if (!(win->flags & __SCROLLOK))
++			if (!(win->flags & __SCROLLOK)) {
++				*x = win->maxx - 1;
+ 				return ERR;
++			}
+ 			scroll(win);
+ 		} else {
+ 			(*y)++;
+ 		}
++		*x = sx = 0;
+ 		lp = &win->alines[*y]->line[0];
+ 		(*lnp) = win->alines[*y];
+ 	} else {
+-- 
+2.31.1
+

@@ -1,0 +1,33 @@
+From 9c2c3bd4d21bf5f55c2e8a41c8253d152f7ba2f5 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 29 May 2021 21:45:58 -0700
+Subject: [PATCH] Use __fpurge from stdio_ext.h
+
+---
+ lib/libcurses/tty.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/lib/libcurses/tty.c b/lib/libcurses/tty.c
+index b022ba6..b5e4506 100644
+--- a/lib/libcurses/tty.c
++++ b/lib/libcurses/tty.c
+@@ -34,6 +34,7 @@
+ #include <sys/types.h>
+ 
+ #include <fcntl.h>
++#include <stdio_ext.h>
+ #include <stdlib.h>
+ #include <termios.h>
+ #include <unistd.h>
+@@ -597,7 +598,7 @@ int
+ flushinp(void)
+ {
+ 
+-	(void)fpurge(_cursesi_screen->infd);
++	(void)__fpurge(_cursesi_screen->infd);
+ 	return OK;
+ }
+ 
+-- 
+2.31.1
+
