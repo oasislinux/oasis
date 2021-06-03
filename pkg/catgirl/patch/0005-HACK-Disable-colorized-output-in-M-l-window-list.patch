@@ -1,0 +1,34 @@
+From 12f859151f0cc5376fbbac0b28a1193c20e26f7b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 3 Jun 2021 00:54:30 -0700
+Subject: [PATCH] [HACK] Disable colorized output in M-l window list
+
+vid_attr is not supported by NetBSD's libcurses, and this is not
+crucial feature.
+---
+ ui.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/ui.c b/ui.c
+index 6819d0a..50b1559 100644
+--- a/ui.c
++++ b/ui.c
+@@ -669,7 +669,6 @@ static void windowList(const struct Window *window) {
+ 
+ 		char buf[TimeCap];
+ 		strftime(buf, sizeof(buf), uiTime.format, localtime(&line->time));
+-		vid_attr(colorAttr(Colors[Gray]), colorPair(Colors[Gray], -1), NULL);
+ 		printf("%s ", buf);
+ 
+ 		bool align = false;
+@@ -685,7 +684,6 @@ static void windowList(const struct Window *window) {
+ 			size_t tab = strcspn(str, "\t");
+ 			if (tab < len) len = tab;
+ 
+-			vid_attr(styleAttr(style), stylePair(style), NULL);
+ 			printf("%.*s", (int)len, str);
+ 			str += len;
+ 		}
+-- 
+2.31.1
+

@@ -1,0 +1,27 @@
+From 78230d9042639147907263f41d9824f917c5c686 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 31 May 2021 16:37:09 -0700
+Subject: [PATCH] Break out of input loop when UI is hidden
+
+Otherwise, wget_wch() is called immediately after hiding the UI
+with M-l, which restores curses mode when using NetBSD's libcurses.
+---
+ ui.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ui.c b/ui.c
+index 2d02ef4..ff87124 100644
+--- a/ui.c
++++ b/ui.c
+@@ -1074,7 +1074,7 @@ void uiRead(void) {
+ 
+ 	wint_t ch;
+ 	static bool paste, style, literal;
+-	for (int ret; ERR != (ret = wget_wch(input, &ch));) {
++	for (int ret; !hidden && ERR != (ret = wget_wch(input, &ch));) {
+ 		if (ret == KEY_CODE_YES && ch == KeyPasteOn) {
+ 			paste = true;
+ 		} else if (ret == KEY_CODE_YES && ch == KeyPasteOff) {
+-- 
+2.31.1
+

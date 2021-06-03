@@ -1,0 +1,57 @@
+From a1592df2eedd841ef8b5ad7edcaabf251f3ab04f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 30 May 2021 23:29:26 -0700
+Subject: [PATCH] Avoid writing past the end of the status bar
+
+When waddnstr is called with a string that would extend past the
+end of the window, the string is truncated, the cursor remains at
+the last column, and ERR is returned. If this error is ignored and
+the loop continues, the next call to waddnstr overwrites the character
+at this column, resulting in a slight visual artifact. When the
+window is too small to fit the full status line, it is effectively
+truncated by one space on the right, since the string shown for
+each channel begins with a space.  Additionally, if the last window
+is the current window, the space is shown with a colored background.
+
+To fix this, when waddnstr returns ERR, exit the loop in styleAdd()
+early return -1 to propogate this error down to the caller.
+---
+ ui.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/ui.c b/ui.c
+index aa8c376..2d02ef4 100644
+--- a/ui.c
++++ b/ui.c
+@@ -374,14 +374,16 @@ static short stylePair(struct Style style) {
+ 	return colorPair(Colors[style.fg], Colors[style.bg]);
+ }
+ 
+-static void styleAdd(WINDOW *win, const char *str) {
++static int styleAdd(WINDOW *win, const char *str) {
+ 	struct Style style = StyleDefault;
+ 	while (*str) {
+ 		size_t len = styleParse(&style, &str);
+ 		wattr_set(win, styleAttr(style), stylePair(style), NULL);
+-		waddnstr(win, str, len);
++		if (waddnstr(win, str, len) == ERR)
++			return -1;
+ 		str += len;
+ 	}
++	return 0;
+ }
+ 
+ static void statusUpdate(void) {
+@@ -420,7 +422,8 @@ static void statusUpdate(void) {
+ 		if (window->scroll) {
+ 			catf(&cat, "~%d ", window->scroll);
+ 		}
+-		styleAdd(status, buf);
++		if (styleAdd(status, buf))
++			break;
+ 	}
+ 	wclrtoeol(status);
+ 
+-- 
+2.31.1
+

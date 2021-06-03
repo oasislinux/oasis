@@ -1,0 +1,27 @@
+From 3568a01d610e33073aa39f4cfadfcacd97509af4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 31 May 2021 16:40:28 -0700
+Subject: [PATCH] Resize status window explicitly during resize()
+
+Although ncurses automatically resizes windows that extend to the
+previous screen limits, NetBSD's libcurses does not, so resize the
+status window explicitly.
+---
+ ui.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/ui.c b/ui.c
+index ff87124..6819d0a 100644
+--- a/ui.c
++++ b/ui.c
+@@ -642,6 +642,7 @@ static void windowReflow(struct Window *window) {
+ 
+ static void resize(void) {
+ 	wclear(main);
++	wresize(status, 1, COLS);
+ 	wresize(main, MAIN_LINES, COLS);
+ 	for (uint num = 0; num < windows.len; ++num) {
+ 		windowReflow(windows.ptrs[num]);
+-- 
+2.31.1
+
