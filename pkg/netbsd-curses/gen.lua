@@ -131,6 +131,7 @@ exe('tput', [[usr.bin/tput/tput.c libterminfo.a]])
 file('bin/tput', '755', '$outdir/tput')
 exe('tset',  [[usr.bin/tset/(map.c misc.c set.c term.c tset.c) libterminfo.a]])
 file('bin/tset', '755', '$outdir/tset')
+sym('bin/reset', 'tset')
 
 man{
 	'usr.bin/infocmp/infocmp.1',

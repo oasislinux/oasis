@@ -137,27 +137,22 @@ exe('infocmp', [[
 	libtic.a
 	libncurses.a
 ]])
-file('bin/infocmp', '755', '$outdir/infocmp')
 
 exe('tic', [[
 	progs/(tic.c dump_entry.c tparm_type.c.o transform.c.o)
 	libtic.a
 	libncurses.a
 ]])
-file('bin/tic', '755', '$outdir/tic')
 
 exe('tput', [[
 	progs/(tput.c clear_cmd.c reset_cmd.c.o tparm_type.c.o transform.c.o tty_settings.c.o)
 	libncurses.a
 ]])
-file('bin/tput', '755', '$outdir/tput')
 
 exe('tset', [[
 	progs/(tset.c reset_cmd.c.o transform.c.o tty_settings.c.o)
 	libncurses.a
 ]])
-file('bin/tset', '755', '$outdir/tset')
-sym('bin/reset', 'tset')
 
 for _, f in ipairs{'tic.1m', 'tset.1'} do
 	local out = '$outdir/'..f
