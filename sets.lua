@@ -35,7 +35,7 @@ return {
 		'file',
 		'fuse',
 		'less',
-		'ncurses',
+		'netbsd-curses',
 		'python',
 		'squashfs-tools-ng',
 		'the_silver_searcher',

@@ -98,6 +98,7 @@ lib('libcurses.a', [[
 	)
 	libterminfo.a
 ]])
+file('lib/libcurses.a', '644', '$outdir/libcurses.a')
 
 lib('libterminfo.a', [[
 	lib/libterminfo/(
@@ -109,6 +110,7 @@ lib('libterminfo.a', [[
 	compat/mi_vector_hash.c
 	$outdir/hash.c
 ]])
+file('lib/libterminfo.a', '644', '$outdir/libterminfo.a')
 
 lib('libpanel.a', [[
 	lib/libpanel/(
@@ -117,6 +119,7 @@ lib('libpanel.a', [[
 	)
 	libcurses.a.d
 ]])
+file('lib/libpanel.a', '644', '$outdir/libpanel.a')
 
 exe('infocmp', [[usr.bin/infocmp/infocmp.c libterminfo.a]])
 file('bin/infocmp', '755', '$outdir/infocmp')

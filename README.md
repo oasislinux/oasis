@@ -149,6 +149,7 @@ tools whenever possible:
 - netsurf instead of chromium or firefox
 - samurai instead of ninja
 - velox instead of Xorg
+- netbsd-curses instead of ncurses
 
 These packages are grouped into logical [sets], and the full list
 is available in the [pkg] directory.
