@@ -30,12 +30,4 @@ exe('st', [[st.c $builddir/pkg/(
 file('bin/st', '755', '$outdir/st')
 man{'st.1'}
 
-local terminfo = {'s/st', 's/st-256color'}
-build('tic', expand{'$outdir/', terminfo}, '$srcdir/st.info', {
-	ticflags='-x -o $outdir',
-})
-for _, t in ipairs(terminfo) do
-	file('share/terminfo/'..t, '644', '$outdir/'..t)
-end
-
 fetch 'git'
