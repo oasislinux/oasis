@@ -80,6 +80,7 @@ local quirks = {
 	'50-system-chicony.quirks',
 	'50-system-cyborg.quirks',
 	'50-system-dell.quirks',
+	'50-system-gigabyte.quirks',
 	'50-system-google.quirks',
 	'50-system-hp.quirks',
 	'50-system-lenovo.quirks',
