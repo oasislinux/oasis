@@ -1,4 +1,4 @@
-From 015737758924b64b67df0a1d1e2385e3398f0cd1 Mon Sep 17 00:00:00 2001
+From edb05302e2c747253afd4698bc445e36c8726306 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 18 Jun 2019 02:29:07 -0700
 Subject: [PATCH] Avoid a few unnecessary statement expressions
@@ -8,10 +8,10 @@ Subject: [PATCH] Avoid a few unnecessary statement expressions
  1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
-index ae0813109..66fefe2a2 100644
+index b891ad480..b420b5187 100644
 --- a/include/c.h
 +++ b/include/c.h
-@@ -161,9 +161,8 @@
+@@ -176,9 +176,8 @@
   * @member:	the name of the member within the struct.
   */
  #ifndef container_of
@@ -23,7 +23,7 @@ index ae0813109..66fefe2a2 100644
  #endif
  
  #ifndef HAVE_PROGRAM_INVOCATION_SHORT_NAME
-@@ -241,11 +240,11 @@ errmsg(char doexit, int excode, char adderr, const char *fmt, ...)
+@@ -256,11 +255,11 @@ errmsg(char doexit, int excode, char adderr, const char *fmt, ...)
  
  /* Don't use inline function to avoid '#include "nls.h"' in c.h
   */
@@ -37,7 +37,7 @@ index ae0813109..66fefe2a2 100644
  
  /* After failed execvp() */
  #define EX_EXEC_FAILED		126	/* Program located, but not usable. */
-@@ -372,10 +371,10 @@ static inline int xusleep(useconds_t usec)
+@@ -387,10 +386,10 @@ static inline int xusleep(useconds_t usec)
  
  #define UTIL_LINUX_VERSION _("%s from %s\n"), program_invocation_short_name, PACKAGE_STRING
  
@@ -51,5 +51,5 @@ index ae0813109..66fefe2a2 100644
  /*
   * seek stuff
 -- 
-2.29.2
+2.31.1
 

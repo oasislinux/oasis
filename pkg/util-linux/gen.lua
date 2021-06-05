@@ -1,4 +1,4 @@
-set('version', '2.36.2')
+set('version', '2.37.0')
 cflags{
 	'-include $dir/config.h',
 	'-I $outdir',
@@ -35,30 +35,31 @@ pkg.deps = {
 lib('libcommon.a', [[
 	lib/(
 		blkdev.c
+		buffer.c
 		canonicalize.c
 		crc32.c
 		crc32c.c
-		env.c
-		idcache.c
 		encode.c
+		env.c
 		fileutils.c
+		idcache.c
+		jsonwrt.c
 		mangle.c
 		match.c
 		mbsalign.c
 		md5.c
 		pager.c
-		procutils.c
 		pwdutils.c
 		randutils.c
-		setproctitle.c
-		strutils.c
-		timeutils.c
-		ttyutils.c
-		strv.c
 		sha1.c
 		signames.c
+		strutils.c
+		strv.c
+		timeutils.c
+		ttyutils.c
 
 		linux_version.c
+		procutils.c
 		loopdev.c
 
 		cpuset.c
@@ -105,7 +106,6 @@ lib('libsmartcols.a', [[
 		line.c
 		table.c
 		print.c
-		fput.c
 		print-api.c
 		version.c
 		buffer.c
@@ -142,13 +142,13 @@ exe('fdisk', [[
 	libfdisk.a.d libsmartcols.a.d
 ]])
 file('bin/fdisk', '755', '$outdir/fdisk')
-man{'disk-utils/fdisk.8'}
+man{'$dir/man/fdisk.8'}
 
 exe('losetup', [[
 	sys-utils/losetup.c
 	libsmartcols.a.d libcommon.a
 ]])
 file('bin/losetup', '755', '$outdir/losetup')
-man{'sys-utils/losetup.8'}
+man{'$dir/man/losetup.8'}
 
 fetch 'git'

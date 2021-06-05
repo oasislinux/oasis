@@ -15,11 +15,13 @@
 /* #undef HAVE_CFPREFERENCESCOPYAPPVALUE */
 #define HAVE_CLEARENV 1
 #define HAVE_CLOCK_GETTIME 1
+/* #undef HAVE_CLOSE_RANGE */
 #define HAVE_CPU_SET_T 1
 /* #undef HAVE_CRYPTSETUP */
 /* #undef HAVE_CRYPT_ACTIVATE_BY_SIGNED_KEY */
 #define HAVE_CRYPT_H 1
 /* #undef HAVE_DCGETTEXT */
+#define HAVE_DECL_BLK_ZONE_REP_CAPACITY 1
 #define HAVE_DECL_CPU_ALLOC 1
 /* #undef HAVE_DECL_DIRFD */
 /* #undef HAVE_DECL_TZNAME */
@@ -37,7 +39,6 @@
 #define HAVE_EXPLICIT_BZERO 1
 /* #undef HAVE_FALLOCATE */
 #define HAVE_FCNTL_H 1
-#define HAVE_FMEMOPEN 1
 #define HAVE_FPURGE 1
 #define HAVE_FSEEKO 1
 #define HAVE_FSTATAT 1
@@ -93,10 +94,12 @@
 /* #undef HAVE_LINUX_COMPILER_H */
 #define HAVE_LINUX_FALLOC_H 1
 #define HAVE_LINUX_FD_H 1
+#define HAVE_LINUX_FIEMAP_H 1
 #define HAVE_LINUX_FS_H 1
 #define HAVE_LINUX_GSMMUX_H 1
 #define HAVE_LINUX_MAJOR_H 1
 #define HAVE_LINUX_NET_NAMESPACE_H 1
+#define HAVE_LINUX_NSFS_H 1
 #define HAVE_LINUX_RAW_H 1
 #define HAVE_LINUX_SECUREBITS_H 1
 #define HAVE_LINUX_TIOCL_H 1
@@ -123,7 +126,7 @@
 #define HAVE_OPENAT 1
 #define HAVE_OPEN_MEMSTREAM 1
 #define HAVE_PATHS_H 1
-/* #undef HAVE_PCRE */
+/* #undef HAVE_PCRE2_POSIX */
 #define HAVE_PERSONALITY 1
 /* #undef HAVE_PIDFD_OPEN */
 /* #undef HAVE_PIDFD_SEND_SIGNAL */
@@ -147,6 +150,7 @@
 /* #undef HAVE_SECURITY_OPENPAM_H */
 /* #undef HAVE_SECURITY_PAM_APPL_H */
 /* #undef HAVE_SECURITY_PAM_MISC_H */
+#define HAVE_SENDFILE 1
 /* #undef HAVE_SETITIMER */
 #define HAVE_SETNS 1
 /* #undef HAVE_SETPROGNAME */
@@ -189,6 +193,7 @@
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_PRCTL_H 1
 #define HAVE_SYS_RESOURCE_H 1
+#define HAVE_SYS_SENDFILE_H 1
 #define HAVE_SYS_SIGNALFD_H 1
 #define HAVE_SYS_SOCKET_H 1
 /* #undef HAVE_SYS_SOCKIO_H */
@@ -202,7 +207,8 @@
 #define HAVE_SYS_TYPES_H 1
 /* #undef HAVE_SYS_UCRED_H */
 #define HAVE_SYS_UN_H 1
-#define HAVE_TERM_H 1
+#define HAVE_SYS_XATTR_H 1
+/* #undef HAVE_TERM_H */
 #define HAVE_TIMEGM 1
 #define HAVE_TIMER_CREATE 1
 #ifdef HAVE__THREAD_LOCAL
@@ -230,11 +236,11 @@
 #define HAVE___FPURGE 1
 #define HAVE___PROGNAME 1
 /* #undef HAVE___SECURE_GETENV */
-#define LIBBLKID_DATE "12-Feb-2020"
-#define LIBBLKID_VERSION "2.36.2"
-#define LIBFDISK_VERSION "2.36.2"
-#define LIBMOUNT_VERSION "2.36.2"
-#define LIBSMARTCOLS_VERSION "2.36.2"
+#define LIBBLKID_DATE "01-Jun-2021"
+#define LIBBLKID_VERSION "2.37.0"
+#define LIBFDISK_VERSION "2.37.0"
+#define LIBMOUNT_VERSION "2.37.0"
+#define LIBSMARTCOLS_VERSION "2.37.0"
 /* #undef LOGIN_CHOWN_VCS */
 /* #undef LOGIN_STAT_MAIL */
 #define LT_OBJDIR ".libs/"
@@ -244,12 +250,13 @@
 #define PACKAGE "util-linux"
 #define PACKAGE_BUGREPORT "kzak@redhat.com"
 #define PACKAGE_NAME "util-linux"
-#define PACKAGE_STRING "util-linux 2.36.2"
+#define PACKAGE_STRING "util-linux 2.37"
 #define PACKAGE_TARNAME "util-linux"
 #define PACKAGE_URL "http://www.kernel.org/pub/linux/utils/util-linux/"
-#define PACKAGE_VERSION "2.36.2"
+#define PACKAGE_VERSION "2.37"
 #define PG_BELL 1
 #define STDC_HEADERS 1
+/* #undef SYS_close_range */
 /* #undef SYS_fallocate */
 /* #undef SYS_ioprio_get */
 /* #undef SYS_ioprio_set */
@@ -289,7 +296,7 @@
 #define USE_TTY_GROUP 1
 /* #undef USE_USRDIR_PATHS_ONLY */
 /* #undef USE_VENDORDIR */
-#define VERSION "2.36.2"
+#define VERSION "2.37"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
