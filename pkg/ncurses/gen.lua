@@ -154,15 +154,6 @@ exe('tset', [[
 	libncurses.a
 ]])
 
-for _, f in ipairs{'tic.1m', 'tset.1'} do
-	local out = '$outdir/'..f
-	build('sed', out, {'$srcdir/man/'..f, '|', '$dir/subst.sed'}, {
-		expr='-f $dir/subst.sed',
-	})
-	man({out}, '1')
-end
-sym('share/man/man1/reset.1.gz', 'tset.1.gz')
-
 local terms = {'dumb', 'linux', 'tmux', 'tmux-256color', 'xterm', 'xterm-256color'}
 local terminfo = {}
 for _, term in ipairs(terms) do
