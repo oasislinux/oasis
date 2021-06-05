@@ -4,7 +4,6 @@ packages:
 - libarchive-tools
 - lua
 - nasm
-- ncurses
 - ninja
 - tzdata
 - wayland-dev
