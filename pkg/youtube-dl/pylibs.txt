@@ -81,7 +81,6 @@ youtube_dl/extractor/biobiochiletv.py
 youtube_dl/extractor/biqle.py
 youtube_dl/extractor/bitchute.py
 youtube_dl/extractor/bleacherreport.py
-youtube_dl/extractor/blinkx.py
 youtube_dl/extractor/bloomberg.py
 youtube_dl/extractor/bokecc.py
 youtube_dl/extractor/bongacams.py
@@ -483,6 +482,7 @@ youtube_dl/extractor/platzi.py
 youtube_dl/extractor/playfm.py
 youtube_dl/extractor/playplustv.py
 youtube_dl/extractor/plays.py
+youtube_dl/extractor/playstuff.py
 youtube_dl/extractor/playtvak.py
 youtube_dl/extractor/playvid.py
 youtube_dl/extractor/playwire.py
