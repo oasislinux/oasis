@@ -1,10 +1,10 @@
 cflags{
 	'-I $dir',
-	'-I $srcdir',
+	'-I $srcdir/include',
 	'-I $srcdir/src',
 }
 
-pkg.hdrs = copy('$outdir/include/xkbcommon', '$srcdir/xkbcommon', {
+pkg.hdrs = copy('$outdir/include/xkbcommon', '$srcdir/include/xkbcommon', {
 	'xkbcommon.h',
 	'xkbcommon-compat.h',
 	'xkbcommon-keysyms.h',
