@@ -1,4 +1,4 @@
-From 5b5cbce58a6ff85174abbdf57ba56db501fe816d Mon Sep 17 00:00:00 2001
+From de7a1acf3168a35c19a569cc7f6f572c39e96c82 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 3 Jun 2021 00:32:57 -0700
 Subject: [PATCH] Don't wrap when adding past last line in non-scrolling window
@@ -18,13 +18,67 @@ the cursor to the last column (to match ncurses behavior).
 
 [0] https://pubs.opengroup.org/onlinepubs/7908799/xcurses/intov.html#tag_001_004_002_002
 ---
- lib/libcurses/addbytes.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ lib/libcurses/addbytes.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/lib/libcurses/addbytes.c b/lib/libcurses/addbytes.c
-index 9fd917c..7f88487 100644
+index 9fd917ca..e52dc310 100644
 --- a/lib/libcurses/addbytes.c
 +++ b/lib/libcurses/addbytes.c
+@@ -232,8 +232,6 @@ _cursesi_addbyte(WINDOW *win, __LINE **lp, int *y, int *x, int c,
+ #endif
+ 
+ 	if (char_interp && ((*lp)->flags & __ISPASTEOL)) {
+-		*x = 0;
+-		(*lp)->flags &= ~__ISPASTEOL;
+ 		if (*y == win->scr_b) {
+ #ifdef DEBUG
+ 			__CTRACE(__CTRACE_INPUT,
+@@ -246,6 +244,8 @@ _cursesi_addbyte(WINDOW *win, __LINE **lp, int *y, int *x, int c,
+ 		} else {
+ 			(*y)++;
+ 		}
++		*x = 0;
++		(*lp)->flags &= ~__ISPASTEOL;
+ 		*lp = win->alines[*y];
+ 		if (c == '\n')
+ 			return OK;
+@@ -341,8 +341,6 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
+ 			return OK;
+ 		case L'\n':
+ 			wclrtoeol(win);
+-			*x = 0;
+-			(*lnp)->flags &= ~__ISPASTEOL;
+ 			if (*y == win->scr_b) {
+ 				if (!(win->flags & __SCROLLOK))
+ 					return ERR;
+@@ -350,6 +348,8 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
+ 			} else {
+ 				(*y)++;
+ 			}
++			*x = 0;
++			(*lnp)->flags &= ~__ISPASTEOL;
+ 			return OK;
+ 		case L'\t':
+ 			cc.vals[0] = L' ';
+@@ -395,8 +395,6 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
+ 	}
+ 	/* check for new line first */
+ 	if (char_interp && ((*lnp)->flags & __ISPASTEOL)) {
+-		*x = 0;
+-		(*lnp)->flags &= ~__ISPASTEOL;
+ 		if (*y == win->scr_b) {
+ 			if (!(win->flags & __SCROLLOK))
+ 				return ERR;
+@@ -404,6 +402,8 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
+ 		} else {
+ 			(*y)++;
+ 		}
++		*x = 0;
++		(*lnp)->flags &= ~__ISPASTEOL;
+ 		(*lnp) = win->alines[*y];
+ 		lp = &win->alines[*y]->line[*x];
+ 	}
 @@ -459,7 +459,6 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
  		if (newx > *(*lnp)->lastchp)
  			*(*lnp)->lastchp = newx;

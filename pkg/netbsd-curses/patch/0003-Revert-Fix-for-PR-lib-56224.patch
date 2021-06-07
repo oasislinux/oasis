@@ -1,0 +1,80 @@
+From 6e3a7ba743db0e7e22ef50d038690b3f1e46bba3 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 8 Jun 2021 20:00:53 -0700
+Subject: [PATCH] Revert "Fix for PR lib/56224"
+
+This reverts commit deeb100e95f3d981cbe4ece4744fe6c34a5a2f05.
+---
+ lib/libcurses/addbytes.c | 38 +-------------------------------------
+ 1 file changed, 1 insertion(+), 37 deletions(-)
+
+diff --git a/lib/libcurses/addbytes.c b/lib/libcurses/addbytes.c
+index a678939f..9fd917ca 100644
+--- a/lib/libcurses/addbytes.c
++++ b/lib/libcurses/addbytes.c
+@@ -1,4 +1,4 @@
+-/*	$NetBSD: addbytes.c,v 1.55 2021/06/06 05:06:44 blymn Exp $	*/
++/*	$NetBSD: addbytes.c,v 1.54 2021/02/13 14:30:37 rillig Exp $	*/
+ 
+ /*
+  * Copyright (c) 1987, 1993, 1994
+@@ -161,15 +161,6 @@ _cursesi_waddbytes(WINDOW *win, const char *bytes, int count, attr_t attr,
+ 		} else if (wc == 0) {
+ 			break;
+ 		}
+-
+-		/* if scrollok is false and we are at the bottom of
+-		 * screen and this character would take us past the
+-		 * end of the line then we are done.
+-		 */
+-		if ((win->curx + n >= win->maxx) && 
+-		    (!(win->flags & __SCROLLOK)) &&
+-		    (win->cury == win->scr_b))
+-			break;
+ #ifdef DEBUG
+ 		__CTRACE(__CTRACE_INPUT,
+ 		    "ADDBYTES WIDE(0x%x [%s], %x) at (%d, %d), ate %d bytes\n",
+@@ -214,19 +205,6 @@ _cursesi_addbyte(WINDOW *win, __LINE **lp, int *y, int *x, int c,
+ 		case '\t':
+ 			tabsize = win->screen->TABSIZE;
+ 			newx = tabsize - (*x % tabsize);
+-			/* if at the bottom of the window and
+-			   not allowed to scroll then just do
+-			   what we can */
+-			if ((*y == win->scr_b) &&
+-			    !(win->flags & __SCROLLOK)) {
+-				if ((*lp)->flags & __ISPASTEOL) {
+-					return OK;
+-				}
+-
+-				if (*x + newx > win->maxx - 1)
+-					newx = win->maxx - *x - 1;
+-			}
+-
+ 			for (i = 0; i < newx; i++) {
+ 				if (waddbytes(win, blank, 1) == ERR)
+ 					return ERR;
+@@ -379,20 +357,6 @@ _cursesi_addwchar(WINDOW *win, __LINE **lnp, int *y, int *x,
+ 			cc.attributes = win->wattr;
+ 			tabsize = win->screen->TABSIZE;
+ 			newx = tabsize - (*x % tabsize);
+-
+-			/* if at the bottom of the window and
+-			   not allowed to scroll then just do
+-			   what we can */
+-			if ((*y == win->scr_b) &&
+-			    !(win->flags & __SCROLLOK)) {
+-				if ((*lnp)->flags & __ISPASTEOL) {
+-					return OK;
+-				}
+-
+-				if (*x + newx > win->maxx - 1)
+-					newx = win->maxx - *x - 1;
+-			}
+-
+ 			for (i = 0; i < newx; i++) {
+ 				if (wadd_wch(win, &cc) == ERR)
+ 					return ERR;
+-- 
+2.31.1
+

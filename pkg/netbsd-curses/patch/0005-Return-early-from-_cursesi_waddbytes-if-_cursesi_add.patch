@@ -1,4 +1,4 @@
-From afe19e9450015024e51f3e694c866fc1e1c20c8f Mon Sep 17 00:00:00 2001
+From c977aac84ce6c6e2737a8a072cb4116b8ee4278e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 3 Jun 2021 00:42:45 -0700
 Subject: [PATCH] Return early from _cursesi_waddbytes if _cursesi_addwchar
@@ -11,7 +11,7 @@ window, in which case the rest of the string should be truncated.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/libcurses/addbytes.c b/lib/libcurses/addbytes.c
-index 7f88487..6d50bdf 100644
+index e52dc310..5d783df8 100644
 --- a/lib/libcurses/addbytes.c
 +++ b/lib/libcurses/addbytes.c
 @@ -132,7 +132,7 @@ _cursesi_waddbytes(WINDOW *win, const char *bytes, int count, attr_t attr,
