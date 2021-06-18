@@ -283,7 +283,7 @@ function cc(src, deps, args)
 	return compile('cc', src, deps, args)
 end
 
-function objects(srcs, deps)
+function objects(srcs, deps, args)
 	local objs, nobjs = {}, 0
 	local rules = {
 		c='cc',
@@ -302,7 +302,7 @@ function objects(srcs, deps)
 	for src in fn, srcs do
 		local rule = rules[src:match('[^.]*$')]
 		if rule then
-			src = compile(rule, src, deps)
+			src = compile(rule, src, deps, args)
 		end
 		nobjs = nobjs + 1
 		objs[nobjs] = src
