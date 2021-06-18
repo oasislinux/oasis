@@ -29,6 +29,12 @@ waylandproto('unstable/xdg-decoration/xdg-decoration-unstable-v1.xml', {
 	code='xdg-decoration-unstable-v1-protocol.c',
 })
 
+waylandproto('unstable/text-input/text-input-unstable-v3.xml', {
+	client='include/text-input-unstable-v3-client-protocol.h',
+	server='include/text-input-unstable-v3-server-protocol.h',
+	code='text-input-unstable-v3-protocol.c',
+})
+
 pkg.hdrs = {
 	'$outdir/include/presentation-time-client-protocol.h',
 	'$outdir/include/xdg-shell-client-protocol.h',
@@ -39,6 +45,8 @@ pkg.hdrs = {
 	'$outdir/include/linux-dmabuf-unstable-v1-server-protocol.h',
 	'$outdir/include/xdg-decoration-unstable-v1-client-protocol.h',
 	'$outdir/include/xdg-decoration-unstable-v1-server-protocol.h',
+	'$outdir/include/text-input-unstable-v3-client-protocol.h',
+	'$outdir/include/text-input-unstable-v3-server-protocol.h',
 }
 
 fetch 'git'
