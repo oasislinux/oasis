@@ -13,6 +13,11 @@ return {
                 -- include, and a list of patterns to exclude. If no patterns
                 -- are specified, all files from the package are included.
 		{sets.core, exclude={'^include/', '^lib/.*%.a$'}},
+
+		-- You may also specify a list of patterns to include or exclude
+		-- for any packages not matching any entries. If no patterns are
+		-- specified, all files from the package are excluded.
+		-- include={...}, exclude={...},
 	},
 
 	-- target toolchain and flags
