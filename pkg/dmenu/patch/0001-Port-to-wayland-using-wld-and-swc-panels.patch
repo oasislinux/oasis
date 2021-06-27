@@ -1083,7 +1083,7 @@ index 8fd1ca4..e4995a6 100644
 +		wld_fill_rectangle(drw->renderer, color, x, y, w, 1);
 +		wld_fill_rectangle(drw->renderer, color, x + w - 1, y + 1, 1, h - 2);
 +		wld_fill_rectangle(drw->renderer, color, x, y + 1, 1, h - 2);
-+		wld_fill_rectangle(drw->renderer, color, x, y - 1, w, 1);
++		wld_fill_rectangle(drw->renderer, color, x, y + h - 1, w, 1);
 +	}
  }
  
