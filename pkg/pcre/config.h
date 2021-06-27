@@ -12,12 +12,12 @@
 #define HAVE_LIMITS_H 1
 /* #undef HAVE_LONG_LONG */
 #define HAVE_MEMMOVE 1
-#define HAVE_MEMORY_H 1
 #define HAVE_PTHREAD 1
 #define HAVE_PTHREAD_PRIO_INHERIT 1
 /* #undef HAVE_READLINE_HISTORY_H */
 /* #undef HAVE_READLINE_READLINE_H */
 #define HAVE_STDINT_H 1
+#define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRERROR 1
 /* #undef HAVE_STRING */
@@ -46,10 +46,10 @@
 #define PACKAGE "pcre"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "PCRE"
-#define PACKAGE_STRING "PCRE 8.44"
+#define PACKAGE_STRING "PCRE 8.45"
 #define PACKAGE_TARNAME "pcre"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "8.44"
+#define PACKAGE_VERSION "8.45"
 #define PARENS_NEST_LIMIT 250
 #define PCRECPP_EXP_DECL extern __attribute__ ((visibility ("default")))
 #define PCRECPP_EXP_DEFN __attribute__ ((visibility ("default")))
@@ -77,7 +77,7 @@
 #define SUPPORT_UCP /**/
 #define SUPPORT_UTF /**/
 /* #undef SUPPORT_VALGRIND */
-#define VERSION "8.44"
+#define VERSION "8.45"
 /* #undef const */
 /* #undef int64_t */
 /* #undef size_t */
