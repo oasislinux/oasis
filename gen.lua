@@ -29,7 +29,7 @@ build('git-commit', '$outdir/root.commit', {'|', '$outdir/root.tree'})
 build('phony', 'commit', '$builddir/root.commit')
 
 build('fspec-sort', '$outdir/root.fspec', {'$outdir/tree.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-sort'})
-build('fspec-tar', '$outdir/root.tar', {'$outdir/root.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-tar'})
+build('fspec-tar', '$outdir/root.tar.zst', {'$outdir/root.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-tar'})
 
 build('phony', 'build.ninja', 'ninja', {generator='1'})
 

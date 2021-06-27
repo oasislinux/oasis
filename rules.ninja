@@ -122,7 +122,7 @@ rule fspec-sort
   command = $builddir/pkg/fspec-sync/host/fspec-sort -p <$in >$out
 
 rule fspec-tar
-  command = $builddir/pkg/fspec-sync/host/fspec-tar <$in >$out
+  command = $builddir/pkg/fspec-sync/host/fspec-tar <$in | zstd >$out
 
 rule fetch
   command = cd $basedir && sh $$OLDPWD/$script $gendir && touch $$OLDPWD/$out
