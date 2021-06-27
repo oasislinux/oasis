@@ -156,6 +156,7 @@ lib('libgit.a', [[
 	pack-write.c
 	packfile.c
 	pager.c
+	parallel-checkout.c
 	parse-options-cb.c
 	parse-options.c
 	patch-delta.c
@@ -170,6 +171,7 @@ lib('libgit.a', [[
 	promisor-remote.c
 	prompt.c
 	protocol.c
+	protocol-caps.c
 	prune-packed.c
 	quote.c
 	range-diff.c
@@ -203,6 +205,7 @@ lib('libgit.a', [[
 	shallow.c
 	sideband.c
 	sigchain.c
+	sparse-index.c
 	split-index.c
 	stable-qsort.c
 	strbuf.c
@@ -259,6 +262,9 @@ lib('libgit.a', [[
 	zlib.c
 
 	unix-socket.c
+	unix-stream-server.c
+
+	compat/simple-ipc/(ipc-shared.c ipc-unix-socket.c)
 
 	sha1dc_git.c
 	sha1dc/sha1.c
@@ -299,6 +305,7 @@ local builtins = {
 	'check-mailmap',
 	'check-ref-format',
 	'checkout-index',
+	'checkout--worker',
 	'checkout',
 	'clean',
 	'clone',

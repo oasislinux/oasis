@@ -45,6 +45,7 @@ config/init.txt
 config/instaweb.txt
 config/interactive.txt
 config/log.txt
+config/lsrefs.txt
 config/mailinfo.txt
 config/mailmap.txt
 config/maintenance.txt

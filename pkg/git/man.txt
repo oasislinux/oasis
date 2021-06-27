@@ -159,6 +159,7 @@ man1/gitweb.1
 man5/gitattributes.5
 man5/githooks.5
 man5/gitignore.5
+man5/gitmailmap.5
 man5/gitmodules.5
 man5/gitrepository-layout.5
 man5/gitweb.conf.5

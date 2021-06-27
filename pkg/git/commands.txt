@@ -168,6 +168,7 @@ gitglossary.txt
 githooks.txt
 gitignore.txt
 gitk.txt
+gitmailmap.txt
 gitmodules.txt
 gitnamespaces.txt
 gitremote-helpers.txt

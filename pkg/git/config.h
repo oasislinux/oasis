@@ -11,7 +11,7 @@
 #define GIT_LOCALE_PATH "/share/locale"
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
-#define GIT_VERSION "2.31.1"
+#define GIT_VERSION "2.32.0"
 #define HAVE_ALLOCA_H
 #define HAVE_PATHS_H
 #define HAVE_DEV_TTY
@@ -21,6 +21,7 @@
 #define NO_GETTEXT
 #define NO_OPENSSL
 #define NO_SYS_POLL_H
+#define SUPPORTS_SIMPLE_IPC
 #define PAGER_ENV "LESS=FRX LV=-c"
 #define USE_CURL_FOR_IMAP_SEND
 
