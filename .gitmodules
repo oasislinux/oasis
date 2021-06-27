@@ -306,7 +306,6 @@
 [submodule "pkg/squashfs-tools-ng/src"]
 	path = pkg/squashfs-tools-ng/src
 	url = https://github.com/AgentD/squashfs-tools-ng.git
-	ignore = all
 [submodule "pkg/sshfs/src"]
 	path = pkg/sshfs/src
 	url = https://github.com/libfuse/sshfs

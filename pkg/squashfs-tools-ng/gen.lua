@@ -1,6 +1,6 @@
 cflags{
 	'-std=c99', '-Wall', '-Wpedantic',
-	'-Wno-maybe-uninitialized',
+	'-Wno-discarded-qualifiers',
 	'-D _GNU_SOURCE',
 	'-I $srcdir',
 	'-I $srcdir/include',
