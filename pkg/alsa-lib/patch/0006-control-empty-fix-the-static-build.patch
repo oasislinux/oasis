@@ -1,13 +1,11 @@
-From b8d490ad478f1ed862244a5a86d157263de94a23 Mon Sep 17 00:00:00 2001
-From: Michael Forney <mforney@mforney.org>
-Date: Sun, 27 Jun 2021 01:24:41 -0700
-Subject: [PATCH] Fix build with --enable-static
+From 42f37846a9f7a7ada7fc3d7887154e62c5f748d2 Mon Sep 17 00:00:00 2001
+From: Jaroslav Kysela <perex@perex.cz>
+Date: Tue, 15 Jun 2021 23:21:42 +0200
+Subject: [PATCH] control: empty - fix the static build
 
-A typo in the variable name was causing a linking error:
-
-  libasound.a(control_symbols.o):(.data.rel+0x8): undefined reference to `_snd_module_control_empty'
-
-Signed-off-by: Michael Forney <mforney@mforney.org>
+Reported-by: Jan Palus <atler@pld-linux.org>
+Fixes: https://github.com/alsa-project/alsa-lib/issues/157
+Signed-off-by: Jaroslav Kysela <perex@perex.cz>
 ---
  src/control/control_empty.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
@@ -26,5 +24,5 @@ index 49d1026c..c9b048c1 100644
  
  /*! \page control_plugins
 -- 
-2.31.1
+2.32.0
 
