@@ -49,7 +49,8 @@ lib('libasound.a', [[src/(
 	conf.c confmisc.c input.c output.c async.c error.c dlmisc.c socket.c shmarea.c userfile.c names.c
 	control/(
 		cards.c tlv.c namehint.c hcontrol.c
-		control.c control_hw.c setup.c ctlparse.c
+		control.c control_hw.c control_empty.c
+		setup.c ctlparse.c
 		control_symbols.c
 		control_shm.c
 		control_ext.c
@@ -157,6 +158,7 @@ local conf = [[
 		VXPocket.conf
 		VXPocket440.conf
 	)
+	ctl/default.conf
 	pcm/(
 		default.conf front.conf rear.conf center_lfe.conf side.conf
 		surround21.conf surround40.conf surround41.conf

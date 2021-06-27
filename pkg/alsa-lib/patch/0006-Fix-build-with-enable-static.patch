@@ -1,0 +1,30 @@
+From b8d490ad478f1ed862244a5a86d157263de94a23 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 27 Jun 2021 01:24:41 -0700
+Subject: [PATCH] Fix build with --enable-static
+
+A typo in the variable name was causing a linking error:
+
+  libasound.a(control_symbols.o):(.data.rel+0x8): undefined reference to `_snd_module_control_empty'
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ src/control/control_empty.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/control/control_empty.c b/src/control/control_empty.c
+index 49d1026c..c9b048c1 100644
+--- a/src/control/control_empty.c
++++ b/src/control/control_empty.c
+@@ -30,7 +30,7 @@
+ 
+ #ifndef PIC
+ /* entry for static linking */
+-const char *_snd_module_ctl_empty = "";
++const char *_snd_module_control_empty = "";
+ #endif
+ 
+ /*! \page control_plugins
+-- 
+2.31.1
+

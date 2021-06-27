@@ -1,4 +1,4 @@
-From 4c27fa943883d1d846e7345aa869eebd9fd09853 Mon Sep 17 00:00:00 2001
+From a4dcc0e1772f620a59cb5030ae2f7c025037fb76 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 18:15:11 -0700
 Subject: [PATCH] Prevent empty top-level declarations
@@ -53,7 +53,7 @@ as an empty top-level declaration, which is not allowed in ISO C.
  43 files changed, 87 insertions(+), 87 deletions(-)
 
 diff --git a/include/alsa-symbols.h b/include/alsa-symbols.h
-index bba9a9d4..26fde696 100644
+index 344f021a..42e64623 100644
 --- a/include/alsa-symbols.h
 +++ b/include/alsa-symbols.h
 @@ -30,9 +30,9 @@
@@ -66,9 +66,9 @@ index bba9a9d4..26fde696 100644
 -	__asm__ (".symver " ASM_NAME(#real) "," ASM_NAME(#name) "@@" #version)
 +	__asm__ (".symver " ASM_NAME(#real) "," ASM_NAME(#name) "@@" #version);
  
- #define EXPORT_SYMBOL __attribute__((visibility("default"),externally_visible))
- 
-@@ -46,11 +46,11 @@
+ #ifdef __clang__
+ #define EXPORT_SYMBOL __attribute__((visibility("default")))
+@@ -50,11 +50,11 @@
  #if defined(__alpha__) || defined(__mips__)
  #define use_default_symbol_version(real, name, version) \
          __asm__ (".weak " ASM_NAME(#name)); \
@@ -83,10 +83,10 @@ index bba9a9d4..26fde696 100644
  #endif
  
 diff --git a/src/conf.c b/src/conf.c
-index 7df2b4e7..011caf89 100644
+index d863dec6..b1022112 100644
 --- a/src/conf.c
 +++ b/src/conf.c
-@@ -3967,7 +3967,7 @@ int snd_config_hook_load(snd_config_t *root, snd_config_t *config, snd_config_t
+@@ -4231,7 +4231,7 @@ int snd_config_hook_load(snd_config_t *root, snd_config_t *config, snd_config_t
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -95,8 +95,8 @@ index 7df2b4e7..011caf89 100644
  #endif
  
  #ifndef DOC_HIDDEN
-@@ -4035,7 +4035,7 @@ int snd_config_hook_load_for_all_cards(snd_config_t *root, snd_config_t *config,
- 	return 0;
+@@ -4401,7 +4401,7 @@ __fin_err:
+ 	return err;
  }
  #ifndef DOC_HIDDEN
 -SND_DLSYM_BUILD_VERSION(snd_config_hook_load_for_all_cards, SND_CONFIG_DLSYM_VERSION_HOOK);
@@ -105,10 +105,10 @@ index 7df2b4e7..011caf89 100644
  
  /** 
 diff --git a/src/confmisc.c b/src/confmisc.c
-index eb8218c1..b6e0753b 100644
+index 64af96fa..57fdb771 100644
 --- a/src/confmisc.c
 +++ b/src/confmisc.c
-@@ -300,7 +300,7 @@ int snd_func_getenv(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
+@@ -330,7 +330,7 @@ int snd_func_getenv(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -117,7 +117,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  /**
-@@ -353,7 +353,7 @@ int snd_func_igetenv(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
+@@ -383,7 +383,7 @@ int snd_func_igetenv(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
  	return 0;
  }
  #ifndef DOC_HIDDEN
@@ -126,7 +126,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  		
  /**
-@@ -445,7 +445,7 @@ int snd_func_concat(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
+@@ -474,7 +474,7 @@ int snd_func_concat(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -135,7 +135,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  
-@@ -534,7 +534,7 @@ int snd_func_iadd(snd_config_t **dst, snd_config_t *root,
+@@ -563,7 +563,7 @@ int snd_func_iadd(snd_config_t **dst, snd_config_t *root,
  	return snd_func_iops(dst, root, src, private_data, 0);
  }
  #ifndef DOC_HIDDEN
@@ -144,7 +144,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  /**
-@@ -560,7 +560,7 @@ int snd_func_imul(snd_config_t **dst, snd_config_t *root,
+@@ -589,7 +589,7 @@ int snd_func_imul(snd_config_t **dst, snd_config_t *root,
  	return snd_func_iops(dst, root, src, private_data, 1);
  }
  #ifndef DOC_HIDDEN
@@ -153,7 +153,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  /**
-@@ -591,7 +591,7 @@ int snd_func_datadir(snd_config_t **dst, snd_config_t *root ATTRIBUTE_UNUSED,
+@@ -620,7 +620,7 @@ int snd_func_datadir(snd_config_t **dst, snd_config_t *root ATTRIBUTE_UNUSED,
  	return snd_config_imake_string(dst, id, snd_config_topdir());
  }
  #ifndef DOC_HIDDEN
@@ -162,7 +162,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  static int open_ctl(long card, snd_ctl_t **ctl)
-@@ -657,7 +657,7 @@ int snd_func_private_string(snd_config_t **dst, snd_config_t *root ATTRIBUTE_UNU
+@@ -704,7 +704,7 @@ int snd_func_private_string(snd_config_t **dst, snd_config_t *root ATTRIBUTE_UNU
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -170,8 +170,8 @@ index eb8218c1..b6e0753b 100644
 +SND_DLSYM_BUILD_VERSION(snd_func_private_string, SND_CONFIG_DLSYM_VERSION_EVALUATE)
  #endif
  
- #ifndef DOC_HIDDEN
-@@ -737,7 +737,7 @@ int snd_func_private_card_driver(snd_config_t **dst, snd_config_t *root ATTRIBUT
+ /**
+@@ -825,7 +825,7 @@ int snd_func_private_card_driver(snd_config_t **dst, snd_config_t *root ATTRIBUT
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -180,7 +180,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  static int parse_card(snd_config_t *root, snd_config_t *src,
-@@ -801,7 +801,7 @@ int snd_func_card_inum(snd_config_t **dst, snd_config_t *root, snd_config_t *src
+@@ -889,7 +889,7 @@ int snd_func_card_inum(snd_config_t **dst, snd_config_t *root, snd_config_t *src
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -189,7 +189,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  /**
-@@ -838,7 +838,7 @@ int snd_func_card_driver(snd_config_t **dst, snd_config_t *root, snd_config_t *s
+@@ -926,7 +926,7 @@ int snd_func_card_driver(snd_config_t **dst, snd_config_t *root, snd_config_t *s
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -198,7 +198,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  /**
-@@ -889,7 +889,7 @@ int snd_func_card_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
+@@ -977,7 +977,7 @@ int snd_func_card_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -207,7 +207,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  /**
-@@ -940,7 +940,7 @@ int snd_func_card_name(snd_config_t **dst, snd_config_t *root,
+@@ -1028,7 +1028,7 @@ int snd_func_card_name(snd_config_t **dst, snd_config_t *root,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -216,7 +216,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  #ifdef BUILD_PCM
-@@ -1026,7 +1026,7 @@ int snd_func_pcm_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src, v
+@@ -1114,7 +1114,7 @@ int snd_func_pcm_id(snd_config_t **dst, snd_config_t *root, snd_config_t *src, v
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -225,7 +225,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  /**
-@@ -1139,7 +1139,7 @@ int snd_func_pcm_args_by_class(snd_config_t **dst, snd_config_t *root, snd_confi
+@@ -1227,7 +1227,7 @@ int snd_func_pcm_args_by_class(snd_config_t **dst, snd_config_t *root, snd_confi
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -234,7 +234,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  /**
-@@ -1193,7 +1193,7 @@ int snd_func_private_pcm_subdevice(snd_config_t **dst, snd_config_t *root ATTRIB
+@@ -1281,7 +1281,7 @@ int snd_func_private_pcm_subdevice(snd_config_t **dst, snd_config_t *root ATTRIB
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -243,7 +243,7 @@ index eb8218c1..b6e0753b 100644
  #endif
  
  #endif /* BUILD_PCM */
-@@ -1295,7 +1295,7 @@ int snd_func_refer(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
+@@ -1383,7 +1383,7 @@ int snd_func_refer(snd_config_t **dst, snd_config_t *root, snd_config_t *src,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -253,10 +253,10 @@ index eb8218c1..b6e0753b 100644
  
  #ifndef DOC_HIDDEN
 diff --git a/src/control/control.c b/src/control/control.c
-index 08058c06..66ba13e9 100644
+index ed986e54..9ef72316 100644
 --- a/src/control/control.c
 +++ b/src/control/control.c
-@@ -2511,7 +2511,7 @@ int snd_ctl_elem_info_is_indirect(const snd_ctl_elem_info_t *obj)
+@@ -2613,7 +2613,7 @@ int snd_ctl_elem_info_is_indirect(const snd_ctl_elem_info_t *obj)
  	assert(obj);
  	return 0;
  }
@@ -265,7 +265,7 @@ index 08058c06..66ba13e9 100644
  
  /**
   * \brief Get owner of a locked element
-@@ -2668,7 +2668,7 @@ int snd_ctl_elem_info_get_dimensions(const snd_ctl_elem_info_t *obj)
+@@ -2770,7 +2770,7 @@ int snd_ctl_elem_info_get_dimensions(const snd_ctl_elem_info_t *obj)
  	return -EINVAL;
  #endif
  }
@@ -274,7 +274,7 @@ index 08058c06..66ba13e9 100644
  
  /**
   * \brief Get specified of dimension width for given element
-@@ -2694,7 +2694,7 @@ int snd_ctl_elem_info_get_dimension(const snd_ctl_elem_info_t *obj, unsigned int
+@@ -2796,7 +2796,7 @@ int snd_ctl_elem_info_get_dimension(const snd_ctl_elem_info_t *obj, unsigned int
  	return -EINVAL;
  #endif /* deprecated */
  }
@@ -284,30 +284,31 @@ index 08058c06..66ba13e9 100644
  /**
   * \brief Set width to a specified dimension level of given element information.
 diff --git a/src/control/control_hw.c b/src/control/control_hw.c
-index b54d65f2..cd04fdd5 100644
+index 680f0fec..d8989c14 100644
 --- a/src/control/control_hw.c
 +++ b/src/control/control_hw.c
-@@ -468,4 +468,4 @@ int _snd_ctl_hw_open(snd_ctl_t **handlep, char *name, snd_config_t *root ATTRIBU
- 		return -EINVAL;
+@@ -514,5 +514,5 @@ int _snd_ctl_hw_open(snd_ctl_t **handlep, char *name, snd_config_t *root ATTRIBU
  	return snd_ctl_hw_open(handlep, name, card, mode);
  }
+ #ifndef DOC_HIDDEN
 -SND_DLSYM_BUILD_VERSION(_snd_ctl_hw_open, SND_CONTROL_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_ctl_hw_open, SND_CONTROL_DLSYM_VERSION)
+ #endif
 diff --git a/src/control/control_shm.c b/src/control/control_shm.c
-index 40d42643..f59c33f5 100644
+index c5723549..b62746b0 100644
 --- a/src/control/control_shm.c
 +++ b/src/control/control_shm.c
-@@ -618,4 +618,4 @@ int _snd_ctl_shm_open(snd_ctl_t **handlep, char *name, snd_config_t *root, snd_c
+@@ -619,4 +619,4 @@ int _snd_ctl_shm_open(snd_ctl_t **handlep, char *name, snd_config_t *root, snd_c
  	snd_config_delete(sconfig);
  	return err;
  }
 -SND_DLSYM_BUILD_VERSION(_snd_ctl_shm_open, SND_CONTROL_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_ctl_shm_open, SND_CONTROL_DLSYM_VERSION)
 diff --git a/src/dlmisc.c b/src/dlmisc.c
-index c9517c55..a15b25a7 100644
+index 1dd91356..280abdbf 100644
 --- a/src/dlmisc.c
 +++ b/src/dlmisc.c
-@@ -172,8 +172,8 @@ EXPORT_SYMBOL void *INTERNAL(snd_dlopen_old)(const char *name, int mode)
+@@ -170,8 +170,8 @@ EXPORT_SYMBOL void *INTERNAL(snd_dlopen_old)(const char *name, int mode)
  }
  #endif
  
@@ -319,10 +320,10 @@ index c9517c55..a15b25a7 100644
  /**
   * \brief Closes a dynamic library - ALSA wrapper for \c dlclose.
 diff --git a/src/hwdep/hwdep_hw.c b/src/hwdep/hwdep_hw.c
-index d3037194..1c8e39bf 100644
+index 1d3cf8e1..3ba489ec 100644
 --- a/src/hwdep/hwdep_hw.c
 +++ b/src/hwdep/hwdep_hw.c
-@@ -185,4 +185,4 @@ int _snd_hwdep_hw_open(snd_hwdep_t **hwdep, char *name,
+@@ -179,4 +179,4 @@ int _snd_hwdep_hw_open(snd_hwdep_t **hwdep, char *name,
  		return -EINVAL;
  	return snd_hwdep_hw_open(hwdep, name, card, device, mode);
  }
@@ -348,7 +349,7 @@ index d909a11d..890d2a34 100644
 -link_warning(snd_names_list_free, "Warning: snd_names_list_free is deprecated, use snd_device_name_free_hint");
 +link_warning(snd_names_list_free, "Warning: snd_names_list_free is deprecated, use snd_device_name_free_hint")
 diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
-index 24030b31..193996a1 100644
+index 09df0f12..68c919e4 100644
 --- a/src/pcm/pcm.c
 +++ b/src/pcm/pcm.c
 @@ -1526,7 +1526,7 @@ snd_pcm_sframes_t snd_pcm_forward(snd_pcm_t *pcm, snd_pcm_uframes_t frames)
@@ -387,7 +388,7 @@ index 24030b31..193996a1 100644
  
  /**
   * \brief Dump current hardware setup for PCM
-@@ -6289,7 +6289,7 @@ int snd_pcm_sw_params_set_start_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params
+@@ -6295,7 +6295,7 @@ int snd_pcm_sw_params_set_start_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params
  }
  
  #ifndef DOC_HIDDEN
@@ -396,7 +397,7 @@ index 24030b31..193996a1 100644
  #endif
  
  /**
-@@ -6305,7 +6305,7 @@ snd_pcm_start_t snd_pcm_sw_params_get_start_mode(const snd_pcm_sw_params_t *para
+@@ -6311,7 +6311,7 @@ snd_pcm_start_t snd_pcm_sw_params_get_start_mode(const snd_pcm_sw_params_t *para
  }
  
  #ifndef DOC_HIDDEN
@@ -405,7 +406,7 @@ index 24030b31..193996a1 100644
  #endif
  
  /**
-@@ -6337,7 +6337,7 @@ int snd_pcm_sw_params_set_xrun_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params,
+@@ -6343,7 +6343,7 @@ int snd_pcm_sw_params_set_xrun_mode(snd_pcm_t *pcm, snd_pcm_sw_params_t *params,
  }
  
  #ifndef DOC_HIDDEN
@@ -414,7 +415,7 @@ index 24030b31..193996a1 100644
  #endif
  
  /**
-@@ -6353,7 +6353,7 @@ snd_pcm_xrun_t snd_pcm_sw_params_get_xrun_mode(const snd_pcm_sw_params_t *params
+@@ -6359,7 +6359,7 @@ snd_pcm_xrun_t snd_pcm_sw_params_get_xrun_mode(const snd_pcm_sw_params_t *params
  }
  
  #ifndef DOC_HIDDEN
@@ -423,7 +424,7 @@ index 24030b31..193996a1 100644
  #endif
  
  /**
-@@ -6846,7 +6846,7 @@ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimest
+@@ -6852,7 +6852,7 @@ void snd_pcm_status_get_trigger_htstamp(const snd_pcm_status_t *obj, snd_htimest
  	assert(obj && ptr);
  	*ptr = obj->trigger_tstamp;
  }
@@ -432,7 +433,7 @@ index 24030b31..193996a1 100644
  
  /** 
   * \brief Get "now" timestamp from a PCM status container
-@@ -6874,7 +6874,7 @@ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *p
+@@ -6880,7 +6880,7 @@ void snd_pcm_status_get_htstamp(const snd_pcm_status_t *obj, snd_htimestamp_t *p
  	assert(obj && ptr);
  	*ptr = obj->tstamp;
  }
@@ -441,7 +442,7 @@ index 24030b31..193996a1 100644
  
  /** 
   * \brief Get "now" hi-res audio timestamp from a PCM status container
-@@ -7557,8 +7557,8 @@ snd_pcm_uframes_t _snd_pcm_boundary(snd_pcm_t *pcm)
+@@ -7571,8 +7571,8 @@ snd_pcm_uframes_t _snd_pcm_boundary(snd_pcm_t *pcm)
  }
  
  #ifndef DOC_HIDDEN
@@ -452,7 +453,7 @@ index 24030b31..193996a1 100644
  #endif
  
  static const char *const names[SND_PCM_HW_PARAM_LAST_INTERVAL + 1] = {
-@@ -7823,13 +7823,13 @@ void snd_pcm_unlink_appl_ptr(snd_pcm_t *pcm, snd_pcm_t *slave)
+@@ -7837,13 +7837,13 @@ void snd_pcm_unlink_appl_ptr(snd_pcm_t *pcm, snd_pcm_t *slave)
  #ifdef USE_VERSIONED_SYMBOLS
  
  #define OBSOLETE1(name, what, new) \
@@ -514,10 +515,10 @@ index 4c099acd..f7769f22 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_copy_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
-index 5b7472d9..7e21891c 100644
+index 608593f1..595f13e8 100644
 --- a/src/pcm/pcm_dmix.c
 +++ b/src/pcm/pcm_dmix.c
-@@ -1417,5 +1417,5 @@ int _snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
+@@ -1374,5 +1374,5 @@ int _snd_pcm_dmix_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -525,10 +526,10 @@ index 5b7472d9..7e21891c 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_dmix_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_dshare.c b/src/pcm/pcm_dshare.c
-index 8a672572..c32e20a9 100644
+index a918512b..d20d4adc 100644
 --- a/src/pcm/pcm_dshare.c
 +++ b/src/pcm/pcm_dshare.c
-@@ -1042,5 +1042,5 @@ int _snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
+@@ -999,5 +999,5 @@ int _snd_pcm_dshare_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -536,10 +537,10 @@ index 8a672572..c32e20a9 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_dshare_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_dsnoop.c b/src/pcm/pcm_dsnoop.c
-index c6e8cd27..1c943013 100644
+index 2c3b9f43..470e8a80 100644
 --- a/src/pcm/pcm_dsnoop.c
 +++ b/src/pcm/pcm_dsnoop.c
-@@ -894,5 +894,5 @@ int _snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
+@@ -853,5 +853,5 @@ int _snd_pcm_dsnoop_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -547,10 +548,10 @@ index c6e8cd27..1c943013 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_dsnoop_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_empty.c b/src/pcm/pcm_empty.c
-index 869577b6..11dcb37e 100644
+index 7cbd349f..c53b922b 100644
 --- a/src/pcm/pcm_empty.c
 +++ b/src/pcm/pcm_empty.c
-@@ -106,5 +106,5 @@ int _snd_pcm_empty_open(snd_pcm_t **pcmp, const char *name ATTRIBUTE_UNUSED,
+@@ -111,5 +111,5 @@ int _snd_pcm_empty_open(snd_pcm_t **pcmp, const char *name ATTRIBUTE_UNUSED,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -589,10 +590,10 @@ index 4416d363..ed88dd29 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_hook_ctl_elems_install, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 2028790e..23a3d05b 100644
+index b3f9d157..5ae6800f 100644
 --- a/src/pcm/pcm_hw.c
 +++ b/src/pcm/pcm_hw.c
-@@ -1946,7 +1946,7 @@ fail:
+@@ -1936,7 +1936,7 @@ fail:
  }
  
  #ifndef DOC_HIDDEN
@@ -683,10 +684,10 @@ index 73b0c3bc..58f741b6 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_mulaw_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_multi.c b/src/pcm/pcm_multi.c
-index 53c414d5..63ca148e 100644
+index 5fa09b9b..982f0829 100644
 --- a/src/pcm/pcm_multi.c
 +++ b/src/pcm/pcm_multi.c
-@@ -1447,5 +1447,5 @@ _free:
+@@ -1446,5 +1446,5 @@ _free:
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -694,10 +695,10 @@ index 53c414d5..63ca148e 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_multi_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_null.c b/src/pcm/pcm_null.c
-index 1d815485..d9d64767 100644
+index c8ea9b38..c3fed163 100644
 --- a/src/pcm/pcm_null.c
 +++ b/src/pcm/pcm_null.c
-@@ -499,5 +499,5 @@ int _snd_pcm_null_open(snd_pcm_t **pcmp, const char *name,
+@@ -501,5 +501,5 @@ int _snd_pcm_null_open(snd_pcm_t **pcmp, const char *name,
  	return 0;
  }
  #ifndef DOC_HIDDEN
@@ -716,10 +717,10 @@ index abf6f1ab..ce48cc45 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_plug_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
-index 5bf7dbb9..11c3bb7c 100644
+index 770aafea..a6c728de 100644
 --- a/src/pcm/pcm_rate.c
 +++ b/src/pcm/pcm_rate.c
-@@ -1613,5 +1613,5 @@ int _snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
+@@ -1602,5 +1602,5 @@ int _snd_pcm_rate_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -738,10 +739,10 @@ index d3e5f3ff..975029d6 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_route_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_share.c b/src/pcm/pcm_share.c
-index bff9507d..7695ba17 100644
+index 72509491..5d6306ea 100644
 --- a/src/pcm/pcm_share.c
 +++ b/src/pcm/pcm_share.c
-@@ -1719,5 +1719,5 @@ _free:
+@@ -1721,5 +1721,5 @@ _free:
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -760,10 +761,10 @@ index 26a27a57..31971686 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_shm_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
-index f08208f8..3ea835b8 100644
+index eea322ca..49265671 100644
 --- a/src/pcm/pcm_softvol.c
 +++ b/src/pcm/pcm_softvol.c
-@@ -1164,5 +1164,5 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
+@@ -1270,5 +1270,5 @@ int _snd_pcm_softvol_open(snd_pcm_t **pcmp, const char *name,
  	return err;
  }
  #ifndef DOC_HIDDEN
@@ -771,20 +772,20 @@ index f08208f8..3ea835b8 100644
 +SND_DLSYM_BUILD_VERSION(_snd_pcm_softvol_open, SND_PCM_DLSYM_VERSION)
  #endif
 diff --git a/src/rawmidi/rawmidi_hw.c b/src/rawmidi/rawmidi_hw.c
-index eaa8a76d..8c85d03f 100644
+index 99927d75..b5fd0342 100644
 --- a/src/rawmidi/rawmidi_hw.c
 +++ b/src/rawmidi/rawmidi_hw.c
-@@ -360,4 +360,4 @@ int _snd_rawmidi_hw_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
+@@ -354,4 +354,4 @@ int _snd_rawmidi_hw_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
  		return -EINVAL;
  	return snd_rawmidi_hw_open(inputp, outputp, name, card, device, subdevice, mode);
  }
 -SND_DLSYM_BUILD_VERSION(_snd_rawmidi_hw_open, SND_RAWMIDI_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_rawmidi_hw_open, SND_RAWMIDI_DLSYM_VERSION)
 diff --git a/src/rawmidi/rawmidi_virt.c b/src/rawmidi/rawmidi_virt.c
-index 2c4c27f5..5d2f7112 100644
+index 884b8ff8..201acb57 100644
 --- a/src/rawmidi/rawmidi_virt.c
 +++ b/src/rawmidi/rawmidi_virt.c
-@@ -467,5 +467,5 @@ int _snd_rawmidi_virtual_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
+@@ -468,5 +468,5 @@ int _snd_rawmidi_virtual_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
  }
  
  #ifndef DOC_HIDDEN
@@ -802,10 +803,10 @@ index e4b4d2a0..dddf4bf7 100644
 -SND_DLSYM_BUILD_VERSION(_snd_seq_hw_open, SND_SEQ_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_seq_hw_open, SND_SEQ_DLSYM_VERSION)
 diff --git a/src/timer/timer.c b/src/timer/timer.c
-index 670becd9..8beb90d1 100644
+index 6fc710b9..a288f01f 100644
 --- a/src/timer/timer.c
 +++ b/src/timer/timer.c
-@@ -643,7 +643,7 @@ int snd_timer_params_set_exclusive(snd_timer_params_t * params, int exclusive)
+@@ -649,7 +649,7 @@ int snd_timer_params_set_exclusive(snd_timer_params_t * params, int exclusive)
  		params->flags &= ~SNDRV_TIMER_PSFLG_EXCLUSIVE;
  	return 0;
  }
@@ -814,7 +815,7 @@ index 670becd9..8beb90d1 100644
  
  /**
   * \brief determine if timer has exclusive flag
-@@ -659,7 +659,7 @@ int snd_timer_params_get_exclusive(snd_timer_params_t * params)
+@@ -665,7 +665,7 @@ int snd_timer_params_get_exclusive(snd_timer_params_t * params)
  	assert(params);
  	return params->flags & SNDRV_TIMER_PSFLG_EXCLUSIVE ? 1 : 0;
  }
@@ -823,7 +824,7 @@ index 670becd9..8beb90d1 100644
  
  /**
   * \brief set timer early event
-@@ -745,7 +745,7 @@ void snd_timer_params_set_filter(snd_timer_params_t * params, unsigned int filte
+@@ -751,7 +751,7 @@ void snd_timer_params_set_filter(snd_timer_params_t * params, unsigned int filte
  	assert(params);
  	params->filter = filter;
  }
@@ -832,7 +833,7 @@ index 670becd9..8beb90d1 100644
  
  /**
   * \brief get timer event filter
-@@ -761,7 +761,7 @@ unsigned int snd_timer_params_get_filter(snd_timer_params_t * params)
+@@ -767,7 +767,7 @@ unsigned int snd_timer_params_get_filter(snd_timer_params_t * params)
  	assert(params);
  	return params->filter;
  }
@@ -841,7 +842,7 @@ index 670becd9..8beb90d1 100644
  
  /**
   * \brief set parameters for timer handle
-@@ -954,5 +954,5 @@ long snd_timer_info_get_ticks(snd_timer_info_t * info)
+@@ -960,5 +960,5 @@ long snd_timer_info_get_ticks(snd_timer_info_t * info)
  	return 1;
  }
  #ifndef DOC_HIDDEN
@@ -849,11 +850,11 @@ index 670becd9..8beb90d1 100644
 +link_warning(snd_timer_info_get_ticks, "Warning: snd_timer_info_get_ticks is deprecated")
  #endif
 diff --git a/src/timer/timer_hw.c b/src/timer/timer_hw.c
-index f08c0ac0..3ed78224 100644
+index fe4e40bb..884e6139 100644
 --- a/src/timer/timer_hw.c
 +++ b/src/timer/timer_hw.c
-@@ -340,4 +340,4 @@ int _snd_timer_hw_open(snd_timer_t **timer, char *name,
- 		return -EINVAL;
+@@ -332,4 +332,4 @@ int _snd_timer_hw_open(snd_timer_t **timer, char *name,
+ 	}
  	return snd_timer_hw_open(timer, name, dev_class, dev_sclass, card, device, subdevice, mode);
  }
 -SND_DLSYM_BUILD_VERSION(_snd_timer_hw_open, SND_TIMER_DLSYM_VERSION);
@@ -890,7 +891,7 @@ index 084ff61a..83543522 100644
  /**
   * \brief get size of the snd_timer_id_t structure in bytes
 diff --git a/src/timer/timer_query_hw.c b/src/timer/timer_query_hw.c
-index dad228c8..7fc7cf4d 100644
+index d8bac6e7..8c464fc3 100644
 --- a/src/timer/timer_query_hw.c
 +++ b/src/timer/timer_query_hw.c
 @@ -135,4 +135,4 @@ int _snd_timer_query_hw_open(snd_timer_query_t **timer, char *name,
@@ -900,5 +901,5 @@ index dad228c8..7fc7cf4d 100644
 -SND_DLSYM_BUILD_VERSION(_snd_timer_query_hw_open, SND_TIMER_QUERY_DLSYM_VERSION);
 +SND_DLSYM_BUILD_VERSION(_snd_timer_query_hw_open, SND_TIMER_QUERY_DLSYM_VERSION)
 -- 
-2.29.0
+2.31.1
 

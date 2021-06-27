@@ -1,0 +1,121 @@
+From 9748480242da804020fb31b4f98f0b4d618857c2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 27 Jun 2021 01:17:55 -0700
+Subject: [PATCH] Fix build with --disable-ucm
+
+A recent change introduced a dependency on ucm to several of the
+other components, but this was not made conditional on whether
+BUILD_UCM is enabled.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ src/control/control.c | 5 ++++-
+ src/pcm/pcm.c         | 5 ++++-
+ src/rawmidi/rawmidi.c | 5 ++++-
+ src/seq/seq.c         | 5 ++++-
+ src/timer/timer.c     | 5 ++++-
+ 5 files changed, 20 insertions(+), 5 deletions(-)
+
+diff --git a/src/control/control.c b/src/control/control.c
+index 9ef72316..7d6a555f 100644
+--- a/src/control/control.c
++++ b/src/control/control.c
+@@ -1520,11 +1520,14 @@ int snd_ctl_open(snd_ctl_t **ctlp, const char *name, int mode)
+ 	int err;
+ 
+ 	assert(ctlp && name);
++#ifdef BUILD_UCM
+ 	if (_snd_is_ucm_device(name)) {
+ 		name = uc_mgr_alibcfg_by_device(&top, name);
+ 		if (name == NULL)
+ 			return -ENODEV;
+-	} else {
++	} else
++#endif
++	{
+ 		err = snd_config_update_ref(&top);
+ 		if (err < 0)
+ 			return err;
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 68c919e4..6c7b72d4 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -2686,11 +2686,14 @@ int snd_pcm_open(snd_pcm_t **pcmp, const char *name,
+ 	int err;
+ 
+ 	assert(pcmp && name);
++#ifdef BUILD_UCM
+ 	if (_snd_is_ucm_device(name)) {
+ 		name = uc_mgr_alibcfg_by_device(&top, name);
+ 		if (name == NULL)
+ 			return -ENODEV;
+-	} else {
++	} else
++#endif
++	{
+ 		err = snd_config_update_ref(&top);
+ 		if (err < 0)
+ 			return err;
+diff --git a/src/rawmidi/rawmidi.c b/src/rawmidi/rawmidi.c
+index 55f44821..f6a60611 100644
+--- a/src/rawmidi/rawmidi.c
++++ b/src/rawmidi/rawmidi.c
+@@ -304,11 +304,14 @@ int snd_rawmidi_open(snd_rawmidi_t **inputp, snd_rawmidi_t **outputp,
+ 	int err;
+ 
+ 	assert((inputp || outputp) && name);
++#ifdef BUILD_UCM
+ 	if (_snd_is_ucm_device(name)) {
+ 		name = uc_mgr_alibcfg_by_device(&top, name);
+ 		if (name == NULL)
+ 			return -ENODEV;
+-	} else {
++	} else
++#endif
++	{
+ 		err = snd_config_update_ref(&top);
+ 		if (err < 0)
+ 			return err;
+diff --git a/src/seq/seq.c b/src/seq/seq.c
+index f051426f..3330e770 100644
+--- a/src/seq/seq.c
++++ b/src/seq/seq.c
+@@ -978,11 +978,14 @@ int snd_seq_open(snd_seq_t **seqp, const char *name,
+ 	int err;
+ 
+ 	assert(seqp && name);
++#if BUILD_UCM
+ 	if (_snd_is_ucm_device(name)) {
+ 		name = uc_mgr_alibcfg_by_device(&top, name);
+ 		if (name == NULL)
+ 			return -ENODEV;
+-	} else {
++	} else
++#endif
++	{
+ 		err = snd_config_update_ref(&top);
+ 		if (err < 0)
+ 			return err;
+diff --git a/src/timer/timer.c b/src/timer/timer.c
+index a288f01f..c34c594f 100644
+--- a/src/timer/timer.c
++++ b/src/timer/timer.c
+@@ -205,11 +205,14 @@ int snd_timer_open(snd_timer_t **timer, const char *name, int mode)
+ 	int err;
+ 
+ 	assert(timer && name);
++#ifdef BUILD_UCM
+ 	if (_snd_is_ucm_device(name)) {
+ 		name = uc_mgr_alibcfg_by_device(&top, name);
+ 		if (name == NULL)
+ 			return -ENODEV;
+-	} else {
++	} else
++#endif
++	{
+ 		err = snd_config_update_ref(&top);
+ 		if (err < 0)
+ 			return err;
+-- 
+2.31.1
+

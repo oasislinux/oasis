@@ -6,7 +6,7 @@ Generated with
 	./configure \
 		--prefix= \
 		--disable-hwdep \
-		--disable-rawmidi \
+		--disable-ucm \
 		--without-libdl
 
 ## Updating
