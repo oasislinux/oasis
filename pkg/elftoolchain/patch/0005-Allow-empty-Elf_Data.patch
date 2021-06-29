@@ -1,0 +1,26 @@
+From fe335f0f01aabe08df740092306ecc107ff5d96d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 28 Jun 2021 18:23:22 -0700
+Subject: [PATCH] Allow empty Elf_Data
+
+---
+ libelf/elf_update.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/libelf/elf_update.c b/libelf/elf_update.c
+index 3e19b78a..62f64fc1 100644
+--- a/libelf/elf_update.c
++++ b/libelf/elf_update.c
+@@ -815,6 +815,9 @@ _libelf_write_scn(Elf *e, unsigned char *nf, struct _Elf_Extent *ex)
+ 			    LIBELF_PRIVATE(fillchar),
+ 			    (size_t) (sh_off + d->d_off - (uint64_t) rc));
+ 
++		if (d->d_size == 0)
++			continue;
++
+ 		rc = (off_t) (sh_off + d->d_off);
+ 
+ 		assert(d->d_buf != NULL);
+-- 
+2.32.0
+
