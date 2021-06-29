@@ -7,7 +7,7 @@ cflags{
 
 pkg.deps = {'pkg/alsa-lib/headers'}
 
-exe('bin/amixer', {'amixer/amixer.c', 'alsamixer/volume_mapping.c', '$builddir/pkg/alsa-lib/libasound.a'})
+exe('bin/amixer', {'amixer/amixer.c', 'amixer/volume_mapping.c', '$builddir/pkg/alsa-lib/libasound.a'})
 file('bin/amixer', '755', '$outdir/bin/amixer')
 man{'amixer/amixer.1'}
 
