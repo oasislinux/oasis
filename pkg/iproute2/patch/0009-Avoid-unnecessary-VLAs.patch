@@ -1,4 +1,4 @@
-From 7d8d4edc0bbfc3fa1b99c6491577465c9bc4a350 Mon Sep 17 00:00:00 2001
+From a83d32a1ccc4c5e1f0713b5136be81606b7e90f4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 13:38:59 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
@@ -22,10 +22,10 @@ index 669f0538..9e456030 100644
  
  	msg->iov.iov_base = &msg->aux;
 diff --git a/ip/iptuntap.c b/ip/iptuntap.c
-index 41fa1649..d2e305ae 100644
+index 54fd7448..b27fa4b1 100644
 --- a/ip/iptuntap.c
 +++ b/ip/iptuntap.c
-@@ -303,9 +303,7 @@ static void show_processes(const char *name)
+@@ -274,9 +274,7 @@ static void show_processes(const char *name)
  
  	fd_path = globbuf.gl_pathv;
  	while (*fd_path) {
@@ -36,7 +36,7 @@ index 41fa1649..d2e305ae 100644
  		int pid, fd;
  		FILE *f;
  
-@@ -315,13 +313,13 @@ static void show_processes(const char *name)
+@@ -286,13 +284,13 @@ static void show_processes(const char *name)
  		if (pid == getpid())
  			goto next;
  
@@ -53,5 +53,5 @@ index 41fa1649..d2e305ae 100644
  
  		if (asprintf(&fdinfo, "/proc/%d/fdinfo/%d", pid, fd) < 0)
 -- 
-2.23.0
+2.32.0
 
