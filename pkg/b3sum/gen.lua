@@ -31,5 +31,6 @@ file('lib/libblake3.a', '644', '$outdir/libblake3.a')
 
 exe('b3sum', {'b3sum.c', 'libblake3.a'})
 file('bin/b3sum', '755', '$outdir/b3sum')
+man{'b3sum.1'}
 
 fetch 'git'
