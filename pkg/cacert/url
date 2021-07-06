@@ -1,2 +1,2 @@
-url = "https://curl.haxx.se/ca/cacert-2021-05-25.pem"
+url = "https://curl.haxx.se/ca/cacert-2021-07-05.pem"
 output = "cacert.pem"
