@@ -75,26 +75,30 @@ local srcs = paths[[
 
 		@x86_64 x86/(
 			cpu.c msac_init.c
-			cpuid.asm msac.asm cdef_avx2.asm cdef_sse.asm
+			cpuid.asm msac.asm cdef_avx2.asm itx_avx2.asm
+			looprestoration_avx2.asm cdef_sse.asm
 
 			cdef_avx512.asm
 			mc_avx512.asm
 			mc_avx2.asm
-			film_grain.asm
-			ipred.asm
-			itx.asm
-			loopfilter.asm
-			looprestoration.asm
-			film_grain_ssse3.asm
-			ipred_ssse3.asm
-			itx_ssse3.asm
-			loopfilter_ssse3.asm
+			film_grain_avx2.asm
+			ipred_avx2.asm
+			loopfilter_avx2.asm
+			film_grain_sse.asm
+			ipred_sse.asm
+			itx_sse.asm
+			loopfilter_sse.asm
 			looprestoration_sse.asm
 			mc_sse.asm
 
 			cdef16_avx2.asm
-			cdef16_sse.asm
+			film_grain16_avx2.asm
+			ipred16_avx2.asm
+			itx16_avx2.asm
+			loopfilter16_avx2.asm
 			looprestoration16_avx2.asm
+			mc16_avx2.asm
+			cdef16_sse.asm
 		)
 	)
 ]]
