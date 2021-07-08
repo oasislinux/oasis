@@ -1145,6 +1145,7 @@ return {
 		'src/thread/pthread_getattr_np.c',
 		'src/thread/pthread_getconcurrency.c',
 		'src/thread/pthread_getcpuclockid.c',
+		'src/thread/pthread_getname_np.c',
 		'src/thread/pthread_getschedparam.c',
 		'src/thread/pthread_getspecific.c',
 		'src/thread/pthread_join.c',
