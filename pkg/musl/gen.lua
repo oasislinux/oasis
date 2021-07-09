@@ -116,9 +116,10 @@ for _, lib in ipairs{'libm.a', 'librt.a', 'libpthread.a', 'libcrypt.a', 'libutil
 end
 
 local startfiles = {'$outdir/libc.a'}
-for _, obj in ipairs{'crt1.o', 'crti.o', 'crtn.o', 'rcrt1.o', 'Scrt1.o'} do
+for _, src in ipairs{'crt1.c', 'rcrt1.c', 'Scrt1.c', arch..'/crti.s', arch..'/crtn.s'} do
+	local obj = src:gsub('.-(%w*)%.[cs]$', '%1.o')
 	local out = '$outdir/'..obj
-	build('cc', out, {'$srcdir/crt/'..obj:gsub('%.o$', '.c'), '|', '$gendir/deps'}, {cflags='$cflags -D CRT $cflags_nossp'})
+	build('cc', out, {'$srcdir/crt/'..src, '|', '$gendir/deps'}, {cflags='$cflags $cflags_nossp'})
 	file('lib/'..obj, '644', out)
 	table.insert(startfiles, out)
 end
