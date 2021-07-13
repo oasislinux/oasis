@@ -60,7 +60,6 @@ build('tic', '$outdir/compiled_terms.c', {'$srcdir/share/terminfo/terminfo', '|'
 })
 build('tic', '$outdir/terminfo.cdb', {'$srcdir/share/terminfo/terminfo', '|', '$outdir/host/tic'}, {
 	ticflags='-x',
-	terms='ansi dumb vt100 vt220 xterm xterm-256color st st-256color',
 })
 file('share/misc/terminfo.cdb', '644', '$outdir/terminfo.cdb')
 
