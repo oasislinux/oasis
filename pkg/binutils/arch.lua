@@ -7,7 +7,7 @@ return {
 	avr={'avr-dis.c'},
 	bfin={'bfin-dis.c'},
 	cr16={'cr16-dis.c', 'cr16-opc.c'},
-	cris={'cris-dis.c', 'cris-opc.c', 'cgen-bitset.c'},
+	cris={'cris_desc.c', 'cris-dis.c', 'cris-opc.c', 'cgen-bitset.c'},
 	crx={'crx-dis.c', 'crx-opc.c'},
 	csky={'csky-dis.c'},
 	d10v={'d10v-dis.c', 'd10v-opc.c'},

@@ -5,9 +5,7 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 /* #undef AIX_WEAK_SUPPORT */
 /* #undef BROKEN_ASSERT */
-/* #undef CRAY_STACKSEG_END */
 /* #undef CROSS_COMPILE */
-/* #undef C_ALLOCA */
 #define DEFAULT_ARCH "x86_64"
 /* #undef DEFAULT_CRIS_ARCH */
 #define DEFAULT_EMULATION "i386elf"
@@ -24,28 +22,14 @@
 #define EMULATIONS &i386elf,
 /* #undef ENABLE_CHECKING */
 /* #undef ENABLE_NLS */
-#define HAVE_ALLOCA 1
-#define HAVE_ALLOCA_H 1
 #define HAVE_DECL_ASPRINTF 1
-#define HAVE_DECL_FREE 1
-#define HAVE_DECL_GETENV 1
 #define HAVE_DECL_GETOPT 1
-#define HAVE_DECL_MALLOC 1
 #define HAVE_DECL_MEMPCPY 1
-#define HAVE_DECL_REALLOC 1
 #define HAVE_DECL_STPCPY 1
-#define HAVE_DECL_STRSTR 1
-#define HAVE_DECL_VSNPRINTF 1
 #define HAVE_DLFCN_H 1
-#define HAVE_ERRNO_H 1
 #define HAVE_INTTYPES_H 1
 #define HAVE_LC_MESSAGES 1
-#define HAVE_LIMITS_H 1
-#define HAVE_LOCALE_H 1
 #define HAVE_MEMORY_H 1
-/* #undef HAVE_REMOVE */
-#define HAVE_SBRK 1
-#define HAVE_SETLOCALE 1
 #define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRINGS_H 1
@@ -55,10 +39,8 @@
 #define HAVE_ST_MTIM_TV_SEC 1
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TYPES_H 1
-#define HAVE_TIME_H 1
-#define HAVE_TM_GMTOFF 1
+/* #undef HAVE_TM_GMTOFF */
 #define HAVE_UNISTD_H 1
-#define HAVE_UNLINK 1
 /* #undef HAVE_WINDOWS_H */
 /* #undef I386COFF */
 #define LT_OBJDIR ".libs/"
@@ -75,12 +57,7 @@
 /* #undef NDS32_DEFAULT_ZOL_EXT */
 /* #undef NDS32_LINUX_TOOLCHAIN */
 /* #undef NEED_DECLARATION_ENVIRON */
-/* #undef NEED_DECLARATION_ERRNO */
 /* #undef NEED_DECLARATION_FFS */
-/* #undef NEED_DECLARATION_FREE */
-/* #undef NEED_DECLARATION_MALLOC */
-/* #undef NEED_DECLARATION_SBRK */
-/* #undef NEED_DECLARATION_STRSTR */
 /* #undef OBJ_MAYBE_AOUT */
 /* #undef OBJ_MAYBE_COFF */
 /* #undef OBJ_MAYBE_ECOFF */
@@ -90,14 +67,12 @@
 #define PACKAGE "gas"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "gas"
-#define PACKAGE_STRING "gas 2.36.1"
+#define PACKAGE_STRING "gas 2.37"
 #define PACKAGE_TARNAME "gas"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.36.1"
-/* #undef STACK_DIRECTION */
+#define PACKAGE_VERSION "2.37"
 #define STDC_HEADERS 1
 /* #undef STRICTCOFF */
-#define STRING_WITH_STRINGS 1
 #define TARGET_ALIAS "x86_64-linux-musl"
 /* #undef TARGET_BYTES_BIG_ENDIAN */
 #define TARGET_CANONICAL "x86_64-pc-linux-musl"
@@ -125,7 +100,7 @@
 # define __EXTENSIONS__ 1
 #endif
 /* #undef USING_CGEN */
-#define VERSION "2.36.1"
+#define VERSION "2.37"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
@@ -144,7 +119,3 @@
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */
-#ifndef __cplusplus
-/* #undef inline */
-#endif
-/* #undef size_t */

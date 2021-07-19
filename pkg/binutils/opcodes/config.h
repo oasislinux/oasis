@@ -2,12 +2,12 @@
 #  error config.h must be #included before system headers
 #endif
 #define __CONFIG_H__ 1
+/* #undef ENABLE_CHECKING */
 /* #undef ENABLE_NLS */
 #define HAVE_DECL_BASENAME 1
 #define HAVE_DECL_STPCPY 1
 #define HAVE_DLFCN_H 1
 #define HAVE_INTTYPES_H 1
-#define HAVE_LIMITS_H 1
 #define HAVE_MEMORY_H 1
 #define HAVE_SIGSETJMP 1
 #define HAVE_STDINT_H 1
@@ -21,12 +21,11 @@
 #define PACKAGE "opcodes"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "opcodes"
-#define PACKAGE_STRING "opcodes 2.36.1"
+#define PACKAGE_STRING "opcodes 2.37"
 #define PACKAGE_TARNAME "opcodes"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.36.1"
+#define PACKAGE_VERSION "2.37"
 #define STDC_HEADERS 1
-#define STRING_WITH_STRINGS 1
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
@@ -42,7 +41,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.36.1"
+#define VERSION "2.37"
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */

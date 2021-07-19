@@ -291,9 +291,9 @@ end)
 
 sub('ld.ninja', function()
 	cflags{
-		'-D ELF_LIST_OPTIONS=TRUE',
-		'-D ELF_SHLIB_LIST_OPTIONS=TRUE',
-		'-D ELF_PLT_UNWIND_LIST_OPTIONS=TRUE',
+		'-D ELF_LIST_OPTIONS=true',
+		'-D ELF_SHLIB_LIST_OPTIONS=true',
+		'-D ELF_PLT_UNWIND_LIST_OPTIONS=true',
 		string.format([[-D 'BINDIR="%s/bin"']], config.prefix),
 		string.format([[-D 'SCRIPTDIR="%s/%s/lib"']], config.prefix, config.target.platform),
 		string.format([[-D 'TOOLBINDIR="%s/%s/bin"']], config.prefix, config.target.platform),

@@ -34,8 +34,6 @@ return {
 	arm_elf32_fdpic_le_vec={'elf32-arm.c', 'elf32.c', 'elf-nacl.c', 'elf-vxworks.c', elf},
 	arm_elf32_nacl_be_vec={'elf32-arm.c', 'elf32.c', 'elf-nacl.c', 'elf-vxworks.c', elf},
 	arm_elf32_nacl_le_vec={'elf32-arm.c', 'elf32.c', 'elf-nacl.c', 'elf-vxworks.c', elf},
-	arm_elf32_symbian_be_vec={'elf32-arm.c', 'elf32.c', 'elf-nacl.c', 'elf-vxworks.c', elf},
-	arm_elf32_symbian_le_vec={'elf32-arm.c', 'elf32.c', 'elf-nacl.c', 'elf-vxworks.c', elf},
 	arm_elf32_vxworks_be_vec={'elf32-arm.c', 'elf32.c', 'elf-nacl.c', 'elf-vxworks.c', elf},
 	arm_elf32_vxworks_le_vec={'elf32-arm.c', 'elf32.c', 'elf-nacl.c', 'elf-vxworks.c', elf},
 	arm_pe_be_vec={'pe-arm.c', 'peigen.c', coff},
