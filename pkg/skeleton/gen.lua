@@ -1,3 +1,5 @@
+set('srcdir', '$dir')
+
 dir('bin', '755')
 sym('bin/plumb', '../etc/plumb')
 dir('boot', '755')
@@ -17,3 +19,6 @@ dir('var/log', '755')
 sym('usr/bin', '../bin')
 
 gitfile('.gitignore', '644', '$dir/gitignore')
+
+file('libexec/applyperms', '755', exe('applyperms', {'applyperms.c'}))
+file('libexec/mergeperms', '755', exe('mergeperms', {'mergeperms.c'}))

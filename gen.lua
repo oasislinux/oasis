@@ -16,7 +16,6 @@ toolchain(config.target)
 
 subgen 'probe'
 subgen 'pkg'
-subgen 'src'
 
 build('awk', '$outdir/root.perms', {'$outdir/tree.fspec', '|', '$basedir/scripts/perms.awk'}, {
 	expr='-f $basedir/scripts/perms.awk',
@@ -30,6 +29,12 @@ build('phony', 'commit', '$builddir/root.commit')
 
 build('fspec-sort', '$outdir/root.fspec', {'$outdir/tree.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-sort'})
 build('fspec-tar', '$outdir/root.tar.zst', {'$outdir/root.fspec', '|', '$builddir/pkg/fspec-sync/host/fspec-tar'})
+
+--build('awk', '$outdir/root.sqfslist', {'$outdir/root.fspec', '|', '$basedir/scripts/squashfs.awk'}, {
+--	expr='-f $basedir/scripts/squashfs.awk',
+--})
+--rule('gensquashfs', 'gensquashfs -F $in -D . -f -c gzip $out')
+--build('gensquashfs', '$outdir/root.squashfs', {'$outdir/root.sqfslist'})
 
 build('phony', 'build.ninja', 'ninja', {generator='1'})
 
