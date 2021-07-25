@@ -29,3 +29,4 @@
 /* #undef HAVE_TIMESPECSUB */
 #define HAVE_TIMINGSAFE_BCMP
 #define HAVE_UNISTD_H
+/* #undef HAVE_WEBAUTHN_H */
