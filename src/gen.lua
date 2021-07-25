@@ -5,4 +5,3 @@ cflags{
 
 file('libexec/applyperms',   '755', exe('applyperms',   {'applyperms.c'}))
 file('libexec/mergeperms',   '755', exe('mergeperms',   {'mergeperms.c'}))
-file('libexec/shutdown',     '755', exe('shutdown',     {'shutdown.c'}))
