@@ -1,4 +1,4 @@
-From c27416b8e150162d8a629dfb6c02c04081531a8b Mon Sep 17 00:00:00 2001
+From e659aeb8ee69392cba017fc306cdea20c8c97b70 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 2 Mar 2021 14:24:01 -0800
 Subject: [PATCH] libext2fs: avoid pointer arithmetic on `void *`
@@ -8,13 +8,11 @@ type.
 
 Signed-off-by: Michael Forney <mforney@mforney.org>
 ---
- e2fsck/recovery.c    |  2 +-
- lib/ext2fs/link.c    | 20 +++++++++++---------
- lib/ext2fs/unix_io.c |  2 +-
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ e2fsck/recovery.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/e2fsck/recovery.c b/e2fsck/recovery.c
-index dc0694fc..889cd0e6 100644
+index 25744f08..3c5a37e9 100644
 --- a/e2fsck/recovery.c
 +++ b/e2fsck/recovery.c
 @@ -179,7 +179,7 @@ static int jbd2_descriptor_block_csum_verify(journal_t *j, void *buf)
@@ -26,86 +24,6 @@ index dc0694fc..889cd0e6 100644
  			sizeof(struct jbd2_journal_block_tail));
  	provided = tail->t_checksum;
  	tail->t_checksum = 0;
-diff --git a/lib/ext2fs/link.c b/lib/ext2fs/link.c
-index a2c34ac5..80b16ac5 100644
---- a/lib/ext2fs/link.c
-+++ b/lib/ext2fs/link.c
-@@ -110,7 +110,8 @@ static errcode_t dx_lookup(ext2_filsys fs, ext2_ino_t dir,
- 					 info->frames[0].buf);
- 	if (errcode)
- 		goto out_err;
--	root = info->frames[0].buf + EXT2_DX_ROOT_OFF;
-+	root = (struct ext2_dx_root_info *)
-+		((char *) info->frames[0].buf + EXT2_DX_ROOT_OFF);
- 	hash_alg = root->hash_version;
- 	if (hash_alg != EXT2_HASH_TEA && hash_alg != EXT2_HASH_HALF_MD4 &&
- 	    hash_alg != EXT2_HASH_LEGACY) {
-@@ -329,19 +330,19 @@ static errcode_t dx_move_dirents(ext2_filsys fs, struct dx_hash_map *map,
- 		csum_size = sizeof(struct ext2_dir_entry_tail);
- 
- 	for (i = 0; i < count; i++) {
--		de = from + map[i].off;
-+		de = (struct ext2_dir_entry *) ((char *) from + map[i].off);
- 		rec_len = EXT2_DIR_REC_LEN(ext2fs_dirent_name_len(de));
- 		memcpy(to, de, rec_len);
--		retval = ext2fs_set_rec_len(fs, rec_len, to);
-+		retval = ext2fs_set_rec_len(fs, rec_len, (struct ext2_dir_entry *) to);
- 		if (retval)
- 			return retval;
--		to += rec_len;
-+		to = (char *)to + rec_len;
- 	}
- 	/*
- 	 * Update rec_len of the last dir entry to stretch to the end of block
- 	 */
--	to -= rec_len;
--	rec_len = fs->blocksize - (to - base) - csum_size;
-+	to = (char *)to - rec_len;
-+	rec_len = fs->blocksize - ((char *) to - (char *) base) - csum_size;
- 	retval = ext2fs_set_rec_len(fs, rec_len, to);
- 	if (retval)
- 		return retval;
-@@ -396,7 +397,7 @@ static errcode_t dx_split_leaf(ext2_filsys fs, ext2_ino_t dir,
- 		return retval;
- 	}
- 	for (offset = 0; offset < fs->blocksize; offset += rec_len) {
--		de = buf + offset;
-+		de = (struct ext2_dir_entry *) ((char *) buf + offset);
- 		retval = ext2fs_get_rec_len(fs, de, &rec_len);
- 		if (retval)
- 			goto out;
-@@ -501,7 +502,7 @@ static errcode_t dx_grow_tree(ext2_filsys fs, ext2_ino_t dir,
- 	retval = ext2fs_set_rec_len(fs, fs->blocksize, de);
- 	if (retval)
- 		return retval;
--	head = buf + 8;
-+	head = (struct ext2_dx_countlimit *) ((char *) buf + 8);
- 	count = ext2fs_le16_to_cpu(info->frames[i+1].head->count);
- 	/* Growing tree depth? */
- 	if (i < 0) {
-@@ -517,7 +518,8 @@ static errcode_t dx_grow_tree(ext2_filsys fs, ext2_ino_t dir,
- 		/* Now update tree root */
- 		info->frames[0].head->count = ext2fs_cpu_to_le16(1);
- 		info->frames[0].entries[0].block = ext2fs_cpu_to_le32(lblk);
--		root = info->frames[0].buf + EXT2_DX_ROOT_OFF;
-+		root = (struct ext2_dx_root_info *)
-+				((char *) info->frames[0].buf + EXT2_DX_ROOT_OFF);
- 		root->indirect_levels++;
- 	} else {
- 		/* Splitting internal node in two */
-diff --git a/lib/ext2fs/unix_io.c b/lib/ext2fs/unix_io.c
-index 64eee342..6764a947 100644
---- a/lib/ext2fs/unix_io.c
-+++ b/lib/ext2fs/unix_io.c
-@@ -315,7 +315,7 @@ bounce_read:
- 		if (actual > align_size)
- 			actual = align_size;
- 		actual -= offset;
--		memcpy(buf, data->bounce + offset, actual);
-+		memcpy(buf, (char *) data->bounce + offset, actual);
- 
- 		really_read += actual;
- 		size -= actual;
 -- 
-2.30.0
+2.32.0
 
