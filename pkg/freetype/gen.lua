@@ -76,8 +76,9 @@ lib('libfreetype.a', [[
 		autofit/autofit.c
 		pshinter/pshinter.c
 
-		raster/raster.c
 		smooth/smooth.c
+		raster/raster.c
+		sdf/sdf.c
 
 		cache/ftcache.c
 		gzip/ftgzip.c.o
