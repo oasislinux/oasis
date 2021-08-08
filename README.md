@@ -162,5 +162,7 @@ likely still install it via pkgsrc or nix.
 
 ## Contact
 
-Feel free to contact me with any questions over email (address in commit
-log), or IRC at #oasis on [libera.chat](ircs://irc.libera.chat:6697).
+There is a mailing list at
+[~mcf/oasis@lists.sr.ht](mailto:~mcf/oasis@lists.sr.ht), and an IRC
+channel at #oasis on [libera.chat](ircs://irc.libera.chat:6697).
+Feel free to use them for questions, patches, or general discussion.
