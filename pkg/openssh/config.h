@@ -315,6 +315,7 @@
 /* #undef HAVE_PRIV_H */
 #define HAVE_PROC_PID 1
 /* #undef HAVE_PROC_PIDINFO */
+#define HAVE_PSELECT 1
 /* #undef HAVE_PSTAT */
 #define HAVE_PTY_H 1
 #define HAVE_PUTUTLINE 1
@@ -369,6 +370,7 @@
 /* #undef HAVE_SHA512UPDATE */
 #define HAVE_SHADOW_H 1
 #define HAVE_SIGACTION 1
+/* #undef HAVE_SIGHANDLER_T */
 /* #undef HAVE_SIGVEC */
 #define HAVE_SIG_ATOMIC_T 1
 #define HAVE_SIZE_T 1
@@ -553,10 +555,11 @@
 /* #undef SANDBOX_SOLARIS */
 /* #undef SANDBOX_SYSTRACE */
 /* #undef SETEUID_BREAKS_SETUID */
-/* #undef SIZEOF_INT */
-/* #undef SIZEOF_LONG_INT */
-/* #undef SIZEOF_LONG_LONG_INT */
-/* #undef SIZEOF_SHORT_INT */
+#define SIZEOF_INT 4
+#define SIZEOF_LONG_INT SIZEOF_LONG
+#define SIZEOF_LONG_LONG_INT 8
+#define SIZEOF_SHORT_INT 2
+/* probe SIZEOF_TIME_T */
 #define SNPRINTF_CONST const
 #define SPT_TYPE SPT_REUSEARGV
 /* #undef SSHD_ACQUIRES_CTTY */
@@ -587,6 +590,7 @@
 /* #undef USE_SOLARIS_PRIVS */
 /* #undef USE_SOLARIS_PROCESS_CONTRACTS */
 /* #undef USE_SOLARIS_PROJECTS */
+#define VARIABLE_DECLARATION_AFTER_CODE 1
 /* #undef VARIABLE_LENGTH_ARRAYS */
 /* #undef WITH_ABBREV_NO_TTY */
 /* #undef WITH_AIXAUTHENTICATE */

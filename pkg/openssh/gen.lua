@@ -8,7 +8,7 @@ cflags{
 	'-D _XOPEN_SOURCE=600',
 	'-D _DEFAULT_SOURCE',
 	archflags[arch] or '-D SANDBOX_RLIMIT=1',
-	'-I $dir',
+	'-I $outdir',
 	'-I $srcdir',
 	'-isystem $basedir/pkg/openbsd/include',
 	'-isystem $builddir/pkg/bearssl/include',
@@ -23,7 +23,14 @@ pkg.deps = {
 	'pkg/libfido2/headers',
 	'pkg/linux-headers/headers',
 	'pkg/zlib/headers',
+	'$outdir/config.h',
 }
+
+build('cat', '$outdir/config.h', {
+	'$dir/config.h',
+	'$builddir/probe/SIZEOF_LONG',
+	'$builddir/probe/SIZEOF_TIME_T',
+})
 
 lib('libopenbsd-compat.a', [[openbsd-compat/(
 	base64.c basename.c bcrypt_pbkdf.c bindresvport.c blowfish.c daemon.c
@@ -87,6 +94,8 @@ lib('libssh.a', [[
 
 	ssh-sk-client.c
 
+	sftp-common.c sftp-client.c sftp-glob.c sftp-server.c
+
 	libopenbsd-compat.a
 	$builddir/pkg/bearssl/libbearssl.a
 	$builddir/pkg/libfido2/libfido2.a.d
@@ -100,9 +109,6 @@ exe('ssh', [[
 ]])
 file('bin/ssh', '755', '$outdir/ssh')
 
-cc('sftp-server.c')
-cc('sftp-common.c')
-
 exe('sshd', [[
 	sshd.c auth-rhosts.c auth-passwd.c
 	audit.c audit-bsm.c audit-linux.c platform.c
@@ -114,7 +120,7 @@ exe('sshd', [[
 	monitor.c monitor_wrap.c auth-krb5.c
 	auth2-gss.c gss-serv.c gss-serv-krb5.c
 	loginrec.c auth-pam.c auth-shadow.c auth-sia.c md5crypt.c
-	srclimit.c sftp-server.c.o sftp-common.c.o
+	srclimit.c
 	sandbox-null.c sandbox-rlimit.c sandbox-systrace.c sandbox-darwin.c
 	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c
 	sandbox-solaris.c uidswap.c
@@ -140,10 +146,10 @@ file('bin/ssh-keyscan', '755', '$outdir/ssh-keyscan')
 exe('ssh-sk-helper', {'ssh-sk-helper.c', 'ssh-sk.c', 'sk-usbhid.c', 'libssh.a.d'})
 file('libexec/ssh-sk-helper', '755', '$outdir/ssh-sk-helper')
 
-exe('sftp-server', {'sftp-common.c.o', 'sftp-server.c.o', 'sftp-server-main.c', 'libssh.a.d'})
+exe('sftp-server', {'sftp-server-main.c', 'libssh.a.d'})
 file('libexec/sftp-server', '755', '$outdir/sftp-server')
 
-exe('sftp', {'sftp.c', 'sftp-client.c', 'sftp-common.c.o', 'sftp-glob.c', 'libssh.a.d'})
+exe('sftp', {'sftp.c', 'libssh.a.d'})
 file('bin/sftp', '755', '$outdir/sftp')
 
 man{
