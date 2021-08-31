@@ -1,0 +1,76 @@
+From 3ff7594c56add20d75d8f8590e07d2dd56f3addd Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 30 Aug 2021 19:26:32 -0700
+Subject: [PATCH] Prevent zero-length array members in asound.h
+
+---
+ include/uapi/sound/asound.h | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 535a7229e1d9..fd8cdf7d5147 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -553,22 +553,30 @@ struct __snd_pcm_sync_ptr {
+ 	} c;
+ };
+ 
++#if __BITS_PER_LONG == 32
+ #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN : defined(__BIG_ENDIAN)
+-typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+-typedef char __pad_after_uframe[0];
++#define __PAD_BEFORE_UFRAME(x) char x[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+ #endif
+ 
+ #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __LITTLE_ENDIAN : defined(__LITTLE_ENDIAN)
+-typedef char __pad_before_uframe[0];
+-typedef char __pad_after_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
++#define __PAD_AFTER_UFRAME(x) char x[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
++#endif
++#endif
++
++#ifndef __PAD_BEFORE_UFRAME
++#define __PAD_BEFORE_UFRAME(x)
++#endif
++
++#ifndef __PAD_AFTER_UFRAME
++#define __PAD_AFTER_UFRAME(x)
+ #endif
+ 
+ struct __snd_pcm_mmap_status64 {
+ 	snd_pcm_state_t state;		/* RO: state - SNDRV_PCM_STATE_XXXX */
+ 	__u32 pad1;			/* Needed for 64 bit alignment */
+-	__pad_before_uframe __pad1;
++	__PAD_BEFORE_UFRAME(__pad1)
+ 	snd_pcm_uframes_t hw_ptr;	/* RO: hw ptr (0...boundary-1) */
+-	__pad_after_uframe __pad2;
++	__PAD_AFTER_UFRAME(__pad2)
+ 	struct __snd_timespec64 tstamp;	/* Timestamp */
+ 	snd_pcm_state_t suspended_state;/* RO: suspended stream state */
+ 	__u32 pad3;			/* Needed for 64 bit alignment */
+@@ -576,15 +584,18 @@ struct __snd_pcm_mmap_status64 {
+ };
+ 
+ struct __snd_pcm_mmap_control64 {
+-	__pad_before_uframe __pad1;
++	__PAD_BEFORE_UFRAME(__pad1)
+ 	snd_pcm_uframes_t appl_ptr;	 /* RW: appl ptr (0...boundary-1) */
+-	__pad_before_uframe __pad2;
++	__PAD_BEFORE_UFRAME(__pad2)
+ 
+-	__pad_before_uframe __pad3;
++	__PAD_BEFORE_UFRAME(__pad3)
+ 	snd_pcm_uframes_t  avail_min;	 /* RW: min available frames for wakeup */
+-	__pad_after_uframe __pad4;
++	__PAD_AFTER_UFRAME(__pad4)
+ };
+ 
++#undef __PAD_BEFORE_UFRAME
++#undef __PAD_AFTER_UFRAME
++
+ struct __snd_pcm_sync_ptr64 {
+ 	__u32 flags;
+ 	__u32 pad1;
+-- 
+2.32.0
+
