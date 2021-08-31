@@ -1,0 +1,27 @@
+From d11a02d9217b7713415be4bb6a4b6ee54df894c7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 30 Aug 2021 20:11:37 -0700
+Subject: [PATCH] make use of snd_utils_close_dev_node conditional on
+ TINYALSA_USES_PLUGINS
+
+---
+ src/pcm.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/pcm.c b/src/pcm.c
+index 10e477b..8a2c6be 100644
+--- a/src/pcm.c
++++ b/src/pcm.c
+@@ -975,7 +975,9 @@ int pcm_close(struct pcm *pcm)
+         pcm->ops->munmap(pcm->data, pcm->mmap_buffer, pcm_frames_to_bytes(pcm, pcm->buffer_size));
+     }
+ 
++#if TINYALSA_USES_PLUGINS
+     snd_utils_close_dev_node(pcm->snd_node);
++#endif
+     pcm->ops->close(pcm->data);
+     pcm->buffer_size = 0;
+     pcm->fd = -1;
+-- 
+2.32.0
+

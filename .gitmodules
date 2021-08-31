@@ -324,6 +324,10 @@
 	path = pkg/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher
 	ignore = all
+[submodule "pkg/tinyalsa/src"]
+	path = pkg/tinyalsa/src
+	url = https://github.com/tinyalsa/tinyalsa.git
+	ignore = all
 [submodule "pkg/tz/src"]
 	path = pkg/tz/src
 	url = https://github.com/eggert/tz

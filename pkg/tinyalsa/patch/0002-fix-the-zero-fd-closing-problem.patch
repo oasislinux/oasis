@@ -1,0 +1,36 @@
+From 27a6c9e762297ce37f28619166b9dd134ffbdf92 Mon Sep 17 00:00:00 2001
+From: dvdli <dvdli@google.com>
+Date: Tue, 13 Jul 2021 14:47:47 +0800
+Subject: [PATCH] fix the zero fd closing problem
+
+The pcm_hw_close refused to close the zero fd. Add "equal to"
+condition and modify the type of fd to int to close the zero fd.
+---
+ src/pcm_hw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/pcm_hw.c b/src/pcm_hw.c
+index 38b2e83..9f01fb0 100644
+--- a/src/pcm_hw.c
++++ b/src/pcm_hw.c
+@@ -50,7 +50,7 @@ struct pcm_hw_data {
+     /** Device number for the pcm device */
+     unsigned int device;
+     /** File descriptor to the pcm device file node */
+-    unsigned int fd;
++    int fd;
+     /** Pointer to the pcm node from snd card definiton */
+     struct snd_node *node;
+ };
+@@ -59,7 +59,7 @@ static void pcm_hw_close(void *data)
+ {
+     struct pcm_hw_data *hw_data = data;
+ 
+-    if (hw_data->fd > 0)
++    if (hw_data->fd >= 0)
+         close(hw_data->fd);
+ 
+     free(hw_data);
+-- 
+2.32.0
+

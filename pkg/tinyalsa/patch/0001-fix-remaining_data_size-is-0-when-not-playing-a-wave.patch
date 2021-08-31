@@ -1,0 +1,73 @@
+From 7ebd3ac08a537207851eb631bdcab01f03ab91b6 Mon Sep 17 00:00:00 2001
+From: dvdli <dvdli@google.com>
+Date: Tue, 29 Jun 2021 21:35:37 +0800
+Subject: [PATCH] fix remaining_data_size is 0 when not playing a wave file
+
+---
+ utils/tinyplay.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/utils/tinyplay.c b/utils/tinyplay.c
+index 4c7ccf6..b2c60bc 100644
+--- a/utils/tinyplay.c
++++ b/utils/tinyplay.c
+@@ -27,6 +27,7 @@
+ */
+ 
+ #include <tinyalsa/asoundlib.h>
++#include <stdbool.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdint.h>
+@@ -98,6 +99,7 @@ struct ctx {
+     struct chunk_fmt chunk_fmt;
+ 
+     FILE *file;
++    size_t file_size;
+ };
+ 
+ int ctx_init(struct ctx* ctx, const struct cmd *cmd)
+@@ -113,6 +115,9 @@ int ctx_init(struct ctx* ctx, const struct cmd *cmd)
+         ctx->file = stdin;
+     } else {
+         ctx->file = fopen(cmd->filename, "rb");
++        fseek(ctx->file, 0L, SEEK_END);
++        ctx->file_size = ftell(ctx->file);
++        fseek(ctx->file, 0L, SEEK_SET);
+     }
+ 
+     if (ctx->file == NULL) {
+@@ -162,6 +167,7 @@ int ctx_init(struct ctx* ctx, const struct cmd *cmd)
+         config.channels = ctx->chunk_fmt.num_channels;
+         config.rate = ctx->chunk_fmt.sample_rate;
+         bits = ctx->chunk_fmt.bits_per_sample;
++        ctx->file_size = (size_t) ctx->chunk_header.sz;
+     }
+ 
+     if (bits == 8) {
+@@ -396,9 +402,10 @@ int sample_is_playable(const struct cmd *cmd)
+ int play_sample(struct ctx *ctx)
+ {
+     char *buffer;
++    bool is_stdin_source = ctx->file == stdin;
+     size_t buffer_size = 0;
+     size_t num_read = 0;
+-    size_t remaining_data_size = ctx->chunk_header.sz;
++    size_t remaining_data_size = is_stdin_source ? SIZE_MAX : ctx->file_size;
+     size_t read_size = 0;
+     const struct pcm_config *config = pcm_get_config(ctx->pcm);
+ 
+@@ -426,7 +433,9 @@ int play_sample(struct ctx *ctx)
+                 fprintf(stderr, "error playing sample\n");
+                 break;
+             }
+-            remaining_data_size -= num_read;
++            if (!is_stdin_source) {
++                remaining_data_size -= num_read;
++            }
+         }
+     } while (!close && num_read > 0 && remaining_data_size > 0);
+ 
+-- 
+2.32.0
+
