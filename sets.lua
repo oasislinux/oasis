@@ -58,9 +58,9 @@ return {
 	},
 	media={
 		'alsa-lib',
-		'alsa-utils',
 		'ffmpeg',
 		'mpv',
+		'tinyalsa',
 		'youtube-dl',
 	},
 	net={
