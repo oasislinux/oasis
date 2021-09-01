@@ -1,4 +1,4 @@
-From 3568a01d610e33073aa39f4cfadfcacd97509af4 Mon Sep 17 00:00:00 2001
+From e3f4f70859054485039e2d8dede1d0b95dd40fa7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 31 May 2021 16:40:28 -0700
 Subject: [PATCH] Resize status window explicitly during resize()
@@ -11,10 +11,10 @@ status window explicitly.
  1 file changed, 1 insertion(+)
 
 diff --git a/ui.c b/ui.c
-index ff87124..6819d0a 100644
+index 2ad1fd8..64e83d3 100644
 --- a/ui.c
 +++ b/ui.c
-@@ -642,6 +642,7 @@ static void windowReflow(struct Window *window) {
+@@ -659,6 +659,7 @@ static void windowReflow(struct Window *window) {
  
  static void resize(void) {
  	wclear(main);
@@ -23,5 +23,5 @@ index ff87124..6819d0a 100644
  	for (uint num = 0; num < windows.len; ++num) {
  		windowReflow(windows.ptrs[num]);
 -- 
-2.31.1
+2.32.0
 
