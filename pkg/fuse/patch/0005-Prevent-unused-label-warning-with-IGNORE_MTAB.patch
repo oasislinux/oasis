@@ -1,0 +1,27 @@
+From 92210452ee8f336c6121ee2a4d6ffae8a085db15 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 23:22:16 -0700
+Subject: [PATCH] Prevent unused-label warning with IGNORE_MTAB
+
+---
+ lib/mount.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lib/mount.c b/lib/mount.c
+index 979f8d9..a51731f 100644
+--- a/lib/mount.c
++++ b/lib/mount.c
+@@ -500,8 +500,10 @@ static int fuse_mount_sys(const char *mnt, struct mount_opts *mo,
+ 
+ 	return fd;
+ 
++#ifndef IGNORE_MTAB
+ out_umount:
+ 	umount2(mnt, 2); /* lazy umount */
++#endif
+ out_close:
+ 	free(type);
+ 	free(source);
+-- 
+2.32.0
+

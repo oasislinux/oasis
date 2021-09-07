@@ -1,0 +1,57 @@
+From 4526a08c6e97ab0260c2c7ae963626d7f7e18ca2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 23:08:22 -0700
+Subject: [PATCH] Avoid invalid use of flexible array members
+
+---
+ include/fuse_kernel.h | 10 +++++++---
+ lib/fuse_lowlevel.c   |  7 +++----
+ 2 files changed, 10 insertions(+), 7 deletions(-)
+
+diff --git a/include/fuse_kernel.h b/include/fuse_kernel.h
+index 018a00a..939af6a 100644
+--- a/include/fuse_kernel.h
++++ b/include/fuse_kernel.h
+@@ -769,13 +769,17 @@ struct fuse_dirent {
+ 
+ struct fuse_direntplus {
+ 	struct fuse_entry_out entry_out;
+-	struct fuse_dirent dirent;
++	uint64_t	ino;
++	uint64_t	off;
++	uint32_t	namelen;
++	uint32_t	type;
++	char name[];
+ };
+ 
+ #define FUSE_NAME_OFFSET_DIRENTPLUS \
+-	offsetof(struct fuse_direntplus, dirent.name)
++	offsetof(struct fuse_direntplus, name)
+ #define FUSE_DIRENTPLUS_SIZE(d) \
+-	FUSE_DIRENT_ALIGN(FUSE_NAME_OFFSET_DIRENTPLUS + (d)->dirent.namelen)
++	FUSE_DIRENT_ALIGN(FUSE_NAME_OFFSET_DIRENTPLUS + (d)->namelen)
+ 
+ struct fuse_notify_inval_inode_out {
+ 	uint64_t	ino;
+diff --git a/lib/fuse_lowlevel.c b/lib/fuse_lowlevel.c
+index ccf52d0..a12f5cc 100644
+--- a/lib/fuse_lowlevel.c
++++ b/lib/fuse_lowlevel.c
+@@ -367,11 +367,10 @@ size_t fuse_add_direntry_plus(fuse_req_t req, char *buf, size_t bufsize,
+ 	if ((buf == NULL) || (entlen_padded > bufsize))
+ 	  return entlen_padded;
+ 
+-	struct fuse_direntplus *dp = (struct fuse_direntplus *) buf;
+-	memset(&dp->entry_out, 0, sizeof(dp->entry_out));
+-	fill_entry(&dp->entry_out, e);
++	struct fuse_direntplus *dirent = (struct fuse_direntplus *) buf;
++	memset(&dirent->entry_out, 0, sizeof(dirent->entry_out));
++	fill_entry(&dirent->entry_out, e);
+ 
+-	struct fuse_dirent *dirent = &dp->dirent;
+ 	dirent->ino = e->attr.st_ino;
+ 	dirent->off = off;
+ 	dirent->namelen = namelen;
+-- 
+2.32.0
+

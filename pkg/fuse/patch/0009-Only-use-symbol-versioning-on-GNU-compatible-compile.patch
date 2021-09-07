@@ -1,0 +1,25 @@
+From f738d8ef399b4eda78a521ced66b626cc7a3a02b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 23:36:31 -0700
+Subject: [PATCH] Only use symbol versioning on GNU-compatible compilers
+
+---
+ lib/fuse_misc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/fuse_misc.h b/lib/fuse_misc.h
+index f956ab7..a86717c 100644
+--- a/lib/fuse_misc.h
++++ b/lib/fuse_misc.h
+@@ -12,7 +12,7 @@
+   Versioned symbols cannot be used in some cases because it
+     - not supported on MacOSX (in MachO binary format)
+ */
+-#ifndef __APPLE__
++#if !defined(__APPLE__) && defined(__GNUC__)
+ # if HAVE_SYMVER_ATTRIBUTE
+ #  define FUSE_SYMVER(sym1, sym2) __attribute__ ((symver (sym2)))
+ # else
+-- 
+2.32.0
+

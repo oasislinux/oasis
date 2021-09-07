@@ -1,0 +1,25 @@
+From 31a2af8891c0d460942f0c182442615618248388 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 23:27:23 -0700
+Subject: [PATCH] Avoid conversion between function and object pointer
+
+---
+ lib/fuse_lowlevel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/fuse_lowlevel.c b/lib/fuse_lowlevel.c
+index a12f5cc..b864d90 100644
+--- a/lib/fuse_lowlevel.c
++++ b/lib/fuse_lowlevel.c
+@@ -2496,7 +2496,7 @@ static struct {
+ 	[FUSE_POLL]	   = { do_poll,        "POLL"	     },
+ 	[FUSE_FALLOCATE]   = { do_fallocate,   "FALLOCATE"   },
+ 	[FUSE_DESTROY]	   = { do_destroy,     "DESTROY"     },
+-	[FUSE_NOTIFY_REPLY] = { (void *) 1,    "NOTIFY_REPLY" },
++	[FUSE_NOTIFY_REPLY] = { (void (*)()) 1, "NOTIFY_REPLY" },
+ 	[FUSE_BATCH_FORGET] = { do_batch_forget, "BATCH_FORGET" },
+ 	[FUSE_READDIRPLUS] = { do_readdirplus,	"READDIRPLUS"},
+ 	[FUSE_RENAME2]     = { do_rename2,      "RENAME2"    },
+-- 
+2.32.0
+

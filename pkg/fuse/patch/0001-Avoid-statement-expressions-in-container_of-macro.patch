@@ -1,4 +1,4 @@
-From 9883408010640daaabd57934e5e4211f48d50362 Mon Sep 17 00:00:00 2001
+From 374d50ca9322cefef0e2405c0189fb8e13838a3a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 17 Jun 2019 23:21:39 -0700
 Subject: [PATCH] Avoid statement expressions in container_of macro
@@ -9,7 +9,7 @@ Subject: [PATCH] Avoid statement expressions in container_of macro
  2 files changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/lib/fuse.c b/lib/fuse.c
-index e75efcd..d8859ab 100755
+index a95d7c1..1c7ddbe 100644
 --- a/lib/fuse.c
 +++ b/lib/fuse.c
 @@ -93,9 +93,8 @@ struct node_table {
@@ -25,7 +25,7 @@ index e75efcd..d8859ab 100755
  #define list_entry(ptr, type, member)           \
  	container_of(ptr, type, member)
 diff --git a/lib/fuse_lowlevel.c b/lib/fuse_lowlevel.c
-index 3684b8b..b9a488c 100644
+index d227688..ccf52d0 100644
 --- a/lib/fuse_lowlevel.c
 +++ b/lib/fuse_lowlevel.c
 @@ -39,9 +39,8 @@
@@ -41,5 +41,5 @@ index 3684b8b..b9a488c 100644
  struct fuse_pollhandle {
  	uint64_t kh;
 -- 
-2.20.1
+2.32.0
 

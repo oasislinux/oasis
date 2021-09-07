@@ -1,4 +1,7 @@
 cflags{
+	'-std=c11', '-Wall', '-Wpedantic',
+	'-Wno-overflow',  -- ioctl opcode conversion
+	'-D _POSIX_C_SOURCE=200809L',
 	'-I $dir',
 	'-I $srcdir/include',
 	'-I $srcdir/lib',

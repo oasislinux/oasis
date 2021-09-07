@@ -1,4 +1,4 @@
-From 9619dc770866c4b0185c058d3187f9ad70dbc9de Mon Sep 17 00:00:00 2001
+From 71ff6ec2055f486f2fe7578d5b3baeebee747e4d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 00:52:16 -0700
 Subject: [PATCH] Fix build without symbol versioning
@@ -25,5 +25,5 @@ index 9e6c633..f584a54 100644
  			 size_t op_size, void *private_data);
  #define fuse_new(args, op, size, data) fuse_new_30(args, op, size, data)
 -- 
-2.31.1
+2.32.0
 

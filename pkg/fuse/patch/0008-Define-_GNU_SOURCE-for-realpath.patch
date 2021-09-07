@@ -1,0 +1,41 @@
+From f66ab008acda13411c1de0c7a3b5d6faeca2df43 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 23:30:18 -0700
+Subject: [PATCH] Define _GNU_SOURCE for realpath()
+
+---
+ lib/helper.c     | 3 +++
+ lib/mount_util.c | 3 +++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/lib/helper.c b/lib/helper.c
+index 64ff7ad..a291fa2 100644
+--- a/lib/helper.c
++++ b/lib/helper.c
+@@ -10,6 +10,9 @@
+   See the file COPYING.LIB.
+ */
+ 
++/* For realpath() */
++#define _GNU_SOURCE
++
+ #include "config.h"
+ #include "fuse_i.h"
+ #include "fuse_misc.h"
+diff --git a/lib/mount_util.c b/lib/mount_util.c
+index 85ab119..d242cc2 100644
+--- a/lib/mount_util.c
++++ b/lib/mount_util.c
+@@ -8,6 +8,9 @@
+   See the file COPYING.LIB.
+ */
+ 
++/* For realpath() */
++#define _GNU_SOURCE
++
+ #include "config.h"
+ #include "mount_util.h"
+ #include <stdio.h>
+-- 
+2.32.0
+

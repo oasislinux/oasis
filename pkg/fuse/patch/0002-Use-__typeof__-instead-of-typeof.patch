@@ -1,4 +1,4 @@
-From f654bcf1919c011d16a73ff76d6fc517ce7ffef8 Mon Sep 17 00:00:00 2001
+From ad9777cc43ac13f591a08fd7a222efd89009a18d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 1 Jul 2019 22:45:12 -0700
 Subject: [PATCH] Use __typeof__ instead of typeof
@@ -22,5 +22,5 @@ index ed62ea9..c497891 100644
  		0x00000187 /* AUTOFS_SUPER_MAGIC */,
  		0xCA451A4E /* BCACHEFS_STATFS_MAGIC */,
 -- 
-2.30.0
+2.32.0
 

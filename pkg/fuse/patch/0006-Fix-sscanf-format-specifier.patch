@@ -1,0 +1,25 @@
+From b556d59ad2ffa73e4baa4c8345210c70a255296a Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 23:26:54 -0700
+Subject: [PATCH] Fix sscanf format specifier
+
+---
+ lib/mount_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/mount_util.c b/lib/mount_util.c
+index 35e9948..85ab119 100644
+--- a/lib/mount_util.c
++++ b/lib/mount_util.c
+@@ -360,7 +360,7 @@ int fuse_mnt_parse_fuse_fd(const char *mountpoint)
+ 	int fd = -1;
+ 	int len = 0;
+ 
+-	if (sscanf(mountpoint, "/dev/fd/%u%n", &fd, &len) == 1 &&
++	if (sscanf(mountpoint, "/dev/fd/%d%n", &fd, &len) == 1 &&
+ 	    len == strlen(mountpoint)) {
+ 		return fd;
+ 	}
+-- 
+2.32.0
+
