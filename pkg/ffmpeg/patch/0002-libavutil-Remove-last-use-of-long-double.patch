@@ -1,0 +1,27 @@
+From ac61188ac8c177bceb48dd2b373caaf7a639f266 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 7 Sep 2021 01:39:36 -0700
+Subject: [PATCH] libavutil: Remove last use of long double
+
+The commit that introduced this file mentioned converting all long
+double to double, so presumably this one was just missed.
+---
+ libavutil/avsscanf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavutil/avsscanf.c b/libavutil/avsscanf.c
+index b7f0f71c2d..31530dde67 100644
+--- a/libavutil/avsscanf.c
++++ b/libavutil/avsscanf.c
+@@ -440,7 +440,7 @@ static double decfloat(FFFILE *f, int c, int bits, int emin, int sign, int pok)
+     /* Assemble desired bits into floating point variable */
+     for (y=i=0; i<LD_B1B_DIG; i++) {
+         if ((a+i & MASK)==z) x[(z=(z+1 & MASK))-1] = 0;
+-        y = 1000000000.0L * y + x[a+i & MASK];
++        y = 1000000000.0 * y + x[a+i & MASK];
+     }
+ 
+     y *= sign;
+-- 
+2.32.0
+

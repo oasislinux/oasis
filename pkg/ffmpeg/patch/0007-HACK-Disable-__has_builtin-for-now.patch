@@ -1,0 +1,30 @@
+From 9caa1ecbdf94a9bd5bedc83c602b30821f7fdd23 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 7 Sep 2021 02:01:31 -0700
+Subject: [PATCH] [HACK] Disable __has_builtin for now
+
+This is only used for detecting __builtin_add_overflow, but since
+we use gcc as a preprocessor for cproc, we have no way to tell it
+we don't support that feature. Since the built-in is used regardless
+of __has_builtin on gcc 5.1 or newer, just disable it for now until
+the cproc preprocessor is complete.
+---
+ libavutil/attributes.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libavutil/attributes.h b/libavutil/attributes.h
+index 5cb9fe3452..d70d98abb1 100644
+--- a/libavutil/attributes.h
++++ b/libavutil/attributes.h
+@@ -34,7 +34,7 @@
+ #    define AV_GCC_VERSION_AT_MOST(x,y)  0
+ #endif
+ 
+-#ifdef __has_builtin
++#if 0
+ #    define AV_HAS_BUILTIN(x) __has_builtin(x)
+ #else
+ #    define AV_HAS_BUILTIN(x) 0
+-- 
+2.32.0
+

@@ -1,0 +1,58 @@
+From f3b0469079853d304fe583f9849f3f75138ee980 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 7 Sep 2021 01:43:25 -0700
+Subject: [PATCH] libavformat: Use C99 __func__ instead of non-standard
+ __FUNCTION__
+
+---
+ libavformat/mux.c   | 2 +-
+ libavformat/utils.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/libavformat/mux.c b/libavformat/mux.c
+index 6a557d294e..23eda49eb6 100644
+--- a/libavformat/mux.c
++++ b/libavformat/mux.c
+@@ -1135,7 +1135,7 @@ static int write_packet_common(AVFormatContext *s, AVStream *st, AVPacket *pkt,
+     int ret;
+ 
+     if (s->debug & FF_FDEBUG_TS)
+-        av_log(s, AV_LOG_DEBUG, "%s size:%d dts:%s pts:%s\n", __FUNCTION__,
++        av_log(s, AV_LOG_DEBUG, "%s size:%d dts:%s pts:%s\n", __func__,
+                pkt->size, av_ts2str(pkt->dts), av_ts2str(pkt->pts));
+ 
+     guess_pkt_duration(s, st, pkt);
+diff --git a/libavformat/utils.c b/libavformat/utils.c
+index 1384b56771..05a3e0221f 100644
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
+@@ -3702,7 +3702,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
+             && codec && !avctx->codec) {
+             if (avcodec_open2(avctx, codec, options ? &options[i] : &thread_opt) < 0)
+                 av_log(ic, AV_LOG_WARNING,
+-                       "Failed to open codec in %s\n",__FUNCTION__);
++                       "Failed to open codec in %s\n", __func__);
+         }
+ 
+         // Try to just open decoders, in case this is enough to get parameters.
+@@ -3710,7 +3710,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
+             if (codec && !avctx->codec)
+                 if (avcodec_open2(avctx, codec, options ? &options[i] : &thread_opt) < 0)
+                     av_log(ic, AV_LOG_WARNING,
+-                           "Failed to open codec in %s\n",__FUNCTION__);
++                           "Failed to open codec in %s\n", __func__);
+         }
+         if (!options)
+             av_dict_free(&thread_opt);
+@@ -3965,7 +3965,7 @@ FF_ENABLE_DEPRECATION_WARNINGS
+                         av_dict_set(&opts, "codec_whitelist", ic->codec_whitelist, 0);
+                     if (avcodec_open2(avctx, codec, (options && stream_index < orig_nb_streams) ? &options[stream_index] : &opts) < 0)
+                         av_log(ic, AV_LOG_WARNING,
+-                               "Failed to open codec in %s\n",__FUNCTION__);
++                               "Failed to open codec in %s\n", __func__);
+                     av_dict_free(&opts);
+                 }
+             }
+-- 
+2.32.0
+

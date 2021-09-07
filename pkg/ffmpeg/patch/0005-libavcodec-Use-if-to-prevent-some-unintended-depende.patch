@@ -1,0 +1,65 @@
+From 0785a7f2102a9c8f50f19c7b4addbd849e071abc Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 7 Sep 2021 01:44:53 -0700
+Subject: [PATCH] libavcodec: Use #if to prevent some unintended dependencies
+
+---
+ libavcodec/h263.h             |  2 ++
+ libavcodec/mpegvideo_motion.c | 10 ++++++----
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/libavcodec/h263.h b/libavcodec/h263.h
+index 998f7d0d59..4d867d7bf2 100644
+--- a/libavcodec/h263.h
++++ b/libavcodec/h263.h
+@@ -98,6 +98,7 @@ int ff_h263_resync(MpegEncContext *s);
+ void ff_h263_encode_motion(PutBitContext *pb, int val, int f_code);
+ 
+ 
++#if CONFIG_H263_ENCODER
+ static inline int h263_get_motion_length(int val, int f_code){
+     int l, bit_size, code;
+ 
+@@ -182,5 +183,6 @@ static inline int get_p_cbp(MpegEncContext * s,
+     }
+     return cbp;
+ }
++#endif
+ 
+ #endif /* AVCODEC_H263_H */
+diff --git a/libavcodec/mpegvideo_motion.c b/libavcodec/mpegvideo_motion.c
+index 427bc96887..081c251d11 100644
+--- a/libavcodec/mpegvideo_motion.c
++++ b/libavcodec/mpegvideo_motion.c
+@@ -359,10 +359,11 @@ void mpeg_motion_internal(MpegEncContext *s,
+         pix_op[s->chroma_x_shift][uvdxy]
+             (dest_cr, ptr_cr, uvlinesize, h >> s->chroma_y_shift);
+     }
+-    if (!is_mpeg12 && (CONFIG_H261_ENCODER || CONFIG_H261_DECODER) &&
+-        s->out_format == FMT_H261) {
++#if CONFIG_H261_ENCODER || CONFIG_H261_DECODER
++    if (!is_mpeg12 && s->out_format == FMT_H261) {
+         ff_h261_loop_filter(s);
+     }
++#endif
+ }
+ /* apply one mpeg motion vector to the three components */
+ static void mpeg_motion(MpegEncContext *s,
+@@ -861,11 +862,12 @@ static av_always_inline void mpv_motion_internal(MpegEncContext *s,
+                         0, 0, 0,
+                         ref_picture, pix_op, qpix_op,
+                         s->mv[dir][0][0], s->mv[dir][0][1], 16);
+-        } else if (!is_mpeg12 && (CONFIG_WMV2_DECODER || CONFIG_WMV2_ENCODER) &&
+-                   s->mspel && s->codec_id == AV_CODEC_ID_WMV2) {
++#if CONFIG_WMV2_DECODER || CONFIG_WMV2_ENCODER
++        } else if (!is_mpeg12 && s->mspel && s->codec_id == AV_CODEC_ID_WMV2) {
+             ff_mspel_motion(s, dest_y, dest_cb, dest_cr,
+                             ref_picture, pix_op,
+                             s->mv[dir][0][0], s->mv[dir][0][1], 16);
++#endif
+         } else {
+             mpeg_motion(s, dest_y, dest_cb, dest_cr, 0,
+                         ref_picture, pix_op,
+-- 
+2.32.0
+
