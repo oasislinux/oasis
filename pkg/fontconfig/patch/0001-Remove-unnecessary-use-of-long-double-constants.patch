@@ -1,0 +1,66 @@
+From e74cd485038256cb170a102413d76ecaac61cf5b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 18:29:49 -0700
+Subject: [PATCH] Remove unnecessary use of long double constants
+
+These constants are immediately converted to double so there is no
+reason to make them long double.
+---
+ src/fcdefault.c  | 2 +-
+ src/fcfreetype.c | 4 ++--
+ src/fcxml.c      | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/src/fcdefault.c b/src/fcdefault.c
+index f3addca..be00c48 100644
+--- a/src/fcdefault.c
++++ b/src/fcdefault.c
+@@ -263,7 +263,7 @@ FcDefaultSubstitute (FcPattern *pattern)
+ 	if (FcPatternObjectGetRange (pattern, FC_SIZE_OBJECT, 0, &r) == FcResultMatch && FcRangeGetDouble (r, &b, &e))
+ 	    size = (b + e) * .5;
+ 	else
+-	    size = 12.0L;
++	    size = 12.0;
+     }
+     if (FcPatternObjectGetDouble (pattern, FC_SCALE_OBJECT, 0, &scale) != FcResultMatch)
+ 	scale = 1.0;
+diff --git a/src/fcfreetype.c b/src/fcfreetype.c
+index 07978cf..0845232 100644
+--- a/src/fcfreetype.c
++++ b/src/fcfreetype.c
+@@ -1811,8 +1811,8 @@ FcFreeTypeQueryFaceInternal (const FT_Face  face,
+ 	FcRange *r;
+ 
+ 	/* usLowerPointSize and usUpperPointSize is actually twips */
+-	lower_size = os2->usLowerOpticalPointSize / 20.0L;
+-	upper_size = os2->usUpperOpticalPointSize / 20.0L;
++	lower_size = os2->usLowerOpticalPointSize / 20.0;
++	upper_size = os2->usUpperOpticalPointSize / 20.0;
+ 
+ 	if (lower_size == upper_size)
+ 	{
+diff --git a/src/fcxml.c b/src/fcxml.c
+index 7797502..f6516ae 100644
+--- a/src/fcxml.c
++++ b/src/fcxml.c
+@@ -1493,7 +1493,7 @@ FcParseRange (FcConfigParse *parse)
+     FcRange	*r;
+     FcChar32	n[2] = {0, 0};
+     int		count = 1;
+-    double	d[2] = {0.0L, 0.0L};
++    double	d[2] = {0.0, 0.0};
+     FcBool	dflag = FcFalse;
+ 
+     while ((vstack = FcVStackPeek (parse)))
+@@ -1519,7 +1519,7 @@ FcParseRange (FcConfigParse *parse)
+ 	default:
+ 	    FcConfigMessage (parse, FcSevereError, "invalid element in range");
+ 	    if (dflag)
+-		d[count] = 0.0L;
++		d[count] = 0.0;
+ 	    else
+ 		n[count] = 0;
+ 	    break;
+-- 
+2.32.0
+
