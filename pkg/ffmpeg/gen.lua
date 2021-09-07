@@ -3,6 +3,7 @@ cflags{
 	'-Wno-deprecated-declarations',
 	'-Wno-discarded-qualifiers',
 	'-D HAVE_AV_CONFIG_H',
+	'-I $dir/include',
 	'-I $outdir',
 	'-I $outdir/include',
 	'-I $outdir/internal',
