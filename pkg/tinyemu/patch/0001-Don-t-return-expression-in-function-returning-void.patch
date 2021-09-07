@@ -1,4 +1,4 @@
-From 4eb4d3cbddf520f0db68973d1fd95da6d282539c Mon Sep 17 00:00:00 2001
+From 7bcefc4f212311a59a83d78d2f9aae6ce11b1538 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 2 Jul 2019 17:51:44 -0700
 Subject: [PATCH] Don't return expression in function returning void
@@ -6,7 +6,8 @@ Subject: [PATCH] Don't return expression in function returning void
 ---
  iomem.c | 2 +-
  temu.c  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ vga.c   | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/iomem.c b/iomem.c
 index c63ada0..8a90bb6 100644
@@ -34,6 +35,19 @@ index 7c07f3b..02696a8 100644
  }
  
  static void slirp_select_fill1(EthernetDevice *net, int *pfd_max,
+diff --git a/vga.c b/vga.c
+index 908a320..948d590 100644
+--- a/vga.c
++++ b/vga.c
+@@ -613,7 +613,7 @@ static uint32_t vga_read_ ## base(void *opaque, uint32_t addr, int size_log2)\
+ }\
+ static void vga_write_ ## base(void *opaque, uint32_t addr, uint32_t val, int size_log2)\
+ {\
+-    return vga_ioport_write(opaque, base + addr, val);\
++    vga_ioport_write(opaque, base + addr, val);\
+ }
+ 
+ VGA_IO(0x3c0)
 -- 
-2.22.0
+2.32.0
 

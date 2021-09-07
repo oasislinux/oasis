@@ -1,0 +1,58 @@
+From b87edf043bc03527ac702d1fdc678e930f77a082 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 19:55:08 -0700
+Subject: [PATCH] Add portable fallbacks for __builtin_clz[ll]
+
+---
+ softfp.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/softfp.c b/softfp.c
+index 2a1aad0..801ecc3 100644
+--- a/softfp.c
++++ b/softfp.c
+@@ -35,7 +35,25 @@ static inline int clz32(uint32_t a)
+     if (a == 0) {
+         r = 32;
+     } else {
++#ifdef __GNUC__
+         r = __builtin_clz(a);
++#else
++	int t;
++
++	t = ((a & 0xffff0000) == 0) << 4;
++	a >>= 16 - t;
++	r = t;
++	t = ((a & 0xff00) == 0) << 3;
++	a >>= 8 - t;
++	r |= t;
++	t = ((a & 0xf0) == 0) << 2;
++	a >>= 4 - t;
++	r |= t;
++	t = ((a & 0xc) == 0) << 1;
++	a >>= 2 - t;
++	r |= t;
++	r += 2 - a & -((a & 2) == 0);
++#endif
+     }
+     return r;
+ }
+@@ -47,7 +65,15 @@ static inline int clz64(uint64_t a)
+         r = 64;
+     } else 
+     {
++#ifdef __GNUC__
+         r = __builtin_clzll(a);
++#else
++	int t;
++
++	t = ((a & 0xffffffff00000000) == 0) << 8;
++	a >>= 32 - t;
++	r = t | clz32(a);
++#endif
+     }
+     return r;
+ }
+-- 
+2.32.0
+

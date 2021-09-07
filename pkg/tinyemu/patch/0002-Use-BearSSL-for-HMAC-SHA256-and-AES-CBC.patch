@@ -1,4 +1,4 @@
-From d08311dfe9776fcb5e1b5ca3a4efe0402ad704be Mon Sep 17 00:00:00 2001
+From 2e18341d2d69f10dafd06fbeb3782d41e65fdf87 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 15 Nov 2019 21:47:49 -0800
 Subject: [PATCH] Use BearSSL for HMAC-SHA256 and AES-CBC
@@ -139,5 +139,5 @@ index 35b6a4b..952bb69 100644
  #ifdef _WIN32
  #include <winsock2.h>
 -- 
-2.24.0
+2.32.0
 

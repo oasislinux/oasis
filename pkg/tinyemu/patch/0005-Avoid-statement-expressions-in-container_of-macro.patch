@@ -1,0 +1,28 @@
+From 29eff3ebdf14cc6238208648a389f92adcedf1d1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 19:55:48 -0700
+Subject: [PATCH] Avoid statement-expressions in container_of macro
+
+---
+ slirp/ip_input.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/slirp/ip_input.c b/slirp/ip_input.c
+index 50ab951..ca004c9 100644
+--- a/slirp/ip_input.c
++++ b/slirp/ip_input.c
+@@ -41,9 +41,8 @@
+ #include "slirp.h"
+ #include "ip_icmp.h"
+ 
+-#define container_of(ptr, type, member) ({                      \
+-        const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+-        (type *)( (char *)__mptr - offsetof(type,member) );})
++#define container_of(ptr, type, member) \
++        (type *)((char *)ptr - offsetof(type, member))
+ 
+ static struct ip *ip_reass(Slirp *slirp, struct ip *ip, struct ipq *fp);
+ static void ip_freef(Slirp *slirp, struct ipq *fp);
+-- 
+2.32.0
+

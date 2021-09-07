@@ -1,0 +1,27 @@
+From 56469bedea5af4f06923e086a65da3131b2239bd Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 20:39:50 -0700
+Subject: [PATCH] Avoid shifting past end of uint32_t for dtb address
+
+Make it clear that the shifting of the dtb address is intended to
+strip the upper 0x1000 bit, since that is the base PC address.
+---
+ riscv_machine.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/riscv_machine.c b/riscv_machine.c
+index a7149fd..6e407c8 100644
+--- a/riscv_machine.c
++++ b/riscv_machine.c
+@@ -810,7 +810,7 @@ static void copy_bios(RISCVMachine *s, const uint8_t *buf, int buf_len,
+     q = (uint32_t *)(ram_ptr + 0x1000);
+     q[0] = 0x297 + 0x80000000 - 0x1000; /* auipc t0, jump_addr */
+     q[1] = 0x597; /* auipc a1, dtb */
+-    q[2] = 0x58593 + ((fdt_addr - 4) << 20); /* addi a1, a1, dtb */
++    q[2] = 0x58593 + ((fdt_addr - 0x1004) << 20); /* addi a1, a1, dtb */
+     q[3] = 0xf1402573; /* csrr a0, mhartid */
+     q[4] = 0x00028067; /* jalr zero, t0, jump_addr */
+ }
+-- 
+2.32.0
+

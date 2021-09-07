@@ -1,0 +1,26 @@
+From 81c6a8b860e86fabbe4576ecb744696a3ae21a37 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 19:56:26 -0700
+Subject: [PATCH] Remove unused empty struct
+
+---
+ x86_machine.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/x86_machine.c b/x86_machine.c
+index db8f6bb..160933f 100644
+--- a/x86_machine.c
++++ b/x86_machine.c
+@@ -2206,9 +2206,6 @@ static void pc_vm_send_mouse_event(VirtMachine *s1, int dx, int dy, int dz,
+     }
+ }
+ 
+-struct screen_info {
+-} __attribute__((packed));
+-
+ /* from plex86 (BSD license) */
+ struct  __attribute__ ((packed)) linux_params {
+     /* screen_info structure */
+-- 
+2.32.0
+

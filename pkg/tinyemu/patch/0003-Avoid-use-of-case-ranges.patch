@@ -1,0 +1,89 @@
+From 8d660bf668aa05e9b5cf10f2fe6171c0462ad34d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 19:47:41 -0700
+Subject: [PATCH] Avoid use of case ranges
+
+---
+ pci.c | 39 ++-------------------------------------
+ vga.c |  5 ++---
+ 2 files changed, 4 insertions(+), 40 deletions(-)
+
+diff --git a/pci.c b/pci.c
+index d37b737..f0cf05b 100644
+--- a/pci.c
++++ b/pci.c
+@@ -291,46 +291,11 @@ static void pci_device_config_write8(PCIDevice *d, uint32_t addr,
+     switch(d->config[0x0e]) {
+     case 0x00:
+     case 0x80:
+-        switch(addr) {
+-        case 0x00:
+-        case 0x01:
+-        case 0x02:
+-        case 0x03:
+-        case 0x08:
+-        case 0x09:
+-        case 0x0a:
+-        case 0x0b:
+-        case 0x0e:
+-        case 0x10 ... 0x27: /* base */
+-        case 0x30 ... 0x33: /* rom */
+-        case 0x3d:
+-            can_write = 0;
+-            break;
+-        default:
+-            can_write = 1;
+-            break;
+-        }
++        can_write = addr >= 0x40 || 1ull << addr & 0xdff0ff000000b0f0;
+         break;
+     default:
+     case 0x01:
+-        switch(addr) {
+-        case 0x00:
+-        case 0x01:
+-        case 0x02:
+-        case 0x03:
+-        case 0x08:
+-        case 0x09:
+-        case 0x0a:
+-        case 0x0b:
+-        case 0x0e:
+-        case 0x38 ... 0x3b: /* rom */
+-        case 0x3d:
+-            can_write = 0;
+-            break;
+-        default:
+-            can_write = 1;
+-            break;
+-        }
++        can_write = addr >= 0x40 || 1ull << addr & 0xd0ffffffffffb0f0;
+         break;
+     }
+     if (can_write)
+diff --git a/vga.c b/vga.c
+index 948d590..afe4c3f 100644
+--- a/vga.c
++++ b/vga.c
+@@ -506,9 +506,6 @@ static void vga_ioport_write(VGAState *s, uint32_t addr, uint32_t val)
+         } else {
+             index = s->ar_index & 0x1f;
+             switch(index) {
+-            case 0x00 ... 0x0f:
+-                s->ar[index] = val & 0x3f;
+-                break;
+             case 0x10:
+                 s->ar[index] = val & ~0x10;
+                 break;
+@@ -525,6 +522,8 @@ static void vga_ioport_write(VGAState *s, uint32_t addr, uint32_t val)
+                 s->ar[index] = val & ~0xf0;
+                 break;
+             default:
++                if (index <= 0x0f)
++                    s->ar[index] = val & 0x3f;
+                 break;
+             }
+         }
+-- 
+2.32.0
+
