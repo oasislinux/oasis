@@ -27,9 +27,15 @@ pkg.deps = {
 	'$gendir/headers',
 }
 
-build('cat', '$outdir/config.h', {'$dir/config-head.h', '$dir/config.h', '$builddir/probe/PIC', '$dir/config-tail.h'})
-build('awk', '$outdir/config.asm', {'$dir/config.h', '$builddir/probe/PIC'}, {
-	expr=[['{print "%define " substr($$0, length("#define ") + 1)}']],
+local probe = {
+	'$builddir/probe/PIC',
+	'$builddir/probe/HAVE_INLINE_ASM',
+	'$builddir/probe/HAVE_MMINTRIN_H',
+}
+
+build('cat', '$outdir/config.h', {'$dir/config-head.h', probe, '$dir/config.h', '$dir/config-tail.h'})
+build('sed', '$outdir/config.asm', {probe, '$dir/config.h'}, {
+	expr=[[-n -e 's,^# *,%,p']],
 })
 build('awk', '$outdir/config.texi', '$dir/config.h', {
 	expr=[['$$3 == "1" {gsub("_", "-", $$2); print "@set", tolower($$2), "yes"}']],
@@ -91,6 +97,10 @@ for line in iterlines('sources.txt', 1) do
 			end
 		end
 	end
+end
+-- combination option in libavutil/x86/Makefile
+if options.HAVE_MMX_EXTERNAL then
+	sources.libavutil['libavutil/x86/emms.asm'] = true
 end
 for lib, srcs in pairs(sources) do
 	sources[lib] = table.keys(srcs)
