@@ -1,4 +1,5 @@
 cflags{
+	'-std=c99', '-Wall',
 	[[-D 'EFIBOOTMGR_VERSION="17"']],
 	[[-D 'DEFAULT_LOADER="/linux"']],
 	'-I $srcdir/src/include',
