@@ -1,4 +1,4 @@
-From 6a898554d5862f7cffbd674b0e1c690c6c8e83e4 Mon Sep 17 00:00:00 2001
+From 24a0e8d916019160c1fe186ccfb9843d00a5ddde Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 2 Mar 2021 15:47:20 -0800
 Subject: [PATCH] libsupport: remove unused sort_r definition
@@ -9,29 +9,28 @@ On any linux (including linux-musl), sort_r is defined in terms of
 qsort_r, so a compiler that does not support inlining may still
 emit a reference to qsort_r.
 ---
- lib/support/sort_r.h | 120 ++-----------------------------------------
- 1 file changed, 3 insertions(+), 117 deletions(-)
+ lib/support/sort_r.h | 119 +------------------------------------------
+ 1 file changed, 2 insertions(+), 117 deletions(-)
 
 diff --git a/lib/support/sort_r.h b/lib/support/sort_r.h
-index dc17e8af..4c4ebf3b 100644
+index 3292a26a..08f496d4 100644
 --- a/lib/support/sort_r.h
 +++ b/lib/support/sort_r.h
-@@ -22,20 +22,11 @@ void sort_r(void *base, size_t nel, size_t width,
+@@ -22,20 +22,10 @@ void sort_r(void *base, size_t nel, size_t width,
  
  */
  
 -#define _SORT_R_INLINE inline
 -
--#if (defined __APPLE__ || defined __MACH__ || defined __DARWIN__ || \
--     defined __FreeBSD__ || defined __DragonFly__)
--#  define _SORT_R_BSD
--#elif (defined _GNU_SOURCE || defined __gnu_hurd__ || defined __GNU__ || \
+-#if (defined __gnu_hurd__ || defined __GNU__ || \
 -       defined __linux__ || defined __MINGW32__ || defined __GLIBC__)
 -#  define _SORT_R_LINUX
+-#elif (defined __APPLE__ || defined __MACH__ || defined __DARWIN__ || \
+-     defined __FreeBSD__ || defined __DragonFly__)
+-#  define _SORT_R_BSD
 -#elif (defined _WIN32 || defined _WIN64 || defined __WINDOWS__)
 -#  define _SORT_R_WINDOWS
 -#  undef _SORT_R_INLINE
-+
 +#if (defined _WIN32 || defined _WIN64 || defined __WINDOWS__)
  #  define _SORT_R_INLINE __inline
  #else
@@ -40,7 +39,7 @@ index dc17e8af..4c4ebf3b 100644
  #endif
  
  #if (defined NESTED_QSORT && NESTED_QSORT == 0)
-@@ -211,111 +202,6 @@ static _SORT_R_INLINE void sort_r_simple(void *base, size_t nel, size_t w,
+@@ -211,111 +201,6 @@ static _SORT_R_INLINE void sort_r_simple(void *base, size_t nel, size_t w,
    }
  }
  
@@ -153,5 +152,5 @@ index dc17e8af..4c4ebf3b 100644
  
  #endif /* SORT_R_H_ */
 -- 
-2.30.0
+2.32.0
 

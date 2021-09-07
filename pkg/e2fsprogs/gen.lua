@@ -1,4 +1,4 @@
-set('version', '1.46.2')
+set('version', '1.46.4')
 cflags{
 	'-std=c99', '-Wall',
         '-Wno-address-of-packed-member', '-Wno-format-truncation',
@@ -23,7 +23,7 @@ build('cat', '$outdir/config.h', {
 
 set('subst', {
 	'-e s,@E2FSPROGS_VERSION@,$version,',
-	'-e s,@E2FSPROGS_MONTH@,Feb,',
+	'-e s,@E2FSPROGS_MONTH@,Aug,',
 	'-e s,@E2FSPROGS_YEAR@,2021,',
 	'-e s,@JDEV@,,',
 })
