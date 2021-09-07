@@ -1,0 +1,34 @@
+From 1b61d04de8d62821eec915eec6bde6b9a0a2d1c9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 30 Aug 2021 13:40:48 -0700
+Subject: [PATCH] amd64: optimize zeroing of integer registers as well
+
+---
+ amd64/emit.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/amd64/emit.c b/amd64/emit.c
+index 311b8c6..015b921 100644
+--- a/amd64/emit.c
++++ b/amd64/emit.c
+@@ -444,11 +444,13 @@ emitins(Ins i, Fn *fn, FILE *f)
+ 			break;
+ 		t0 = rtype(i.arg[0]);
+ 		if (isreg(i.to)
+-		&& KBASE(i.cls) == 1
+ 		&& t0 == RCon
+-		&& fn->con[i.arg[0].val].type == CBits) {
+-			assert(fn->con[i.arg[0].val].bits.i == 0);
+-			emitf("pxor %D=, %D=", &i, fn, f);
++		&& fn->con[i.arg[0].val].type == CBits
++		&& fn->con[i.arg[0].val].bits.i == 0) {
++			if (KBASE(i.cls) == 0)
++				emitf("xor%k %=, %=", &i, fn, f);
++			else
++				emitf("pxor %D=, %D=", &i, fn, f);
+ 			break;
+ 		}
+ 		if (i.cls == Kl
+-- 
+2.32.0
+

@@ -1,4 +1,4 @@
-From 86ce810ec5463f41d001b543288bd43dda79eebd Mon Sep 17 00:00:00 2001
+From d9d890583d93f1bfdc38e4aa890350d4111b848a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 9 May 2019 23:32:15 -0700
 Subject: [PATCH] arm64: Handle slots in Ocopy operands
@@ -8,7 +8,7 @@ Subject: [PATCH] arm64: Handle slots in Ocopy operands
  1 file changed, 21 insertions(+), 4 deletions(-)
 
 diff --git a/arm64/emit.c b/arm64/emit.c
-index e7effef..adae233 100644
+index 9ebcfcd..5a3fe55 100644
 --- a/arm64/emit.c
 +++ b/arm64/emit.c
 @@ -218,8 +218,8 @@ emitf(char *s, Ins *i, E *e)
@@ -22,7 +22,7 @@ index e7effef..adae233 100644
  			switch (rtype(r)) {
  			default:
  				die("TODO emit non reg addresses");
-@@ -305,9 +305,26 @@ emitins(Ins *i, E *e)
+@@ -307,9 +307,26 @@ emitins(Ins *i, E *e)
  	case Ocopy:
  		if (req(i->to, i->arg[0]))
  			break;
@@ -52,5 +52,5 @@ index e7effef..adae233 100644
  	case Oaddr:
  		assert(rtype(i->arg[0]) == RSlot);
 -- 
-2.21.0
+2.32.0
 

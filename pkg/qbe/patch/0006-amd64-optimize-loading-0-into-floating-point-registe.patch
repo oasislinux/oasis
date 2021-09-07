@@ -1,0 +1,76 @@
+From 1e0c08a288a5f7993dd8565ace35f1ecfc614544 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?=C3=89rico=20Nogueira?= <erico.erc@gmail.com>
+Date: Sun, 11 Jul 2021 19:19:12 -0300
+Subject: [PATCH] amd64: optimize loading +0 into floating point registers
+
+Loading +0 into a floating point register can be done using pxor or
+xorps instructions. Per [1], we went with pxor because it can run on all
+vector ALU ports, even if it's one byte longer.
+
+To implement it, we special case fixarg to emit Ocopy when the value is
++0, and emitins to treat Ocopy for floating point args specially. Since
+0. == -0., we can't check if bits.d or bits.f are equal to 0. To avoid
+requiring signbit(), we inspect bits.i directly; this assumes the bits
+union is always zero-initialized.
+
+[1] https://stackoverflow.com/questions/39811577/does-using-mix-of-pxor-and-xorps-affect-performance/39828976
+---
+ amd64/emit.c |  8 ++++++++
+ amd64/isel.c | 12 +++++++-----
+ 2 files changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/amd64/emit.c b/amd64/emit.c
+index 09b90d5..311b8c6 100644
+--- a/amd64/emit.c
++++ b/amd64/emit.c
+@@ -443,6 +443,14 @@ emitins(Ins i, Fn *fn, FILE *f)
+ 		if (req(i.to, i.arg[0]))
+ 			break;
+ 		t0 = rtype(i.arg[0]);
++		if (isreg(i.to)
++		&& KBASE(i.cls) == 1
++		&& t0 == RCon
++		&& fn->con[i.arg[0].val].type == CBits) {
++			assert(fn->con[i.arg[0].val].bits.i == 0);
++			emitf("pxor %D=, %D=", &i, fn, f);
++			break;
++		}
+ 		if (i.cls == Kl
+ 		&& t0 == RCon
+ 		&& fn->con[i.arg[0].val].type == CBits) {
+diff --git a/amd64/isel.c b/amd64/isel.c
+index 607c176..1c902f5 100644
+--- a/amd64/isel.c
++++ b/amd64/isel.c
+@@ -69,7 +69,7 @@ fixarg(Ref *r, int k, Ins *i, Fn *fn)
+ 	r1 = r0 = *r;
+ 	s = rslot(r0, fn);
+ 	op = i ? i->op : Ocopy;
+-	if (KBASE(k) == 1 && rtype(r0) == RCon) {
++	if (KBASE(k) == 1 && rtype(r0) == RCon && fn->con[r0.val].bits.i != 0) {
+ 		/* load floating points from memory
+ 		 * slots, they can't be used as
+ 		 * immediates
+@@ -84,13 +84,15 @@ fixarg(Ref *r, int k, Ins *i, Fn *fn)
+ 		a.offset.label = intern(buf);
+ 		fn->mem[fn->nmem-1] = a;
+ 	}
+-	else if (op != Ocopy && k == Kl && noimm(r0, fn)) {
++	else if (op != Ocopy && ((k == Kl && noimm(r0, fn)) || (KBASE(k) == 1 && rtype(r0) == RCon))) {
+ 		/* load constants that do not fit in
+ 		 * a 32bit signed integer into a
+-		 * long temporary
++		 * long temporary OR
++		 * load positive zero into a floating
++		 * point register
+ 		 */
+-		r1 = newtmp("isel", Kl, fn);
+-		emit(Ocopy, Kl, r1, r0, R);
++		r1 = newtmp("isel", k, fn);
++		emit(Ocopy, k, r1, r0, R);
+ 	}
+ 	else if (s != -1) {
+ 		/* load fast locals' addresses into
+-- 
+2.32.0
+
