@@ -9,5 +9,5 @@ cd "$1"
 
 git submodule update --init --checkout src
 if [ -d patch ] ; then
-	git -C src am --whitespace=nowarn "$PWD"/patch/*
+	git -C src am --keep-non-patch --whitespace=nowarn "$PWD"/patch/*
 fi
