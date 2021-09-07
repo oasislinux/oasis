@@ -1,0 +1,567 @@
+From 45d27217546b0fdbb4cf89beedb75d2675bb14a4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 22:51:14 -0700
+Subject: [PATCH] Avoid __attribute__((packed)) requirement
+
+Also, use portable get_*/set_* functions. Compilers will optimize
+the memory access to a single load/store if possible.
+---
+ extlinux/main.c         |  46 ++++----
+ libinstaller/setadv.c   |  14 +--
+ libinstaller/syslxint.h | 255 ++++++++++++----------------------------
+ libinstaller/syslxmod.c |  20 ++--
+ 4 files changed, 112 insertions(+), 223 deletions(-)
+
+diff --git a/extlinux/main.c b/extlinux/main.c
+index 04a2036b..0186baba 100644
+--- a/extlinux/main.c
++++ b/extlinux/main.c
+@@ -236,7 +236,7 @@ static int patch_file_and_bootblock(int fd, const char *dir, int devfd)
+     sector_t *sectp;
+     uint64_t totalbytes, totalsectors;
+     int nsect;
+-    struct fat_boot_sector *sbs;
++    unsigned char *sbs;
+     char *dirpath, *subpath, *xdirpath;
+     int rv;
+ 
+@@ -293,20 +293,20 @@ static int patch_file_and_bootblock(int fd, const char *dir, int devfd)
+        early bootstrap share code with the FAT version. */
+     dprintf("heads = %u, sect = %u\n", geo.heads, geo.sectors);
+ 
+-    sbs = (struct fat_boot_sector *)syslinux_bootsect;
++    sbs = syslinux_bootsect;
+ 
+     totalsectors = totalbytes >> SECTOR_SHIFT;
+     if (totalsectors >= 65536) {
+-	set_16(&sbs->bsSectors, 0);
++	set_16(sbs + FAT_BS_SECTORS, 0);
+     } else {
+-	set_16(&sbs->bsSectors, totalsectors);
++	set_16(sbs + FAT_BS_SECTORS, totalsectors);
+     }
+-    set_32(&sbs->bsHugeSectors, totalsectors);
++    set_32(sbs + FAT_BS_HUGE_SECTORS, totalsectors);
+ 
+-    set_16(&sbs->bsBytesPerSec, SECTOR_SIZE);
+-    set_16(&sbs->bsSecPerTrack, geo.sectors);
+-    set_16(&sbs->bsHeads, geo.heads);
+-    set_32(&sbs->bsHiddenSecs, geo.start);
++    set_16(sbs + FAT_BS_BYTES_PER_SEC, SECTOR_SIZE);
++    set_16(sbs + FAT_BS_SEC_PER_TRACK, geo.sectors);
++    set_16(sbs + FAT_BS_HEADS, geo.heads);
++    set_32(sbs + FAT_BS_HIDDEN_SECS, geo.start);
+ 
+     /* Construct the boot file map */
+ 
+@@ -346,8 +346,8 @@ int install_bootblock(int fd, const char *device)
+ {
+     struct ext2_super_block sb;
+     struct btrfs_super_block sb2;
+-    struct fat_boot_sector sb3;
+-    struct ntfs_boot_sector sb4;
++    unsigned char sb3[512];
++    unsigned char sb4[512];
+     xfs_sb_t sb5;
+     struct ufs_super_block sb6;
+     bool ok = false;
+@@ -374,7 +374,7 @@ int install_bootblock(int fd, const char *device)
+ 		return 1;
+ 	}
+ 
+-	if (fat_check_sb_fields(&sb3))
++	if (fat_check_sb_fields(sb3))
+ 		ok = true;
+     } else if (fs_type == NTFS) {
+         if (xpread(fd, &sb4, sizeof(sb4), 0) != sizeof(sb4)) {
+@@ -382,7 +382,7 @@ int install_bootblock(int fd, const char *device)
+             return 1;
+         }
+ 
+-        if (ntfs_check_sb_fields(&sb4))
++        if (ntfs_check_sb_fields(sb4))
+              ok = true;
+     } else if (fs_type == XFS) {
+ 	if (xpread(fd, &sb5, sizeof sb5, 0) != sizeof sb5) {
+@@ -427,21 +427,19 @@ int install_bootblock(int fd, const char *device)
+     }
+ 
+     if (fs_type == VFAT) {
+-	struct fat_boot_sector *sbs = (struct fat_boot_sector *)syslinux_bootsect;
+-        if (xpwrite(fd, &sbs->FAT_bsHead, FAT_bsHeadLen, 0) != FAT_bsHeadLen ||
+-	    xpwrite(fd, &sbs->FAT_bsCode, FAT_bsCodeLen,
+-		    offsetof(struct fat_boot_sector, FAT_bsCode)) != FAT_bsCodeLen) {
++	unsigned char *sbs = syslinux_bootsect;
++        if (xpwrite(fd, sbs + FAT_BS_HEAD, FAT_BS_HEAD_LEN, 0) != FAT_BS_HEAD_LEN ||
++	    xpwrite(fd, sbs + FAT_BS_CODE, FAT_BS_CODE_LEN,
++		    FAT_BS_CODE) != FAT_BS_CODE_LEN) {
+ 	    perror("writing fat bootblock");
+ 	    return 1;
+ 	}
+     } else if (fs_type == NTFS) {
+-        struct ntfs_boot_sector *sbs =
+-                (struct ntfs_boot_sector *)syslinux_bootsect;
+-        if (xpwrite(fd, &sbs->NTFS_bsHead,
+-                    NTFS_bsHeadLen, 0) != NTFS_bsHeadLen ||
+-                    xpwrite(fd, &sbs->NTFS_bsCode, NTFS_bsCodeLen,
+-                    offsetof(struct ntfs_boot_sector,
+-                    NTFS_bsCode)) != NTFS_bsCodeLen) {
++        unsigned char *sbs = syslinux_bootsect;
++        if (xpwrite(fd, sbs + NTFS_BS_HEAD,
++                    NTFS_BS_HEAD_LEN, 0) != NTFS_BS_HEAD_LEN ||
++                    xpwrite(fd, sbs + NTFS_BS_CODE, NTFS_BS_CODE_LEN,
++                    NTFS_BS_CODE) != NTFS_BS_CODE_LEN) {
+             perror("writing ntfs bootblock");
+             return 1;
+         }
+diff --git a/libinstaller/setadv.c b/libinstaller/setadv.c
+index 214f7fc1..4f1cbc88 100644
+--- a/libinstaller/setadv.c
++++ b/libinstaller/setadv.c
+@@ -44,14 +44,14 @@ static void cleanup_adv(unsigned char *advbuf)
+     uint32_t csum;
+ 
+     /* Make sure both copies agree, and update the checksum */
+-    set_32((uint32_t *) advbuf, ADV_MAGIC1);
++    set_32(advbuf, ADV_MAGIC1);
+ 
+     csum = ADV_MAGIC2;
+     for (i = 8; i < ADV_SIZE - 4; i += 4)
+-	csum -= get_32((uint32_t *) (advbuf + i));
++	csum -= get_32(advbuf + i);
+ 
+-    set_32((uint32_t *) (advbuf + 4), csum);
+-    set_32((uint32_t *) (advbuf + ADV_SIZE - 4), ADV_MAGIC3);
++    set_32(advbuf + 4, csum);
++    set_32(advbuf + ADV_SIZE - 4, ADV_MAGIC3);
+ 
+     memcpy(advbuf + ADV_SIZE, advbuf, ADV_SIZE);
+ }
+@@ -138,13 +138,13 @@ static int adv_consistent(const unsigned char *p)
+     int i;
+     uint32_t csum;
+ 
+-    if (get_32((uint32_t *) p) != ADV_MAGIC1 ||
+-	get_32((uint32_t *) (p + ADV_SIZE - 4)) != ADV_MAGIC3)
++    if (get_32(p) != ADV_MAGIC1 ||
++	get_32(p + ADV_SIZE - 4) != ADV_MAGIC3)
+ 	return 0;
+ 
+     csum = 0;
+     for (i = 4; i < ADV_SIZE - 4; i += 4)
+-	csum += get_32((uint32_t *) (p + i));
++	csum += get_32(p + i);
+ 
+     return csum == ADV_MAGIC2;
+ }
+diff --git a/libinstaller/syslxint.h b/libinstaller/syslxint.h
+index 7eee7890..dbc6a0b8 100644
+--- a/libinstaller/syslxint.h
++++ b/libinstaller/syslxint.h
+@@ -23,56 +23,27 @@
+ # define X86_MEM 0
+ #endif
+ 
+-#ifdef __GNUC__
+-# ifdef __MINGW32__
+-   /* gcc 4.7 miscompiles packed structures in MS-bitfield mode */
+-#  define PACKED __attribute__((packed,gcc_struct))
+-# else
+-#  define PACKED __attribute__((packed))
+-# endif
+-#else
+-# error "Need to define PACKED for this compiler"
+-#endif
+-
+ /*
+  * Access functions for littleendian numbers, possibly misaligned.
+  */
+-static inline uint8_t get_8(const uint8_t * p)
++static inline uint8_t get_8(const unsigned char* p)
+ {
+     return *p;
+ }
+ 
+-static inline uint16_t get_16(const uint16_t * p)
++static inline uint16_t get_16(const unsigned char *p)
+ {
+-#if X86_MEM
+-    /* Littleendian and unaligned-capable */
+-    return *p;
+-#else
+-    const uint8_t *pp = (const uint8_t *)p;
+-    return pp[0] + ((uint16_t)pp[1] << 8);
+-#endif
++    return p[0] | (uint16_t)p[1] << 8;
+ }
+ 
+-static inline uint32_t get_32(const uint32_t * p)
++static inline uint32_t get_32(const unsigned char *p)
+ {
+-#if X86_MEM
+-    /* Littleendian and unaligned-capable */
+-    return *p;
+-#else
+-    const uint16_t *pp = (const uint16_t *)p;
+-    return get_16(&pp[0]) + ((uint32_t)get_16(&pp[1]) << 16);
+-#endif
++    return get_16(&p[0]) | (uint32_t)get_16(&p[2]) << 16;
+ }
+ 
+-static inline uint64_t get_64(const uint64_t * p)
++static inline uint64_t get_64(const unsigned char *p)
+ {
+-#if X86_MEM
+-    /* Littleendian and unaligned-capable */
+-    return *p;
+-#else
+-    const uint32_t *pp = (const uint32_t *)p;
+-    return get_32(&pp[0]) + ((uint64_t)get_32(&pp[1]) << 32);
+-#endif
++    return get_32(&p[0]) | (uint64_t)get_32(&p[2]) << 32;
+ }
+ 
+ static inline void set_8(uint8_t *p, uint8_t v)
+@@ -80,40 +51,22 @@ static inline void set_8(uint8_t *p, uint8_t v)
+     *p = v;
+ }
+ 
+-static inline void set_16(uint16_t *p, uint16_t v)
++static inline void set_16(unsigned char *p, uint16_t v)
+ {
+-#if X86_MEM
+-    /* Littleendian and unaligned-capable */
+-    *p = v;
+-#else
+-    uint8_t *pp = (uint8_t *) p;
+-    pp[0] = v;
+-    pp[1] = v >> 8;
+-#endif
++    p[0] = v;
++    p[1] = v >> 8;
+ }
+ 
+-static inline void set_32(uint32_t *p, uint32_t v)
++static inline void set_32(unsigned char *p, uint32_t v)
+ {
+-#if X86_MEM
+-    /* Littleendian and unaligned-capable */
+-    *p = v;
+-#else
+-    uint16_t *pp = (uint16_t *) p;
+-    set_16(&pp[0], v);
+-    set_16(&pp[1], v >> 16);
+-#endif
++    set_16(&p[0], v);
++    set_16(&p[2], v >> 16);
+ }
+ 
+-static inline void set_64(uint64_t *p, uint64_t v)
++static inline void set_64(unsigned char *p, uint64_t v)
+ {
+-#if X86_MEM
+-    /* Littleendian and unaligned-capable */
+-    *p = v;
+-#else
+-    uint32_t *pp = (uint32_t *) p;
+-    set_32(&pp[0], v);
+-    set_32(&pp[1], v >> 32);
+-#endif
++    set_32(&p[0], v);
++    set_32(&p[4], v >> 32);
+ }
+ 
+ /*
+@@ -139,35 +92,35 @@ void memset_sl(void _slimg *dst, int c, size_t len);
+ /* Sane system ... */
+ static inline uint8_t get_8_sl(const uint8_t _slimg * p)
+ {
+-    return get_8((const uint8_t _force *)p);
++    return get_8((const unsigned char _force *)p);
+ }
+ static inline uint16_t get_16_sl(const uint16_t _slimg * p)
+ {
+-    return get_16((const uint16_t _force *)p);
++    return get_16((const unsigned char _force *)p);
+ }
+ static inline uint32_t get_32_sl(const uint32_t _slimg * p)
+ {
+-    return get_32((const uint32_t _force *)p);
++    return get_32((const unsigned char _force *)p);
+ }
+ static inline uint64_t get_64_sl(const uint64_t _slimg * p)
+ {
+-    return get_64((const uint64_t _force *)p);
++    return get_64((const unsigned char _force *)p);
+ }
+ static inline void set_8_sl(uint8_t _slimg * p, uint8_t v)
+ {
+-    set_8((uint8_t _force *)p, v);
++    set_8((unsigned char _force *)p, v);
+ }
+ static inline void set_16_sl(uint16_t _slimg * p, uint16_t v)
+ {
+-    set_16((uint16_t _force *)p, v);
++    set_16((unsigned char _force *)p, v);
+ }
+ static inline void set_32_sl(uint32_t _slimg * p, uint32_t v)
+ {
+-    set_32((uint32_t _force *)p, v);
++    set_32((unsigned char _force *)p, v);
+ }
+ static inline void set_64_sl(uint64_t _slimg * p, uint64_t v)
+ {
+-    set_64((uint64_t _force *)p, v);
++    set_64((unsigned char _force *)p, v);
+ }
+ static inline void memcpy_to_sl(void _slimg *dst, const void *src, size_t len)
+ {
+@@ -213,130 +166,68 @@ struct ext_patch_area {
+     uint16_t raidpatch;		/* Boot sector RAID mode patch pointer */
+ };
+ 
+-/* Sector extent */
+-struct syslinux_extent {
+-    uint64_t lba;
+-    uint16_t len;
+-} PACKED;
+-
+ /* FAT bootsector format, also used by other disk-based derivatives */
+-struct fat_boot_sector {
+-    uint8_t bsJump[3];
+-    char bsOemName[8];
+-    uint16_t bsBytesPerSec;
+-    uint8_t bsSecPerClust;
+-    uint16_t bsResSectors;
+-    uint8_t bsFATs;
+-    uint16_t bsRootDirEnts;
+-    uint16_t bsSectors;
+-    uint8_t bsMedia;
+-    uint16_t bsFATsecs;
+-    uint16_t bsSecPerTrack;
+-    uint16_t bsHeads;
+-    uint32_t bsHiddenSecs;
+-    uint32_t bsHugeSectors;
+-
+-    union {
+-	struct {
+-	    uint8_t DriveNumber;
+-	    uint8_t Reserved1;
+-	    uint8_t BootSignature;
+-	    uint32_t VolumeID;
+-	    char VolumeLabel[11];
+-	    char FileSysType[8];
+-	    uint8_t Code[442];
+-	} PACKED bs16;
+-	struct {
+-	    uint32_t FATSz32;
+-	    uint16_t ExtFlags;
+-	    uint16_t FSVer;
+-	    uint32_t RootClus;
+-	    uint16_t FSInfo;
+-	    uint16_t BkBootSec;
+-	    uint8_t Reserved0[12];
+-	    uint8_t DriveNumber;
+-	    uint8_t Reserved1;
+-	    uint8_t BootSignature;
+-	    uint32_t VolumeID;
+-	    char VolumeLabel[11];
+-	    char FileSysType[8];
+-	    uint8_t Code[414];
+-	} PACKED bs32;
+-    } PACKED;
+-
+-    uint32_t bsMagic;
+-    uint16_t bsForwardPtr;
+-    uint16_t bsSignature;
+-} PACKED;
++#define FAT_BS_JUMP 0x00
++#define FAT_BS_BYTES_PER_SEC 0x0B
++#define FAT_BS_RES_SECTORS 0x0D
++#define FAT_BS_FATS 0x10
++#define FAT_BS_SECTORS 0x13
++#define FAT_BS_SEC_PER_TRACK 0x18
++#define FAT_BS_HEADS 0x1A
++#define FAT_BS_HIDDEN_SECS 0x1C
++#define FAT_BS_HUGE_SECTORS 0x20
++#define FAT_BS_SIGNATURE 0x1FE
++#define FAT_BS16_FILE_SYS_TYPE 0x36
++#define FAT_BS32_FILE_SYS_TYPE 0x52
++#define FAT_BS32_CODE 0x62
++
++#define FAT_BS_HEAD      FAT_BS_JUMP
++#define FAT_BS_HEAD_LEN  FAT_BS_BYTES_PER_SEC
++#define FAT_BS_CODE      FAT_BS32_CODE /* The common safe choice */
++#define FAT_BS_CODE_LEN  FAT_BS_SIGNATURE - FAT_BS_CODE
+ 
+ /* NTFS bootsector format */
+-struct ntfs_boot_sector {
+-    uint8_t bsJump[3];
+-    char bsOemName[8];
+-    uint16_t bsBytesPerSec;
+-    uint8_t bsSecPerClust;
+-    uint16_t bsResSectors;
+-    uint8_t bsZeroed_0[3];
+-    uint16_t bsZeroed_1;
+-    uint8_t bsMedia;
+-    uint16_t bsZeroed_2;
+-    uint16_t bsUnused_0;
+-    uint16_t bsUnused_1;
+-    uint32_t bsUnused_2;
+-    uint32_t bsZeroed_3;
+-    uint32_t bsUnused_3;
+-    uint64_t bsTotalSectors;
+-    uint64_t bsMFTLogicalClustNr;
+-    uint64_t bsMFTMirrLogicalClustNr;
+-    uint8_t bsClustPerMFTrecord;
+-    uint8_t bsUnused_4[3];
+-    uint8_t bsClustPerIdxBuf;
+-    uint8_t bsUnused_5[3];
+-    uint64_t bsVolSerialNr;
+-    uint32_t bsUnused_6;
+-
+-    uint8_t Code[420];
+-
+-    uint32_t bsMagic;
+-    uint16_t bsForwardPtr;
+-    uint16_t bsSignature;
+-} PACKED;
+-
+-#define FAT_bsHead      bsJump
+-#define FAT_bsHeadLen   offsetof(struct fat_boot_sector, bsBytesPerSec)
+-#define FAT_bsCode	    bs32.Code	/* The common safe choice */
+-#define FAT_bsCodeLen   (offsetof(struct fat_boot_sector, bsSignature) - \
+-		     offsetof(struct fat_boot_sector, FAT_bsCode))
+-
+-#define NTFS_bsHead     bsJump
+-#define NTFS_bsHeadLen  offsetof(struct ntfs_boot_sector, bsOemName)
+-#define NTFS_bsCode     Code
+-#define NTFS_bsCodeLen  (offsetof(struct ntfs_boot_sector, bsSignature) - \
+-                            offsetof(struct ntfs_boot_sector, NTFS_bsCode))
++#define NTFS_BS_JUMP 0x00
++#define NTFS_BS_OEM_NAME 0x03
++#define NTFS_BS_RES_SECTORS 0x0E
++#define NTFS_BS_ZEROED_0 0x10
++#define NTFS_BS_ZEROED_1 0x13
++#define NTFS_BS_ZEROED_2 0x16
++#define NTFS_BS_ZEROED_3 0x20
++#define NTFS_BS_CODE 0x54
++#define NTFS_BS_SIGNATURE 0x1FE
++
++#define NTFS_BS_HEAD     NTFS_BS_JUMP
++#define NTFS_BS_HEAD_LEN NTFS_BS_OEM_NAME
++#define NTFS_BS_CODE_LEN NTFS_BS_SIGNATURE - NTFS_BS_CODE
+ 
+ /* Check if there are specific zero fields in an NTFS boot sector */
+-static inline int ntfs_check_zero_fields(const struct ntfs_boot_sector *sb)
++static inline int ntfs_check_zero_fields(const unsigned char *sb)
+ {
+-    return !sb->bsResSectors && (!sb->bsZeroed_0[0] && !sb->bsZeroed_0[1] &&
+-            !sb->bsZeroed_0[2]) && !sb->bsZeroed_1 && !sb->bsZeroed_2 &&
+-            !sb->bsZeroed_3;
++    return !sb[NTFS_BS_RES_SECTORS] && !sb[NTFS_BS_RES_SECTORS + 1] &&
++            !sb[NTFS_BS_ZEROED_0] && !sb[NTFS_BS_ZEROED_0 + 1] &&
++            !sb[NTFS_BS_ZEROED_0 + 2] && !sb[NTFS_BS_ZEROED_1] &&
++            !sb[NTFS_BS_ZEROED_1 + 1] && !sb[NTFS_BS_ZEROED_2] &&
++            !sb[NTFS_BS_ZEROED_2 + 1] && !sb[NTFS_BS_ZEROED_3] &&
++            !sb[NTFS_BS_ZEROED_3 + 1] && !sb[NTFS_BS_ZEROED_3 + 2] &&
++            !sb[NTFS_BS_ZEROED_3 + 3];
+ }
+ 
+-static inline int ntfs_check_sb_fields(const struct ntfs_boot_sector *sb)
++static inline int ntfs_check_sb_fields(const unsigned char *sb)
+ {
+     return ntfs_check_zero_fields(sb) &&
+-            (!memcmp(sb->bsOemName, "NTFS    ", 8) ||
+-             !memcmp(sb->bsOemName, "MSWIN4.0", 8) ||
+-             !memcmp(sb->bsOemName, "MSWIN4.1", 8));
++            (!memcmp(sb + NTFS_BS_OEM_NAME, "NTFS    ", 8) ||
++             !memcmp(sb + NTFS_BS_OEM_NAME, "MSWIN4.0", 8) ||
++             !memcmp(sb + NTFS_BS_OEM_NAME, "MSWIN4.1", 8));
+ }
+ 
+-static inline int fat_check_sb_fields(const struct fat_boot_sector *sb)
++static inline int fat_check_sb_fields(const unsigned char *sb)
+ {
+-    return sb->bsResSectors && sb->bsFATs &&
+-            (!memcmp(sb->bs16.FileSysType, "FAT12   ", 8) ||
+-             !memcmp(sb->bs16.FileSysType, "FAT16   ", 8) ||
+-             !memcmp(sb->bs16.FileSysType, "FAT     ", 8) ||
+-             !memcmp(sb->bs32.FileSysType, "FAT32   ", 8));
++    return (sb[FAT_BS_RES_SECTORS] || sb[FAT_BS_RES_SECTORS + 1]) && sb[FAT_BS_FATS] &&
++            (!memcmp(sb + FAT_BS16_FILE_SYS_TYPE, "FAT12   ", 8) ||
++             !memcmp(sb + FAT_BS16_FILE_SYS_TYPE, "FAT16   ", 8) ||
++             !memcmp(sb + FAT_BS16_FILE_SYS_TYPE, "FAT     ", 8) ||
++             !memcmp(sb + FAT_BS32_FILE_SYS_TYPE, "FAT32   ", 8));
+ }
+ 
+ #endif /* SYSLXINT_H */
+diff --git a/libinstaller/syslxmod.c b/libinstaller/syslxmod.c
+index 0ec41641..10f7ccf0 100644
+--- a/libinstaller/syslxmod.c
++++ b/libinstaller/syslxmod.c
+@@ -32,7 +32,7 @@
+ /*
+  * Generate sector extents
+  */
+-static void generate_extents(struct syslinux_extent _slimg *ex, int nptrs,
++static void generate_extents(unsigned char *ex, int nptrs,
+ 			     const sector_t *sectp, int nsect)
+ {
+     uint32_t addr = 0x8000;	/* ldlinux.sys starts loading here */
+@@ -43,7 +43,7 @@ static void generate_extents(struct syslinux_extent _slimg *ex, int nptrs,
+     base = addr;
+     len = lba = 0;
+ 
+-    memset_sl(ex, 0, nptrs * sizeof *ex);
++    memset_sl(ex, 0, nptrs * 10);
+ 
+     while (nsect) {
+ 	sect = *sectp++;
+@@ -58,9 +58,9 @@ static void generate_extents(struct syslinux_extent _slimg *ex, int nptrs,
+ 		goto next;
+ 	    }
+ 
+-	    set_64_sl(&ex->lba, lba);
+-	    set_16_sl(&ex->len, len);
+-	    ex++;
++	    set_64(ex, lba);
++	    set_16(ex + 8, len);
++	    ex += 10;
+ 	}
+ 
+ 	base = addr;
+@@ -73,9 +73,9 @@ static void generate_extents(struct syslinux_extent _slimg *ex, int nptrs,
+     }
+ 
+     if (len) {
+-	set_64_sl(&ex->lba, lba);
+-	set_16_sl(&ex->len, len);
+-	ex++;
++	set_64(ex, lba);
++	set_16(ex + 8, len);
++	ex += 10;
+     }
+ }
+ 
+@@ -109,7 +109,7 @@ int syslinux_patch(const sector_t *sectp, int nsectors,
+ {
+     struct patch_area _slimg *patcharea;
+     struct ext_patch_area _slimg *epa;
+-    struct syslinux_extent _slimg *ex;
++    unsigned char *ex;
+     const uint32_t _slimg *wp;
+     int nsect = ((boot_image_len + SECTOR_SIZE - 1) >> SECTOR_SHIFT) + 2;
+     uint32_t csum;
+@@ -152,7 +152,7 @@ int syslinux_patch(const sector_t *sectp, int nsectors,
+     }
+ 
+     /* Set the sector extents */
+-    ex = slptr(boot_image, &epa->secptroffset);
++    ex = ptr(boot_image, &epa->secptroffset);
+     nptrs = get_16_sl(&epa->secptrcnt);
+ 
+ #if 0
+-- 
+2.32.0
+

@@ -1,0 +1,27 @@
+From ba4ce26feeb95b9a6e26c9db19045289c53a45cc Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 6 Sep 2021 22:38:25 -0700
+Subject: [PATCH] Don't omit second operand to conditional operator
+
+---
+ extlinux/main.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/extlinux/main.c b/extlinux/main.c
+index 4967a306..04a2036b 100644
+--- a/extlinux/main.c
++++ b/extlinux/main.c
+@@ -196,8 +196,8 @@ int get_geometry(int devfd, uint64_t totalbytes, struct hd_geometry *geo)
+        what zipdisks use, so this would help if someone has a USB key that
+        they're booting in USB-ZIP mode. */
+ 
+-    geo->heads = opt.heads ? : 64;
+-    geo->sectors = opt.sectors ? : 32;
++    geo->heads = opt.heads ? opt.heads : 64;
++    geo->sectors = opt.sectors ? opt.sectors : 32;
+     geo->cylinders = totalbytes / (geo->heads * geo->sectors << SECTOR_SHIFT);
+     geo->start = 0;
+ 
+-- 
+2.32.0
+
