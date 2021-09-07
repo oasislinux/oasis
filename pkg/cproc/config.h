@@ -1,8 +1,8 @@
-static char target[]         = "x86_64-linux-musl";
-static char *startfiles[]    = {"-l", ":crt1.o", "-l", ":crti.o"};
-static char *endfiles[]      = {"-l", "c", "-l", ":crtn.o"};
-static char *preprocesscmd[] = {
-	"cpp", "-P",
+static const char target[]         = "x86_64-linux-musl";
+static const char *const startfiles[]    = {"-l", ":crt1.o", "-l", ":crti.o"};
+static const char *const endfiles[]      = {"-l", "c", "-l", ":crtn.o"};
+static const char *const preprocesscmd[] = {
+	"cpp",
 
 	/* clear preprocessor GNU C version */
 	"-U", "__GNUC__",
@@ -18,6 +18,6 @@ static char *preprocesscmd[] = {
 	"-D", "__attribute__(x)=",
 	"-D", "__extension__=",
 };
-static char *codegencmd[]    = {"qbe"};
-static char *assemblecmd[]   = {"as"};
-static char *linkcmd[]       = {"ld", "--dynamic-linker", "/lib/ld-musl-x86_64.so.1"};
+static const char *const codegencmd[]    = {"qbe"};
+static const char *const assemblecmd[]   = {"as"};
+static const char *const linkcmd[]       = {"ld", "--dynamic-linker", "/lib/ld-musl-x86_64.so.1"};
