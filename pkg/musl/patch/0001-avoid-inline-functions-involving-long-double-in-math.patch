@@ -1,0 +1,112 @@
+From 9b972aaf435f15ce82b9f3dc006877d6cdd04592 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 30 Sep 2021 22:21:25 -0700
+Subject: [PATCH] avoid inline functions involving long double in math.h
+
+---
+ include/math.h               | 11 ++++++-----
+ src/math/__isgreaterequall.c |  6 ++++++
+ src/math/__isgreaterl.c      |  6 ++++++
+ src/math/__islessequall.c    |  6 ++++++
+ src/math/__islessgreaterl.c  |  6 ++++++
+ src/math/__islessl.c         |  6 ++++++
+ 6 files changed, 36 insertions(+), 5 deletions(-)
+ create mode 100644 src/math/__isgreaterequall.c
+ create mode 100644 src/math/__isgreaterl.c
+ create mode 100644 src/math/__islessequall.c
+ create mode 100644 src/math/__islessgreaterl.c
+ create mode 100644 src/math/__islessl.c
+
+diff --git a/include/math.h b/include/math.h
+index 14f28ec8..0286fba4 100644
+--- a/include/math.h
++++ b/include/math.h
+@@ -107,19 +107,20 @@ static __inline int __is##rel(type __x, type __y) \
+ 
+ __ISREL_DEF(lessf, <, float_t)
+ __ISREL_DEF(less, <, double_t)
+-__ISREL_DEF(lessl, <, long double)
+ __ISREL_DEF(lessequalf, <=, float_t)
+ __ISREL_DEF(lessequal, <=, double_t)
+-__ISREL_DEF(lessequall, <=, long double)
+ __ISREL_DEF(lessgreaterf, !=, float_t)
+ __ISREL_DEF(lessgreater, !=, double_t)
+-__ISREL_DEF(lessgreaterl, !=, long double)
+ __ISREL_DEF(greaterf, >, float_t)
+ __ISREL_DEF(greater, >, double_t)
+-__ISREL_DEF(greaterl, >, long double)
+ __ISREL_DEF(greaterequalf, >=, float_t)
+ __ISREL_DEF(greaterequal, >=, double_t)
+-__ISREL_DEF(greaterequall, >=, long double)
++
++int __islessl(long double, long double);
++int __islessequall(long double, long double);
++int __islessgreaterl(long double, long double);
++int __isgreaterl(long double, long double);
++int __isgreaterequall(long double, long double);
+ 
+ #define __tg_pred_2(x, y, p) ( \
+ 	sizeof((x)+(y)) == sizeof(float) ? p##f(x, y) : \
+diff --git a/src/math/__isgreaterequall.c b/src/math/__isgreaterequall.c
+new file mode 100644
+index 00000000..2d014213
+--- /dev/null
++++ b/src/math/__isgreaterequall.c
+@@ -0,0 +1,6 @@
++#include <math.h>
++
++int __isgreaterequall(long double x, long double y)
++{
++	return !isunordered(x, y) && x >= y;
++}
+diff --git a/src/math/__isgreaterl.c b/src/math/__isgreaterl.c
+new file mode 100644
+index 00000000..835fe575
+--- /dev/null
++++ b/src/math/__isgreaterl.c
+@@ -0,0 +1,6 @@
++#include <math.h>
++
++int __isgreaterl(long double x, long double y)
++{
++	return !isunordered(x, y) && x > y;
++}
+diff --git a/src/math/__islessequall.c b/src/math/__islessequall.c
+new file mode 100644
+index 00000000..3534ab5b
+--- /dev/null
++++ b/src/math/__islessequall.c
+@@ -0,0 +1,6 @@
++#include <math.h>
++
++int __islessequall(long double x, long double y)
++{
++	return !isunordered(x, y) && x <= y;
++}
+diff --git a/src/math/__islessgreaterl.c b/src/math/__islessgreaterl.c
+new file mode 100644
+index 00000000..e8543384
+--- /dev/null
++++ b/src/math/__islessgreaterl.c
+@@ -0,0 +1,6 @@
++#include <math.h>
++
++int __islessgreaterl(long double x, long double y)
++{
++	return !isunordered(x, y) && x != y;
++}
+diff --git a/src/math/__islessl.c b/src/math/__islessl.c
+new file mode 100644
+index 00000000..27b48d0e
+--- /dev/null
++++ b/src/math/__islessl.c
+@@ -0,0 +1,6 @@
++#include <math.h>
++
++int __islessl(long double x, long double y)
++{
++	return !isunordered(x, y) && x < y;
++}
+-- 
+2.32.0
+
