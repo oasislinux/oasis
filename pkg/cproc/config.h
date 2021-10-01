@@ -14,6 +14,9 @@ static const char *const preprocesscmd[] = {
 	"-D", "__STDC_NO_VLA__",
 	"-U", "__SIZEOF_INT128__",
 
+	/* we don't generate position-independent code */
+	"-U", "__PIC__",
+
 	/* ignore attributes and extension markers */
 	"-D", "__attribute__(x)=",
 	"-D", "__extension__=",
