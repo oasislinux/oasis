@@ -3,12 +3,15 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 /* #undef AIX_BUILDDATE */
 /* #undef AIX_GENUINE_CPLUSPLUS */
+#define ALIGNOF_LONG 8
+#define ALIGNOF_SIZE_T 8
 /* #undef ALT_SOABI */
 /* #undef ANDROID_API_LEVEL */
 /* #undef DOUBLE_IS_ARM_MIXED_ENDIAN_IEEE754 */
 /* #undef DOUBLE_IS_BIG_ENDIAN_IEEE754 */
 #define DOUBLE_IS_LITTLE_ENDIAN_IEEE754 1
 #define ENABLE_IPV6 1
+/* #undef EXPERIMENTAL_ISOLATED_SUBINTERPRETERS */
 /* #undef FLOAT_WORDS_BIGENDIAN */
 /* #undef FLOCK_NEEDS_LIBBSD */
 /* #undef GETPGRP_HAVE_ARG */
@@ -41,6 +44,7 @@
 #define HAVE_CLOCK_GETRES 1
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_CLOCK_SETTIME 1
+/* #undef HAVE_CLOSE_RANGE */
 #define HAVE_COMPUTED_GOTOS 1
 #define HAVE_CONFSTR 1
 /* #undef HAVE_CONIO_H */
@@ -93,6 +97,7 @@
 #define HAVE_ERF 1
 #define HAVE_ERFC 1
 #define HAVE_ERRNO_H 1
+#define HAVE_EVENTFD 1
 #define HAVE_EXECV 1
 #define HAVE_EXPLICIT_BZERO 1
 /* #undef HAVE_EXPLICIT_MEMSET */
@@ -234,6 +239,7 @@
 #define HAVE_NETPACKET_PACKET_H 1
 #define HAVE_NET_IF_H 1
 #define HAVE_NICE 1
+/* #undef HAVE_NON_UNICODE_WCHAR_T_REPRESENTATION */
 #define HAVE_OPENAT 1
 #define HAVE_OPENPTY 1
 #define HAVE_PATHCONF 1
@@ -326,6 +332,7 @@
 #define HAVE_SOCKADDR_STORAGE 1
 #define HAVE_SOCKETPAIR 1
 #define HAVE_SPAWN_H 1
+#define HAVE_SPLICE 1
 #define HAVE_SSIZE_T 1
 #define HAVE_STATVFS 1
 #define HAVE_STAT_TV_NSEC 1
@@ -334,7 +341,6 @@
 #define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STD_ATOMIC 1
-#define HAVE_STRDUP 1
 #define HAVE_STRFTIME 1
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
@@ -361,6 +367,7 @@
 /* #undef HAVE_SYS_DIR_H */
 /* #undef HAVE_SYS_ENDIAN_H */
 #define HAVE_SYS_EPOLL_H 1
+#define HAVE_SYS_EVENTFD_H 1
 /* #undef HAVE_SYS_EVENT_H */
 #define HAVE_SYS_FILE_H 1
 #define HAVE_SYS_IOCTL_H 1
@@ -421,6 +428,7 @@
 /* #undef HAVE_UUID_GENERATE_TIME_SAFE */
 /* #undef HAVE_UUID_H */
 /* #undef HAVE_UUID_UUID_H */
+#define HAVE_VFORK 1
 #define HAVE_WAIT3 1
 #define HAVE_WAIT4 1
 #define HAVE_WAITID 1
@@ -432,7 +440,6 @@
 #define HAVE_WMEMCMP 1
 #define HAVE_WORKING_TZSET 1
 #define HAVE_WRITEV 1
-#define HAVE_X509_VERIFY_PARAM_SET1_HOST 1
 #define HAVE_ZLIB_COPY 1
 /* #undef HAVE__GETPTY */
 /* #undef MAJOR_IN_MKDEV */
@@ -451,8 +458,8 @@
 #define PY_BUILTIN_HASHLIB_HASHES "sha3,blake2"
 #define PY_COERCE_C_LOCALE 1
 #define PY_FORMAT_SIZE_T "z"
-#define PY_SSL_DEFAULT_CIPHERS 1
-/* #undef PY_SSL_DEFAULT_CIPHER_STRING */
+#define PY_SSL_DEFAULT_CIPHERS 0
+#define PY_SSL_DEFAULT_CIPHER_STRING "TLSv1.3:TLSv1.2+AEAD+ECDHE:TLSv1.2+AEAD+DHE"
 /* #undef Py_DEBUG */
 /* #undef Py_ENABLE_SHARED */
 /* #undef Py_HASH_ALGORITHM */
@@ -505,6 +512,7 @@
 #define WITH_DOC_STRINGS 1
 /* #undef WITH_DTRACE */
 /* #undef WITH_DYLD */
+/* #undef WITH_EDITLINE */
 /* #undef WITH_LIBINTL */
 /* #undef WITH_NEXT_FRAMEWORK */
 /* #undef WITH_PYMALLOC */

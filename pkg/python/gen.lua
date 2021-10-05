@@ -61,7 +61,7 @@ rule('makesetup', 'lua $dir/makesetup.lua $dir/modules.lua <$in >$out')
 build('makesetup', '$outdir/config.c', {'$srcdir/Modules/config.c.in', '|', '$dir/makesetup.lua', '$dir/modules.lua'})
 
 cc('Modules/getbuildinfo.c', nil, {
-	cflags=[[$cflags -D 'DATE="Feb 19 2021"' -D 'TIME="13:32:09"']]
+	cflags=[[$cflags -D 'DATE="Oct 4 2021"' -D 'TIME="18:40:47"']]
 })
 cc('Modules/getpath.c', nil, {
 	cflags={
@@ -69,7 +69,7 @@ cc('Modules/getpath.c', nil, {
 		[[-D 'PYTHONPATH=":plat-linux"']],
 		[[-D 'PREFIX="/"']],
 		[[-D 'EXEC_PREFIX="/"']],
-		[[-D 'VERSION="3.9"']],
+		[[-D 'VERSION="3.10"']],
 		[[-D 'VPATH=""']],
 	},
 })
@@ -144,17 +144,17 @@ lib('libpython.a', {expand{'Modules/', srcs}, paths[[
 		typeobject.c
 		unicodeobject.c
 		unicodectype.c
+		unionobject.c
 		weakrefobject.c
 	)
 	Parser/(
-		acceler.c
-		grammar1.c
-		listnode.c
-		node.c
-		parser.c
 		token.c
-		pegen/(pegen.c parse.c parse_string.c peg_api.c)
-		myreadline.c parsetok.c tokenizer.c
+		pegen.c
+		parser.c
+		string_parser.c
+		peg_api.c
+		myreadline.c
+		tokenizer.c
 	)
 	Python/(
 		_warnings.c
@@ -176,7 +176,6 @@ lib('libpython.a', {expand{'Modules/', srcs}, paths[[
 		getcopyright.c
 		getplatform.c.o
 		getversion.c
-		graminit.c
 		hamt.c
 		hashtable.c
 		import.c
@@ -187,7 +186,6 @@ lib('libpython.a', {expand{'Modules/', srcs}, paths[[
 		mysnprintf.c
 		mystrtoul.c
 		pathconfig.c
-		peephole.c
 		preconfig.c
 		pyarena.c
 		pyctype.c
@@ -211,6 +209,7 @@ lib('libpython.a', {expand{'Modules/', srcs}, paths[[
 		dtoa.c
 		formatter_unicode.c
 		fileutils.c
+		suggestions.c
 		dynload_stub.c
 		frozen.c
 	)
@@ -226,10 +225,10 @@ man{'$outdir/python3.1'}
 sym('share/man/man1/python.1.gz', 'python3.1.gz')
 
 for f in iterlines('pylibs.txt') do
-	file('lib/python3.9/'..f, '644', '$srcdir/Lib/'..f)
+	file('lib/python3.10/'..f, '644', '$srcdir/Lib/'..f)
 end
-file('lib/python3.9/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$dir/lib/_sysconfigdata.py')
-file('lib/python3.9/Makefile', '644', '$dir/lib/Makefile')
-dir('lib/python3.9/lib-dynload', '755')
+file('lib/python3.10/_sysconfigdata_'..abiflags..'_'..platform..'_.py', '644', '$dir/lib/_sysconfigdata.py')
+file('lib/python3.10/Makefile', '644', '$dir/lib/Makefile')
+dir('lib/python3.10/lib-dynload', '755')
 
 fetch 'curl'

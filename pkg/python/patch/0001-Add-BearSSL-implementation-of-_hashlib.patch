@@ -1,21 +1,21 @@
-From 40cce685bfce6c2824177f3e550d6ffbd24e08c6 Mon Sep 17 00:00:00 2001
+From a21116a6e36fd6d2f7c815cc0ebf92fffe0e72c6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 May 2021 22:48:13 -0700
 Subject: [PATCH] Add BearSSL implementation of _hashlib
 
 ---
- Modules/_hashbearssl.c          | 1136 +++++++++++++++++++++++++++++++
+ Modules/_hashbearssl.c          | 1124 +++++++++++++++++++++++++++++++
  Modules/clinic/_hashbearssl.c.h | 1113 ++++++++++++++++++++++++++++++
- 2 files changed, 2249 insertions(+)
+ 2 files changed, 2237 insertions(+)
  create mode 100644 Modules/_hashbearssl.c
  create mode 100644 Modules/clinic/_hashbearssl.c.h
 
 diff --git a/Modules/_hashbearssl.c b/Modules/_hashbearssl.c
 new file mode 100644
-index 0000000000..98fd1d84dc
+index 0000000000..3d51d99efb
 --- /dev/null
 +++ b/Modules/_hashbearssl.c
-@@ -0,0 +1,1136 @@
+@@ -0,0 +1,1124 @@
 +/* Module that wraps all BearSSL hash algorithms */
 +#define PY_SSIZE_T_CLEAN
 +#include "Python.h"
@@ -58,15 +58,6 @@ index 0000000000..98fd1d84dc
 +[clinic start generated code]*/
 +/*[clinic end generated code: output=da39a3ee5e6b4b0d input=7a269412ec77c79a]*/
 +
-+/* NULL .tp_new doesn't block __new__ */
-+static PyObject *
-+_disabled_new(PyTypeObject *type, PyObject *args, PyObject *kwargs)
-+{
-+    PyErr_Format(PyExc_TypeError,
-+        "cannot create '%.100s' instances", _PyType_Name(type));
-+    return NULL;
-+}
-+
 +static const br_hash_class *
 +py_hash_by_name(const char *name)
 +{
@@ -108,7 +99,7 @@ index 0000000000..98fd1d84dc
 +{
 +    if (self->lock)
 +        PyThread_free_lock(self->lock);
-+    PyObject_Del(self);
++    PyObject_Free(self);
 +}
 +
 +/*[clinic input]
@@ -259,10 +250,9 @@ index 0000000000..98fd1d84dc
 +    .tp_dealloc = (destructor)Hash_dealloc,
 +    .tp_doc = Hash_doc,
 +    .tp_basicsize = sizeof(Hash),
-+    .tp_flags = Py_TPFLAGS_DEFAULT,
++    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION | Py_TPFLAGS_IMMUTABLETYPE,
 +    .tp_methods = Hash_methods,
 +    .tp_getset = Hash_getset,
-+    .tp_new = _disabled_new,
 +};
 +
 +PyDoc_STRVAR(SHAKE_doc,
@@ -288,7 +278,7 @@ index 0000000000..98fd1d84dc
 +{
 +    if (self->lock)
 +        PyThread_free_lock(self->lock);
-+    PyObject_Del(self);
++    PyObject_Free(self);
 +}
 +
 +/*[clinic input]
@@ -448,10 +438,9 @@ index 0000000000..98fd1d84dc
 +    .tp_dealloc = (destructor)SHAKE_dealloc,
 +    .tp_doc = SHAKE_doc,
 +    .tp_basicsize = sizeof(SHAKE),
-+    .tp_flags = Py_TPFLAGS_DEFAULT,
++    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION | Py_TPFLAGS_IMMUTABLETYPE,
 +    .tp_methods = SHAKE_methods,
 +    .tp_getset = SHAKE_getset,
-+    .tp_new = _disabled_new,
 +};
 +
 +PyDoc_STRVAR(HMAC_doc,
@@ -474,7 +463,7 @@ index 0000000000..98fd1d84dc
 +{
 +    if (self->lock)
 +        PyThread_free_lock(self->lock);
-+    PyObject_Del(self);
++    PyObject_Free(self);
 +}
 +/*[clinic input]
 +_hashlib.HMAC.copy as HMAC_copy
@@ -632,10 +621,9 @@ index 0000000000..98fd1d84dc
 +    .tp_dealloc = (destructor)HMAC_dealloc,
 +    .tp_doc = HMAC_doc,
 +    .tp_basicsize = sizeof(HMAC),
-+    .tp_flags = Py_TPFLAGS_DEFAULT,
++    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION | Py_TPFLAGS_IMMUTABLETYPE,
 +    .tp_methods = HMAC_methods,
 +    .tp_getset = HMAC_getset,
-+    .tp_new = _disabled_new,
 +};
 +
 +static PyObject *
@@ -2272,5 +2260,5 @@ index 0000000000..49bf8f9287
 +}
 +/*[clinic end generated code: output=b4705bad5ece43e9 input=a9049054013a1b77]*/
 -- 
-2.31.1
+2.32.0
 

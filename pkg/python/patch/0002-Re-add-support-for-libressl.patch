@@ -1,0 +1,403 @@
+From 308e4f113891bea997bcac7e7e48a18956478265 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 5 Oct 2021 14:44:43 -0700
+Subject: [PATCH] Re-add support for libressl
+
+---
+ Modules/_hashopenssl.c          |  4 +++
+ Modules/_ssl.c                  | 58 +++++++++++++++++++++------------
+ Modules/_ssl/debughelpers.c     |  4 +++
+ Modules/clinic/_hashopenssl.c.h | 10 +++++-
+ Modules/clinic/_ssl.c.h         | 28 ++++++++++++----
+ 5 files changed, 77 insertions(+), 27 deletions(-)
+
+diff --git a/Modules/_hashopenssl.c b/Modules/_hashopenssl.c
+index b9e68c05c3..75eb76266a 100644
+--- a/Modules/_hashopenssl.c
++++ b/Modules/_hashopenssl.c
+@@ -40,10 +40,12 @@
+ 
+ #define MUNCH_SIZE INT_MAX
+ 
++#ifndef LIBRESSL_VERSION_NUMBER
+ #define PY_OPENSSL_HAS_SCRYPT 1
+ #define PY_OPENSSL_HAS_SHA3 1
+ #define PY_OPENSSL_HAS_SHAKE 1
+ #define PY_OPENSSL_HAS_BLAKE2 1
++#endif
+ 
+ static PyModuleDef _hashlibmodule;
+ 
+@@ -1794,6 +1796,7 @@ hashlib_md_meth_names(PyObject *module)
+     return 0;
+ }
+ 
++#ifndef LIBRESSL_VERSION_NUMBER
+ /*[clinic input]
+ _hashlib.get_fips_mode -> int
+ 
+@@ -1831,6 +1834,7 @@ _hashlib_get_fips_mode_impl(PyObject *module)
+     return result;
+ #endif
+ }
++#endif
+ 
+ 
+ static int
+diff --git a/Modules/_ssl.c b/Modules/_ssl.c
+index 6c63301b2a..d8a70d5511 100644
+--- a/Modules/_ssl.c
++++ b/Modules/_ssl.c
+@@ -291,8 +291,10 @@ typedef struct {
+     int post_handshake_auth;
+ #endif
+     PyObject *msg_cb;
++#ifndef LIBRESSL_VERSION_NUMBER
+     PyObject *keylog_filename;
+     BIO *keylog_bio;
++#endif
+     /* Cached module state, also used in SSLSocket and SSLSession code. */
+     _sslmodulestate *state;
+ } PySSLContext;
+@@ -1829,6 +1831,7 @@ _ssl__SSLSocket_getpeercert_impl(PySSLSocket *self, int binary_mode)
+     return result;
+ }
+ 
++#ifndef LIBRESSL_VERSION_NUMBER
+ /*[clinic input]
+ _ssl._SSLSocket.get_verified_chain
+ 
+@@ -1892,6 +1895,7 @@ _ssl__SSLSocket_get_unverified_chain_impl(PySSLSocket *self)
+     }
+     return retval;
+ }
++#endif
+ 
+ static PyObject *
+ cipher_to_tuple(const SSL_CIPHER *cipher)
+@@ -2298,8 +2302,7 @@ static PyObject *
+ _ssl__SSLSocket_write_impl(PySSLSocket *self, Py_buffer *b)
+ /*[clinic end generated code: output=aa7a6be5527358d8 input=77262d994fe5100a]*/
+ {
+-    size_t count = 0;
+-    int retval;
++    int len;
+     int sockstate;
+     _PySSLError err;
+     int nonblocking;
+@@ -2317,6 +2320,12 @@ _ssl__SSLSocket_write_impl(PySSLSocket *self, Py_buffer *b)
+         Py_INCREF(sock);
+     }
+ 
++    if (b->len > INT_MAX) {
++        PyErr_Format(PyExc_OverflowError,
++                     "string longer than %d bytes", INT_MAX);
++        goto error;
++    }
++
+     if (sock != NULL) {
+         /* just in case the blocking state of the socket has been changed */
+         nonblocking = (sock->sock_timeout >= 0);
+@@ -2346,8 +2355,8 @@ _ssl__SSLSocket_write_impl(PySSLSocket *self, Py_buffer *b)
+ 
+     do {
+         PySSL_BEGIN_ALLOW_THREADS
+-        retval = SSL_write_ex(self->ssl, b->buf, (size_t)b->len, &count);
+-        err = _PySSL_errno(retval == 0, self->ssl, retval);
++        len = SSL_write(self->ssl, b->buf, (int)b->len);
++        err = _PySSL_errno(len <= 0, self->ssl, len);
+         PySSL_END_ALLOW_THREADS
+         self->err = err;
+ 
+@@ -2380,11 +2389,11 @@ _ssl__SSLSocket_write_impl(PySSLSocket *self, Py_buffer *b)
+              err.ssl == SSL_ERROR_WANT_WRITE);
+ 
+     Py_XDECREF(sock);
+-    if (retval == 0)
+-        return PySSL_SetError(self, retval, __FILE__, __LINE__);
++    if (len <= 0)
++        return PySSL_SetError(self, len, __FILE__, __LINE__);
+     if (PySSL_ChainExceptions(self) < 0)
+         return NULL;
+-    return PyLong_FromSize_t(count);
++    return PyLong_FromLong(len);
+ error:
+     Py_XDECREF(sock);
+     PySSL_ChainExceptions(self);
+@@ -2418,7 +2427,7 @@ _ssl__SSLSocket_pending_impl(PySSLSocket *self)
+ 
+ /*[clinic input]
+ _ssl._SSLSocket.read
+-    size as len: Py_ssize_t
++    size as len: int
+     [
+     buffer: Py_buffer(accept={rwbuffer})
+     ]
+@@ -2428,14 +2437,13 @@ Read up to size bytes from the SSL socket.
+ [clinic start generated code]*/
+ 
+ static PyObject *
+-_ssl__SSLSocket_read_impl(PySSLSocket *self, Py_ssize_t len,
+-                          int group_right_1, Py_buffer *buffer)
+-/*[clinic end generated code: output=49b16e6406023734 input=ec48bf622be1c4a1]*/
++_ssl__SSLSocket_read_impl(PySSLSocket *self, int len, int group_right_1,
++                          Py_buffer *buffer)
++/*[clinic end generated code: output=00097776cec2a0af input=ff157eb918d0905b]*/
+ {
+     PyObject *dest = NULL;
+     char *mem;
+-    size_t count = 0;
+-    int retval;
++    int count;
+     int sockstate;
+     _PySSLError err;
+     int nonblocking;
+@@ -2498,8 +2506,8 @@ _ssl__SSLSocket_read_impl(PySSLSocket *self, Py_ssize_t len,
+ 
+     do {
+         PySSL_BEGIN_ALLOW_THREADS
+-        retval = SSL_read_ex(self->ssl, mem, (size_t)len, &count);
+-        err = _PySSL_errno(retval == 0, self->ssl, retval);
++        count = SSL_read(self->ssl, mem, len);
++        err = _PySSL_errno(count <= 0, self->ssl, count);
+         PySSL_END_ALLOW_THREADS
+         self->err = err;
+ 
+@@ -2532,8 +2540,8 @@ _ssl__SSLSocket_read_impl(PySSLSocket *self, Py_ssize_t len,
+     } while (err.ssl == SSL_ERROR_WANT_READ ||
+              err.ssl == SSL_ERROR_WANT_WRITE);
+ 
+-    if (retval == 0) {
+-        PySSL_SetError(self, retval, __FILE__, __LINE__);
++    if (count <= 0) {
++        PySSL_SetError(self, count, __FILE__, __LINE__);
+         goto error;
+     }
+     if (self->exc_type != NULL)
+@@ -2546,7 +2554,7 @@ _ssl__SSLSocket_read_impl(PySSLSocket *self, Py_ssize_t len,
+         return dest;
+     }
+     else {
+-        return PyLong_FromSize_t(count);
++        return PyLong_FromLong(count);
+     }
+ 
+ error:
+@@ -3062,8 +3070,10 @@ _ssl__SSLContext_impl(PyTypeObject *type, int proto_version)
+     self->hostflags = X509_CHECK_FLAG_NO_PARTIAL_WILDCARDS;
+     self->protocol = proto_version;
+     self->msg_cb = NULL;
++#ifndef LIBRESSL_VERSION_NUMBER
+     self->keylog_filename = NULL;
+     self->keylog_bio = NULL;
++#endif
+     self->alpn_protocols = NULL;
+     self->set_sni_cb = NULL;
+     self->state = get_ssl_state(module);
+@@ -3187,6 +3197,7 @@ context_clear(PySSLContext *self)
+ {
+     Py_CLEAR(self->set_sni_cb);
+     Py_CLEAR(self->msg_cb);
++#ifndef LIBRESSL_VERSION_NUMBER
+     Py_CLEAR(self->keylog_filename);
+     if (self->keylog_bio != NULL) {
+         PySSL_BEGIN_ALLOW_THREADS
+@@ -3194,6 +3205,7 @@ context_clear(PySSLContext *self)
+         PySSL_END_ALLOW_THREADS
+         self->keylog_bio = NULL;
+     }
++#endif
+     return 0;
+ }
+ 
+@@ -3535,7 +3547,7 @@ set_maximum_version(PySSLContext *self, PyObject *arg, void *c)
+     return set_min_max_proto_version(self, arg, 1);
+ }
+ 
+-#ifdef TLS1_3_VERSION
++#if defined(TLS1_3_VERSION) && !defined(LIBRESSL_VERSION_NUMBER)
+ static PyObject *
+ get_num_tickets(PySSLContext *self, void *c)
+ {
+@@ -3568,12 +3580,14 @@ PyDoc_STRVAR(PySSLContext_num_tickets_doc,
+ "Control the number of TLSv1.3 session tickets");
+ #endif /* TLS1_3_VERSION */
+ 
++#ifndef LIBRESSL_VERSION_NUMBER
+ static PyObject *
+ get_security_level(PySSLContext *self, void *c)
+ {
+     return PyLong_FromLong(SSL_CTX_get_security_level(self->ctx));
+ }
+ PyDoc_STRVAR(PySSLContext_security_level_doc, "The current security level");
++#endif
+ 
+ static PyObject *
+ get_options(PySSLContext *self, void *c)
+@@ -4603,13 +4617,15 @@ static PyGetSetDef context_getsetlist[] = {
+                         (setter) set_minimum_version, NULL},
+     {"maximum_version", (getter) get_maximum_version,
+                         (setter) set_maximum_version, NULL},
++#ifndef LIBRESSL_VERSION_NUMBER
+     {"keylog_filename", (getter) _PySSLContext_get_keylog_filename,
+                         (setter) _PySSLContext_set_keylog_filename, NULL},
++#endif
+     {"_msg_callback", (getter) _PySSLContext_get_msg_callback,
+                       (setter) _PySSLContext_set_msg_callback, NULL},
+     {"sni_callback", (getter) get_sni_callback,
+                      (setter) set_sni_callback, PySSLContext_sni_callback_doc},
+-#ifdef TLS1_3_VERSION
++#if defined(TLS1_3_VERSION) && !defined(LIBRESSL_VERSION_NUMBER)
+     {"num_tickets", (getter) get_num_tickets,
+                     (setter) set_num_tickets, PySSLContext_num_tickets_doc},
+ #endif
+@@ -4628,8 +4644,10 @@ static PyGetSetDef context_getsetlist[] = {
+                      (setter) set_verify_flags, NULL},
+     {"verify_mode", (getter) get_verify_mode,
+                     (setter) set_verify_mode, NULL},
++#ifndef LIBRESSL_VERSION_NUMBER
+     {"security_level", (getter) get_security_level,
+                        NULL, PySSLContext_security_level_doc},
++#endif
+     {NULL},            /* sentinel */
+ };
+ 
+diff --git a/Modules/_ssl/debughelpers.c b/Modules/_ssl/debughelpers.c
+index 03c125eb44..d992c5bc02 100644
+--- a/Modules/_ssl/debughelpers.c
++++ b/Modules/_ssl/debughelpers.c
+@@ -114,6 +114,8 @@ _PySSLContext_set_msg_callback(PySSLContext *self, PyObject *arg, void *c) {
+     return 0;
+ }
+ 
++#ifndef LIBRESSL_VERSION_NUMBER
++
+ static void
+ _PySSL_keylog_callback(const SSL *ssl, const char *line)
+ {
+@@ -217,3 +219,5 @@ _PySSLContext_set_keylog_filename(PySSLContext *self, PyObject *arg, void *c) {
+     SSL_CTX_set_keylog_callback(self->ctx, _PySSL_keylog_callback);
+     return 0;
+ }
++
++#endif
+diff --git a/Modules/clinic/_hashopenssl.c.h b/Modules/clinic/_hashopenssl.c.h
+index de01489e6a..c686eddea8 100644
+--- a/Modules/clinic/_hashopenssl.c.h
++++ b/Modules/clinic/_hashopenssl.c.h
+@@ -1275,6 +1275,8 @@ _hashlib_HMAC_hexdigest(HMACobject *self, PyObject *Py_UNUSED(ignored))
+     return _hashlib_HMAC_hexdigest_impl(self);
+ }
+ 
++#if !defined(LIBRESSL_VERSION_NUMBER)
++
+ PyDoc_STRVAR(_hashlib_get_fips_mode__doc__,
+ "get_fips_mode($module, /)\n"
+ "--\n"
+@@ -1310,6 +1312,8 @@ _hashlib_get_fips_mode(PyObject *module, PyObject *Py_UNUSED(ignored))
+     return return_value;
+ }
+ 
++#endif /* !defined(LIBRESSL_VERSION_NUMBER) */
++
+ PyDoc_STRVAR(_hashlib_compare_digest__doc__,
+ "compare_digest($module, a, b, /)\n"
+ "--\n"
+@@ -1385,4 +1389,8 @@ _hashlib_compare_digest(PyObject *module, PyObject *const *args, Py_ssize_t narg
+ #ifndef _HASHLIB_SCRYPT_METHODDEF
+     #define _HASHLIB_SCRYPT_METHODDEF
+ #endif /* !defined(_HASHLIB_SCRYPT_METHODDEF) */
+-/*[clinic end generated code: output=162369cb9d43f1cc input=a9049054013a1b77]*/
++
++#ifndef _HASHLIB_GET_FIPS_MODE_METHODDEF
++    #define _HASHLIB_GET_FIPS_MODE_METHODDEF
++#endif /* !defined(_HASHLIB_GET_FIPS_MODE_METHODDEF) */
++/*[clinic end generated code: output=a110f274fb33395d input=a9049054013a1b77]*/
+diff --git a/Modules/clinic/_ssl.c.h b/Modules/clinic/_ssl.c.h
+index b59b129af8..f6bcd09e03 100644
+--- a/Modules/clinic/_ssl.c.h
++++ b/Modules/clinic/_ssl.c.h
+@@ -88,6 +88,8 @@ _ssl__SSLSocket_getpeercert(PySSLSocket *self, PyObject *const *args, Py_ssize_t
+     return return_value;
+ }
+ 
++#if !defined(LIBRESSL_VERSION_NUMBER)
++
+ PyDoc_STRVAR(_ssl__SSLSocket_get_verified_chain__doc__,
+ "get_verified_chain($self, /)\n"
+ "--\n"
+@@ -105,6 +107,10 @@ _ssl__SSLSocket_get_verified_chain(PySSLSocket *self, PyObject *Py_UNUSED(ignore
+     return _ssl__SSLSocket_get_verified_chain_impl(self);
+ }
+ 
++#endif /* !defined(LIBRESSL_VERSION_NUMBER) */
++
++#if !defined(LIBRESSL_VERSION_NUMBER)
++
+ PyDoc_STRVAR(_ssl__SSLSocket_get_unverified_chain__doc__,
+ "get_unverified_chain($self, /)\n"
+ "--\n"
+@@ -122,6 +128,8 @@ _ssl__SSLSocket_get_unverified_chain(PySSLSocket *self, PyObject *Py_UNUSED(igno
+     return _ssl__SSLSocket_get_unverified_chain_impl(self);
+ }
+ 
++#endif /* !defined(LIBRESSL_VERSION_NUMBER) */
++
+ PyDoc_STRVAR(_ssl__SSLSocket_shared_ciphers__doc__,
+ "shared_ciphers($self, /)\n"
+ "--\n"
+@@ -271,25 +279,25 @@ PyDoc_STRVAR(_ssl__SSLSocket_read__doc__,
+     {"read", (PyCFunction)_ssl__SSLSocket_read, METH_VARARGS, _ssl__SSLSocket_read__doc__},
+ 
+ static PyObject *
+-_ssl__SSLSocket_read_impl(PySSLSocket *self, Py_ssize_t len,
+-                          int group_right_1, Py_buffer *buffer);
++_ssl__SSLSocket_read_impl(PySSLSocket *self, int len, int group_right_1,
++                          Py_buffer *buffer);
+ 
+ static PyObject *
+ _ssl__SSLSocket_read(PySSLSocket *self, PyObject *args)
+ {
+     PyObject *return_value = NULL;
+-    Py_ssize_t len;
++    int len;
+     int group_right_1 = 0;
+     Py_buffer buffer = {NULL, NULL};
+ 
+     switch (PyTuple_GET_SIZE(args)) {
+         case 1:
+-            if (!PyArg_ParseTuple(args, "n:read", &len)) {
++            if (!PyArg_ParseTuple(args, "i:read", &len)) {
+                 goto exit;
+             }
+             break;
+         case 2:
+-            if (!PyArg_ParseTuple(args, "nw*:read", &len, &buffer)) {
++            if (!PyArg_ParseTuple(args, "iw*:read", &len, &buffer)) {
+                 goto exit;
+             }
+             group_right_1 = 1;
+@@ -1351,6 +1359,14 @@ _ssl_enum_crls(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObje
+ 
+ #endif /* defined(_MSC_VER) */
+ 
++#ifndef _SSL__SSLSOCKET_GET_VERIFIED_CHAIN_METHODDEF
++    #define _SSL__SSLSOCKET_GET_VERIFIED_CHAIN_METHODDEF
++#endif /* !defined(_SSL__SSLSOCKET_GET_VERIFIED_CHAIN_METHODDEF) */
++
++#ifndef _SSL__SSLSOCKET_GET_UNVERIFIED_CHAIN_METHODDEF
++    #define _SSL__SSLSOCKET_GET_UNVERIFIED_CHAIN_METHODDEF
++#endif /* !defined(_SSL__SSLSOCKET_GET_UNVERIFIED_CHAIN_METHODDEF) */
++
+ #ifndef _SSL_ENUM_CERTIFICATES_METHODDEF
+     #define _SSL_ENUM_CERTIFICATES_METHODDEF
+ #endif /* !defined(_SSL_ENUM_CERTIFICATES_METHODDEF) */
+@@ -1358,4 +1374,4 @@ _ssl_enum_crls(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObje
+ #ifndef _SSL_ENUM_CRLS_METHODDEF
+     #define _SSL_ENUM_CRLS_METHODDEF
+ #endif /* !defined(_SSL_ENUM_CRLS_METHODDEF) */
+-/*[clinic end generated code: output=5a7d7bf5cf8ee092 input=a9049054013a1b77]*/
++/*[clinic end generated code: output=0e12e5e4ee2221b5 input=a9049054013a1b77]*/
+-- 
+2.32.0
+
