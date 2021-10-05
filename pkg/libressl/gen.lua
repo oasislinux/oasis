@@ -264,6 +264,7 @@ lib('libcrypto.a', [[crypto/(
 	ui/(ui_err.c ui_lib.c ui_openssl.c ui_util.c)
 	whrlpool/wp_dgst.c
 	x509/(
+		x509_addr.c x509_asid.c
 		x509_def.c x509_d2.c x509_r2x.c x509_cmp.c
 		x509_obj.c x509_req.c x509spki.c x509_vfy.c
 		x509_set.c x509cset.c x509rset.c x509_err.c
@@ -327,6 +328,8 @@ lib('libssl.a', [[ssl/(
 	ssl_versions.c
 	t1_enc.c
 	t1_lib.c
+	tls12_key_schedule.c
+	tls12_lib.c
 	tls12_record_layer.c
 	tls13_buffer.c
 	tls13_client.c
@@ -340,6 +343,7 @@ lib('libssl.a', [[ssl/(
 	tls13_record.c
 	tls13_record_layer.c
 	tls13_server.c
+	tls_content.c
 ) libcrypto.a.d]])
 file('lib/libssl.a', '644', '$outdir/libssl.a')
 
