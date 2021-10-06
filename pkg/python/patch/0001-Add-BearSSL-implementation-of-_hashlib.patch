@@ -1,21 +1,21 @@
-From a21116a6e36fd6d2f7c815cc0ebf92fffe0e72c6 Mon Sep 17 00:00:00 2001
+From 61ad7f5ec78d4c80a99ac71820d9bc8b62c3fbae Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 May 2021 22:48:13 -0700
 Subject: [PATCH] Add BearSSL implementation of _hashlib
 
 ---
- Modules/_hashbearssl.c          | 1124 +++++++++++++++++++++++++++++++
+ Modules/_hashbearssl.c          | 1126 +++++++++++++++++++++++++++++++
  Modules/clinic/_hashbearssl.c.h | 1113 ++++++++++++++++++++++++++++++
- 2 files changed, 2237 insertions(+)
+ 2 files changed, 2239 insertions(+)
  create mode 100644 Modules/_hashbearssl.c
  create mode 100644 Modules/clinic/_hashbearssl.c.h
 
 diff --git a/Modules/_hashbearssl.c b/Modules/_hashbearssl.c
 new file mode 100644
-index 0000000000..3d51d99efb
+index 0000000000..2d1a76296d
 --- /dev/null
 +++ b/Modules/_hashbearssl.c
-@@ -0,0 +1,1124 @@
+@@ -0,0 +1,1126 @@
 +/* Module that wraps all BearSSL hash algorithms */
 +#define PY_SSIZE_T_CLEAN
 +#include "Python.h"
@@ -387,6 +387,7 @@ index 0000000000..3d51d99efb
 +    newobj->lock = NULL;
 +    ENTER_HASHLIB(self)
 +    newobj->ctx = self->ctx;
++    newobj->bits = self->bits;
 +    LEAVE_HASHLIB(self)
 +
 +    return (PyObject *)newobj;
@@ -658,6 +659,7 @@ index 0000000000..3d51d99efb
 +    if (!self)
 +        return NULL;
 +    self->lock = NULL;
++    self->bits = bits;
 +    br_shake_init(&self->ctx, bits);
 +
 +    if (string->len >= HASHLIB_GIL_MINSIZE) {
