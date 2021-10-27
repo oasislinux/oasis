@@ -1,0 +1,37 @@
+From 3c3a5a3208341615cefc3be9383e04cab32f9bfb Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 26 Oct 2021 15:27:31 -0700
+Subject: [PATCH] use preferred syntactic location for epoll_event packed
+ attribute
+
+---
+ include/sys/epoll.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/sys/epoll.h b/include/sys/epoll.h
+index ac81a841..de4fe0e7 100644
+--- a/include/sys/epoll.h
++++ b/include/sys/epoll.h
+@@ -45,14 +45,14 @@ typedef union epoll_data {
+ 	uint64_t u64;
+ } epoll_data_t;
+ 
+-struct epoll_event {
+-	uint32_t events;
+-	epoll_data_t data;
+-}
++struct
+ #ifdef __x86_64__
+ __attribute__ ((__packed__))
+ #endif
+-;
++epoll_event {
++	uint32_t events;
++	epoll_data_t data;
++};
+ 
+ 
+ int epoll_create(int);
+-- 
+2.32.0
+
