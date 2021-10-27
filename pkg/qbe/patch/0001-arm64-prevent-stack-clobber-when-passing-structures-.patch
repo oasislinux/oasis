@@ -1,7 +1,7 @@
-From ffd2585ef162a6dcc42011a33bd69687048ab4a8 Mon Sep 17 00:00:00 2001
+From 6c1744026545445511f1c500653bab859bc79b50 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 11 May 2019 19:38:13 -0700
-Subject: [PATCH] arm64: Prevent stack clobber when passing structures < 8
+Subject: [PATCH] arm64: prevent stack clobber when passing structures < 8
  bytes
 
 ---
@@ -9,10 +9,10 @@ Subject: [PATCH] arm64: Prevent stack clobber when passing structures < 8
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arm64/abi.c b/arm64/abi.c
-index f5b605a..4e80db2 100644
+index 8209944..f37c892 100644
 --- a/arm64/abi.c
 +++ b/arm64/abi.c
-@@ -308,12 +308,14 @@ stkblob(Ref r, Class *c, Fn *fn, Insl **ilp)
+@@ -312,12 +312,14 @@ stkblob(Ref r, Class *c, Fn *fn, Insl **ilp)
  {
  	Insl *il;
  	int al;
@@ -29,5 +29,5 @@ index f5b605a..4e80db2 100644
  	*ilp = il;
  }
 -- 
-2.21.0
+2.32.0
 

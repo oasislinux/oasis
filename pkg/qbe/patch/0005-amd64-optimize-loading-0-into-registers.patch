@@ -1,39 +1,46 @@
-From 1e0c08a288a5f7993dd8565ace35f1ecfc614544 Mon Sep 17 00:00:00 2001
+From a11da13e22a694f8fe4a81d894d433f50ce4af6b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=C3=89rico=20Nogueira?= <erico.erc@gmail.com>
 Date: Sun, 11 Jul 2021 19:19:12 -0300
-Subject: [PATCH] amd64: optimize loading +0 into floating point registers
+Subject: [PATCH] amd64: optimize loading 0 into registers
 
 Loading +0 into a floating point register can be done using pxor or
 xorps instructions. Per [1], we went with pxor because it can run on all
 vector ALU ports, even if it's one byte longer.
 
-To implement it, we special case fixarg to emit Ocopy when the value is
-+0, and emitins to treat Ocopy for floating point args specially. Since
-0. == -0., we can't check if bits.d or bits.f are equal to 0. To avoid
-requiring signbit(), we inspect bits.i directly; this assumes the bits
-union is always zero-initialized.
+Similarly, an integer register can be zeroed with xor, which has a
+smaller encoding than mov with 0 immediate.
+
+To implement this, we special case fixarg to allow Ocopy when the
+value is +0 for floating point, and change emitins to emit pxor/xor
+when it encounters a copy from 0.
+
+Co-authored-by: Michael Forney <mforney@mforney.org>
 
 [1] https://stackoverflow.com/questions/39811577/does-using-mix-of-pxor-and-xorps-affect-performance/39828976
 ---
- amd64/emit.c |  8 ++++++++
+ amd64/emit.c | 12 ++++++++++++
  amd64/isel.c | 12 +++++++-----
- 2 files changed, 15 insertions(+), 5 deletions(-)
+ 2 files changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/amd64/emit.c b/amd64/emit.c
-index 09b90d5..311b8c6 100644
+index a888000..7aeeff5 100644
 --- a/amd64/emit.c
 +++ b/amd64/emit.c
-@@ -443,6 +443,14 @@ emitins(Ins i, Fn *fn, FILE *f)
+@@ -443,6 +443,18 @@ emitins(Ins i, Fn *fn, FILE *f)
  		if (req(i.to, i.arg[0]))
  			break;
  		t0 = rtype(i.arg[0]);
-+		if (isreg(i.to)
-+		&& KBASE(i.cls) == 1
-+		&& t0 == RCon
-+		&& fn->con[i.arg[0].val].type == CBits) {
-+			assert(fn->con[i.arg[0].val].bits.i == 0);
-+			emitf("pxor %D=, %D=", &i, fn, f);
-+			break;
++		if (t0 == RCon
++		&& fn->con[i.arg[0].val].type == CBits
++		&& fn->con[i.arg[0].val].bits.i == 0) {
++			if (isreg(i.to)) {
++				if (KBASE(i.cls) == 0)
++					emitf("xor%k %=, %=", &i, fn, f);
++				else
++					emitf("pxor %D=, %D=", &i, fn, f);
++				break;
++			}
++			i.cls = KWIDE(i.cls) ? Kl : Kw;
 +		}
  		if (i.cls == Kl
  		&& t0 == RCon

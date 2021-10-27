@@ -1,14 +1,14 @@
-From 948e221acc92d002662ffa609a252a3410a93001 Mon Sep 17 00:00:00 2001
+From 294fedc93dbeac68f0beec1eeea62be30227b025 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 31 May 2019 13:31:04 -0700
-Subject: [PATCH] Increase NString to 96
+Subject: [PATCH] increase NString to 72
 
 ---
  all.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/all.h b/all.h
-index 7f843a9..805a346 100644
+index 37980d3..f49b4ef 100644
 --- a/all.h
 +++ b/all.h
 @@ -31,7 +31,7 @@ typedef struct Dat Dat;
@@ -16,10 +16,10 @@ index 7f843a9..805a346 100644
  
  enum {
 -	NString = 64,
-+	NString = 96,
++	NString = 72,
  	NIns    = 1 << 20,
  	NAlign  = 3,
  	NField  = 32,
 -- 
-2.28.0
+2.32.0
 

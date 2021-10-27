@@ -1,7 +1,7 @@
-From 264b07e0cb0ce869cfcdab0a3e66c92a99de5dee Mon Sep 17 00:00:00 2001
+From b3c8dfafafd7e749a12227c951f3faebc2572710 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 01:38:27 -0700
-Subject: [PATCH] fold: Don't fold invalid addition/subtraction rather than
+Subject: [PATCH] fold: don't fold invalid addition/subtraction rather than
  failing
 
 This may happen in a branch QBE doesn't realize is unreachable,
@@ -29,7 +29,7 @@ for example (simplified from real code found in ncurses)
  1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/fold.c b/fold.c
-index 0a3945f..9e1a12d 100644
+index 2081a72..50a862e 100644
 --- a/fold.c
 +++ b/fold.c
 @@ -343,7 +343,7 @@ foldint(Con *res, int op, int w, Con *cl, Con *cr)
@@ -62,5 +62,5 @@ index 0a3945f..9e1a12d 100644
  	case Oadd:  x = l.u + r.u; break;
  	case Osub:  x = l.u - r.u; break;
 -- 
-2.22.0
+2.32.0
 

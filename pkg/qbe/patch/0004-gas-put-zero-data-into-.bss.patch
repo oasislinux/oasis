@@ -1,0 +1,102 @@
+From e81a67355f1a53739cbfd9797ac9d687efff05e8 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 28 Sep 2021 11:25:05 -0700
+Subject: [PATCH] gas: put zero data into .bss
+
+---
+ gas.c | 56 ++++++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 40 insertions(+), 16 deletions(-)
+
+diff --git a/gas.c b/gas.c
+index 8c31794..ce082dc 100644
+--- a/gas.c
++++ b/gas.c
+@@ -3,10 +3,26 @@
+ 
+ char *gasloc, *gassym;
+ 
++static void
++startdat(FILE *f, char *section, char *name, int align, int export, int zero)
++{
++	char *p;
++
++	if (section)
++		fprintf(f, ".section %s\n", section);
++	else
++		fprintf(f, "%s\n", zero ? ".bss" : ".data");
++	fprintf(f, ".balign %d\n", align);
++	p = name[0] == '"' ? "" : gassym;
++	if (export)
++		fprintf(f, ".globl %s%s\n", p, name);
++	fprintf(f, "%s%s:\n", p, name);
++}
++
+ void
+ gasemitdat(Dat *d, FILE *f)
+ {
+-	static int aligned;
++	static int aligned, export;
+ 	static char *dtoa[] = {
+ 		[DAlign] = ".balign",
+ 		[DB] = "\t.byte",
+@@ -14,34 +30,42 @@ gasemitdat(Dat *d, FILE *f)
+ 		[DW] = "\t.int",
+ 		[DL] = "\t.quad"
+ 	};
++	static char *name, *section;
++	static int64_t zero;
+ 	char *p;
+ 
+ 	switch (d->type) {
+ 	case DStart:
+ 		aligned = 0;
+-		if (d->u.str) {
+-			fprintf(f, ".section %s\n", d->u.str);
+-		} else {
+-			fprintf(f, ".data\n");
+-		}
++		zero = 0;
++		section = d->u.str;
+ 		break;
+ 	case DEnd:
++		if (zero != -1) {
++			startdat(f, section, name, aligned, export, 1);
++			fprintf(f, "\t.fill %"PRId64",1,0\n", zero);
++		}
++		break;
++	case DAlign:
++		aligned = d->u.num;
+ 		break;
+ 	case DName:
+-		if (!aligned)
+-			fprintf(f, ".balign 8\n");
+-		p = d->u.str[0] == '"' ? "" : gassym;
+-		if (d->export)
+-			fprintf(f, ".globl %s%s\n", p, d->u.str);
+-		fprintf(f, "%s%s:\n", p, d->u.str);
++		name = d->u.str;
++		export = d->export;
+ 		break;
+ 	case DZ:
+-		fprintf(f, "\t.fill %"PRId64",1,0\n", d->u.num);
++		if (zero != -1)
++			zero += d->u.num;
++		else
++			fprintf(f, "\t.fill %"PRId64",1,0\n", d->u.num);
+ 		break;
+ 	default:
+-		if (d->type == DAlign)
+-			aligned = 1;
+-
++		if (zero != -1) {
++			startdat(f, section, name, aligned, export, 0);
++			if (zero > 0)
++				fprintf(f, "\t.fill %"PRId64",1,0\n", zero);
++			zero = -1;
++		}
+ 		if (d->isstr) {
+ 			if (d->type != DB)
+ 				err("strings only supported for 'b' currently");
+-- 
+2.32.0
+
