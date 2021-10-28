@@ -212,6 +212,7 @@
 [submodule "pkg/netsurf/libcss/src"]
 	path = pkg/netsurf/libcss/src
 	url = git://git.netsurf-browser.org/libcss.git
+	ignore = all
 [submodule "pkg/netsurf/libdom/src"]
 	path = pkg/netsurf/libdom/src
 	url = git://git.netsurf-browser.org/libdom.git

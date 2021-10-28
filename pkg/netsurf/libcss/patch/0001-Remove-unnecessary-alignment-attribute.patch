@@ -1,0 +1,27 @@
+From a76e4659fb5218330832821ba84c651b743d423f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 28 Oct 2021 11:03:15 -0700
+Subject: [PATCH] Remove unnecessary alignment attribute
+
+This was added just to silence a gcc warning. css_rules are always
+embedded into outer structs, so the cast is perfectly fine.
+---
+ src/stylesheet.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/stylesheet.h b/src/stylesheet.h
+index a71fca6..24be8bf 100644
+--- a/src/stylesheet.h
++++ b/src/stylesheet.h
+@@ -121,7 +121,7 @@ struct css_rule {
+ 	uint16_t items; /**< number of items (selectors) in rule */
+ 	uint8_t type;   /**< css_rule_type */
+ 	uint8_t ptype;  /**< css_rule_parent_type */
+-} _ALIGNED;
++};
+ 
+ typedef struct css_rule_selector {
+ 	css_rule base;
+-- 
+2.32.0
+
