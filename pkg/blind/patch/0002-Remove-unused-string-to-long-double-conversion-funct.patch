@@ -1,0 +1,22 @@
+From ece59ca75ed8ed59fe73614f03c70a79198e4a84 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 28 Oct 2021 11:18:37 -0700
+Subject: [PATCH] Remove unused string to long double conversion functions
+
+---
+ src/util/to.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/util/to.h b/src/util/to.h
+index c927d57..438fce6 100644
+--- a/src/util/to.h
++++ b/src/util/to.h
+@@ -131,5 +131,4 @@ DEF_STR_TO_INT(toi, int, "i")
+ 	}
+ DEF_STR_TO_FLOAT(tof, float, strtof)
+ DEF_STR_TO_FLOAT(tolf, double, strtod)
+-DEF_STR_TO_FLOAT(tollf, long double, strtold)
+ #undef DEF_STR_TO_FLOAT
+-- 
+2.32.0
+
