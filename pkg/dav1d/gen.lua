@@ -100,6 +100,32 @@ local srcs = paths[[
 			mc16_avx2.asm
 			cdef16_sse.asm
 		)
+
+        @aarch64 arm/(
+            cpu.c
+        )
+
+        @aarch64 arm/64/(
+            cdef16.S
+            cdef.S
+            cdef_tmpl.S
+            film_grain16.S
+            film_grain.S
+            ipred16.S
+            ipred.S
+            itx16.S
+            itx.S
+            loopfilter16.S
+            loopfilter.S
+            looprestoration16.S
+            looprestoration_common.S
+            looprestoration.S
+            looprestoration_tmpl.S
+            mc16.S
+            mc.S
+            msac.S
+            util.S
+        )
 	)
 ]]
 
@@ -127,6 +153,16 @@ local tmpl = paths[[
 		looprestoration_init_tmpl.c
 		mc_init_tmpl.c
 	)
+
+    @aarch64 arm/(
+		cdef_init_tmpl.c
+		film_grain_init_tmpl.c
+		ipred_init_tmpl.c
+		itx_init_tmpl.c
+		loopfilter_init_tmpl.c
+		looprestoration_init_tmpl.c
+		mc_init_tmpl.c
+    )
 ]]
 for _, bit in ipairs{'8', '16'} do
 	for _, src in ipairs(tmpl) do

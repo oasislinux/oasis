@@ -565,7 +565,7 @@ CONFIG_DWT
 CONFIG_ERROR_RESILIENCE libavcodec/error_resilience.c
 CONFIG_FAAN
 CONFIG_FAST_UNALIGNED
-CONFIG_FFT libavcodec/avfft.c libavcodec/fft_float.c libavcodec/fft_fixed_32.c libavcodec/fft_init_table.c libavcodec/x86/fft_init.c libavcodec/x86/fft.asm
+CONFIG_FFT libavcodec/avfft.c libavcodec/fft_float.c libavcodec/fft_fixed_32.c libavcodec/fft_init_table.c libavcodec/x86/fft_init.c libavcodec/x86/fft.asm libavcodec/aarch64/fft_init_aarch64.c libavcodec/aarch64/fft_neon.S
 CONFIG_LSP libavcodec/lsp.c
 CONFIG_LZO libavutil/lzo.c
 CONFIG_MDCT libavcodec/mdct_float.c libavcodec/mdct_fixed_32.c
@@ -618,23 +618,23 @@ CONFIG_FAANDCT libavcodec/faandct.c
 CONFIG_FAANIDCT libavcodec/faanidct.c
 CONFIG_FDCTDSP libavcodec/fdctdsp.c libavcodec/jfdctfst.c libavcodec/jfdctint.c libavcodec/x86/fdctdsp_init.c libavcodec/x86/fdct.c
 CONFIG_FLACDSP libavcodec/flacdsp.c libavcodec/x86/flacdsp_init.c
-CONFIG_FMTCONVERT libavcodec/fmtconvert.c libavcodec/x86/fmtconvert_init.c libavcodec/x86/fmtconvert.asm
+CONFIG_FMTCONVERT libavcodec/fmtconvert.c libavcodec/x86/fmtconvert_init.c libavcodec/x86/fmtconvert.asm libavcodec/aarch64/fmtconvert_init.c libavcodec/aarch64/fmtconvert_neon.S
 CONFIG_FRAME_THREAD_ENCODER libavcodec/frame_thread_encoder.c
 CONFIG_G722DSP
 CONFIG_GOLOMB libavcodec/golomb.c
 CONFIG_GPLV3
 CONFIG_H263DSP libavcodec/h263dsp.c libavcodec/x86/h263dsp_init.c libavcodec/x86/h263_loopfilter.asm
-CONFIG_H264CHROMA libavcodec/h264chroma.c libavcodec/x86/h264chroma_init.c libavcodec/x86/h264_chromamc.asm libavcodec/x86/h264_chromamc_10bit.asm
-CONFIG_H264DSP libavcodec/h264dsp.c libavcodec/h264idct.c libavcodec/x86/h264dsp_init.c libavcodec/x86/h264_deblock.asm libavcodec/x86/h264_deblock_10bit.asm libavcodec/x86/h264_idct.asm libavcodec/x86/h264_idct_10bit.asm libavcodec/x86/h264_weight.asm libavcodec/x86/h264_weight_10bit.asm
+CONFIG_H264CHROMA libavcodec/h264chroma.c libavcodec/x86/h264chroma_init.c libavcodec/x86/h264_chromamc.asm libavcodec/x86/h264_chromamc_10bit.asm libavcodec/aarch64/h264chroma_init_aarch64.c
+CONFIG_H264DSP libavcodec/h264dsp.c libavcodec/h264idct.c libavcodec/x86/h264dsp_init.c libavcodec/x86/h264_deblock.asm libavcodec/x86/h264_deblock_10bit.asm libavcodec/x86/h264_idct.asm libavcodec/x86/h264_idct_10bit.asm libavcodec/x86/h264_weight.asm libavcodec/x86/h264_weight_10bit.asm libavcodec/aarch64/h264dsp_init_aarch64.c libavcodec/aarch64/h264dsp_neon.S libavcodec/aarch64/h264idct_neon.S libavcodec/aarch64/h264cmc_neon.S libavcodec/aarch64/h264dsp_neon.S
 CONFIG_H264PARSE libavcodec/h264_parse.c libavcodec/h2645_parse.c libavcodec/h264_ps.c
-CONFIG_H264PRED libavcodec/h264pred.c libavcodec/x86/h264_intrapred_init.c libavcodec/x86/h264_intrapred.asm libavcodec/x86/h264_intrapred_10bit.asm
-CONFIG_H264QPEL libavcodec/h264qpel.c libavcodec/x86/h264_qpel.c libavcodec/x86/h264_qpel_8bit.asm libavcodec/x86/h264_qpel_10bit.asm libavcodec/x86/fpel.asm libavcodec/x86/qpel.asm
+CONFIG_H264PRED libavcodec/h264pred.c libavcodec/x86/h264_intrapred_init.c libavcodec/x86/h264_intrapred.asm libavcodec/x86/h264_intrapred_10bit.asm libavcodec/aarch64/h264pred_init.c libavcodec/aarch64/h264pred_neon.S
+CONFIG_H264QPEL libavcodec/h264qpel.c libavcodec/x86/h264_qpel.c libavcodec/x86/h264_qpel_8bit.asm libavcodec/x86/h264_qpel_10bit.asm libavcodec/x86/fpel.asm libavcodec/x86/qpel.asm libavcodec/aarch64/h264qpel_init_aarch64.c libavcodec/aarch64/h264qpel_neon.S
 CONFIG_HEVCPARSE libavcodec/hevc_parse.c libavcodec/h2645_parse.c libavcodec/hevc_ps.c libavcodec/hevc_sei.c libavcodec/hevc_data.c libavcodec/dynamic_hdr10_plus.c
-CONFIG_HPELDSP libavcodec/hpeldsp.c libavcodec/x86/hpeldsp_init.c libavcodec/x86/fpel.asm libavcodec/x86/hpeldsp.asm
+CONFIG_HPELDSP libavcodec/hpeldsp.c libavcodec/x86/hpeldsp_init.c libavcodec/x86/fpel.asm libavcodec/x86/hpeldsp.asm libavcodec/aarch64/hpeldsp_init_aarch64.c libavcodec/aarch64/hpeldsp_neon.S
 CONFIG_HUFFMAN libavcodec/huffman.c
 CONFIG_HUFFYUVDSP libavcodec/huffyuvdsp.c libavcodec/x86/huffyuvdsp_init.c libavcodec/x86/huffyuvdsp.asm
 CONFIG_HUFFYUVENCDSP libavcodec/huffyuvencdsp.c libavcodec/x86/huffyuvencdsp_init.c libavcodec/x86/huffyuvencdsp.asm
-CONFIG_IDCTDSP libavcodec/idctdsp.c libavcodec/simple_idct.c libavcodec/jrevdct.c libavcodec/x86/idctdsp_init.c libavcodec/x86/idctdsp.asm libavcodec/x86/simple_idct10.asm libavcodec/x86/simple_idct.asm
+CONFIG_IDCTDSP libavcodec/idctdsp.c libavcodec/simple_idct.c libavcodec/jrevdct.c libavcodec/x86/idctdsp_init.c libavcodec/x86/idctdsp.asm libavcodec/x86/simple_idct10.asm libavcodec/x86/simple_idct.asm libavcodec/aarch64/idctdsp_init_aarch64.c libavcodec/aarch64/h264idct_neon.S libavcodec/aarch64/simple_idct_neon.S
 CONFIG_IIRFILTER libavcodec/iirfilter.c
 CONFIG_MDCT15 libavcodec/mdct15.c libavcodec/x86/mdct15_init.c libavcodec/x86/mdct15.asm
 CONFIG_INTRAX8 libavcodec/intrax8.c libavcodec/intrax8dsp.c libavcodec/msmpeg4data.c
@@ -651,12 +651,12 @@ CONFIG_LZF libavcodec/lzf.c
 CONFIG_ME_CMP libavcodec/me_cmp.c libavcodec/x86/me_cmp_init.c libavcodec/x86/me_cmp.asm
 CONFIG_MPEG_ER libavcodec/mpeg_er.c
 CONFIG_MPEGAUDIO libavcodec/mpegaudio.c libavcodec/mpegaudiodec_common.c
-CONFIG_MPEGAUDIODSP libavcodec/mpegaudiodsp.c libavcodec/mpegaudiodsp_data.c libavcodec/mpegaudiodsp_fixed.c libavcodec/mpegaudiodsp_float.c libavcodec/x86/mpegaudiodsp.c libavcodec/x86/imdct36.asm
+CONFIG_MPEGAUDIODSP libavcodec/mpegaudiodsp.c libavcodec/mpegaudiodsp_data.c libavcodec/mpegaudiodsp_fixed.c libavcodec/mpegaudiodsp_float.c libavcodec/x86/mpegaudiodsp.c libavcodec/x86/imdct36.asm libavcodec/aarch64/mpegaudiodsp_init.c libavcodec/aarch64/mpegaudiodsp_neon.S libavcodec/aarch64/mdct_neon.S
 CONFIG_MPEGAUDIOHEADER libavcodec/mpegaudiodecheader.c libavcodec/mpegaudiodata.c
 CONFIG_MPEGVIDEO libavcodec/mpegvideo.c libavcodec/mpegvideodsp.c libavcodec/rl.c libavcodec/mpegvideo_motion.c libavcodec/mpegutils.c libavcodec/mpegvideodata.c libavcodec/mpegpicture.c libavcodec/x86/mpegvideo.c libavcodec/x86/mpegvideodsp.c
 CONFIG_MPEGVIDEOENC libavcodec/mpegvideo_enc.c libavcodec/mpeg12data.c libavcodec/motion_est.c libavcodec/ratecontrol.c libavcodec/mpegvideoencdsp.c libavcodec/x86/mpegvideoenc.c libavcodec/x86/mpegvideoencdsp_init.c libavcodec/x86/mpegvideoencdsp.asm
 CONFIG_MSS34DSP libavcodec/mss34dsp.c
-CONFIG_PIXBLOCKDSP libavcodec/pixblockdsp.c libavcodec/x86/pixblockdsp_init.c libavcodec/x86/pixblockdsp.asm
+CONFIG_PIXBLOCKDSP libavcodec/pixblockdsp.c libavcodec/x86/pixblockdsp_init.c libavcodec/x86/pixblockdsp.asm libavcodec/aarch64/pixblockdsp_init_aarch64.c libavcodec/aarch64/pixblockdsp_neon.S
 CONFIG_QPELDSP libavcodec/qpeldsp.c libavcodec/x86/qpeldsp_init.c libavcodec/x86/qpeldsp.asm libavcodec/x86/fpel.asm libavcodec/x86/qpel.asm
 CONFIG_QSV libavcodec/qsv.c libavutil/hwcontext_qsv.c
 CONFIG_QSVDEC libavcodec/qsvdec.c
@@ -678,8 +678,8 @@ CONFIG_TEXTUREDSPENC libavcodec/texturedspenc.c
 CONFIG_TPELDSP libavcodec/tpeldsp.c
 CONFIG_VAAPI_1
 CONFIG_VAAPI_ENCODE libavcodec/vaapi_encode.c
-CONFIG_VC1DSP libavcodec/vc1dsp.c libavcodec/x86/vc1dsp_init.c libavcodec/x86/vc1dsp_mmx.c libavcodec/x86/vc1dsp_loopfilter.asm libavcodec/x86/vc1dsp_mc.asm
-CONFIG_VIDEODSP libavcodec/videodsp.c libavcodec/x86/videodsp_init.c libavcodec/x86/videodsp.asm
+CONFIG_VC1DSP libavcodec/vc1dsp.c libavcodec/x86/vc1dsp_init.c libavcodec/x86/vc1dsp_mmx.c libavcodec/x86/vc1dsp_loopfilter.asm libavcodec/x86/vc1dsp_mc.asm libavcodec/aarch64/vc1dsp_init_aarch64.c
+CONFIG_VIDEODSP libavcodec/videodsp.c libavcodec/x86/videodsp_init.c libavcodec/x86/videodsp.asm libavcodec/aarch64/videodsp_init.c libavcodec/aarch64/videodsp.S
 CONFIG_VP3DSP libavcodec/vp3dsp.c libavcodec/x86/vp3dsp_init.c libavcodec/x86/vp3dsp.asm
 CONFIG_VP56DSP libavcodec/vp56dsp.c
 CONFIG_VP8DSP libavcodec/vp8dsp.c libavcodec/x86/vp8dsp_init.c libavcodec/x86/vp8dsp.asm libavcodec/x86/vp8dsp_loopfilter.asm
@@ -813,7 +813,7 @@ CONFIG_H264_MMAL_DECODER libavcodec/mmaldec.c
 CONFIG_H264_QSV_DECODER libavcodec/qsvdec.c
 CONFIG_H264_RKMPP_DECODER libavcodec/rkmppdec.c
 CONFIG_HAP_DECODER libavcodec/hapdec.c libavcodec/hap.c
-CONFIG_HEVC_DECODER libavcodec/hevcdec.c libavcodec/hevc_mvs.c libavcodec/hevc_cabac.c libavcodec/hevc_refs.c libavcodec/hevcpred.c libavcodec/hevcdsp.c libavcodec/hevc_filter.c libavcodec/hevc_data.c libavcodec/x86/hevcdsp_init.c libavcodec/x86/hevc_add_res.asm libavcodec/x86/hevc_deblock.asm libavcodec/x86/hevc_idct.asm libavcodec/x86/hevc_mc.asm libavcodec/x86/hevc_sao.asm libavcodec/x86/hevc_sao_10bit.asm
+CONFIG_HEVC_DECODER libavcodec/hevcdec.c libavcodec/hevc_mvs.c libavcodec/hevc_cabac.c libavcodec/hevc_refs.c libavcodec/hevcpred.c libavcodec/hevcdsp.c libavcodec/hevc_filter.c libavcodec/hevc_data.c libavcodec/x86/hevcdsp_init.c libavcodec/x86/hevc_add_res.asm libavcodec/x86/hevc_deblock.asm libavcodec/x86/hevc_idct.asm libavcodec/x86/hevc_mc.asm libavcodec/x86/hevc_sao.asm libavcodec/x86/hevc_sao_10bit.asm libavcodec/aarch64/hevcdsp_init_aarch64.c libavcodec/aarch64/hevcdsp_idct_neon.S libavcodec/aarch64/hevcdsp_sao_neon.S
 CONFIG_HEVC_QSV_DECODER libavcodec/qsvdec.c
 CONFIG_HEVC_RKMPP_DECODER libavcodec/rkmppdec.c
 CONFIG_HEVC_V4L2M2M_DECODER libavcodec/v4l2_m2m_dec.c
@@ -915,7 +915,7 @@ CONFIG_RSCC_DECODER libavcodec/rscc.c
 CONFIG_RV10_DECODER libavcodec/rv10.c
 CONFIG_RV20_DECODER libavcodec/rv10.c
 CONFIG_RV30_DECODER libavcodec/rv30.c libavcodec/rv34.c libavcodec/rv30dsp.c
-CONFIG_RV40_DECODER libavcodec/rv40.c libavcodec/rv34.c libavcodec/rv40dsp.c libavcodec/x86/rv40dsp_init.c libavcodec/x86/rv40dsp.asm
+CONFIG_RV40_DECODER libavcodec/rv40.c libavcodec/rv34.c libavcodec/rv40dsp.c libavcodec/x86/rv40dsp_init.c libavcodec/x86/rv40dsp.asm libavcodec/aarch64/rv40dsp_init_aarch64
 CONFIG_S302M_DECODER libavcodec/s302m.c
 CONFIG_SANM_DECODER libavcodec/sanm.c
 CONFIG_SCPR_DECODER libavcodec/scpr.c
@@ -977,11 +977,11 @@ CONFIG_VP7_DECODER libavcodec/vp8.c libavcodec/vp56rac.c
 CONFIG_VP8_DECODER libavcodec/vp8.c libavcodec/vp56rac.c
 CONFIG_VP8_RKMPP_DECODER libavcodec/rkmppdec.c
 CONFIG_VP8_V4L2M2M_DECODER libavcodec/v4l2_m2m_dec.c
-CONFIG_VP9_DECODER libavcodec/vp9.c libavcodec/vp9data.c libavcodec/vp9dsp.c libavcodec/vp9lpf.c libavcodec/vp9recon.c libavcodec/vp9block.c libavcodec/vp9prob.c libavcodec/vp9mvs.c libavcodec/vp56rac.c libavcodec/vp9dsp_8bpp.c libavcodec/vp9dsp_10bpp.c libavcodec/vp9dsp_12bpp.c libavcodec/x86/vp9dsp_init.c libavcodec/x86/vp9dsp_init_10bpp.c libavcodec/x86/vp9dsp_init_12bpp.c libavcodec/x86/vp9dsp_init_16bpp.c libavcodec/x86/vp9intrapred.asm libavcodec/x86/vp9intrapred_16bpp.asm libavcodec/x86/vp9itxfm.asm libavcodec/x86/vp9itxfm_16bpp.asm libavcodec/x86/vp9lpf.asm libavcodec/x86/vp9lpf_16bpp.asm libavcodec/x86/vp9mc.asm libavcodec/x86/vp9mc_16bpp.asm
+CONFIG_VP9_DECODER libavcodec/vp9.c libavcodec/vp9data.c libavcodec/vp9dsp.c libavcodec/vp9lpf.c libavcodec/vp9recon.c libavcodec/vp9block.c libavcodec/vp9prob.c libavcodec/vp9mvs.c libavcodec/vp56rac.c libavcodec/vp9dsp_8bpp.c libavcodec/vp9dsp_10bpp.c libavcodec/vp9dsp_12bpp.c libavcodec/x86/vp9dsp_init.c libavcodec/x86/vp9dsp_init_10bpp.c libavcodec/x86/vp9dsp_init_12bpp.c libavcodec/x86/vp9dsp_init_16bpp.c libavcodec/x86/vp9intrapred.asm libavcodec/x86/vp9intrapred_16bpp.asm libavcodec/x86/vp9itxfm.asm libavcodec/x86/vp9itxfm_16bpp.asm libavcodec/x86/vp9lpf.asm libavcodec/x86/vp9lpf_16bpp.asm libavcodec/x86/vp9mc.asm libavcodec/x86/vp9mc_16bpp.asm libavcodec/aarch64/vp9dsp_init_aarch64.c libavcodec/aarch64/vp9dsp_init_10bpp_aarch64.c libavcodec/aarch64/vp9dsp_init_12bpp_aarch64.c libavcodec/aarch64/vp9dsp_init_16bpp_aarch64_template.c libavcodec/aarch64/vp9itxfm_16bpp_neon.S libavcodec/aarch64/vp9itxfm_neon.S libavcodec/aarch64/vp9lpf_16bpp_neon.S libavcodec/aarch64/vp9lpf_neon.S libavcodec/aarch64/vp9mc_16bpp_neon.S libavcodec/aarch64/vp9mc_aarch64.S libavcodec/aarch64/vp9mc_neon.S
 CONFIG_VP9_RKMPP_DECODER libavcodec/rkmppdec.c
 CONFIG_VP9_V4L2M2M_DECODER libavcodec/v4l2_m2m_dec.c
 CONFIG_VQA_DECODER libavcodec/vqavideo.c
-CONFIG_WEBP_DECODER libavcodec/webp.c libavcodec/x86/vp8dsp_init.c libavcodec/x86/vp8dsp.asm
+CONFIG_WEBP_DECODER libavcodec/webp.c libavcodec/x86/vp8dsp_init.c libavcodec/x86/vp8dsp.asm libavcodec/aarch64/vp8dsp_neon.S libavcodec/aarch64/vp8dsp_init_aarch64.c
 CONFIG_WCMV_DECODER libavcodec/wcmv.c
 CONFIG_WRAPPED_AVFRAME_DECODER libavcodec/wrapped_avframe.c
 CONFIG_WMV1_DECODER libavcodec/msmpeg4dec.c libavcodec/msmpeg4.c libavcodec/msmpeg4data.c
@@ -1005,7 +1005,7 @@ CONFIG_ZERO12V_DECODER libavcodec/012v.c
 CONFIG_ZEROCODEC_DECODER libavcodec/zerocodec.c
 CONFIG_ZLIB_DECODER libavcodec/lcldec.c
 CONFIG_ZMBV_DECODER libavcodec/zmbv.c
-CONFIG_AAC_DECODER libavcodec/aacdec.c libavcodec/aactab.c libavcodec/aacsbr.c libavcodec/aacps_common.c libavcodec/aacps_float.c libavcodec/mpeg4audio.c libavcodec/kbdwin.c libavcodec/sbrdsp.c libavcodec/aacpsdsp_float.c libavcodec/cbrt_data.c libavcodec/x86/aacpsdsp_init.c libavcodec/x86/sbrdsp_init.c libavcodec/x86/aacpsdsp.asm libavcodec/x86/sbrdsp.asm
+CONFIG_AAC_DECODER libavcodec/aacdec.c libavcodec/aactab.c libavcodec/aacsbr.c libavcodec/aacps_common.c libavcodec/aacps_float.c libavcodec/mpeg4audio.c libavcodec/kbdwin.c libavcodec/sbrdsp.c libavcodec/aacpsdsp_float.c libavcodec/cbrt_data.c libavcodec/x86/aacpsdsp_init.c libavcodec/x86/sbrdsp_init.c libavcodec/x86/aacpsdsp.asm libavcodec/x86/sbrdsp.asm libavcodec/aarch64/aacpsdsp_init_aarch64.c libavcodec/aarch64/aacpsdsp_neon.S libavcodec/aarch64/sbrdsp_init_aarch64.c libavcodec/aarch64/sbrdsp_neon.S
 CONFIG_AAC_FIXED_DECODER libavcodec/aacdec_fixed.c libavcodec/aactab.c libavcodec/aacsbr_fixed.c libavcodec/aacps_common.c libavcodec/aacps_fixed.c libavcodec/mpeg4audio.c libavcodec/kbdwin.c libavcodec/sbrdsp_fixed.c libavcodec/aacpsdsp_fixed.c libavcodec/cbrt_data_fixed.c
 CONFIG_AAC_LATM_DECODER
 CONFIG_AC3_DECODER libavcodec/ac3dec_float.c libavcodec/ac3dec_data.c libavcodec/ac3.c libavcodec/kbdwin.c libavcodec/ac3tab.c
@@ -1028,7 +1028,7 @@ CONFIG_BINKAUDIO_DCT_DECODER libavcodec/binkaudio.c
 CONFIG_BINKAUDIO_RDFT_DECODER libavcodec/binkaudio.c
 CONFIG_BMV_AUDIO_DECODER libavcodec/bmvaudio.c
 CONFIG_COOK_DECODER libavcodec/cook.c
-CONFIG_DCA_DECODER libavcodec/dcadec.c libavcodec/dca.c libavcodec/dcadata.c libavcodec/dcahuff.c libavcodec/dca_core.c libavcodec/dca_exss.c libavcodec/dca_xll.c libavcodec/dca_lbr.c libavcodec/dcadsp.c libavcodec/dcadct.c libavcodec/synth_filter.c libavcodec/x86/dcadsp_init.c libavcodec/x86/synth_filter_init.c libavcodec/x86/dcadsp.asm libavcodec/x86/synth_filter.asm
+CONFIG_DCA_DECODER libavcodec/dcadec.c libavcodec/dca.c libavcodec/dcadata.c libavcodec/dcahuff.c libavcodec/dca_core.c libavcodec/dca_exss.c libavcodec/dca_xll.c libavcodec/dca_lbr.c libavcodec/dcadsp.c libavcodec/dcadct.c libavcodec/synth_filter.c libavcodec/x86/dcadsp_init.c libavcodec/x86/synth_filter_init.c libavcodec/x86/dcadsp.asm libavcodec/x86/synth_filter.asm libavcodec/aarch64/synth_filter_init.c libavcodec/aarch64/synth_filter_neon.S
 CONFIG_DOLBY_E_DECODER libavcodec/dolby_e.c libavcodec/dolby_e_parse.c libavcodec/kbdwin.c
 CONFIG_DSD_LSBF_DECODER libavcodec/dsddec.c libavcodec/dsd.c
 CONFIG_DSD_MSBF_DECODER libavcodec/dsddec.c libavcodec/dsd.c
@@ -1070,7 +1070,7 @@ CONFIG_MPC7_DECODER libavcodec/mpc7.c libavcodec/mpc.c
 CONFIG_MPC8_DECODER libavcodec/mpc8.c libavcodec/mpc.c
 CONFIG_NELLYMOSER_DECODER libavcodec/nellymoserdec.c libavcodec/nellymoser.c
 CONFIG_ON2AVC_DECODER libavcodec/on2avc.c libavcodec/on2avcdata.c
-CONFIG_OPUS_DECODER libavcodec/opusdec.c libavcodec/opus.c libavcodec/opus_celt.c libavcodec/opus_rc.c libavcodec/opus_pvq.c libavcodec/opus_silk.c libavcodec/opustab.c libavcodec/vorbis_data.c libavcodec/opusdsp.c libavcodec/x86/opusdsp_init.c libavcodec/x86/opusdsp.asm
+CONFIG_OPUS_DECODER libavcodec/opusdec.c libavcodec/opus.c libavcodec/opus_celt.c libavcodec/opus_rc.c libavcodec/opus_pvq.c libavcodec/opus_silk.c libavcodec/opustab.c libavcodec/vorbis_data.c libavcodec/opusdsp.c libavcodec/x86/opusdsp_init.c libavcodec/x86/opusdsp.asm libavcodec/aarch64/opusdsp_neon.S libavcodec/aarch64/opusdsp_init.c
 CONFIG_PAF_AUDIO_DECODER libavcodec/pafaudio.c
 CONFIG_QCELP_DECODER libavcodec/qcelpdec.c libavcodec/celp_filters.c libavcodec/acelp_vectors.c libavcodec/acelp_filters.c
 CONFIG_QDM2_DECODER libavcodec/qdm2.c
@@ -1090,7 +1090,7 @@ CONFIG_TRUESPEECH_DECODER libavcodec/truespeech.c
 CONFIG_TTA_DECODER libavcodec/tta.c libavcodec/ttadata.c libavcodec/ttadsp.c libavcodec/x86/ttadsp_init.c libavcodec/x86/ttadsp.asm
 CONFIG_TWINVQ_DECODER libavcodec/twinvqdec.c libavcodec/twinvq.c libavcodec/metasound_data.c
 CONFIG_VMDAUDIO_DECODER libavcodec/vmdaudio.c
-CONFIG_VORBIS_DECODER libavcodec/vorbisdec.c libavcodec/vorbisdsp.c libavcodec/vorbis.c libavcodec/vorbis_data.c libavcodec/x86/vorbisdsp_init.c libavcodec/x86/vorbisdsp.asm
+CONFIG_VORBIS_DECODER libavcodec/vorbisdec.c libavcodec/vorbisdsp.c libavcodec/vorbis.c libavcodec/vorbis_data.c libavcodec/x86/vorbisdsp_init.c libavcodec/x86/vorbisdsp.asm libavcodec/aarch64/vorbisdsp_init.c libavcodec/aarch64/vorbisdsp_neon.S
 CONFIG_WAVPACK_DECODER libavcodec/wavpack.c libavcodec/wavpackdata.c libavcodec/dsd.c
 CONFIG_WMALOSSLESS_DECODER libavcodec/wmalosslessdec.c libavcodec/wma_common.c
 CONFIG_WMAPRO_DECODER libavcodec/wmaprodec.c libavcodec/wma.c libavcodec/wma_common.c

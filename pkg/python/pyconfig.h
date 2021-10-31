@@ -133,8 +133,13 @@
 #define HAVE_GAI_STRERROR 1
 /* #undef HAVE_GAMMA */
 /* #undef HAVE_GCC_ASM_FOR_MC68881 */
+#ifdef __x86_64__
 #define HAVE_GCC_ASM_FOR_X64 1
 #define HAVE_GCC_ASM_FOR_X87 1
+#else
+#undef HAVE_GCC_ASM_FOR_X64
+#undef HAVE_GCC_ASM_FOR_X87
+#endif
 #define HAVE_GCC_UINT128_T 1
 #define HAVE_GETADDRINFO 1
 #define HAVE_GETC_UNLOCKED 1
@@ -526,7 +531,9 @@
 /* #  undef WORDS_BIGENDIAN */
 # endif
 #endif
-/* #undef X87_DOUBLE_ROUNDING */
+#ifdef __aarch64__
+#undef X87_DOUBLE_ROUNDING
+#endif
 /* #undef _BSD_SOURCE */
 #define _DARWIN_C_SOURCE 1
 #define _FILE_OFFSET_BITS 64

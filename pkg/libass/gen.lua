@@ -33,10 +33,11 @@ lib('libass.a', [[
 		ass_outline.c ass_drawing.c
 		ass_rasterizer.c ass_rasterizer_c.c
 		ass_bitmap.c ass_blur.c
-		x86/(
+		@x86_64 x86/(
 			rasterizer.asm blend_bitmaps.asm blur.asm cpuid.asm
 			be_blur.asm
 		)
+
 	)
 	$builddir/pkg/freetype/libfreetype.a.d
 	$builddir/pkg/fribidi/libfribidi.a

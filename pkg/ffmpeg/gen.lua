@@ -1,4 +1,13 @@
-local arch = 'x86'
+local arch = ({
+	aarch64='aarch64',
+	x86_64='x86',
+})[config.target.platform:match('[^-]*')]
+sub('tools.ninja', function()
+	toolchain(config.host)
+	exe('unifdef', {'scripts/unifdef.c'})
+end)
+
+
 cflags{
 	'-Wno-deprecated-declarations',
 	'-Wno-discarded-qualifiers',
@@ -9,35 +18,50 @@ cflags{
 	'-I $outdir/internal',
 	'-I $srcdir',
 }
-nasmflags{
-	'-i $srcdir/',
-	'-i $srcdir/libavcodec/'..arch..'/',
-	'-i $srcdir/libavutil/'..arch..'/',
-	'-f elf64',
-	'-P $outdir/config.asm',
+
+pkg.deps = {
+	'$outdir/config.h',
+	'$gendir/headers',
 }
+
+if arch == 'x86' then
+    nasmflags{
+        '-i $srcdir/',
+        '-i $srcdir/libavcodec/'..arch..'/',
+        '-i $srcdir/libavutil/'..arch..'/',
+        '-f elf64',
+        '-P $outdir/config.asm',
+    }
+
+    pkg.deps[3] = '$outdir/config.asm'
+end
 
 -- TODO: Copy the rest of the headers.
 pkg.hdrs = {
 	'$outdir/include/libavutil/avconfig.h',
 	'$outdir/include/libavutil/ffversion.h',
 }
-pkg.deps = {
-	'$outdir/config.asm',
-	'$outdir/config.h',
-	'$gendir/headers',
+
+local archprobes = {
+    x86="X86_64",
+    aarch64="AARCH64",
 }
 
 local probe = {
 	'$builddir/probe/PIC',
-	'$builddir/probe/HAVE_INLINE_ASM',
+    '$builddir/probe/HAVE_INLINE_ASM',
 	'$builddir/probe/HAVE_MMINTRIN_H',
+    '$builddir/probe/'..archprobes[arch],
 }
 
 build('cat', '$outdir/config.h', {'$dir/config-head.h', probe, '$dir/config.h', '$dir/config-tail.h'})
-build('sed', '$outdir/config.asm', {probe, '$dir/config.h'}, {
-	expr=[[-n -e 's,^# *,%,p']],
-})
+
+if arch == 'x86' then
+    build('sed', '$outdir/config.asm', {probe, '$dir/config.h'}, {
+        expr=[[-n -e 's,^# *,%,p']],
+    })
+end
+
 build('awk', '$outdir/config.texi', '$dir/config.h', {
 	expr=[['$$3 == "1" {gsub("_", "-", $$2); print "@set", tolower($$2), "yes"}']],
 })
@@ -67,10 +91,11 @@ build('awk', '$outdir/include/libavutil/ffversion.h', {'$dir/ver'}, {
 local options = {}
 for line in iterlines('config.h', 1) do
 	local cfg, val = line:match('^#define ([^ ]+) ([^ ]+)')
-	if cfg then
-		options[cfg] = val == '1'
-	end
+    if cfg then
+        options[cfg] = val == '1' or val == archprobes[arch]
+    end
 end
+
 local sources = {
 	libavcodec={},
 	libavdevice={},
@@ -177,7 +202,16 @@ lib('libavcodec.a', {
 		'utils.c',
 		'vorbis_parser.c',
 		'xiph.c',
-		'x86/constants.c',
+        table.unpack(paths[[
+            @x86_64 x86/(
+                constants.c
+            )
+
+            @aarch64 aarch64/(
+                neontest.c
+                neon.S
+            )
+        ]]),
 	}},
 	sources.libavcodec,
 	'libavutil.a',
@@ -212,6 +246,12 @@ lib('libavfilter.a', {
 		'graphparser.c',
 		'transform.c',
 		'video.c',
+        table.unpack(paths[[
+            @aarch64 aarch64/(
+                vf_nlmeans_init.c
+                vf_nlmeans_neon.S
+            )
+        ]])
 	}},
 	sources.libavfilter,
 	'libavutil.a',
@@ -241,6 +281,7 @@ lib('libavformat.a', {
 	'libavcodec.a.d',
 	'libavutil.a',
 })
+
 
 lib('libavutil.a', {
 	expand{'libavutil/', {
@@ -320,16 +361,26 @@ lib('libavutil.a', {
 		'tx_int32.c',
 		'video_enc_params.c',
 		'film_grain_params.c',
-		'x86/cpu.c',
-		'x86/fixed_dsp_init.c',
-		'x86/float_dsp_init.c',
-		'x86/imgutils_init.c',
-		'x86/lls_init.c',
-		'x86/cpuid.asm',
-		'x86/fixed_dsp.asm',
-		'x86/float_dsp.asm',
-		'x86/imgutils.asm',
-		'x86/lls.asm',
+        table.unpack(paths[[
+            @x86_64 x86/(
+                cpu.c
+                fixed_dsp_init.c
+                float_dsp_init.c
+                imgutils_init.c
+                lls_init.c
+                cpuid.asm
+                fixed_dsp.asm
+                float_dsp.asm
+                imgutils.asm
+                lls.asm
+            )
+            @aarch64 aarch64/(
+                cpu.c
+                float_dsp_init.c
+                float_dsp_neon.S
+                asm.S
+            )
+        ]])
 	}},
 	sources.libavutil,
 })
@@ -344,12 +395,24 @@ lib('libswresample.a', {
 		'resample_dsp.c',
 		'swresample.c',
 		'swresample_frame.c',
-		'x86/audio_convert.asm',
-		'x86/rematrix.asm',
-		'x86/resample.asm',
-		'x86/audio_convert_init.c',
-		'x86/rematrix_init.c',
-		'x86/resample_init.c',
+        table.unpack(paths[[
+            @x86_64 x86/(
+                audio_convert.asm
+                rematrix.asm
+                resample.asm
+                audio_convert_init.c
+                rematrix_init.c
+                resample_init.c
+            )
+
+            @aarch64 aarch64/(
+                audio_convert_init.c
+                neontest.c
+                resample_init.c
+                resample.S
+                audio_convert_neon.S
+            )
+        ]])
 	}},
 	sources.libswresample,
 	'libavutil.a',
@@ -371,16 +434,29 @@ lib('libswscale.a', {
 		'utils.c',
 		'yuv2rgb.c',
 		'vscale.c',
-		'x86/rgb2rgb.c',
-		'x86/swscale.c',
-		'x86/yuv2rgb.c',
-		'x86/hscale_fast_bilinear_simd.c',
-		'x86/input.asm',
-		'x86/output.asm',
-		'x86/scale.asm',
-		'x86/rgb_2_rgb.asm',
-		'x86/yuv_2_rgb.asm',
-		'x86/yuv2yuvX.asm',
+        table.unpack(paths[[
+            @x86_64 x86/(
+                rgb2rgb.c
+                swscale.c
+                yuv2rgb.c
+                hscale_fast_bilinear_simd.c
+                input.asm
+                output.asm
+                scale.asm
+                rgb_2_rgb.asm
+                yuv_2_rgb.asm
+                yuv2yuvX.asm
+            )
+            @aarch64 aarch64/(
+                rgb2rgb.c
+                swscale.c
+                swscale_unscaled.c
+                hscale.S
+                output.S
+                rgb2rgb_neon.S
+                yuv2rgb_neon.S
+            )
+        ]])
 	}},
 	sources.libswscale,
 	'libavutil.a',
