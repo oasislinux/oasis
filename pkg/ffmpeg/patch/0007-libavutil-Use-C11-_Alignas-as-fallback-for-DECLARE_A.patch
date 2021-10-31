@@ -1,0 +1,27 @@
+From 998e73fa83da20afd47263fce2e50876c799ee41 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 25 Oct 2021 17:08:29 -0700
+Subject: [PATCH] libavutil: Use C11 _Alignas as fallback for DECLARE_ALIGNED
+
+---
+ libavutil/mem.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/libavutil/mem.h b/libavutil/mem.h
+index e21a1feaae..aeaacd9d55 100644
+--- a/libavutil/mem.h
++++ b/libavutil/mem.h
+@@ -121,6 +121,10 @@
+     #define DECLARE_ALIGNED(n,t,v)      __declspec(align(n)) t v
+     #define DECLARE_ASM_ALIGNED(n,t,v)  __declspec(align(n)) t v
+     #define DECLARE_ASM_CONST(n,t,v)    __declspec(align(n)) static const t v
++#elif defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
++    #define DECLARE_ALIGNED(n,t,v)      _Alignas(n) t v
++    #define DECLARE_ASM_ALIGNED(n,t,v)  _Alignas(n) t v
++    #define DECLARE_ASM_CONST(n,t,v)    static const _Alignas(n) t v
+ #else
+     #define DECLARE_ALIGNED(n,t,v)      t v
+     #define DECLARE_ASM_ALIGNED(n,t,v)  t v
+-- 
+2.32.0
+
