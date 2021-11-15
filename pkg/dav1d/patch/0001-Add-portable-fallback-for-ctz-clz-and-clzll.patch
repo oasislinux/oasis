@@ -1,4 +1,4 @@
-From 438abb276c7568391d757c7b3338e137307cdad5 Mon Sep 17 00:00:00 2001
+From 881ceef5adda6f1cc5f5a9a15ae74b068bf85dd4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 30 Apr 2021 18:45:18 -0700
 Subject: [PATCH] Add portable fallback for ctz, clz, and clzll
@@ -8,7 +8,7 @@ Subject: [PATCH] Add portable fallback for ctz, clz, and clzll
  1 file changed, 25 insertions(+), 2 deletions(-)
 
 diff --git a/include/common/attributes.h b/include/common/attributes.h
-index 15892b9..47fed92 100644
+index 4ccc421..72d5202 100644
 --- a/include/common/attributes.h
 +++ b/include/common/attributes.h
 @@ -32,6 +32,7 @@
@@ -17,9 +17,9 @@ index 15892b9..47fed92 100644
  #include <assert.h>
 +#include <strings.h>
  
- #ifdef __GNUC__
- #define ATTR_ALIAS __attribute__((may_alias))
-@@ -146,7 +147,7 @@ static inline int clzll(const unsigned long long mask) {
+ #ifndef __has_attribute
+ #define __has_attribute(x) 0
+@@ -156,7 +157,7 @@ static inline int clzll(const unsigned long long mask) {
          return clz((unsigned)mask) + 32;
  }
  #endif /* _WIN64 */
@@ -28,7 +28,7 @@ index 15892b9..47fed92 100644
  static inline int ctz(const unsigned int mask) {
      return __builtin_ctz(mask);
  }
-@@ -158,7 +159,29 @@ static inline int clz(const unsigned int mask) {
+@@ -168,7 +169,29 @@ static inline int clz(const unsigned int mask) {
  static inline int clzll(const unsigned long long mask) {
      return __builtin_clzll(mask);
  }
@@ -57,8 +57,8 @@ index 15892b9..47fed92 100644
 +}
 +#endif /* !_MSC_VER && !__GNUC__ */
  
- #ifndef __has_feature
- #define __has_feature(x) 0
+ #ifndef static_assert
+ #define CHECK_OFFSET(type, field, name) \
 -- 
 2.32.0
 

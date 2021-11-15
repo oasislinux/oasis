@@ -74,9 +74,9 @@ local srcs = paths[[
 		thread_task.c
 
 		@x86_64 x86/(
-			cpu.c msac_init.c
-			cpuid.asm msac.asm cdef_avx2.asm itx_avx2.asm
-			looprestoration_avx2.asm cdef_sse.asm
+			cpu.c msac_init.c refmvs_init.c
+			cpuid.asm msac.asm refmvs.asm cdef_avx2.asm itx_avx2.asm
+			looprestoration_avx2.asm cdef_sse.asm itx_sse.asm
 
 			cdef_avx512.asm
 			mc_avx512.asm
@@ -86,7 +86,6 @@ local srcs = paths[[
 			loopfilter_avx2.asm
 			film_grain_sse.asm
 			ipred_sse.asm
-			itx_sse.asm
 			loopfilter_sse.asm
 			looprestoration_sse.asm
 			mc_sse.asm
@@ -99,6 +98,12 @@ local srcs = paths[[
 			looprestoration16_avx2.asm
 			mc16_avx2.asm
 			cdef16_sse.asm
+			film_grain16_sse.asm
+			ipred16_sse.asm
+			itx16_sse.asm
+			loopfilter16_sse.asm
+			looprestoration16_sse.asm
+			mc16_sse.asm
 		)
 	)
 ]]

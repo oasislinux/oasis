@@ -1,19 +1,20 @@
-From a7aacef625f376acb904dd6aab24ffbaa1d88999 Mon Sep 17 00:00:00 2001
+From 152e1ab7151fe8461ba4243a9d6bdea0edda7690 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 30 Apr 2021 18:56:27 -0700
 Subject: [PATCH] Remove invalid ';' at top-level
 
 This is not allowed in the ISO C grammar.
 ---
- src/cdef_tmpl.c                     |  6 +++---
- src/film_grain_tmpl.c               | 12 ++++++------
- src/looprestoration.h               |  4 ++--
- src/mc_tmpl.c                       |  6 +++---
- src/x86/looprestoration_init_tmpl.c | 14 +++++++-------
- 5 files changed, 21 insertions(+), 21 deletions(-)
+ src/cdef_tmpl.c                     |   6 +-
+ src/film_grain_tmpl.c               |  12 ++--
+ src/looprestoration.h               |   4 +-
+ src/mc_tmpl.c                       |   6 +-
+ src/x86/looprestoration_init_tmpl.c |  16 ++---
+ src/x86/mc_init_tmpl.c              | 106 ++++++++++++++--------------
+ 6 files changed, 75 insertions(+), 75 deletions(-)
 
 diff --git a/src/cdef_tmpl.c b/src/cdef_tmpl.c
-index 41e3fe6..53130e2 100644
+index 91ac45b..7ad3cb0 100644
 --- a/src/cdef_tmpl.c
 +++ b/src/cdef_tmpl.c
 @@ -222,9 +222,9 @@ static void cdef_filter_block_##w##x##h##_c(pixel *const dst, \
@@ -92,10 +93,10 @@ index f8d3e3b..374db4c 100644
  #undef w_mask_fns
  
 diff --git a/src/x86/looprestoration_init_tmpl.c b/src/x86/looprestoration_init_tmpl.c
-index f7819a1..5e5d0c0 100644
+index ae64cc8..c92b7cc 100644
 --- a/src/x86/looprestoration_init_tmpl.c
 +++ b/src/x86/looprestoration_init_tmpl.c
-@@ -31,12 +31,12 @@
+@@ -31,19 +31,19 @@
  #include "common/intops.h"
  
  #define decl_wiener_filter_fns(ext) \
@@ -110,22 +111,145 @@ index f7819a1..5e5d0c0 100644
 +decl_lr_filter_fn(BF(dav1d_sgr_filter_3x3, ext)) \
  decl_lr_filter_fn(BF(dav1d_sgr_filter_mix, ext))
  
- /* FIXME: Replace with a port of the AVX2 code */
-@@ -176,10 +176,10 @@ static void BF(sgr_filter_mix, ext)(pixel *const dst, const ptrdiff_t dst_stride
-     BF(dav1d_sgr_weighted2, ext)(dst, dst_stride, tmp1, tmp2, w, h, wt); \
- }
- 
 -decl_wiener_filter_fns(sse2);
 -decl_wiener_filter_fns(ssse3);
 -decl_wiener_filter_fns(avx2);
+-decl_sgr_filter_fns(ssse3);
 -decl_sgr_filter_fns(avx2);
 +decl_wiener_filter_fns(sse2)
 +decl_wiener_filter_fns(ssse3)
 +decl_wiener_filter_fns(avx2)
++decl_sgr_filter_fns(ssse3)
 +decl_sgr_filter_fns(avx2)
  
- #if BITDEPTH == 8
- SGR_FILTER_OLD(ssse3)
+ COLD void bitfn(dav1d_loop_restoration_dsp_init_x86)(Dav1dLoopRestorationDSPContext *const c,
+                                                      const int bpc)
+diff --git a/src/x86/mc_init_tmpl.c b/src/x86/mc_init_tmpl.c
+index 3991004..0bd6188 100644
+--- a/src/x86/mc_init_tmpl.c
++++ b/src/x86/mc_init_tmpl.c
+@@ -42,68 +42,68 @@
+ #define init_mct_scaled_fn(type, name, suffix) \
+     c->mct_scaled[type] = BF(dav1d_prep_##name, suffix)
+ 
+-decl_fn(mc, dav1d_put_8tap_regular);
+-decl_fn(mc, dav1d_put_8tap_regular_smooth);
+-decl_fn(mc, dav1d_put_8tap_regular_sharp);
+-decl_fn(mc, dav1d_put_8tap_smooth);
+-decl_fn(mc, dav1d_put_8tap_smooth_regular);
+-decl_fn(mc, dav1d_put_8tap_smooth_sharp);
+-decl_fn(mc, dav1d_put_8tap_sharp);
+-decl_fn(mc, dav1d_put_8tap_sharp_regular);
+-decl_fn(mc, dav1d_put_8tap_sharp_smooth);
+-decl_fn(mc, dav1d_put_bilin);
++decl_fn(mc, dav1d_put_8tap_regular)
++decl_fn(mc, dav1d_put_8tap_regular_smooth)
++decl_fn(mc, dav1d_put_8tap_regular_sharp)
++decl_fn(mc, dav1d_put_8tap_smooth)
++decl_fn(mc, dav1d_put_8tap_smooth_regular)
++decl_fn(mc, dav1d_put_8tap_smooth_sharp)
++decl_fn(mc, dav1d_put_8tap_sharp)
++decl_fn(mc, dav1d_put_8tap_sharp_regular)
++decl_fn(mc, dav1d_put_8tap_sharp_smooth)
++decl_fn(mc, dav1d_put_bilin)
+ 
+-decl_fn(mct, dav1d_prep_8tap_regular);
+-decl_fn(mct, dav1d_prep_8tap_regular_smooth);
+-decl_fn(mct, dav1d_prep_8tap_regular_sharp);
+-decl_fn(mct, dav1d_prep_8tap_smooth);
+-decl_fn(mct, dav1d_prep_8tap_smooth_regular);
+-decl_fn(mct, dav1d_prep_8tap_smooth_sharp);
+-decl_fn(mct, dav1d_prep_8tap_sharp);
+-decl_fn(mct, dav1d_prep_8tap_sharp_regular);
+-decl_fn(mct, dav1d_prep_8tap_sharp_smooth);
+-decl_fn(mct, dav1d_prep_bilin);
++decl_fn(mct, dav1d_prep_8tap_regular)
++decl_fn(mct, dav1d_prep_8tap_regular_smooth)
++decl_fn(mct, dav1d_prep_8tap_regular_sharp)
++decl_fn(mct, dav1d_prep_8tap_smooth)
++decl_fn(mct, dav1d_prep_8tap_smooth_regular)
++decl_fn(mct, dav1d_prep_8tap_smooth_sharp)
++decl_fn(mct, dav1d_prep_8tap_sharp)
++decl_fn(mct, dav1d_prep_8tap_sharp_regular)
++decl_fn(mct, dav1d_prep_8tap_sharp_smooth)
++decl_fn(mct, dav1d_prep_bilin)
+ 
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_regular);
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_regular_smooth);
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_regular_sharp);
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_smooth);
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_smooth_regular);
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_smooth_sharp);
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_sharp);
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_sharp_regular);
+-decl_fn(mc_scaled, dav1d_put_8tap_scaled_sharp_smooth);
+-decl_fn(mc_scaled, dav1d_put_bilin_scaled);
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_regular)
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_regular_smooth)
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_regular_sharp)
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_smooth)
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_smooth_regular)
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_smooth_sharp)
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_sharp)
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_sharp_regular)
++decl_fn(mc_scaled, dav1d_put_8tap_scaled_sharp_smooth)
++decl_fn(mc_scaled, dav1d_put_bilin_scaled)
+ 
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_regular);
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_regular_smooth);
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_regular_sharp);
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_smooth);
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_smooth_regular);
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_smooth_sharp);
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_sharp);
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_sharp_regular);
+-decl_fn(mct_scaled, dav1d_prep_8tap_scaled_sharp_smooth);
+-decl_fn(mct_scaled, dav1d_prep_bilin_scaled);
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_regular)
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_regular_smooth)
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_regular_sharp)
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_smooth)
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_smooth_regular)
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_smooth_sharp)
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_sharp)
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_sharp_regular)
++decl_fn(mct_scaled, dav1d_prep_8tap_scaled_sharp_smooth)
++decl_fn(mct_scaled, dav1d_prep_bilin_scaled)
+ 
+-decl_fn(avg, dav1d_avg);
+-decl_fn(w_avg, dav1d_w_avg);
+-decl_fn(mask, dav1d_mask);
+-decl_fn(w_mask, dav1d_w_mask_420);
+-decl_fn(w_mask, dav1d_w_mask_422);
+-decl_fn(w_mask, dav1d_w_mask_444);
+-decl_fn(blend, dav1d_blend);
+-decl_fn(blend_dir, dav1d_blend_v);
+-decl_fn(blend_dir, dav1d_blend_h);
++decl_fn(avg, dav1d_avg)
++decl_fn(w_avg, dav1d_w_avg)
++decl_fn(mask, dav1d_mask)
++decl_fn(w_mask, dav1d_w_mask_420)
++decl_fn(w_mask, dav1d_w_mask_422)
++decl_fn(w_mask, dav1d_w_mask_444)
++decl_fn(blend, dav1d_blend)
++decl_fn(blend_dir, dav1d_blend_v)
++decl_fn(blend_dir, dav1d_blend_h)
+ 
+-decl_fn(warp8x8, dav1d_warp_affine_8x8);
++decl_fn(warp8x8, dav1d_warp_affine_8x8)
+ decl_warp8x8_fn(BF(dav1d_warp_affine_8x8, sse4));
+-decl_fn(warp8x8t, dav1d_warp_affine_8x8t);
++decl_fn(warp8x8t, dav1d_warp_affine_8x8t)
+ decl_warp8x8t_fn(BF(dav1d_warp_affine_8x8t, sse4));
+ 
+-decl_fn(emu_edge, dav1d_emu_edge);
++decl_fn(emu_edge, dav1d_emu_edge)
+ 
+-decl_fn(resize, dav1d_resize);
++decl_fn(resize, dav1d_resize)
+ 
+ COLD void bitfn(dav1d_mc_dsp_init_x86)(Dav1dMCDSPContext *const c) {
+     const unsigned flags = dav1d_get_cpu_flags();
 -- 
 2.32.0
 
