@@ -1,4 +1,4 @@
-From 0785a7f2102a9c8f50f19c7b4addbd849e071abc Mon Sep 17 00:00:00 2001
+From 71b3efc1e55297cbe079378c1e0127c78fe264f5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 7 Sep 2021 01:44:53 -0700
 Subject: [PATCH] libavcodec: Use #if to prevent some unintended dependencies
@@ -9,10 +9,10 @@ Subject: [PATCH] libavcodec: Use #if to prevent some unintended dependencies
  2 files changed, 8 insertions(+), 4 deletions(-)
 
 diff --git a/libavcodec/h263.h b/libavcodec/h263.h
-index 998f7d0d59..4d867d7bf2 100644
+index 491f2e0aac..6f4088e57c 100644
 --- a/libavcodec/h263.h
 +++ b/libavcodec/h263.h
-@@ -98,6 +98,7 @@ int ff_h263_resync(MpegEncContext *s);
+@@ -99,6 +99,7 @@ int ff_h263_resync(MpegEncContext *s);
  void ff_h263_encode_motion(PutBitContext *pb, int val, int f_code);
  
  
@@ -20,7 +20,7 @@ index 998f7d0d59..4d867d7bf2 100644
  static inline int h263_get_motion_length(int val, int f_code){
      int l, bit_size, code;
  
-@@ -182,5 +183,6 @@ static inline int get_p_cbp(MpegEncContext * s,
+@@ -183,5 +184,6 @@ static inline int get_p_cbp(MpegEncContext * s,
      }
      return cbp;
  }
