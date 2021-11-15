@@ -114,6 +114,7 @@ exe('curl', [[
 		tool_helpers.c
 		tool_homedir.c
 		tool_libinfo.c
+		tool_listhelp.c
 		tool_main.c
 		tool_msgs.c
 		tool_operate.c

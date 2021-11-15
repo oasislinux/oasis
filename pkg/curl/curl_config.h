@@ -143,7 +143,7 @@
 #define HAVE_LONGLONG 1
 /* #undef HAVE_MACH_ABSOLUTE_TIME */
 #define HAVE_MALLOC_H 1
-#define HAVE_MEMORY_H 1
+/* #undef HAVE_MEMORY_H */
 /* #undef HAVE_MEMRCHR */
 #define HAVE_MSG_NOSIGNAL 1
 #define HAVE_NETDB_H 1
@@ -193,8 +193,6 @@
 #define HAVE_SIGNAL 1
 #define HAVE_SIGNAL_H 1
 #define HAVE_SIGSETJMP 1
-#define HAVE_SIG_ATOMIC_T 1
-/* #undef HAVE_SIG_ATOMIC_T_VOLATILE */
 #define HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID 1
 #define HAVE_SOCKET 1
 #define HAVE_SOCKETPAIR 1
@@ -204,6 +202,7 @@
 /* #undef HAVE_SSL_H */
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
+#define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRCASECMP 1
 /* #undef HAVE_STRCMPI */
@@ -252,7 +251,6 @@
 /* #undef HAVE_WINDOWS_H */
 /* #undef HAVE_WINLDAP_H */
 /* #undef HAVE_WINSOCK2_H */
-/* #undef HAVE_WINSOCK_H */
 /* #undef HAVE_WOLFSSH_SSH_H */
 /* #undef HAVE_WOLFSSL_DES_ECB_ENCRYPT */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
@@ -349,9 +347,6 @@
 /* #undef WANT_IDN_PROTOTYPES */
 #ifndef _ALL_SOURCE
 /* #  undef _ALL_SOURCE */
-#endif
-#ifndef _DARWIN_USE_64_BIT_INODE
-# define _DARWIN_USE_64_BIT_INODE 1
 #endif
 /* #undef _FILE_OFFSET_BITS */
 /* #undef _LARGE_FILES */
