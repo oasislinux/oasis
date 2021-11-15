@@ -42,10 +42,10 @@
 #define PACKAGE "acpid"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "acpid"
-#define PACKAGE_STRING "acpid 2.0.32"
+#define PACKAGE_STRING "acpid 2.0.33"
 #define PACKAGE_TARNAME "acpid"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.0.32"
+#define PACKAGE_VERSION "2.0.33"
 #define STDC_HEADERS 1
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
@@ -62,7 +62,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.0.32"
+#define VERSION "2.0.33"
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1
 #endif
