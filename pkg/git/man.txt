@@ -149,6 +149,7 @@ man1/git-var.1
 man1/git-verify-commit.1
 man1/git-verify-pack.1
 man1/git-verify-tag.1
+man1/git-version.1
 man1/git-web--browse.1
 man1/git-whatchanged.1
 man1/git-worktree.1

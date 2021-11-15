@@ -8,20 +8,27 @@ cflags{
 }
 
 pkg.deps = {
-	'$outdir/config-list.h',
 	'$outdir/command-list.h',
+	'$outdir/config-list.h',
+	'$outdir/hook-list.h',
 	'pkg/curl/headers',
 	'pkg/zlib/headers',
 }
 
 rule('cmdlist', 'cd $srcdir && ./generate-cmdlist.sh $$OLDPWD/$in >$$OLDPWD/$out')
 build('cmdlist', '$outdir/command-list.h', {
-	'$srcdir/command-list.txt', '|', expand{'$srcdir/Documentation/', lines('commands.txt')},
+	'$srcdir/command-list.txt',
+	'|', '$srcdir/generate-cmdlist.sh', expand{'$srcdir/Documentation/', lines('commands.txt')},
 })
 
-rule('configlist', 'cd $srcdir && ./generate-configlist.sh $$OLDPWD/$in >$$OLDPWD/$out')
+rule('configlist', 'cd $srcdir && ./generate-configlist.sh >$$OLDPWD/$out')
 build('configlist', '$outdir/config-list.h', {
-	'$srcdir/command-list.txt', '|', expand{'$srcdir/Documentation/', lines('configs.txt')},
+	'|', '$srcdir/generate-configlist.sh', expand{'$srcdir/Documentation/', lines('configs.txt')},
+})
+
+rule('hooklist', 'cd $srcdir && ./generate-hooklist.sh >$$OLDPWD/$out')
+build('hooklist', '$outdir/hook-list.h', {
+	'|', '$srcdir/generate-hooklist.sh', '$srcdir/Documentation/githooks.txt'
 })
 
 cc('exec-cmd.c', nil, {cflags=[[$cflags '-DFALLBACK_RUNTIME_PREFIX=""']]})
@@ -51,6 +58,7 @@ lib('libgit.a', [[
 	bulk-checkin.c
 	bundle.c
 	cache-tree.c
+	cbtree.c
 	chdir-notify.c
 	checkout.c
 	chunk-format.c
@@ -109,6 +117,7 @@ lib('libgit.a', [[
 	hashmap.c
 	help.c
 	hex.c
+	hook.c
 	ident.c
 	json-writer.c
 	kwset.c
@@ -148,6 +157,7 @@ lib('libgit.a', [[
 	oid-array.c
 	oidmap.c
 	oidset.c
+	oidtree.c
 	pack-bitmap-write.c
 	pack-bitmap.c
 	pack-check.c
@@ -271,6 +281,8 @@ lib('libgit.a', [[
 	sha1dc/ubc_check.c
 
 	sha256/block/sha256.c
+
+	compat/linux/procinfo.c
 
 	libxdiff.a
 	$builddir/pkg/zlib/libz.a
@@ -450,7 +462,6 @@ local scripts = {
 
 	-- src/Makefile:/^SCRIPT_LIB.\+=
 	{'mergetool--lib', '644'},
-	{'rebase--preserve-merges', '644'},
 	{'sh-i18n', '644'},
 	{'sh-setup', '644'},
 }

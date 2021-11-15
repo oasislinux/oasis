@@ -151,6 +151,7 @@ git-var.txt
 git-verify-commit.txt
 git-verify-pack.txt
 git-verify-tag.txt
+git-version.txt
 git-web--browse.txt
 git-whatchanged.txt
 git-worktree.txt

@@ -1,4 +1,4 @@
-From 56a6faa9119f2572c3638aaa9ccae3120d4ac790 Mon Sep 17 00:00:00 2001
+From dfb7c96e207a1c6d298d417c2e0b8fd79821d8d3 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 27 Jun 2020 01:09:58 -0700
 Subject: [PATCH] Enable add.interactive.usebuiltin by default
@@ -8,10 +8,10 @@ Subject: [PATCH] Enable add.interactive.usebuiltin by default
  1 file changed, 1 insertion(+)
 
 diff --git a/builtin/add.c b/builtin/add.c
-index ea762a41e3..456db07957 100644
+index ef6b619c45..c2b326abfd 100644
 --- a/builtin/add.c
 +++ b/builtin/add.c
-@@ -202,6 +202,7 @@ int run_add_interactive(const char *revision, const char *patch_mode,
+@@ -239,6 +239,7 @@ int run_add_interactive(const char *revision, const char *patch_mode,
  
  	if (use_builtin_add_i < 0) {
  		int experimental;
@@ -20,5 +20,5 @@ index ea762a41e3..456db07957 100644
  					 &use_builtin_add_i))
  			; /* ok */
 -- 
-2.30.1
+2.32.0
 
