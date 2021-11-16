@@ -11,13 +11,14 @@
 #define	TAGS		(!SECURE)
 #define	USERFILE	(!SECURE)
 #define	GLOB		(!SECURE)
-#define	PIPEC		(!SECURE)
+#define	PIPEC		(!SECURE && HAVE_POPEN)
 #define	LOGFILE		(!SECURE)
 #define	GNU_OPTIONS	1
 #define	ONLY_RETURN	0
 #define	LESSKEYFILE		".less"
 #define	LESSKEYFILE_SYS		SYSDIR "/sysless"
 #define	DEF_LESSKEYINFILE	".lesskey"
+#define	LESSKEYINFILE_SYS	SYSDIR "/syslesskey"
 #define LESSHISTFILE		".lesshst"
 #define	MSDOS_COMPILER	0
 #define	PATHNAME_SEP	"/"
@@ -34,6 +35,7 @@
 #define HAVE_MEMCPY 1
 #define HAVE_STRCHR 1
 #define HAVE_STRSTR 1
+#define HAVE_LESSKEYSRC 1
 #if 0 /* old sizes for small memory machines */
 #define	CMDBUF_SIZE	512	/* Buffer for multichar commands */
 #define	UNGOT_SIZE	100	/* Max chars to unget() */
@@ -70,9 +72,11 @@
 #define HAVE_LIMITS_H 1
 #define HAVE_LOCALE 1
 #define HAVE_MEMORY_H 1
+#define HAVE_NANOSLEEP 1
 #define HAVE_OSPEED 1
 /* #undef HAVE_PCRE */
 /* #undef HAVE_PCRE2 */
+#define HAVE_POLL 1
 #define HAVE_POPEN 1
 #define HAVE_POSIX_REGCOMP 1
 #define HAVE_REALPATH 1
@@ -104,8 +108,10 @@
 /* #undef HAVE_TERMIO_H */
 #define HAVE_TIME_H 1
 #define HAVE_TIME_T 1
+#define HAVE_TTYNAME 1
 #define HAVE_UNISTD_H 1
 #define HAVE_UPPER_LOWER 1
+#define HAVE_USLEEP 1
 /* #undef HAVE_V8_REGCOMP */
 #define HAVE_VALUES_H 1
 #define HAVE_VOID 1
