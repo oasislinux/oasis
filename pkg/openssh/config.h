@@ -105,7 +105,7 @@
 /* #undef HAVE_CLOSEFROM */
 #define HAVE_CONST_GAI_STRERROR_PROTO 1
 #define HAVE_CONTROL_IN_MSGHDR 1
-/* #undef HAVE_CRYPT */
+#define HAVE_CRYPT 1
 /* #undef HAVE_CRYPTO_SHA2_H */
 #define HAVE_CRYPT_H 1
 /* #undef HAVE_CYGWIN */
@@ -313,6 +313,7 @@
 #define HAVE_PRCTL 1
 /* #undef HAVE_PRIV_BASICSET */
 /* #undef HAVE_PRIV_H */
+/* #undef HAVE_PROCCTL */
 #define HAVE_PROC_PID 1
 /* #undef HAVE_PROC_PIDINFO */
 #define HAVE_PSELECT 1
@@ -440,6 +441,7 @@
 /* #undef HAVE_SYS_NERR */
 #define HAVE_SYS_POLL_H 1
 #define HAVE_SYS_PRCTL_H 1
+/* #undef HAVE_SYS_PROCCTL_H */
 /* #undef HAVE_SYS_PSTAT_H */
 /* #undef HAVE_SYS_PTMS_H */
 #define HAVE_SYS_PTRACE_H 1
