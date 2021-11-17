@@ -60,7 +60,11 @@ lib('libfido2.a', [[
 		pin.c
 		random.c
 		reset.c
+		rs1.c
 		rs256.c
+		time.c
+		tpm.c
+		types.c
 		u2f.c
 
 		hid_linux.c
