@@ -1,6 +1,7 @@
 #define __dead _Noreturn
 #define HAVE_ASPRINTF
 #define HAVE_CONFSTR
+#define NO_CURSES
 #define HAVE_ISSETUGID
 #define HAVE_REALLOCARRAY
 #define HAVE_SETRESGID
