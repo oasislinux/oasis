@@ -36,6 +36,7 @@ lib('libmandoc.a', {
 	'msec.c',
 	'preconv.c',
 	'read.c',
+	'tag.c',
 
 	'compat_fts.c',
 	'compat_ohash.c',
@@ -47,7 +48,6 @@ exe('mandoc', {
 	'mdoc_man.c',
 	'mdoc_markdown.c',
 	'out.c',
-	'tag.c',
 	'tree.c',
 
 	'eqn_html.c',
@@ -65,6 +65,7 @@ exe('mandoc', {
 	'term_ascii.c',
 	'term_ps.c',
 	'term_tab.c',
+	'term_tag.c',
 	'tbl_term.c',
 
 	'dbm.c',
