@@ -6,7 +6,6 @@ aes
 algol68
 allegro
 alliant
-alpha
 amanda
 amigaos
 android
@@ -19,6 +18,7 @@ application
 applix
 apt
 archive
+arm
 asf
 assembler
 asterix
@@ -41,6 +41,7 @@ bout
 bsdi
 bsi
 btsnoop
+bytecode
 c-lang
 c64
 cad
@@ -118,7 +119,6 @@ gpu
 grace
 graphviz
 gringotts
-guile
 hardware
 hitachi-sh
 hp
@@ -192,11 +192,11 @@ music
 nasa
 natinst
 ncr
-neko
 netbsd
 netscape
 netware
 news
+nim-lang
 nitpicker
 numpy
 oasis
@@ -235,13 +235,13 @@ project
 psdbms
 psl
 pulsar
+puzzle
 pwsafe
 pyramid
 python
 qt
 revision
 riff
-rinex
 rpi
 rpm
 rpmsg
@@ -288,6 +288,7 @@ tplink
 troff
 tuxedo
 typeset
+uf2
 unicode
 unisig
 unknown
