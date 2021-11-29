@@ -8,7 +8,6 @@ pkg.deps = {'pkg/libtls-bearssl/headers'}
 
 exe('pounce', {
 	'bounce.c',
-	'cert.c',
 	'client.c',
 	'config.c',
 	'local.c',
