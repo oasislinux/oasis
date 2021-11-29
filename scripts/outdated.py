@@ -8,7 +8,6 @@ import urllib.request
 names = {
 	'awk': 'nawk',
 	'lpeg': 'lua:lpeg',
-	'sfeed_curses': 'sfeed-curses',
 	'sshfs': 'fusefs:sshfs',
 	'st': 'st-term',
 	'terminus-font': 'fonts:terminus',
