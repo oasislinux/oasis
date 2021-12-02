@@ -327,6 +327,10 @@
 [submodule "pkg/ubase/src"]
 	path = pkg/ubase/src
 	url = https://github.com/michaelforney/ubase
+[submodule "pkg/unbound/src"]
+	path = pkg/unbound/src
+	url = https://github.com/NLnetlabs/unbound.git
+	ignore = all
 [submodule "pkg/usbids/src"]
 	path = pkg/usbids/src
 	url = https://github.com/usbids/usbids.git

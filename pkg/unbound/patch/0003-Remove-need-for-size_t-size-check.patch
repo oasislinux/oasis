@@ -1,0 +1,89 @@
+From a7120321640d03c0ec7444719366bec99add6542 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Dec 2021 16:05:33 -0800
+Subject: [PATCH] Remove need for size_t size check
+
+---
+ configure       | 33 ---------------------------------
+ configure.ac    |  1 -
+ util/regional.c |  8 +-------
+ 3 files changed, 1 insertion(+), 41 deletions(-)
+
+diff --git a/configure b/configure
+index 9c33d22f..8b012048 100755
+--- a/configure
++++ b/configure
+@@ -15163,39 +15163,6 @@ cat >>confdefs.h <<_ACEOF
+ _ACEOF
+ 
+ 
+-# The cast to long int works around a bug in the HP C Compiler
+-# version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
+-# declarations like `int a3[[(sizeof (unsigned char)) >= 0]];'.
+-# This bug is HP SR number 8606223364.
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking size of size_t" >&5
+-$as_echo_n "checking size of size_t... " >&6; }
+-if ${ac_cv_sizeof_size_t+:} false; then :
+-  $as_echo_n "(cached) " >&6
+-else
+-  if ac_fn_c_compute_int "$LINENO" "(long int) (sizeof (size_t))" "ac_cv_sizeof_size_t"        "$ac_includes_default"; then :
+-
+-else
+-  if test "$ac_cv_type_size_t" = yes; then
+-     { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
+-as_fn_error 77 "cannot compute sizeof (size_t)
+-See \`config.log' for more details" "$LINENO" 5; }
+-   else
+-     ac_cv_sizeof_size_t=0
+-   fi
+-fi
+-
+-fi
+-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_sizeof_size_t" >&5
+-$as_echo "$ac_cv_sizeof_size_t" >&6; }
+-
+-
+-
+-cat >>confdefs.h <<_ACEOF
+-#define SIZEOF_SIZE_T $ac_cv_sizeof_size_t
+-_ACEOF
+-
+-
+ 
+ # add option to disable the evil rpath
+ 
+diff --git a/configure.ac b/configure.ac
+index 9e15aee4..750e9bfd 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -448,7 +448,6 @@ AC_INCLUDES_DEFAULT
+ # endif
+ #endif
+ ])
+-AC_CHECK_SIZEOF(size_t)
+ 
+ # add option to disable the evil rpath
+ ACX_ARG_RPATH
+diff --git a/util/regional.c b/util/regional.c
+index 93e911c5..1c6629c3 100644
+--- a/util/regional.c
++++ b/util/regional.c
+@@ -146,13 +146,7 @@ regional_alloc(struct regional *r, size_t size)
+ {
+ 	size_t a;
+ 	void *s;
+-	if(
+-#if SIZEOF_SIZE_T == 8
+-		(unsigned long long)size >= 0xffffffffffffff00ULL
+-#else
+-		(unsigned)size >= (unsigned)0xffffff00UL
+-#endif
+-		)
++	if(size >= (size_t)-0x100)
+ 		return NULL; /* protect against integer overflow in
+ 			malloc and ALIGN_UP */
+ 	a = ALIGN_UP(size, ALIGNMENT);
+-- 
+2.34.1
+

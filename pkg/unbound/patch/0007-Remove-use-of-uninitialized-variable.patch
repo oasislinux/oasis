@@ -1,0 +1,24 @@
+From ede4d741adeb68ca6e244dfa07af164f1a204432 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 21 Dec 2021 15:03:44 -0800
+Subject: [PATCH] Remove use of uninitialized variable
+
+---
+ util/ub_event.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/util/ub_event.c b/util/ub_event.c
+index 8cd87ec4..54db6866 100644
+--- a/util/ub_event.c
++++ b/util/ub_event.c
+@@ -211,7 +211,6 @@ ub_default_event_base(int sigs, time_t* time_secs, struct timeval* time_tv)
+ {
+ 	void* base;
+ 
+-	(void)base;
+ #ifdef USE_MINI_EVENT
+ 	(void)sigs;
+ 	/* use mini event time-sharing feature */
+-- 
+2.34.1
+

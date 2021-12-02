@@ -1,0 +1,827 @@
+From ca1cd33d7a07b3344d031d9119064c2b12de8e03 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Dec 2021 12:42:00 -0800
+Subject: [PATCH] Add support for BearSSL crypto
+
+---
+ config.h.in              |   3 +
+ configure                |  50 ++++-
+ configure.ac             |  43 ++++-
+ daemon/unbound.c         |   2 +
+ util/configparser.c      |   4 +-
+ util/configparser.y      |   4 +-
+ util/random.c            |  46 ++++-
+ validator/val_secalgo.c  | 382 ++++++++++++++++++++++++++++++++++++++-
+ validator/val_sigcrypt.c |   2 +-
+ 9 files changed, 514 insertions(+), 22 deletions(-)
+
+diff --git a/config.h.in b/config.h.in
+index e8a26735..6b0b1c50 100644
+--- a/config.h.in
++++ b/config.h.in
+@@ -72,6 +72,9 @@
+ /* If we have be64toh */
+ #undef HAVE_BE64TOH
+ 
++/* Use bearssl for crypto */
++#undef HAVE_BEARSSL
++
+ /* Define to 1 if you have the `BIO_set_callback_ex' function. */
+ #undef HAVE_BIO_SET_CALLBACK_EX
+ 
+diff --git a/configure b/configure
+index 0e964568..9c33d22f 100755
+--- a/configure
++++ b/configure
+@@ -871,6 +871,7 @@ with_pythonmodule
+ enable_swig_version_check
+ with_nss
+ with_nettle
++with_bearssl
+ with_ssl
+ with_libbsd
+ enable_sha1
+@@ -1649,6 +1650,7 @@ Optional Packages:
+                           disable script engine. (default=no)
+   --with-nss=path         use libnss instead of openssl, installed at path.
+   --with-nettle=path      use libnettle as crypto library, installed at path.
++  --with-bearssl=path     use bearssl as crypto library, installed at path.
+   --with-ssl=pathname     enable SSL (will check /usr/local/ssl /usr/lib/ssl
+                           /usr/ssl /usr/pkg /usr/local /opt/local /usr/sfw
+                           /usr or specify like /usr/include/openssl11)
+@@ -17981,11 +17983,35 @@ done
+ 
+ 
+ 
++fi
++
++
++# bearssl
++USE_BEARSSL="no"
++
++# Check whether --with-bearssl was given.
++if test ${with_bearssl+y}
++then :
++  withval=$with_bearssl;
++	USE_BEARSSL="yes"
++
++printf "%s\n" "#define HAVE_BEARSSL 1" >>confdefs.h
++
++	if test "$withval" != "" -a "$withval" != "yes"; then
++		CPPFLAGS="$CPPFLAGS -I$withval/include"
++		LDFLAGS="$LDFLAGS -L$withval/lib"
++	fi
++	LIBS="$LIBS -lbearssl"
++	SSLLIB=""
++	PC_CRYPTO_DEPENDENCY=""
++
++
++
+ fi
+ 
+ 
+ # openssl
+-if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ 
+ 
+ # Check whether --with-ssl was given.
+@@ -18790,7 +18816,7 @@ if test "${enable_gost+set}" = set; then :
+ fi
+ 
+ use_gost="no"
+-if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ case "$enable_gost" in
+ 	no)
+ 	;;
+@@ -18943,7 +18969,7 @@ case "$enable_ecdsa" in
+     no)
+       ;;
+     *)
+-      if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++      if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ 	      ac_fn_c_check_func "$LINENO" "ECDSA_sign" "ac_cv_func_ECDSA_sign"
+ if test "x$ac_cv_func_ECDSA_sign" = xyes; then :
+ 
+@@ -19036,7 +19062,7 @@ use_dsa="no"
+ case "$enable_dsa" in
+     yes)
+       # detect if DSA is supported, and turn it off if not.
+-      if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++      if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+       ac_fn_c_check_func "$LINENO" "DSA_SIG_new" "ac_cv_func_DSA_SIG_new"
+ if test "x$ac_cv_func_DSA_SIG_new" = xyes; then :
+ 
+@@ -19080,6 +19106,9 @@ else
+ fi
+ 
+       else
++      if test $USE_BEARSSL = "yes"; then
++        as_fn_error $? "BearSSL does not support DSA and you used --enable-dsa." "$LINENO" 5
++      fi
+ 
+ cat >>confdefs.h <<_ACEOF
+ #define USE_DSA 1
+@@ -19115,7 +19144,7 @@ case "$enable_ed25519" in
+     no)
+       ;;
+     *)
+-      if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++      if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ 	      ac_fn_c_check_decl "$LINENO" "NID_ED25519" "ac_cv_have_decl_NID_ED25519" "$ac_includes_default
+ #include <openssl/evp.h>
+ 
+@@ -19139,6 +19168,9 @@ else
+ fi
+ 
+       fi
++      if test $USE_BEARSSL = "yes"; then
++		as_fn_error $? "BearSSL does not support Ed25519 and you used --enable-ed25519." "$LINENO" 5
++      fi
+       if test $USE_NETTLE = "yes"; then
+ 		for ac_header in nettle/eddsa.h
+ do :
+@@ -19174,7 +19206,7 @@ case "$enable_ed448" in
+     no)
+       ;;
+     *)
+-      if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++      if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ 	      ac_fn_c_check_decl "$LINENO" "NID_ED448" "ac_cv_have_decl_NID_ED448" "$ac_includes_default
+ #include <openssl/evp.h>
+ 
+@@ -19198,6 +19230,9 @@ else
+ fi
+ 
+       fi
++      if test $USE_BEARSSL = "yes"; then
++		as_fn_error $? "BearSSL does not support Ed448 and you used --enable-ed448." "$LINENO" 5
++      fi
+       if test $use_ed448 = "yes"; then
+ 
+ cat >>confdefs.h <<_ACEOF
+@@ -21744,6 +21779,9 @@ if test $ALLTARGET = "alltargets"; then
+ 	if test $USE_NETTLE = "yes"; then
+ 		as_fn_error $? "--with-nettle can only be used in combination with --with-libunbound-only." "$LINENO" 5
+ 	fi
++	if test $USE_BEARSSL = "yes"; then
++		as_fn_error $? "--with-bearssl can only be used in combination with --with-libunbound-only." "$LINENO" 5
++	fi
+ fi
+ 
+ 
+diff --git a/configure.ac b/configure.ac
+index 36fdb459..9e15aee4 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -835,8 +835,25 @@ AC_ARG_WITH([nettle], AS_HELP_STRING([--with-nettle=path],[use libnettle as cryp
+ 	]
+ )
+ 
++# bearssl
++USE_BEARSSL="no"
++AC_ARG_WITH([bearssl], AS_HELP_STRING([--with-bearssl=path],[use bearssl as crypto library, installed at path.]),
++	[
++	USE_BEARSSL="yes"
++	AC_DEFINE(HAVE_BEARSSL, 1, [Use bearssl for crypto])
++	if test "$withval" != "" -a "$withval" != "yes"; then
++		CPPFLAGS="$CPPFLAGS -I$withval/include"
++		LDFLAGS="$LDFLAGS -L$withval/lib"
++	fi
++	LIBS="$LIBS -lbearssl"
++	SSLLIB=""
++	PC_CRYPTO_DEPENDENCY=""
++	AC_SUBST(PC_CRYPTO_DEPENDENCY)
++	]
++)
++
+ # openssl
+-if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ ACX_WITH_SSL
+ ACX_LIB_SSL
+ SSLLIB="-lssl"
+@@ -1084,7 +1101,7 @@ AC_MSG_RESULT($ac_cv_c_gost_works)
+ 
+ AC_ARG_ENABLE(gost, AS_HELP_STRING([--disable-gost],[Disable GOST support]))
+ use_gost="no"
+-if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ case "$enable_gost" in
+ 	no)
+ 	;;
+@@ -1098,7 +1115,7 @@ case "$enable_gost" in
+ 	fi
+ 	;;
+ esac
+-fi dnl !USE_NSS && !USE_NETTLE
++fi dnl !USE_NSS && !USE_NETTLE && !USE_BEARSSL
+ 
+ AC_ARG_ENABLE(ecdsa, AS_HELP_STRING([--disable-ecdsa],[Disable ECDSA support]))
+ use_ecdsa="no"
+@@ -1106,7 +1123,7 @@ case "$enable_ecdsa" in
+     no)
+       ;;
+     *)
+-      if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++      if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ 	      AC_CHECK_FUNC(ECDSA_sign, [], [AC_MSG_ERROR([OpenSSL does not support ECDSA: please upgrade or rerun with --disable-ecdsa])])
+ 	      AC_CHECK_FUNC(SHA384_Init, [], [AC_MSG_ERROR([OpenSSL does not support SHA384: please upgrade or rerun with --disable-ecdsa])])
+ 	      AC_CHECK_DECLS([NID_X9_62_prime256v1, NID_secp384r1], [], [AC_MSG_ERROR([OpenSSL does not support the ECDSA curves: please upgrade or rerun with --disable-ecdsa])], [AC_INCLUDES_DEFAULT
+@@ -1137,7 +1154,7 @@ use_dsa="no"
+ case "$enable_dsa" in
+     yes)
+       # detect if DSA is supported, and turn it off if not.
+-      if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++      if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+       AC_CHECK_FUNC(DSA_SIG_new, [
+       AC_CHECK_TYPE(DSA_SIG*, [
+       AC_DEFINE_UNQUOTED([USE_DSA], [1], [Define this to enable DSA support.])
+@@ -1163,6 +1180,9 @@ AC_INCLUDES_DEFAULT
+       ], [if test "x$enable_dsa" = "xyes"; then AC_MSG_ERROR([OpenSSL does not support DSA and you used --enable-dsa.])
+                fi ])
+       else
++      if test $USE_BEARSSL = "yes"; then
++        AC_MSG_ERROR([BearSSL does not support DSA and you used --enable-dsa.])
++      fi
+       AC_DEFINE_UNQUOTED([USE_DSA], [1], [Define this to enable DSA support.])
+       fi
+       ;;
+@@ -1183,7 +1203,7 @@ case "$enable_ed25519" in
+     no)
+       ;;
+     *)
+-      if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++      if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ 	      AC_CHECK_DECLS([NID_ED25519], [
+       		use_ed25519="yes"
+ 	      ], [ if test "x$enable_ed25519" = "xyes"; then AC_MSG_ERROR([OpenSSL does not support ED25519 and you used --enable-ed25519.])
+@@ -1191,6 +1211,9 @@ case "$enable_ed25519" in
+ #include <openssl/evp.h>
+ 	      ])
+       fi
++      if test $USE_BEARSSL = "yes"; then
++		AC_MSG_ERROR([BearSSL does not support Ed25519 and you used --enable-ed25519.])
++      fi
+       if test $USE_NETTLE = "yes"; then
+ 		AC_CHECK_HEADERS([nettle/eddsa.h], use_ed25519="yes",, [AC_INCLUDES_DEFAULT])
+       fi
+@@ -1206,7 +1229,7 @@ case "$enable_ed448" in
+     no)
+       ;;
+     *)
+-      if test $USE_NSS = "no" -a $USE_NETTLE = "no"; then
++      if test $USE_NSS = "no" -a $USE_NETTLE = "no" -a $USE_BEARSSL = "no"; then
+ 	      AC_CHECK_DECLS([NID_ED448], [
+       		use_ed448="yes"
+ 	      ], [ if test "x$enable_ed448" = "xyes"; then AC_MSG_ERROR([OpenSSL does not support ED448 and you used --enable-ed448.])
+@@ -1214,6 +1237,9 @@ case "$enable_ed448" in
+ #include <openssl/evp.h>
+ 	      ])
+       fi
++      if test $USE_BEARSSL = "yes"; then
++		AC_MSG_ERROR([BearSSL does not support Ed448 and you used --enable-ed448.])
++      fi
+       if test $use_ed448 = "yes"; then
+       		AC_DEFINE_UNQUOTED([USE_ED448], [1], [Define this to enable ED448 support.])
+       fi
+@@ -1937,6 +1963,9 @@ if test $ALLTARGET = "alltargets"; then
+ 	if test $USE_NETTLE = "yes"; then
+ 		AC_MSG_ERROR([--with-nettle can only be used in combination with --with-libunbound-only.])	
+ 	fi
++	if test $USE_BEARSSL = "yes"; then
++		AC_MSG_ERROR([--with-bearssl can only be used in combination with --with-libunbound-only.])
++	fi
+ fi
+ 
+ AC_SUBST(ALLTARGET)
+diff --git a/daemon/unbound.c b/daemon/unbound.c
+index 457a0803..1a31bb3e 100644
+--- a/daemon/unbound.c
++++ b/daemon/unbound.c
+@@ -121,6 +121,8 @@ print_build_options(void)
+ 		NSS_GetVersion()
+ #elif defined(HAVE_NETTLE)
+ 		"nettle"
++#elif defined(HAVE_BEARSSL)
++		"bearssl"
+ #endif
+ 		);
+ 	printf("Linked modules:");
+diff --git a/util/configparser.c b/util/configparser.c
+index 2f155650..f2749753 100644
+--- a/util/configparser.c
++++ b/util/configparser.c
+@@ -5649,7 +5649,7 @@ yyreduce:
+ 		OUTYY(("P(server_fake_dsa:%s)\n", (yyvsp[0].str)));
+ 		if(strcmp((yyvsp[0].str), "yes") != 0 && strcmp((yyvsp[0].str), "no") != 0)
+ 			yyerror("expected yes or no.");
+-#if defined(HAVE_SSL) || defined(HAVE_NETTLE)
++#if defined(HAVE_SSL) || defined(HAVE_NETTLE) || defined(HAVE_BEARSSL)
+ 		else fake_dsa = (strcmp((yyvsp[0].str), "yes")==0);
+ 		if(fake_dsa)
+ 			log_warn("test option fake_dsa is enabled");
+@@ -5665,7 +5665,7 @@ yyreduce:
+ 		OUTYY(("P(server_fake_sha1:%s)\n", (yyvsp[0].str)));
+ 		if(strcmp((yyvsp[0].str), "yes") != 0 && strcmp((yyvsp[0].str), "no") != 0)
+ 			yyerror("expected yes or no.");
+-#if defined(HAVE_SSL) || defined(HAVE_NETTLE)
++#if defined(HAVE_SSL) || defined(HAVE_NETTLE) || defined(HAVE_BEARSSL)
+ 		else fake_sha1 = (strcmp((yyvsp[0].str), "yes")==0);
+ 		if(fake_sha1)
+ 			log_warn("test option fake_sha1 is enabled");
+diff --git a/util/configparser.y b/util/configparser.y
+index 1daf853d..844c175e 100644
+--- a/util/configparser.y
++++ b/util/configparser.y
+@@ -2028,7 +2028,7 @@ server_fake_dsa: VAR_FAKE_DSA STRING_ARG
+ 		OUTYY(("P(server_fake_dsa:%s)\n", $2));
+ 		if(strcmp($2, "yes") != 0 && strcmp($2, "no") != 0)
+ 			yyerror("expected yes or no.");
+-#if defined(HAVE_SSL) || defined(HAVE_NETTLE)
++#if defined(HAVE_SSL) || defined(HAVE_NETTLE) || defined(HAVE_BEARSSL)
+ 		else fake_dsa = (strcmp($2, "yes")==0);
+ 		if(fake_dsa)
+ 			log_warn("test option fake_dsa is enabled");
+@@ -2041,7 +2041,7 @@ server_fake_sha1: VAR_FAKE_SHA1 STRING_ARG
+ 		OUTYY(("P(server_fake_sha1:%s)\n", $2));
+ 		if(strcmp($2, "yes") != 0 && strcmp($2, "no") != 0)
+ 			yyerror("expected yes or no.");
+-#if defined(HAVE_SSL) || defined(HAVE_NETTLE)
++#if defined(HAVE_SSL) || defined(HAVE_NETTLE) || defined(HAVE_BEARSSL)
+ 		else fake_sha1 = (strcmp($2, "yes")==0);
+ 		if(fake_sha1)
+ 			log_warn("test option fake_sha1 is enabled");
+diff --git a/util/random.c b/util/random.c
+index f7bb0a6f..6bce2f62 100644
+--- a/util/random.c
++++ b/util/random.c
+@@ -183,10 +183,52 @@ long int ub_random(struct ub_randstate* s)
+ 	}
+ 	return x & MAX_VALUE;
+ }
+-#endif /* HAVE_SSL or HAVE_LIBBSD or HAVE_NSS or HAVE_NETTLE */
+ 
++#elif defined(HAVE_BEARSSL)
+ 
+-#if (defined(HAVE_NSS) || defined(HAVE_NETTLE)) && !defined(HAVE_LIBBSD)
++#include <bearssl.h>
++
++struct ub_randstate {
++	br_hmac_drbg_context ctx;
++	int seeded;
++};
++
++struct ub_randstate* ub_initstate(struct ub_randstate* ATTR_UNUSED(from))
++{
++	struct ub_randstate* s = (struct ub_randstate*)calloc(1, sizeof(*s));
++	unsigned char buf[32];
++	if(!s) {
++		log_err("malloc failure in random init");
++		return NULL;
++	}
++	if(getentropy(buf, sizeof(buf)) == 0) {
++		/* got entropy */
++		br_hmac_drbg_init(&s->ctx, &br_sha256_vtable, buf, sizeof(buf));
++		s->seeded = 1;
++	} else {
++		log_err("bearssl random(hmac-drbg) cannot initialize, "
++			"getentropy failed: %s", strerror(errno));
++		free(s);
++		return NULL;
++	}
++
++	return s;
++}
++
++long int ub_random(struct ub_randstate* s)
++{
++	unsigned long x = 0;
++	if (!s || !s->seeded) {
++		log_err("couldn't generate randomness, hmac-drbg generator not yet seeded");
++	} else {
++		br_hmac_drbg_generate(&s->ctx, (unsigned char *)&x, sizeof(x));
++	}
++	return x & MAX_VALUE;
++}
++
++#endif /* HAVE_SSL or HAVE_LIBBSD or HAVE_NSS or HAVE_NETTLE or HAVE_BEARSSL */
++
++#if (defined(HAVE_NSS) || defined(HAVE_NETTLE) || defined(HAVE_BEARSSL)) && !defined(HAVE_LIBBSD)
+ long int
+ ub_random_max(struct ub_randstate* state, long int x)
+ {
+diff --git a/validator/val_secalgo.c b/validator/val_secalgo.c
+index 7abf66f0..aa20b57b 100644
+--- a/validator/val_secalgo.c
++++ b/validator/val_secalgo.c
+@@ -50,7 +50,7 @@
+ #include "sldns/keyraw.h"
+ #include "sldns/sbuffer.h"
+ 
+-#if !defined(HAVE_SSL) && !defined(HAVE_NSS) && !defined(HAVE_NETTLE)
++#if !defined(HAVE_SSL) && !defined(HAVE_NSS) && !defined(HAVE_NETTLE) && !defined(HAVE_BEARSSL)
+ #error "Need crypto library to do digital signature cryptography"
+ #endif
+ 
+@@ -2067,4 +2067,382 @@ verify_canonrrset(sldns_buffer* buf, int algo, unsigned char* sigblock,
+ 	}
+ }
+ 
+-#endif /* HAVE_SSL or HAVE_NSS or HAVE_NETTLE */
++#elif defined(HAVE_BEARSSL)
++
++#include <bearssl.h>
++
++/* return size of digest if supported, or 0 otherwise */
++size_t
++nsec3_hash_algo_size_supported(int id)
++{
++	switch(id) {
++	case NSEC3_HASH_SHA1:
++		return br_sha1_SIZE;
++	default:
++		return 0;
++	}
++}
++
++/* perform nsec3 hash. return false on failure */
++int
++secalgo_nsec3_hash(int algo, unsigned char* buf, size_t len,
++        unsigned char* res)
++{
++	br_hash_compat_context ctx;
++
++	switch(algo) {
++	case NSEC3_HASH_SHA1:
++		br_sha1_init(&ctx.sha1);
++		br_sha1_update(&ctx.sha1, buf, len);
++		br_sha1_out(&ctx.sha1, res);
++		return 1;
++	default:
++		return 0;
++	}
++}
++
++void
++secalgo_hash_sha256(unsigned char* buf, size_t len, unsigned char* res)
++{
++	br_sha256_context ctx;
++
++	br_sha256_init(&ctx);
++	br_sha256_update(&ctx, buf, len);
++	br_sha256_out(&ctx, res);
++}
++
++/** hash structure for keeping track of running hashes */
++struct secalgo_hash {
++	br_hash_compat_context ctx;
++};
++
++/** create secalgo hash with hash type */
++static struct secalgo_hash* secalgo_hash_create(const br_hash_class *vtable)
++{
++	struct secalgo_hash* h;
++	h = calloc(1, sizeof(*h));
++	if(!h)
++		return NULL;
++	vtable->init(&h->ctx.vtable);
++	return h;
++}
++
++struct secalgo_hash* secalgo_hash_create_sha384(void)
++{
++	return secalgo_hash_create(&br_sha384_vtable);
++}
++
++struct secalgo_hash* secalgo_hash_create_sha512(void)
++{
++	return secalgo_hash_create(&br_sha512_vtable);
++}
++
++int secalgo_hash_update(struct secalgo_hash* hash, uint8_t* data, size_t len)
++{
++	hash->ctx.vtable->update(&hash->ctx.vtable, data, len);
++	return 1;
++}
++
++int secalgo_hash_final(struct secalgo_hash* hash, uint8_t* result,
++        size_t maxlen, size_t* resultlen)
++{
++	size_t len;
++
++	hash->ctx.vtable->out(&hash->ctx.vtable, result);
++	len = hash->ctx.vtable->desc >> BR_HASHDESC_OUT_OFF & BR_HASHDESC_OUT_MASK;
++	if(len > maxlen) {
++		*resultlen = 0;
++		log_err("secalgo_hash_final: hash buffer too small");
++		return 0;
++	}
++	hash->ctx.vtable->out(&hash->ctx.vtable, result);
++	*resultlen = len;
++	return 1;
++}
++
++void secalgo_hash_delete(struct secalgo_hash* hash)
++{
++	if(!hash) return;
++	free(hash);
++}
++
++size_t
++ds_digest_size_supported(int algo)
++{
++	switch(algo) {
++	case LDNS_SHA1:
++#ifdef USE_SHA1
++		return br_sha1_SIZE;
++#else
++		if(fake_sha1) return 20;
++		return 0;
++#endif
++#ifdef USE_SHA2
++	case LDNS_SHA256:
++		return br_sha256_SIZE;
++#endif
++#ifdef USE_ECDSA
++	case LDNS_SHA384:
++		return br_sha384_SIZE;
++#endif
++	}
++	return 0;
++}
++
++int
++secalgo_ds_digest(int algo, unsigned char* buf, size_t len,
++	unsigned char* res)
++{
++	br_hash_compat_context ctx;
++
++	switch(algo) {
++#ifdef USE_SHA1
++	case LDNS_SHA1:
++		br_sha1_init(&ctx.sha1);
++		br_sha1_update(&ctx.sha1, buf, len);
++		br_sha1_out(&ctx.sha1, res);
++		return 1;
++#endif
++#ifdef USE_SHA2
++	case LDNS_SHA256:
++		br_sha256_init(&ctx.sha256);
++		br_sha256_update(&ctx.sha256, buf, len);
++		br_sha256_out(&ctx.sha256, res);
++		return 1;
++#endif
++#ifdef USE_ECDSA
++	case LDNS_SHA384:
++		br_sha384_init(&ctx.sha384);
++		br_sha384_update(&ctx.sha384, buf, len);
++		br_sha384_out(&ctx.sha384, res);
++		return 1;
++#endif
++	default:
++		verbose(VERB_QUERY, "unknown DS digest algorithm %d", algo);
++		break;
++	}
++	return 0;
++}
++
++int
++dnskey_algo_id_is_supported(int id)
++{
++	switch(id) {
++	case LDNS_DSA:
++	case LDNS_DSA_NSEC3:
++		if(fake_dsa || fake_sha1) return 1;
++		return 0;
++	case LDNS_RSASHA1:
++	case LDNS_RSASHA1_NSEC3:
++#ifdef USE_SHA1
++		return 1;
++#else
++		if(fake_sha1) return 1;
++		return 0;
++#endif
++#ifdef USE_SHA2
++	case LDNS_RSASHA256:
++	case LDNS_RSASHA512:
++#endif
++#ifdef USE_ECDSA
++	case LDNS_ECDSAP256SHA256:
++	case LDNS_ECDSAP384SHA384:
++#endif
++#if defined(USE_SHA1) || defined(USE_SHA2)
++		return 1;
++#endif
++
++	default:
++		return 0;
++	}
++}
++
++#if defined(USE_SHA1) || defined(USE_SHA2)
++static char *
++_verify_bearssl_rsa(sldns_buffer* buf, const unsigned char* hash,
++	size_t hashlen, const unsigned char* oid, const unsigned char* sig,
++	size_t siglen, unsigned char* key, size_t keylen)
++{
++	br_rsa_public_key pubkey;
++	unsigned char sighash[64];
++
++	/* RSA pubkey parsing as per RFC 3110 sec. 2 */
++	if(keylen <= 1) {
++		return "null RSA key";
++	}
++	if (key[0] != 0) {
++		/* 1-byte length */
++		pubkey.e = key + 1;
++		pubkey.elen = key[0];
++	} else {
++		/* 1-byte NUL + 2-bytes exponent length */
++		if (keylen < 3) {
++			return "incorrect RSA key length";
++		}
++		pubkey.e = key + 3;
++		pubkey.elen = (unsigned)key[1] << 8 | (unsigned)key[2];
++		if (pubkey.elen == 0)
++			return "null RSA exponent length";
++	}
++	/* Check that we are not over-running input length */
++	if (keylen < (pubkey.e - key) + pubkey.elen + 1) {
++		return "RSA key content shorter than expected";
++	}
++	pubkey.n = pubkey.e + pubkey.elen;
++	pubkey.nlen = keylen - (pubkey.n - key);
++
++	if (br_rsa_pkcs1_vrfy_get_default()(sig, siglen, oid, hashlen, &pubkey,
++	    sighash) != 1 || memcmp(hash, sighash, hashlen) != 0) {
++		return "RSA signature verification failed";
++	} else {
++		return NULL;
++	}
++}
++#endif
++
++#ifdef USE_ECDSA
++static char *
++_verify_bearssl_ecdsa(sldns_buffer* buf, int algo, const unsigned char* hash,
++	size_t hashlen, const unsigned char* sig, size_t siglen,
++	unsigned char* key, size_t keylen)
++{
++	br_ec_public_key pubkey;
++	unsigned char q[97];
++
++	/* uncompressed point format */
++	q[0] = 4;
++	switch(algo) {
++	case LDNS_ECDSAP256SHA256:
++		pubkey.curve = BR_EC_secp256r1;
++		if (keylen != 64) {
++			return "incorrect ECDSA P-256 key length";
++		}
++		memcpy(q + 1, key, 64);
++		break;
++	case LDNS_ECDSAP384SHA384:
++		pubkey.curve = BR_EC_secp384r1;
++		if (keylen != 96) {
++			return "incorrect ECDSA P-384 key length";
++		}
++		memcpy(q + 1, key, 96);
++		break;
++	default:
++		return "unsupported ECDSA algorithm";
++	}
++	pubkey.q = q;
++	pubkey.qlen = 1 + keylen;
++
++	if (br_ecdsa_vrfy_raw_get_default()(br_ec_get_default(), hash, hashlen,
++	    &pubkey, sig, siglen) != 1) {
++		return "ECDSA signature verification failed";
++	} else {
++		return NULL;
++	}
++}
++#endif
++
++/**
++ * Check a canonical sig+rrset and signature against a dnskey
++ * @param buf: buffer with data to verify, the first rrsig part and the
++ *	canonicalized rrset.
++ * @param algo: DNSKEY algorithm.
++ * @param sigblock: signature rdata field from RRSIG
++ * @param sigblock_len: length of sigblock data.
++ * @param key: public key data from DNSKEY RR.
++ * @param keylen: length of keydata.
++ * @param reason: bogus reason in more detail.
++ * @return secure if verification succeeded, bogus on crypto failure,
++ *	unchecked on format errors and alloc failures.
++ */
++enum sec_status
++verify_canonrrset(sldns_buffer* buf, int algo, unsigned char* sig,
++	unsigned int siglen, unsigned char* key, unsigned int keylen,
++	char** reason)
++{
++	br_hash_compat_context ctx;
++	const unsigned char *oid;
++	unsigned char hash[64];
++	size_t hashlen;
++
++	if (siglen == 0 || keylen == 0) {
++		*reason = "null signature";
++		return sec_status_bogus;
++	}
++
++#ifndef USE_DSA
++	if((algo == LDNS_DSA || algo == LDNS_DSA_NSEC3) && (fake_dsa || fake_sha1))
++		return sec_status_secure;
++#endif
++#ifndef USE_SHA1
++	if(fake_sha1 && (algo == LDNS_DSA || algo == LDNS_DSA_NSEC3 || algo == LDNS_RSASHA1 || algo == LDNS_RSASHA1_NSEC3))
++		return sec_status_secure;
++#endif
++
++	switch(algo) {
++#ifdef USE_SHA1
++	case LDNS_RSASHA1:
++	case LDNS_RSASHA1_NSEC3:
++		ctx.vtable = &br_sha1_vtable;
++		oid = BR_HASH_OID_SHA1;
++		break;
++#endif
++#ifdef USE_SHA2
++	case LDNS_RSASHA256:
++		ctx.vtable = &br_sha256_vtable;
++		oid = BR_HASH_OID_SHA256;
++		break;
++	case LDNS_RSASHA512:
++		ctx.vtable = &br_sha512_vtable;
++		oid = BR_HASH_OID_SHA512;
++		break;
++#endif
++#ifdef USE_ECDSA
++	case LDNS_ECDSAP256SHA256:
++		ctx.vtable = &br_sha256_vtable;
++		break;
++	case LDNS_ECDSAP384SHA384:
++		ctx.vtable = &br_sha384_vtable;
++		break;
++#endif
++	default:
++		*reason = "unable to verify signature, unknown algorithm";
++		return sec_status_bogus;
++	}
++
++	ctx.vtable->init(&ctx.vtable);
++	ctx.vtable->update(&ctx.vtable, sldns_buffer_begin(buf), sldns_buffer_limit(buf));
++	ctx.vtable->out(&ctx.vtable, hash);
++	hashlen = ctx.vtable->desc >> BR_HASHDESC_OUT_OFF & BR_HASHDESC_OUT_MASK;
++
++	switch(algo) {
++#if defined(USE_SHA1) || defined(USE_SHA2)
++#ifdef USE_SHA1
++	case LDNS_RSASHA1:
++	case LDNS_RSASHA1_NSEC3:
++#endif
++#ifdef USE_SHA2
++	case LDNS_RSASHA256:
++	case LDNS_RSASHA512:
++#endif
++		*reason = _verify_bearssl_rsa(buf, hash, hashlen, oid, sig,
++					siglen, key, keylen);
++		break;
++#endif
++#ifdef USE_ECDSA
++	case LDNS_ECDSAP256SHA256:
++	case LDNS_ECDSAP384SHA384:
++		*reason = _verify_bearssl_ecdsa(buf, algo, hash, hashlen,
++					sig, siglen, key, keylen);
++		break;
++#endif
++	default:
++		*reason = "unable to verify signature, unknown algorithm";
++	}
++	if (*reason != NULL) {
++		return sec_status_bogus;
++	} else {
++		return sec_status_secure;
++	}
++}
++
++#endif /* HAVE_SSL or HAVE_NSS or HAVE_NETTLE or HAVE_BEARSSL */
+diff --git a/validator/val_sigcrypt.c b/validator/val_sigcrypt.c
+index b15fba3f..2ffe73b8 100644
+--- a/validator/val_sigcrypt.c
++++ b/validator/val_sigcrypt.c
+@@ -58,7 +58,7 @@
+ #include "sldns/wire2str.h"
+ 
+ #include <ctype.h>
+-#if !defined(HAVE_SSL) && !defined(HAVE_NSS) && !defined(HAVE_NETTLE)
++#if !defined(HAVE_SSL) && !defined(HAVE_NSS) && !defined(HAVE_NETTLE) && !defined(HAVE_BEARSSL)
+ #error "Need crypto library to do digital signature cryptography"
+ #endif
+ 
+-- 
+2.34.1
+

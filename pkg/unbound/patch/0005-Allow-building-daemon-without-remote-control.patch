@@ -1,0 +1,162 @@
+From 91e0865f0bd42d28d50ddd1fc1fae6cfaab17e46 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Dec 2021 16:08:12 -0800
+Subject: [PATCH] Allow building daemon without remote control
+
+---
+ daemon/daemon.c   | 13 +++++++++++++
+ daemon/unbound.c  |  5 +++++
+ daemon/worker.c   |  8 ++++++++
+ util/fptr_wlist.c |  4 ++++
+ 4 files changed, 30 insertions(+)
+
+diff --git a/daemon/daemon.c b/daemon/daemon.c
+index 0e3923b4..27132ce1 100644
+--- a/daemon/daemon.c
++++ b/daemon/daemon.c
+@@ -68,7 +68,9 @@
+ 
+ #include "daemon/daemon.h"
+ #include "daemon/worker.h"
++#ifdef WITH_REMOTE
+ #include "daemon/remote.h"
++#endif
+ #include "daemon/acl_list.h"
+ #include "util/log.h"
+ #include "util/config_file.h"
+@@ -378,9 +380,16 @@ daemon_open_shared_ports(struct daemon* daemon)
+ 	if(daemon->cfg->remote_control_enable && 
+ 		daemon->cfg->control_port != daemon->rc_port) {
+ 		listening_ports_free(daemon->rc_ports);
++#ifdef WITH_REMOTE
+ 		if(!(daemon->rc_ports=daemon_remote_open_ports(daemon->cfg)))
+ 			return 0;
+ 		daemon->rc_port = daemon->cfg->control_port;
++#else
++		log_err("unbound built without remote control");
++		daemon->rc_ports = NULL;
++		daemon->rc_port = 0;
++		return 0;
++#endif
+ 	}
+ 	return 1;
+ }
+@@ -738,8 +747,10 @@ daemon_cleanup(struct daemon* daemon)
+ 	daemon->views = NULL;
+ 	if(daemon->env->auth_zones)
+ 		auth_zones_cleanup(daemon->env->auth_zones);
++#ifdef WITH_REMOTE
+ 	/* key cache is cleared by module desetup during next daemon_fork() */
+ 	daemon_remote_clear(daemon->rc);
++#endif
+ 	for(i=0; i<daemon->num; i++)
+ 		worker_delete(daemon->workers[i]);
+ 	free(daemon->workers);
+@@ -764,7 +775,9 @@ daemon_delete(struct daemon* daemon)
+ 	if(!daemon)
+ 		return;
+ 	modstack_desetup(&daemon->mods, daemon->env);
++#ifdef WITH_REMOTE
+ 	daemon_remote_delete(daemon->rc);
++#endif
+ 	for(i = 0; i < daemon->num_ports; i++)
+ 		listening_ports_free(daemon->ports[i]);
+ 	free(daemon->ports);
+diff --git a/daemon/unbound.c b/daemon/unbound.c
+index 2baf4dba..7925d91b 100644
+--- a/daemon/unbound.c
++++ b/daemon/unbound.c
+@@ -490,8 +490,13 @@ perform_setup(struct daemon* daemon, struct config_file* cfg, int debug_mode,
+ 	w_config_adjust_directory(cfg);
+ #endif
+ 
++
++#ifdef WITH_REMOTE
+ 	if(!(daemon->rc = daemon_remote_create(cfg)))
+ 		fatal_exit("could not set up remote-control");
++#else
++	daemon->rc = NULL;
++#endif
+ 
+ 	/* read ssl keys while superuser and outside chroot */
+ #ifdef HAVE_SSL
+diff --git a/daemon/worker.c b/daemon/worker.c
+index 5d2483cd..f3c32279 100644
+--- a/daemon/worker.c
++++ b/daemon/worker.c
+@@ -376,10 +376,12 @@ worker_handle_control_cmd(struct tube* ATTR_UNUSED(tube), uint8_t* msg,
+ 		verbose(VERB_ALGO, "got control cmd stats_noreset");
+ 		server_stats_reply(worker, 0);
+ 		break;
++#ifdef WITH_REMOTE
+ 	case worker_cmd_remote:
+ 		verbose(VERB_ALGO, "got control cmd remote");
+ 		daemon_remote_exec(worker);
+ 		break;
++#endif
+ 	default:
+ 		log_err("bad command %d", (int)cmd);
+ 		break;
+@@ -1731,11 +1733,13 @@ worker_init(struct worker* worker, struct config_file *cfg,
+ 			return 0;
+ 		}
+ #endif /* LIBEVENT_SIGNAL_PROBLEM */
++#ifdef WITH_REMOTE
+ 		if(!daemon_remote_open_accept(worker->daemon->rc, 
+ 			worker->daemon->rc_ports, worker)) {
+ 			worker_delete(worker);
+ 			return 0;
+ 		}
++#endif
+ #ifdef UB_ON_WINDOWS
+ 		wsvc_setup_worker(worker);
+ #endif /* UB_ON_WINDOWS */
+@@ -2007,16 +2011,20 @@ void worker_start_accept(void* arg)
+ {
+ 	struct worker* worker = (struct worker*)arg;
+ 	listen_start_accept(worker->front);
++#ifdef WITH_REMOTE
+ 	if(worker->thread_num == 0)
+ 		daemon_remote_start_accept(worker->daemon->rc);
++#endif
+ }
+ 
+ void worker_stop_accept(void* arg)
+ {
+ 	struct worker* worker = (struct worker*)arg;
+ 	listen_stop_accept(worker->front);
++#ifdef WITH_REMOTE
+ 	if(worker->thread_num == 0)
+ 		daemon_remote_stop_accept(worker->daemon->rc);
++#endif
+ }
+ 
+ /* --- fake callbacks for fptr_wlist to work --- */
+diff --git a/util/fptr_wlist.c b/util/fptr_wlist.c
+index f8dac65c..f98ec5f3 100644
+--- a/util/fptr_wlist.c
++++ b/util/fptr_wlist.c
+@@ -118,8 +118,10 @@ fptr_whitelist_comm_point_raw(comm_point_callback_type *fptr)
+ {
+ 	if(fptr == &tube_handle_listen) return 1;
+ 	else if(fptr == &tube_handle_write) return 1;
++#ifdef WITH_REMOTE
+ 	else if(fptr == &remote_accept_callback) return 1;
+ 	else if(fptr == &remote_control_callback) return 1;
++#endif
+ 	return 0;
+ }
+ 
+@@ -587,7 +589,9 @@ int fptr_whitelist_print_func(void (*fptr)(char*,void*))
+ {
+ 	if(fptr == &config_print_func) return 1;
+ 	else if(fptr == &config_collate_func) return 1;
++#ifdef WITH_REMOTE
+ 	else if(fptr == &remote_get_opt_ssl) return 1;
++#endif
+ 	return 0;
+ }
+ 
+-- 
+2.34.1
+

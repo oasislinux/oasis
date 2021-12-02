@@ -1,0 +1,27 @@
+From ba9aa51428c55309c307c70c02706777a0403f13 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 21 Dec 2021 13:24:55 -0800
+Subject: [PATCH] Remove unintended use of VLA
+
+---
+ services/authzone.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/services/authzone.c b/services/authzone.c
+index e83af533..918874cc 100644
+--- a/services/authzone.c
++++ b/services/authzone.c
+@@ -7553,8 +7553,8 @@ static int zonemd_simple_domain(struct auth_zone* z, int hashalgo,
+ 	struct secalgo_hash* h, struct auth_data* node,
+ 	struct regional* region, struct sldns_buffer* buf, char** reason)
+ {
+-	const size_t rrlistsize = 65536;
+-	struct auth_rrset* rrlist[rrlistsize];
++	struct auth_rrset* rrlist[65536];
++	const size_t rrlistsize = sizeof(rrlist) / sizeof(*rrlist);
+ 	size_t i, rrnum = 0;
+ 	/* see if the domain is out of scope, the zone origin,
+ 	 * that would be omitted */
+-- 
+2.34.1
+

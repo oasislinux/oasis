@@ -1,0 +1,499 @@
+From b69e788f3c4b8c3dbdb8d272630fe0616f43406f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Dec 2021 13:57:48 -0800
+Subject: [PATCH] Allow building daemon without TLS support
+
+---
+ configure                  | 11 ---------
+ configure.ac               | 11 ---------
+ daemon/cachedump.c         |  2 ++
+ daemon/remote.c            | 46 +++++++++++++++++++++++++++++++++-----
+ daemon/remote.h            |  2 --
+ daemon/unbound.c           |  9 +++++---
+ smallapp/unbound-control.c | 44 +++++++++++++++++++++++++++++++-----
+ 7 files changed, 86 insertions(+), 39 deletions(-)
+
+diff --git a/configure b/configure
+index 8b012048..f2ea348e 100755
+--- a/configure
++++ b/configure
+@@ -21739,17 +21739,6 @@ if test "${with_libunbound_only+set}" = set; then :
+ 
+ fi
+ 
+-if test $ALLTARGET = "alltargets"; then
+-	if test $USE_NSS = "yes"; then
+-		as_fn_error $? "--with-nss can only be used in combination with --with-libunbound-only." "$LINENO" 5
+-	fi
+-	if test $USE_NETTLE = "yes"; then
+-		as_fn_error $? "--with-nettle can only be used in combination with --with-libunbound-only." "$LINENO" 5
+-	fi
+-	if test $USE_BEARSSL = "yes"; then
+-		as_fn_error $? "--with-bearssl can only be used in combination with --with-libunbound-only." "$LINENO" 5
+-	fi
+-fi
+ 
+ 
+ 
+diff --git a/configure.ac b/configure.ac
+index 750e9bfd..de6468c8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1955,17 +1955,6 @@ AC_ARG_WITH(libunbound-only, AS_HELP_STRING([--with-libunbound-only],[do not bui
+ 		INSTALLTARGET="install-lib"
+ 	fi
+ ])
+-if test $ALLTARGET = "alltargets"; then
+-	if test $USE_NSS = "yes"; then 
+-		AC_MSG_ERROR([--with-nss can only be used in combination with --with-libunbound-only.])	
+-	fi
+-	if test $USE_NETTLE = "yes"; then
+-		AC_MSG_ERROR([--with-nettle can only be used in combination with --with-libunbound-only.])	
+-	fi
+-	if test $USE_BEARSSL = "yes"; then
+-		AC_MSG_ERROR([--with-bearssl can only be used in combination with --with-libunbound-only.])
+-	fi
+-fi
+ 
+ AC_SUBST(ALLTARGET)
+ AC_SUBST(INSTALLTARGET)
+diff --git a/daemon/cachedump.c b/daemon/cachedump.c
+index b1ce53b5..b5636ca7 100644
+--- a/daemon/cachedump.c
++++ b/daemon/cachedump.c
+@@ -40,7 +40,9 @@
+  * to text format.
+  */
+ #include "config.h"
++#ifdef HAVE_SSL
+ #include <openssl/ssl.h>
++#endif
+ #include "daemon/cachedump.h"
+ #include "daemon/remote.h"
+ #include "daemon/worker.h"
+diff --git a/daemon/remote.c b/daemon/remote.c
+index adf03838..94ab5603 100644
+--- a/daemon/remote.c
++++ b/daemon/remote.c
+@@ -149,6 +149,7 @@ timeval_divide(struct timeval* avg, const struct timeval* sum, long long d)
+ #endif
+ }
+ 
++#ifdef HAVE_SSL
+ static int
+ remote_setup_ctx(struct daemon_remote* rc, struct config_file* cfg)
+ {
+@@ -199,6 +200,7 @@ remote_setup_ctx(struct daemon_remote* rc, struct config_file* cfg)
+ 	free(s_key);
+ 	return 1;
+ }
++#endif
+ 
+ struct daemon_remote*
+ daemon_remote_create(struct config_file* cfg)
+@@ -211,19 +213,25 @@ daemon_remote_create(struct config_file* cfg)
+ 	}
+ 	rc->max_active = 10;
+ 
++#ifdef HAVE_SSL
++	rc->ctx = NULL;
++#endif
+ 	if(!cfg->remote_control_enable) {
+-		rc->ctx = NULL;
+ 		return rc;
+ 	}
+ 	if(options_remote_is_address(cfg) && cfg->control_use_cert) {
++#ifdef HAVE_SSL
+ 		if(!remote_setup_ctx(rc, cfg)) {
+ 			daemon_remote_delete(rc);
+ 			return NULL;
+ 		}
+ 		rc->use_cert = 1;
++#else
++		log_err("unbound built without TLS support");
++		return NULL;
++#endif
+ 	} else {
+ 		struct config_strlist* p;
+-		rc->ctx = NULL;
+ 		rc->use_cert = 0;
+ 		if(!options_remote_is_address(cfg))
+ 		  for(p = cfg->control_ifs.first; p; p = p->next) {
+@@ -245,8 +253,10 @@ void daemon_remote_clear(struct daemon_remote* rc)
+ 	p = rc->busy_list;
+ 	while(p) {
+ 		np = p->next;
++#ifdef HAVE_SSL
+ 		if(p->ssl)
+ 			SSL_free(p->ssl);
++#endif
+ 		comm_point_delete(p->c);
+ 		free(p);
+ 		p = np;
+@@ -260,9 +270,11 @@ void daemon_remote_delete(struct daemon_remote* rc)
+ {
+ 	if(!rc) return;
+ 	daemon_remote_clear(rc);
++#ifdef HAVE_SSL
+ 	if(rc->ctx) {
+ 		SSL_CTX_free(rc->ctx);
+ 	}
++#endif
+ 	free(rc);
+ }
+ 
+@@ -496,6 +508,7 @@ int remote_accept_callback(struct comm_point* c, void* arg, int err,
+ 	comm_point_start_listening(n->c, -1, REMOTE_CONTROL_TCP_TIMEOUT);
+ 	memcpy(&n->c->repinfo.addr, &addr, addrlen);
+ 	n->c->repinfo.addrlen = addrlen;
++#ifdef HAVE_SSL
+ 	if(rc->use_cert) {
+ 		n->shake_state = rc_hs_read;
+ 		n->ssl = SSL_new(rc->ctx);
+@@ -517,6 +530,7 @@ int remote_accept_callback(struct comm_point* c, void* arg, int err,
+ 	} else {
+ 		n->ssl = NULL;
+ 	}
++#endif
+ 
+ 	n->rc = rc;
+ 	n->next = rc->busy_list;
+@@ -548,10 +562,12 @@ clean_point(struct daemon_remote* rc, struct rc_state* s)
+ {
+ 	state_list_remove_elem(&rc->busy_list, s->c);
+ 	rc->active --;
++#ifdef HAVE_SSL
+ 	if(s->ssl) {
+ 		SSL_shutdown(s->ssl);
+ 		SSL_free(s->ssl);
+ 	}
++#endif
+ 	comm_point_delete(s->c);
+ 	free(s);
+ }
+@@ -562,6 +578,7 @@ ssl_print_text(RES* res, const char* text)
+ 	int r;
+ 	if(!res) 
+ 		return 0;
++#ifdef HAVE_SSL
+ 	if(res->ssl) {
+ 		ERR_clear_error();
+ 		if((r=SSL_write(res->ssl, text, (int)strlen(text))) <= 0) {
+@@ -573,7 +590,9 @@ ssl_print_text(RES* res, const char* text)
+ 			log_crypto_err("could not SSL_write");
+ 			return 0;
+ 		}
+-	} else {
++	} else
++#endif
++	{
+ 		size_t at = 0;
+ 		while(at < strlen(text)) {
+ 			ssize_t r = send(res->fd, text+at, strlen(text)-at, 0);
+@@ -618,6 +637,7 @@ ssl_read_line(RES* res, char* buf, size_t max)
+ 	if(!res)
+ 		return 0;
+ 	while(len < max) {
++#ifdef HAVE_SSL
+ 		if(res->ssl) {
+ 			ERR_clear_error();
+ 			if((r=SSL_read(res->ssl, buf+len, 1)) <= 0) {
+@@ -628,7 +648,9 @@ ssl_read_line(RES* res, char* buf, size_t max)
+ 				log_crypto_err("could not SSL_read");
+ 				return 0;
+ 			}
+-		} else {
++		} else
++#endif
++		{
+ 			while(1) {
+ 				ssize_t rr = recv(res->fd, buf+len, 1, 0);
+ 				if(rr <= 0) {
+@@ -3232,6 +3254,7 @@ handle_req(struct daemon_remote* rc, struct rc_state* s, RES* res)
+ 	fd_set_block(s->c->fd);
+ 
+ 	/* try to read magic UBCT[version]_space_ string */
++#ifdef HAVE_SSL
+ 	if(res->ssl) {
+ 		ERR_clear_error();
+ 		if((r=SSL_read(res->ssl, magic, (int)sizeof(magic)-1)) <= 0) {
+@@ -3240,7 +3263,9 @@ handle_req(struct daemon_remote* rc, struct rc_state* s, RES* res)
+ 			log_crypto_err("could not SSL_read");
+ 			return;
+ 		}
+-	} else {
++	} else
++#endif
++	{
+ 		while(1) {
+ 			ssize_t rr = recv(res->fd, magic, sizeof(magic)-1, 0);
+ 			if(rr <= 0) {
+@@ -3278,6 +3303,7 @@ handle_req(struct daemon_remote* rc, struct rc_state* s, RES* res)
+ 	execute_cmd(rc, res, buf, rc->worker);
+ }
+ 
++#ifdef HAVE_SSL
+ /** handle SSL_do_handshake changes to the file descriptor to wait for later */
+ static int
+ remote_handshake_later(struct daemon_remote* rc, struct rc_state* s,
+@@ -3309,6 +3335,7 @@ remote_handshake_later(struct daemon_remote* rc, struct rc_state* s,
+ 	}
+ 	return 0;
+ }
++#endif
+ 
+ int remote_control_callback(struct comm_point* c, void* arg, int err, 
+ 	struct comm_reply* ATTR_UNUSED(rep))
+@@ -3323,6 +3350,7 @@ int remote_control_callback(struct comm_point* c, void* arg, int err,
+ 		clean_point(rc, s);
+ 		return 0;
+ 	}
++#ifdef HAVE_SSL
+ 	if(s->ssl) {
+ 		/* (continue to) setup the SSL connection */
+ 		ERR_clear_error();
+@@ -3333,11 +3361,14 @@ int remote_control_callback(struct comm_point* c, void* arg, int err,
+ 		}
+ 		s->shake_state = rc_none;
+ 	}
++#endif
+ 
+ 	/* once handshake has completed, check authentication */
+ 	if (!rc->use_cert) {
+ 		verbose(VERB_ALGO, "unauthenticated remote control connection");
+-	} else if(SSL_get_verify_result(s->ssl) == X509_V_OK) {
++	}
++#ifdef HAVE_SSL
++	else if(SSL_get_verify_result(s->ssl) == X509_V_OK) {
+ #ifdef HAVE_SSL_GET1_PEER_CERTIFICATE
+ 		X509* x = SSL_get1_peer_certificate(s->ssl);
+ #else
+@@ -3357,9 +3388,12 @@ int remote_control_callback(struct comm_point* c, void* arg, int err,
+ 		clean_point(rc, s);
+ 		return 0;
+ 	}
++#endif
+ 
+ 	/* if OK start to actually handle the request */
++#ifdef HAVE_SSL
+ 	res.ssl = s->ssl;
++#endif
+ 	res.fd = c->fd;
+ 	handle_req(rc, s, &res);
+ 
+diff --git a/daemon/remote.h b/daemon/remote.h
+index 217ea21e..e2972779 100644
+--- a/daemon/remote.h
++++ b/daemon/remote.h
+@@ -174,7 +174,6 @@ void daemon_remote_start_accept(struct daemon_remote* rc);
+  */
+ void daemon_remote_exec(struct worker* worker);
+ 
+-#ifdef HAVE_SSL
+ /** 
+  * Print fixed line of text over ssl connection in blocking mode
+  * @param ssl: print to
+@@ -201,6 +200,5 @@ int ssl_printf(RES* ssl, const char* format, ...)
+  * @return false on connection failure.
+  */
+ int ssl_read_line(RES* ssl, char* buf, size_t max);
+-#endif /* HAVE_SSL */
+ 
+ #endif /* DAEMON_REMOTE_H */
+diff --git a/daemon/unbound.c b/daemon/unbound.c
+index 1a31bb3e..2baf4dba 100644
+--- a/daemon/unbound.c
++++ b/daemon/unbound.c
+@@ -60,14 +60,16 @@
+ #include "util/ub_event.h"
+ #include <signal.h>
+ #include <fcntl.h>
++#ifdef HAVE_SSL
+ #include <openssl/crypto.h>
++#include <openssl/ssl.h>
++#endif
+ #ifdef HAVE_PWD_H
+ #include <pwd.h>
+ #endif
+ #ifdef HAVE_GRP_H
+ #include <grp.h>
+ #endif
+-#include <openssl/ssl.h>
+ 
+ #ifndef S_SPLINT_S
+ /* splint chokes on this system header file */
+@@ -488,10 +490,11 @@ perform_setup(struct daemon* daemon, struct config_file* cfg, int debug_mode,
+ 	w_config_adjust_directory(cfg);
+ #endif
+ 
+-	/* read ssl keys while superuser and outside chroot */
+-#ifdef HAVE_SSL
+ 	if(!(daemon->rc = daemon_remote_create(cfg)))
+ 		fatal_exit("could not set up remote-control");
++
++	/* read ssl keys while superuser and outside chroot */
++#ifdef HAVE_SSL
+ 	if(cfg->ssl_service_key && cfg->ssl_service_key[0]) {
+ 		if(!(daemon->listen_sslctx = listen_sslctx_create(
+ 			cfg->ssl_service_key, cfg->ssl_service_pem, NULL)))
+diff --git a/smallapp/unbound-control.c b/smallapp/unbound-control.c
+index c7c38276..fea6a9f7 100644
+--- a/smallapp/unbound-control.c
++++ b/smallapp/unbound-control.c
+@@ -45,6 +45,7 @@
+ #ifdef HAVE_GETOPT_H
+ #include <getopt.h>
+ #endif
++#ifdef HAVE_SSL
+ #ifdef HAVE_OPENSSL_SSL_H
+ #include <openssl/ssl.h>
+ #endif
+@@ -54,6 +55,9 @@
+ #ifdef HAVE_OPENSSL_RAND_H
+ #include <openssl/rand.h>
+ #endif
++#else
++typedef void *SSL;
++#endif
+ #include "util/log.h"
+ #include "util/config_file.h"
+ #include "util/locks.h"
+@@ -486,6 +490,7 @@ static void print_stats_shm(const char* cfgfile)
+ #endif /* HAVE_SHMGET */
+ }
+ 
++#ifdef HAVE_SSL
+ /** exit with ssl error */
+ static void ssl_err(const char* s)
+ {
+@@ -515,8 +520,6 @@ setup_ctx(struct config_file* cfg)
+ 	char* s_cert=NULL, *c_key=NULL, *c_cert=NULL;
+ 	SSL_CTX* ctx;
+ 
+-	if(!(options_remote_is_address(cfg) && cfg->control_use_cert))
+-		return NULL;
+ 	s_cert = fname_after_chroot(cfg->server_cert_file, cfg, 1);
+ 	c_key = fname_after_chroot(cfg->control_key_file, cfg, 1);
+ 	c_cert = fname_after_chroot(cfg->control_cert_file, cfg, 1);
+@@ -555,6 +558,7 @@ setup_ctx(struct config_file* cfg)
+ 	free(c_cert);
+ 	return ctx;
+ }
++#endif
+ 
+ /** check connect error */
+ static void
+@@ -723,6 +727,7 @@ contact_server(const char* svr, struct config_file* cfg, int statuscmd)
+ 	return fd;
+ }
+ 
++#ifdef HAVE_SSL
+ /** setup SSL on the connection */
+ static SSL*
+ setup_ssl(SSL_CTX* ctx, int fd)
+@@ -759,11 +764,13 @@ setup_ssl(SSL_CTX* ctx, int fd)
+ 
+ 	return ssl;
+ }
++#endif
+ 
+ /** read from ssl or fd, fatalexit on error, 0 EOF, 1 success */
+ static int
+ remote_read(SSL* ssl, int fd, char* buf, size_t len)
+ {
++#ifdef HAVE_SSL
+ 	if(ssl) {
+ 		int r;
+ 		ERR_clear_error();
+@@ -775,7 +782,9 @@ remote_read(SSL* ssl, int fd, char* buf, size_t len)
+ 			ssl_err("could not SSL_read");
+ 		}
+ 		buf[r] = 0;
+-	} else {
++	} else
++#endif
++	{
+ 		ssize_t rr = recv(fd, buf, len-1, 0);
+ 		if(rr <= 0) {
+ 			if(rr == 0) {
+@@ -793,10 +802,13 @@ remote_read(SSL* ssl, int fd, char* buf, size_t len)
+ static void
+ remote_write(SSL* ssl, int fd, const char* buf, size_t len)
+ {
++#ifdef HAVE_SSL
+ 	if(ssl) {
+ 		if(SSL_write(ssl, buf, (int)len) <= 0)
+ 			ssl_err("could not SSL_write");
+-	} else {
++	} else
++#endif
++	{
+ 		if(send(fd, buf, len, 0) < (ssize_t)len) {
+ 			fatal_exit("could not send: %s", sock_strerror(errno));
+ 		}
+@@ -894,7 +906,9 @@ go(const char* cfgfile, char* svr, int quiet, int argc, char* argv[])
+ {
+ 	struct config_file* cfg;
+ 	int fd, ret;
++#ifdef HAVE_SSL
+ 	SSL_CTX* ctx;
++#endif
+ 	SSL* ssl;
+ 
+ 	/* read config */
+@@ -907,18 +921,34 @@ go(const char* cfgfile, char* svr, int quiet, int argc, char* argv[])
+ #ifdef UB_ON_WINDOWS
+ 	w_config_adjust_directory(cfg);
+ #endif
+-	ctx = setup_ctx(cfg);
++	if(options_remote_is_address(cfg) && cfg->control_use_cert) {
++#ifdef HAVE_SSL
++		ctx = setup_ctx(cfg);
++#else
++		fatal_exit("unbound built without TLS support");
++#endif
++	} else {
++#ifdef HAVE_SSL
++		ctx = NULL;
++#endif
++	}
+ 
+ 	/* contact server */
+ 	fd = contact_server(svr, cfg, argc>0&&strcmp(argv[0],"status")==0);
++#ifdef HAVE_SSL
+ 	ssl = setup_ssl(ctx, fd);
++#else
++	ssl = NULL;
++#endif
+ 
+ 	/* send command */
+ 	ret = go_cmd(ssl, fd, quiet, argc, argv);
+ 
++#ifdef HAVE_SSL
+ 	if(ssl) SSL_free(ssl);
+-	sock_close(fd);
+ 	if(ctx) SSL_CTX_free(ctx);
++#endif
++	sock_close(fd);
+ 	config_delete(cfg);
+ 	return ret;
+ }
+@@ -997,6 +1027,7 @@ int main(int argc, char* argv[])
+ 		fatal_exit("WSAStartup failed: %s", wsa_strerror(r));
+ #endif
+ 
++#ifdef HAVE_SSL
+ #ifdef HAVE_ERR_LOAD_CRYPTO_STRINGS
+ 	ERR_load_crypto_strings();
+ #endif
+@@ -1031,6 +1062,7 @@ int main(int argc, char* argv[])
+ 		RAND_seed(buf, 256);
+ 		log_warn("no entropy, seeding openssl PRNG with time\n");
+ 	}
++#endif
+ 
+ 	ret = go(cfgfile, svr, quiet, argc, argv);
+ 
+-- 
+2.34.1
+

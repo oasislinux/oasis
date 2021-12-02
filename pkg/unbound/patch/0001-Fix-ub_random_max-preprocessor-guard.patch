@@ -1,0 +1,27 @@
+From b9f80118e406d60e0e41b2f6b2549a8502fd1886 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Dec 2021 12:42:54 -0800
+Subject: [PATCH] Fix ub_random_max preprocessor guard
+
+|| has lower precedence than &&, so if HAVE_NETTLE and HAVE_LIBBSD
+are both defined, ub_random_max would get defined twice.
+---
+ util/random.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/util/random.c b/util/random.c
+index 6eb102c6..f7bb0a6f 100644
+--- a/util/random.c
++++ b/util/random.c
+@@ -186,7 +186,7 @@ long int ub_random(struct ub_randstate* s)
+ #endif /* HAVE_SSL or HAVE_LIBBSD or HAVE_NSS or HAVE_NETTLE */
+ 
+ 
+-#if defined(HAVE_NSS) || defined(HAVE_NETTLE) && !defined(HAVE_LIBBSD)
++#if (defined(HAVE_NSS) || defined(HAVE_NETTLE)) && !defined(HAVE_LIBBSD)
+ long int
+ ub_random_max(struct ub_randstate* state, long int x)
+ {
+-- 
+2.34.0
+
