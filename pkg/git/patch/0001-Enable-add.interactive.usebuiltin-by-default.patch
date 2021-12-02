@@ -1,4 +1,4 @@
-From dfb7c96e207a1c6d298d417c2e0b8fd79821d8d3 Mon Sep 17 00:00:00 2001
+From 2dd5d11805fc486ea2d6b83cba568a1282b45286 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 27 Jun 2020 01:09:58 -0700
 Subject: [PATCH] Enable add.interactive.usebuiltin by default
@@ -20,5 +20,5 @@ index ef6b619c45..c2b326abfd 100644
  					 &use_builtin_add_i))
  			; /* ok */
 -- 
-2.32.0
+2.34.0
 

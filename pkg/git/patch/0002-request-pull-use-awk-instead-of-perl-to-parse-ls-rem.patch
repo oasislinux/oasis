@@ -1,4 +1,4 @@
-From 7cb4481678c7cffd129b85e39c5a080055587372 Mon Sep 17 00:00:00 2001
+From 1b87b640fac0fa52de5da8d2c57d038cc0cef5b1 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 16 Mar 2021 17:21:31 -0700
 Subject: [PATCH] request-pull: use awk instead of perl to parse ls-remote
@@ -80,5 +80,5 @@ index 2d0e44656c..0e3cf644e0 100755
  ref=$3
  
 -- 
-2.30.1
+2.34.0
 
