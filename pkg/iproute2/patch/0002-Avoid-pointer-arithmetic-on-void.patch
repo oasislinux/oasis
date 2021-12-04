@@ -1,4 +1,4 @@
-From 3d774f0cd909b05fa445e9033c2f9762d26bb42a Mon Sep 17 00:00:00 2001
+From 182b5b66b931b6aca9e546f758be6cd73ec50d61 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -7,6 +7,7 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  include/libnetlink.h |  4 ++--
  ip/ipfou.c           |  2 +-
  ip/ipila.c           |  2 +-
+ ip/ipioam6.c         |  3 ++-
  ip/ipl2tp.c          |  2 +-
  ip/ipmacsec.c        |  2 +-
  ip/ipmptcp.c         |  6 +++---
@@ -14,13 +15,13 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  ip/tcp_metrics.c     |  2 +-
  lib/libnetlink.c     | 12 ++++++------
  lib/utils.c          |  2 +-
- 10 files changed, 18 insertions(+), 18 deletions(-)
+ 11 files changed, 20 insertions(+), 19 deletions(-)
 
 diff --git a/include/libnetlink.h b/include/libnetlink.h
-index 6bff6bae..ca09dbc8 100644
+index 9e4cc101..6925de43 100644
 --- a/include/libnetlink.h
 +++ b/include/libnetlink.h
-@@ -174,7 +174,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
+@@ -206,7 +206,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type);
  int rta_nest_end(struct rtattr *rta, struct rtattr *nest);
  
  #define RTA_TAIL(rta) \
@@ -29,7 +30,7 @@ index 6bff6bae..ca09dbc8 100644
  				    RTA_ALIGN((rta)->rta_len)))
  
  #define parse_rtattr_nested(tb, max, rta) \
-@@ -238,7 +238,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
+@@ -270,7 +270,7 @@ int rtnl_from_file(FILE *, rtnl_listen_filter_t handler,
  		   void *jarg);
  
  #define NLMSG_TAIL(nmsg) \
@@ -64,6 +65,20 @@ index 475c35b5..0540d1d9 100644
  
  	open_json_object(NULL);
  	print_ila_locid("locator_match", ILA_ATTR_LOCATOR_MATCH, tb);
+diff --git a/ip/ipioam6.c b/ip/ipioam6.c
+index b63d7d5c..c7c9aceb 100644
+--- a/ip/ipioam6.c
++++ b/ip/ipioam6.c
+@@ -110,7 +110,8 @@ static int process_msg(struct nlmsghdr *n, void *arg)
+ 		return -1;
+ 
+ 	ghdr = NLMSG_DATA(n);
+-	parse_rtattr(attrs, IOAM6_ATTR_MAX, (void *)ghdr + GENL_HDRLEN, len);
++	parse_rtattr(attrs, IOAM6_ATTR_MAX,
++		     (struct rtattr *)((char *)ghdr + GENL_HDRLEN), len);
+ 
+ 	open_json_object(NULL);
+ 	switch (ghdr->cmd) {
 diff --git a/ip/ipl2tp.c b/ip/ipl2tp.c
 index f090390f..edbe0f2f 100644
 --- a/ip/ipl2tp.c
@@ -91,10 +106,10 @@ index bf48e8b5..eecb7e48 100644
  		fprintf(stderr, "incomplete dump message\n");
  		return -1;
 diff --git a/ip/ipmptcp.c b/ip/ipmptcp.c
-index 5f490f00..f53dcab8 100644
+index fd042da8..46227e27 100644
 --- a/ip/ipmptcp.c
 +++ b/ip/ipmptcp.c
-@@ -247,7 +247,7 @@ static int print_mptcp_addr(struct nlmsghdr *n, void *arg)
+@@ -250,7 +250,7 @@ static int print_mptcp_addr(struct nlmsghdr *n, void *arg)
  		return -1;
  
  	ghdr = NLMSG_DATA(n);
@@ -103,7 +118,7 @@ index 5f490f00..f53dcab8 100644
  			   len, NLA_F_NESTED);
  	addrinfo = tb[MPTCP_PM_ATTR_ADDR];
  	if (!addrinfo)
-@@ -358,7 +358,7 @@ static int print_mptcp_limit(struct nlmsghdr *n, void *arg)
+@@ -361,7 +361,7 @@ static int print_mptcp_limit(struct nlmsghdr *n, void *arg)
  		return -1;
  
  	ghdr = NLMSG_DATA(n);
@@ -112,7 +127,7 @@ index 5f490f00..f53dcab8 100644
  
  	open_json_object(NULL);
  	if (tb[MPTCP_PM_ATTR_RCV_ADD_ADDRS]) {
-@@ -447,7 +447,7 @@ static int mptcp_monitor_msg(struct rtnl_ctrl_data *ctrl,
+@@ -450,7 +450,7 @@ static int mptcp_monitor_msg(struct rtnl_ctrl_data *ctrl,
  
  	printf("[%14s]", event_to_str[ghdr->cmd]);
  
@@ -122,7 +137,7 @@ index 5f490f00..f53dcab8 100644
  	printf(" token=%08x", rta_getattr_u32(tb[MPTCP_ATTR_TOKEN]));
  
 diff --git a/ip/ipseg6.c b/ip/ipseg6.c
-index 56a76996..1c3c3bf5 100644
+index 4f541ae4..b9baf38c 100644
 --- a/ip/ipseg6.c
 +++ b/ip/ipseg6.c
 @@ -115,7 +115,7 @@ static int process_msg(struct nlmsghdr *n, void *arg)
@@ -148,10 +163,10 @@ index acbd745a..051ddc63 100644
  
  	if (attrs[TCP_METRICS_ATTR_ADDR_IPV4]) {
 diff --git a/lib/libnetlink.c b/lib/libnetlink.c
-index 2f2cc1fe..05006fdc 100644
+index 7e977a67..7068750f 100644
 --- a/lib/libnetlink.c
 +++ b/lib/libnetlink.c
-@@ -1328,7 +1328,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
+@@ -1365,7 +1365,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
  	}
  
  	memcpy(NLMSG_TAIL(n), data, len);
@@ -160,7 +175,7 @@ index 2f2cc1fe..05006fdc 100644
  	n->nlmsg_len = NLMSG_ALIGN(n->nlmsg_len) + NLMSG_ALIGN(len);
  	return 0;
  }
-@@ -1343,7 +1343,7 @@ struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type)
+@@ -1380,7 +1380,7 @@ struct rtattr *addattr_nest(struct nlmsghdr *n, int maxlen, int type)
  
  int addattr_nest_end(struct nlmsghdr *n, struct rtattr *nest)
  {
@@ -169,7 +184,7 @@ index 2f2cc1fe..05006fdc 100644
  	return n->nlmsg_len;
  }
  
-@@ -1359,9 +1359,9 @@ struct rtattr *addattr_nest_compat(struct nlmsghdr *n, int maxlen, int type,
+@@ -1396,9 +1396,9 @@ struct rtattr *addattr_nest_compat(struct nlmsghdr *n, int maxlen, int type,
  
  int addattr_nest_compat_end(struct nlmsghdr *n, struct rtattr *start)
  {
@@ -181,7 +196,7 @@ index 2f2cc1fe..05006fdc 100644
  	addattr_nest_end(n, nest);
  	return n->nlmsg_len;
  }
-@@ -1433,7 +1433,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type)
+@@ -1470,7 +1470,7 @@ struct rtattr *rta_nest(struct rtattr *rta, int maxlen, int type)
  
  int rta_nest_end(struct rtattr *rta, struct rtattr *nest)
  {
@@ -190,7 +205,7 @@ index 2f2cc1fe..05006fdc 100644
  
  	return rta->rta_len;
  }
-@@ -1482,7 +1482,7 @@ int __parse_rtattr_nested_compat(struct rtattr *tb[], int max,
+@@ -1519,7 +1519,7 @@ int __parse_rtattr_nested_compat(struct rtattr *tb[], int max,
  	if (RTA_PAYLOAD(rta) < len)
  		return -1;
  	if (RTA_PAYLOAD(rta) >= RTA_ALIGN(len) + sizeof(struct rtattr)) {
@@ -200,10 +215,10 @@ index 2f2cc1fe..05006fdc 100644
  	}
  	memset(tb, 0, sizeof(struct rtattr *) * (max + 1));
 diff --git a/lib/utils.c b/lib/utils.c
-index 93ae0c55..33cf199e 100644
+index 53d31006..0f683f9c 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
-@@ -1532,7 +1532,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
+@@ -1514,7 +1514,7 @@ int get_rtnl_link_stats_rta(struct rtnl_link_stats64 *stats64,
  
  	len = RTA_PAYLOAD(rta);
  	if (len < size)
@@ -213,5 +228,5 @@ index 93ae0c55..33cf199e 100644
  		len = size;
  
 -- 
-2.32.0
+2.34.0
 

@@ -1,17 +1,17 @@
-From 5cdc7a38a66b85fde75b24fc1e78c31fe6d095ca Mon Sep 17 00:00:00 2001
+From 3ee799ca4d64cc852b0443d7cb62e659ec24f25a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 16:03:55 -0700
 Subject: [PATCH] ip: Fix get_link_kind when linked statically
 
 ---
- ip/iplink.c | 96 +++++++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 86 insertions(+), 10 deletions(-)
+ ip/iplink.c | 100 ++++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 90 insertions(+), 10 deletions(-)
 
 diff --git a/ip/iplink.c b/ip/iplink.c
-index 89a7da63..5457e638 100644
+index 3b146881..f2e18c0b 100644
 --- a/ip/iplink.c
 +++ b/ip/iplink.c
-@@ -149,7 +149,6 @@ static int on_off(const char *msg, const char *realval)
+@@ -150,7 +150,6 @@ static int on_off(const char *msg, const char *realval)
  	return -1;
  }
  
@@ -19,12 +19,13 @@ index 89a7da63..5457e638 100644
  static struct link_util *linkutil_list;
  
  struct link_util *get_link_kind(const char *id)
-@@ -158,21 +157,98 @@ struct link_util *get_link_kind(const char *id)
+@@ -159,21 +158,102 @@ struct link_util *get_link_kind(const char *id)
  	char buf[256];
  	struct link_util *l;
  
 +	if (linkutil_list == NULL) {
 +		// <sed -n 's/^\(struct link_util .*_link_util\) = {/		extern \1;/p' ip/*.c
++		extern struct link_util bareudp_link_util;
 +		extern struct link_util bond_link_util;
 +		extern struct link_util bond_slave_link_util;
 +		extern struct link_util bridge_link_util;
@@ -49,6 +50,7 @@ index 89a7da63..5457e638 100644
 +		extern struct link_util vrf_slave_link_util;
 +		extern struct link_util vxcan_link_util;
 +		extern struct link_util vxlan_link_util;
++		extern struct link_util wwan_link_util;
 +		extern struct link_util macsec_link_util;
 +		extern struct link_util tun_link_util;
 +		extern struct link_util gre_link_util;
@@ -66,6 +68,7 @@ index 89a7da63..5457e638 100644
 +		extern struct link_util xfrm_link_util;
 +
 +		// <sed -n 's/^struct link_util \(.*_link_util\) = {/		\1.next = linkutil_list, linkutil_list = \&\1;/p' ip/*.c
++		bareudp_link_util.next = linkutil_list, linkutil_list = &bareudp_link_util;
 +		bond_link_util.next = linkutil_list, linkutil_list = &bond_link_util;
 +		bond_slave_link_util.next = linkutil_list, linkutil_list = &bond_slave_link_util;
 +		bridge_link_util.next = linkutil_list, linkutil_list = &bridge_link_util;
@@ -90,6 +93,7 @@ index 89a7da63..5457e638 100644
 +		vrf_slave_link_util.next = linkutil_list, linkutil_list = &vrf_slave_link_util;
 +		vxcan_link_util.next = linkutil_list, linkutil_list = &vxcan_link_util;
 +		vxlan_link_util.next = linkutil_list, linkutil_list = &vxlan_link_util;
++		wwan_link_util.next = linkutil_list, linkutil_list = &wwan_link_util;
 +		macsec_link_util.next = linkutil_list, linkutil_list = &macsec_link_util;
 +		tun_link_util.next = linkutil_list, linkutil_list = &tun_link_util;
 +		gre_link_util.next = linkutil_list, linkutil_list = &gre_link_util;
@@ -128,5 +132,5 @@ index 89a7da63..5457e638 100644
  	snprintf(buf, sizeof(buf), "%s_link_util", id);
  	l = dlsym(dlh, buf);
 -- 
-2.31.1
+2.34.0
 

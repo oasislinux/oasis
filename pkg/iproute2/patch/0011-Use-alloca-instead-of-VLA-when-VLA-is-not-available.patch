@@ -1,4 +1,4 @@
-From 17d42e4eb3606a22523b3d2bd0a5b9701554025d Mon Sep 17 00:00:00 2001
+From 699a445be9c703e33d86073c0fd6a60ea04a73cb Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 16:48:56 -0700
 Subject: [PATCH] Use alloca instead of VLA when VLA is not available
@@ -8,10 +8,10 @@ Subject: [PATCH] Use alloca instead of VLA when VLA is not available
  1 file changed, 12 insertions(+), 2 deletions(-)
 
 diff --git a/ip/ipaddress.c b/ip/ipaddress.c
-index 7c732f9a..6ca3ee21 100644
+index 0cd48fbe..8a8fa9d6 100644
 --- a/ip/ipaddress.c
 +++ b/ip/ipaddress.c
-@@ -244,7 +244,12 @@ static void print_linktype(FILE *fp, struct rtattr *tb)
+@@ -245,7 +245,12 @@ static void print_linktype(FILE *fp, struct rtattr *tb)
  
  		lu = get_link_kind(kind);
  		if (lu && lu->print_opt) {
@@ -25,7 +25,7 @@ index 7c732f9a..6ca3ee21 100644
  
  			if (linkinfo[IFLA_INFO_DATA]) {
  				parse_rtattr_nested(attr, lu->maxattr,
-@@ -278,7 +283,12 @@ static void print_linktype(FILE *fp, struct rtattr *tb)
+@@ -279,7 +284,12 @@ static void print_linktype(FILE *fp, struct rtattr *tb)
  
  		slave_lu = get_link_kind(slave);
  		if (slave_lu && slave_lu->print_opt) {
@@ -40,5 +40,5 @@ index 7c732f9a..6ca3ee21 100644
  			if (linkinfo[IFLA_INFO_SLAVE_DATA]) {
  				parse_rtattr_nested(attr, slave_lu->maxattr,
 -- 
-2.31.1
+2.34.0
 

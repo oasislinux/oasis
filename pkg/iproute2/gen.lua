@@ -5,6 +5,7 @@ cflags{
 	'-Wno-cpp',  -- we don't have libmnl
 	'-D _GNU_SOURCE',
 	'-D HAVE_SETNS',
+	'-D HAVE_HANDLE_AT',
 	[[-D 'NETNS_RUN_DIR="/run/netns"']],
 	'-I $srcdir/include',
 	'-I $srcdir/include/uapi',
@@ -38,7 +39,7 @@ exe('bin/ip', [[ip/(
 	iplink_bridge.c iplink_bridge_slave.c ipfou.c iplink_ipvlan.c
 	iplink_geneve.c iplink_vrf.c iproute_lwtunnel.c ipmacsec.c ipila.c
 	ipvrf.c iplink_xstats.c ipseg6.c iplink_netdevsim.c iplink_rmnet.c
-	ipnexthop.c ipmptcp.c iplink_bareudp.c
+	ipnexthop.c ipmptcp.c iplink_bareudp.c iplink_wwan.c ipioam6.c
 ) libnetlink.a]])
 file('bin/ip', '755', '$outdir/bin/ip')
 

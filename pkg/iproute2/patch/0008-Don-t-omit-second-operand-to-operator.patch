@@ -1,4 +1,4 @@
-From 63019ede32dc511f239fc73e36ce897ae1207cc4 Mon Sep 17 00:00:00 2001
+From 572e84091a11295ad0ba8a7722016306ae510763 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:40 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -13,10 +13,10 @@ Subject: [PATCH] Don't omit second operand to '?' operator
  6 files changed, 33 insertions(+), 15 deletions(-)
 
 diff --git a/ip/iproute_lwtunnel.c b/ip/iproute_lwtunnel.c
-index 566fc7ea..df9df4ca 100644
+index 218d5086..937c3278 100644
 --- a/ip/iproute_lwtunnel.c
 +++ b/ip/iproute_lwtunnel.c
-@@ -227,7 +227,7 @@ static const char *format_action_type(int action)
+@@ -253,7 +253,7 @@ static const char *format_action_type(int action)
  	if (action < 0 || action > SEG6_LOCAL_ACTION_MAX)
  		return "<invalid>";
  
@@ -25,7 +25,7 @@ index 566fc7ea..df9df4ca 100644
  }
  
  static int read_action_type(const char *name)
-@@ -258,7 +258,7 @@ static void print_encap_bpf_prog(FILE *fp, struct rtattr *encap,
+@@ -284,7 +284,7 @@ static void print_encap_bpf_prog(FILE *fp, struct rtattr *encap,
  
  	if (is_json_context())
  		print_string(PRINT_JSON, str, NULL,
@@ -35,7 +35,7 @@ index 566fc7ea..df9df4ca 100644
  		fprintf(fp, "%s ", str);
  		if (progname)
 diff --git a/ip/iptunnel.c b/ip/iptunnel.c
-index b38265d4..3433b588 100644
+index c6c99118..cc5cbbc7 100644
 --- a/ip/iptunnel.c
 +++ b/ip/iptunnel.c
 @@ -279,11 +279,16 @@ static int do_add(int cmd, int argc, char **argv)
@@ -57,10 +57,10 @@ index b38265d4..3433b588 100644
  
  static void print_tunnel(const void *t)
 diff --git a/ip/iptuntap.c b/ip/iptuntap.c
-index d00ecdf4..54fd7448 100644
+index f3167858..5095e0f8 100644
 --- a/ip/iptuntap.c
 +++ b/ip/iptuntap.c
-@@ -319,7 +319,7 @@ static void show_processes(const char *name)
+@@ -323,7 +323,7 @@ static void show_processes(const char *name)
  				char *pname = get_task_name(pid);
  
  				print_string(PRINT_ANY, "name",
@@ -70,10 +70,10 @@ index d00ecdf4..54fd7448 100644
  				print_uint(PRINT_ANY, "pid",
  					   "(%d)", pid);
 diff --git a/lib/bpf_legacy.c b/lib/bpf_legacy.c
-index 398540d1..ea5c54f9 100644
+index d01c3b89..023a096b 100644
 --- a/lib/bpf_legacy.c
 +++ b/lib/bpf_legacy.c
-@@ -765,7 +765,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
+@@ -768,7 +768,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
  		mnt = bpf_find_mntpt("bpf", BPF_FS_MAGIC, bpf_tmp,
  				     sizeof(bpf_tmp), bpf_known_mnts);
  	if (!mnt) {
@@ -83,10 +83,10 @@ index 398540d1..ea5c54f9 100644
  		if (!ret)
  			ret = bpf_mnt_fs(mnt);
 diff --git a/lib/utils.c b/lib/utils.c
-index 33cf199e..bb2e223b 100644
+index 0f683f9c..e862e1d4 100644
 --- a/lib/utils.c
 +++ b/lib/utils.c
-@@ -943,8 +943,10 @@ int __get_hz(void)
+@@ -929,8 +929,10 @@ int __get_hz(void)
  	int hz = 0;
  	FILE *fp;
  
@@ -99,7 +99,7 @@ index 33cf199e..bb2e223b 100644
  
  	if (getenv("PROC_NET_PSCHED"))
  		snprintf(name, sizeof(name)-1,
-@@ -965,6 +967,7 @@ int __get_hz(void)
+@@ -951,6 +953,7 @@ int __get_hz(void)
  				hz = denom;
  		fclose(fp);
  	}
@@ -108,7 +108,7 @@ index 33cf199e..bb2e223b 100644
  		return hz;
  	return HZ;
 diff --git a/misc/ss.c b/misc/ss.c
-index e9c29d73..3c99a5f2 100644
+index eda95552..202e5385 100644
 --- a/misc/ss.c
 +++ b/misc/ss.c
 @@ -482,7 +482,9 @@ static FILE *generic_proc_open(const char *env, const char *name)
@@ -197,5 +197,5 @@ index e9c29d73..3c99a5f2 100644
  	}
  
 -- 
-2.32.0
+2.34.0
 

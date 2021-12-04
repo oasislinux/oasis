@@ -1,0 +1,25 @@
+From 32f3e01aeae44068c040bb999f8e7ece8609dba5 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 4 Dec 2021 00:50:36 -0800
+Subject: [PATCH] Remove flexible array member in embedded struct
+
+---
+ include/uapi/linux/sctp.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/sctp.h b/include/uapi/linux/sctp.h
+index 53fdfafc..3a98a867 100644
+--- a/include/uapi/linux/sctp.h
++++ b/include/uapi/linux/sctp.h
+@@ -577,7 +577,7 @@ struct sctp_stream_reset_event {
+ 	__u16 strreset_flags;
+ 	__u32 strreset_length;
+ 	sctp_assoc_t strreset_assoc_id;
+-	__u16 strreset_stream_list[];
++	__u16 strreset_stream_list[0];
+ };
+ 
+ #define SCTP_ASSOC_RESET_DENIED		0x0004
+-- 
+2.34.0
+

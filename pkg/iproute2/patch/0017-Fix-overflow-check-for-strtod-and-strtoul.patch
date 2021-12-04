@@ -1,0 +1,45 @@
+From 203c2dcd7742802a8b7c21ab94251787377556bb Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 2 Dec 2021 16:28:42 -0800
+Subject: [PATCH] Fix overflow check for strtod and strtoul
+
+---
+ lib/utils.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/lib/utils.c b/lib/utils.c
+index e862e1d4..d5c2f4e3 100644
+--- a/lib/utils.c
++++ b/lib/utils.c
+@@ -221,6 +221,7 @@ int get_time_rtt(unsigned int *val, const char *arg, int *raw)
+ 	char *p;
+ 
+ 	if (strchr(arg, '.') != NULL) {
++		errno = 0;
+ 		t = strtod(arg, &p);
+ 		if (t < 0.0)
+ 			return -1;
+@@ -230,9 +231,10 @@ int get_time_rtt(unsigned int *val, const char *arg, int *raw)
+ 			return -1;
+ 
+ 		/* over/underflow */
+-		if ((t == HUGE_VALF || t == HUGE_VALL) && errno == ERANGE)
++		if (errno == ERANGE)
+ 			return -1;
+ 	} else {
++		errno = 0;
+ 		res = strtoul(arg, &p, 0);
+ 
+ 		/* empty string? */
+@@ -240,7 +242,7 @@ int get_time_rtt(unsigned int *val, const char *arg, int *raw)
+ 			return -1;
+ 
+ 		/* overflow */
+-		if (res == ULONG_MAX && errno == ERANGE)
++		if (errno == ERANGE)
+ 			return -1;
+ 
+ 		t = (double)res;
+-- 
+2.34.0
+
