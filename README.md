@@ -148,7 +148,7 @@ tools whenever possible:
 - perp and sinit instead of sysvinit or systemd
 - netsurf instead of chromium or firefox
 - samurai instead of ninja
-- velox instead of Xorg
+- wayland instead of Xorg
 - netbsd-curses instead of ncurses
 
 These packages are grouped into logical [sets], and the full list
