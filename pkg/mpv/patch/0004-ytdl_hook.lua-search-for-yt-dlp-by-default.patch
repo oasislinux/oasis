@@ -1,0 +1,106 @@
+From 050f86d1aafff0059d7254f356275fa33e123d60 Mon Sep 17 00:00:00 2001
+From: Guido Cella <guido@guidocella.xyz>
+Date: Fri, 17 Sep 2021 09:37:09 +0200
+Subject: [PATCH] ytdl_hook.lua: search for yt-dlp by default
+
+Because youtube-dl is inactive and the yt-dlp fork is becoming more
+popular, make mpv use yt-dlp without any extra configuration.
+
+yt-dlp is ordered before youtube-dl because it's more obscure, so users
+who have yt-dlp installed are more likely to want to use it rather than
+youtube-dl.
+
+Fixes #9208.
+---
+ player/lua/ytdl_hook.lua | 53 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 39 insertions(+), 14 deletions(-)
+
+diff --git a/player/lua/ytdl_hook.lua b/player/lua/ytdl_hook.lua
+index 7e77eb01ba..8d841f24d5 100644
+--- a/player/lua/ytdl_hook.lua
++++ b/player/lua/ytdl_hook.lua
+@@ -10,7 +10,8 @@ local o = {
+ options.read_options(o)
+ 
+ local ytdl = {
+-    path = "youtube-dl",
++    path = "",
++    paths_to_search = {"yt-dlp", "yt-dlp_x86", "youtube-dl"},
+     searched = false,
+     blacklisted = {}
+ }
+@@ -29,7 +30,13 @@ local safe_protos = Set {
+     "data"
+ }
+ 
++local function platform_is_windows()
++    return package.config:sub(1,1) == "\\"
++end
++
+ local function exec(args)
++    msg.debug("Running: " .. table.concat(args, " "))
++
+     local ret = mp.command_native({name = "subprocess",
+                                    args = args,
+                                    capture_stdout = true,
+@@ -472,17 +479,6 @@ end
+ function run_ytdl_hook(url)
+     local start_time = os.clock()
+ 
+-    -- check for youtube-dl in mpv's config dir
+-    if not (ytdl.searched) then
+-        local exesuf = (package.config:sub(1,1) == '\\') and '.exe' or ''
+-        local ytdl_mcd = mp.find_config_file("youtube-dl" .. exesuf)
+-        if not (ytdl_mcd == nil) then
+-            msg.verbose("found youtube-dl at: " .. ytdl_mcd)
+-            ytdl.path = ytdl_mcd
+-        end
+-        ytdl.searched = true
+-    end
+-
+     -- strip ytdl://
+     if (url:find("ytdl://") == 1) then
+         url = url:sub(8)
+@@ -534,8 +530,37 @@ function run_ytdl_hook(url)
+     end
+     table.insert(command, "--")
+     table.insert(command, url)
+-    msg.debug("Running: " .. table.concat(command,' '))
+-    local es, json, result, aborted = exec(command)
++
++    local es, json, result, aborted
++    if ytdl.searched then
++        es, json, result, aborted = exec(command)
++    else
++        for _, path in pairs(ytdl.paths_to_search) do
++            -- search for youtube-dl in mpv's config dir
++            local exesuf = platform_is_windows() and ".exe" or ""
++            local ytdl_cmd = mp.find_config_file(path .. exesuf)
++            if ytdl_cmd then
++                msg.verbose("Found youtube-dl at: " .. ytdl_cmd)
++                ytdl.path = ytdl_cmd
++                command[1] = ytdl.path
++                es, json, result, aborted = exec(command)
++                break
++            else
++                msg.verbose("No youtube-dl found with path " .. path .. exesuf .. " in config directories")
++                command[1] = path
++                es, json, result, aborted = exec(command)
++                if result.error_string == "init" then
++                    msg.verbose("youtube-dl with path " .. path .. exesuf .. " not found in PATH or not enough permissions")
++                else
++                    msg.verbose("Found youtube-dl with path " .. path .. exesuf .. " in PATH")
++                    ytdl.path = path
++                    break
++                end
++            end
++        end
++
++        ytdl.searched = true
++    end
+ 
+     if aborted then
+         return
+-- 
+2.34.0
+
