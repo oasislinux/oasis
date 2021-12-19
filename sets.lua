@@ -61,7 +61,6 @@ return {
 		'ffmpeg',
 		'mpv',
 		'tinyalsa',
-		'youtube-dl',
 		'yt-dlp',
 	},
 	net={
