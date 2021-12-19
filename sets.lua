@@ -62,6 +62,7 @@ return {
 		'mpv',
 		'tinyalsa',
 		'youtube-dl',
+		'yt-dlp',
 	},
 	net={
 		'acme-client',

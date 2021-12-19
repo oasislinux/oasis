@@ -1,0 +1,350 @@
+From 52d1ea4b111432f7a8c3e14f06b4fc2431fe6a5b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 4 Jul 2016 16:14:18 -0700
+Subject: [PATCH] Disable use of ctypes and dynamic loading
+
+---
+ yt_dlp/compat.py  |   8 ---
+ yt_dlp/cookies.py |  69 --------------------
+ yt_dlp/utils.py   | 161 +---------------------------------------------
+ 3 files changed, 1 insertion(+), 237 deletions(-)
+
+diff --git a/yt_dlp/compat.py b/yt_dlp/compat.py
+index 79c8e3494..28f3b065b 100644
+--- a/yt_dlp/compat.py
++++ b/yt_dlp/compat.py
+@@ -2,7 +2,6 @@
+ 
+ import asyncio
+ import base64
+-import ctypes
+ import getpass
+ import html
+ import html.parser
+@@ -34,12 +33,6 @@ class compat_HTMLParseError(Exception):
+     pass
+ 
+ 
+-# compat_ctypes_WINFUNCTYPE = ctypes.WINFUNCTYPE
+-# will not work since ctypes.WINFUNCTYPE does not exist in UNIX machines
+-def compat_ctypes_WINFUNCTYPE(*args, **kwargs):
+-    return ctypes.WINFUNCTYPE(*args, **kwargs)
+-
+-
+ class _TreeBuilder(etree.TreeBuilder):
+     def doctype(self, name, pubid, system):
+         pass
+@@ -249,7 +242,6 @@ __all__ = [
+     'compat_cookiejar_Cookie',
+     'compat_cookies',
+     'compat_cookies_SimpleCookie',
+-    'compat_ctypes_WINFUNCTYPE',
+     'compat_etree_Element',
+     'compat_etree_fromstring',
+     'compat_etree_register_namespace',
+diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
+index ec68a809d..0ea322074 100644
+--- a/yt_dlp/cookies.py
++++ b/yt_dlp/cookies.py
+@@ -1,4 +1,3 @@
+-import ctypes
+ import json
+ import os
+ import shutil
+@@ -311,8 +310,6 @@ def get_cookie_decryptor(browser_root, browser_keyring_name, logger):
+         return LinuxChromeCookieDecryptor(browser_keyring_name, logger)
+     elif sys.platform == 'darwin':
+         return MacChromeCookieDecryptor(browser_keyring_name, logger)
+-    elif sys.platform == 'win32':
+-        return WindowsChromeCookieDecryptor(browser_root, logger)
+     else:
+         raise NotImplementedError('Chrome cookie decryption is not supported '
+                                   'on this platform: {}'.format(sys.platform))
+@@ -379,40 +376,6 @@ class MacChromeCookieDecryptor(ChromeCookieDecryptor):
+             return encrypted_value
+ 
+ 
+-class WindowsChromeCookieDecryptor(ChromeCookieDecryptor):
+-    def __init__(self, browser_root, logger):
+-        self._logger = logger
+-        self._v10_key = _get_windows_v10_key(browser_root, logger)
+-
+-    def decrypt(self, encrypted_value):
+-        version = encrypted_value[:3]
+-        ciphertext = encrypted_value[3:]
+-
+-        if version == b'v10':
+-            if self._v10_key is None:
+-                self._logger.warning('cannot decrypt v10 cookies: no key found', only_once=True)
+-                return None
+-
+-            # https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/os_crypt_win.cc
+-            #   kNonceLength
+-            nonce_length = 96 // 8
+-            # boringssl
+-            #   EVP_AEAD_AES_GCM_TAG_LEN
+-            authentication_tag_length = 16
+-
+-            raw_ciphertext = ciphertext
+-            nonce = raw_ciphertext[:nonce_length]
+-            ciphertext = raw_ciphertext[nonce_length:-authentication_tag_length]
+-            authentication_tag = raw_ciphertext[-authentication_tag_length:]
+-
+-            return _decrypt_aes_gcm(ciphertext, self._v10_key, nonce, authentication_tag, self._logger)
+-
+-        else:
+-            # any other prefix means the data is DPAPI encrypted
+-            # https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/os_crypt_win.cc
+-            return _decrypt_windows_dpapi(encrypted_value, self._logger).decode('utf-8')
+-
+-
+ def _extract_safari_cookies(profile, logger):
+     if profile is not None:
+         logger.error('safari does not support profiles')
+@@ -663,38 +626,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
+         return None
+ 
+ 
+-def _decrypt_windows_dpapi(ciphertext, logger):
+-    """
+-    References:
+-        - https://docs.microsoft.com/en-us/windows/win32/api/dpapi/nf-dpapi-cryptunprotectdata
+-    """
+-    from ctypes.wintypes import DWORD
+-
+-    class DATA_BLOB(ctypes.Structure):
+-        _fields_ = [('cbData', DWORD),
+-                    ('pbData', ctypes.POINTER(ctypes.c_char))]
+-
+-    buffer = ctypes.create_string_buffer(ciphertext)
+-    blob_in = DATA_BLOB(ctypes.sizeof(buffer), buffer)
+-    blob_out = DATA_BLOB()
+-    ret = ctypes.windll.crypt32.CryptUnprotectData(
+-        ctypes.byref(blob_in),  # pDataIn
+-        None,  # ppszDataDescr: human readable description of pDataIn
+-        None,  # pOptionalEntropy: salt?
+-        None,  # pvReserved: must be NULL
+-        None,  # pPromptStruct: information about prompts to display
+-        0,  # dwFlags
+-        ctypes.byref(blob_out)  # pDataOut
+-    )
+-    if not ret:
+-        logger.warning('failed to decrypt with DPAPI', only_once=True)
+-        return None
+-
+-    result = ctypes.string_at(blob_out.pbData, blob_out.cbData)
+-    ctypes.windll.kernel32.LocalFree(blob_out.pbData)
+-    return result
+-
+-
+ def _config_home():
+     return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
+ 
+diff --git a/yt_dlp/utils.py b/yt_dlp/utils.py
+index 81c95f3e9..34b2eab51 100644
+--- a/yt_dlp/utils.py
++++ b/yt_dlp/utils.py
+@@ -9,7 +9,6 @@ import calendar
+ import codecs
+ import collections
+ import contextlib
+-import ctypes
+ import datetime
+ import email.utils
+ import email.header
+@@ -47,7 +46,6 @@ from .compat import (
+     compat_basestring,
+     compat_chr,
+     compat_cookiejar,
+-    compat_ctypes_WINFUNCTYPE,
+     compat_etree_fromstring,
+     compat_expanduser,
+     compat_html_entities,
+@@ -1857,90 +1855,11 @@ def get_windows_version():
+         return None
+ 
+ 
+-def _windows_write_string(s, out):
+-    """ Returns True if the string was written using special methods,
+-    False if it has yet to be written out."""
+-    # Adapted from http://stackoverflow.com/a/3259271/35070
+-
+-    import ctypes
+-    import ctypes.wintypes
+-
+-    WIN_OUTPUT_IDS = {
+-        1: -11,
+-        2: -12,
+-    }
+-
+-    try:
+-        fileno = out.fileno()
+-    except AttributeError:
+-        # If the output stream doesn't have a fileno, it's virtual
+-        return False
+-    except io.UnsupportedOperation:
+-        # Some strange Windows pseudo files?
+-        return False
+-    if fileno not in WIN_OUTPUT_IDS:
+-        return False
+-
+-    GetStdHandle = compat_ctypes_WINFUNCTYPE(
+-        ctypes.wintypes.HANDLE, ctypes.wintypes.DWORD)(
+-        ('GetStdHandle', ctypes.windll.kernel32))
+-    h = GetStdHandle(WIN_OUTPUT_IDS[fileno])
+-
+-    WriteConsoleW = compat_ctypes_WINFUNCTYPE(
+-        ctypes.wintypes.BOOL, ctypes.wintypes.HANDLE, ctypes.wintypes.LPWSTR,
+-        ctypes.wintypes.DWORD, ctypes.POINTER(ctypes.wintypes.DWORD),
+-        ctypes.wintypes.LPVOID)(('WriteConsoleW', ctypes.windll.kernel32))
+-    written = ctypes.wintypes.DWORD(0)
+-
+-    GetFileType = compat_ctypes_WINFUNCTYPE(ctypes.wintypes.DWORD, ctypes.wintypes.DWORD)(('GetFileType', ctypes.windll.kernel32))
+-    FILE_TYPE_CHAR = 0x0002
+-    FILE_TYPE_REMOTE = 0x8000
+-    GetConsoleMode = compat_ctypes_WINFUNCTYPE(
+-        ctypes.wintypes.BOOL, ctypes.wintypes.HANDLE,
+-        ctypes.POINTER(ctypes.wintypes.DWORD))(
+-        ('GetConsoleMode', ctypes.windll.kernel32))
+-    INVALID_HANDLE_VALUE = ctypes.wintypes.DWORD(-1).value
+-
+-    def not_a_console(handle):
+-        if handle == INVALID_HANDLE_VALUE or handle is None:
+-            return True
+-        return ((GetFileType(handle) & ~FILE_TYPE_REMOTE) != FILE_TYPE_CHAR
+-                or GetConsoleMode(handle, ctypes.byref(ctypes.wintypes.DWORD())) == 0)
+-
+-    if not_a_console(h):
+-        return False
+-
+-    def next_nonbmp_pos(s):
+-        try:
+-            return next(i for i, c in enumerate(s) if ord(c) > 0xffff)
+-        except StopIteration:
+-            return len(s)
+-
+-    while s:
+-        count = min(next_nonbmp_pos(s), 1024)
+-
+-        ret = WriteConsoleW(
+-            h, s, count if count else 2, ctypes.byref(written), None)
+-        if ret == 0:
+-            raise OSError('Failed to write string')
+-        if not count:  # We just wrote a non-BMP character
+-            assert written.value == 2
+-            s = s[1:]
+-        else:
+-            assert written.value > 0
+-            s = s[written.value:]
+-    return True
+-
+-
+ def write_string(s, out=None, encoding=None):
+     if out is None:
+         out = sys.stderr
+     assert type(s) == compat_str
+ 
+-    if sys.platform == 'win32' and encoding is None and hasattr(out, 'fileno'):
+-        if _windows_write_string(s, out):
+-            return
+-
+     if ('b' in getattr(out, 'mode', '')
+             or sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
+         byt = s.encode(encoding or preferredencoding(), 'ignore')
+@@ -1969,62 +1888,6 @@ def intlist_to_bytes(xs):
+     return compat_struct_pack('%dB' % len(xs), *xs)
+ 
+ 
+-# Cross-platform file locking
+-if sys.platform == 'win32':
+-    import ctypes.wintypes
+-    import msvcrt
+-
+-    class OVERLAPPED(ctypes.Structure):
+-        _fields_ = [
+-            ('Internal', ctypes.wintypes.LPVOID),
+-            ('InternalHigh', ctypes.wintypes.LPVOID),
+-            ('Offset', ctypes.wintypes.DWORD),
+-            ('OffsetHigh', ctypes.wintypes.DWORD),
+-            ('hEvent', ctypes.wintypes.HANDLE),
+-        ]
+-
+-    kernel32 = ctypes.windll.kernel32
+-    LockFileEx = kernel32.LockFileEx
+-    LockFileEx.argtypes = [
+-        ctypes.wintypes.HANDLE,     # hFile
+-        ctypes.wintypes.DWORD,      # dwFlags
+-        ctypes.wintypes.DWORD,      # dwReserved
+-        ctypes.wintypes.DWORD,      # nNumberOfBytesToLockLow
+-        ctypes.wintypes.DWORD,      # nNumberOfBytesToLockHigh
+-        ctypes.POINTER(OVERLAPPED)  # Overlapped
+-    ]
+-    LockFileEx.restype = ctypes.wintypes.BOOL
+-    UnlockFileEx = kernel32.UnlockFileEx
+-    UnlockFileEx.argtypes = [
+-        ctypes.wintypes.HANDLE,     # hFile
+-        ctypes.wintypes.DWORD,      # dwReserved
+-        ctypes.wintypes.DWORD,      # nNumberOfBytesToLockLow
+-        ctypes.wintypes.DWORD,      # nNumberOfBytesToLockHigh
+-        ctypes.POINTER(OVERLAPPED)  # Overlapped
+-    ]
+-    UnlockFileEx.restype = ctypes.wintypes.BOOL
+-    whole_low = 0xffffffff
+-    whole_high = 0x7fffffff
+-
+-    def _lock_file(f, exclusive):
+-        overlapped = OVERLAPPED()
+-        overlapped.Offset = 0
+-        overlapped.OffsetHigh = 0
+-        overlapped.hEvent = 0
+-        f._lock_file_overlapped_p = ctypes.pointer(overlapped)
+-        handle = msvcrt.get_osfhandle(f.fileno())
+-        if not LockFileEx(handle, 0x2 if exclusive else 0x0, 0,
+-                          whole_low, whole_high, f._lock_file_overlapped_p):
+-            raise OSError('Locking file failed: %r' % ctypes.FormatError())
+-
+-    def _unlock_file(f):
+-        assert f._lock_file_overlapped_p
+-        handle = msvcrt.get_osfhandle(f.fileno())
+-        if not UnlockFileEx(handle, 0,
+-                            whole_low, whole_high, f._lock_file_overlapped_p):
+-            raise OSError('Unlocking file failed: %r' % ctypes.FormatError())
+-
+-else:
+     # Some platforms, such as Jython, is missing fcntl
+     try:
+         import fcntl
+@@ -2287,29 +2150,7 @@ def fix_xml_ampersands(xml_str):
+ 
+ 
+ def setproctitle(title):
+-    assert isinstance(title, compat_str)
+-
+-    # ctypes in Jython is not complete
+-    # http://bugs.jython.org/issue2148
+-    if sys.platform.startswith('java'):
+-        return
+-
+-    try:
+-        libc = ctypes.cdll.LoadLibrary('libc.so.6')
+-    except OSError:
+-        return
+-    except TypeError:
+-        # LoadLibrary in Windows Python 2.7.13 only expects
+-        # a bytestring, but since unicode_literals turns
+-        # every string into a unicode string, it fails.
+-        return
+-    title_bytes = title.encode('utf-8')
+-    buf = ctypes.create_string_buffer(len(title_bytes))
+-    buf.value = title_bytes
+-    try:
+-        libc.prctl(15, buf, 0, 0, 0)
+-    except AttributeError:
+-        return  # Strange libc, just skip this
++    return
+ 
+ 
+ def remove_start(s, start):
+-- 
+2.34.0
+
