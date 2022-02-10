@@ -1,0 +1,95 @@
+From ff79051c78b68121da85eb7d271998a0bbbaf4d7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 28 Sep 2021 11:25:05 -0700
+Subject: [PATCH] gas: put zero data into .bss
+
+---
+ all.h   |  6 ++----
+ gas.c   | 21 ++++++++++++++++-----
+ parse.c |  4 ++--
+ 3 files changed, 20 insertions(+), 11 deletions(-)
+
+diff --git a/all.h b/all.h
+index 942c52d..257d6ba 100644
+--- a/all.h
++++ b/all.h
+@@ -387,6 +387,8 @@ struct Dat {
+ 		DL,
+ 		DZ
+ 	} type;
++	char *name;
++	Lnk *lnk;
+ 	union {
+ 		int64_t num;
+ 		double fltd;
+@@ -396,10 +398,6 @@ struct Dat {
+ 			char *name;
+ 			int64_t off;
+ 		} ref;
+-		struct {
+-			char *name;
+-			Lnk *lnk;
+-		} start;
+ 	} u;
+ 	char isref;
+ 	char isstr;
+diff --git a/gas.c b/gas.c
+index 4400769..bc76648 100644
+--- a/gas.c
++++ b/gas.c
+@@ -33,21 +33,32 @@ gasemitdat(Dat *d, FILE *f)
+ 		[DW] = "\t.int",
+ 		[DL] = "\t.quad"
+ 	};
++	static int64_t bss;
+ 	char *p;
+ 
+ 	switch (d->type) {
+ 	case DStart:
+-		gasemitlnk(
+-			d->u.start.name,
+-			d->u.start.lnk,
+-			".data", f);
++		bss = 0;
+ 		break;
+ 	case DEnd:
++		if (bss != -1) {
++			gasemitlnk(d->name, d->lnk, ".bss", f);
++			fprintf(f, "\t.fill %"PRId64",1,0\n", bss);
++		}
+ 		break;
+ 	case DZ:
+-		fprintf(f, "\t.fill %"PRId64",1,0\n", d->u.num);
++		if (bss != -1)
++			bss += d->u.num;
++		else
++			fprintf(f, "\t.fill %"PRId64",1,0\n", d->u.num);
+ 		break;
+ 	default:
++		if (bss != -1) {
++			gasemitlnk(d->name, d->lnk, ".data", f);
++			if (bss > 0)
++				fprintf(f, "\t.fill %"PRId64",1,0\n", bss);
++			bss = -1;
++		}
+ 		if (d->isstr) {
+ 			if (d->type != DB)
+ 				err("strings only supported for 'b' currently");
+diff --git a/parse.c b/parse.c
+index 5e5ab66..fb8b509 100644
+--- a/parse.c
++++ b/parse.c
+@@ -1010,8 +1010,8 @@ parsedat(void cb(Dat *), Lnk *lnk)
+ 		t = nextnl();
+ 	}
+ 	d.type = DStart;
+-	d.u.start.name = name;
+-	d.u.start.lnk = lnk;
++	d.name = name;
++	d.lnk = lnk;
+ 	cb(&d);
+ 
+ 	if (t != Tlbrace)
+-- 
+2.34.1
+

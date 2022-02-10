@@ -1,4 +1,4 @@
-From a11da13e22a694f8fe4a81d894d433f50ce4af6b Mon Sep 17 00:00:00 2001
+From 97d75808dc4e8eff6d15a56e6812af168dc265d7 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=C3=89rico=20Nogueira?= <erico.erc@gmail.com>
 Date: Sun, 11 Jul 2021 19:19:12 -0300
 Subject: [PATCH] amd64: optimize loading 0 into registers
@@ -23,10 +23,10 @@ Co-authored-by: Michael Forney <mforney@mforney.org>
  2 files changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/amd64/emit.c b/amd64/emit.c
-index a888000..7aeeff5 100644
+index b8e9e8e..388b8b3 100644
 --- a/amd64/emit.c
 +++ b/amd64/emit.c
-@@ -443,6 +443,18 @@ emitins(Ins i, Fn *fn, FILE *f)
+@@ -450,6 +450,18 @@ emitins(Ins i, Fn *fn, FILE *f)
  		if (req(i.to, i.arg[0]))
  			break;
  		t0 = rtype(i.arg[0]);
@@ -46,7 +46,7 @@ index a888000..7aeeff5 100644
  		&& t0 == RCon
  		&& fn->con[i.arg[0].val].type == CBits) {
 diff --git a/amd64/isel.c b/amd64/isel.c
-index 607c176..1c902f5 100644
+index 4181e26..d4f0b69 100644
 --- a/amd64/isel.c
 +++ b/amd64/isel.c
 @@ -69,7 +69,7 @@ fixarg(Ref *r, int k, Ins *i, Fn *fn)
@@ -79,5 +79,5 @@ index 607c176..1c902f5 100644
  	else if (s != -1) {
  		/* load fast locals' addresses into
 -- 
-2.32.0
+2.34.1
 
