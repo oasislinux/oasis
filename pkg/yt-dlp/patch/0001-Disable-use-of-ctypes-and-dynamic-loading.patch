@@ -1,27 +1,27 @@
-From 52d1ea4b111432f7a8c3e14f06b4fc2431fe6a5b Mon Sep 17 00:00:00 2001
+From 80d23f5b00895685d4ab1535757dbd3ee88ad72d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
  yt_dlp/compat.py  |   8 ---
- yt_dlp/cookies.py |  69 --------------------
- yt_dlp/utils.py   | 161 +---------------------------------------------
- 3 files changed, 1 insertion(+), 237 deletions(-)
+ yt_dlp/cookies.py |  76 ----------------------
+ yt_dlp/utils.py   | 160 +---------------------------------------------
+ 3 files changed, 1 insertion(+), 243 deletions(-)
 
 diff --git a/yt_dlp/compat.py b/yt_dlp/compat.py
-index 79c8e3494..28f3b065b 100644
+index b97d4512e..f02b8900b 100644
 --- a/yt_dlp/compat.py
 +++ b/yt_dlp/compat.py
-@@ -2,7 +2,6 @@
- 
+@@ -3,7 +3,6 @@
  import asyncio
  import base64
+ import collections
 -import ctypes
  import getpass
  import html
  import html.parser
-@@ -34,12 +33,6 @@ class compat_HTMLParseError(Exception):
+@@ -35,12 +34,6 @@ class compat_HTMLParseError(Exception):
      pass
  
  
@@ -34,7 +34,7 @@ index 79c8e3494..28f3b065b 100644
  class _TreeBuilder(etree.TreeBuilder):
      def doctype(self, name, pubid, system):
          pass
-@@ -249,7 +242,6 @@ __all__ = [
+@@ -254,7 +247,6 @@ __all__ = [
      'compat_cookiejar_Cookie',
      'compat_cookies',
      'compat_cookies_SimpleCookie',
@@ -43,16 +43,17 @@ index 79c8e3494..28f3b065b 100644
      'compat_etree_fromstring',
      'compat_etree_register_namespace',
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index ec68a809d..0ea322074 100644
+index fc033a8ae..7ccf9b19e 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
-@@ -1,4 +1,3 @@
+@@ -1,5 +1,4 @@
+ import contextlib
 -import ctypes
  import json
  import os
  import shutil
-@@ -311,8 +310,6 @@ def get_cookie_decryptor(browser_root, browser_keyring_name, logger):
-         return LinuxChromeCookieDecryptor(browser_keyring_name, logger)
+@@ -323,8 +322,6 @@ def get_cookie_decryptor(browser_root, browser_keyring_name, logger, *, keyring=
+         return LinuxChromeCookieDecryptor(browser_keyring_name, logger, keyring=keyring)
      elif sys.platform == 'darwin':
          return MacChromeCookieDecryptor(browser_keyring_name, logger)
 -    elif sys.platform == 'win32':
@@ -60,7 +61,7 @@ index ec68a809d..0ea322074 100644
      else:
          raise NotImplementedError('Chrome cookie decryption is not supported '
                                    'on this platform: {}'.format(sys.platform))
-@@ -379,40 +376,6 @@ class MacChromeCookieDecryptor(ChromeCookieDecryptor):
+@@ -404,47 +401,6 @@ class MacChromeCookieDecryptor(ChromeCookieDecryptor):
              return encrypted_value
  
  
@@ -68,12 +69,18 @@ index ec68a809d..0ea322074 100644
 -    def __init__(self, browser_root, logger):
 -        self._logger = logger
 -        self._v10_key = _get_windows_v10_key(browser_root, logger)
+-        self._cookie_counts = {'v10': 0, 'other': 0}
+-
+-    @property
+-    def cookie_counts(self):
+-        return self._cookie_counts
 -
 -    def decrypt(self, encrypted_value):
 -        version = encrypted_value[:3]
 -        ciphertext = encrypted_value[3:]
 -
 -        if version == b'v10':
+-            self._cookie_counts['v10'] += 1
 -            if self._v10_key is None:
 -                self._logger.warning('cannot decrypt v10 cookies: no key found', only_once=True)
 -                return None
@@ -93,6 +100,7 @@ index ec68a809d..0ea322074 100644
 -            return _decrypt_aes_gcm(ciphertext, self._v10_key, nonce, authentication_tag, self._logger)
 -
 -        else:
+-            self._cookie_counts['other'] += 1
 -            # any other prefix means the data is DPAPI encrypted
 -            # https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/os_crypt_win.cc
 -            return _decrypt_windows_dpapi(encrypted_value, self._logger).decode('utf-8')
@@ -101,7 +109,7 @@ index ec68a809d..0ea322074 100644
  def _extract_safari_cookies(profile, logger):
      if profile is not None:
          logger.error('safari does not support profiles')
-@@ -663,38 +626,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
+@@ -872,38 +828,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
          return None
  
  
@@ -141,7 +149,7 @@ index ec68a809d..0ea322074 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils.py b/yt_dlp/utils.py
-index 81c95f3e9..34b2eab51 100644
+index fe1096168..4f8e75642 100644
 --- a/yt_dlp/utils.py
 +++ b/yt_dlp/utils.py
 @@ -9,7 +9,6 @@ import calendar
@@ -160,7 +168,7 @@ index 81c95f3e9..34b2eab51 100644
      compat_etree_fromstring,
      compat_expanduser,
      compat_html_entities,
-@@ -1857,90 +1855,11 @@ def get_windows_version():
+@@ -1967,89 +1965,11 @@ def get_windows_version():
          return None
  
  
@@ -169,7 +177,6 @@ index 81c95f3e9..34b2eab51 100644
 -    False if it has yet to be written out."""
 -    # Adapted from http://stackoverflow.com/a/3259271/35070
 -
--    import ctypes
 -    import ctypes.wintypes
 -
 -    WIN_OUTPUT_IDS = {
@@ -251,7 +258,7 @@ index 81c95f3e9..34b2eab51 100644
      if ('b' in getattr(out, 'mode', '')
              or sys.version_info[0] < 3):  # Python 2 lies about mode of sys.stderr
          byt = s.encode(encoding or preferredencoding(), 'ignore')
-@@ -1969,62 +1888,6 @@ def intlist_to_bytes(xs):
+@@ -2078,62 +1998,6 @@ def intlist_to_bytes(xs):
      return compat_struct_pack('%dB' % len(xs), *xs)
  
  
@@ -314,7 +321,7 @@ index 81c95f3e9..34b2eab51 100644
      # Some platforms, such as Jython, is missing fcntl
      try:
          import fcntl
-@@ -2287,29 +2150,7 @@ def fix_xml_ampersands(xml_str):
+@@ -2407,29 +2271,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
@@ -346,5 +353,5 @@ index 81c95f3e9..34b2eab51 100644
  
  def remove_start(s, start):
 -- 
-2.34.0
+2.34.1
 
