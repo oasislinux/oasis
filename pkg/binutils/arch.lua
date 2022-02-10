@@ -87,4 +87,5 @@ return {
 	z80={'z80-dis.c'},
 	z8k={'z8k-dis.c'},
 	bpf={'bpf-asm.c', 'bpf-desc.c', 'bpf-dis.c', 'bpf-ibld.c', 'bpf-opc.c'},
+	loongarch={'loongarch-dis.c', 'loongarch-opc.c', 'loongarch-coder.c'},
 }

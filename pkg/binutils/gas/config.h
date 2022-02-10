@@ -15,7 +15,7 @@
 #define DEFAULT_GENERATE_X86_RELAX_RELOCATIONS 1
 #define DEFAULT_MIPS_FIX_LOONGSON3_LLSC 0
 /* #undef DEFAULT_RISCV_ARCH_WITH_EXT */
-#define DEFAULT_RISCV_ATTR 0
+#define DEFAULT_RISCV_ATTR 1
 /* #undef DEFAULT_RISCV_ISA_SPEC */
 /* #undef DEFAULT_RISCV_PRIV_SPEC */
 #define DEFAULT_X86_USED_NOTE 1
@@ -67,10 +67,10 @@
 #define PACKAGE "gas"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "gas"
-#define PACKAGE_STRING "gas 2.37"
+#define PACKAGE_STRING "gas 2.38"
 #define PACKAGE_TARNAME "gas"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.37"
+#define PACKAGE_VERSION "2.38"
 #define STDC_HEADERS 1
 /* #undef STRICTCOFF */
 #define TARGET_ALIAS "x86_64-linux-musl"
@@ -100,7 +100,7 @@
 # define __EXTENSIONS__ 1
 #endif
 /* #undef USING_CGEN */
-#define VERSION "2.37"
+#define VERSION "2.38"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

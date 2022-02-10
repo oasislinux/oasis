@@ -1,0 +1,34 @@
+From b0508ec3e6134825199ba6ff3d8effd369428117 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 10 Feb 2022 14:51:52 -0800
+Subject: [PATCH] bfd: Remove return with expression in void function
+
+This is not allowed in ISO C (C11 6.8.6.4p1):
+
+> A return statement with an expression shall not appear in a
+> function whose return type is void.
+
+2022-02-10  Michael Forney  <mforney@mforney.org>
+
+        * bfd.c (bfd_set_gp_value): Remove return with expression
+        in void function.
+---
+ bfd/bfd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/bfd/bfd.c b/bfd/bfd.c
+index 3e59057d07a..80c9e425754 100644
+--- a/bfd/bfd.c
++++ b/bfd/bfd.c
+@@ -1871,7 +1871,7 @@ DESCRIPTION
+ void
+ bfd_set_gp_value (bfd *abfd, bfd_vma v)
+ {
+-  return _bfd_set_gp_value (abfd, v);
++  _bfd_set_gp_value (abfd, v);
+ }
+ 
+ /*
+-- 
+2.34.1
+

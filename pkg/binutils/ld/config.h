@@ -53,10 +53,10 @@
 #define PACKAGE "ld"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "ld"
-#define PACKAGE_STRING "ld 2.37"
+#define PACKAGE_STRING "ld 2.38"
 #define PACKAGE_TARNAME "ld"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.37"
+#define PACKAGE_VERSION "2.38"
 #define SIZEOF_VOID_P 8
 #define STDC_HEADERS 1
 #define SUPPORT_ERROR_HANDLING_SCRIPT 1
@@ -76,7 +76,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.37"
+#define VERSION "2.38"
 /* #undef YYTEXT_POINTER */
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1

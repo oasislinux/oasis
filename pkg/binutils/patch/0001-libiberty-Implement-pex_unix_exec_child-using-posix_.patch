@@ -1,4 +1,4 @@
-From 662b185803a405b9c945e7e2de9766723f6a7ad7 Mon Sep 17 00:00:00 2001
+From 33fd36d26892e893d4c58ccbe826445a76262c68 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 17 Apr 2019 16:44:05 -0700
 Subject: [PATCH] libiberty: Implement pex_unix_exec_child using posix_spawn
@@ -11,7 +11,7 @@ Subject: [PATCH] libiberty: Implement pex_unix_exec_child using posix_spawn
  4 files changed, 110 insertions(+), 11 deletions(-)
 
 diff --git a/libiberty/config.in b/libiberty/config.in
-index f7052b5d95..ce79a9e77f 100644
+index f7052b5d958..ce79a9e77f2 100644
 --- a/libiberty/config.in
 +++ b/libiberty/config.in
 @@ -198,6 +198,9 @@
@@ -35,10 +35,10 @@ index f7052b5d95..ce79a9e77f 100644
  #undef HAVE_STDINT_H
  
 diff --git a/libiberty/configure b/libiberty/configure
-index b6af9baf21..139955e68a 100755
+index e09ddd91e58..a5591fac95d 100755
 --- a/libiberty/configure
 +++ b/libiberty/configure
-@@ -5481,7 +5481,7 @@ host_makefile_frag=${frag}
+@@ -5651,7 +5651,7 @@ host_makefile_frag=${frag}
  # It's OK to check for header files.  Although the compiler may not be
  # able to link anything, it had better be able to at least compile
  # something.
@@ -47,20 +47,20 @@ index b6af9baf21..139955e68a 100755
  do :
    as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
  ac_fn_c_check_header_preproc "$LINENO" "$ac_header" "$as_ac_Header"
-@@ -5990,9 +5990,9 @@ funcs="$funcs setproctitle"
+@@ -6160,9 +6160,9 @@ funcs="$funcs setproctitle"
  vars="sys_errlist sys_nerr sys_siglist"
  
  checkfuncs="__fsetlocking canonicalize_file_name dup3 getrlimit getrusage \
 - getsysinfo gettimeofday on_exit pipe2 psignal pstat_getdynamic pstat_getstatic \
-- realpath setrlimit sbrk spawnve spawnvpe strerror strsignal sysconf sysctl \
+- realpath setrlimit spawnve spawnvpe strerror strsignal sysconf sysctl \
 - sysmp table times wait3 wait4"
 + getsysinfo gettimeofday on_exit pipe2 posix_spawn psignal pstat_getdynamic \
-+ pstat_getstatic realpath setrlimit sbrk spawnve spawnvpe strerror strsignal \
++ pstat_getstatic realpath setrlimit spawnve spawnvpe strerror strsignal \
 + sysconf sysctl sysmp table times wait3 wait4"
  
- # These are neither executed nor required, but they help keep
- # autoheader happy without adding a bunch of text to acconfig.h.
-@@ -6006,7 +6006,7 @@ if test "x" = "y"; then
+ # Darwin has sbrk, but it is deprecated and that produces build-time warnings
+ # so do not check for it.
+@@ -6183,7 +6183,7 @@ if test "x" = "y"; then
      index insque \
      memchr memcmp memcpy memmem memmove memset mkstemps \
      on_exit \
@@ -70,10 +70,10 @@ index b6af9baf21..139955e68a 100755
      sbrk setenv setproctitle setrlimit sigsetmask snprintf spawnve spawnvpe \
       stpcpy stpncpy strcasecmp strchr strdup \
 diff --git a/libiberty/configure.ac b/libiberty/configure.ac
-index ad95296397..442c714319 100644
+index f59f35e1f20..134576ea3af 100644
 --- a/libiberty/configure.ac
 +++ b/libiberty/configure.ac
-@@ -271,7 +271,7 @@ AC_SUBST_FILE(host_makefile_frag)
+@@ -288,7 +288,7 @@ AC_SUBST_FILE(host_makefile_frag)
  # It's OK to check for header files.  Although the compiler may not be
  # able to link anything, it had better be able to at least compile
  # something.
@@ -82,20 +82,20 @@ index ad95296397..442c714319 100644
  AC_HEADER_SYS_WAIT
  AC_HEADER_TIME
  
-@@ -394,9 +394,9 @@ funcs="$funcs setproctitle"
+@@ -411,9 +411,9 @@ funcs="$funcs setproctitle"
  vars="sys_errlist sys_nerr sys_siglist"
  
  checkfuncs="__fsetlocking canonicalize_file_name dup3 getrlimit getrusage \
 - getsysinfo gettimeofday on_exit pipe2 psignal pstat_getdynamic pstat_getstatic \
-- realpath setrlimit sbrk spawnve spawnvpe strerror strsignal sysconf sysctl \
+- realpath setrlimit spawnve spawnvpe strerror strsignal sysconf sysctl \
 - sysmp table times wait3 wait4"
 + getsysinfo gettimeofday on_exit pipe2 posix_spawn psignal pstat_getdynamic \
-+ pstat_getstatic realpath setrlimit sbrk spawnve spawnvpe strerror strsignal \
++ pstat_getstatic realpath setrlimit spawnve spawnvpe strerror strsignal \
 + sysconf sysctl sysmp table times wait3 wait4"
  
- # These are neither executed nor required, but they help keep
- # autoheader happy without adding a bunch of text to acconfig.h.
-@@ -410,7 +410,7 @@ if test "x" = "y"; then
+ # Darwin has sbrk, but it is deprecated and that produces build-time warnings
+ # so do not check for it.
+@@ -434,7 +434,7 @@ if test "x" = "y"; then
      index insque \
      memchr memcmp memcpy memmem memmove memset mkstemps \
      on_exit \
@@ -105,7 +105,7 @@ index ad95296397..442c714319 100644
      sbrk setenv setproctitle setrlimit sigsetmask snprintf spawnve spawnvpe \
       stpcpy stpncpy strcasecmp strchr strdup \
 diff --git a/libiberty/pex-unix.c b/libiberty/pex-unix.c
-index 8da2fdcf84..c1c93be12b 100644
+index 850d344ba58..ba3a6d5d38f 100644
 --- a/libiberty/pex-unix.c
 +++ b/libiberty/pex-unix.c
 @@ -58,6 +58,9 @@ extern int errno;
@@ -218,5 +218,5 @@ index 8da2fdcf84..c1c93be12b 100644
  
  /* Subroutine of pex_unix_exec_child.  Move OLD_FD to a new file descriptor
 -- 
-2.30.0
+2.34.1
 
