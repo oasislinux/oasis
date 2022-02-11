@@ -1,5 +1,5 @@
 cflags{
-	'-std=c11', '-Wall', '-Wpedantic', '-Wno-switch', '-Wno-parentheses',
+	'-std=c11', '-Wall', '-Wpedantic', '-Wno-switch', '-Wno-parentheses', '-Wno-maybe-uninitialized',
 	'-I $dir',
 }
 
@@ -24,6 +24,7 @@ exe('cproc-qbe', {
 	'tree.c',
 	'type.c',
 	'util.c.o',
+	'utf.c',
 })
 file('bin/cproc', '755', '$outdir/cproc')
 file('bin/cproc-qbe', '755', '$outdir/cproc-qbe')
