@@ -1,0 +1,26 @@
+From c421db7540796882a53d9b533862da16d7810ec3 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 18 Feb 2022 01:51:13 -0800
+Subject: [PATCH] nfc: uapi: remove stray semicolon in struct declaration
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ include/uapi/linux/nfc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/uapi/linux/nfc.h b/include/uapi/linux/nfc.h
+index 4fa4e979e948..8ab0833ed192 100644
+--- a/include/uapi/linux/nfc.h
++++ b/include/uapi/linux/nfc.h
+@@ -277,7 +277,7 @@ struct sockaddr_nfc_llcp {
+ 	__u32 nfc_protocol;
+ 	__u8 dsap; /* Destination SAP, if known */
+ 	__u8 ssap; /* Source SAP to be bound to */
+-	char service_name[NFC_LLCP_MAX_SERVICE_NAME]; /* Service name URI */;
++	char service_name[NFC_LLCP_MAX_SERVICE_NAME]; /* Service name URI */
+ 	__kernel_size_t service_name_len;
+ };
+ 
+-- 
+2.34.1
+

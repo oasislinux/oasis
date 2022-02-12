@@ -1,4 +1,4 @@
-From d770264c9479c16bc45729d7bddd7e9275e44199 Mon Sep 17 00:00:00 2001
+From 8b57c152660e28afb04d9c03a5b8b5c224bd11fd Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 2 Jun 2020 03:56:03 -0700
 Subject: [PATCH] Revert change of BPF_F_* to enum constants
@@ -8,10 +8,10 @@ Subject: [PATCH] Revert change of BPF_F_* to enum constants
  1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 791f31dd0abe..a2e8fd2e798c 100644
+index ba5af15e25f5..90c141acf380 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -5120,12 +5120,10 @@ enum {
+@@ -5185,12 +5185,10 @@ enum {
  /* BPF_FUNC_perf_event_output, BPF_FUNC_perf_event_read and
   * BPF_FUNC_perf_event_read_value flags.
   */
@@ -28,5 +28,5 @@ index 791f31dd0abe..a2e8fd2e798c 100644
  /* Current network namespace */
  enum {
 -- 
-2.34.0
+2.34.1
 
