@@ -1,4 +1,4 @@
-From a878ba9c650d4cb25ddf656e4812536456005f6f Mon Sep 17 00:00:00 2001
+From 923a6d5c2d391af83c8b108c3cf59d5e709e25b0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 31 May 2021 16:37:09 -0700
 Subject: [PATCH] Break out of input loop when UI is hidden
@@ -10,10 +10,10 @@ with M-l, which restores curses mode when using NetBSD's libcurses.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/ui.c b/ui.c
-index 2df8396..2ad1fd8 100644
+index 4b87a1f..c92c0df 100644
 --- a/ui.c
 +++ b/ui.c
-@@ -1091,7 +1091,7 @@ void uiRead(void) {
+@@ -1089,7 +1089,7 @@ void uiRead(void) {
  
  	wint_t ch;
  	static bool paste, style, literal;
@@ -23,5 +23,5 @@ index 2df8396..2ad1fd8 100644
  			paste = true;
  		} else if (ret == KEY_CODE_YES && ch == KeyPasteOff) {
 -- 
-2.32.0
+2.34.1
 

@@ -1,4 +1,4 @@
-From 80dac47ee3aa26290cda962ab2531afb054bf47a Mon Sep 17 00:00:00 2001
+From 9c8a70c58b3b95dcccf3e91f570781938d517dcd Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 3 Jun 2021 00:54:30 -0700
 Subject: [PATCH] [HACK] Disable colorized output in M-l window list
@@ -10,10 +10,10 @@ crucial feature.
  1 file changed, 2 deletions(-)
 
 diff --git a/ui.c b/ui.c
-index 64e83d3..407672c 100644
+index 1e9e03f..dcdf6ae 100644
 --- a/ui.c
 +++ b/ui.c
-@@ -686,7 +686,6 @@ static void windowList(const struct Window *window) {
+@@ -684,7 +684,6 @@ static void windowList(const struct Window *window) {
  
  		char buf[TimeCap];
  		strftime(buf, sizeof(buf), uiTime.format, localtime(&line->time));
@@ -21,7 +21,7 @@ index 64e83d3..407672c 100644
  		printf("%s ", buf);
  
  		bool align = false;
-@@ -702,7 +701,6 @@ static void windowList(const struct Window *window) {
+@@ -700,7 +699,6 @@ static void windowList(const struct Window *window) {
  			size_t tab = strcspn(str, "\t");
  			if (tab < len) len = tab;
  
@@ -30,5 +30,5 @@ index 64e83d3..407672c 100644
  			str += len;
  		}
 -- 
-2.32.0
+2.34.1
 

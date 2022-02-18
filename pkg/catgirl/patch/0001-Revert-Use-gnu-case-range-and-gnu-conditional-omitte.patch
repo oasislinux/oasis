@@ -1,4 +1,4 @@
-From 2ee883206837a7dc5a0049841b5a9cdc096f67f6 Mon Sep 17 00:00:00 2001
+From 48ce2b38033ae93717fd330c3cb6c0476e2979e5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 7 May 2020 00:36:14 -0700
 Subject: [PATCH] Revert "Use gnu-case-range and
@@ -15,7 +15,7 @@ This reverts commit 75a6aa9258270169f43f56e063f1bfb57eebe56b.
  6 files changed, 57 insertions(+), 39 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 373e7d5..a07ef19 100644
+index 48fc350..ac452d2 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -2,8 +2,7 @@ PREFIX ?= /usr/local
@@ -29,7 +29,7 @@ index 373e7d5..a07ef19 100644
  LDADD.ncursesw = -lncursesw
  
 diff --git a/command.c b/command.c
-index 5c97ef5..0e90715 100644
+index 335c396..d87e162 100644
 --- a/command.c
 +++ b/command.c
 @@ -68,8 +68,8 @@ static int splitChunk(const char *cmd, uint id) {
@@ -52,7 +52,7 @@ index 5c97ef5..0e90715 100644
  }
  
  static void commandNick(uint id, char *params) {
-@@ -269,7 +269,7 @@ static void commandOp(uint id, char *params) {
+@@ -275,7 +275,7 @@ static void commandOp(uint id, char *params) {
  }
  
  static void commandDeop(uint id, char *params) {
@@ -61,7 +61,7 @@ index 5c97ef5..0e90715 100644
  }
  
  static void commandVoice(uint id, char *params) {
-@@ -281,7 +281,7 @@ static void commandVoice(uint id, char *params) {
+@@ -287,7 +287,7 @@ static void commandVoice(uint id, char *params) {
  }
  
  static void commandDevoice(uint id, char *params) {
@@ -70,7 +70,7 @@ index 5c97ef5..0e90715 100644
  }
  
  static void commandBan(uint id, char *params) {
-@@ -356,12 +356,12 @@ static void commandWhowas(uint id, char *params) {
+@@ -362,12 +362,12 @@ static void commandWhowas(uint id, char *params) {
  
  static void commandNS(uint id, char *params) {
  	(void)id;
@@ -85,7 +85,7 @@ index 5c97ef5..0e90715 100644
  }
  
  static void commandQuery(uint id, char *params) {
-@@ -436,7 +436,8 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
+@@ -442,7 +442,8 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
  		uiFormat(
  			id, Cold, NULL, "%sing \3%02d%s %s %s %s",
  			(heat == Hot ? "Highlight" : "Ignor"), Brown, filter.mask,
@@ -95,7 +95,7 @@ index 5c97ef5..0e90715 100644
  		);
  	} else {
  		for (size_t i = 0; i < FilterCap && filters[i].mask; ++i) {
-@@ -444,8 +445,9 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
+@@ -450,8 +451,9 @@ static void commandFilter(enum Heat heat, uint id, char *params) {
  			uiFormat(
  				Network, Warm, NULL, "%sing \3%02d%s %s %s %s",
  				(heat == Hot ? "Highlight" : "Ignor"), Brown, filters[i].mask,
@@ -107,7 +107,7 @@ index 5c97ef5..0e90715 100644
  			);
  		}
  	}
-@@ -458,8 +460,8 @@ static void commandUnfilter(enum Heat heat, uint id, char *params) {
+@@ -464,8 +466,8 @@ static void commandUnfilter(enum Heat heat, uint id, char *params) {
  	uiFormat(
  		id, Cold, NULL, "%s %sing \3%02d%s %s %s %s",
  		(found ? "No longer" : "Not"), (heat == Hot ? "highlight" : "ignor"),
@@ -118,7 +118,7 @@ index 5c97ef5..0e90715 100644
  	);
  }
  
-@@ -488,7 +490,9 @@ static void commandExec(uint id, char *params) {
+@@ -494,7 +496,9 @@ static void commandExec(uint id, char *params) {
  	dup2(execPipe[1], STDOUT_FILENO);
  	dup2(utilPipe[1], STDERR_FILENO);
  
@@ -129,7 +129,7 @@ index 5c97ef5..0e90715 100644
  	execl(shell, shell, "-c", params, NULL);
  	warn("%s", shell);
  	_exit(EX_UNAVAILABLE);
-@@ -513,7 +517,8 @@ static void commandHelp(uint id, char *params) {
+@@ -519,7 +523,8 @@ static void commandHelp(uint id, char *params) {
  	if (pid) return;
  
  	char buf[256];
@@ -162,7 +162,7 @@ index 9e59db5..9ea1192 100644
  }
  
 diff --git a/handle.c b/handle.c
-index a8f054c..1ace1b3 100644
+index e460c7c..0cdda74 100644
 --- a/handle.c
 +++ b/handle.c
 @@ -299,9 +299,9 @@ static void handleReplyISupport(struct Message *msg) {
@@ -320,10 +320,10 @@ index a8f054c..1ace1b3 100644
  			return true;
  		}
 diff --git a/ui.c b/ui.c
-index 1adcafe..2df8396 100644
+index 2789bd7..4b87a1f 100644
 --- a/ui.c
 +++ b/ui.c
-@@ -495,7 +495,7 @@ static size_t windowTop(const struct Window *window) {
+@@ -497,7 +497,7 @@ static size_t windowTop(const struct Window *window) {
  }
  
  static size_t windowBottom(const struct Window *window) {
@@ -332,7 +332,7 @@ index 1adcafe..2df8396 100644
  	if (window->scroll) bottom -= SplitLines + MarkerLines;
  	return bottom;
  }
-@@ -978,7 +978,6 @@ static void keyCode(int code) {
+@@ -976,7 +976,6 @@ static void keyCode(int code) {
  		break; case KeyMetaGt: scrollTo(window, 0);
  		break; case KeyMetaLt: scrollTop(window);
  
@@ -340,7 +340,7 @@ index 1adcafe..2df8396 100644
  		break; case KeyMetaA: showAuto();
  		break; case KeyMetaB: edit(id, EditPrevWord, 0);
  		break; case KeyMetaD: edit(id, EditDeleteNextWord, 0);
-@@ -1008,6 +1007,12 @@ static void keyCode(int code) {
+@@ -1006,6 +1005,12 @@ static void keyCode(int code) {
  		break; case KEY_SEND: scrollTo(window, 0);
  		break; case KEY_SHOME: scrollTo(window, BufferCap);
  		break; case KEY_UP: windowScroll(window, +1);
@@ -367,5 +367,5 @@ index 219a83c..9c721e0 100644
  		if (error) return error;
  	}
 -- 
-2.32.0
+2.34.1
 
