@@ -94,8 +94,8 @@ man{'bin/pax/pax.1', 'bin/pax/tar.1', 'bin/pax/cpio.1'}
 exe('rsync', [[
 	usr.bin/rsync/(
 		blocks.c client.c downloader.c fargs.c flist.c hash.c ids.c
-		io.c log.c mkpath.c mktemp.c receiver.c sender.c server.c session.c
-		socket.c symlinks.c uploader.c main.c misc.c md4.c
+		io.c log.c main.c md4.c misc.c mkpath.c mktemp.c receiver.c rmatch.c
+		rules.c sender.c server.c session.c socket.c symlinks.c uploader.c
 	)
 	libbsd.a
 ]])

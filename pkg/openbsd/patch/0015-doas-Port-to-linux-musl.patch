@@ -1,4 +1,4 @@
-From 3eac1566f49c5edb13c41009b571b1b391f5f841 Mon Sep 17 00:00:00 2001
+From dc1adc29e491a5e2cc3befb26ac6230b1551ad7b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -27,12 +27,12 @@ Simplify handling of PATH in the environment since we don't have
 login.conf with per-user default PATH.
 ---
  usr.bin/doas/doas.1    |   9 ---
- usr.bin/doas/doas.c    | 159 ++++++++++++++---------------------------
+ usr.bin/doas/doas.c    | 163 +++++++++++++----------------------------
  usr.bin/doas/doas.h    |   6 +-
  usr.bin/doas/env.c     |  17 ++---
  usr.bin/doas/parse.y   |   1 +
- usr.bin/doas/persist.c | 133 ++++++++++++++++++++++++++++++++++
- 6 files changed, 196 insertions(+), 129 deletions(-)
+ usr.bin/doas/persist.c | 133 +++++++++++++++++++++++++++++++++
+ 6 files changed, 196 insertions(+), 133 deletions(-)
  create mode 100644 usr.bin/doas/persist.c
 
 diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
@@ -63,7 +63,7 @@ index 4d2e09777c8..a91705e8e3f 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index be05be3a968..46b0ceb136b 100644
+index 5d440311ffe..05eb2948c5b 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -20,8 +20,6 @@
@@ -99,11 +99,11 @@ index be05be3a968..46b0ceb136b 100644
  	    " command [args]\n");
  	exit(1);
  }
-@@ -199,23 +206,36 @@ checkconfig(const char *confpath, int argc, char **argv,
- 	}
+@@ -200,24 +207,35 @@ checkconfig(const char *confpath, int argc, char **argv,
  }
  
-+static int
+ static int
+-authuser(char *myname, char *login_style, int persist)
 +verifypasswd(const char *user, const char *pass)
 +{
 +	struct spwd *sp;
@@ -121,8 +121,7 @@ index be05be3a968..46b0ceb136b 100644
 +	return strcmp(p1, p2) == 0;
 +}
 +
- static void
--authuser(char *myname, char *login_style, int persist)
++static int
 +authuser(char *myname, int persist)
  {
  	char *challenge = NULL, *response, rbuf[1024], cbuf[128];
@@ -141,12 +140,14 @@ index be05be3a968..46b0ceb136b 100644
  	}
  
 -	if (!(as = auth_userchallenge(myname, login_style, "auth-doas",
--	    &challenge)))
--		errx(1, "Authentication failed");
+-	    &challenge))) {
+-		warnx("Authentication failed");
+-		return AUTH_FAILED;
+-	}
  	if (!challenge) {
  		char host[HOST_NAME_MAX + 1];
  		if (gethostname(host, sizeof(host)))
-@@ -227,75 +247,31 @@ authuser(char *myname, char *login_style, int persist)
+@@ -229,78 +247,34 @@ authuser(char *myname, char *login_style, int persist)
  	response = readpassphrase(challenge, rbuf, sizeof(rbuf),
  	    RPP_REQUIRE_TTY);
  	if (response == NULL && errno == ENOTTY) {
@@ -161,7 +162,8 @@ index be05be3a968..46b0ceb136b 100644
 -		syslog(LOG_AUTHPRIV | LOG_NOTICE,
 -		    "failed auth for %s", myname);
 +		syslog(LOG_NOTICE, "failed auth for %s", myname);
- 		errx(1, "Authentication failed");
+ 		warnx("Authentication failed");
+ 		return AUTH_FAILED;
  	}
  	explicit_bzero(rbuf, sizeof(rbuf));
  good:
@@ -171,6 +173,8 @@ index be05be3a968..46b0ceb136b 100644
 +		setpersist(fd);
  		close(fd);
  	}
+ 
+ 	return AUTH_OK;
  }
  
 -int
@@ -227,8 +231,8 @@ index be05be3a968..46b0ceb136b 100644
  	struct passwd mypwstore, targpwstore;
  	struct passwd *mypw, *targpw;
  	const struct rule *rule;
-@@ -308,28 +284,20 @@ main(int argc, char **argv)
- 	int nflag = 0;
+@@ -314,28 +288,20 @@ main(int argc, char **argv)
+ 	int authed = AUTH_FAILED;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
 -	char *login_style = NULL;
@@ -259,7 +263,7 @@ index be05be3a968..46b0ceb136b 100644
  		case 'u':
  			if (parseuid(optarg, &target) != 0)
  				errx(1, "unknown user");
-@@ -399,47 +367,30 @@ main(int argc, char **argv)
+@@ -405,9 +371,9 @@ main(int argc, char **argv)
  	cmd = argv[0];
  	if (!permit(uid, groups, ngroups, &rule, target, cmd,
  	    (const char **)argv + 1)) {
@@ -272,11 +276,18 @@ index be05be3a968..46b0ceb136b 100644
  	}
  
  	if (!(rule->options & NOPASS)) {
- 		if (nflag)
+@@ -415,8 +381,7 @@ main(int argc, char **argv)
  			errx(1, "Authentication required");
  
--		authuser(mypw->pw_name, login_style, rule->options & PERSIST);
-+		authuser(mypw->pw_name, rule->options & PERSIST);
+ 		for (i = 0; i < AUTH_RETRIES; i++) {
+-			authed = authuser(mypw->pw_name, login_style,
+-			    rule->options & PERSIST);
++			authed = authuser(mypw->pw_name, rule->options & PERSIST);
+ 			if (authed == AUTH_OK)
+ 				break;
+ 		}
+@@ -425,36 +390,18 @@ main(int argc, char **argv)
+ 			exit(1);
  	}
  
 -	if ((p = getenv("PATH")) != NULL)
@@ -284,9 +295,10 @@ index be05be3a968..46b0ceb136b 100644
 -	if (formerpath == NULL)
 -		formerpath = "";
 -
--	if (unveil(_PATH_LOGIN_CONF, "r") == -1 ||
--	    unveil(_PATH_LOGIN_CONF ".db", "r") == -1)
--		err(1, "unveil");
+-	if (unveil(_PATH_LOGIN_CONF, "r") == -1)
+-		err(1, "unveil %s", _PATH_LOGIN_CONF);
+-	if (unveil(_PATH_LOGIN_CONF ".db", "r") == -1)
+-		err(1, "unveil %s.db", _PATH_LOGIN_CONF);
 -	if (rule->cmd) {
 -		if (setenv("PATH", safepath, 1) == -1)
 -			err(1, "failed to set PATH '%s'", safepath);
@@ -317,7 +329,7 @@ index be05be3a968..46b0ceb136b 100644
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
-@@ -453,23 +404,17 @@ main(int argc, char **argv)
+@@ -468,23 +415,17 @@ main(int argc, char **argv)
  		err(1, "pledge");
  
  	if (!(rule->options & NOLOG)) {
@@ -343,7 +355,7 @@ index be05be3a968..46b0ceb136b 100644
  		errx(1, "%s: command not found", cmd);
  	err(1, "%s", cmd);
 diff --git a/usr.bin/doas/doas.h b/usr.bin/doas/doas.h
-index 0b3585822eb..63254dabfca 100644
+index 3a9bf4d4de2..2a9561b5565 100644
 --- a/usr.bin/doas/doas.h
 +++ b/usr.bin/doas/doas.h
 @@ -29,13 +29,17 @@ extern struct rule **rules;
@@ -560,5 +572,5 @@ index 00000000000..4ad1bf1efbf
 +	return 0;
 +}
 -- 
-2.31.1
+2.34.1
 

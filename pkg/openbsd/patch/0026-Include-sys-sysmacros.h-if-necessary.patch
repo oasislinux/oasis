@@ -1,4 +1,4 @@
-From a8d547a2cf005a00a111394464fc2692f426ceed Mon Sep 17 00:00:00 2001
+From 0d3a091280d0874fb561c83431803eb2489876cb Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 5 Aug 2019 21:42:54 -0700
 Subject: [PATCH] Include sys/sysmacros.h if necessary
@@ -40,7 +40,7 @@ index 42c70804fb7..405dd2c24ed 100644
  #include "pax.h"
  #include "extern.h"
 diff --git a/bin/pax/tar.c b/bin/pax/tar.c
-index a49a5e885fb..3bfa9444dd5 100644
+index 9d8a92d9d13..e84a9c69a09 100644
 --- a/bin/pax/tar.c
 +++ b/bin/pax/tar.c
 @@ -45,6 +45,9 @@
@@ -54,12 +54,12 @@ index a49a5e885fb..3bfa9444dd5 100644
  #include "pax.h"
  #include "extern.h"
 diff --git a/usr.bin/rsync/flist.c b/usr.bin/rsync/flist.c
-index ac29ad47098..9680883ca77 100644
+index 392ba494423..5f15487623a 100644
 --- a/usr.bin/rsync/flist.c
 +++ b/usr.bin/rsync/flist.c
-@@ -17,6 +17,10 @@
+@@ -16,6 +16,10 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
   */
- #include <sys/param.h>
  #include <sys/stat.h>
 +#include <sys/types.h>
 +#ifndef major
@@ -69,5 +69,5 @@ index ac29ad47098..9680883ca77 100644
  #include <assert.h>
  #include <errno.h>
 -- 
-2.22.0
+2.34.1
 

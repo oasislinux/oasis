@@ -1,4 +1,4 @@
-From 56fcd604ca9bf0ae936307c3e56d232a3daef919 Mon Sep 17 00:00:00 2001
+From 18fa17d3834528f4dd1b1087a765eb4ae9db23a5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 Jun 2019 20:06:13 -0700
 Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
@@ -11,7 +11,7 @@ Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
  4 files changed, 14 insertions(+), 13 deletions(-)
 
 diff --git a/usr.bin/rsync/blocks.c b/usr.bin/rsync/blocks.c
-index 4f21a41833d..242590e5bae 100644
+index 81874c8cba0..fbb7495acdf 100644
 --- a/usr.bin/rsync/blocks.c
 +++ b/usr.bin/rsync/blocks.c
 @@ -157,7 +157,7 @@ blk_find(struct sess *sess, struct blkstat *st,
@@ -51,7 +51,7 @@ index 4f21a41833d..242590e5bae 100644
  	st->s2 -= osz * map[0];
  
 diff --git a/usr.bin/rsync/downloader.c b/usr.bin/rsync/downloader.c
-index 9ddb8600a73..36b086f74c8 100644
+index cb84c2bfcd9..c9f0f8e80dc 100644
 --- a/usr.bin/rsync/downloader.c
 +++ b/usr.bin/rsync/downloader.c
 @@ -495,7 +495,7 @@ again:
@@ -64,7 +64,7 @@ index 9ddb8600a73..36b086f74c8 100644
  		/*
  		 * Now we read from our block.
 diff --git a/usr.bin/rsync/io.c b/usr.bin/rsync/io.c
-index 27beba693d4..847af4c4c1b 100644
+index ea35bdb295f..d392e40aeae 100644
 --- a/usr.bin/rsync/io.c
 +++ b/usr.bin/rsync/io.c
 @@ -117,7 +117,7 @@ io_write_blocking(int fd, const void *buf, size_t sz)
@@ -122,7 +122,7 @@ index 27beba693d4..847af4c4c1b 100644
  }
  
 diff --git a/usr.bin/rsync/sender.c b/usr.bin/rsync/sender.c
-index 00add6b4e6c..0ac8226816f 100644
+index e2999aa2589..9dd008def01 100644
 --- a/usr.bin/rsync/sender.c
 +++ b/usr.bin/rsync/sender.c
 @@ -128,7 +128,7 @@ send_up_fsm(struct sess *sess, size_t *phase,
@@ -134,7 +134,7 @@ index 00add6b4e6c..0ac8226816f 100644
  
  		up->stat.curpos += sz;
  		if (up->stat.curpos == up->stat.curlen)
-@@ -568,7 +568,8 @@ rsync_sender(struct sess *sess, int fdin,
+@@ -557,7 +557,8 @@ rsync_sender(struct sess *sess, int fdin,
  		if ((pfd[1].revents & POLLOUT) && wbufsz > 0) {
  			assert(pfd[2].fd == -1);
  			assert(wbufsz - wbufpos);
@@ -145,5 +145,5 @@ index 00add6b4e6c..0ac8226816f 100644
  				ERR("write");
  				goto out;
 -- 
-2.31.1
+2.34.1
 

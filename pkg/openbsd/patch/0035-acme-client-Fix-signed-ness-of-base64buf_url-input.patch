@@ -1,4 +1,4 @@
-From 710536e5ddcb952ccbb9d1611b2a913c1ed3b69d Mon Sep 17 00:00:00 2001
+From 00b21fb61055a23322cbda5572f6635d1e090162 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 20:10:05 -0700
 Subject: [PATCH] acme-client: Fix signed-ness of base64buf_url input
@@ -13,7 +13,7 @@ This make most of the pointer casts unnecessary.
  5 files changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index a07f9d07021..d01efa848d6 100644
+index 377f53c12fa..d16680235de 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
 @@ -40,8 +40,9 @@
@@ -109,7 +109,7 @@ index 32d4b4b3d85..701733df786 100644
  /*
   * JSON parsing routines.
 diff --git a/usr.sbin/acme-client/keyproc.c b/usr.sbin/acme-client/keyproc.c
-index 1b58b4575c8..157e4947667 100644
+index 96ece27396b..5fba077b7e4 100644
 --- a/usr.sbin/acme-client/keyproc.c
 +++ b/usr.sbin/acme-client/keyproc.c
 @@ -77,7 +77,8 @@ int
@@ -122,7 +122,7 @@ index 1b58b4575c8..157e4947667 100644
  	char		*sans = NULL, *san = NULL;
  	FILE		*f;
  	size_t		 i, sansz;
-@@ -237,7 +238,7 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+@@ -235,7 +236,7 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
  	} else if ((der = dercp = malloc(len)) == NULL) {
  		warn("malloc");
  		goto out;
@@ -155,5 +155,5 @@ index e3cab0cd5a2..6b32205b31b 100644
  			goto out;
  		} else if ((der64 = base64buf_url(der, len)) == NULL) {
 -- 
-2.31.1
+2.34.1
 
