@@ -1,4 +1,4 @@
-From b8db0d40427b083351f080cfd151346f23302e03 Mon Sep 17 00:00:00 2001
+From 4facb9769bda85852c9bc8f54b85073314568d04 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 22:29:34 -0700
 Subject: [PATCH] Avoid index ranges and empty initializer lists in syscallent
@@ -18,14 +18,14 @@ Subject: [PATCH] Avoid index ranges and empty initializer lists in syscallent
  src/linux/s390/syscallent.h        | 42 ++++++++--------
  src/linux/s390x/syscallent.h       | 78 +++++++++++++++---------------
  src/linux/sh/syscallent.h          | 12 ++---
- src/linux/sh64/syscallent.h        | 22 ++++++---
+ src/linux/sh64/syscallent.h        | 18 +++----
  src/linux/sparc/syscallent.h       |  4 +-
  src/linux/sparc64/syscallent.h     | 36 +++++++-------
  src/linux/xtensa/syscallent.h      | 32 ++++++------
- 17 files changed, 173 insertions(+), 167 deletions(-)
+ 17 files changed, 168 insertions(+), 168 deletions(-)
 
 diff --git a/src/linux/alpha/syscallent.h b/src/linux/alpha/syscallent.h
-index f9e971ed3..36f29509b 100644
+index 87cbe59bd..88bc0a5a4 100644
 --- a/src/linux/alpha/syscallent.h
 +++ b/src/linux/alpha/syscallent.h
 @@ -60,7 +60,7 @@
@@ -150,7 +150,7 @@ index f9e971ed3..36f29509b 100644
  [406] = { 3,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
  [407] = { 1,	TD,		SEN(epoll_create),		"epoll_create"		},
 diff --git a/src/linux/arm/syscallent.h b/src/linux/arm/syscallent.h
-index 4fd351305..3ec054c84 100644
+index 2086308a2..f4d808f2d 100644
 --- a/src/linux/arm/syscallent.h
 +++ b/src/linux/arm/syscallent.h
 @@ -433,7 +433,7 @@
@@ -163,7 +163,7 @@ index 4fd351305..3ec054c84 100644
  [ARM_FIRST_SHUFFLED_SYSCALL+1+2] = { 3,	TM,	SEN(printargs),	"cacheflush"		},
  [ARM_FIRST_SHUFFLED_SYSCALL+1+3] = { 0,	0,	SEN(printargs),	"usr26"			},
 diff --git a/src/linux/avr32/syscallent.h b/src/linux/avr32/syscallent.h
-index 5d4624abe..14aff66a2 100644
+index 104044e5f..1b3f3c64e 100644
 --- a/src/linux/avr32/syscallent.h
 +++ b/src/linux/avr32/syscallent.h
 @@ -228,7 +228,7 @@
@@ -185,7 +185,7 @@ index 5d4624abe..14aff66a2 100644
  [284] = { 5,	TD,		SEN(pread),			"pread64"		},
  [285] = { 5,	TD,		SEN(pwrite),			"pwrite64"		},
 diff --git a/src/linux/bfin/syscallent.h b/src/linux/bfin/syscallent.h
-index 16287d085..90f55b5c2 100644
+index 05720b4f9..abef9f5c6 100644
 --- a/src/linux/bfin/syscallent.h
 +++ b/src/linux/bfin/syscallent.h
 @@ -229,7 +229,7 @@
@@ -198,7 +198,7 @@ index 16287d085..90f55b5c2 100644
  [225] = { 4,	TD,		SEN(readahead),			"readahead"		},
  [226] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
 diff --git a/src/linux/i386/syscallent.h b/src/linux/i386/syscallent.h
-index 3c4cb9fe4..fe9e8b4a6 100644
+index 3553a0575..4ae813d43 100644
 --- a/src/linux/i386/syscallent.h
 +++ b/src/linux/i386/syscallent.h
 @@ -229,7 +229,7 @@
@@ -229,7 +229,7 @@ index 3c4cb9fe4..fe9e8b4a6 100644
  [287] = { 4,	0,		SEN(request_key),		"request_key"		},
  [288] = { 5,	0,		SEN(keyctl),			"keyctl"		},
 diff --git a/src/linux/m68k/syscallent.h b/src/linux/m68k/syscallent.h
-index 67f66d719..2205f4982 100644
+index 3abd77b0c..d861832e2 100644
 --- a/src/linux/m68k/syscallent.h
 +++ b/src/linux/m68k/syscallent.h
 @@ -225,7 +225,7 @@
@@ -242,7 +242,7 @@ index 67f66d719..2205f4982 100644
  [221] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
  [222] = { 2,	TS|TP,		SEN(tkill),			"tkill"			},
 diff --git a/src/linux/microblaze/syscallent.h b/src/linux/microblaze/syscallent.h
-index d3446abdb..7d8c7394f 100644
+index 15ca048ca..7c86c2d07 100644
 --- a/src/linux/microblaze/syscallent.h
 +++ b/src/linux/microblaze/syscallent.h
 @@ -229,7 +229,7 @@
@@ -437,7 +437,7 @@ index 29cc42632..b1274f890 100644
  [3261] = { 0,	0,	SEN(printargs),		"posix_netunboot"	},
  [3262] = { 0,	0,	SEN(printargs),		"posix_rdump"	},
 diff --git a/src/linux/powerpc/syscallent.h b/src/linux/powerpc/syscallent.h
-index 98b29e5e8..38056daf6 100644
+index c8f954be4..c47134fd5 100644
 --- a/src/linux/powerpc/syscallent.h
 +++ b/src/linux/powerpc/syscallent.h
 @@ -231,7 +231,7 @@
@@ -450,7 +450,7 @@ index 98b29e5e8..38056daf6 100644
  [226] = { 4,	TD|TN,		SEN(sendfile64),		"sendfile64"		},
  [227] = { 2,	TM,		SEN(io_setup),			"io_setup"		},
 diff --git a/src/linux/powerpc64/syscallent.h b/src/linux/powerpc64/syscallent.h
-index a5035cb31..86ffe0099 100644
+index 64f4c3ad5..6d6b3fa74 100644
 --- a/src/linux/powerpc64/syscallent.h
 +++ b/src/linux/powerpc64/syscallent.h
 @@ -199,14 +199,14 @@
@@ -492,7 +492,7 @@ index a5035cb31..86ffe0099 100644
  [256] = { 5,	0,		SEN(printargs),			"sys_debug_setcontext"	},
  [257] = { 5,	0,		SEN(vserver),			"vserver"		},
 diff --git a/src/linux/s390/syscallent.h b/src/linux/s390/syscallent.h
-index 5b83b3d15..ccb956441 100644
+index a808c7b5b..8f7a0aca0 100644
 --- a/src/linux/s390/syscallent.h
 +++ b/src/linux/s390/syscallent.h
 @@ -26,8 +26,8 @@
@@ -626,12 +626,12 @@ index 5b83b3d15..ccb956441 100644
  [244] = { 1,	TM,		SEN(io_destroy),		"io_destroy"		},
  [245] = { 5,	0,		SEN(io_getevents_time32),	"io_getevents"		},
 diff --git a/src/linux/s390x/syscallent.h b/src/linux/s390x/syscallent.h
-index d64141075..8225b5ec4 100644
+index 90bf993b7..8c03af9d9 100644
 --- a/src/linux/s390x/syscallent.h
 +++ b/src/linux/s390x/syscallent.h
 @@ -21,29 +21,29 @@
  [ 10] = { 1,	TF,		SEN(unlink),			"unlink"		},
- [ 11] = { 3,	TF|TP|TSD|SE|SI,	SEN(execve),			"execve"		},
+ [ 11] = { 3,	CC|TF|TP|TSD|SE|SI,	SEN(execve),			"execve"		},
  [ 12] = { 1,	TF,		SEN(chdir),			"chdir"			},
 -[ 13] = { },
 +/* [ 13] - unused */
@@ -785,7 +785,7 @@ index d64141075..8225b5ec4 100644
  [169] = { 3,	0,		SEN(nfsservctl),		"nfsservctl"		},
 -[170 ... 171] = { },
 +/* [170 ... 171] - unused */
- [172] = { 5,	TC,		SEN(prctl),			"prctl"			},
+ [172] = { 5,	CC|TC,		SEN(prctl),			"prctl"			},
  [173] = { 0,	TS,		SEN(rt_sigreturn),		"rt_sigreturn"		},
  [174] = { 4,	TS,		SEN(rt_sigaction),		"rt_sigaction"		},
 @@ -180,7 +180,7 @@
@@ -837,7 +837,7 @@ index d64141075..8225b5ec4 100644
  [266] = { 3,	TD|TFSF|TSFA,	SEN(fstatfs64),			"fstatfs64"		},
  [267] = { 5,	TM|SI,		SEN(remap_file_pages),		"remap_file_pages"	},
 diff --git a/src/linux/sh/syscallent.h b/src/linux/sh/syscallent.h
-index 64f3d6f1f..d79c2e8ed 100644
+index c238f0400..a95f0db99 100644
 --- a/src/linux/sh/syscallent.h
 +++ b/src/linux/sh/syscallent.h
 @@ -197,7 +197,7 @@
@@ -894,7 +894,7 @@ index 64f3d6f1f..d79c2e8ed 100644
  [295] = { 4,	TD|TF,		SEN(openat),			"openat"		},
  [296] = { 3,	TD|TF,		SEN(mkdirat),			"mkdirat"		},
 diff --git a/src/linux/sh64/syscallent.h b/src/linux/sh64/syscallent.h
-index 94e6cea3a..ad192a1b9 100644
+index f33504235..646eb6f4a 100644
 --- a/src/linux/sh64/syscallent.h
 +++ b/src/linux/sh64/syscallent.h
 @@ -89,7 +89,7 @@
@@ -915,23 +915,16 @@ index 94e6cea3a..ad192a1b9 100644
  [114] = { 4,	TP,		SEN(wait4),			"wait4"			},
  [115] = { 1,	TF,		SEN(swapoff),			"swapoff"		},
  [116] = { 1,	0,		SEN(sysinfo),			"sysinfo"		},
-@@ -171,9 +171,15 @@
- [161] = { 2,	0,		SEN(sched_rr_get_interval_time64),"sched_rr_get_interval"},
- [162] = { 2,	0,		SEN(nanosleep_time64),		"nanosleep"		},
+@@ -173,7 +173,7 @@
  [163] = { 5,	TM|SI,		SEN(mremap),			"mremap"		},
-+<<<<<<< HEAD
  [164] = { 3,	TC,		SEN(setresuid16),		"setresuid"		},
  [165] = { 3,	TC,		SEN(getresuid16),		"getresuid"		},
- [166] = { },
-+=======
-+[164] = { 3,	0,		SEN(setresuid16),		"setresuid"		},
-+[165] = { 3,	0,		SEN(getresuid16),		"getresuid"		},
+-[166] = { },
 +/* [166] - unused */
-+>>>>>>> c63898a0... Avoid index ranges and empty initializer lists in syscallent arrays
  [167] = { 5,	0,		SEN(query_module),		"query_module"		},
  [168] = { 3,	TD,		SEN(poll_time64),		"poll"			},
  [169] = { 3,	0,		SEN(nfsservctl),		"nfsservctl"		},
-@@ -195,7 +201,7 @@
+@@ -195,7 +195,7 @@
  [185] = { 2,	TC,		SEN(capset),			"capset"		},
  [186] = { 2,	TS,		SEN(sigaltstack),		"sigaltstack"		},
  [187] = { 4,	TD|TN,		SEN(sendfile),			"sendfile"		},
@@ -940,7 +933,7 @@ index 94e6cea3a..ad192a1b9 100644
  [190] = { 0,	TP,		SEN(vfork),			"vfork"			},
  [191] = { 2,	0,		SEN(getrlimit),			"ugetrlimit"		},
  [192] = { 6,	TD|TM|SI,	SEN(mmap_4koff),		"mmap2"			},
-@@ -256,7 +262,7 @@
+@@ -256,7 +256,7 @@
  [247] = { 3,	TI,		SEN(shmctl),			"shmctl"		},
  [248] = { 3,	TD,		SEN(getdents64),		"getdents64"		},
  [249] = { 3,	TD,		SEN(fcntl64),			"fcntl64"		},
@@ -949,7 +942,7 @@ index 94e6cea3a..ad192a1b9 100644
  [252] = { 0,	PU|NF,		SEN(gettid),			"gettid"		},
  [253] = { 3,	TD,		SEN(readahead),			"readahead"		},
  [254] = { 5,	TF,		SEN(setxattr),			"setxattr"		},
-@@ -276,14 +282,14 @@
+@@ -276,14 +276,14 @@
  [268] = { 6,	0,		SEN(futex_time64),		"futex"			},
  [269] = { 3,	0,		SEN(sched_setaffinity),		"sched_setaffinity"	},
  [270] = { 3,	0,		SEN(sched_getaffinity),		"sched_getaffinity"	},
@@ -966,7 +959,7 @@ index 94e6cea3a..ad192a1b9 100644
  [280] = { 1,	TP|SE,		SEN(exit),			"exit_group"		},
  [281] = { 3,	0,		SEN(lookup_dcookie),		"lookup_dcookie"	},
  [282] = { 1,	TD,		SEN(epoll_create),		"epoll_create"		},
-@@ -305,7 +311,7 @@
+@@ -305,7 +305,7 @@
  [298] = { 3,	TS|TP,		SEN(tgkill),			"tgkill"		},
  [299] = { 2,	TF,		SEN(utimes),			"utimes"		},
  [300] = { 4,	TD,		SEN(fadvise64_64),		"fadvise64_64"		},
@@ -975,7 +968,7 @@ index 94e6cea3a..ad192a1b9 100644
  [302] = { 6,	TM,		SEN(mbind),			"mbind"			},
  [303] = { 5,	TM,		SEN(get_mempolicy),		"get_mempolicy"		},
  [304] = { 3,	TM,		SEN(set_mempolicy),		"set_mempolicy"		},
-@@ -325,7 +331,7 @@
+@@ -325,7 +325,7 @@
  [318] = { 0,	TD,		SEN(inotify_init),		"inotify_init"		},
  [319] = { 3,	TD|TF,		SEN(inotify_add_watch),		"inotify_add_watch"	},
  [320] = { 2,	TD,		SEN(inotify_rm_watch),		"inotify_rm_watch"	},
@@ -985,7 +978,7 @@ index 94e6cea3a..ad192a1b9 100644
  [323] = { 4,	TD|TF,		SEN(openat),			"openat"		},
  [324] = { 3,	TD|TF,		SEN(mkdirat),			"mkdirat"		},
 diff --git a/src/linux/sparc/syscallent.h b/src/linux/sparc/syscallent.h
-index e3321f448..1f83f1619 100644
+index 55d10ec5d..e0d74b014 100644
 --- a/src/linux/sparc/syscallent.h
 +++ b/src/linux/sparc/syscallent.h
 @@ -57,7 +57,7 @@
@@ -1007,7 +1000,7 @@ index e3321f448..1f83f1619 100644
  [166] = { 1,	0,		SEN(set_tid_address),		"set_tid_address"	},
  [167] = { 5,	TF,		SEN(mount),			"mount"			},
 diff --git a/src/linux/sparc64/syscallent.h b/src/linux/sparc64/syscallent.h
-index 94471f0c7..f0bfccd56 100644
+index 9cd51431d..78278a045 100644
 --- a/src/linux/sparc64/syscallent.h
 +++ b/src/linux/sparc64/syscallent.h
 @@ -36,10 +36,10 @@
@@ -1044,7 +1037,7 @@ index 94471f0c7..f0bfccd56 100644
 +/* [ 56] - unused */
  [ 57] = { 2,	TF,		SEN(symlink),			"symlink"		},
  [ 58] = { 3,	TF,		SEN(readlink),			"readlink"		},
- [ 59] = { 3,	TF|TP|TSD|SE|SI,	SEN(execve),			"execve"		},
+ [ 59] = { 3,	CC|TF|TP|TSD|SE|SI,	SEN(execve),			"execve"		},
 @@ -73,31 +73,31 @@
  [ 66] = { 0,	TP,		SEN(vfork),			"vfork"			},
  [ 67] = { 4,	TD,		SEN(pread),			"pread64"		},
@@ -1118,7 +1111,7 @@ index 94471f0c7..f0bfccd56 100644
  [233] = { 1,	0,		SEN(stime),			"stime"			},
  [234] = { 3,	TF|TSF|TSFA,	SEN(statfs64),			"statfs64"		},
 diff --git a/src/linux/xtensa/syscallent.h b/src/linux/xtensa/syscallent.h
-index eb6425d53..5289872d7 100644
+index 09fed329c..69d58ec6d 100644
 --- a/src/linux/xtensa/syscallent.h
 +++ b/src/linux/xtensa/syscallent.h
 @@ -7,7 +7,7 @@
@@ -1243,5 +1236,5 @@ index eb6425d53..5289872d7 100644
  [321] = { 6,	TD|TF,		SEN(fanotify_mark),		"fanotify_mark"		},
  [322] = { 6,	0,		SEN(process_vm_readv),		"process_vm_readv"	},
 -- 
-2.30.0
+2.34.1
 

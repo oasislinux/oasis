@@ -1,22 +1,21 @@
-From 55ff71bf1e559974132c313181134f8a24625fcc Mon Sep 17 00:00:00 2001
+From a9a8b003bc97952fcc47d84b2ba9c490d90985e3 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
-Date: Sat, 26 Sep 2020 16:30:33 -0700
+Date: Fri, 18 Feb 2022 01:40:22 -0800
 Subject: [PATCH] Prevent zero-sized arrays
 
 ---
  src/xlat/btrfs_features_compat.h | 3 ++-
- src/xlat/mq_attr_flags.h         | 3 ++-
+ src/xlat/compat_ptrace_cmds.h    | 3 ++-
  src/xlat/sigprof_codes.h         | 3 ++-
- src/xlat/sock_ipx_options.h      | 3 ++-
- 4 files changed, 8 insertions(+), 4 deletions(-)
+ 3 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/src/xlat/btrfs_features_compat.h b/src/xlat/btrfs_features_compat.h
-index 44d99a5..f20e7c4 100644
+index 12136c495..cc5804a1b 100644
 --- a/src/xlat/btrfs_features_compat.h
 +++ b/src/xlat/btrfs_features_compat.h
-@@ -13,13 +13,14 @@ extern const struct xlat btrfs_features_compat[];
- # else
+@@ -15,13 +15,14 @@ extern const struct xlat btrfs_features_compat[];
  
+ DIAG_PUSH_IGNORE_TAUTOLOGICAL_CONSTANT_COMPARE
  static const struct xlat_data btrfs_features_compat_xdata[] = {
 + {0}
  };
@@ -30,31 +29,29 @@ index 44d99a5..f20e7c4 100644
   .type = XT_NORMAL,
   .flags_mask = 0
    ,
-diff --git a/src/xlat/mq_attr_flags.h b/src/xlat/mq_attr_flags.h
-index c8593a6..3534c0e 100644
---- a/src/xlat/mq_attr_flags.h
-+++ b/src/xlat/mq_attr_flags.h
-@@ -18,13 +18,14 @@ static const struct xlat_data mq_attr_flags_xdata[] = {
-  #define XLAT_VAL_0 ((unsigned) (O_NONBLOCK))
-  #define XLAT_STR_0 STRINGIFY(O_NONBLOCK)
+diff --git a/src/xlat/compat_ptrace_cmds.h b/src/xlat/compat_ptrace_cmds.h
+index 9a7fc96b1..a29567689 100644
+--- a/src/xlat/compat_ptrace_cmds.h
++++ b/src/xlat/compat_ptrace_cmds.h
+@@ -225,11 +225,12 @@ static const struct xlat_data compat_ptrace_cmds_xdata[] = {
+  #define XLAT_VAL_9 ((unsigned) (COMPAT_PTRACE_SETHBPREGS))
+  #define XLAT_STR_9 STRINGIFY(COMPAT_PTRACE_SETHBPREGS)
  #endif
-+  {0},
++ {0}
  };
- #  if !(defined HAVE_M32_MPERS || defined HAVE_MX32_MPERS)
  static
- #  endif
- const struct xlat mq_attr_flags[1] = { {
-  .data = mq_attr_flags_xdata,
-- .size = ARRAY_SIZE(mq_attr_flags_xdata),
-+ .size = ARRAY_SIZE(mq_attr_flags_xdata) - 1,
-  .type = XT_NORMAL,
+ const struct xlat compat_ptrace_cmds[1] = { {
+  .data = compat_ptrace_cmds_xdata,
+- .size = ARRAY_SIZE(compat_ptrace_cmds_xdata),
++ .size = ARRAY_SIZE(compat_ptrace_cmds_xdata) - 1,
+  .type = XT_SORTED,
   .flags_mask = 0
  #  ifdef XLAT_VAL_0
 diff --git a/src/xlat/sigprof_codes.h b/src/xlat/sigprof_codes.h
-index 5147a5f..019edf3 100644
+index bc61fdc8f..88f043ab9 100644
 --- a/src/xlat/sigprof_codes.h
 +++ b/src/xlat/sigprof_codes.h
-@@ -18,13 +18,14 @@ static const struct xlat_data sigprof_codes_xdata[] = {
+@@ -20,13 +20,14 @@ static const struct xlat_data sigprof_codes_xdata[] = {
   #define XLAT_VAL_0 ((unsigned) (PROF_SIG))
   #define XLAT_STR_0 STRINGIFY(PROF_SIG)
  #endif
@@ -70,24 +67,6 @@ index 5147a5f..019edf3 100644
   .type = XT_NORMAL,
   .flags_mask = 0
  #  ifdef XLAT_VAL_0
-diff --git a/src/xlat/sock_ipx_options.h b/src/xlat/sock_ipx_options.h
-index 653d4dc..2f259ba 100644
---- a/src/xlat/sock_ipx_options.h
-+++ b/src/xlat/sock_ipx_options.h
-@@ -18,11 +18,12 @@ static const struct xlat_data sock_ipx_options_xdata[] = {
-  #define XLAT_VAL_0 ((unsigned) (IPX_TYPE))
-  #define XLAT_STR_0 STRINGIFY(IPX_TYPE)
- #endif
-+  {0}
- };
- static
- const struct xlat sock_ipx_options[1] = { {
-  .data = sock_ipx_options_xdata,
-- .size = ARRAY_SIZE(sock_ipx_options_xdata),
-+ .size = ARRAY_SIZE(sock_ipx_options_xdata) - 1,
-  .type = XT_NORMAL,
-  .flags_mask = 0
- #  ifdef XLAT_VAL_0
 -- 
-2.30.0
+2.34.1
 

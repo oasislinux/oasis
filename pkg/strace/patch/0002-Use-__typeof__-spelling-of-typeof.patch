@@ -1,4 +1,4 @@
-From eeb1e797fc52a2a7fc470420ddd57344362c2c2e Mon Sep 17 00:00:00 2001
+From deb58e1542286779d0bd95482ae3e4e7e7ce7fb7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:33:01 -0700
 Subject: [PATCH] Use __typeof__ spelling of typeof
@@ -8,20 +8,21 @@ Subject: [PATCH] Use __typeof__ spelling of typeof
  src/defs.h           |  6 +++---
  src/fs_0x94_ioctl.c  |  2 +-
  src/fs_f_ioctl.c     |  2 +-
- src/gcc_compat.h     |  2 +-
+ src/landlock.c       |  4 ++--
  src/list.h           | 10 +++++-----
  src/macros.h         |  2 +-
  src/net.c            |  2 +-
+ src/tee.c            |  2 +-
  src/ubi.c            |  2 +-
  tests/btrfs.c        |  2 +-
  tests/fcntl-common.c |  2 +-
- 11 files changed, 22 insertions(+), 22 deletions(-)
+ 12 files changed, 24 insertions(+), 24 deletions(-)
 
 diff --git a/src/btrfs.c b/src/btrfs.c
-index df2b35a7f..2c49dcc67 100644
+index 349fee657..c641d2408 100644
 --- a/src/btrfs.c
 +++ b/src/btrfs.c
-@@ -214,7 +214,7 @@ btrfs_print_logical_ino_container(struct tcb *tcp,
+@@ -216,7 +216,7 @@ btrfs_print_logical_ino_container(struct tcb *tcp,
  		tprint_more_data_follows();
  	} else {
  		const uint64_t val_addr =
@@ -30,7 +31,7 @@ index df2b35a7f..2c49dcc67 100644
  		uint64_t record[3];
  		tprint_struct_next();
  		tprints_field_name("val");
-@@ -255,7 +255,7 @@ btrfs_print_ino_path_container(struct tcb *tcp,
+@@ -257,7 +257,7 @@ btrfs_print_ino_path_container(struct tcb *tcp,
  		tprint_more_data_follows();
  	} else {
  		uint64_t val_addr =
@@ -39,16 +40,16 @@ index df2b35a7f..2c49dcc67 100644
  		uint64_t offset;
  		tprint_struct_next();
  		tprints_field_name("val");
-@@ -296,7 +296,7 @@ btrfs_print_qgroup_inherit(struct tcb *const tcp, const kernel_ulong_t qgi_addr)
+@@ -298,7 +298,7 @@ btrfs_print_qgroup_inherit(struct tcb *const tcp, const kernel_ulong_t qgi_addr)
  		uint64_t record;
  		tprint_struct_next();
  		tprints_field_name("qgroups");
 -		print_array(tcp, qgi_addr + offsetof(typeof(inherit), qgroups),
 +		print_array(tcp, qgi_addr + offsetof(__typeof__(inherit), qgroups),
  			    inherit.num_qgroups, &record, sizeof(record),
- 			    tfetch_mem, print_uint64_array_member, 0);
+ 			    tfetch_mem, print_uint_array_member, 0);
  	}
-@@ -1149,7 +1149,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+@@ -1169,7 +1169,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
  		PRINT_FIELD_OBJ_PTR(args, key,
  				    print_btrfs_ioctl_search_key,
  				    entering(tcp), !abbrev(tcp));
@@ -57,7 +58,7 @@ index df2b35a7f..2c49dcc67 100644
  				      sizeof(args.buf), args.key.nr_items);
  		tprint_struct_end();
  		if (entering(tcp))
-@@ -1185,7 +1185,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+@@ -1205,7 +1205,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
  				    entering(tcp), !abbrev(tcp));
  		tprint_struct_next();
  		PRINT_FIELD_U(args, buf_size);
@@ -66,7 +67,7 @@ index df2b35a7f..2c49dcc67 100644
  				      args.buf_size, args.key.nr_items);
  		tprint_struct_end();
  		if (entering(tcp))
-@@ -1263,7 +1263,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+@@ -1283,7 +1283,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
  			struct btrfs_ioctl_space_info info;
  			tprint_struct_next();
  			tprints_field_name("spaces");
@@ -76,10 +77,10 @@ index df2b35a7f..2c49dcc67 100644
  				    &info, sizeof(info), tfetch_mem,
  				    print_btrfs_ioctl_space_info, 0);
 diff --git a/src/defs.h b/src/defs.h
-index bbc8aa38f..d8f84b32b 100644
+index fd11d60c3..71cec62b4 100644
 --- a/src/defs.h
 +++ b/src/defs.h
-@@ -1047,7 +1047,7 @@ print_local_array_ex(struct tcb *tcp,
+@@ -1089,7 +1089,7 @@ print_local_array_ex(struct tcb *tcp,
  # define print_local_array_upto(tcp_, start_addr_, upto_, print_func_)	     \
  	print_local_array_ex((tcp_), (start_addr_),			     \
  			     CLAMP((upto_), 0,				     \
@@ -88,7 +89,7 @@ index bbc8aa38f..d8f84b32b 100644
  			     sizeof((start_addr_)[0]), (print_func_),        \
  			     NULL, 0, NULL, NULL)
  
-@@ -1793,8 +1793,8 @@ scno_is_valid(kernel_ulong_t scno)
+@@ -1926,8 +1926,8 @@ scno_is_valid(kernel_ulong_t scno)
  
  # define ILOG2_ITER_(val_, ret_, bit_)					\
  	do {								\
@@ -125,19 +126,28 @@ index 7b51bc9f9..ee9a42754 100644
  			    args.fm_mapped_extents, &fe, sizeof(fe),
  			    tfetch_mem, print_fiemap_extent, 0);
  	}
-diff --git a/src/gcc_compat.h b/src/gcc_compat.h
-index 9b9bc9389..65f47f73f 100644
---- a/src/gcc_compat.h
-+++ b/src/gcc_compat.h
-@@ -59,7 +59,7 @@
- # endif
+diff --git a/src/landlock.c b/src/landlock.c
+index d3ddb4edb..151bea7af 100644
+--- a/src/landlock.c
++++ b/src/landlock.c
+@@ -19,7 +19,7 @@ print_landlock_ruleset_attr(struct tcb *tcp, const kernel_ulong_t addr,
+ {
+ 	struct landlock_ruleset_attr attr;
  
- # if GNUC_PREREQ(3, 0)
--#  define SAME_TYPE(x, y)	__builtin_types_compatible_p(typeof(x), typeof(y))
-+#  define SAME_TYPE(x, y)	__builtin_types_compatible_p(__typeof__(x), __typeof__(y))
- #  define FAIL_BUILD_ON_ZERO(expr) (sizeof(int[-1 + 2 * !!(expr)]) * 0)
- /* &(a)[0] is a pointer and not an array, shouldn't be treated as the same */
- #  define MUST_BE_ARRAY(a) FAIL_BUILD_ON_ZERO(!SAME_TYPE((a), &(a)[0]))
+-	if (size < offsetofend(typeof(attr), handled_access_fs)) {
++	if (size < offsetofend(__typeof__(attr), handled_access_fs)) {
+ 		printaddr(addr);
+ 		return;
+ 	}
+@@ -31,7 +31,7 @@ print_landlock_ruleset_attr(struct tcb *tcp, const kernel_ulong_t addr,
+ 	PRINT_FIELD_FLAGS(attr, handled_access_fs, landlock_ruleset_access_fs,
+ 			  "LANDLOCK_ACCESS_FS_???");
+ 
+-	if (size > offsetofend(typeof(attr), handled_access_fs)) {
++	if (size > offsetofend(__typeof__(attr), handled_access_fs)) {
+ 		tprint_arg_next();
+ 		tprint_more_data_follows();
+ 	}
 diff --git a/src/list.h b/src/list.h
 index 4de4cb3be..f4ec11f0e 100644
 --- a/src/list.h
@@ -181,10 +191,10 @@ index 4de4cb3be..f4ec11f0e 100644
  
  #endif /* !STRACE_LIST_H */
 diff --git a/src/macros.h b/src/macros.h
-index 467f5d042..be54782bf 100644
+index fc563ce2d..02f58d726 100644
 --- a/src/macros.h
 +++ b/src/macros.h
-@@ -39,7 +39,7 @@
+@@ -62,7 +62,7 @@
  
  # define sizeof_field(type_, member_) (sizeof(((type_ *)0)->member_))
  
@@ -194,11 +204,11 @@ index 467f5d042..be54782bf 100644
  # ifndef offsetofend
  #  define offsetofend(type_, member_)	\
 diff --git a/src/net.c b/src/net.c
-index b23911a97..9790943be 100644
+index 3ba2330fb..8d4458a70 100644
 --- a/src/net.c
 +++ b/src/net.c
-@@ -528,7 +528,7 @@ SYS_FUNC(socketpair)
- #define MAYBE_PRINT_FIELD_LEN(print_prefix_, where_, field_, 		\
+@@ -524,7 +524,7 @@ SYS_FUNC(socketpair)
+ #define MAYBE_PRINT_FIELD_LEN(print_prefix_, where_, field_,		\
  			len_, print_func_, ...)				\
  	do {								\
 -		unsigned int start = offsetof(typeof(where_), field_);	\
@@ -206,6 +216,19 @@ index b23911a97..9790943be 100644
  		unsigned int end = start + sizeof(where_.field_);	\
  		if (len_ > start) {					\
  			print_prefix_;					\
+diff --git a/src/tee.c b/src/tee.c
+index d7e9b15d9..fc735e0da 100644
+--- a/src/tee.c
++++ b/src/tee.c
+@@ -33,7 +33,7 @@ struct tee_ioctl_shm_register_fd_data {
+ 
+ #define TEE_FETCH_BUF_DATA(buf_, arg_, params_) \
+ 	tee_fetch_buf_data(tcp, arg, &buf_, sizeof(arg_), \
+-			   &arg_, offsetof(typeof(arg_), num_params), \
++			   &arg_, offsetof(__typeof__(arg_), num_params), \
+ 			   params_)
+ 
+ /* session id is printed as 0x%x in libteec */
 diff --git a/src/ubi.c b/src/ubi.c
 index bd2d2811e..ff9f88cd0 100644
 --- a/src/ubi.c
@@ -220,12 +243,12 @@ index bd2d2811e..ff9f88cd0 100644
  	tprint_struct_begin();
  	PRINT_FIELD_D(*p, vol_id);
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index fd240259c..6d98c0b9c 100644
+index 867d93213..12ae01545 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
-@@ -849,7 +849,7 @@ btrfs_print_tree_search_buf(struct btrfs_ioctl_search_key *key,
+@@ -876,7 +876,7 @@ btrfs_print_tree_search_buf(struct btrfs_ioctl_search_key *key,
  		printf("buf=[");
- 		for (i = 0; i < key->nr_items; i++) {
+ 		for (uint64_t i = 0; i < key->nr_items; ++i) {
  			struct btrfs_ioctl_search_header *sh;
 -			sh = (typeof(sh))(buf + off);
 +			sh = (__typeof__(sh))(buf + off);
@@ -233,11 +256,11 @@ index fd240259c..6d98c0b9c 100644
  				printf(", ");
  			printf("{transid=%" PRI__u64 ", objectid=",
 diff --git a/tests/fcntl-common.c b/tests/fcntl-common.c
-index 878a23c7c..0cfa23174 100644
+index 20f92dd1d..aa6ecc8f5 100644
 --- a/tests/fcntl-common.c
 +++ b/tests/fcntl-common.c
-@@ -22,7 +22,7 @@
- #define TEST_FLOCK64_EINVAL(cmd) test_flock64_einval(cmd, #cmd)
+@@ -28,7 +28,7 @@
+ #endif
  
  #ifdef HAVE_TYPEOF
 -# define TYPEOF_FLOCK_OFF_T typeof(((struct flock *) NULL)->l_len)
@@ -246,5 +269,5 @@ index 878a23c7c..0cfa23174 100644
  # define TYPEOF_FLOCK_OFF_T off_t
  #endif
 -- 
-2.31.1
+2.34.1
 

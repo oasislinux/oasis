@@ -1,4 +1,4 @@
-From 3e8180da79247998e838a028112e8b86a43e8172 Mon Sep 17 00:00:00 2001
+From 4cd0019ddd66505ce71f0cffa3627a4a038640ef Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -6,15 +6,16 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
 ---
  src/netlink_smc_diag.c |  4 ++--
  src/print_timespec.h   |  6 ++++--
- src/sockaddr.c         |  2 +-
- src/ucopy.c            | 10 +++++-----
- 4 files changed, 12 insertions(+), 10 deletions(-)
+ src/sockaddr.c         |  4 ++--
+ src/tee.c              |  2 +-
+ src/ucopy.c            | 12 ++++++------
+ 5 files changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/src/netlink_smc_diag.c b/src/netlink_smc_diag.c
-index 7d2872dc9..fd6c276cb 100644
+index f7ff06b6b..dbf5be980 100644
 --- a/src/netlink_smc_diag.c
 +++ b/src/netlink_smc_diag.c
-@@ -41,7 +41,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_req)
+@@ -42,7 +42,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_req)
  	if (len >= sizeof(req)) {
  		if (!umoven_or_printaddr(tcp, addr + offset,
  					 sizeof(req) - offset,
@@ -59,10 +60,10 @@ index 9603a6bb6..f5f747c42 100644
  
  	tprint_array_end();
 diff --git a/src/sockaddr.c b/src/sockaddr.c
-index 3da702153..9487741d6 100644
+index a6e698d4b..52c10eac4 100644
 --- a/src/sockaddr.c
 +++ b/src/sockaddr.c
-@@ -497,7 +497,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
+@@ -580,7 +580,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
  static void
  print_sockaddr_data_raw(const void *const buf, const int addrlen)
  {
@@ -71,8 +72,30 @@ index 3da702153..9487741d6 100644
  	const int datalen = addrlen - SIZEOF_SA_FAMILY;
  
  	tprints_field_name("sa_data");
+@@ -777,7 +777,7 @@ print_sockaddr_data_rxrpc(struct tcb *tcp, const void *const buf,
+ 	tprints_field_name("transport");
+ 	tprint_struct_begin();
+ 
+-	const void *const transport_buf = (void *) &sa->transport
++	const void *const transport_buf = (char *) &sa->transport
+ 					  + sizeof(sa->transport.family);
+ 	const int transport_len = MIN(sa->transport_len,
+ 				      len - offsetof(struct sockaddr_rxrpc,
+diff --git a/src/tee.c b/src/tee.c
+index fc735e0da..f705a7a94 100644
+--- a/src/tee.c
++++ b/src/tee.c
+@@ -69,7 +69,7 @@ tee_fetch_buf_data(struct tcb *const tcp,
+ 		tee_print_buf(buf);
+ 		return RVAL_IOCTL_DECODED;
+ 	}
+-	uint32_t *num_params = (uint32_t *) (arg_struct + num_params_offs);
++	uint32_t *num_params = (uint32_t *) ((char *)arg_struct + num_params_offs);
+ 	if (entering(tcp) &&
+ 	    (arg_size + TEE_IOCTL_PARAM_SIZE(*num_params) != buf->buf_len)) {
+ 		/*
 diff --git a/src/ucopy.c b/src/ucopy.c
-index 6cebb8e26..e8ca2ad5d 100644
+index c769a1916..ed401ae74 100644
 --- a/src/ucopy.c
 +++ b/src/ucopy.c
 @@ -186,7 +186,7 @@ vm_read_mem(const pid_t pid, void *laddr,
@@ -84,8 +107,8 @@ index 6cebb8e26..e8ca2ad5d 100644
  		page_start += page_size;
  		taddr = page_start;
  	}
-@@ -278,7 +278,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
- 		memcpy(laddr, &u.x[residue], m);
+@@ -282,7 +282,7 @@ umoven_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+ 		memcpy(laddr, &u.data[residue], m);
  		residue = 0;
  		addr += sizeof(long);
 -		laddr += m;
@@ -93,10 +116,10 @@ index 6cebb8e26..e8ca2ad5d 100644
  		nread += m;
  		len -= m;
  	}
-@@ -375,10 +375,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
- 		memcpy(laddr, &u.x[residue], m);
+@@ -378,10 +378,10 @@ umovestr_peekdata(const int pid, kernel_ulong_t addr, unsigned int len,
+ 		memcpy(laddr, &u.data[residue], m);
  		while (residue < sizeof(long))
- 			if (u.x[residue++] == '\0')
+ 			if (u.data[residue++] == '\0')
 -				return (laddr - orig_addr) + residue;
 +				return nread + residue;
  		residue = 0;
@@ -106,7 +129,16 @@ index 6cebb8e26..e8ca2ad5d 100644
  		nread += m;
  		len -= m;
  	}
-@@ -509,7 +509,7 @@ upoken_pokedata(const int pid, kernel_ulong_t addr, unsigned int len,
+@@ -502,7 +502,7 @@ upoken_pokedata(const int pid, kernel_ulong_t addr, unsigned int len,
+ 
+ 		addr += sizeof(long);
+ 		nwritten += npoke;
+-		our_addr += npoke;
++		our_addr = (char *)our_addr + npoke;
+ 		len -= npoke;
+ 	}
+ 
+@@ -515,7 +515,7 @@ upoken_pokedata(const int pid, kernel_ulong_t addr, unsigned int len,
  
  		addr += sizeof(long);
  		nwritten += sizeof(long);
@@ -116,5 +148,5 @@ index 6cebb8e26..e8ca2ad5d 100644
  	}
  
 -- 
-2.31.1
+2.34.1
 

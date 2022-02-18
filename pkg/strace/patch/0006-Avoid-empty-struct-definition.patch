@@ -1,4 +1,4 @@
-From 4abe148a0e2dc930a5cdb8d92e88af203898368a Mon Sep 17 00:00:00 2001
+From f94d470d85911142bff6cb3821079f3ff321edfc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:50:31 -0700
 Subject: [PATCH] Avoid empty struct definition
@@ -34,5 +34,5 @@ index b5125d420..b45a48da5 100644
  		return false;
  
 -- 
-2.30.0
+2.34.1
 

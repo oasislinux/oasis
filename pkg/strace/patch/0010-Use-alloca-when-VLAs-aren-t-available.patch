@@ -1,4 +1,4 @@
-From 1c1cc6c87f4388ef1e7259fee347a0c36fe11bac Mon Sep 17 00:00:00 2001
+From 4673bf0d6a0eba5d363266a40cfb087e08a66e7f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 30 Jan 2020 21:57:34 -0800
 Subject: [PATCH] Use alloca when VLAs aren't available
@@ -8,10 +8,10 @@ Subject: [PATCH] Use alloca when VLAs aren't available
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/src/evdev.c b/src/evdev.c
-index 08d5d9034..01b87ca3e 100644
+index 81dd951cb..74a765469 100644
 --- a/src/evdev.c
 +++ b/src/evdev.c
-@@ -161,9 +161,13 @@ decode_bitset(struct tcb *const tcp, const kernel_ulong_t arg,
+@@ -164,9 +164,13 @@ decode_bitset(struct tcb *const tcp, const kernel_ulong_t arg,
  		return RVAL_IOCTL_DECODED;
  	}
  
@@ -27,5 +27,5 @@ index 08d5d9034..01b87ca3e 100644
  
  	if (xlat_verbose(xlat_verbosity) != XLAT_STYLE_RAW) {
 -- 
-2.31.1
+2.34.1
 

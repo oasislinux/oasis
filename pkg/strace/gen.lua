@@ -126,6 +126,7 @@ local srcs = paths[[src/(
 	fetch_bpf_fprog.c
 	fetch_indirect_syscall_args.c
 	fetch_struct_flock.c
+	fetch_struct_iovec.c
 	fetch_struct_keyctl_kdf_params.c
 	fetch_struct_mmsghdr.c
 	fetch_struct_msghdr.c
@@ -147,6 +148,8 @@ local srcs = paths[[src/(
 	fstatfs.c
 	fstatfs64.c
 	futex.c
+	futex_waitv.c
+	gen/gen_hdio.c
 	get_personality.c
 	get_robust_list.c
 	getcpu.c
@@ -172,9 +175,12 @@ local srcs = paths[[src/(
 	ipc_shm.c
 	ipc_shmctl.c
 	kcmp.c
+	kd_ioctl.c
+	kd_mpers_ioctl.c
 	kexec.c
 	keyctl.c
 	kvm.c
+	landlock.c
 	ldt.c
 	link.c
 	listen.c
@@ -184,6 +190,7 @@ local srcs = paths[[src/(
 	mem.c
 	membarrier.c
 	memfd_create.c
+	memfd_secret.c
 	mknod.c
 	mmap_cache.c
 	mmap_notify.c
@@ -250,15 +257,16 @@ local srcs = paths[[src/(
 	printmode.c
 	printrusage.c
 	printsiginfo.c
-	process.c
 	process_vm.c
 	ptp.c
+	ptrace.c
 	ptrace_syscall_info.c
 	quota.c
 	random_ioctl.c
 	readahead.c
 	readlink.c
 	reboot.c
+	regset.c
 	renameat.c
 	resource.c
 	retval.c
@@ -268,21 +276,25 @@ local srcs = paths[[src/(
 	rtc.c
 	rtnl_addr.c
 	rtnl_addrlabel.c
+	rtnl_cachereport.c
 	rtnl_dcb.c
 	rtnl_link.c
 	rtnl_mdb.c
 	rtnl_neigh.c
 	rtnl_neightbl.c
 	rtnl_netconf.c
+	rtnl_nh.c
 	rtnl_nsid.c
 	rtnl_route.c
 	rtnl_rule.c
+	rtnl_stats.c
 	rtnl_tc.c
 	rtnl_tc_action.c
 	s390.c
 	sched.c
 	scsi.c
 	seccomp.c
+	seccomp_ioctl.c
 	sendfile.c
 	sg_io_v3.c
 	sg_io_v4.c
@@ -308,6 +320,7 @@ local srcs = paths[[src/(
 	sync_file_range.c
 	sync_file_range2.c
 	syscall.c
+	syscall_name.c
 	sysctl.c
 	sysinfo.c
 	syslog.c
@@ -362,6 +375,17 @@ pkg.deps = {
 lib('libstrace.a', srcs)
 exe('strace', {'src/strace.c', 'libstrace.a'})
 file('bin/strace', '755', '$outdir/strace')
-man{'doc/strace.1'}
+
+build('sed', '$outdir/strace.1', '$srcdir/doc/strace.1.in', {
+	expr={
+		[[-e 's,@STRACE_MANPAGE_DATE@,2022-01-04,']],
+		[[-e 's,@VERSION@,5.16,']],
+		[[-e 's,@ENABLE_STACKTRACE_TRUE@,#,']],
+		[[-e 's,@ENABLE_STACKTRACE_FALSE@,,']],
+		[[-e 's,@ENABLE_SECONTEXT_TRUE@,#,']],
+		[[-e 's,@ENABLE_SECONTEXT_FALSE@,,']],
+	},
+})
+man{'$outdir/strace.1'}
 
 fetch 'curl'

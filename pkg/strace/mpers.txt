@@ -5,6 +5,7 @@ dirent.c
 evdev_mpers.c
 fetch_bpf_fprog.c
 fetch_struct_flock.c
+fetch_struct_iovec.c
 fetch_struct_keyctl_kdf_params.c
 fetch_struct_mmsghdr.c
 fetch_struct_msghdr.c
@@ -16,6 +17,7 @@ hdio.c
 ipc_msgctl.c
 ipc_semctl.c
 ipc_shmctl.c
+kd_mpers_ioctl.c
 loop.c
 mtd.c
 perf_ioctl.c
@@ -29,6 +31,7 @@ print_time.c
 print_timeval.c
 printrusage.c
 printsiginfo.c
+regset.c
 rt_sigreturn.c
 rtc.c
 sg_io_v3.c

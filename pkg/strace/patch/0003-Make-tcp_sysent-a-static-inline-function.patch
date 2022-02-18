@@ -1,4 +1,4 @@
-From 21e7b497ab2009b9905566d3846c5aeb4d6db795 Mon Sep 17 00:00:00 2001
+From 42f2ce6f4e8cd2e6e1667088da58e237afc2cbb0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:40:36 -0700
 Subject: [PATCH] Make tcp_sysent a static inline function
@@ -10,10 +10,10 @@ operator without evaluating the macro argument multiple times.
  1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/src/defs.h b/src/defs.h
-index d8f84b32b..728e1fede 100644
+index 71cec62b4..56b2882b6 100644
 --- a/src/defs.h
 +++ b/src/defs.h
-@@ -390,8 +390,12 @@ struct tcb {
+@@ -397,8 +397,12 @@ struct tcb {
  # define syscall_tampered_nofail(tcp) ((tcp)->flags & TCB_TAMPERED_NO_FAIL)
  # define has_seccomp_filter(tcp)	((tcp)->flags & TCB_SECCOMP_FILTER)
  
@@ -29,5 +29,5 @@ index d8f84b32b..728e1fede 100644
  
  # include "xlat.h"
 -- 
-2.31.1
+2.34.1
 
