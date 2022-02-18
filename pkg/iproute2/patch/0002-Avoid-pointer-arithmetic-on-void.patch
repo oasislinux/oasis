@@ -1,4 +1,4 @@
-From 182b5b66b931b6aca9e546f758be6cd73ec50d61 Mon Sep 17 00:00:00 2001
+From f322d5077bb45dffaa384be4c78e4cf218767bf5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 19:12:31 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -106,10 +106,10 @@ index bf48e8b5..eecb7e48 100644
  		fprintf(stderr, "incomplete dump message\n");
  		return -1;
 diff --git a/ip/ipmptcp.c b/ip/ipmptcp.c
-index fd042da8..46227e27 100644
+index 85700444..bbdd06e7 100644
 --- a/ip/ipmptcp.c
 +++ b/ip/ipmptcp.c
-@@ -250,7 +250,7 @@ static int print_mptcp_addr(struct nlmsghdr *n, void *arg)
+@@ -256,7 +256,7 @@ static int print_mptcp_addr(struct nlmsghdr *n, void *arg)
  		return -1;
  
  	ghdr = NLMSG_DATA(n);
@@ -118,7 +118,7 @@ index fd042da8..46227e27 100644
  			   len, NLA_F_NESTED);
  	addrinfo = tb[MPTCP_PM_ATTR_ADDR];
  	if (!addrinfo)
-@@ -361,7 +361,7 @@ static int print_mptcp_limit(struct nlmsghdr *n, void *arg)
+@@ -371,7 +371,7 @@ static int print_mptcp_limit(struct nlmsghdr *n, void *arg)
  		return -1;
  
  	ghdr = NLMSG_DATA(n);
@@ -127,7 +127,7 @@ index fd042da8..46227e27 100644
  
  	open_json_object(NULL);
  	if (tb[MPTCP_PM_ATTR_RCV_ADD_ADDRS]) {
-@@ -450,7 +450,7 @@ static int mptcp_monitor_msg(struct rtnl_ctrl_data *ctrl,
+@@ -460,7 +460,7 @@ static int mptcp_monitor_msg(struct rtnl_ctrl_data *ctrl,
  
  	printf("[%14s]", event_to_str[ghdr->cmd]);
  
@@ -228,5 +228,5 @@ index 53d31006..0f683f9c 100644
  		len = size;
  
 -- 
-2.34.0
+2.34.1
 

@@ -1,4 +1,4 @@
-From 572e84091a11295ad0ba8a7722016306ae510763 Mon Sep 17 00:00:00 2001
+From f30befee39d2f8cf06158bfd5b37b675e2287f3f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:39:40 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -13,10 +13,10 @@ Subject: [PATCH] Don't omit second operand to '?' operator
  6 files changed, 33 insertions(+), 15 deletions(-)
 
 diff --git a/ip/iproute_lwtunnel.c b/ip/iproute_lwtunnel.c
-index 218d5086..937c3278 100644
+index b05dffc6..a2d868db 100644
 --- a/ip/iproute_lwtunnel.c
 +++ b/ip/iproute_lwtunnel.c
-@@ -253,7 +253,7 @@ static const char *format_action_type(int action)
+@@ -291,7 +291,7 @@ static const char *format_action_type(int action)
  	if (action < 0 || action > SEG6_LOCAL_ACTION_MAX)
  		return "<invalid>";
  
@@ -25,7 +25,7 @@ index 218d5086..937c3278 100644
  }
  
  static int read_action_type(const char *name)
-@@ -284,7 +284,7 @@ static void print_encap_bpf_prog(FILE *fp, struct rtattr *encap,
+@@ -322,7 +322,7 @@ static void print_encap_bpf_prog(FILE *fp, struct rtattr *encap,
  
  	if (is_json_context())
  		print_string(PRINT_JSON, str, NULL,
@@ -70,10 +70,10 @@ index f3167858..5095e0f8 100644
  				print_uint(PRINT_ANY, "pid",
  					   "(%d)", pid);
 diff --git a/lib/bpf_legacy.c b/lib/bpf_legacy.c
-index d01c3b89..023a096b 100644
+index 614ee1c6..21853635 100644
 --- a/lib/bpf_legacy.c
 +++ b/lib/bpf_legacy.c
-@@ -768,7 +768,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
+@@ -786,7 +786,7 @@ static const char *bpf_get_work_dir(enum bpf_prog_type type)
  		mnt = bpf_find_mntpt("bpf", BPF_FS_MAGIC, bpf_tmp,
  				     sizeof(bpf_tmp), bpf_known_mnts);
  	if (!mnt) {
@@ -197,5 +197,5 @@ index eda95552..202e5385 100644
  	}
  
 -- 
-2.34.0
+2.34.1
 

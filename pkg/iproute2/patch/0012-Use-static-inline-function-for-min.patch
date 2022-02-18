@@ -1,4 +1,4 @@
-From 04a1a40ac12d194de7f4077e7af02fa7564b070e Mon Sep 17 00:00:00 2001
+From 610a720da48cb1b4de2364d70215450275edebcb Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 24 Jun 2019 17:38:56 -0700
 Subject: [PATCH] Use static inline function for min()
@@ -10,10 +10,10 @@ It is only called to calculate a minimum `int`, so specialize for
  1 file changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/include/utils.h b/include/utils.h
-index c9849461..7fb33bb7 100644
+index b6c468e9..8bdbb369 100644
 --- a/include/utils.h
 +++ b/include/utils.h
-@@ -267,13 +267,10 @@ unsigned int print_name_and_link(const char *fmt,
+@@ -273,13 +273,10 @@ unsigned int print_name_and_link(const char *fmt,
  # define offsetof(type, member) ((size_t) &((type *)0)->member)
  #endif
  
@@ -32,5 +32,5 @@ index c9849461..7fb33bb7 100644
  #ifndef __check_format_string
  # define __check_format_string(pos_str, pos_args) \
 -- 
-2.34.0
+2.34.1
 

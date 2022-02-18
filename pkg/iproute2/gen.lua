@@ -23,7 +23,10 @@ lib('libnetlink.a', [[lib/(
 	utils.c utils_math.c rt_names.c ll_map.c ll_types.c ll_proto.c ll_addr.c
 	inet_proto.c namespace.c json_writer.c json_print.c json_print_math.c
 	names.c color.c bpf_legacy.c bpf_glue.c exec.c fs.c cg_map.c
+	ax25_ntop.c
+	rose_ntop.c
 	mpls_ntop.c mpls_pton.c
+	netrom_ntop.c
 )]])
 
 exe('bin/ip', [[ip/(
@@ -40,6 +43,7 @@ exe('bin/ip', [[ip/(
 	iplink_geneve.c iplink_vrf.c iproute_lwtunnel.c ipmacsec.c ipila.c
 	ipvrf.c iplink_xstats.c ipseg6.c iplink_netdevsim.c iplink_rmnet.c
 	ipnexthop.c ipmptcp.c iplink_bareudp.c iplink_wwan.c ipioam6.c
+	iplink_amt.c
 ) libnetlink.a]])
 file('bin/ip', '755', '$outdir/bin/ip')
 
