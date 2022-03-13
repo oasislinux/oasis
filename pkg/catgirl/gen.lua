@@ -20,10 +20,12 @@ exe('catgirl', [[
 	edit.c
 	filter.c
 	handle.c
+	input.c
 	irc.c
 	log.c
 	ui.c
 	url.c
+	window.c
 	xdg.c
 	$builddir/pkg/libtls-bearssl/libtls.a.d
 	$builddir/pkg/netbsd-curses/libcurses.a.d

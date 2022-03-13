@@ -1,4 +1,4 @@
-From 9c8a70c58b3b95dcccf3e91f570781938d517dcd Mon Sep 17 00:00:00 2001
+From 2c3519fb68301db5a2aef8715b3cd6ea29fa45ae Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 3 Jun 2021 00:54:30 -0700
 Subject: [PATCH] [HACK] Disable colorized output in M-l window list
@@ -6,26 +6,26 @@ Subject: [PATCH] [HACK] Disable colorized output in M-l window list
 vid_attr is not supported by NetBSD's libcurses, and this is not
 crucial feature.
 ---
- ui.c | 2 --
+ window.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/ui.c b/ui.c
-index 1e9e03f..dcdf6ae 100644
---- a/ui.c
-+++ b/ui.c
-@@ -684,7 +684,6 @@ static void windowList(const struct Window *window) {
- 
+diff --git a/window.c b/window.c
+index d7bc472..b322c55 100644
+--- a/window.c
++++ b/window.c
+@@ -294,7 +294,6 @@ void windowBare(void) {
  		char buf[TimeCap];
- 		strftime(buf, sizeof(buf), uiTime.format, localtime(&line->time));
--		vid_attr(colorAttr(Colors[Gray]), colorPair(Colors[Gray], -1), NULL);
+ 		struct Style style = { .fg = Gray, .bg = Default };
+ 		strftime(buf, sizeof(buf), windowTime.format, localtime(&line->time));
+-		vid_attr(uiAttr(style), uiPair(style), NULL);
  		printf("%s ", buf);
  
  		bool align = false;
-@@ -700,7 +699,6 @@ static void windowList(const struct Window *window) {
+@@ -310,7 +309,6 @@ void windowBare(void) {
  			size_t tab = strcspn(str, "\t");
  			if (tab < len) len = tab;
  
--			vid_attr(styleAttr(style), stylePair(style), NULL);
+-			vid_attr(uiAttr(style), uiPair(style), NULL);
  			printf("%.*s", (int)len, str);
  			str += len;
  		}
