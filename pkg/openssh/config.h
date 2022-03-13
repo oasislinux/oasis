@@ -17,12 +17,15 @@
 /* #undef AU_IPv4 */
 /* #undef BIND_8_COMPAT */
 /* #undef BROKEN_BSM_API */
+/* #undef BROKEN_CLOSEFROM */
 /* #undef BROKEN_CMSG_TYPE */
 /* #undef BROKEN_GETADDRINFO */
 /* #undef BROKEN_GETGROUPS */
+/* #undef BROKEN_GETLINE */
 /* #undef BROKEN_GLOB */
 /* #undef BROKEN_INET_NTOA */
 /* #undef BROKEN_ONE_BYTE_DIRENT_D_NAME */
+/* #undef BROKEN_POLL */
 /* #undef BROKEN_READV_COMPARISON */
 /* #undef BROKEN_READ_COMPARISON */
 /* #undef BROKEN_SAVED_UIDS */
@@ -103,6 +106,7 @@
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_CLOCK_T 1
 /* #undef HAVE_CLOSEFROM */
+/* #undef HAVE_CLOSE_RANGE */
 #define HAVE_CONST_GAI_STRERROR_PROTO 1
 #define HAVE_CONTROL_IN_MSGHDR 1
 #define HAVE_CRYPT 1
@@ -160,11 +164,13 @@
 #define HAVE_FCNTL_H 1
 #define HAVE_FD_MASK 1
 #define HAVE_FEATURES_H 1
-/* #undef HAVE_FIDO_CRED_PROT */
-/* #undef HAVE_FIDO_CRED_SET_PROT */
-/* #undef HAVE_FIDO_DEV_GET_TOUCH_BEGIN */
-/* #undef HAVE_FIDO_DEV_GET_TOUCH_STATUS */
-/* #undef HAVE_FIDO_DEV_SUPPORTS_CRED_PROT */
+#define HAVE_FIDO_ASSERT_SET_CLIENTDATA 1
+#define HAVE_FIDO_CRED_PROT 1
+#define HAVE_FIDO_CRED_SET_CLIENTDATA 1
+#define HAVE_FIDO_CRED_SET_PROT 1
+#define HAVE_FIDO_DEV_GET_TOUCH_BEGIN 1
+#define HAVE_FIDO_DEV_GET_TOUCH_STATUS 1
+#define HAVE_FIDO_DEV_SUPPORTS_CRED_PROT 1
 /* #undef HAVE_FLOATINGPOINT_H */
 #define HAVE_FLOCK 1
 /* #undef HAVE_FMT_SCALED */
@@ -279,8 +285,6 @@
 #define HAVE_MALLOC 1
 #define HAVE_MBLEN 1
 #define HAVE_MBTOWC 1
-/* #undef HAVE_MD5_CRYPT */
-/* #undef HAVE_MD5_PASSWORDS */
 #define HAVE_MEMMEM 1
 #define HAVE_MEMMOVE 1
 /* #undef HAVE_MEMSET_S */
@@ -293,6 +297,7 @@
 /* #undef HAVE_NET_IF_TUN_H */
 #define HAVE_NET_ROUTE_H 1
 /* #undef HAVE_NEXT */
+#define HAVE_NFDS_T 1
 /* #undef HAVE_NGETADDRINFO */
 #define HAVE_NL_LANGINFO 1
 /* #undef HAVE_NSLEEP */
@@ -310,6 +315,7 @@
 #define HAVE_PLEDGE 1
 #define HAVE_POLL 1
 #define HAVE_POLL_H 1
+#define HAVE_PPOLL 1
 #define HAVE_PRCTL 1
 /* #undef HAVE_PRIV_BASICSET */
 /* #undef HAVE_PRIV_H */
@@ -412,6 +418,7 @@
 /* #undef HAVE_STRUCT_PASSWD_PW_CLASS */
 /* #undef HAVE_STRUCT_PASSWD_PW_EXPIRE */
 #define HAVE_STRUCT_PASSWD_PW_GECOS 1
+#define HAVE_STRUCT_POLLFD_FD 1
 #define HAVE_STRUCT_SOCKADDR_IN6 1
 #define HAVE_STRUCT_SOCKADDR_IN6_SIN6_SCOPE_ID 1
 #define HAVE_STRUCT_SOCKADDR_STORAGE 1
@@ -439,6 +446,7 @@
 #define HAVE_SYS_MOUNT_H 1
 /* #undef HAVE_SYS_NDIR_H */
 /* #undef HAVE_SYS_NERR */
+#define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_POLL_H 1
 #define HAVE_SYS_PRCTL_H 1
 /* #undef HAVE_SYS_PROCCTL_H */
