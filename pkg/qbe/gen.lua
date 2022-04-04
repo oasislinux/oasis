@@ -9,6 +9,7 @@ exe('qbe', [[
 	fold.c live.c spill.c rega.c gas.c
 	amd64/(targ.c sysv.c isel.c emit.c)
 	arm64/(targ.c abi.c isel.c emit.c)
+	rv64/(targ.c abi.c isel.c emit.c)
 ]])
 file('bin/qbe', '755', '$outdir/qbe')
 
