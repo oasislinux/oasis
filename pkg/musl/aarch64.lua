@@ -51,6 +51,7 @@ return {
 		'fenv.h',
 		'float.h',
 		'hwcap.h',
+		'mman.h',
 		'posix.h',
 		'reg.h',
 		'setjmp.h',
