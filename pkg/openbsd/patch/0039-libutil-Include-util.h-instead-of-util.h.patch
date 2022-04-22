@@ -1,0 +1,28 @@
+From 43cb99e0700fe904af34962b9b7ca4560dd70d62 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 6 Sep 2022 23:36:35 -0700
+Subject: [PATCH] libutil: Include <util.h> instead of "util.h"
+
+We provide our own util.h and want to use that instead of OpenBSD's
+version.
+---
+ lib/libutil/fmt_scaled.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/lib/libutil/fmt_scaled.c b/lib/libutil/fmt_scaled.c
+index 374901ffe1e..05ef9983afe 100644
+--- a/lib/libutil/fmt_scaled.c
++++ b/lib/libutil/fmt_scaled.c
+@@ -42,8 +42,7 @@
+ #include <string.h>
+ #include <ctype.h>
+ #include <limits.h>
+-
+-#include "util.h"
++#include <util.h>
+ 
+ typedef enum {
+ 	NONE = 0, KILO = 1, MEGA = 2, GIGA = 3, TERA = 4, PETA = 5, EXA = 6
+-- 
+2.35.1
+

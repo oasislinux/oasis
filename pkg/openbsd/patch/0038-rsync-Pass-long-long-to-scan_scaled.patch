@@ -1,0 +1,42 @@
+From 2165fef297534420b3fbd557cedcb65ec45f0a49 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 27 Apr 2022 20:03:45 -0700
+Subject: [PATCH] rsync: Pass long long * to scan_scaled
+
+off_t might not be long long.
+---
+ usr.bin/rsync/main.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/usr.bin/rsync/main.c b/usr.bin/rsync/main.c
+index e7713cc548a..6009eb734ff 100644
+--- a/usr.bin/rsync/main.c
++++ b/usr.bin/rsync/main.c
+@@ -346,6 +346,7 @@ main(int argc, char *argv[])
+ 	struct fargs	*fargs;
+ 	char		**args;
+ 	const char	*errstr;
++	long long	 size;
+ 
+ 	/* Global pledge. */
+ 
+@@ -475,12 +476,14 @@ basedir:
+ 			opts.basedir[basedir_cnt++] = optarg;
+ 			break;
+ 		case OP_MAX_SIZE:
+-			if (scan_scaled(optarg, &opts.max_size) == -1)
++			if (scan_scaled(optarg, &size) == -1)
+ 				err(1, "bad max-size");
++			opts.max_size = size;
+ 			break;
+ 		case OP_MIN_SIZE:
+-			if (scan_scaled(optarg, &opts.min_size) == -1)
++			if (scan_scaled(optarg, &size) == -1)
+ 				err(1, "bad min-size");
++			opts.max_size = size;
+ 			break;
+ 		case OP_VERSION:
+ 			fprintf(stderr, "openrsync: protocol version %u\n",
+-- 
+2.35.1
+

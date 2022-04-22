@@ -1,4 +1,4 @@
-From f066f3d01c72b0d78bcca3fb03501e4e5c66a3ba Mon Sep 17 00:00:00 2001
+From 01657f2c1445cf4874337a0966a76f24ba9c9536 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 15 Apr 2020 22:10:06 -0700
 Subject: [PATCH] rsync: Add implementation of MD4
@@ -16,20 +16,20 @@ Subject: [PATCH] rsync: Add implementation of MD4
  create mode 100644 usr.bin/rsync/md4.h
 
 diff --git a/usr.bin/rsync/Makefile b/usr.bin/rsync/Makefile
-index f2e4d460c57..47c8edf05b5 100644
+index 3c60f18e07f..172045ce7ac 100644
 --- a/usr.bin/rsync/Makefile
 +++ b/usr.bin/rsync/Makefile
 @@ -2,7 +2,7 @@
  
  PROG=	openrsync
- SRCS=	blocks.c client.c downloader.c fargs.c flist.c hash.c ids.c \
+ SRCS=	blocks.c client.c copy.c downloader.c fargs.c flist.c hash.c ids.c \
 -	io.c log.c main.c misc.c mkpath.c mktemp.c receiver.c rmatch.c \
 +	io.c log.c main.c md4.c misc.c mkpath.c mktemp.c receiver.c rmatch.c \
  	rules.c sender.c server.c session.c socket.c symlinks.c uploader.c
- LDADD+= -lcrypto -lm
- DPADD+= ${LIBCRYPTO} ${LIBM}
+ LDADD+= -lcrypto -lm -lutil
+ DPADD+= ${LIBCRYPTO} ${LIBM} ${LIBUTIL}
 diff --git a/usr.bin/rsync/blocks.c b/usr.bin/rsync/blocks.c
-index fbb7495acdf..62d3139f643 100644
+index 906733c968e..0a8c3f485d1 100644
 --- a/usr.bin/rsync/blocks.c
 +++ b/usr.bin/rsync/blocks.c
 @@ -26,7 +26,7 @@
@@ -42,7 +42,7 @@ index fbb7495acdf..62d3139f643 100644
  #include "extern.h"
  
 diff --git a/usr.bin/rsync/downloader.c b/usr.bin/rsync/downloader.c
-index c9f0f8e80dc..3fdbd4416ab 100644
+index 07ec334f6b4..6543851fd2c 100644
 --- a/usr.bin/rsync/downloader.c
 +++ b/usr.bin/rsync/downloader.c
 @@ -28,7 +28,7 @@
@@ -406,5 +406,5 @@ index 9dd008def01..2aeb99b64a0 100644
  #include "extern.h"
  
 -- 
-2.34.1
+2.35.1
 

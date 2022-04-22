@@ -1,0 +1,46 @@
+From 82646d38665109ec5f0753ba384da94d529bbbe9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 27 Apr 2022 19:57:54 -0700
+Subject: [PATCH] pax: Use POSIX struct stat fields for high resolution
+ timestamps
+
+---
+ bin/pax/tar.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
+
+diff --git a/bin/pax/tar.c b/bin/pax/tar.c
+index 1f4012123c3..7ede7938c3d 100644
+--- a/bin/pax/tar.c
++++ b/bin/pax/tar.c
+@@ -417,8 +417,7 @@ tar_rd(ARCHD *arcn, char *buf)
+ 		arcn->sb.st_mtime = INT_MAX;                    /* XXX 2038 */
+ 	else
+ 		arcn->sb.st_mtime = val;
+-	arcn->sb.st_ctime = arcn->sb.st_atime = arcn->sb.st_mtime;
+-	arcn->sb.st_ctimensec = arcn->sb.st_atimensec = arcn->sb.st_mtimensec;
++	arcn->sb.st_ctim = arcn->sb.st_atim = arcn->sb.st_mtim;
+ 
+ 	/*
+ 	 * have to look at the last character, it may be a '/' and that is used
+@@ -795,14 +794,10 @@ reset:
+ 		else
+ 			arcn->sb.st_mtime = val;
+ 	}
+-	if (arcn->sb.st_ctime == 0) {
+-		arcn->sb.st_ctime = arcn->sb.st_mtime;
+-		arcn->sb.st_ctimensec = arcn->sb.st_mtimensec;
+-	}
+-	if (arcn->sb.st_atime == 0) {
+-		arcn->sb.st_atime = arcn->sb.st_mtime;
+-		arcn->sb.st_atimensec = arcn->sb.st_mtimensec;
+-	}
++	if (arcn->sb.st_ctime == 0)
++		arcn->sb.st_ctim = arcn->sb.st_mtim;
++	if (arcn->sb.st_atime == 0)
++		arcn->sb.st_atim = arcn->sb.st_mtim;
+ 
+ 	/*
+ 	 * If we can find the ascii names for gname and uname in the password
+-- 
+2.35.1
+

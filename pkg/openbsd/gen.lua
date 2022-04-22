@@ -30,7 +30,7 @@ lib('libbsd.a', [[
 		stdlib/(freezero.c recallocarray.c strtonum.c)
 		string/(strmode.c timingsafe_bcmp.c timingsafe_memcmp.c)
 	)
-	lib/libutil/ohash.c
+	lib/libutil/(fmt_scaled.c ohash.c)
 ]])
 file('lib/libbsd.a', '644', '$outdir/libbsd.a')
 
@@ -93,7 +93,7 @@ man{'bin/pax/pax.1', 'bin/pax/tar.1', 'bin/pax/cpio.1'}
 -- rsync
 exe('rsync', [[
 	usr.bin/rsync/(
-		blocks.c client.c downloader.c fargs.c flist.c hash.c ids.c
+		blocks.c client.c copy.c downloader.c fargs.c flist.c hash.c ids.c
 		io.c log.c main.c md4.c misc.c mkpath.c mktemp.c receiver.c rmatch.c
 		rules.c sender.c server.c session.c socket.c symlinks.c uploader.c
 	)

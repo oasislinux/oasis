@@ -1,19 +1,19 @@
-From f2c85cb223c434e6cbfbe40af689a0d5e39edf87 Mon Sep 17 00:00:00 2001
+From 288aa9ed695a489087e0e73ea1d257d2d13a487f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 23:14:16 -0700
 Subject: [PATCH] acme-client: Port to BearSSL
 
 ---
- usr.sbin/acme-client/acctproc.c   | 305 ++++++++------------------
+ usr.sbin/acme-client/acctproc.c   | 305 +++++++++------------------
  usr.sbin/acme-client/certproc.c   |   5 -
- usr.sbin/acme-client/key.c        | 342 ++++++++++++++++++++++++------
+ usr.sbin/acme-client/key.c        | 335 ++++++++++++++++++++++++------
  usr.sbin/acme-client/key.h        |  22 +-
- usr.sbin/acme-client/keyproc.c    | 195 +++++------------
- usr.sbin/acme-client/revokeproc.c | 280 ++++++++++--------------
- 6 files changed, 558 insertions(+), 591 deletions(-)
+ usr.sbin/acme-client/keyproc.c    | 195 ++++++-----------
+ usr.sbin/acme-client/revokeproc.c | 274 ++++++++++--------------
+ 6 files changed, 551 insertions(+), 585 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index d16680235de..372159d0b45 100644
+index d243258beef..7704f2a5be1 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
 @@ -18,72 +18,30 @@
@@ -85,9 +85,9 @@ index d16680235de..372159d0b45 100644
 -
 -	if ((r = EVP_PKEY_get0_RSA(pkey)) == NULL)
 -		warnx("EVP_PKEY_get0_RSA");
--	else if ((mod = bn2string(r->n)) == NULL)
+-	else if ((mod = bn2string(RSA_get0_n(r))) == NULL)
 -		warnx("bn2string");
--	else if ((exp = bn2string(r->e)) == NULL)
+-	else if ((exp = bn2string(RSA_get0_e(r))) == NULL)
 -		warnx("bn2string");
 +
 +	if ((mod = base64buf_url(key->rsa.pk.n, key->rsa.pk.nlen)) == NULL)
@@ -158,7 +158,7 @@ index d16680235de..372159d0b45 100644
  
  	/* Construct the thumbprint input itself. */
  
--	switch (EVP_PKEY_type(pkey->type)) {
+-	switch (EVP_PKEY_base_id(pkey)) {
 -	case EVP_PKEY_RSA:
 +	switch (pkey->type) {
 +	case BR_KEYTYPE_RSA:
@@ -171,7 +171,7 @@ index d16680235de..372159d0b45 100644
  			break;
  		goto out;
  	default:
--		warnx("EVP_PKEY_type: unknown key type");
+-		warnx("EVP_PKEY_base_id: unknown key type");
 +		warnx("unknown key type");
  		goto out;
  	}
@@ -230,9 +230,9 @@ index d16680235de..372159d0b45 100644
  
 -	if ((r = EVP_PKEY_get0_RSA(pkey)) == NULL)
 -		warnx("EVP_PKEY_get0_RSA");
--	else if ((mod = bn2string(r->n)) == NULL)
+-	else if ((mod = bn2string(RSA_get0_n(r))) == NULL)
 -		warnx("bn2string");
--	else if ((exp = bn2string(r->e)) == NULL)
+-	else if ((exp = bn2string(RSA_get0_e(r))) == NULL)
 -		warnx("bn2string");
 +	if ((mod = base64buf_url(key->rsa.pk.n, key->rsa.pk.nlen)) == NULL)
 +		warnx("base64buf_url");
@@ -326,7 +326,7 @@ index d16680235de..372159d0b45 100644
  		goto out;
  	}
  
--	switch (EVP_PKEY_type(pkey->type)) {
+-	switch (EVP_PKEY_base_id(pkey)) {
 -	case EVP_PKEY_RSA:
 +	switch (key->type) {
 +	case BR_KEYTYPE_RSA:
@@ -349,7 +349,7 @@ index d16680235de..372159d0b45 100644
  			goto out;
  		}
  	} else {
--		switch (EVP_PKEY_type(pkey->type)) {
+-		switch (EVP_PKEY_base_id(pkey)) {
 -		case EVP_PKEY_RSA:
 -			if (!op_sign_rsa(&prot, pkey, nonce, url))
 +		switch (key->type) {
@@ -364,7 +364,7 @@ index d16680235de..372159d0b45 100644
  				goto out;
  			break;
  		default:
--			warnx("EVP_PKEY_type");
+-			warnx("EVP_PKEY_base_id");
 +			warnx("unknown key type");
  			goto out;
  		}
@@ -400,7 +400,7 @@ index d16680235de..372159d0b45 100644
 +	ctx.vtable->out(&ctx.vtable, dig);
 +	digsz = ctx.vtable->desc >> BR_HASHDESC_OUT_OFF & BR_HASHDESC_OUT_MASK;
  
--	switch (EVP_PKEY_type(pkey->type)) {
+-	switch (EVP_PKEY_base_id(pkey)) {
 -	case EVP_PKEY_RSA:
 -		if ((dig64 = base64buf_url(dig, digsz)) == NULL) {
 -			warnx("base64buf_url");
@@ -458,7 +458,7 @@ index d16680235de..372159d0b45 100644
 -
  		break;
  	default:
--		warnx("EVP_PKEY_type");
+-		warnx("EVP_PKEY_base_id");
 +		warnx("unknown key type");
  		goto out;
  	}
@@ -543,7 +543,7 @@ index f443d573675..85c3897a4b8 100644
  
  #define BEGIN_MARKER "-----BEGIN CERTIFICATE-----"
 diff --git a/usr.sbin/acme-client/key.c b/usr.sbin/acme-client/key.c
-index 1bc1eee8f59..e95f737d22c 100644
+index c3374914547..c9dc9b10b45 100644
 --- a/usr.sbin/acme-client/key.c
 +++ b/usr.sbin/acme-client/key.c
 @@ -17,15 +17,11 @@
@@ -564,7 +564,7 @@ index 1bc1eee8f59..e95f737d22c 100644
  
  #include "key.h"
  
-@@ -33,114 +29,320 @@
+@@ -33,113 +29,320 @@
   * Default number of bits when creating a new RSA key.
   */
  #define	KBITS 4096
@@ -711,7 +711,7 @@ index 1bc1eee8f59..e95f737d22c 100644
 +		warnx("br_ec_keygen");
  		goto err;
  	}
--	
+-
 -	/* set OPENSSL_EC_NAMED_CURVE to be able to load the key */
 -
 -	EC_KEY_set_asn1_flag(eckey, OPENSSL_EC_NAMED_CURVE);
@@ -719,7 +719,7 @@ index 1bc1eee8f59..e95f737d22c 100644
 -	/* Serialise the key to the disc in EC format */
 -
 -	if (!PEM_write_ECPrivateKey(f, eckey, NULL, NULL, 0, NULL, NULL)) {
--		warnx("PEM_write_ECPrivateKey");
+-		warnx("%s: PEM_write_ECPrivateKey", fname);
 +	if (br_ec_compute_pub(ec, &key->ec.pk, pbuf, &key->ec.sk) == 0) {
 +		warnx("br_ec_compute_pub");
  		goto err;
@@ -728,41 +728,39 @@ index 1bc1eee8f59..e95f737d22c 100644
 -	/* Convert the EC key into a PKEY structure */
 +	/* Serialise the key to the disk in EC format */
  
--	if ((pkey=EVP_PKEY_new()) == NULL) {
+-	if ((pkey = EVP_PKEY_new()) == NULL) {
 -		warnx("EVP_PKEY_new");
 +	if ((derlen = br_encode_ec_raw_der(NULL, &key->ec.sk,
 +	    &key->ec.pk)) == 0) {
 +		warnx("br_encode_ec_raw_der");
- 		goto err;
- 	}
--	if (!EVP_PKEY_set1_EC_KEY(pkey, eckey)) {
--		warnx("EVP_PKEY_assign_EC_KEY");
++		goto err;
++	}
 +	if ((der = malloc(derlen)) == NULL) {
 +		warn("malloc");
  		goto err;
  	}
+-	if (!EVP_PKEY_set1_EC_KEY(pkey, eckey)) {
+-		warnx("EVP_PKEY_assign_EC_KEY");
 +	br_encode_ec_raw_der(der, &key->ec.sk, &key->ec.pk);
 +	pemlen = br_pem_encode(NULL, der, derlen, BR_ENCODE_PEM_EC_RAW, 0);
 +	if ((pem = malloc(pemlen + 1)) == NULL) {
 +		warn("malloc");
-+		goto err;
-+	}
+ 		goto err;
+ 	}
 +	br_pem_encode(pem, der, derlen, BR_ENCODE_PEM_EC_RAW, 0);
 +	if (fwrite(pem, 1, pemlen, f) == pemlen)
 +		goto out;
  
--	warnx("%s: PEM_write_ECPrivateKey", fname);
--
 -	goto out;
 +	warn("write private key");
  
  err:
--	EC_KEY_free(eckey);
 -	EVP_PKEY_free(pkey);
 -	pkey = NULL;
 +	free(key);
 +	key = NULL;
  out:
+-	EC_KEY_free(eckey);
 -	return pkey;
 +	free(der);
 +	free(pem);
@@ -781,18 +779,6 @@ index 1bc1eee8f59..e95f737d22c 100644
  key_load(FILE *f, const char *fname)
  {
 -	EVP_PKEY	*pkey;
--
--	pkey = PEM_read_PrivateKey(f, NULL, NULL, NULL);
--	if (pkey == NULL) {
--		warnx("%s: PEM_read_PrivateKey", fname);
--		return NULL;
--	} else if (EVP_PKEY_type(pkey->type) == EVP_PKEY_RSA ||
--		   EVP_PKEY_type(pkey->type) == EVP_PKEY_EC )
--		return pkey;
--
--	warnx("%s: unsupported key type", fname);
--	EVP_PKEY_free(pkey);
--	return NULL;
 +	struct key			*key = NULL;
 +	size_t				 datasz, len = 0, n;
 +	int				 type = 0, err;
@@ -867,7 +853,11 @@ index 1bc1eee8f59..e95f737d22c 100644
 +		}
 +		datasz += 4 + rsa->plen + rsa->qlen + rsa->dplen + rsa->dqlen +
 +		    rsa->iqlen;
-+
+ 
+-	pkey = PEM_read_PrivateKey(f, NULL, NULL, NULL);
+-	if (pkey == NULL) {
+-		warnx("%s: PEM_read_PrivateKey", fname);
+-		return NULL;
 +		if ((key = malloc(sizeof(*key) + datasz)) == NULL) {
 +			warn("malloc");
 +			goto err;
@@ -937,8 +927,14 @@ index 1bc1eee8f59..e95f737d22c 100644
 +		br_ec_compute_pub(ecimpl, &key->ec.pk,
 +		    key->ec.sk.x + key->ec.sk.xlen, &key->ec.sk);
 +		goto out;
-+	}
-+
+ 	}
+-	if (EVP_PKEY_base_id(pkey) == EVP_PKEY_RSA ||
+-	    EVP_PKEY_base_id(pkey) == EVP_PKEY_EC)
+-		return pkey;
+ 
+-	warnx("%s: unsupported key type", fname);
+-	EVP_PKEY_free(pkey);
+-	return NULL;
 +	warnx("%s: missing private key", fname);
 +
 +err:
@@ -1241,10 +1237,10 @@ index 5fba077b7e4..25e676e7829 100644
  	return rc;
  }
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index 6b32205b31b..122dcda0620 100644
+index c6c012dd9c1..337bcfd8900 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
-@@ -22,92 +22,53 @@
+@@ -22,93 +22,53 @@
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
@@ -1338,38 +1334,35 @@ index 6b32205b31b..122dcda0620 100644
  revokeproc(int fd, const char *certfile, int force,
      int revocate, const char *const *alts, size_t altsz)
  {
--	unsigned char	*der = NULL, *dercp;
--	char		*der64 = NULL;
--	char		*san = NULL, *str, *tok;
--	int		 rc = 0, cc, i, extsz, ssz, len;
--	size_t		*found = NULL;
--	BIO		*bio = NULL;
--	FILE		*f = NULL;
--	X509		*x = NULL;
--	long		 lval;
--	enum revokeop	 op, rop;
--	time_t		 t;
--	X509_EXTENSION	*ex;
--	ASN1_OBJECT	*obj;
--	size_t		 j;
-+	static const unsigned char dnsname[] = {0, 2};
-+	char			 buf[8192], *pos, *sans = NULL, *der64 = NULL;
-+	int			 rc = 0, cc, state, err;
-+	size_t			 i, j, n, len = 0, altlen, altmax, eltsz;
-+	FILE			*f = NULL;
-+	br_pem_decoder_context	 pc;
-+	br_x509_decoder_context	 xd;
-+	br_x509_minimal_context	 xc;
-+	br_x509_certificate	 cert = {0};
-+	br_name_element		*elts = NULL;
-+	uint32_t		 days, secs;
-+	long			 lval;
-+	enum revokeop		 op, rop;
-+	time_t			 t;
+-	unsigned char			*der = NULL, *dercp;
+-	char				*der64 = NULL;
+-	char				*san = NULL, *str, *tok;
+-	int				 rc = 0, cc, i, ssz, len;
+-	size_t				*found = NULL;
+-	BIO				*bio = NULL;
++	static const unsigned char	 dnsname[] = {0, 2};
++	char				 buf[8192], *pos, *sans = NULL, *der64 = NULL;
++	int				 rc = 0, cc, state, err;
++	size_t				 i, j, n, len = 0, altlen, altmax, eltsz;
+ 	FILE				*f = NULL;
+-	X509				*x = NULL;
++	br_pem_decoder_context		 pc;
++	br_x509_decoder_context		 xd;
++	br_x509_minimal_context		 xc;
++	br_x509_certificate		 cert = {0};
++	br_name_element			*elts = NULL;
++	uint32_t			 days, secs;
+ 	long				 lval;
+ 	enum revokeop			 op, rop;
+ 	time_t				 t;
+-	const STACK_OF(X509_EXTENSION)	*exts;
+-	X509_EXTENSION			*ex;
+-	ASN1_OBJECT			*obj;
+-	size_t				 j;
  
  	/*
  	 * First try to open the certificate before we drop privileges
-@@ -122,8 +83,6 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -123,8 +83,6 @@ revokeproc(int fd, const char *certfile, int force,
  
  	/* File-system and sandbox jailing. */
  
@@ -1378,7 +1371,7 @@ index 6b32205b31b..122dcda0620 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -147,17 +106,54 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -148,17 +106,54 @@ revokeproc(int fd, const char *certfile, int force,
  		goto out;
  	}
  
@@ -1438,17 +1431,16 @@ index 6b32205b31b..122dcda0620 100644
  
  	/*
  	 * Next, the long process to make sure that the SAN entries
-@@ -165,99 +161,66 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -166,100 +161,66 @@ revokeproc(int fd, const char *certfile, int force,
  	 * command line.
  	 */
  
--	extsz = x->cert_info->extensions != NULL ?
--		sk_X509_EXTENSION_num(x->cert_info->extensions) : 0;
+-	exts = X509_get0_extensions(x);
 -
 -	/* Scan til we find the SAN NID. */
 -
--	for (i = 0; i < extsz; i++) {
--		ex = sk_X509_EXTENSION_value(x->cert_info->extensions, i);
+-	for (i = 0; i < sk_X509_EXTENSION_num(exts); i++) {
+-		ex = sk_X509_EXTENSION_value(exts, i);
 -		assert(ex != NULL);
 -		obj = X509_EXTENSION_get_object(ex);
 -		assert(obj != NULL);
@@ -1464,15 +1456,17 @@ index 6b32205b31b..122dcda0620 100644
 -		if (bio == NULL) {
 -			warnx("BIO_new");
 -			goto out;
--		} else if (!X509V3_EXT_print(bio, ex, 0, 0)) {
+-		}
+-		if (!X509V3_EXT_print(bio, ex, 0, 0)) {
 -			warnx("X509V3_EXT_print");
 -			goto out;
--		} else if ((san = calloc(1, bio->num_write + 1)) == NULL) {
+-		}
+-		if ((san = calloc(1, BIO_number_written(bio) + 1)) == NULL) {
 -			warn("calloc");
 -			goto out;
 -		}
--		ssz = BIO_read(bio, san, bio->num_write);
--		if (ssz < 0 || (unsigned)ssz != bio->num_write) {
+-		ssz = BIO_read(bio, san, BIO_number_written(bio));
+-		if (ssz < 0 || (unsigned)ssz != BIO_number_written(bio)) {
 -			warnx("BIO_read");
 -			goto out;
 -		}
@@ -1575,7 +1569,7 @@ index 6b32205b31b..122dcda0620 100644
  	/*
  	 * If we're going to revoke, write the certificate to the
  	 * netproc in DER and base64-encoded format.
-@@ -278,16 +241,7 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -280,16 +241,7 @@ revokeproc(int fd, const char *certfile, int force,
  		if (cc <= 0)
  			goto out;
  
@@ -1593,7 +1587,7 @@ index 6b32205b31b..122dcda0620 100644
  			warnx("base64buf_url");
  			goto out;
  		} else if (writestr(fd, COMM_CSR, der64) >= 0)
-@@ -340,13 +294,9 @@ out:
+@@ -342,13 +294,9 @@ out:
  	close(fd);
  	if (f != NULL)
  		fclose(f);
@@ -1611,5 +1605,5 @@ index 6b32205b31b..122dcda0620 100644
  	return rc;
  }
 -- 
-2.34.1
+2.35.1
 

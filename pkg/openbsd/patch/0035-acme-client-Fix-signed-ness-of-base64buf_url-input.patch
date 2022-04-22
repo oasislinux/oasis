@@ -1,4 +1,4 @@
-From 00b21fb61055a23322cbda5572f6635d1e090162 Mon Sep 17 00:00:00 2001
+From a26fe94638fa10455f7525757a57ba6d11c24e8c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 20:10:05 -0700
 Subject: [PATCH] acme-client: Fix signed-ness of base64buf_url input
@@ -13,7 +13,7 @@ This make most of the pointer casts unnecessary.
  5 files changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index 377f53c12fa..d16680235de 100644
+index cd01f8c3381..d243258beef 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
 @@ -40,8 +40,9 @@
@@ -66,7 +66,7 @@ index 377f53c12fa..d16680235de 100644
  	}
 @@ -375,7 +376,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
- 	switch (EVP_PKEY_type(pkey->type)) {
+ 	switch (EVP_PKEY_base_id(pkey)) {
  	case EVP_PKEY_RSA:
 -		if ((dig64 = base64buf_url((char *)dig, digsz)) == NULL) {
 +		if ((dig64 = base64buf_url(dig, digsz)) == NULL) {
@@ -132,20 +132,20 @@ index 96ece27396b..5fba077b7e4 100644
  		goto out;
  	} else if ((der64 = base64buf_url(der, len)) == NULL) {
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index e3cab0cd5a2..6b32205b31b 100644
+index 3eb0bd4cafa..c6c012dd9c1 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
 @@ -94,7 +94,8 @@ int
  revokeproc(int fd, const char *certfile, int force,
      int revocate, const char *const *alts, size_t altsz)
  {
--	char		*der = NULL, *dercp, *der64 = NULL;
-+	unsigned char	*der = NULL, *dercp;
-+	char		*der64 = NULL;
- 	char		*san = NULL, *str, *tok;
- 	int		 rc = 0, cc, i, extsz, ssz, len;
- 	size_t		*found = NULL;
-@@ -283,7 +284,7 @@ revokeproc(int fd, const char *certfile, int force,
+-	char				*der = NULL, *dercp, *der64 = NULL;
++	unsigned char			*der = NULL, *dercp;
++	char				*der64 = NULL;
+ 	char				*san = NULL, *str, *tok;
+ 	int				 rc = 0, cc, i, ssz, len;
+ 	size_t				*found = NULL;
+@@ -285,7 +286,7 @@ revokeproc(int fd, const char *certfile, int force,
  		} else if ((der = dercp = malloc(len)) == NULL) {
  			warn("malloc");
  			goto out;
@@ -155,5 +155,5 @@ index e3cab0cd5a2..6b32205b31b 100644
  			goto out;
  		} else if ((der64 = base64buf_url(der, len)) == NULL) {
 -- 
-2.34.1
+2.35.1
 
