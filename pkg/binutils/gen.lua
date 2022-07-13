@@ -20,6 +20,7 @@ cflags{
 pkg.deps = {
 	'pkg/zlib/headers',
 	'$outdir/bfd/bfd.h',
+	'$outdir/bfd/bfdver.h',
 	'$outdir/bfd/bfd_stdint.h',
 }
 
@@ -243,7 +244,6 @@ sub('gas.ninja', function()
 		'$outdir/gas/targ-cpu.h',
 		'$outdir/gas/targ-env.h',
 		'$outdir/gas/obj-format.h',
-		'$outdir/bfd/bfdver.h',
 	}
 	-- src/gas/Makefile.am:/^GAS_CFILES
 	exe('bin/as', [[
