@@ -166,3 +166,7 @@ There is a mailing list at
 [~mcf/oasis@lists.sr.ht](mailto:~mcf/oasis@lists.sr.ht), and an IRC
 channel at #oasis on [libera.chat](ircs://irc.libera.chat:6697).
 Feel free to use them for questions, patches, or general discussion.
+
+## Related 
+
+- [Oasis in wsl](https://github.com/pandademic/wsl-distro-oasis)
