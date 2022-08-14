@@ -5,7 +5,7 @@
 oasis is a small linux system.
 
 It is probably quite a bit different from other Linux-based operating
-systems you might be familiar with, and is closer to to a BSD.
+systems you might be familiar with, and is closer to a BSD.
 
 There are many features that distinguish it from other operating
 systems:
