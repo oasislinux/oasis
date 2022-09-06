@@ -11,5 +11,6 @@ Generated with
 		--disable-plugins \
 		--enable-default-hash-style=gnu \
 		--enable-deterministic-archives \
-		--enable-new-dtags
+		--enable-new-dtags \
+		--without-msgpack
 	make configure-host

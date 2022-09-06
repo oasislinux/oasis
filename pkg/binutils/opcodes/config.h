@@ -21,10 +21,10 @@
 #define PACKAGE "opcodes"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "opcodes"
-#define PACKAGE_STRING "opcodes 2.38"
+#define PACKAGE_STRING "opcodes 2.39"
 #define PACKAGE_TARNAME "opcodes"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.38"
+#define PACKAGE_VERSION "2.39"
 #define SIZEOF_VOID_P 8
 #define STDC_HEADERS 1
 #ifndef _ALL_SOURCE
@@ -42,7 +42,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.38"
+#define VERSION "2.39"
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */

@@ -32,6 +32,7 @@
 #define HAVE_MKDTEMP 1
 #define HAVE_MKSTEMP 1
 #define HAVE_MMAP 1
+/* #undef HAVE_MSGPACK */
 #define HAVE_SBRK 1
 #define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
@@ -56,10 +57,10 @@
 #define PACKAGE "binutils"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "binutils"
-#define PACKAGE_STRING "binutils 2.38"
+#define PACKAGE_STRING "binutils 2.39"
 #define PACKAGE_TARNAME "binutils"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "2.38"
+#define PACKAGE_VERSION "2.39"
 #define SIZEOF_LONG 8
 #define SIZEOF_LONG_LONG 8
 #define STDC_HEADERS 1
@@ -82,7 +83,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "2.38"
+#define VERSION "2.39"
 /* #undef YYTEXT_POINTER */
 #ifndef _DARWIN_USE_64_BIT_INODE
 # define _DARWIN_USE_64_BIT_INODE 1

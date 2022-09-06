@@ -1,4 +1,4 @@
-From 33fd36d26892e893d4c58ccbe826445a76262c68 Mon Sep 17 00:00:00 2001
+From 8e578ea68fa570aa46f04d4cf1c593ac11732bdf Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 17 Apr 2019 16:44:05 -0700
 Subject: [PATCH] libiberty: Implement pex_unix_exec_child using posix_spawn
@@ -35,10 +35,10 @@ index f7052b5d958..ce79a9e77f2 100644
  #undef HAVE_STDINT_H
  
 diff --git a/libiberty/configure b/libiberty/configure
-index e09ddd91e58..a5591fac95d 100755
+index 306c07bd37e..6f85b1fd529 100755
 --- a/libiberty/configure
 +++ b/libiberty/configure
-@@ -5651,7 +5651,7 @@ host_makefile_frag=${frag}
+@@ -5652,7 +5652,7 @@ host_makefile_frag=${frag}
  # It's OK to check for header files.  Although the compiler may not be
  # able to link anything, it had better be able to at least compile
  # something.
@@ -47,7 +47,7 @@ index e09ddd91e58..a5591fac95d 100755
  do :
    as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
  ac_fn_c_check_header_preproc "$LINENO" "$ac_header" "$as_ac_Header"
-@@ -6160,9 +6160,9 @@ funcs="$funcs setproctitle"
+@@ -6161,9 +6161,9 @@ funcs="$funcs setproctitle"
  vars="sys_errlist sys_nerr sys_siglist"
  
  checkfuncs="__fsetlocking canonicalize_file_name dup3 getrlimit getrusage \
@@ -60,7 +60,7 @@ index e09ddd91e58..a5591fac95d 100755
  
  # Darwin has sbrk, but it is deprecated and that produces build-time warnings
  # so do not check for it.
-@@ -6183,7 +6183,7 @@ if test "x" = "y"; then
+@@ -6184,7 +6184,7 @@ if test "x" = "y"; then
      index insque \
      memchr memcmp memcpy memmem memmove memset mkstemps \
      on_exit \
@@ -70,10 +70,10 @@ index e09ddd91e58..a5591fac95d 100755
      sbrk setenv setproctitle setrlimit sigsetmask snprintf spawnve spawnvpe \
       stpcpy stpncpy strcasecmp strchr strdup \
 diff --git a/libiberty/configure.ac b/libiberty/configure.ac
-index f59f35e1f20..134576ea3af 100644
+index 6c1ff9c6093..5d21f383e7d 100644
 --- a/libiberty/configure.ac
 +++ b/libiberty/configure.ac
-@@ -288,7 +288,7 @@ AC_SUBST_FILE(host_makefile_frag)
+@@ -289,7 +289,7 @@ AC_SUBST_FILE(host_makefile_frag)
  # It's OK to check for header files.  Although the compiler may not be
  # able to link anything, it had better be able to at least compile
  # something.
@@ -82,7 +82,7 @@ index f59f35e1f20..134576ea3af 100644
  AC_HEADER_SYS_WAIT
  AC_HEADER_TIME
  
-@@ -411,9 +411,9 @@ funcs="$funcs setproctitle"
+@@ -412,9 +412,9 @@ funcs="$funcs setproctitle"
  vars="sys_errlist sys_nerr sys_siglist"
  
  checkfuncs="__fsetlocking canonicalize_file_name dup3 getrlimit getrusage \
@@ -95,7 +95,7 @@ index f59f35e1f20..134576ea3af 100644
  
  # Darwin has sbrk, but it is deprecated and that produces build-time warnings
  # so do not check for it.
-@@ -434,7 +434,7 @@ if test "x" = "y"; then
+@@ -435,7 +435,7 @@ if test "x" = "y"; then
      index insque \
      memchr memcmp memcpy memmem memmove memset mkstemps \
      on_exit \
@@ -218,5 +218,5 @@ index 850d344ba58..ba3a6d5d38f 100644
  
  /* Subroutine of pex_unix_exec_child.  Move OLD_FD to a new file descriptor
 -- 
-2.34.1
+2.35.1
 

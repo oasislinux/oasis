@@ -1,4 +1,4 @@
-local version = setmetatable({2, 38}, {__index=function() return 0 end})
+local version = setmetatable({2, 39}, {__index=function() return 0 end})
 local defvec = 'x86_64_elf64_vec'
 local selvecs = {[defvec]=true, i386_elf32_vec=true}
 local selarchs = {i386=true}
@@ -69,13 +69,9 @@ sub('bfd.ninja', function()
 		'-e s,@supports_plugins@,0,',
 		'-e s,@wordsize@,64,',
 		'-e s,@bfd_default_target_size@,64,',
-		'-e s,@BFD_HOST_64BIT_LONG@,1,',
-		'-e s,@BFD_HOST_64BIT_LONG_LONG@,1,',
-		'-e s,@BFD_HOST_64_BIT_DEFINED@,1,',
-		'-e s,@BFD_HOST_64_BIT@,long,',
-		[[-e 's,@BFD_HOST_U_64_BIT@,unsigned long,']],
-		[[-e 's,@BFD_HOSTPTR_T@,unsigned long,']],
-		'-e s,@bfd_file_ptr@,BFD_HOST_64_BIT,',
+		[[-e 's,@BFD_INT64_FMT@,__PRI64,']],
+		'-e s,@bfd_file_ptr@,int64_t,',
+		'-e s,@bfd_ufile_ptr@,uint64_t,',
 	}})
 	build('sed', '$outdir/bfd/bfdver.h', '$srcdir/bfd/version.h', {expr={
 		string.format('-e s,@bfd_version@,%d%02d%02d%02d%02d,', version[1], version[2], version[3], version[4], version[5]),
@@ -104,12 +100,6 @@ sub('bfd.ninja', function()
 		end
 		if vec:find('iamcu_elf32') then
 			selarchs.iamcu = true
-		end
-		if vec:find('l1om_elf64') then
-			selarchs.l1om = true
-		end
-		if vec:find('k1om_elf64') then
-			selarchs.k1om = true
 		end
 	end
 	local srcs = {}
