@@ -1,26 +1,18 @@
-From b5f26e6d73a01270c0bdb84843d5ff57438e3a2c Mon Sep 17 00:00:00 2001
+From 4309e1275d48248b427365952249b904be7c85d1 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
- yt_dlp/cookies.py | 73 -----------------------------------------
- yt_dlp/utils.py   | 82 +----------------------------------------------
- 2 files changed, 1 insertion(+), 154 deletions(-)
+ yt_dlp/cookies.py | 94 -----------------------------------------------
+ yt_dlp/utils.py   | 83 +----------------------------------------
+ 2 files changed, 1 insertion(+), 176 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index df8f97b44..7c4fb932f 100644
+index 0ccd22947..3481243cc 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
-@@ -1,7 +1,5 @@
- import base64
- import contextlib
--import ctypes
--import http.cookiejar
- import json
- import os
- import shutil
-@@ -340,8 +338,6 @@ def decrypt(self, encrypted_value):
+@@ -372,8 +372,6 @@ def decrypt(self, encrypted_value):
  def get_cookie_decryptor(browser_root, browser_keyring_name, logger, *, keyring=None):
      if sys.platform == 'darwin':
          return MacChromeCookieDecryptor(browser_keyring_name, logger)
@@ -29,7 +21,7 @@ index df8f97b44..7c4fb932f 100644
      return LinuxChromeCookieDecryptor(browser_keyring_name, logger, keyring=keyring)
  
  
-@@ -411,43 +407,6 @@ def decrypt(self, encrypted_value):
+@@ -443,43 +441,6 @@ def decrypt(self, encrypted_value):
              return encrypted_value
  
  
@@ -73,7 +65,35 @@ index df8f97b44..7c4fb932f 100644
  def _extract_safari_cookies(profile, logger):
      if profile is not None:
          logger.error('safari does not support profiles')
-@@ -871,38 +830,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
+@@ -855,27 +816,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
+         return None
+ 
+ 
+-def _get_windows_v10_key(browser_root, logger):
+-    path = _find_most_recently_used_file(browser_root, 'Local State', logger)
+-    if path is None:
+-        logger.error('could not find local state file')
+-        return None
+-    logger.debug(f'Found local state file at "{path}"')
+-    with open(path, encoding='utf8') as f:
+-        data = json.load(f)
+-    try:
+-        base64_key = data['os_crypt']['encrypted_key']
+-    except KeyError:
+-        logger.error('no encrypted key in Local State')
+-        return None
+-    encrypted_key = base64.b64decode(base64_key)
+-    prefix = b'DPAPI'
+-    if not encrypted_key.startswith(prefix):
+-        logger.error('invalid key')
+-        return None
+-    return _decrypt_windows_dpapi(encrypted_key[len(prefix):], logger)
+-
+-
+ def pbkdf2_sha1(password, salt, iterations, key_length):
+     return pbkdf2_hmac('sha1', password, salt, iterations, key_length)
+ 
+@@ -903,40 +843,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
          return None
  
  
@@ -82,10 +102,12 @@ index df8f97b44..7c4fb932f 100644
 -    References:
 -        - https://docs.microsoft.com/en-us/windows/win32/api/dpapi/nf-dpapi-cryptunprotectdata
 -    """
--    from ctypes.wintypes import DWORD
+-
+-    import ctypes
+-    import ctypes.wintypes
 -
 -    class DATA_BLOB(ctypes.Structure):
--        _fields_ = [('cbData', DWORD),
+-        _fields_ = [('cbData', ctypes.wintypes.DWORD),
 -                    ('pbData', ctypes.POINTER(ctypes.c_char))]
 -
 -    buffer = ctypes.create_string_buffer(ciphertext)
@@ -113,23 +135,16 @@ index df8f97b44..7c4fb932f 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils.py b/yt_dlp/utils.py
-index 7648b6fce..21110dc33 100644
+index 00f2fbf42..5e12d9f74 100644
 --- a/yt_dlp/utils.py
 +++ b/yt_dlp/utils.py
-@@ -5,7 +5,6 @@
- import codecs
- import collections
- import contextlib
--import ctypes
- import datetime
- import email.header
- import email.utils
-@@ -1983,63 +1982,6 @@ def __init__(self):
+@@ -2042,64 +2042,6 @@ def __init__(self):
          super().__init__(self.msg)
  
  
 -# Cross-platform file locking
 -if sys.platform == 'win32':
+-    import ctypes
 -    import ctypes.wintypes
 -    import msvcrt
 -
@@ -188,15 +203,16 @@ index 7648b6fce..21110dc33 100644
      try:
          import fcntl
  
-@@ -2362,29 +2304,7 @@ def fix_xml_ampersands(xml_str):
+@@ -2422,30 +2364,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
 -    assert isinstance(title, str)
 -
--    # ctypes in Jython is not complete
--    # http://bugs.jython.org/issue2148
--    if sys.platform.startswith('java'):
+-    # Workaround for https://github.com/yt-dlp/yt-dlp/issues/4541
+-    try:
+-        import ctypes
+-    except ImportError:
 -        return
 -
 -    try:
