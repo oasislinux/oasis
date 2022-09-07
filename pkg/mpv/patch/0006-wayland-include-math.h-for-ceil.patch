@@ -1,0 +1,24 @@
+From 1c8ae213f7d683c69298f131d424c9006a9650d3 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 21 Jul 2022 14:00:02 -0700
+Subject: [PATCH] wayland: include <math.h> for ceil
+
+---
+ video/out/wayland_common.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/video/out/wayland_common.c b/video/out/wayland_common.c
+index 3cebab9e99..4ec5c148e7 100644
+--- a/video/out/wayland_common.c
++++ b/video/out/wayland_common.c
+@@ -18,6 +18,7 @@
+ #include <errno.h>
+ #include <limits.h>
+ #include <linux/input-event-codes.h>
++#include <math.h>
+ #include <poll.h>
+ #include <time.h>
+ #include <unistd.h>
+-- 
+2.35.1
+

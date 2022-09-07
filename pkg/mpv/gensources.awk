@@ -2,10 +2,10 @@
 
 BEGIN {
 	FS = "\""
-	external["video/out/wayland/idle-inhibit-v1.c"] = "$builddir/pkg/wayland-protocols/idle-inhibit-unstable-v1-protocol.c.o"
-	external["video/out/wayland/presentation-time.c"] = "$builddir/pkg/wayland-protocols/presentation-time-protocol.c.o"
-	external["video/out/wayland/xdg-decoration-v1.c"] = "$builddir/pkg/wayland-protocols/xdg-decoration-unstable-v1-protocol.c.o"
-	external["video/out/wayland/xdg-shell.c"] = "$builddir/pkg/wayland-protocols/xdg-shell-protocol.c.o"
+	external["generated/wayland/idle-inhibit-unstable-v1.c"] = "$builddir/pkg/wayland-protocols/idle-inhibit-unstable-v1-protocol.c.o"
+	external["generated/wayland/presentation-time.c"] = "$builddir/pkg/wayland-protocols/presentation-time-protocol.c.o"
+	external["generated/wayland/xdg-decoration-unstable-v1.c"] = "$builddir/pkg/wayland-protocols/xdg-decoration-unstable-v1-protocol.c.o"
+	external["generated/wayland/xdg-shell.c"] = "$builddir/pkg/wayland-protocols/xdg-shell-protocol.c.o"
 }
 
 /sources = \[/ { insources = 1 }

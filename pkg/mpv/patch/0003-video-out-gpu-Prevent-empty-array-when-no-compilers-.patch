@@ -1,28 +1,37 @@
-From 30a85ce789cd15dedd7abd60ed36f74212068a31 Mon Sep 17 00:00:00 2001
+From 25a7c939446a456b258e889013a1f3136199f09b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 02:21:16 -0700
 Subject: [PATCH] video/out/gpu: Prevent empty array when no compilers or
  contexts are enabled
 
 ---
- video/out/gpu/context.c | 9 +++++----
- video/out/gpu/spirv.c   | 1 +
- 2 files changed, 6 insertions(+), 4 deletions(-)
+ video/out/gpu/context.c | 11 ++++++-----
+ video/out/gpu/spirv.c   |  1 +
+ 2 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/video/out/gpu/context.c b/video/out/gpu/context.c
-index 9561b534d8..f73d0674be 100644
+index 6e58cce485..0e68c45b91 100644
 --- a/video/out/gpu/context.c
 +++ b/video/out/gpu/context.c
-@@ -108,6 +108,7 @@ static const struct ra_ctx_fns *contexts[] = {
- #endif
+@@ -110,6 +110,7 @@ static const struct ra_ctx_fns *contexts[] = {
+     &ra_ctx_vulkan_display,
  
  #endif
 +    NULL
  };
  
- int ra_ctx_validate_api(struct mp_log *log, const struct m_option *opt,
-@@ -122,7 +123,7 @@ int ra_ctx_validate_api(struct mp_log *log, const struct m_option *opt,
-     }
+ int ra_ctx_api_help(struct mp_log *log, const struct m_option *opt,
+@@ -117,7 +118,7 @@ int ra_ctx_api_help(struct mp_log *log, const struct m_option *opt,
+ {
+     mp_info(log, "GPU APIs (contexts):\n");
+     mp_info(log, "    auto (autodetect)\n");
+-    for (int n = 0; n < MP_ARRAY_SIZE(contexts); n++)
++    for (int n = 0; n < MP_ARRAY_SIZE(contexts) - 1; n++)
+         mp_info(log, "    %s (%s)\n", contexts[n]->type, contexts[n]->name);
+     return M_OPT_EXIT;
+ }
+@@ -128,7 +129,7 @@ int ra_ctx_validate_api(struct mp_log *log, const struct m_option *opt,
+     struct bstr param = bstr0(*value);
      if (bstr_equals0(param, "auto"))
          return 1;
 -    for (int i = 0; i < MP_ARRAY_SIZE(contexts); i++) {
@@ -30,15 +39,17 @@ index 9561b534d8..f73d0674be 100644
          if (bstr_equals0(param, contexts[i]->type))
              return 1;
      }
-@@ -135,13 +136,13 @@ int ra_ctx_validate_context(struct mp_log *log, const struct m_option *opt,
-     if (bstr_equals0(param, "help")) {
-         mp_info(log, "GPU contexts (APIs):\n");
-         mp_info(log, "    auto (autodetect)\n");
--        for (int n = 0; n < MP_ARRAY_SIZE(contexts); n++)
-+        for (int n = 0; n < MP_ARRAY_SIZE(contexts) - 1; n++)
-             mp_info(log, "    %s (%s)\n", contexts[n]->name, contexts[n]->type);
-         return M_OPT_EXIT;
-     }
+@@ -140,7 +141,7 @@ int ra_ctx_context_help(struct mp_log *log, const struct m_option *opt,
+ {
+     mp_info(log, "GPU contexts (APIs):\n");
+     mp_info(log, "    auto (autodetect)\n");
+-    for (int n = 0; n < MP_ARRAY_SIZE(contexts); n++)
++    for (int n = 0; n < MP_ARRAY_SIZE(contexts) - 1; n++)
+         mp_info(log, "    %s (%s)\n", contexts[n]->name, contexts[n]->type);
+     return M_OPT_EXIT;
+ }
+@@ -151,7 +152,7 @@ int ra_ctx_validate_context(struct mp_log *log, const struct m_option *opt,
+     struct bstr param = bstr0(*value);
      if (bstr_equals0(param, "auto"))
          return 1;
 -    for (int i = 0; i < MP_ARRAY_SIZE(contexts); i++) {
@@ -46,7 +57,7 @@ index 9561b534d8..f73d0674be 100644
          if (bstr_equals0(param, contexts[i]->name))
              return 1;
      }
-@@ -166,7 +167,7 @@ struct ra_ctx *ra_ctx_create(struct vo *vo, const char *context_type,
+@@ -176,7 +177,7 @@ struct ra_ctx *ra_ctx_create(struct vo *vo, const char *context_type,
      bool old_probing = vo->probing;
      vo->probing = opts.probing;
  
@@ -56,7 +67,7 @@ index 9561b534d8..f73d0674be 100644
              continue;
          if (!api_auto && strcmp(contexts[i]->type, context_type) != 0)
 diff --git a/video/out/gpu/spirv.c b/video/out/gpu/spirv.c
-index ee11d601a3..87596ba5e3 100644
+index 67088bc7df..69100497eb 100644
 --- a/video/out/gpu/spirv.c
 +++ b/video/out/gpu/spirv.c
 @@ -16,6 +16,7 @@ static const struct spirv_compiler_fns *compilers[] = {
@@ -68,5 +79,5 @@ index ee11d601a3..87596ba5e3 100644
  
  static const struct m_opt_choice_alternatives compiler_choices[] = {
 -- 
-2.23.0
+2.35.1
 

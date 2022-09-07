@@ -1,13 +1,15 @@
 audio/aframe.c
-audio/audio_buffer.c
 audio/chmap.c
 audio/chmap_sel.c
 audio/decode/ad_lavc.c
 audio/decode/ad_spdif.c
+audio/filter/af_drop.c
 audio/filter/af_format.c
 audio/filter/af_lavcac3enc.c
 audio/filter/af_rubberband.c rubberband
 audio/filter/af_scaletempo.c
+audio/filter/af_scaletempo2.c
+audio/filter/af_scaletempo2_internals.c
 audio/fmt-conversion.c
 audio/format.c
 audio/out/ao.c
@@ -27,14 +29,12 @@ audio/out/ao_opensles.c opensles
 audio/out/ao_oss.c oss-audio
 audio/out/ao_pcm.c
 audio/out/ao_pulse.c pulse
-audio/out/ao_rsound.c rsound
 audio/out/ao_sdl.c sdl2-audio
 audio/out/ao_sndio.c sndio
 audio/out/ao_wasapi.c wasapi
 audio/out/ao_wasapi_changenotify.c wasapi
 audio/out/ao_wasapi_utils.c wasapi
-audio/out/pull.c
-audio/out/push.c
+audio/out/buffer.c
 common/av_common.c
 common/av_log.c
 common/codecs.c
@@ -43,6 +43,7 @@ common/encode_lavc.c
 common/msg.c
 common/playlist.c
 common/recorder.c
+common/stats.c
 common/tags.c
 common/version.c
 demux/codec_tags.c
@@ -64,6 +65,7 @@ demux/demux_timeline.c
 demux/ebml.c
 demux/packet.c
 demux/timeline.c
+filters/f_async_queue.c
 filters/f_autoconvert.c
 filters/f_auto_filters.c
 filters/f_decoder_wrapper.c
@@ -82,7 +84,6 @@ input/event.c
 input/input.c
 input/ipc.c
 input/keycodes.c
-input/pipe-win32.c win32-pipes
 input/sdl_gamepad.c sdl2-gamepad
 misc/bstr.c
 misc/charset_conv.c
@@ -92,10 +93,10 @@ misc/json.c
 misc/natural_sort.c
 misc/node.c
 misc/rendezvous.c
-misc/ring.c
 misc/thread_pool.c
 misc/thread_tools.c
-options/m_config.c
+options/m_config_core.c
+options/m_config_frontend.c
 options/m_option.c
 options/m_property.c
 options/options.c
@@ -126,6 +127,7 @@ stream/stream_bluray.c libbluray
 stream/stream_cb.c
 stream/stream_cdda.c cdda
 stream/stream_concat.c
+stream/stream_slice.c
 stream/stream_dvb.c dvbin
 stream/stream_dvdnav.c dvdnav
 stream/stream_edl.c
@@ -135,23 +137,25 @@ stream/stream_libarchive.c libarchive
 stream/stream_memory.c
 stream/stream_mf.c
 stream/stream_null.c
-stream/stream_smb.c libsmbclient
-sub/ass_mp.c libass
+sub/ass_mp.c
 sub/dec_sub.c
 sub/draw_bmp.c
+sub/filter_regex.c posix
+sub/filter_jsre.c javascript
 sub/filter_sdh.c
 sub/img_convert.c
 sub/lavc_conv.c
 sub/osd.c
-sub/osd_dummy.c dummy-osd
-sub/osd_libass.c libass-osd
-sub/sd_ass.c libass
+sub/osd_libass.c
+sub/sd_ass.c
 sub/sd_lavc.c
 test/chmap.c tests
 test/gl_video.c tests
 test/img_format.c tests
 test/json.c tests
 test/linked_list.c tests
+test/paths.c tests
+test/repack.c tests && zimg
 test/scale_sws.c tests
 test/scale_test.c tests
 test/scale_zimg.c tests && zimg
@@ -191,7 +195,7 @@ video/out/dither.c
 video/out/dr_helper.c
 video/out/drm_atomic.c drm
 video/out/drm_common.c drm
-video/out/drm_prime.c drm && drmprime
+video/out/drm_prime.c drm
 video/out/filter_kernels.c
 video/out/gpu/context.c
 video/out/gpu/d3d11_helpers.c d3d11 || egl-angle-win32
@@ -214,6 +218,7 @@ video/out/hwdec/hwdec_cuda_vk.c cuda-interop && vulkan
 video/out/hwdec/hwdec_vaapi.c vaapi-egl || vaapi-vulkan
 video/out/hwdec/hwdec_vaapi_gl.c vaapi-egl
 video/out/hwdec/hwdec_vaapi_vk.c vaapi-vulkan
+video/out/libmpv_sw.c
 video/out/placebo/ra_pl.c libplacebo
 video/out/placebo/utils.c libplacebo
 video/out/opengl/angle_dynamic.c egl-angle
@@ -232,7 +237,7 @@ video/out/opengl/context_x11egl.c egl-x11
 video/out/opengl/egl_helpers.c egl-helpers
 video/out/opengl/formats.c gl
 video/out/opengl/hwdec_d3d11egl.c d3d-hwaccel && egl-angle
-video/out/opengl/hwdec_drmprime_drm.c drmprime && drm
+video/out/opengl/hwdec_drmprime_drm.c drm
 video/out/opengl/hwdec_dxva2egl.c d3d9-hwaccel && egl-angle
 video/out/opengl/hwdec_dxva2gldx.c gl-dxinterop-d3d9
 video/out/opengl/hwdec_ios.m ios-gl
@@ -255,6 +260,7 @@ video/out/vo_mediacodec_embed.c android
 video/out/vo_null.c
 video/out/vo_rpi.c rpi-mmal
 video/out/vo_sdl.c sdl2-video
+video/out/vo_sixel.c sixel
 video/out/vo_tct.c
 video/out/vo_vaapi.c vaapi-x11 && gpl
 video/out/vo_vdpau.c vdpau
@@ -262,6 +268,7 @@ video/out/vo_wlshm.c wayland && memfd_create
 video/out/vo_x11.c x11
 video/out/vo_xv.c xv
 video/out/vulkan/context.c vulkan
+video/out/vulkan/context_display.c vulkan
 video/out/vulkan/context_android.c vulkan && android
 video/out/vulkan/context_wayland.c vulkan && wayland
 video/out/vulkan/context_win.c vulkan && win32-desktop
@@ -277,6 +284,7 @@ video/out/win32/displayconfig.c win32-desktop
 video/out/win32/droptarget.c win32-desktop
 video/out/win_state.c
 video/out/x11_common.c x11
+video/repack.c
 video/sws_utils.c
 video/zimg.c zimg
 video/vaapi.c vaapi
@@ -286,7 +294,6 @@ osdep/io.c
 osdep/threads.c
 osdep/timer.c
 osdep/polldev.c posix
-osdep/android/posix-spawn.c android
 osdep/android/strnlen.c android
 osdep/glob-win.c glob-win32
 osdep/macosx_application.m cocoa

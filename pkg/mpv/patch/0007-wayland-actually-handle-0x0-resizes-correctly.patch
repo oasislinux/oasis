@@ -1,0 +1,39 @@
+From 386d92e1ac1c22dbed0d2ab0e77ba1038baba966 Mon Sep 17 00:00:00 2001
+From: Dudemanguy <random342@airmail.cc>
+Date: Tue, 25 Jan 2022 11:56:37 -0600
+Subject: [PATCH] wayland: actually handle 0x0 resizes correctly
+
+According to the xdg-shell protocol spec, a 0x0 size from the compositor
+means that "the client should decide its own window dimension". We were
+not doing this correctly. What should happen is that mpv should simply
+reuse the old window size if it is not maximized or fullscreened. This
+should work on all (reasonably recent) versions of mutter and an
+compositor that follows the spec.
+
+https://gitlab.freedesktop.org/wayland/wayland-protocols/-/blob/main/stable/xdg-shell/xdg-shell.xml#L1050
+---
+ video/out/wayland_common.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/video/out/wayland_common.c b/video/out/wayland_common.c
+index 4ec5c148e7..61964c46e5 100644
+--- a/video/out/wayland_common.c
++++ b/video/out/wayland_common.c
+@@ -856,6 +856,14 @@ static void handle_toplevel_config(void *data, struct xdg_toplevel *toplevel,
+         }
+     }
+ 
++    /* Reuse old size if either of these are 0. */
++    if (width == 0 || height == 0) {
++        if (!is_fullscreen && !is_maximized) {
++            wl->geometry = wl->window_size;
++        }
++        goto resize;
++    }
++
+     if (old_toplevel_width == wl->toplevel_width &&
+         old_toplevel_height == wl->toplevel_height)
+         return;
+-- 
+2.35.1
+

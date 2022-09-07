@@ -1,4 +1,4 @@
-build('awk', '$outdir/version.h', {'$srcdir/VERSION', '|', '$dir/version.awk'}, {
+build('awk', '$outdir/generated/version.h', {'$srcdir/VERSION', '|', '$dir/version.awk'}, {
 	expr='-f $dir/version.awk',
 })
 
@@ -30,29 +30,35 @@ local libs = {
 	'zlib/libz.a',
 }
 pkg.deps = {
-	'$outdir/version.h',
+	'$outdir/generated/version.h',
 	'pkg/ffmpeg/headers',
 	'pkg/ffmpeg/fetch',
 	'pkg/linux-headers/headers',
 	'pkg/zlib/headers',
 }
 
-build('copy', '$outdir/video/out/wayland/idle-inhibit-v1.h', '$builddir/pkg/wayland-protocols/include/idle-inhibit-unstable-v1-client-protocol.h')
-build('copy', '$outdir/video/out/wayland/presentation-time.h', '$builddir/pkg/wayland-protocols/include/presentation-time-client-protocol.h')
-build('copy', '$outdir/video/out/wayland/xdg-decoration-v1.h', '$builddir/pkg/wayland-protocols/include/xdg-decoration-unstable-v1-client-protocol.h')
-build('copy', '$outdir/video/out/wayland/xdg-shell.h', '$builddir/pkg/wayland-protocols/include/xdg-shell-client-protocol.h')
+build('copy', '$outdir/generated/wayland/idle-inhibit-unstable-v1.h', '$builddir/pkg/wayland-protocols/include/idle-inhibit-unstable-v1-client-protocol.h')
+build('copy', '$outdir/generated/wayland/presentation-time.h', '$builddir/pkg/wayland-protocols/include/presentation-time-client-protocol.h')
+build('copy', '$outdir/generated/wayland/xdg-decoration-unstable-v1.h', '$builddir/pkg/wayland-protocols/include/xdg-decoration-unstable-v1-client-protocol.h')
+build('copy', '$outdir/generated/wayland/xdg-shell.h', '$builddir/pkg/wayland-protocols/include/xdg-shell-client-protocol.h')
 
 rule('file2string', '$outdir/file2string $in >$out')
-local function file2string(out, inp)
-	build('file2string', '$outdir/'..out, {'$srcdir/'..inp, '|', '$outdir/file2string'})
-	table.insert(pkg.deps, '$outdir/'..out)
+local function file2string(src)
+	local out = '$outdir/generated/'..src..'.inc'
+	build('file2string', out, {'$srcdir/'..src, '|', '$outdir/file2string'})
+	table.insert(pkg.deps, out)
 end
 
-file2string('input/input_conf.h', 'etc/input.conf')
-file2string('player/builtin_conf.inc', 'etc/builtin.conf')
-file2string('sub/osd_font.h', 'sub/osd_font.otf')
-for _, f in ipairs{'defaults', 'assdraw', 'options', 'osc', 'ytdl_hook', 'stats', 'console'} do
-	file2string('player/lua/'..f..'.inc', 'player/lua/'..f..'.lua')
+file2string('etc/input.conf')
+file2string('etc/builtin.conf')
+file2string('sub/osd_font.otf')
+local lua = {
+	'defaults.lua', 'assdraw.lua', 'options.lua', 'osc.lua',
+	'ytdl_hook.lua', 'stats.lua', 'console.lua',
+	'auto_profiles.lua',
+}
+for _, f in ipairs(lua) do
+	file2string('player/lua/'..f)
 end
 
 local options = {}
@@ -160,10 +166,10 @@ if options.HAVE_WAYLAND then
 		'libxkbcommon/libxkbcommon.a',
 	})
 	table.insert(pkg.deps, {
-		'$outdir/video/out/wayland/idle-inhibit-v1.h',
-		'$outdir/video/out/wayland/presentation-time.h',
-		'$outdir/video/out/wayland/xdg-decoration-v1.h',
-		'$outdir/video/out/wayland/xdg-shell.h',
+		'$outdir/generated/wayland/idle-inhibit-unstable-v1.h',
+		'$outdir/generated/wayland/presentation-time.h',
+		'$outdir/generated/wayland/xdg-decoration-unstable-v1.h',
+		'$outdir/generated/wayland/xdg-shell.h',
 		'pkg/libxkbcommon/headers',
 		'pkg/wayland/headers',
 	})
