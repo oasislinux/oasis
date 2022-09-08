@@ -2,10 +2,10 @@ image: alpine/edge
 packages:
 - bison
 - libarchive-tools
-- lua
+- lua5.1
 - nasm
 - ninja
-- tzdata
+- tzdata-utils
 - wayland-dev
 sources:
 - https://github.com/michaelforney/oasis
