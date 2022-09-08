@@ -1,6 +1,6 @@
 cflags{
 	'-std=c99', '-Wall', '-Wpedantic',
-	'-Wno-format-truncation',
+	'-Wno-format-truncation', '-Wno-maybe-uninitialized',
 	'-D _GNU_SOURCE',
 	'-I $srcdir/libsndio',
 	'-I $srcdir/bsd-compat',
@@ -21,7 +21,7 @@ local objs = objects[[
 		sio_aucat.c
 		sioctl.c sioctl_aucat.c
 	)
-	bsd-compat/(issetugid.c strlcat.c strlcpy.c strtonum.c clock_gettime.c)
+	bsd-compat/(getpeereid.c issetugid.c strlcat.c strlcpy.c strtonum.c clock_gettime.c)
 	$builddir/pkg/tinyalsa/libtinyalsa.a
 ]]
 
