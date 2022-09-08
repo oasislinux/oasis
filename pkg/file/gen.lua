@@ -1,6 +1,7 @@
-local version = '5.41'
+local version = '5.42'
 cflags{
 	'-Wall',
+	'-Wno-maybe-uninitialized',  -- false positive in src/readelf.c
 	'-D HAVE_CONFIG_H',
 	([[-D 'MAGIC="%s/share/file/magic"']]):format(config.prefix),
 	'-D _GNU_SOURCE',

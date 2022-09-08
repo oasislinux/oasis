@@ -4,6 +4,7 @@
 #define ELFCORE 1
 #define HAVE_ASCTIME_R 1
 #define HAVE_ASPRINTF 1
+#define HAVE_BYTESWAP_H 1
 /* #undef HAVE_BZLIB_H */
 #define HAVE_CTIME_R 1
 #define HAVE_DAYLIGHT 1
@@ -40,8 +41,10 @@
 #define HAVE_MMAP 1
 #define HAVE_NEWLOCALE 1
 #define HAVE_PIPE2 1
+#define HAVE_POSIX_SPAWNP 1
 #define HAVE_PREAD 1
 #define HAVE_SIG_T 1
+#define HAVE_SPAWN_H 1
 #define HAVE_STDINT_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRCASESTR 1
@@ -55,6 +58,8 @@
 #define HAVE_STRUCT_STAT_ST_RDEV 1
 #define HAVE_STRUCT_TM_TM_GMTOFF 1
 #define HAVE_STRUCT_TM_TM_ZONE 1
+/* #undef HAVE_SYS_BSWAP_H */
+#define HAVE_SYS_IOCTL_H 1
 #define HAVE_SYS_MMAN_H 1
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_STAT_H 1
@@ -89,10 +94,10 @@
 #define PACKAGE "file"
 #define PACKAGE_BUGREPORT "christos@astron.com"
 #define PACKAGE_NAME "file"
-#define PACKAGE_STRING "file 5.41"
+#define PACKAGE_STRING "file 5.42"
 #define PACKAGE_TARNAME "file"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "5.41"
+#define PACKAGE_VERSION "5.42"
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
 #ifndef _ALL_SOURCE
@@ -110,7 +115,7 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "5.41"
+#define VERSION "5.42"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

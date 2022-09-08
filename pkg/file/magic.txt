@@ -18,6 +18,7 @@ application
 applix
 apt
 archive
+aria
 arm
 asf
 assembler
@@ -47,6 +48,7 @@ c64
 cad
 cafebabe
 cbor
+ccf
 cddb
 chord
 cisco
@@ -78,6 +80,7 @@ dif
 diff
 digital
 dolby
+dsf
 dump
 dyadic
 ebml
@@ -196,6 +199,7 @@ netbsd
 netscape
 netware
 news
+nifty
 nim-lang
 nitpicker
 numpy
@@ -206,6 +210,7 @@ ole2compounddocs
 olf
 openfst
 opentimestamps
+oric
 os2
 os400
 os9
@@ -218,6 +223,7 @@ pbf
 pbm
 pc88
 pc98
+pci_ids
 pcjr
 pdf
 pdp
