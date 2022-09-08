@@ -1,4 +1,4 @@
-From 31fdee5b9d8fc63c850222768dcd097e43da0116 Mon Sep 17 00:00:00 2001
+From 89dfcdd084486a728c347e14ec619cd46c430ffd Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 26 Mar 2020 14:17:19 -0700
 Subject: [PATCH] Add functions to retrieve certificate validity period from
@@ -9,10 +9,10 @@ Subject: [PATCH] Add functions to retrieve certificate validity period from
  1 file changed, 36 insertions(+)
 
 diff --git a/inc/bearssl_x509.h b/inc/bearssl_x509.h
-index 49d2fba..9d43e15 100644
+index 7668e1d..a50b8fe 100644
 --- a/inc/bearssl_x509.h
 +++ b/inc/bearssl_x509.h
-@@ -1045,6 +1045,42 @@ br_x509_decoder_last_error(br_x509_decoder_context *ctx)
+@@ -1122,6 +1122,42 @@ br_x509_decoder_last_error(br_x509_decoder_context *ctx)
  	return 0;
  }
  
@@ -56,5 +56,5 @@ index 49d2fba..9d43e15 100644
   * \brief Get the "isCA" flag from an X.509 decoder context.
   *
 -- 
-2.26.0
+2.35.1
 
