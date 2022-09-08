@@ -1,4 +1,4 @@
-From ac068eb8361307fbdde0d61b9f6f3cdef70d73fe Mon Sep 17 00:00:00 2001
+From 04afba4813f504cafb717c48c50de4395fb3ea71 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 16 Oct 2020 19:09:50 -0700
 Subject: [PATCH] Reuse dynbuf symbols for curl tool
@@ -8,10 +8,10 @@ Subject: [PATCH] Reuse dynbuf symbols for curl tool
  1 file changed, 11 insertions(+), 13 deletions(-)
 
 diff --git a/lib/dynbuf.h b/lib/dynbuf.h
-index 39b859570..b9401d743 100644
+index c1e97235d..8b9158051 100644
 --- a/lib/dynbuf.h
 +++ b/lib/dynbuf.h
-@@ -22,22 +22,20 @@
+@@ -24,22 +24,20 @@
   *
   ***************************************************************************/
  
@@ -46,5 +46,5 @@ index 39b859570..b9401d743 100644
  struct dynbuf {
    char *bufr;    /* point to a null-terminated allocated buffer */
 -- 
-2.28.0
+2.35.1
 

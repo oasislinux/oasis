@@ -32,6 +32,7 @@ pkg.hdrs = copy('$outdir/include/curl', '$srcdir/include/curl', {
 	'system.h',
 	'urlapi.h',
 	'options.h',
+	'header.h',
 })
 pkg.deps = {
 	'$outdir/curl_config.h',
@@ -51,21 +52,21 @@ lib('libcurl.a', [[
 		curl_memrchr.c curl_multibyte.c curl_ntlm_core.c curl_ntlm_wb.c
 		curl_path.c curl_range.c curl_rtmp.c curl_sasl.c curl_sspi.c
 		curl_threads.c dict.c doh.c dotdot.c dynbuf.c easy.c
-		easygetopt.c easyoptions.c escape.c file.c fileinfo.c formdata.c
-		ftp.c ftplistparser.c getenv.c getinfo.c gopher.c hash.c hmac.c
-		hostasyn.c hostcheck.c hostip.c hostip4.c hostip6.c hostsyn.c
-		hsts.c http.c http2.c http_chunks.c http_digest.c
-		http_negotiate.c http_ntlm.c http_proxy.c http_aws_sigv4.c
-		idn_win32.c if2ip.c imap.c inet_ntop.c inet_pton.c krb5.c ldap.c
-		llist.c md4.c md5.c memdebug.c mime.c mprintf.c mqtt.c multi.c
-		netrc.c non-ascii.c nonblock.c openldap.c parsedate.c pingpong.c
-		pop3.c progress.c psl.c rand.c rename.c rtsp.c select.c sendf.c
-		setopt.c sha256.c share.c slist.c smb.c smtp.c socketpair.c
-		socks.c socks_gssapi.c socks_sspi.c speedcheck.c splay.c
-		strcase.c strdup.c strerror.c strtok.c strtoofft.c
-		system_win32.c telnet.c tftp.c timeval.c transfer.c url.c
-		urlapi.c version.c version_win32.c warnless.c wildcard.c
-		x509asn1.c
+		easygetopt.c easyoptions.c escape.c file.c fileinfo.c fopen.c
+		formdata.c ftp.c ftplistparser.c getenv.c getinfo.c gopher.c
+		h2h3.c hash.c headers.c hmac.c hostasyn.c hostip.c hostip4.c
+		hostip6.c hostsyn.c hsts.c http.c http2.c http_chunks.c
+		http_digest.c http_negotiate.c http_ntlm.c http_proxy.c
+		http_aws_sigv4.c idn_win32.c if2ip.c imap.c inet_ntop.c
+		inet_pton.c krb5.c ldap.c llist.c md4.c md5.c memdebug.c mime.c
+		mprintf.c mqtt.c multi.c netrc.c nonblock.c openldap.c
+		parsedate.c pingpong.c pop3.c progress.c psl.c rand.c rename.c
+		rtsp.c select.c sendf.c setopt.c sha256.c share.c slist.c smb.c
+		smtp.c socketpair.c socks.c socks_gssapi.c socks_sspi.c
+		speedcheck.c splay.c strcase.c strdup.c strerror.c strtok.c
+		strtoofft.c system_win32.c telnet.c tftp.c timediff.c timeval.c
+		transfer.c url.c urlapi.c version.c version_win32.c warnless.c
+		wildcard.c
 		vauth/(
 			cleartext.c cram.c digest.c digest_sspi.c
 			gsasl.c krb5_gssapi.c krb5_sspi.c ntlm.c
@@ -73,12 +74,12 @@ lib('libcurl.a', [[
 			spnego_sspi.c vauth.c
 		)
 		vtls/(
-			bearssl.c gskit.c gtls.c keylog.c mbedtls.c
-			mbedtls_threadlock.c mesalink.c nss.c
-			openssl.c rustls.c schannel.c schannel_verify.c
-			sectransp.c vtls.c wolfssl.c
+			bearssl.c gskit.c gtls.c hostcheck.c keylog.c mbedtls.c
+			mbedtls_threadlock.c nss.c openssl.c rustls.c schannel.c
+			schannel_verify.c sectransp.c vtls.c wolfssl.c
+			x509asn1.c
 		)
-		vquic/(ngtcp2.c quiche.c vquic.c)
+		vquic/(msh3.c ngtcp2.c quiche.c vquic.c)
 		vssh/(libssh.c libssh2.c wolfssh.c)
 	)
 	$builddir/pkg/bearssl/libbearssl.a
@@ -102,17 +103,16 @@ exe('curl', [[
 		tool_cb_see.c
 		tool_cb_wrt.c
 		tool_cfgable.c
-		tool_convert.c
 		tool_dirhie.c
 		tool_doswin.c
 		tool_easysrc.c
 		tool_filetime.c
+		tool_findfile.c
 		tool_formparse.c
 		tool_getparam.c
 		tool_getpass.c
 		tool_help.c
 		tool_helpers.c
-		tool_homedir.c
 		tool_libinfo.c
 		tool_listhelp.c
 		tool_main.c

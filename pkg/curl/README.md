@@ -7,7 +7,6 @@ Generated with
 		--disable-pop3 \
 		--disable-smb \
 		--with-ca-bundle=/etc/ssl/cert.pem \
-		--without-ssl \
 		--with-bearssl \
 		CPPFLAGS='-I/src/oasis/out/pkg/bearssl/include -I/src/oasis/out/pkg/zlib/include' \
 		LDFLAGS='-L/src/oasis/out/pkg/bearssl -L/src/oasis/out/pkg/zlib'
