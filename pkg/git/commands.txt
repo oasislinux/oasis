@@ -54,12 +54,14 @@ git-for-each-repo.txt
 git-format-patch.txt
 git-fsck-objects.txt
 git-fsck.txt
+git-fsmonitor--daemon.txt
 git-gc.txt
 git-get-tar-commit-id.txt
 git-grep.txt
 git-gui.txt
 git-hash-object.txt
 git-help.txt
+git-hook.txt
 git-http-backend.txt
 git-http-fetch.txt
 git-http-push.txt

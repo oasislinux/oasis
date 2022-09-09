@@ -40,6 +40,7 @@ config/help.txt
 config/http.txt
 config/i18n.txt
 config/imap.txt
+config/includeif.txt
 config/index.txt
 config/init.txt
 config/instaweb.txt
@@ -65,10 +66,12 @@ config/remote.txt
 config/remotes.txt
 config/repack.txt
 config/rerere.txt
-config/reset.txt
+config/revert.txt
+config/safe.txt
 config/sendemail.txt
 config/sequencer.txt
 config/showbranch.txt
+config/sparse.txt
 config/splitindex.txt
 config/ssh.txt
 config/stash.txt

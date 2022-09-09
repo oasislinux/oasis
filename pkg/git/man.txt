@@ -53,12 +53,14 @@ man1/git-for-each-repo.1
 man1/git-format-patch.1
 man1/git-fsck-objects.1
 man1/git-fsck.1
+man1/git-fsmonitor--daemon.1
 man1/git-gc.1
 man1/git-get-tar-commit-id.1
 man1/git-grep.1
 man1/git-gui.1
 man1/git-hash-object.1
 man1/git-help.1
+man1/git-hook.1
 man1/git-http-backend.1
 man1/git-http-fetch.1
 man1/git-http-push.1

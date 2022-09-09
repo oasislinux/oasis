@@ -71,6 +71,7 @@ lib('libgit.a', [[
 	compat/obstack.c
 	compat/regex/regex.c.o
 	compat/terminal.c
+	compat/zlib-uncompress2.c
 	compat/qsort_s.c
 	config.c
 	connect.c
@@ -109,6 +110,8 @@ lib('libgit.a', [[
 	fmt-merge-msg.c
 	fsck.c
 	fsmonitor.c
+	fsmonitor-ipc.c
+	fsmonitor-settings.c
 	gettext.c
 	gpg-interface.c
 	graph.c
@@ -161,6 +164,7 @@ lib('libgit.a', [[
 	pack-bitmap-write.c
 	pack-bitmap.c
 	pack-check.c
+	pack-mtimes.c
 	pack-objects.c
 	pack-revindex.c
 	pack-write.c
@@ -191,6 +195,7 @@ lib('libgit.a', [[
 	rebase.c
 	ref-filter.c
 	reflog-walk.c
+	reflog.c
 	refs.c
 	refs/debug.c
 	refs/files-backend.c
@@ -346,11 +351,13 @@ local builtins = {
 	'for-each-ref',
 	'for-each-repo',
 	'fsck',
+	'fsmonitor--daemon',
 	'gc',
 	'get-tar-commit-id',
 	'grep',
 	'hash-object',
 	'help',
+	'hook',
 	'index-pack',
 	'init-db',
 	'interpret-trailers',

@@ -11,12 +11,14 @@
 #define GIT_LOCALE_PATH "/share/locale"
 #define GIT_MAN_PATH "share/man"
 #define GIT_USER_AGENT "git/" GIT_VERSION
-#define GIT_VERSION "2.35.1"
+#define GIT_VERSION "2.37.3"
 #define HAVE_ALLOCA_H
 #define HAVE_PATHS_H
 #define HAVE_DEV_TTY
 #define HAVE_CLOCK_GETTIME
 #define HAVE_CLOCK_MONOTONIC
+#define HAVE_SYNC_FILE_RANGE
+#define HAVE_GETRANDOM
 #define HAVE_GETDELIM
 #define NO_GETTEXT
 #define NO_OPENSSL
