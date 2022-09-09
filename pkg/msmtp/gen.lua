@@ -12,7 +12,11 @@ pkg.deps = {
 exe('msmtp', [[
 	src/(
 		conf.c
+		eval.c
 		list.c
+		md5.c
+		md5-apps.c
+		msgid.c
 		msmtp.c
 		net.c
 		netrc.c
@@ -27,8 +31,6 @@ exe('msmtp', [[
 
 		mtls.c
 		mtls-libtls.c
-
-		md5.c md5-apps.c
 	)
 	$builddir/pkg/libtls-bearssl/libtls.a.d
 ]])
