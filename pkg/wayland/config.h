@@ -11,4 +11,4 @@
 #undef HAVE_SYS_UCRED_H
 #define HAVE_XUCRED_CR_PID 0
 #define PACKAGE "wayland"
-#define PACKAGE_VERSION "1.20.0"
+#define PACKAGE_VERSION "1.21.0"

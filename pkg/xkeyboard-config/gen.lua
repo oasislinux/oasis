@@ -73,7 +73,7 @@ local data = [[
 		af al am apl
 		ara at au az
 		ba bd be
-		bg br brai
+		bg bqn br brai
 		bt bw by
 		ca cd ch
 		cm cn cz
@@ -85,7 +85,7 @@ local data = [[
 		id ie il
 		in iq
 		ir is it
-		jp jv
+		jp
 		ke kg kh
 		kr kz
 		la latam latin

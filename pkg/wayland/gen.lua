@@ -10,9 +10,9 @@ cflags{
 build('sed', '$outdir/include/wayland-version.h', '$srcdir/src/wayland-version.h.in', {
 	expr={
 		'-e s,@WAYLAND_VERSION_MAJOR@,1,',
-		'-e s,@WAYLAND_VERSION_MINOR@,20,',
+		'-e s,@WAYLAND_VERSION_MINOR@,21,',
 		'-e s,@WAYLAND_VERSION_MICRO@,0,',
-		'-e s,@WAYLAND_VERSION@,1.20.0,',
+		'-e s,@WAYLAND_VERSION@,1.21.0,',
 	},
 })
 
