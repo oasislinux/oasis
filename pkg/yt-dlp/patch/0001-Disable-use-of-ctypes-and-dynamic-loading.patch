@@ -1,12 +1,12 @@
-From 4309e1275d48248b427365952249b904be7c85d1 Mon Sep 17 00:00:00 2001
+From e52fcf6a85eb47df1795e934d413ffee81240403 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
  yt_dlp/cookies.py | 94 -----------------------------------------------
- yt_dlp/utils.py   | 83 +----------------------------------------
- 2 files changed, 1 insertion(+), 176 deletions(-)
+ yt_dlp/utils.py   | 84 +-----------------------------------------
+ 2 files changed, 2 insertions(+), 176 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
 index 0ccd22947..3481243cc 100644
@@ -135,10 +135,10 @@ index 0ccd22947..3481243cc 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils.py b/yt_dlp/utils.py
-index 00f2fbf42..5e12d9f74 100644
+index 00f2fbf42..9ca0ee207 100644
 --- a/yt_dlp/utils.py
 +++ b/yt_dlp/utils.py
-@@ -2042,64 +2042,6 @@ def __init__(self):
+@@ -2042,64 +2042,7 @@ def __init__(self):
          super().__init__(self.msg)
  
  
@@ -200,10 +200,11 @@ index 00f2fbf42..5e12d9f74 100644
 -            raise OSError('Unlocking file failed: %r' % ctypes.FormatError())
 -
 -else:
++if True:
      try:
          import fcntl
  
-@@ -2422,30 +2364,7 @@ def fix_xml_ampersands(xml_str):
+@@ -2422,30 +2365,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
@@ -236,5 +237,5 @@ index 00f2fbf42..5e12d9f74 100644
  
  def remove_start(s, start):
 -- 
-2.35.1
+2.37.3
 
