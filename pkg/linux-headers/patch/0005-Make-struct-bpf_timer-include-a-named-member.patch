@@ -1,4 +1,4 @@
-From 2098e4227bca59a46f19f817a6af1f52ea9a408e Mon Sep 17 00:00:00 2001
+From e0e81fd6e3be7bd03fcf82cbb598253a9b7c47f8 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 2 Dec 2021 14:49:08 -0800
 Subject: [PATCH] Make struct bpf_timer include a named member
@@ -12,10 +12,10 @@ Signed-off-by: Michael Forney <mforney@mforney.org>
  1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 90c141acf380..b05ee9448e6a 100644
+index 864d6345ebc3..a2ac330e49bd 100644
 --- a/include/uapi/linux/bpf.h
 +++ b/include/uapi/linux/bpf.h
-@@ -6250,9 +6250,8 @@ struct bpf_spin_lock {
+@@ -6688,9 +6688,8 @@ struct bpf_spin_lock {
  };
  
  struct bpf_timer {
@@ -25,8 +25,8 @@ index 90c141acf380..b05ee9448e6a 100644
 +	__u64	reserved[2];
 +};
  
- struct bpf_sysctl {
- 	__u32	write;		/* Sysctl is being read (= 0) or written (= 1).
+ struct bpf_dynptr {
+ 	__u64 :64;
 -- 
-2.34.1
+2.35.1
 

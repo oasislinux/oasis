@@ -1,6 +1,7 @@
 return {
 	-- <cd src/arch/x86/include/uapi && find * -name '*.h' -exec printf "\t'%s',\n" {} + | LC_COLLATE=C sort
 	'asm/a.out.h',
+	'asm/amd_hsmp.h',
 	'asm/auxvec.h',
 	'asm/bitsperlong.h',
 	'asm/boot.h',
