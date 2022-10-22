@@ -104,6 +104,7 @@ local srcs = paths[[src/(
 	close_range.c
 	copy_file_range.c
 	count.c
+	counter_ioctl.c
 	delay.c
 	desc.c
 	dirent.c
@@ -183,6 +184,7 @@ local srcs = paths[[src/(
 	landlock.c
 	ldt.c
 	link.c
+	lirc_ioctl.c
 	listen.c
 	lookup_dcookie.c
 	loop.c
@@ -315,6 +317,7 @@ local srcs = paths[[src/(
 	statfs.c
 	statfs64.c
 	statx.c
+	strauss.c
 	string_to_uint.c
 	swapon.c
 	sync_file_range.c
@@ -378,8 +381,8 @@ file('bin/strace', '755', '$outdir/strace')
 
 build('sed', '$outdir/strace.1', '$srcdir/doc/strace.1.in', {
 	expr={
-		[[-e 's,@STRACE_MANPAGE_DATE@,2022-01-04,']],
-		[[-e 's,@VERSION@,5.16,']],
+		[[-e 's,@STRACE_MANPAGE_DATE@,2022-08-12,']],
+		[[-e 's,@VERSION@,5.19,']],
 		[[-e 's,@ENABLE_STACKTRACE_TRUE@,#,']],
 		[[-e 's,@ENABLE_STACKTRACE_FALSE@,,']],
 		[[-e 's,@ENABLE_SECONTEXT_TRUE@,#,']],

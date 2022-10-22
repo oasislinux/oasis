@@ -1,4 +1,4 @@
-From 91ba17ac11b0994dc28019a7b643d479a2f201c5 Mon Sep 17 00:00:00 2001
+From b77a4eb06db5c9ec06dfb8386364a5966bbcb1a8 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -6,9 +6,9 @@ Subject: [PATCH] Don't omit second operand to '?' operator
 ---
  src/kd_ioctl.c | 2 +-
  src/open.c     | 5 +++--
- src/prctl.c    | 2 +-
+ src/prctl.c    | 9 ++++-----
  src/strace.c   | 6 +++---
- 4 files changed, 8 insertions(+), 7 deletions(-)
+ 4 files changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/src/kd_ioctl.c b/src/kd_ioctl.c
 index eadc1a457..35a89ffed 100644
@@ -40,23 +40,48 @@ index d7654d7e8..6c5c4a2a5 100644
  
  const char *
 diff --git a/src/prctl.c b/src/prctl.c
-index 4275e5f70..a52b3348d 100644
+index 97f42fe15..c0394782b 100644
 --- a/src/prctl.c
 +++ b/src/prctl.c
-@@ -80,7 +80,7 @@ sprint_sve_val(kernel_ulong_t arg)
- 	const char *flags_str = sprintflags("", pr_sve_vl_flags, flags);
+@@ -82,7 +82,6 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
+ 	kernel_ulong_t vl = arg & PR_SVE_VL_LEN_MASK;
+ 	kernel_ulong_t flags = arg & ~PR_SVE_VL_LEN_MASK;
  
- 	xsprintf(out, "%s%s%#" PRI_klx,
--		 flags_str ?: "", flags_str ? "|" : "", vl);
-+		 flags_str ? flags_str : "", flags_str ? "|" : "", vl);
+-	if (!flags && aux)
+ 		return NULL;
+ 
+ 	const char *flags_str = sprintflags_ex("", pr_sve_vl_flags, flags, '\0',
+@@ -91,10 +90,10 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
+ 	if (!aux && flags && xlat_verbose(xlat_verbosity) == XLAT_STYLE_VERBOSE)
+ 	{
+ 		xsprintf(out, "%#" PRI_klx " /* %s%s%#" PRI_klx " */",
+-			 arg, flags_str ?: "", flags_str ? "|" : "", vl);
++			 arg, flags_str ? flags_str : "", flags_str ? "|" : "", vl);
+ 	} else {
+ 		xsprintf(out, "%s%s%#" PRI_klx,
+-			 flags_str ?: "", flags_str ? "|" : "", vl);
++			 flags_str ? flags_str : "", flags_str ? "|" : "", vl);
+ 	}
  
  	return out;
- }
+@@ -127,10 +126,10 @@ sprint_sme_val(kernel_ulong_t arg, bool aux)
+ 	if (!aux && flags && xlat_verbose(xlat_verbosity) == XLAT_STYLE_VERBOSE)
+ 	{
+ 		xsprintf(out, "%#" PRI_klx " /* %s%s%#" PRI_klx " */",
+-			 arg, flags_str ?: "", flags_str ? "|" : "", vl);
++			 arg, flags_str ? flags_str : "", flags_str ? "|" : "", vl);
+ 	} else {
+ 		xsprintf(out, "%s%s%#" PRI_klx,
+-			 flags_str ?: "", flags_str ? "|" : "", vl);
++			 flags_str ? flags_str : "", flags_str ? "|" : "", vl);
+ 	}
+ 
+ 	return out;
 diff --git a/src/strace.c b/src/strace.c
-index d12e1f34a..85c8568fe 100644
+index cea52bb22..154ee684f 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -2380,7 +2380,7 @@ init(int argc, char *argv[])
+@@ -2463,7 +2463,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -65,7 +90,7 @@ index d12e1f34a..85c8568fe 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2488,10 +2488,10 @@ init(int argc, char *argv[])
+@@ -2572,10 +2572,10 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
  			break;
  		case GETOPT_QUAL_QUIET:
@@ -79,5 +104,5 @@ index d12e1f34a..85c8568fe 100644
  		case GETOPT_QUAL_DECODE_PID:
  			qualify_decode_pid(optarg);
 -- 
-2.34.1
+2.37.3
 

@@ -1,4 +1,4 @@
-From ec81ad56aec0cdfe0eff2cd4cb9ea396e3ab9794 Mon Sep 17 00:00:00 2001
+From 2aed2fd146be2c7b36f1f618accf166c8be109b6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 30 Jan 2020 22:32:50 -0800
 Subject: [PATCH] Avoid index ranges
@@ -11,7 +11,7 @@ ignore this for now.
  2 files changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/src/print_mac.c b/src/print_mac.c
-index 9674b9841..7446fa719 100644
+index 38a1f57e8..ebcc708a3 100644
 --- a/src/print_mac.c
 +++ b/src/print_mac.c
 @@ -17,8 +17,6 @@
@@ -24,7 +24,7 @@ index 9674b9841..7446fa719 100644
  	[ARPHRD_ETHER]      =  6 /* ETH_ALEN */,
  	/* ARPHRD_EETHER - no actual devices in Linux */
 @@ -129,7 +127,7 @@ print_mac_addr(const char *prefix, const uint8_t addr[], size_t size)
- const char *
+ static const char *
  sprint_hwaddr(const uint8_t hwaddr[], size_t size, uint32_t devtype)
  {
 -	uint8_t sz = (devtype < ARRAY_SIZE(hwaddr_sizes))
@@ -33,10 +33,10 @@ index 9674b9841..7446fa719 100644
  
  	return sprint_mac_addr(hwaddr, MIN(size, sz));
 diff --git a/src/util.c b/src/util.c
-index 4ed870ac6..e6a7fdfba 100644
+index 6e513ede0..88f25aa83 100644
 --- a/src/util.c
 +++ b/src/util.c
-@@ -1382,16 +1382,16 @@ dumpstr(struct tcb *const tcp, const kernel_ulong_t addr,
+@@ -1389,16 +1389,16 @@ dumpstr(struct tcb *const tcp, const kernel_ulong_t addr,
  		? 1 + ilog2_klong(len - 1) / HEX_BIT : DUMPSTR_OFFS_MIN_CHARS;
  	kernel_ulong_t i = 0;
  	const unsigned char *src;
@@ -58,5 +58,5 @@ index 4ed870ac6..e6a7fdfba 100644
  
  		/* Fetching data from tracee.  */
 -- 
-2.34.1
+2.37.3
 

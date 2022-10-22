@@ -1,4 +1,4 @@
-From deb58e1542286779d0bd95482ae3e4e7e7ce7fb7 Mon Sep 17 00:00:00 2001
+From 8ec1f34a8943d175270cbfde3d3a576512e5d2e6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:33:01 -0700
 Subject: [PATCH] Use __typeof__ spelling of typeof
@@ -11,12 +11,11 @@ Subject: [PATCH] Use __typeof__ spelling of typeof
  src/landlock.c       |  4 ++--
  src/list.h           | 10 +++++-----
  src/macros.h         |  2 +-
- src/net.c            |  2 +-
  src/tee.c            |  2 +-
  src/ubi.c            |  2 +-
  tests/btrfs.c        |  2 +-
  tests/fcntl-common.c |  2 +-
- 12 files changed, 24 insertions(+), 24 deletions(-)
+ 11 files changed, 23 insertions(+), 23 deletions(-)
 
 diff --git a/src/btrfs.c b/src/btrfs.c
 index 349fee657..c641d2408 100644
@@ -77,10 +76,10 @@ index 349fee657..c641d2408 100644
  				    &info, sizeof(info), tfetch_mem,
  				    print_btrfs_ioctl_space_info, 0);
 diff --git a/src/defs.h b/src/defs.h
-index fd11d60c3..71cec62b4 100644
+index 861b667ff..c44935796 100644
 --- a/src/defs.h
 +++ b/src/defs.h
-@@ -1089,7 +1089,7 @@ print_local_array_ex(struct tcb *tcp,
+@@ -1120,7 +1120,7 @@ print_local_array_ex(struct tcb *tcp,
  # define print_local_array_upto(tcp_, start_addr_, upto_, print_func_)	     \
  	print_local_array_ex((tcp_), (start_addr_),			     \
  			     CLAMP((upto_), 0,				     \
@@ -89,7 +88,7 @@ index fd11d60c3..71cec62b4 100644
  			     sizeof((start_addr_)[0]), (print_func_),        \
  			     NULL, 0, NULL, NULL)
  
-@@ -1926,8 +1926,8 @@ scno_is_valid(kernel_ulong_t scno)
+@@ -1986,8 +1986,8 @@ scno_pers_is_valid(kernel_ulong_t scno, unsigned int pers)
  
  # define ILOG2_ITER_(val_, ret_, bit_)					\
  	do {								\
@@ -191,7 +190,7 @@ index 4de4cb3be..f4ec11f0e 100644
  
  #endif /* !STRACE_LIST_H */
 diff --git a/src/macros.h b/src/macros.h
-index fc563ce2d..02f58d726 100644
+index 659d47191..57a0123b4 100644
 --- a/src/macros.h
 +++ b/src/macros.h
 @@ -62,7 +62,7 @@
@@ -203,19 +202,6 @@ index fc563ce2d..02f58d726 100644
  
  # ifndef offsetofend
  #  define offsetofend(type_, member_)	\
-diff --git a/src/net.c b/src/net.c
-index 3ba2330fb..8d4458a70 100644
---- a/src/net.c
-+++ b/src/net.c
-@@ -524,7 +524,7 @@ SYS_FUNC(socketpair)
- #define MAYBE_PRINT_FIELD_LEN(print_prefix_, where_, field_,		\
- 			len_, print_func_, ...)				\
- 	do {								\
--		unsigned int start = offsetof(typeof(where_), field_);	\
-+		unsigned int start = offsetof(__typeof__(where_), field_); \
- 		unsigned int end = start + sizeof(where_.field_);	\
- 		if (len_ > start) {					\
- 			print_prefix_;					\
 diff --git a/src/tee.c b/src/tee.c
 index d7e9b15d9..fc735e0da 100644
 --- a/src/tee.c
@@ -269,5 +255,5 @@ index 20f92dd1d..aa6ecc8f5 100644
  # define TYPEOF_FLOCK_OFF_T off_t
  #endif
 -- 
-2.34.1
+2.37.3
 

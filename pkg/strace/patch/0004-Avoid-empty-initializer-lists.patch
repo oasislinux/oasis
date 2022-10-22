@@ -1,4 +1,4 @@
-From d24d8f3d9a658f2732c99d92376a675af58aee25 Mon Sep 17 00:00:00 2001
+From 1ea9b617255ce7ae228fa6fec171a0d960ab7e96 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,19 +20,19 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/src/bpf.c b/src/bpf.c
-index 801968048..841bb33e3 100644
+index 7bdeb4f65..3c6889eb0 100644
 --- a/src/bpf.c
 +++ b/src/bpf.c
-@@ -43,7 +43,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
+@@ -48,7 +48,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
  #define BEGIN_BPF_CMD_DECODER(bpf_cmd)					\
  	static DECL_BPF_CMD_DECODER(decode_ ## bpf_cmd)			\
  	{								\
 -		struct bpf_cmd ## _struct attr = {};			\
 +		struct bpf_cmd ## _struct attr = {0};			\
- 		const size_t attr_size = bpf_cmd ## _struct_size;	\
+ 		size_t attr_size = bpf_cmd ## _struct_size;	\
  		const unsigned int len = MIN(size, attr_size);		\
  		memcpy(&attr, data, len);				\
-@@ -154,7 +154,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
+@@ -159,7 +159,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
  	if (abbrev(tcp)) {
  		printaddr(addr);
  	} else {
@@ -81,10 +81,10 @@ index fc13a6613..f7b6e6e49 100644
  		return;
  	tprints(sprintsigmask_n("", mask, len));
 diff --git a/src/strace.c b/src/strace.c
-index 7370275e1..d12e1f34a 100644
+index 3f5a00a0a..cea52bb22 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -3532,7 +3532,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -3621,7 +3621,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -212,10 +212,10 @@ index faf9423f8..eacee2366 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 diff --git a/tests/waitid.c b/tests/waitid.c
-index a14899530..b08881ae7 100644
+index 1ed763840..fef941874 100644
 --- a/tests/waitid.c
 +++ b/tests/waitid.c
-@@ -130,7 +130,7 @@ do_waitid(const unsigned int idtype,
+@@ -146,7 +146,7 @@ do_waitid(const unsigned int idtype,
  	  const unsigned int options,
  	  const kernel_rusage_t *const rusage)
  {
@@ -225,5 +225,5 @@ index a14899530..b08881ae7 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.34.1
+2.37.3
 

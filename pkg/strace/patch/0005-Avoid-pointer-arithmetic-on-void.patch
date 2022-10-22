@@ -1,4 +1,4 @@
-From 4cd0019ddd66505ce71f0cffa3627a4a038640ef Mon Sep 17 00:00:00 2001
+From 989bfd76544b4f62ade9e35d2476332934d27d86 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -60,10 +60,10 @@ index 9603a6bb6..f5f747c42 100644
  
  	tprint_array_end();
 diff --git a/src/sockaddr.c b/src/sockaddr.c
-index a6e698d4b..52c10eac4 100644
+index 9139da1cd..7126ad2fc 100644
 --- a/src/sockaddr.c
 +++ b/src/sockaddr.c
-@@ -580,7 +580,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
+@@ -583,7 +583,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
  static void
  print_sockaddr_data_raw(const void *const buf, const int addrlen)
  {
@@ -72,7 +72,7 @@ index a6e698d4b..52c10eac4 100644
  	const int datalen = addrlen - SIZEOF_SA_FAMILY;
  
  	tprints_field_name("sa_data");
-@@ -777,7 +777,7 @@ print_sockaddr_data_rxrpc(struct tcb *tcp, const void *const buf,
+@@ -780,7 +780,7 @@ print_sockaddr_data_rxrpc(struct tcb *tcp, const void *const buf,
  	tprints_field_name("transport");
  	tprint_struct_begin();
  
@@ -148,5 +148,5 @@ index c769a1916..ed401ae74 100644
  	}
  
 -- 
-2.34.1
+2.37.3
 

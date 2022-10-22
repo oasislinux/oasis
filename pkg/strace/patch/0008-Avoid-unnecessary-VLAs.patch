@@ -1,4 +1,4 @@
-From fa5aa4ec41eafb8a65732dd599bd645a8650d0d1 Mon Sep 17 00:00:00 2001
+From ecb0b8b820e7777d3270e1ba48583fcf6ef6e9ed Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:58:46 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
@@ -25,10 +25,10 @@ index e4f362787..ad203748b 100644
  		const size_t c = columns[i];
  
 diff --git a/src/nlattr.c b/src/nlattr.c
-index 9b4879a84..ffa8be53e 100644
+index c0563c804..298f6e6da 100644
 --- a/src/nlattr.c
 +++ b/src/nlattr.c
-@@ -356,7 +356,7 @@ decode_nla_hwaddr(struct tcb *const tcp,
+@@ -355,7 +355,7 @@ decode_nla_hwaddr(struct tcb *const tcp,
  	if (len > MAX_ADDR_LEN)
  		return false;
  
@@ -73,7 +73,7 @@ index 92aaee092..159a2a511 100644
  	if (umoven(tcp, tcp->u_arg[1], nargs * current_wordsize, buf) < 0)
  		return;
 diff --git a/src/util.c b/src/util.c
-index 302496d36..4ed870ac6 100644
+index c4c4bc0ef..6e513ede0 100644
 --- a/src/util.c
 +++ b/src/util.c
 @@ -571,8 +571,7 @@ enum sock_proto
@@ -96,5 +96,5 @@ index 302496d36..4ed870ac6 100644
  		return SOCK_PROTO_UNKNOWN;
  	else {
 -- 
-2.34.1
+2.37.3
 
