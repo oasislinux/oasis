@@ -1,4 +1,4 @@
-From 2def6690cc2df49dee47a38fbc4ed4243c28abbe Mon Sep 17 00:00:00 2001
+From 61e878284860d2d83caff67254328cda2552c8a5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 30 Oct 2016 23:54:56 -0700
 Subject: [PATCH] Port to wayland using wld
@@ -7,8 +7,8 @@ Subject: [PATCH] Port to wayland using wld
  Makefile     |   12 +-
  config.def.h |  500 ++++++-----
  config.mk    |   12 +-
- st.c         | 2365 +++++++++++++++++++++++++-------------------------
- 4 files changed, 1462 insertions(+), 1427 deletions(-)
+ st.c         | 2366 +++++++++++++++++++++++++-------------------------
+ 4 files changed, 1463 insertions(+), 1427 deletions(-)
 
 diff --git a/Makefile b/Makefile
 index fb026c4..053d3e0 100644
@@ -645,7 +645,7 @@ index c84c5ee..7da06f1 100644
  # flags
  CPPFLAGS = -DVERSION=\"${VERSION}\" -D_XOPEN_SOURCE=600
 diff --git a/st.c b/st.c
-index fbcd9e0..863b338 100644
+index fbcd9e0..913c71b 100644
 --- a/st.c
 +++ b/st.c
 @@ -3,6 +3,8 @@
@@ -1643,7 +1643,7 @@ index fbcd9e0..863b338 100644
 +	if (str) {
 +		sel.source = wl_data_device_manager_create_data_source(wl.datadevmanager);
 +		wl_data_source_add_listener(sel.source, &datasrclistener, NULL);
-+		wl_data_source_offer(sel.source, "text/plain; charset=utf-8");
++		wl_data_source_offer(sel.source, "text/plain;charset=utf-8");
 +	} else {
 +		sel.source = NULL;
  	}
@@ -2185,7 +2185,7 @@ index fbcd9e0..863b338 100644
  		                   FC_PIXEL_SIZE, 0, &fontval);
  		usedfontsize = fontval;
  		if (fontsize == 0)
-@@ -3494,282 +3286,338 @@ xloadfonts(char *fontstr, double fontsize)
+@@ -3494,282 +3286,339 @@ xloadfonts(char *fontstr, double fontsize)
  	}
  
  	/* Setting character width and height. */
@@ -2433,6 +2433,7 @@ index fbcd9e0..863b338 100644
 +	wl.toplevel = xdg_surface_get_toplevel(wl.xdgsurface);
 +	xdg_toplevel_add_listener(wl.toplevel, &toplevellistener, NULL);
 +	xdg_toplevel_set_app_id(wl.toplevel, opt_class ? opt_class : termname);
++	wl_surface_commit(wl.surface);
  
 -	xresettitle();
 -	XMapWindow(xw.dpy, xw.win);
@@ -2713,7 +2714,7 @@ index fbcd9e0..863b338 100644
  
  			FcConfigSubstitute(0, fcpattern,
  					FcMatchPattern);
-@@ -3783,186 +3631,58 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
+@@ -3783,186 +3632,58 @@ xmakeglyphfontspecs(XftGlyphFontSpec *specs, const Glyph *glyphs, int len, int x
  			 */
  			if (frclen >= LEN(frc)) {
  				frclen = LEN(frc) - 1;
@@ -2917,7 +2918,7 @@ index fbcd9e0..863b338 100644
  
  	LIMIT(oldx, 0, term.col-1);
  	LIMIT(oldy, 0, term.row-1);
-@@ -3979,7 +3699,11 @@ xdrawcursor(void)
+@@ -3979,7 +3700,11 @@ xdrawcursor(void)
  	og = term.line[oldy][oldx];
  	if (ena_sel && selected(oldx, oldy))
  		og.mode ^= ATTR_REVERSE;
@@ -2930,7 +2931,7 @@ index fbcd9e0..863b338 100644
  
  	g.u = term.line[term.c.y][term.c.x].u;
  
-@@ -4010,198 +3734,152 @@ xdrawcursor(void)
+@@ -4010,198 +3735,152 @@ xdrawcursor(void)
  		return;
  
  	/* draw the new one */
@@ -3204,7 +3205,7 @@ index fbcd9e0..863b338 100644
  }
  
  void
-@@ -4211,7 +3889,7 @@ numlock(const Arg *dummy)
+@@ -4211,7 +3890,7 @@ numlock(const Arg *dummy)
  }
  
  char*
@@ -3213,7 +3214,7 @@ index fbcd9e0..863b338 100644
  {
  	Key *kp;
  	int i;
-@@ -4251,38 +3929,176 @@ kmap(KeySym k, uint state)
+@@ -4251,38 +3930,176 @@ kmap(KeySym k, uint state)
  }
  
  void
@@ -3401,7 +3402,7 @@ index fbcd9e0..863b338 100644
  		if (IS_SET(MODE_8BIT)) {
  			if (*buf < 0177) {
  				c = *buf | 0x80;
-@@ -4294,101 +4110,334 @@ kpress(XEvent *ev)
+@@ -4294,101 +4111,334 @@ kpress(XEvent *ev)
  			len = 2;
  		}
  	}
@@ -3791,7 +3792,7 @@ index fbcd9e0..863b338 100644
  		if (FD_ISSET(cmdfd, &rfd)) {
  			ttyread();
  			if (blinktimeout) {
-@@ -4398,60 +4447,54 @@ run(void)
+@@ -4398,60 +4448,54 @@ run(void)
  			}
  		}
  
@@ -3892,7 +3893,7 @@ index fbcd9e0..863b338 100644
  	}
  }
  
-@@ -4471,9 +4514,7 @@ usage(void)
+@@ -4471,9 +4515,7 @@ usage(void)
  int
  main(int argc, char *argv[])
  {
@@ -3903,7 +3904,7 @@ index fbcd9e0..863b338 100644
  
  	ARGBEGIN {
  	case 'a':
-@@ -4489,13 +4530,6 @@ main(int argc, char *argv[])
+@@ -4489,13 +4531,6 @@ main(int argc, char *argv[])
  	case 'f':
  		opt_font = EARGF(usage());
  		break;
@@ -3917,7 +3918,7 @@ index fbcd9e0..863b338 100644
  	case 'o':
  		opt_io = EARGF(usage());
  		break;
-@@ -4527,9 +4561,8 @@ run:
+@@ -4527,9 +4562,8 @@ run:
  			opt_title = basename(xstrdup(argv[0]));
  	}
  	setlocale(LC_CTYPE, "");
@@ -3929,5 +3930,5 @@ index fbcd9e0..863b338 100644
  	run();
  
 -- 
-2.29.2
+2.37.3
 

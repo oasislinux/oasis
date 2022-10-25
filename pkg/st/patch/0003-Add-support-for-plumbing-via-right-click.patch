@@ -1,4 +1,4 @@
-From ff54d8fda487f9e73ec895f86639a57d749e5048 Mon Sep 17 00:00:00 2001
+From 85a6bb6ba81de493c0ceb9a8d4c2f78eb5d1567f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 2 Dec 2020 17:54:35 -0800
 Subject: [PATCH] Add support for plumbing via right click
@@ -22,7 +22,7 @@ index 49ca50b..a63d2be 100644
 + */
 +static char *plumb_cmd[] = {"plumb", NULL, NULL};
 diff --git a/st.c b/st.c
-index caa5aa0..02d5397 100644
+index 20a3c3c..914fdd5 100644
 --- a/st.c
 +++ b/st.c
 @@ -44,6 +44,9 @@ char *argv0;
@@ -132,7 +132,7 @@ index caa5aa0..02d5397 100644
  }
  
  
-@@ -4223,16 +4270,23 @@ ptrbutton(void * data, struct wl_pointer * pointer, uint32_t serial,
+@@ -4224,16 +4271,23 @@ ptrbutton(void * data, struct wl_pointer * pointer, uint32_t serial,
  
  	switch (state) {
  	case WL_POINTER_BUTTON_STATE_RELEASED:
@@ -159,7 +159,7 @@ index caa5aa0..02d5397 100644
  		}
  		break;
  
-@@ -4556,6 +4610,7 @@ main(int argc, char *argv[])
+@@ -4557,6 +4611,7 @@ main(int argc, char *argv[])
  	} ARGEND;
  
  run:
@@ -168,5 +168,5 @@ index caa5aa0..02d5397 100644
  		/* eat all remaining arguments */
  		opt_cmd = argv;
 -- 
-2.30.1
+2.37.3
 
