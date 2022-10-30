@@ -179,7 +179,7 @@ function set(var, val, indent)
 end
 
 function subninja(file)
-	if not file:hasprefix('$') then
+	if not file:match('^[$/]') then
 		file = '$gendir/'..file
 	end
 	io.write(string.format('subninja %s\n', file))
@@ -265,7 +265,7 @@ end
 
 function compile(rule, src, deps, args)
 	local obj = src..'.o'
-	if not src:hasprefix('$') then
+	if not src:match('^[$/]') then
 		src = '$srcdir/'..src
 		obj = '$outdir/'..obj
 	end
@@ -314,7 +314,7 @@ function link(out, files, args)
 	local objs = {}
 	local deps = {}
 	for _, file in ipairs(files) do
-		if not file:hasprefix('$') then
+		if not file:match('^[$/]') then
 			file = '$outdir/'..file
 		end
 		if file:hassuffix('.d') then
@@ -343,7 +343,7 @@ function ar(out, files)
 	local objs, nobjs = {}, 0
 	local deps, ndeps = {out}, 1
 	for _, file in ipairs(files) do
-		if not file:hasprefix('$') then
+		if not file:match('^[$/]') then
 			file = '$outdir/'..file
 		end
 		if file:find('%.[ad]$') then
@@ -367,7 +367,7 @@ function exe(out, srcs, deps, args)
 end
 
 function yacc(name, gram)
-	if not gram:hasprefix('$') then
+	if not gram:match('^[$/]') then
 		gram = '$srcdir/'..gram
 	end
 	build('yacc', expand{'$outdir/', name, {'.tab.c', '.tab.h'}}, gram, {
@@ -486,7 +486,7 @@ end
 
 function man(srcs, section)
 	for _, src in ipairs(srcs) do
-		if not src:hasprefix('$') then
+		if not src:match('^[$/]') then
 			src = '$srcdir/'..src
 		end
 		local i = src:find('/', 1, true)
