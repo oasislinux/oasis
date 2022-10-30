@@ -24,5 +24,5 @@ while read -r _ archive ; do
 done <sha256
 
 if [ -d patch ] ; then
-	git apply -v --whitespace=nowarn --directory "$dir/src" patch/*
+	git apply -v --whitespace=nowarn --directory "$dir/src" patch/*.patch
 fi
