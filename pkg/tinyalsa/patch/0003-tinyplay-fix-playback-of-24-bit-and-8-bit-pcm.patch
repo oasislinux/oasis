@@ -1,0 +1,29 @@
+From ecc8e52555cfbbbb14269880dea48cf0bf42ab50 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 31 Oct 2022 00:07:42 -0700
+Subject: [PATCH] tinyplay: fix playback of 24-bit and 8-bit pcm
+
+The bits-to-format function returned bool, which happened to work
+for PCM_FORMAT_S16_LE (0) and PCM_FORMAT_S32_LE (1). However, all
+other formats were incorrectly mapped to PCM_FORMAT_S32_LE. Return
+enum pcm_format instead.
+---
+ utils/tinyplay.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/utils/tinyplay.c b/utils/tinyplay.c
+index 9f72bbb..d617074 100644
+--- a/utils/tinyplay.c
++++ b/utils/tinyplay.c
+@@ -112,7 +112,7 @@ static bool is_wave_file(const char *filetype)
+     return filetype != NULL && strcmp(filetype, "wav") == 0;
+ }
+ 
+-static bool signed_pcm_bits_to_format(int bits)
++static enum pcm_format signed_pcm_bits_to_format(int bits)
+ {
+     switch (bits) {
+     case 8:
+-- 
+2.37.3
+
