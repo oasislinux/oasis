@@ -1,0 +1,141 @@
+From 7472a43ccf2f5bae14cd736102daab8b4be0df31 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 31 Oct 2022 03:47:44 -0700
+Subject: [PATCH] alsa: Add support for s24le3/s24be3
+
+---
+ libsndio/sio_alsa.c | 41 +++++++++++++++++++++++++++++++++--------
+ 1 file changed, 33 insertions(+), 8 deletions(-)
+
+diff --git a/libsndio/sio_alsa.c b/libsndio/sio_alsa.c
+index e460bf6..9a65288 100644
+--- a/libsndio/sio_alsa.c
++++ b/libsndio/sio_alsa.c
+@@ -112,40 +112,60 @@ static enum pcm_format cap_fmts[] = {
+  */
+ static int
+ sio_alsa_fmttopar(struct sio_alsa_hdl *hdl, enum pcm_format fmt,
+-    unsigned int *bits, unsigned int *sig, unsigned int *le)
++    unsigned int *bits, unsigned int *bps, unsigned int *sig, unsigned int *le)
+ {
+ 	switch (fmt) {
+ 	case PCM_FORMAT_S8:
+ 		*bits = 8;
++		*bps = 1;
+ 		*sig = 1;
++		*le = 1;
+ 		break;
+ 	case PCM_FORMAT_S16_LE:
+ 		*bits = 16;
++		*bps = 2;
+ 		*sig = 1;
+ 		*le = 1;
+ 		break;
+ 	case PCM_FORMAT_S16_BE:
+ 		*bits = 16;
++		*bps = 2;
++		*sig = 1;
++		*le = 0;
++		break;
++	case PCM_FORMAT_S24_3LE:
++		*bits = 24;
++		*bps = 3;
++		*sig = 1;
++		*le = 1;
++		break;
++	case PCM_FORMAT_S24_3BE:
++		*bits = 24;
++		*bps = 3;
+ 		*sig = 1;
+ 		*le = 0;
+ 		break;
+ 	case PCM_FORMAT_S24_LE:
+ 		*bits = 24;
++		*bps = 4;
+ 		*sig = 1;
+ 		*le = 1;
+ 		break;
+ 	case PCM_FORMAT_S24_BE:
+ 		*bits = 24;
++		*bps = 4;
+ 		*sig = 1;
+ 		*le = 0;
+ 		break;
+ 	case PCM_FORMAT_S32_LE:
+ 		*bits = 32;
++		*bps = 4;
+ 		*sig = 1;
+ 		*le = 1;
+ 		break;
+ 	case PCM_FORMAT_S32_BE:
+ 		*bits = 32;
++		*bps = 4;
+ 		*sig = 1;
+ 		*le = 0;
+ 		break;
+@@ -163,13 +183,17 @@ sio_alsa_fmttopar(struct sio_alsa_hdl *hdl, enum pcm_format fmt,
+  */
+ static void
+ sio_alsa_enctofmt(struct sio_alsa_hdl *hdl, enum pcm_format *rfmt,
+-    unsigned int bits, unsigned int sig, unsigned int le)
++    unsigned int bits, unsigned int bps, unsigned int sig, unsigned int le)
+ {
++	if (bps == ~0U)
++		bps = SIO_BPS(bits);
+ 	if (le == ~0U)
+ 		le = SIO_LE_NATIVE;
+ 	if (bits == 8)
+ 		*rfmt = PCM_FORMAT_S8;
+-	else if (bits == 24)
++	else if (bits == 24 && bps == 3)
++		*rfmt = le ? PCM_FORMAT_S24_3LE : PCM_FORMAT_S24_3BE;
++	else if (bits == 24 && bps == 4)
+ 		*rfmt = le ? PCM_FORMAT_S24_LE : PCM_FORMAT_S24_BE;
+ 	else if (bits == 32)
+ 		*rfmt = le ? PCM_FORMAT_S32_LE : PCM_FORMAT_S32_BE;
+@@ -450,6 +474,7 @@ sio_alsa_setpar_hw(struct pcm *pcm, struct pcm_params *par,
+ 	static enum pcm_format fmts[] = {
+ 		PCM_FORMAT_S32_LE,	PCM_FORMAT_S32_BE,
+ 		PCM_FORMAT_S24_LE,	PCM_FORMAT_S24_BE,
++		PCM_FORMAT_S24_3LE,	PCM_FORMAT_S24_3BE,
+ 		PCM_FORMAT_S16_LE,	PCM_FORMAT_S16_BE,
+ 		PCM_FORMAT_S8
+ 	};
+@@ -582,9 +607,9 @@ sio_alsa_getcap(struct sio_hdl *sh, struct sio_cap *cap)
+ 	for (i = 0; i < CAP_NFMTS; i++) {
+ 		sio_alsa_fmttopar(hdl, cap_fmts[i],
+ 		    &cap->enc[i].bits,
++		    &cap->enc[i].bps,
+ 		    &cap->enc[i].sig,
+ 		    &cap->enc[i].le);
+-		cap->enc[i].bps = SIO_BPS(cap->enc[0].bits);
+ 		cap->enc[i].msb = 0;
+ 	}
+ 	for (i = 0; i < CAP_NRATES; i++) {
+@@ -620,7 +645,8 @@ sio_alsa_setpar(struct sio_hdl *sh, struct sio_par *par)
+ 	struct sio_alsa_hdl *hdl = (struct sio_alsa_hdl *)sh;
+ 	struct pcm_config icfg, ocfg;
+ 
+-	sio_alsa_enctofmt(hdl, &icfg.format, par->bits, par->sig, par->le);
++	sio_alsa_enctofmt(hdl, &icfg.format, par->bits, par->bps, par->sig,
++	    par->le);
+ 	icfg.rate = (par->rate == ~0U) ? 48000 : par->rate;
+ 	if (par->appbufsz != ~0U) {
+ 		icfg.period_size = (par->round != ~0U) ?
+@@ -674,11 +700,10 @@ sio_alsa_setpar(struct sio_hdl *sh, struct sio_par *par)
+ 		hdl->sio.eof = 1;
+ 		return 0;
+ 	}
+-	if (!sio_alsa_fmttopar(hdl, icfg.format,
+-		&hdl->par.bits, &hdl->par.sig, &hdl->par.le))
++	if (!sio_alsa_fmttopar(hdl, icfg.format, &hdl->par.bits, &hdl->par.bps,
++	    &hdl->par.sig, &hdl->par.le))
+ 		return 0;
+ 	hdl->par.msb = 0;
+-	hdl->par.bps = SIO_BPS(hdl->par.bits);
+ 	hdl->par.rate = ocfg.rate;
+ 	hdl->par.round = ocfg.period_size;
+ 	hdl->par.bufsz = ocfg.period_size * ocfg.period_count;
+-- 
+2.37.3
+
