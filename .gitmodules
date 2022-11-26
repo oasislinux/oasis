@@ -250,6 +250,9 @@
 [submodule "pkg/openssh/src"]
 	path = pkg/openssh/src
 	url = https://github.com/oasislinux/openssh.git
+[submodule "pkg/pax/src"]
+	path = pkg/pax/src
+	url = https://git.sr.ht/~mcf/pax
 [submodule "pkg/pciutils/src"]
 	path = pkg/pciutils/src
 	url = https://git.kernel.org/pub/scm/utils/pciutils/pciutils.git
