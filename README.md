@@ -127,7 +127,7 @@ script to launch qemu. There is also `README.md` with some information
 about how to use it. In short, use `./run` to launch in graphical
 mode, and `./run -s` to launch in serial mode.
 
-[qemu-image]: https://patchouli.sr.ht/builds.sr.ht/artifacts/~mcf/356456/5af47a3cf086151c/oasis-qemu.tar.xz
+[qemu-image]: https://patchouli.sr.ht/builds.sr.ht/artifacts/~mcf/898139/041f9b22bf687120/oasis-qemu.tar.xz
 
 ## Software
 
