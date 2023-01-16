@@ -160,6 +160,9 @@
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng
+[submodule "pkg/libtirpc/src"]
+	path = pkg/libtirpc/src
+	url = git://git.linux-nfs.org/projects/steved/libtirpc.git
 [submodule "pkg/libtls-bearssl/src"]
 	path = pkg/libtls-bearssl/src
 	url = https://git.sr.ht/~mcf/libtls-bearssl
