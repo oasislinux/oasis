@@ -3,6 +3,7 @@ cflags{
 	'-include $dir/config.h',
 	'-I $outdir',
 	'-I $srcdir/include',
+	'-I $srcdir/libblkid/src',
 	'-I $srcdir/libuuid/src',
 	'-isystem $builddir/pkg/linux-headers/include',
 }
@@ -15,6 +16,12 @@ build('cat', '$outdir/config.h', {
 build('sed', '$outdir/libsmartcols.h', '$srcdir/libsmartcols/src/libsmartcols.h.in', {
 	expr='s,@LIBSMARTCOLS_VERSION@,$version,',
 })
+build('sed', '$outdir/blkid.h', '$srcdir/libblkid/src/blkid.h.in', {
+	expr={
+		'-e /@LIBBLKID_VERSION@/d',
+		'-e /@LIBBLKID_DATE@/d',
+	},
+})
 build('sed', '$outdir/libfdisk.h', '$srcdir/libfdisk/src/libfdisk.h.in', {
 	expr={
 		'-e s,@LIBFDISK_VERSION@,$version,',
@@ -24,7 +31,10 @@ build('sed', '$outdir/libfdisk.h', '$srcdir/libfdisk/src/libfdisk.h.in', {
 	},
 })
 
-pkg.hdrs = copy('$outdir/include/uuid', '$srcdir/libuuid/src', {'uuid.h'})
+pkg.hdrs = {
+	copy('$outdir/include/uuid', '$srcdir/libuuid/src', {'uuid.h'}),
+	copy('$outdir/include/blkid', '$outdir', {'blkid.h'}),
+}
 pkg.deps = {
 	'$outdir/config.h',
 	'$outdir/libsmartcols.h',
@@ -69,6 +79,113 @@ lib('libcommon.a', [[
 	)
 ]])
 
+lib('libblkid.a', [[
+	libblkid/src/(
+		init.c
+		cache.c
+		config.c
+		dev.c
+		devname.c
+		devno.c
+		encode.c
+		evaluate.c
+		getsize.c
+		probe.c
+		read.c
+		resolve.c
+		save.c
+		tag.c
+		verify.c
+		version.c
+		partitions/(
+			aix.c
+			atari.c
+			bsd.c
+			dos.c
+			gpt.c
+			mac.c
+			minix.c
+			partitions.c
+			sgi.c
+			solaris_x86.c
+			sun.c
+			ultrix.c
+			unixware.c
+		)
+		superblocks/(
+			adaptec_raid.c
+			apfs.c
+			bcache.c
+			befs.c
+			bfs.c
+			bitlocker.c
+			bluestore.c
+			btrfs.c
+			cramfs.c
+			ddf_raid.c
+			drbd.c
+			drbdproxy_datalog.c
+			drbdmanage.c
+			exfat.c
+			exfs.c
+			ext.c
+			f2fs.c
+			gfs.c
+			hfs.c
+			highpoint_raid.c
+			hpfs.c
+			iso9660.c
+			isw_raid.c
+			jfs.c
+			jmicron_raid.c
+			linux_raid.c
+			lsi_raid.c
+			luks.c
+			lvm.c
+			minix.c
+			mpool.c
+			netware.c
+			nilfs.c
+			ntfs.c
+			refs.c
+			nvidia_raid.c
+			ocfs.c
+			promise_raid.c
+			reiserfs.c
+			romfs.c
+			silicon_raid.c
+			squashfs.c
+			stratis.c
+			superblocks.c
+			swap.c
+			sysv.c
+			ubi.c
+			ubifs.c
+			udf.c
+			ufs.c
+			vdo.c
+			vfat.c
+			via_raid.c
+			vmfs.c
+			vxfs.c
+			xfs.c
+			zfs.c
+			zonefs.c
+			erofs.c
+		)
+		topology/(
+			topology.c
+			dm.c
+			evms.c
+			ioctl.c
+			lvm.c
+			md.c
+			sysfs.c
+		)
+	)
+	libcommon.a
+]])
+
 lib('libfdisk.a', [[
 	libfdisk/src/(
 		init.c
@@ -94,7 +211,7 @@ lib('libfdisk.a', [[
 		bsd.c
 		gpt.c
 	)
-	libuuid.a libcommon.a
+	libuuid.a libblkid.a libcommon.a
 ]])
 
 lib('libsmartcols.a', [[

@@ -68,7 +68,7 @@
 #define HAVE_LASTLOG_H 1
 #define HAVE_LCHOWN 1
 /* #undef HAVE_LIBAUDIT */
-/* #undef HAVE_LIBBLKID */
+#define HAVE_LIBBLKID 1
 /* #undef HAVE_LIBCAP_NG */
 /* #undef HAVE_LIBCRYPT */
 /* #undef HAVE_LIBECONF */

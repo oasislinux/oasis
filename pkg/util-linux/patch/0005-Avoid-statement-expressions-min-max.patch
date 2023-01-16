@@ -1,18 +1,22 @@
-From 2cfdfe606f814c7672baede286c904c051b00e99 Mon Sep 17 00:00:00 2001
+From ad5d729e363236dbdcf15b82d8575bd5d9db77ea Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 17:13:45 -0700
 Subject: [PATCH] Avoid statement expressions min/max
 
 ---
- include/c.h                  | 24 ++++++++++--------------
- include/strutils.h           |  3 ++-
- lib/mbsalign.c               |  2 +-
- libfdisk/src/alignment.c     |  8 ++++----
- libfdisk/src/context.c       |  4 ++--
- libfdisk/src/gpt.c           |  4 ++--
- libsmartcols/src/calculate.c |  8 ++++----
- libsmartcols/src/column.c    |  2 +-
- 8 files changed, 26 insertions(+), 29 deletions(-)
+ include/c.h                        | 24 ++++++++++--------------
+ include/strutils.h                 |  3 ++-
+ lib/mbsalign.c                     |  2 +-
+ libblkid/src/superblocks/befs.c    |  6 +++---
+ libblkid/src/superblocks/exfat.c   |  2 +-
+ libblkid/src/superblocks/iso9660.c |  4 ++--
+ libblkid/src/superblocks/minix.c   |  4 ++--
+ libfdisk/src/alignment.c           |  8 ++++----
+ libfdisk/src/context.c             |  4 ++--
+ libfdisk/src/gpt.c                 |  4 ++--
+ libsmartcols/src/calculate.c       |  8 ++++----
+ libsmartcols/src/column.c          |  2 +-
+ 12 files changed, 34 insertions(+), 37 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
 index b420b5187..fe82a8847 100644
@@ -77,6 +81,73 @@ index e251202af..f3ea1a2df 100644
        mbs_align_pad (dest, dest_end, end_spaces, padchar);
      }
  #ifdef HAVE_WIDECHAR
+diff --git a/libblkid/src/superblocks/befs.c b/libblkid/src/superblocks/befs.c
+index 211feae9f..35c2b19c4 100644
+--- a/libblkid/src/superblocks/befs.c
++++ b/libblkid/src/superblocks/befs.c
+@@ -257,7 +257,7 @@ static int32_t compare_keys(const char keys1[], uint16_t keylengths1[],
+ 
+ 	key1 = &keys1[keystart1];
+ 
+-	result = strncmp(key1, key2, min(keylength1, keylength2));
++	result = strncmp(key1, key2, umin(keylength1, keylength2));
+ 
+ 	if (result == 0)
+ 		return keylength1 - keylength2;
+@@ -386,8 +386,8 @@ static int get_uuid(blkid_probe pr, const struct befs_super_block *bs,
+ 
+ 	bi_size = (uint64_t)FS16_TO_CPU(bs->root_dir.len, fs_le) <<
+ 		FS32_TO_CPU(bs->block_shift, fs_le);
+-	sd_total_size = min(bi_size - sizeof(struct befs_inode),
+-			    (uint64_t)FS32_TO_CPU(bi->inode_size, fs_le));
++	sd_total_size = umin(bi_size - sizeof(struct befs_inode),
++			     (uint64_t)FS32_TO_CPU(bi->inode_size, fs_le));
+ 
+ 	offset = 0;
+ 
+diff --git a/libblkid/src/superblocks/exfat.c b/libblkid/src/superblocks/exfat.c
+index f586ec786..3c0448027 100644
+--- a/libblkid/src/superblocks/exfat.c
++++ b/libblkid/src/superblocks/exfat.c
+@@ -126,7 +126,7 @@ static int probe_exfat(blkid_probe pr, const struct blkid_idmag *mag)
+ 	label = find_label(pr, sb);
+ 	if (label)
+ 		blkid_probe_set_utf8label(pr, label->name,
+-				min((size_t) label->length * 2, sizeof(label->name)),
++				umin((size_t) label->length * 2, sizeof(label->name)),
+ 				UL_ENCODE_UTF16LE);
+ 	else if (errno)
+ 		return -errno;
+diff --git a/libblkid/src/superblocks/iso9660.c b/libblkid/src/superblocks/iso9660.c
+index 289a325c8..ac4cc274f 100644
+--- a/libblkid/src/superblocks/iso9660.c
++++ b/libblkid/src/superblocks/iso9660.c
+@@ -228,8 +228,8 @@ static int probe_iso9660(blkid_probe pr, const struct blkid_idmag *mag)
+ 		unsigned char *desc =
+ 			blkid_probe_get_buffer(pr,
+ 					off,
+-					max(sizeof(struct boot_record),
+-					    sizeof(struct iso_volume_descriptor)));
++					umax(sizeof(struct boot_record),
++					     sizeof(struct iso_volume_descriptor)));
+ 
+ 		if (desc == NULL || desc[0] == ISO_VD_END)
+ 			break;
+diff --git a/libblkid/src/superblocks/minix.c b/libblkid/src/superblocks/minix.c
+index b521efb2b..d1fb64f64 100644
+--- a/libblkid/src/superblocks/minix.c
++++ b/libblkid/src/superblocks/minix.c
+@@ -83,8 +83,8 @@ static int probe_minix(blkid_probe pr,
+ 	unsigned block_size;
+ 
+ 	data = blkid_probe_get_buffer(pr, 1024,
+-			max(sizeof(struct minix_super_block),
+-			    sizeof(struct minix3_super_block)));
++			umax(sizeof(struct minix_super_block),
++			     sizeof(struct minix3_super_block)));
+ 	if (!data)
+ 		return errno ? -errno : 1;
+ 	version = get_minix_version(data, &swabme);
 diff --git a/libfdisk/src/alignment.c b/libfdisk/src/alignment.c
 index 3ae721913..a1a05f48a 100644
 --- a/libfdisk/src/alignment.c
@@ -210,5 +281,5 @@ index c11df69f5..1285d42e6 100644
  	}
  
 -- 
-2.31.1
+2.37.3
 
