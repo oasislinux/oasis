@@ -58,9 +58,7 @@ subst('ext2_err.et', 'lib/ext2fs/ext2_err.et.in')
 et('$outdir/ext2_err.et', 'ext2_err.c', 'include/ext2fs/ext2_err.h')
 et('$srcdir/lib/support/prof_err.et', 'prof_err.c', 'internal/support/prof_err.h')
 
-build('copy', '$outdir/include/blkid/blkid.h', '$srcdir/lib/blkid/blkid.h.in')
 build('copy', '$outdir/include/ext2fs/ext2_types.h', '$dir/ext2_types.h')
-build('copy', '$outdir/internal/blkid/blkid_types.h', '$dir/blkid_types.h')
 
 sub('tools.ninja', function()
 	toolchain(config.host)
@@ -70,14 +68,12 @@ rule('gen_crc32ctable', '$outdir/gen_crc32ctable >$out')
 build('gen_crc32ctable', '$outdir/internal/crc32c_table.h', {'|', '$outdir/gen_crc32ctable'})
 
 pkg.hdrs = {
-	'$outdir/include/blkid/blkid.h',
 	'$outdir/include/ext2fs/ext2_err.h',
 	'$outdir/include/ext2fs/ext2_types.h',
 }
 pkg.deps = {
 	'$outdir/config.h',
 	'$gendir/headers',
-	'$outdir/internal/blkid/blkid_types.h',
 	'$outdir/internal/support/prof_err.h',
 	'$outdir/internal/crc32c_table.h',
 	'pkg/linux-headers/headers',
@@ -85,10 +81,6 @@ pkg.deps = {
 }
 
 lib('libcomm_err.a', [[lib/et/(error_message.c et_name.c init_et.c com_err.c com_right.c)]])
-lib('libblkid.a', [[lib/blkid/(
-	cache.c dev.c devname.c devno.c getsize.c llseek.c probe.c
-	read.c resolve.c save.c tag.c version.c
-)]])
 lib('libe2p.a', [[lib/e2p/(
 	feature.c fgetflags.c fsetflags.c fgetversion.c fsetversion.c
 	getflags.c getversion.c hashstr.c iod.c ls.c ljs.c mntopts.c
@@ -198,7 +190,8 @@ exe('bin/e2fsck', [[
 		logfile.c sigcatcher.c readahead.c
 		extents.c encrypted_files.c
 	)
-	libsupport.a libext2fs.a libe2p.a libblkid.a libcomm_err.a
+	libsupport.a libext2fs.a libe2p.a libcomm_err.a
+	$builddir/pkg/util-linux/libblkid.a.d
 	$builddir/pkg/util-linux/libuuid.a.d
 ]])
 file('bin/e2fsck', '755', '$outdir/bin/e2fsck')
@@ -224,7 +217,8 @@ exe('bin/mke2fs', [[
 		create_inode.c
 	)
 	$outdir/default_profile.c
-	libsupport.a libext2fs.a libe2p.a libblkid.a libcomm_err.a
+	libsupport.a libext2fs.a libe2p.a libcomm_err.a
+	$builddir/pkg/util-linux/libblkid.a.d
 	$builddir/pkg/util-linux/libuuid.a.d
 ]])
 file('bin/mke2fs', '755', '$outdir/bin/mke2fs')
