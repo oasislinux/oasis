@@ -1,0 +1,421 @@
+From 54212b1aebdb3c5ffa7904eed7b9a09490aca1e1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 21 Jan 2023 17:17:48 -0800
+Subject: [PATCH] Remove stray ';' at top-level
+
+---
+ module/avl/avl.c               |  46 +++----
+ module/nvpair/nvpair.c         | 240 ++++++++++++++++-----------------
+ module/zcommon/zfs_namecheck.c |  20 +--
+ module/zcommon/zfs_prop.c      |  50 +++----
+ 4 files changed, 178 insertions(+), 178 deletions(-)
+
+diff --git a/module/avl/avl.c b/module/avl/avl.c
+index f761a8ae7..18dbe1b99 100644
+--- a/module/avl/avl.c
++++ b/module/avl/avl.c
+@@ -1052,26 +1052,26 @@ module_init(avl_init);
+ module_exit(avl_fini);
+ #endif
+ 
+-ZFS_MODULE_DESCRIPTION("Generic AVL tree implementation");
+-ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR);
+-ZFS_MODULE_LICENSE(ZFS_META_LICENSE);
+-ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);
+-
+-EXPORT_SYMBOL(avl_create);
+-EXPORT_SYMBOL(avl_find);
+-EXPORT_SYMBOL(avl_insert);
+-EXPORT_SYMBOL(avl_insert_here);
+-EXPORT_SYMBOL(avl_walk);
+-EXPORT_SYMBOL(avl_first);
+-EXPORT_SYMBOL(avl_last);
+-EXPORT_SYMBOL(avl_nearest);
+-EXPORT_SYMBOL(avl_add);
+-EXPORT_SYMBOL(avl_swap);
+-EXPORT_SYMBOL(avl_is_empty);
+-EXPORT_SYMBOL(avl_remove);
+-EXPORT_SYMBOL(avl_numnodes);
+-EXPORT_SYMBOL(avl_destroy_nodes);
+-EXPORT_SYMBOL(avl_destroy);
+-EXPORT_SYMBOL(avl_update_lt);
+-EXPORT_SYMBOL(avl_update_gt);
+-EXPORT_SYMBOL(avl_update);
++ZFS_MODULE_DESCRIPTION("Generic AVL tree implementation")
++ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR)
++ZFS_MODULE_LICENSE(ZFS_META_LICENSE)
++ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE)
++
++EXPORT_SYMBOL(avl_create)
++EXPORT_SYMBOL(avl_find)
++EXPORT_SYMBOL(avl_insert)
++EXPORT_SYMBOL(avl_insert_here)
++EXPORT_SYMBOL(avl_walk)
++EXPORT_SYMBOL(avl_first)
++EXPORT_SYMBOL(avl_last)
++EXPORT_SYMBOL(avl_nearest)
++EXPORT_SYMBOL(avl_add)
++EXPORT_SYMBOL(avl_swap)
++EXPORT_SYMBOL(avl_is_empty)
++EXPORT_SYMBOL(avl_remove)
++EXPORT_SYMBOL(avl_numnodes)
++EXPORT_SYMBOL(avl_destroy_nodes)
++EXPORT_SYMBOL(avl_destroy)
++EXPORT_SYMBOL(avl_update_lt)
++EXPORT_SYMBOL(avl_update_gt)
++EXPORT_SYMBOL(avl_update)
+diff --git a/module/nvpair/nvpair.c b/module/nvpair/nvpair.c
+index 9834dedd8..6dfebb0ec 100644
+--- a/module/nvpair/nvpair.c
++++ b/module/nvpair/nvpair.c
+@@ -3256,13 +3256,13 @@ nvs_xdr_nvp_##type(XDR *xdrs, void *ptr, ...)	\
+ #endif
+ 
+ /* BEGIN CSTYLED */
+-NVS_BUILD_XDRPROC_T(char);
+-NVS_BUILD_XDRPROC_T(short);
+-NVS_BUILD_XDRPROC_T(u_short);
+-NVS_BUILD_XDRPROC_T(int);
+-NVS_BUILD_XDRPROC_T(u_int);
+-NVS_BUILD_XDRPROC_T(longlong_t);
+-NVS_BUILD_XDRPROC_T(u_longlong_t);
++NVS_BUILD_XDRPROC_T(char)
++NVS_BUILD_XDRPROC_T(short)
++NVS_BUILD_XDRPROC_T(u_short)
++NVS_BUILD_XDRPROC_T(int)
++NVS_BUILD_XDRPROC_T(u_int)
++NVS_BUILD_XDRPROC_T(longlong_t)
++NVS_BUILD_XDRPROC_T(u_longlong_t)
+ /* END CSTYLED */
+ 
+ /*
+@@ -3672,121 +3672,121 @@ module_init(nvpair_init);
+ module_exit(nvpair_fini);
+ #endif
+ 
+-ZFS_MODULE_DESCRIPTION("Generic name/value pair implementation");
+-ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR);
+-ZFS_MODULE_LICENSE(ZFS_META_LICENSE);
+-ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);
++ZFS_MODULE_DESCRIPTION("Generic name/value pair implementation")
++ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR)
++ZFS_MODULE_LICENSE(ZFS_META_LICENSE)
++ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE)
+ 
+-EXPORT_SYMBOL(nv_alloc_init);
+-EXPORT_SYMBOL(nv_alloc_reset);
+-EXPORT_SYMBOL(nv_alloc_fini);
++EXPORT_SYMBOL(nv_alloc_init)
++EXPORT_SYMBOL(nv_alloc_reset)
++EXPORT_SYMBOL(nv_alloc_fini)
+ 
+ /* list management */
+-EXPORT_SYMBOL(nvlist_alloc);
+-EXPORT_SYMBOL(nvlist_free);
+-EXPORT_SYMBOL(nvlist_size);
+-EXPORT_SYMBOL(nvlist_pack);
+-EXPORT_SYMBOL(nvlist_unpack);
+-EXPORT_SYMBOL(nvlist_dup);
+-EXPORT_SYMBOL(nvlist_merge);
+-
+-EXPORT_SYMBOL(nvlist_xalloc);
+-EXPORT_SYMBOL(nvlist_xpack);
+-EXPORT_SYMBOL(nvlist_xunpack);
+-EXPORT_SYMBOL(nvlist_xdup);
+-EXPORT_SYMBOL(nvlist_lookup_nv_alloc);
+-
+-EXPORT_SYMBOL(nvlist_add_nvpair);
+-EXPORT_SYMBOL(nvlist_add_boolean);
+-EXPORT_SYMBOL(nvlist_add_boolean_value);
+-EXPORT_SYMBOL(nvlist_add_byte);
+-EXPORT_SYMBOL(nvlist_add_int8);
+-EXPORT_SYMBOL(nvlist_add_uint8);
+-EXPORT_SYMBOL(nvlist_add_int16);
+-EXPORT_SYMBOL(nvlist_add_uint16);
+-EXPORT_SYMBOL(nvlist_add_int32);
+-EXPORT_SYMBOL(nvlist_add_uint32);
+-EXPORT_SYMBOL(nvlist_add_int64);
+-EXPORT_SYMBOL(nvlist_add_uint64);
+-EXPORT_SYMBOL(nvlist_add_string);
+-EXPORT_SYMBOL(nvlist_add_nvlist);
+-EXPORT_SYMBOL(nvlist_add_boolean_array);
+-EXPORT_SYMBOL(nvlist_add_byte_array);
+-EXPORT_SYMBOL(nvlist_add_int8_array);
+-EXPORT_SYMBOL(nvlist_add_uint8_array);
+-EXPORT_SYMBOL(nvlist_add_int16_array);
+-EXPORT_SYMBOL(nvlist_add_uint16_array);
+-EXPORT_SYMBOL(nvlist_add_int32_array);
+-EXPORT_SYMBOL(nvlist_add_uint32_array);
+-EXPORT_SYMBOL(nvlist_add_int64_array);
+-EXPORT_SYMBOL(nvlist_add_uint64_array);
+-EXPORT_SYMBOL(nvlist_add_string_array);
+-EXPORT_SYMBOL(nvlist_add_nvlist_array);
+-EXPORT_SYMBOL(nvlist_next_nvpair);
+-EXPORT_SYMBOL(nvlist_prev_nvpair);
+-EXPORT_SYMBOL(nvlist_empty);
+-EXPORT_SYMBOL(nvlist_add_hrtime);
+-
+-EXPORT_SYMBOL(nvlist_remove);
+-EXPORT_SYMBOL(nvlist_remove_nvpair);
+-EXPORT_SYMBOL(nvlist_remove_all);
+-
+-EXPORT_SYMBOL(nvlist_lookup_boolean);
+-EXPORT_SYMBOL(nvlist_lookup_boolean_value);
+-EXPORT_SYMBOL(nvlist_lookup_byte);
+-EXPORT_SYMBOL(nvlist_lookup_int8);
+-EXPORT_SYMBOL(nvlist_lookup_uint8);
+-EXPORT_SYMBOL(nvlist_lookup_int16);
+-EXPORT_SYMBOL(nvlist_lookup_uint16);
+-EXPORT_SYMBOL(nvlist_lookup_int32);
+-EXPORT_SYMBOL(nvlist_lookup_uint32);
+-EXPORT_SYMBOL(nvlist_lookup_int64);
+-EXPORT_SYMBOL(nvlist_lookup_uint64);
+-EXPORT_SYMBOL(nvlist_lookup_string);
+-EXPORT_SYMBOL(nvlist_lookup_nvlist);
+-EXPORT_SYMBOL(nvlist_lookup_boolean_array);
+-EXPORT_SYMBOL(nvlist_lookup_byte_array);
+-EXPORT_SYMBOL(nvlist_lookup_int8_array);
+-EXPORT_SYMBOL(nvlist_lookup_uint8_array);
+-EXPORT_SYMBOL(nvlist_lookup_int16_array);
+-EXPORT_SYMBOL(nvlist_lookup_uint16_array);
+-EXPORT_SYMBOL(nvlist_lookup_int32_array);
+-EXPORT_SYMBOL(nvlist_lookup_uint32_array);
+-EXPORT_SYMBOL(nvlist_lookup_int64_array);
+-EXPORT_SYMBOL(nvlist_lookup_uint64_array);
+-EXPORT_SYMBOL(nvlist_lookup_string_array);
+-EXPORT_SYMBOL(nvlist_lookup_nvlist_array);
+-EXPORT_SYMBOL(nvlist_lookup_hrtime);
+-EXPORT_SYMBOL(nvlist_lookup_pairs);
+-
+-EXPORT_SYMBOL(nvlist_lookup_nvpair);
+-EXPORT_SYMBOL(nvlist_exists);
++EXPORT_SYMBOL(nvlist_alloc)
++EXPORT_SYMBOL(nvlist_free)
++EXPORT_SYMBOL(nvlist_size)
++EXPORT_SYMBOL(nvlist_pack)
++EXPORT_SYMBOL(nvlist_unpack)
++EXPORT_SYMBOL(nvlist_dup)
++EXPORT_SYMBOL(nvlist_merge)
++
++EXPORT_SYMBOL(nvlist_xalloc)
++EXPORT_SYMBOL(nvlist_xpack)
++EXPORT_SYMBOL(nvlist_xunpack)
++EXPORT_SYMBOL(nvlist_xdup)
++EXPORT_SYMBOL(nvlist_lookup_nv_alloc)
++
++EXPORT_SYMBOL(nvlist_add_nvpair)
++EXPORT_SYMBOL(nvlist_add_boolean)
++EXPORT_SYMBOL(nvlist_add_boolean_value)
++EXPORT_SYMBOL(nvlist_add_byte)
++EXPORT_SYMBOL(nvlist_add_int8)
++EXPORT_SYMBOL(nvlist_add_uint8)
++EXPORT_SYMBOL(nvlist_add_int16)
++EXPORT_SYMBOL(nvlist_add_uint16)
++EXPORT_SYMBOL(nvlist_add_int32)
++EXPORT_SYMBOL(nvlist_add_uint32)
++EXPORT_SYMBOL(nvlist_add_int64)
++EXPORT_SYMBOL(nvlist_add_uint64)
++EXPORT_SYMBOL(nvlist_add_string)
++EXPORT_SYMBOL(nvlist_add_nvlist)
++EXPORT_SYMBOL(nvlist_add_boolean_array)
++EXPORT_SYMBOL(nvlist_add_byte_array)
++EXPORT_SYMBOL(nvlist_add_int8_array)
++EXPORT_SYMBOL(nvlist_add_uint8_array)
++EXPORT_SYMBOL(nvlist_add_int16_array)
++EXPORT_SYMBOL(nvlist_add_uint16_array)
++EXPORT_SYMBOL(nvlist_add_int32_array)
++EXPORT_SYMBOL(nvlist_add_uint32_array)
++EXPORT_SYMBOL(nvlist_add_int64_array)
++EXPORT_SYMBOL(nvlist_add_uint64_array)
++EXPORT_SYMBOL(nvlist_add_string_array)
++EXPORT_SYMBOL(nvlist_add_nvlist_array)
++EXPORT_SYMBOL(nvlist_next_nvpair)
++EXPORT_SYMBOL(nvlist_prev_nvpair)
++EXPORT_SYMBOL(nvlist_empty)
++EXPORT_SYMBOL(nvlist_add_hrtime)
++
++EXPORT_SYMBOL(nvlist_remove)
++EXPORT_SYMBOL(nvlist_remove_nvpair)
++EXPORT_SYMBOL(nvlist_remove_all)
++
++EXPORT_SYMBOL(nvlist_lookup_boolean)
++EXPORT_SYMBOL(nvlist_lookup_boolean_value)
++EXPORT_SYMBOL(nvlist_lookup_byte)
++EXPORT_SYMBOL(nvlist_lookup_int8)
++EXPORT_SYMBOL(nvlist_lookup_uint8)
++EXPORT_SYMBOL(nvlist_lookup_int16)
++EXPORT_SYMBOL(nvlist_lookup_uint16)
++EXPORT_SYMBOL(nvlist_lookup_int32)
++EXPORT_SYMBOL(nvlist_lookup_uint32)
++EXPORT_SYMBOL(nvlist_lookup_int64)
++EXPORT_SYMBOL(nvlist_lookup_uint64)
++EXPORT_SYMBOL(nvlist_lookup_string)
++EXPORT_SYMBOL(nvlist_lookup_nvlist)
++EXPORT_SYMBOL(nvlist_lookup_boolean_array)
++EXPORT_SYMBOL(nvlist_lookup_byte_array)
++EXPORT_SYMBOL(nvlist_lookup_int8_array)
++EXPORT_SYMBOL(nvlist_lookup_uint8_array)
++EXPORT_SYMBOL(nvlist_lookup_int16_array)
++EXPORT_SYMBOL(nvlist_lookup_uint16_array)
++EXPORT_SYMBOL(nvlist_lookup_int32_array)
++EXPORT_SYMBOL(nvlist_lookup_uint32_array)
++EXPORT_SYMBOL(nvlist_lookup_int64_array)
++EXPORT_SYMBOL(nvlist_lookup_uint64_array)
++EXPORT_SYMBOL(nvlist_lookup_string_array)
++EXPORT_SYMBOL(nvlist_lookup_nvlist_array)
++EXPORT_SYMBOL(nvlist_lookup_hrtime)
++EXPORT_SYMBOL(nvlist_lookup_pairs)
++
++EXPORT_SYMBOL(nvlist_lookup_nvpair)
++EXPORT_SYMBOL(nvlist_exists)
+ 
+ /* processing nvpair */
+-EXPORT_SYMBOL(nvpair_name);
+-EXPORT_SYMBOL(nvpair_type);
+-EXPORT_SYMBOL(nvpair_value_boolean_value);
+-EXPORT_SYMBOL(nvpair_value_byte);
+-EXPORT_SYMBOL(nvpair_value_int8);
+-EXPORT_SYMBOL(nvpair_value_uint8);
+-EXPORT_SYMBOL(nvpair_value_int16);
+-EXPORT_SYMBOL(nvpair_value_uint16);
+-EXPORT_SYMBOL(nvpair_value_int32);
+-EXPORT_SYMBOL(nvpair_value_uint32);
+-EXPORT_SYMBOL(nvpair_value_int64);
+-EXPORT_SYMBOL(nvpair_value_uint64);
+-EXPORT_SYMBOL(nvpair_value_string);
+-EXPORT_SYMBOL(nvpair_value_nvlist);
+-EXPORT_SYMBOL(nvpair_value_boolean_array);
+-EXPORT_SYMBOL(nvpair_value_byte_array);
+-EXPORT_SYMBOL(nvpair_value_int8_array);
+-EXPORT_SYMBOL(nvpair_value_uint8_array);
+-EXPORT_SYMBOL(nvpair_value_int16_array);
+-EXPORT_SYMBOL(nvpair_value_uint16_array);
+-EXPORT_SYMBOL(nvpair_value_int32_array);
+-EXPORT_SYMBOL(nvpair_value_uint32_array);
+-EXPORT_SYMBOL(nvpair_value_int64_array);
+-EXPORT_SYMBOL(nvpair_value_uint64_array);
+-EXPORT_SYMBOL(nvpair_value_string_array);
+-EXPORT_SYMBOL(nvpair_value_nvlist_array);
+-EXPORT_SYMBOL(nvpair_value_hrtime);
++EXPORT_SYMBOL(nvpair_name)
++EXPORT_SYMBOL(nvpair_type)
++EXPORT_SYMBOL(nvpair_value_boolean_value)
++EXPORT_SYMBOL(nvpair_value_byte)
++EXPORT_SYMBOL(nvpair_value_int8)
++EXPORT_SYMBOL(nvpair_value_uint8)
++EXPORT_SYMBOL(nvpair_value_int16)
++EXPORT_SYMBOL(nvpair_value_uint16)
++EXPORT_SYMBOL(nvpair_value_int32)
++EXPORT_SYMBOL(nvpair_value_uint32)
++EXPORT_SYMBOL(nvpair_value_int64)
++EXPORT_SYMBOL(nvpair_value_uint64)
++EXPORT_SYMBOL(nvpair_value_string)
++EXPORT_SYMBOL(nvpair_value_nvlist)
++EXPORT_SYMBOL(nvpair_value_boolean_array)
++EXPORT_SYMBOL(nvpair_value_byte_array)
++EXPORT_SYMBOL(nvpair_value_int8_array)
++EXPORT_SYMBOL(nvpair_value_uint8_array)
++EXPORT_SYMBOL(nvpair_value_int16_array)
++EXPORT_SYMBOL(nvpair_value_uint16_array)
++EXPORT_SYMBOL(nvpair_value_int32_array)
++EXPORT_SYMBOL(nvpair_value_uint32_array)
++EXPORT_SYMBOL(nvpair_value_int64_array)
++EXPORT_SYMBOL(nvpair_value_uint64_array)
++EXPORT_SYMBOL(nvpair_value_string_array)
++EXPORT_SYMBOL(nvpair_value_nvlist_array)
++EXPORT_SYMBOL(nvpair_value_hrtime)
+diff --git a/module/zcommon/zfs_namecheck.c b/module/zcommon/zfs_namecheck.c
+index 7ecce451b..5f6b8a3b9 100644
+--- a/module/zcommon/zfs_namecheck.c
++++ b/module/zcommon/zfs_namecheck.c
+@@ -453,15 +453,15 @@ pool_namecheck(const char *pool, namecheck_err_t *why, char *what)
+ 	return (0);
+ }
+ 
+-EXPORT_SYMBOL(entity_namecheck);
+-EXPORT_SYMBOL(pool_namecheck);
+-EXPORT_SYMBOL(dataset_namecheck);
+-EXPORT_SYMBOL(bookmark_namecheck);
+-EXPORT_SYMBOL(snapshot_namecheck);
+-EXPORT_SYMBOL(zfs_component_namecheck);
+-EXPORT_SYMBOL(dataset_nestcheck);
+-EXPORT_SYMBOL(get_dataset_depth);
+-EXPORT_SYMBOL(zfs_max_dataset_nesting);
++EXPORT_SYMBOL(entity_namecheck)
++EXPORT_SYMBOL(pool_namecheck)
++EXPORT_SYMBOL(dataset_namecheck)
++EXPORT_SYMBOL(bookmark_namecheck)
++EXPORT_SYMBOL(snapshot_namecheck)
++EXPORT_SYMBOL(zfs_component_namecheck)
++EXPORT_SYMBOL(dataset_nestcheck)
++EXPORT_SYMBOL(get_dataset_depth)
++EXPORT_SYMBOL(zfs_max_dataset_nesting)
+ 
+ ZFS_MODULE_PARAM(zfs, zfs_, max_dataset_nesting, INT, ZMOD_RW,
+-	"Limit to the amount of nesting a path can have. Defaults to 50.");
++	"Limit to the amount of nesting a path can have. Defaults to 50.")
+diff --git a/module/zcommon/zfs_prop.c b/module/zcommon/zfs_prop.c
+index b4e8fcf1f..9de54aa44 100644
+--- a/module/zcommon/zfs_prop.c
++++ b/module/zcommon/zfs_prop.c
+@@ -1054,32 +1054,32 @@ module_exit(zcommon_fini);
+ 
+ #endif
+ 
+-ZFS_MODULE_DESCRIPTION("Generic ZFS support");
+-ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR);
+-ZFS_MODULE_LICENSE(ZFS_META_LICENSE);
+-ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);
++ZFS_MODULE_DESCRIPTION("Generic ZFS support")
++ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR)
++ZFS_MODULE_LICENSE(ZFS_META_LICENSE)
++ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE)
+ 
+ /* zfs dataset property functions */
+-EXPORT_SYMBOL(zfs_userquota_prop_prefixes);
+-EXPORT_SYMBOL(zfs_prop_init);
+-EXPORT_SYMBOL(zfs_prop_get_type);
+-EXPORT_SYMBOL(zfs_prop_get_table);
+-EXPORT_SYMBOL(zfs_prop_delegatable);
+-EXPORT_SYMBOL(zfs_prop_visible);
++EXPORT_SYMBOL(zfs_userquota_prop_prefixes)
++EXPORT_SYMBOL(zfs_prop_init)
++EXPORT_SYMBOL(zfs_prop_get_type)
++EXPORT_SYMBOL(zfs_prop_get_table)
++EXPORT_SYMBOL(zfs_prop_delegatable)
++EXPORT_SYMBOL(zfs_prop_visible)
+ 
+ /* Dataset property functions shared between libzfs and kernel. */
+-EXPORT_SYMBOL(zfs_prop_default_string);
+-EXPORT_SYMBOL(zfs_prop_default_numeric);
+-EXPORT_SYMBOL(zfs_prop_readonly);
+-EXPORT_SYMBOL(zfs_prop_inheritable);
+-EXPORT_SYMBOL(zfs_prop_encryption_key_param);
+-EXPORT_SYMBOL(zfs_prop_valid_keylocation);
+-EXPORT_SYMBOL(zfs_prop_setonce);
+-EXPORT_SYMBOL(zfs_prop_to_name);
+-EXPORT_SYMBOL(zfs_name_to_prop);
+-EXPORT_SYMBOL(zfs_prop_user);
+-EXPORT_SYMBOL(zfs_prop_userquota);
+-EXPORT_SYMBOL(zfs_prop_index_to_string);
+-EXPORT_SYMBOL(zfs_prop_string_to_index);
+-EXPORT_SYMBOL(zfs_prop_valid_for_type);
+-EXPORT_SYMBOL(zfs_prop_written);
++EXPORT_SYMBOL(zfs_prop_default_string)
++EXPORT_SYMBOL(zfs_prop_default_numeric)
++EXPORT_SYMBOL(zfs_prop_readonly)
++EXPORT_SYMBOL(zfs_prop_inheritable)
++EXPORT_SYMBOL(zfs_prop_encryption_key_param)
++EXPORT_SYMBOL(zfs_prop_valid_keylocation)
++EXPORT_SYMBOL(zfs_prop_setonce)
++EXPORT_SYMBOL(zfs_prop_to_name)
++EXPORT_SYMBOL(zfs_name_to_prop)
++EXPORT_SYMBOL(zfs_prop_user)
++EXPORT_SYMBOL(zfs_prop_userquota)
++EXPORT_SYMBOL(zfs_prop_index_to_string)
++EXPORT_SYMBOL(zfs_prop_string_to_index)
++EXPORT_SYMBOL(zfs_prop_valid_for_type)
++EXPORT_SYMBOL(zfs_prop_written)
+-- 
+2.37.3
+

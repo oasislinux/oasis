@@ -1,0 +1,54 @@
+From 2218ade9b12bc42f61d96a4613328a6f627805a1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 21 Jan 2023 17:41:15 -0800
+Subject: [PATCH] Avoid unnecessary VLA
+
+---
+ cmd/zpool/zpool_vdev.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/cmd/zpool/zpool_vdev.c b/cmd/zpool/zpool_vdev.c
+index 3d83da641..521086366 100644
+--- a/cmd/zpool/zpool_vdev.c
++++ b/cmd/zpool/zpool_vdev.c
+@@ -891,8 +891,7 @@ check_replication(nvlist_t *config, nvlist_t *newroot)
+ static int
+ zero_label(char *path)
+ {
+-	const int size = 4096;
+-	char buf[size];
++	char buf[4096];
+ 	int err, fd;
+ 
+ 	if ((fd = open(path, O_WRONLY|O_EXCL)) < 0) {
+@@ -901,20 +900,20 @@ zero_label(char *path)
+ 		return (-1);
+ 	}
+ 
+-	memset(buf, 0, size);
+-	err = write(fd, buf, size);
++	memset(buf, 0, sizeof (buf));
++	err = write(fd, buf, sizeof (buf));
+ 	(void) fdatasync(fd);
+ 	(void) close(fd);
+ 
+ 	if (err == -1) {
+-		(void) fprintf(stderr, gettext("cannot zero first %d bytes "
+-		    "of '%s': %s\n"), size, path, strerror(errno));
++		(void) fprintf(stderr, gettext("cannot zero first %zu bytes "
++		    "of '%s': %s\n"), sizeof (buf), path, strerror(errno));
+ 		return (-1);
+ 	}
+ 
+-	if (err != size) {
+-		(void) fprintf(stderr, gettext("could only zero %d/%d bytes "
+-		    "of '%s'\n"), err, size, path);
++	if (err != sizeof (buf)) {
++		(void) fprintf(stderr, gettext("could only zero %d/%zu bytes "
++		    "of '%s'\n"), err, sizeof (buf), path);
+ 		return (-1);
+ 	}
+ 
+-- 
+2.37.3
+

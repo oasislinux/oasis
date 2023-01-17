@@ -1,0 +1,25 @@
+From bf9e24e3fe87474e71555b3421bfaa7d0c5e1882 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 21 Jan 2023 17:18:50 -0800
+Subject: [PATCH] Avoid conflict with C23 bool keyword
+
+---
+ cmd/zed/agents/fmd_api.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cmd/zed/agents/fmd_api.h b/cmd/zed/agents/fmd_api.h
+index 4f06fb244..45c1f2ce2 100644
+--- a/cmd/zed/agents/fmd_api.h
++++ b/cmd/zed/agents/fmd_api.h
+@@ -109,7 +109,7 @@ typedef struct fmd_stat {
+ 	uint_t fmds_type;		/* statistic type (see above) */
+ 	char fmds_desc[64];		/* statistic description */
+ 	union {
+-		int bool;		/* FMD_TYPE_BOOL */
++		int b;			/* FMD_TYPE_BOOL */
+ 		int32_t i32;		/* FMD_TYPE_INT32 */
+ 		uint32_t ui32;		/* FMD_TYPE_UINT32 */
+ 		int64_t i64;		/* FMD_TYPE_INT64 */
+-- 
+2.37.3
+

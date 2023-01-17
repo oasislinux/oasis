@@ -1,0 +1,41 @@
+From 4f4a44f8c83179ee98397faa773f2e4c1faa066b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 17 Jan 2023 12:57:13 -0800
+Subject: [PATCH] Use AC_PROG_FGREP to detect fgrep
+
+fgrep is not standard, so use AC_PROG_FGREP to detect the appropriate
+command.
+---
+ config/kernel.m4 | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/config/kernel.m4 b/config/kernel.m4
+index 3a059b73a..3f535fdb3 100644
+--- a/config/kernel.m4
++++ b/config/kernel.m4
+@@ -324,6 +324,7 @@ dnl #     and `/usr/src/linux-*` with the highest version number according
+ dnl #     to `sort -V` is assumed to be both source and build directory.
+ dnl #
+ AC_DEFUN([ZFS_AC_KERNEL], [
++	AC_REQUIRE([AC_PROG_FGREP])
+ 	AC_ARG_WITH([linux],
+ 		AS_HELP_STRING([--with-linux=PATH],
+ 		[Path to kernel source]),
+@@ -404,11 +405,11 @@ AC_DEFUN([ZFS_AC_KERNEL], [
+ 	utsrelease1=$kernelbuild/include/linux/version.h
+ 	utsrelease2=$kernelbuild/include/linux/utsrelease.h
+ 	utsrelease3=$kernelbuild/include/generated/utsrelease.h
+-	AS_IF([test -r $utsrelease1 && fgrep -q UTS_RELEASE $utsrelease1], [
++	AS_IF([test -r $utsrelease1 && $FGREP -q UTS_RELEASE $utsrelease1], [
+ 		utsrelease=$utsrelease1
+-	], [test -r $utsrelease2 && fgrep -q UTS_RELEASE $utsrelease2], [
++	], [test -r $utsrelease2 && $FGREP -q UTS_RELEASE $utsrelease2], [
+ 		utsrelease=$utsrelease2
+-	], [test -r $utsrelease3 && fgrep -q UTS_RELEASE $utsrelease3], [
++	], [test -r $utsrelease3 && $FGREP -q UTS_RELEASE $utsrelease3], [
+ 		utsrelease=$utsrelease3
+ 	])
+ 
+-- 
+2.37.3
+

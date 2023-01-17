@@ -1,0 +1,89 @@
+From ec03405d2ba8eee8e95ec94e09888eaff82ad6ac Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 17 Jan 2023 12:01:13 -0800
+Subject: [PATCH] Port to BearSSL
+
+---
+ lib/libzfs/libzfs_crypto.c | 52 ++++++++++++++++++++++++++++++--------
+ 1 file changed, 42 insertions(+), 10 deletions(-)
+
+diff --git a/lib/libzfs/libzfs_crypto.c b/lib/libzfs/libzfs_crypto.c
+index f77becd6a..5eed592a4 100644
+--- a/lib/libzfs/libzfs_crypto.c
++++ b/lib/libzfs/libzfs_crypto.c
+@@ -25,7 +25,7 @@
+ #include <termios.h>
+ #include <signal.h>
+ #include <errno.h>
+-#include <openssl/evp.h>
++#include <bearssl.h>
+ #if LIBFETCH_DYNAMIC
+ #include <dlfcn.h>
+ #endif
+@@ -763,6 +763,44 @@ error:
+ 	return (ret);
+ }
+ 
++static void
++pbkdf2_hmac_sha1(unsigned char *DK, size_t DKlen, const char *P, size_t Plen, const char *S, size_t Slen, int c)
++{
++	br_hmac_key_context kc;
++	br_hmac_context hmac;
++	unsigned char F[br_sha1_SIZE], U[64];
++	int j, k;
++	unsigned long i;
++
++	assert(Slen <= sizeof U - 4);
++	br_hmac_key_init(&kc, &br_sha1_vtable, P, Plen);
++	for (i = 1;; ++i) {
++		memcpy(U, S, Slen);
++		U[Slen] = i >> 24;
++		U[Slen + 1] = i >> 16;
++		U[Slen + 2] = i >> 8;
++		U[Slen + 3] = i;
++		br_hmac_init(&hmac, &kc, 0);
++		br_hmac_update(&hmac, U, Slen + 4);
++		br_hmac_out(&hmac, U);
++		memcpy(F, U, br_sha1_SIZE);
++		for (j = 1; j < c; ++j) {
++			br_hmac_init(&hmac, &kc, 0);
++			br_hmac_update(&hmac, U, br_sha1_SIZE);
++			br_hmac_out(&hmac, U);
++			for (k = 0; k < br_sha1_SIZE; k++)
++				F[k] ^= U[k];
++		}
++		if (DKlen < sizeof F) {
++			memcpy(DK, F, DKlen);
++			break;
++		}
++		memcpy(DK, F, sizeof F);
++		DK += sizeof F;
++		DKlen -= sizeof F;
++	}
++}
++
+ static int
+ derive_key(libzfs_handle_t *hdl, zfs_keyformat_t format, uint64_t iters,
+     uint8_t *key_material, size_t key_material_len, uint64_t salt,
+@@ -793,15 +831,9 @@ derive_key(libzfs_handle_t *hdl, zfs_keyformat_t format, uint64_t iters,
+ 	case ZFS_KEYFORMAT_PASSPHRASE:
+ 		salt = LE_64(salt);
+ 
+-		ret = PKCS5_PBKDF2_HMAC_SHA1((char *)key_material,
+-		    strlen((char *)key_material), ((uint8_t *)&salt),
+-		    sizeof (uint64_t), iters, WRAPPING_KEY_LEN, key);
+-		if (ret != 1) {
+-			ret = EIO;
+-			zfs_error_aux(hdl, dgettext(TEXT_DOMAIN,
+-			    "Failed to generate key from passphrase."));
+-			goto error;
+-		}
++		pbkdf2_hmac_sha1((unsigned char *)key, WRAPPING_KEY_LEN,
++		    (char *)key_material, strlen((char *)key_material),
++		    (char *)&salt, sizeof salt, iters);
+ 		break;
+ 	default:
+ 		ret = EINVAL;
+-- 
+2.37.3
+

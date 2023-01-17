@@ -1,0 +1,221 @@
+From 6f50ce7e45a1d35ed170a22c7b465445cc5437fa Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 17 Jan 2023 13:07:11 -0800
+Subject: [PATCH] Use __asm__ instead of asm to compile with -std=c99
+
+---
+ module/zcommon/zfs_fletcher_intel.c | 44 +++++++--------
+ module/zcommon/zfs_fletcher_sse.c   | 86 ++++++++++++++---------------
+ 2 files changed, 65 insertions(+), 65 deletions(-)
+
+diff --git a/module/zcommon/zfs_fletcher_intel.c b/module/zcommon/zfs_fletcher_intel.c
+index 5136a01ec..14eecb192 100644
+--- a/module/zcommon/zfs_fletcher_intel.c
++++ b/module/zcommon/zfs_fletcher_intel.c
+@@ -83,18 +83,18 @@ fletcher_4_avx2_fini(fletcher_4_ctx_t *ctx, zio_cksum_t *zcp)
+ 
+ #define	FLETCHER_4_AVX2_RESTORE_CTX(ctx)				\
+ {									\
+-	asm volatile("vmovdqu %0, %%ymm0" :: "m" ((ctx)->avx[0]));	\
+-	asm volatile("vmovdqu %0, %%ymm1" :: "m" ((ctx)->avx[1]));	\
+-	asm volatile("vmovdqu %0, %%ymm2" :: "m" ((ctx)->avx[2]));	\
+-	asm volatile("vmovdqu %0, %%ymm3" :: "m" ((ctx)->avx[3]));	\
++	__asm__ volatile("vmovdqu %0, %%ymm0" :: "m" ((ctx)->avx[0]));	\
++	__asm__ volatile("vmovdqu %0, %%ymm1" :: "m" ((ctx)->avx[1]));	\
++	__asm__ volatile("vmovdqu %0, %%ymm2" :: "m" ((ctx)->avx[2]));	\
++	__asm__ volatile("vmovdqu %0, %%ymm3" :: "m" ((ctx)->avx[3]));	\
+ }
+ 
+ #define	FLETCHER_4_AVX2_SAVE_CTX(ctx)					\
+ {									\
+-	asm volatile("vmovdqu %%ymm0, %0" : "=m" ((ctx)->avx[0]));	\
+-	asm volatile("vmovdqu %%ymm1, %0" : "=m" ((ctx)->avx[1]));	\
+-	asm volatile("vmovdqu %%ymm2, %0" : "=m" ((ctx)->avx[2]));	\
+-	asm volatile("vmovdqu %%ymm3, %0" : "=m" ((ctx)->avx[3]));	\
++	__asm__ volatile("vmovdqu %%ymm0, %0" : "=m" ((ctx)->avx[0]));	\
++	__asm__ volatile("vmovdqu %%ymm1, %0" : "=m" ((ctx)->avx[1]));	\
++	__asm__ volatile("vmovdqu %%ymm2, %0" : "=m" ((ctx)->avx[2]));	\
++	__asm__ volatile("vmovdqu %%ymm3, %0" : "=m" ((ctx)->avx[3]));	\
+ }
+ 
+ 
+@@ -109,15 +109,15 @@ fletcher_4_avx2_native(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+ 	FLETCHER_4_AVX2_RESTORE_CTX(ctx);
+ 
+ 	for (; ip < ipend; ip += 2) {
+-		asm volatile("vpmovzxdq %0, %%ymm4"::"m" (*ip));
+-		asm volatile("vpaddq %ymm4, %ymm0, %ymm0");
+-		asm volatile("vpaddq %ymm0, %ymm1, %ymm1");
+-		asm volatile("vpaddq %ymm1, %ymm2, %ymm2");
+-		asm volatile("vpaddq %ymm2, %ymm3, %ymm3");
++		__asm__ volatile("vpmovzxdq %0, %%ymm4"::"m" (*ip));
++		__asm__ volatile("vpaddq %ymm4, %ymm0, %ymm0");
++		__asm__ volatile("vpaddq %ymm0, %ymm1, %ymm1");
++		__asm__ volatile("vpaddq %ymm1, %ymm2, %ymm2");
++		__asm__ volatile("vpaddq %ymm2, %ymm3, %ymm3");
+ 	}
+ 
+ 	FLETCHER_4_AVX2_SAVE_CTX(ctx);
+-	asm volatile("vzeroupper");
++	__asm__ volatile("vzeroupper");
+ 
+ 	kfpu_end();
+ }
+@@ -136,20 +136,20 @@ fletcher_4_avx2_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+ 
+ 	FLETCHER_4_AVX2_RESTORE_CTX(ctx);
+ 
+-	asm volatile("vmovdqu %0, %%ymm5" :: "m" (mask));
++	__asm__ volatile("vmovdqu %0, %%ymm5" :: "m" (mask));
+ 
+ 	for (; ip < ipend; ip += 2) {
+-		asm volatile("vpmovzxdq %0, %%ymm4"::"m" (*ip));
+-		asm volatile("vpshufb %ymm5, %ymm4, %ymm4");
++		__asm__ volatile("vpmovzxdq %0, %%ymm4"::"m" (*ip));
++		__asm__ volatile("vpshufb %ymm5, %ymm4, %ymm4");
+ 
+-		asm volatile("vpaddq %ymm4, %ymm0, %ymm0");
+-		asm volatile("vpaddq %ymm0, %ymm1, %ymm1");
+-		asm volatile("vpaddq %ymm1, %ymm2, %ymm2");
+-		asm volatile("vpaddq %ymm2, %ymm3, %ymm3");
++		__asm__ volatile("vpaddq %ymm4, %ymm0, %ymm0");
++		__asm__ volatile("vpaddq %ymm0, %ymm1, %ymm1");
++		__asm__ volatile("vpaddq %ymm1, %ymm2, %ymm2");
++		__asm__ volatile("vpaddq %ymm2, %ymm3, %ymm3");
+ 	}
+ 
+ 	FLETCHER_4_AVX2_SAVE_CTX(ctx);
+-	asm volatile("vzeroupper");
++	__asm__ volatile("vzeroupper");
+ 
+ 	kfpu_end();
+ }
+diff --git a/module/zcommon/zfs_fletcher_sse.c b/module/zcommon/zfs_fletcher_sse.c
+index 15ce9b07f..3aca5485d 100644
+--- a/module/zcommon/zfs_fletcher_sse.c
++++ b/module/zcommon/zfs_fletcher_sse.c
+@@ -82,18 +82,18 @@ fletcher_4_sse2_fini(fletcher_4_ctx_t *ctx, zio_cksum_t *zcp)
+ 
+ #define	FLETCHER_4_SSE_RESTORE_CTX(ctx)					\
+ {									\
+-	asm volatile("movdqu %0, %%xmm0" :: "m" ((ctx)->sse[0]));	\
+-	asm volatile("movdqu %0, %%xmm1" :: "m" ((ctx)->sse[1]));	\
+-	asm volatile("movdqu %0, %%xmm2" :: "m" ((ctx)->sse[2]));	\
+-	asm volatile("movdqu %0, %%xmm3" :: "m" ((ctx)->sse[3]));	\
++	__asm__ volatile("movdqu %0, %%xmm0" :: "m" ((ctx)->sse[0]));	\
++	__asm__ volatile("movdqu %0, %%xmm1" :: "m" ((ctx)->sse[1]));	\
++	__asm__ volatile("movdqu %0, %%xmm2" :: "m" ((ctx)->sse[2]));	\
++	__asm__ volatile("movdqu %0, %%xmm3" :: "m" ((ctx)->sse[3]));	\
+ }
+ 
+ #define	FLETCHER_4_SSE_SAVE_CTX(ctx)					\
+ {									\
+-	asm volatile("movdqu %%xmm0, %0" : "=m" ((ctx)->sse[0]));	\
+-	asm volatile("movdqu %%xmm1, %0" : "=m" ((ctx)->sse[1]));	\
+-	asm volatile("movdqu %%xmm2, %0" : "=m" ((ctx)->sse[2]));	\
+-	asm volatile("movdqu %%xmm3, %0" : "=m" ((ctx)->sse[3]));	\
++	__asm__ volatile("movdqu %%xmm0, %0" : "=m" ((ctx)->sse[0]));	\
++	__asm__ volatile("movdqu %%xmm1, %0" : "=m" ((ctx)->sse[1]));	\
++	__asm__ volatile("movdqu %%xmm2, %0" : "=m" ((ctx)->sse[2]));	\
++	__asm__ volatile("movdqu %%xmm3, %0" : "=m" ((ctx)->sse[3]));	\
+ }
+ 
+ static void
+@@ -106,21 +106,21 @@ fletcher_4_sse2_native(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+ 
+ 	FLETCHER_4_SSE_RESTORE_CTX(ctx);
+ 
+-	asm volatile("pxor %xmm4, %xmm4");
++	__asm__ volatile("pxor %xmm4, %xmm4");
+ 
+ 	for (; ip < ipend; ip += 2) {
+-		asm volatile("movdqu %0, %%xmm5" :: "m"(*ip));
+-		asm volatile("movdqa %xmm5, %xmm6");
+-		asm volatile("punpckldq %xmm4, %xmm5");
+-		asm volatile("punpckhdq %xmm4, %xmm6");
+-		asm volatile("paddq %xmm5, %xmm0");
+-		asm volatile("paddq %xmm0, %xmm1");
+-		asm volatile("paddq %xmm1, %xmm2");
+-		asm volatile("paddq %xmm2, %xmm3");
+-		asm volatile("paddq %xmm6, %xmm0");
+-		asm volatile("paddq %xmm0, %xmm1");
+-		asm volatile("paddq %xmm1, %xmm2");
+-		asm volatile("paddq %xmm2, %xmm3");
++		__asm__ volatile("movdqu %0, %%xmm5" :: "m"(*ip));
++		__asm__ volatile("movdqa %xmm5, %xmm6");
++		__asm__ volatile("punpckldq %xmm4, %xmm5");
++		__asm__ volatile("punpckhdq %xmm4, %xmm6");
++		__asm__ volatile("paddq %xmm5, %xmm0");
++		__asm__ volatile("paddq %xmm0, %xmm1");
++		__asm__ volatile("paddq %xmm1, %xmm2");
++		__asm__ volatile("paddq %xmm2, %xmm3");
++		__asm__ volatile("paddq %xmm6, %xmm0");
++		__asm__ volatile("paddq %xmm0, %xmm1");
++		__asm__ volatile("paddq %xmm1, %xmm2");
++		__asm__ volatile("paddq %xmm2, %xmm3");
+ 	}
+ 
+ 	FLETCHER_4_SSE_SAVE_CTX(ctx);
+@@ -141,13 +141,13 @@ fletcher_4_sse2_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+ 	for (; ip < ipend; ip += 2) {
+ 		uint32_t scratch1 = BSWAP_32(ip[0]);
+ 		uint32_t scratch2 = BSWAP_32(ip[1]);
+-		asm volatile("movd %0, %%xmm5" :: "r"(scratch1));
+-		asm volatile("movd %0, %%xmm6" :: "r"(scratch2));
+-		asm volatile("punpcklqdq %xmm6, %xmm5");
+-		asm volatile("paddq %xmm5, %xmm0");
+-		asm volatile("paddq %xmm0, %xmm1");
+-		asm volatile("paddq %xmm1, %xmm2");
+-		asm volatile("paddq %xmm2, %xmm3");
++		__asm__ volatile("movd %0, %%xmm5" :: "r"(scratch1));
++		__asm__ volatile("movd %0, %%xmm6" :: "r"(scratch2));
++		__asm__ volatile("punpcklqdq %xmm6, %xmm5");
++		__asm__ volatile("paddq %xmm5, %xmm0");
++		__asm__ volatile("paddq %xmm0, %xmm1");
++		__asm__ volatile("paddq %xmm1, %xmm2");
++		__asm__ volatile("paddq %xmm2, %xmm3");
+ 	}
+ 
+ 	FLETCHER_4_SSE_SAVE_CTX(ctx);
+@@ -188,23 +188,23 @@ fletcher_4_ssse3_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+ 
+ 	FLETCHER_4_SSE_RESTORE_CTX(ctx);
+ 
+-	asm volatile("movdqu %0, %%xmm7"::"m" (mask));
+-	asm volatile("pxor %xmm4, %xmm4");
++	__asm__ volatile("movdqu %0, %%xmm7"::"m" (mask));
++	__asm__ volatile("pxor %xmm4, %xmm4");
+ 
+ 	for (; ip < ipend; ip += 2) {
+-		asm volatile("movdqu %0, %%xmm5"::"m" (*ip));
+-		asm volatile("pshufb %xmm7, %xmm5");
+-		asm volatile("movdqa %xmm5, %xmm6");
+-		asm volatile("punpckldq %xmm4, %xmm5");
+-		asm volatile("punpckhdq %xmm4, %xmm6");
+-		asm volatile("paddq %xmm5, %xmm0");
+-		asm volatile("paddq %xmm0, %xmm1");
+-		asm volatile("paddq %xmm1, %xmm2");
+-		asm volatile("paddq %xmm2, %xmm3");
+-		asm volatile("paddq %xmm6, %xmm0");
+-		asm volatile("paddq %xmm0, %xmm1");
+-		asm volatile("paddq %xmm1, %xmm2");
+-		asm volatile("paddq %xmm2, %xmm3");
++		__asm__ volatile("movdqu %0, %%xmm5"::"m" (*ip));
++		__asm__ volatile("pshufb %xmm7, %xmm5");
++		__asm__ volatile("movdqa %xmm5, %xmm6");
++		__asm__ volatile("punpckldq %xmm4, %xmm5");
++		__asm__ volatile("punpckhdq %xmm4, %xmm6");
++		__asm__ volatile("paddq %xmm5, %xmm0");
++		__asm__ volatile("paddq %xmm0, %xmm1");
++		__asm__ volatile("paddq %xmm1, %xmm2");
++		__asm__ volatile("paddq %xmm2, %xmm3");
++		__asm__ volatile("paddq %xmm6, %xmm0");
++		__asm__ volatile("paddq %xmm0, %xmm1");
++		__asm__ volatile("paddq %xmm1, %xmm2");
++		__asm__ volatile("paddq %xmm2, %xmm3");
+ 	}
+ 
+ 	FLETCHER_4_SSE_SAVE_CTX(ctx);
+-- 
+2.37.3
+

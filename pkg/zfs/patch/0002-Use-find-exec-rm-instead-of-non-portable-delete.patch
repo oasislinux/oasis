@@ -1,0 +1,90 @@
+From 8da3e065051442982e255786a45fd5eea01321a9 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 17 Jan 2023 12:56:34 -0800
+Subject: [PATCH] Use find -exec rm instead of non-portable -delete
+
+---
+ config/ax_code_coverage.m4                                    | 2 +-
+ module/Makefile.in                                            | 4 ++--
+ .../tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh | 2 +-
+ .../tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh   | 2 +-
+ .../tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib   | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/config/ax_code_coverage.m4 b/config/ax_code_coverage.m4
+index 3e3c666f3..fbe46db1f 100644
+--- a/config/ax_code_coverage.m4
++++ b/config/ax_code_coverage.m4
+@@ -153,7 +153,7 @@ distclean: code-coverage-clean
+ code-coverage-clean:
+ 	-$(LCOV) --directory $(top_builddir) -z
+ 	-rm -rf $(CODE_COVERAGE_OUTPUT_FILE) $(CODE_COVERAGE_OUTPUT_FILE).tmp $(CODE_COVERAGE_OUTPUT_DIRECTORY)
+-	-find . \( -name "*.gcda" -o -name "*.gcno" -o -name "*.gcov" \) -delete
++	-find . \( -name "*.gcda" -o -name "*.gcno" -o -name "*.gcov" \) -exec rm -- {} +
+ ']
+ 	], [
+ 		[CODE_COVERAGE_RULES_CHECK='
+diff --git a/module/Makefile.in b/module/Makefile.in
+index b6338430e..d87fb729d 100644
+--- a/module/Makefile.in
++++ b/module/Makefile.in
+@@ -70,7 +70,7 @@ clean-Linux:
+ @CONFIG_KERNEL_TRUE@	$(MAKE) -C @LINUX_OBJ@ M="$$PWD" @KERNEL_MAKE@ clean
+ 
+ 	$(RM) @LINUX_SYMBOLS@ Module.markers
+-	find . -name '*.ur-safe' -type f -delete
++	find . -name '*.ur-safe' -type f -exec $(RM) -- {} +
+ 
+ clean-FreeBSD:
+ 	+$(FMAKE) clean
+@@ -86,7 +86,7 @@ modules_install-Linux:
+ 	@# Remove extraneous build products when packaging
+ 	kmoddir=$(INSTALL_MOD_PATH)/lib/modules/@LINUX_VERSION@; \
+ 	if [ -n "$(DESTDIR)" ]; then \
+-		find $$kmoddir -name 'modules.*' -delete; \
++		find $$kmoddir -name 'modules.*' -exec $(RM) -- {} +; \
+ 	fi
+ 	@# Debian ships tiny fake System.map files that are
+ 	@# syntactically valid but just say
+diff --git a/tests/zfs-tests/tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh b/tests/zfs-tests/tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh
+index 0d08cf629..7714d02cd 100755
+--- a/tests/zfs-tests/tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh
++++ b/tests/zfs-tests/tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh
+@@ -33,7 +33,7 @@ function cleanup
+ 	for snap in $TESTSNAP1 $TESTSNAP2; do
+ 		snapexists "$snap" && destroy_dataset "$snap"
+ 	done
+-	find "$MNTPOINT" -type f -delete
++	find "$MNTPOINT" -type f -exec rm -- {} +
+ 	rm -f "$FILEDIFF"
+ }
+ 
+diff --git a/tests/zfs-tests/tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh b/tests/zfs-tests/tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh
+index da0aebe6b..7d5242ee0 100755
+--- a/tests/zfs-tests/tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh
++++ b/tests/zfs-tests/tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh
+@@ -61,7 +61,7 @@ test_pool ()
+ 	object=$(ls -i $mntpnt | awk '{print $1}')
+ 	log_must zfs snapshot $POOL/fs@a
+ 	while true; do
+-		log_must find $mntpnt/ -type f -delete
++		log_must find $mntpnt/ -type f -exec rm -- {} +
+ 		sync
+ 		log_must mkfiles "$mntpnt/" 4000
+ 		sync
+diff --git a/tests/zfs-tests/tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib b/tests/zfs-tests/tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib
+index b69d2ce02..54f3e459e 100644
+--- a/tests/zfs-tests/tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib
++++ b/tests/zfs-tests/tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib
+@@ -60,7 +60,7 @@ function udev_cleanup
+ 
+ 	udevadm settle
+ 	# find all dangling links and delete them
+-	find -L "${ZVOL_DEVDIR}" -type l -print -delete
++	find -L "${ZVOL_DEVDIR}" -type l -print -exec rm -- {} +
+ 	# purge those links from udev database
+ 	udevadm info --cleanup-db
+ }
+-- 
+2.37.3
+
