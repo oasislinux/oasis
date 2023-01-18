@@ -7,3 +7,5 @@ sub('host.ninja', function()
 	toolchain(config.host)
 	exe('pax', {'pax.c'})
 end)
+
+fetch 'git'
