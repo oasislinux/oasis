@@ -1,4 +1,4 @@
-From e52fcf6a85eb47df1795e934d413ffee81240403 Mon Sep 17 00:00:00 2001
+From f36143f1158d68838e715882015cde04ddfb1e28 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -9,10 +9,10 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  2 files changed, 2 insertions(+), 176 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index 0ccd22947..3481243cc 100644
+index 8ca7cea2c..3d74c63d4 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
-@@ -372,8 +372,6 @@ def decrypt(self, encrypted_value):
+@@ -374,8 +374,6 @@ def decrypt(self, encrypted_value):
  def get_cookie_decryptor(browser_root, browser_keyring_name, logger, *, keyring=None):
      if sys.platform == 'darwin':
          return MacChromeCookieDecryptor(browser_keyring_name, logger)
@@ -21,7 +21,7 @@ index 0ccd22947..3481243cc 100644
      return LinuxChromeCookieDecryptor(browser_keyring_name, logger, keyring=keyring)
  
  
-@@ -443,43 +441,6 @@ def decrypt(self, encrypted_value):
+@@ -445,43 +443,6 @@ def decrypt(self, encrypted_value):
              return encrypted_value
  
  
@@ -65,7 +65,7 @@ index 0ccd22947..3481243cc 100644
  def _extract_safari_cookies(profile, logger):
      if profile is not None:
          logger.error('safari does not support profiles')
-@@ -855,27 +816,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
+@@ -860,27 +821,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
          return None
  
  
@@ -93,7 +93,7 @@ index 0ccd22947..3481243cc 100644
  def pbkdf2_sha1(password, salt, iterations, key_length):
      return pbkdf2_hmac('sha1', password, salt, iterations, key_length)
  
-@@ -903,40 +843,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
+@@ -908,40 +848,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
          return None
  
  
@@ -135,10 +135,10 @@ index 0ccd22947..3481243cc 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils.py b/yt_dlp/utils.py
-index 00f2fbf42..9ca0ee207 100644
+index 994239897..3e27de8d0 100644
 --- a/yt_dlp/utils.py
 +++ b/yt_dlp/utils.py
-@@ -2042,64 +2042,7 @@ def __init__(self):
+@@ -2088,64 +2088,7 @@ def __init__(self):
          super().__init__(self.msg)
  
  
@@ -157,7 +157,7 @@ index 00f2fbf42..9ca0ee207 100644
 -            ('hEvent', ctypes.wintypes.HANDLE),
 -        ]
 -
--    kernel32 = ctypes.windll.kernel32
+-    kernel32 = ctypes.WinDLL('kernel32')
 -    LockFileEx = kernel32.LockFileEx
 -    LockFileEx.argtypes = [
 -        ctypes.wintypes.HANDLE,     # hFile
@@ -204,7 +204,7 @@ index 00f2fbf42..9ca0ee207 100644
      try:
          import fcntl
  
-@@ -2422,30 +2365,7 @@ def fix_xml_ampersands(xml_str):
+@@ -2477,30 +2420,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
