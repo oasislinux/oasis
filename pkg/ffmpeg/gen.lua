@@ -147,6 +147,12 @@ if options.CONFIG_ZLIB then
 	table.insert(sources.libavformat, '$builddir/pkg/zlib/libz.a')
 end
 
+if options.CONFIG_BLURAY_PROTOCOL then
+	cflags{'-isystem $builddir/pkg/libbluray/include'}
+	table.insert(pkg.deps, 'pkg/libbluray/headers')
+	table.insert(sources.libavcodec, '$builddir/pkg/libbluray/libbluray.a.d')
+end
+
 lib('libavcodec.a', {
 	expand{'libavcodec/', {
 		'ac3_parser.c',
