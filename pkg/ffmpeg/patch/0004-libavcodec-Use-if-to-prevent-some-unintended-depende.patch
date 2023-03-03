@@ -1,37 +1,17 @@
-From 71b3efc1e55297cbe079378c1e0127c78fe264f5 Mon Sep 17 00:00:00 2001
+From a7dd6d3b3467b46ff767d68b488fd17a32b54c7f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 7 Sep 2021 01:44:53 -0700
 Subject: [PATCH] libavcodec: Use #if to prevent some unintended dependencies
 
 ---
- libavcodec/h263.h             |  2 ++
  libavcodec/mpegvideo_motion.c | 10 ++++++----
- 2 files changed, 8 insertions(+), 4 deletions(-)
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/libavcodec/h263.h b/libavcodec/h263.h
-index 491f2e0aac..6f4088e57c 100644
---- a/libavcodec/h263.h
-+++ b/libavcodec/h263.h
-@@ -99,6 +99,7 @@ int ff_h263_resync(MpegEncContext *s);
- void ff_h263_encode_motion(PutBitContext *pb, int val, int f_code);
- 
- 
-+#if CONFIG_H263_ENCODER
- static inline int h263_get_motion_length(int val, int f_code){
-     int l, bit_size, code;
- 
-@@ -183,5 +184,6 @@ static inline int get_p_cbp(MpegEncContext * s,
-     }
-     return cbp;
- }
-+#endif
- 
- #endif /* AVCODEC_H263_H */
 diff --git a/libavcodec/mpegvideo_motion.c b/libavcodec/mpegvideo_motion.c
-index 427bc96887..081c251d11 100644
+index 9a450b7c8e..cc920c6067 100644
 --- a/libavcodec/mpegvideo_motion.c
 +++ b/libavcodec/mpegvideo_motion.c
-@@ -359,10 +359,11 @@ void mpeg_motion_internal(MpegEncContext *s,
+@@ -361,10 +361,11 @@ void mpeg_motion_internal(MpegEncContext *s,
          pix_op[s->chroma_x_shift][uvdxy]
              (dest_cr, ptr_cr, uvlinesize, h >> s->chroma_y_shift);
      }
@@ -61,5 +41,5 @@ index 427bc96887..081c251d11 100644
              mpeg_motion(s, dest_y, dest_cb, dest_cr, 0,
                          ref_picture, pix_op,
 -- 
-2.32.0
+2.37.3
 

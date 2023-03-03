@@ -4,7 +4,7 @@ To generate `sources.txt`, first run configure ffmpeg
 
 Then, generate `vars.txt` from config.asm
 
-	awk '!($0 ~ "^;") {print $2}' config.asm >vars.txt
+	awk '$3 ~ /^[01]$/ {print $2}' config.asm config_components.h >vars.txt
 
 Build `sources.txt` from vars.txt and ffmpeg's `Makefile`s
 
