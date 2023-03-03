@@ -57,9 +57,9 @@ genlist('$outdir/internal/libavcodec/codec_list.c', '$srcdir/libavcodec/allcodec
 genlist('$outdir/internal/libavcodec/parser_list.c', '$srcdir/libavcodec/parsers.c', 'AVCodecParser', 'parser_list')
 genlist('$outdir/internal/libavcodec/bsf_list.c', '$srcdir/libavcodec/bitstream_filters.c', 'FFBitStreamFilter', 'bitstream_filters')
 genlist('$outdir/internal/libavformat/demuxer_list.c', '$srcdir/libavformat/allformats.c', 'AVInputFormat', 'demuxer_list')
-genlist('$outdir/internal/libavformat/muxer_list.c', '$srcdir/libavformat/allformats.c', 'AVOutputFormat', 'muxer_list')
+genlist('$outdir/internal/libavformat/muxer_list.c', '$srcdir/libavformat/allformats.c', 'FFOutputFormat', 'muxer_list')
 genlist('$outdir/internal/libavdevice/indev_list.c', '$srcdir/libavdevice/alldevices.c', 'AVInputFormat', 'indev_list')
-genlist('$outdir/internal/libavdevice/outdev_list.c', '$srcdir/libavdevice/alldevices.c', 'AVOutputFormat', 'outdev_list')
+genlist('$outdir/internal/libavdevice/outdev_list.c', '$srcdir/libavdevice/alldevices.c', 'FFOutputFormat', 'outdev_list')
 genlist('$outdir/internal/libavformat/protocol_list.c', '$srcdir/libavformat/protocols.c', 'URLProtocol', 'url_protocols')
 
 build('awk', '$outdir/include/libavutil/ffversion.h', {'$dir/ver'}, {
@@ -234,6 +234,7 @@ lib('libavformat.a', {
 		'demux.c',
 		'demux_utils.c',
 		'dump.c',
+		'dv.c',
 		'format.c',
 		'id3v1.c',
 		'id3v2.c',
@@ -261,6 +262,7 @@ lib('libavutil.a', {
 		'adler32.c',
 		'aes.c',
 		'aes_ctr.c',
+		'ambient_viewing_environment.c',
 		'audio_fifo.c',
 		'avstring.c',
 		'avsscanf.c',
@@ -271,7 +273,6 @@ lib('libavutil.a', {
 		'cast5.c',
 		'camellia.c',
 		'channel_layout.c',
-		'color_utils.c',
 		'cpu.c',
 		'crc.c',
 		'csp.c',
@@ -383,6 +384,7 @@ lib('libswscale.a', {
 		'hscale.c',
 		'hscale_fast_bilinear.c',
 		'gamma.c',
+		'half2float.c',
 		'input.c',
 		'options.c',
 		'output.c',
@@ -426,10 +428,25 @@ cc('fftools/opt_common.c', {'$gendir/deps'})
 exe('ffprobe', {paths[[fftools/(ffprobe.c cmdutils.c.o opt_common.c.o)]], libs})
 file('bin/ffprobe', '755', '$outdir/ffprobe')
 
-exe('ffmpeg', {paths[[fftools/(ffmpeg.c ffmpeg_filter.c ffmpeg_hw.c ffmpeg_mux.c ffmpeg_opt.c cmdutils.c.o opt_common.c.o)]], libs})
+exe('ffmpeg', {paths[[
+	fftools/(
+		ffmpeg.c
+		ffmpeg_demux.c
+		ffmpeg_filter.c
+		ffmpeg_hw.c
+		ffmpeg_mux.c
+		ffmpeg_mux_init.c
+		ffmpeg_opt.c
+		objpool.c
+		sync_queue.c
+		thread_queue.c
+		cmdutils.c.o
+		opt_common.c.o
+	)
+]], libs})
 file('bin/ffmpeg', '755', '$outdir/ffmpeg')
 
-rule('texi2mdoc', [[$builddir/pkg/texi2mdoc/host/texi2mdoc -d 'August 31, 2022' -I $outdir $in >$out]])
+rule('texi2mdoc', [[$builddir/pkg/texi2mdoc/host/texi2mdoc -d 'February 27, 2023' -I $outdir $in >$out]])
 build('texi2mdoc', '$outdir/ffprobe.1', {'$srcdir/doc/ffprobe.texi', '|', '$outdir/config.texi', '$builddir/pkg/texi2mdoc/host/texi2mdoc'})
 build('texi2mdoc', '$outdir/ffmpeg.1', {'$srcdir/doc/ffmpeg.texi', '|', '$outdir/config.texi', '$builddir/pkg/texi2mdoc/host/texi2mdoc'})
 man{'$outdir/ffprobe.1', '$outdir/ffmpeg.1'}

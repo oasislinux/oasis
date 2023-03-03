@@ -1,0 +1,46 @@
+From ea1a98299479f1678d649585723f6a446e9760b1 Mon Sep 17 00:00:00 2001
+From: sfan5 <sfan5@live.de>
+Date: Sat, 30 Oct 2021 17:12:29 +0200
+Subject: [PATCH] f_lavfi: replace deprecated avfilter_pad_count
+
+---
+ filters/f_lavfi.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/filters/f_lavfi.c b/filters/f_lavfi.c
+index 9e64215f39..f9d581fed8 100644
+--- a/filters/f_lavfi.c
++++ b/filters/f_lavfi.c
+@@ -944,19 +944,19 @@ static struct mp_filter *lavfi_create(struct mp_filter *parent, void *options)
+     return l ? l->f : NULL;
+ }
+ 
+-static bool is_single_media_only(const AVFilterPad *pads, int media_type)
+-{
+-    int count = avfilter_pad_count(pads);
+-    if (count != 1)
+-        return false;
+-    return avfilter_pad_get_type(pads, 0) == media_type;
+-}
+-
+ // Does it have exactly one video input and one video output?
+ static bool is_usable(const AVFilter *filter, int media_type)
+ {
+-    return is_single_media_only(filter->inputs, media_type) &&
+-           is_single_media_only(filter->outputs, media_type);
++#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(8, 3, 0)
++    int nb_inputs  = avfilter_filter_pad_count(filter, 0),
++        nb_outputs = avfilter_filter_pad_count(filter, 1);
++#else
++    int nb_inputs  = avfilter_pad_count(filter->inputs),
++        nb_outputs = avfilter_pad_count(filter->outputs);
++#endif
++    return nb_inputs == 1 && nb_outputs == 1 &&
++           avfilter_pad_get_type(filter->inputs, 0) == media_type &&
++           avfilter_pad_get_type(filter->outputs, 0) == media_type;
+ }
+ 
+ bool mp_lavfi_is_usable(const char *name, int media_type)
+-- 
+2.37.3
+

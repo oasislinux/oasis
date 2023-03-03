@@ -1,4 +1,4 @@
-From d117054cbf83a3ad3a0385c37a5dbbf75a10b5f5 Mon Sep 17 00:00:00 2001
+From e556055b4cfae9c170092f426b450630fa126b37 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 7 Sep 2021 01:41:48 -0700
 Subject: [PATCH] libavcodec: Prevent stray semicolon at top-level
@@ -13,28 +13,28 @@ is no problem if it expands to an empty token sequence.
  1 file changed, 36 insertions(+), 36 deletions(-)
 
 diff --git a/libavcodec/pcm.c b/libavcodec/pcm.c
-index 471075ad71..c7bb50e061 100644
+index 23955ba2dd..295ee4e986 100644
 --- a/libavcodec/pcm.c
 +++ b/libavcodec/pcm.c
-@@ -565,7 +565,7 @@ const FFCodec ff_ ## name_ ## _encoder = {                                  \
+@@ -559,7 +559,7 @@ const FFCodec ff_ ## name_ ## _encoder = {                                  \
+     FF_CODEC_ENCODE_CB(pcm_encode_frame),                                   \
      .p.sample_fmts = (const enum AVSampleFormat[]){ sample_fmt_,             \
                                                     AV_SAMPLE_FMT_NONE },    \
-     .caps_internal = FF_CODEC_CAP_INIT_THREADSAFE,                          \
 -}
 +};
  
  #define PCM_ENCODER_2(cf, id, sample_fmt, name, long_name)                  \
      PCM_ENCODER_ ## cf(id, sample_fmt, name, long_name)
-@@ -588,7 +588,7 @@ const FFCodec ff_ ## name_ ## _decoder = {                                  \
+@@ -581,7 +581,7 @@ const FFCodec ff_ ## name_ ## _decoder = {                                  \
+     .p.capabilities = AV_CODEC_CAP_DR1,                                     \
      .p.sample_fmts  = (const enum AVSampleFormat[]){ sample_fmt_,           \
                                                       AV_SAMPLE_FMT_NONE },  \
-     .caps_internal  = FF_CODEC_CAP_INIT_THREADSAFE,                         \
 -}
 +};
  
  #define PCM_DECODER_2(cf, id, sample_fmt, name, long_name)                  \
      PCM_DECODER_ ## cf(id, sample_fmt, name, long_name)
-@@ -598,40 +598,40 @@ const FFCodec ff_ ## name_ ## _decoder = {                                  \
+@@ -591,40 +591,40 @@ const FFCodec ff_ ## name_ ## _decoder = {                                  \
      PCM_DECODER_3(CONFIG_ ## id ## _DECODER, id, sample_fmt, name, long_name)
  
  #define PCM_CODEC(id, sample_fmt_, name, long_name_)                    \
