@@ -5,6 +5,11 @@ waylandproto('stable/presentation-time/presentation-time.xml', {
 	code='presentation-time-protocol.c',
 })
 
+waylandproto('stable/viewporter/viewporter.xml', {
+	client='include/viewporter-client-protocol.h',
+	code='viewporter-protocol.c',
+})
+
 waylandproto('stable/xdg-shell/xdg-shell.xml', {
 	client='include/xdg-shell-client-protocol.h',
 	server='include/xdg-shell-server-protocol.h',
