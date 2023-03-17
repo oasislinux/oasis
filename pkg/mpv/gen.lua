@@ -38,7 +38,9 @@ pkg.deps = {
 }
 
 build('copy', '$outdir/generated/wayland/idle-inhibit-unstable-v1.h', '$builddir/pkg/wayland-protocols/include/idle-inhibit-unstable-v1-client-protocol.h')
+build('copy', '$outdir/generated/wayland/linux-dmabuf-unstable-v1.h', '$builddir/pkg/wayland-protocols/include/linux-dmabuf-unstable-v1-client-protocol.h')
 build('copy', '$outdir/generated/wayland/presentation-time.h', '$builddir/pkg/wayland-protocols/include/presentation-time-client-protocol.h')
+build('copy', '$outdir/generated/wayland/viewporter.h', '$builddir/pkg/wayland-protocols/include/viewporter-client-protocol.h')
 build('copy', '$outdir/generated/wayland/xdg-decoration-unstable-v1.h', '$builddir/pkg/wayland-protocols/include/xdg-decoration-unstable-v1-client-protocol.h')
 build('copy', '$outdir/generated/wayland/xdg-shell.h', '$builddir/pkg/wayland-protocols/include/xdg-shell-client-protocol.h')
 
@@ -167,7 +169,9 @@ if options.HAVE_WAYLAND then
 	})
 	table.insert(pkg.deps, {
 		'$outdir/generated/wayland/idle-inhibit-unstable-v1.h',
+		'$outdir/generated/wayland/linux-dmabuf-unstable-v1.h',
 		'$outdir/generated/wayland/presentation-time.h',
+		'$outdir/generated/wayland/viewporter.h',
 		'$outdir/generated/wayland/xdg-decoration-unstable-v1.h',
 		'$outdir/generated/wayland/xdg-shell.h',
 		'pkg/libxkbcommon/headers',

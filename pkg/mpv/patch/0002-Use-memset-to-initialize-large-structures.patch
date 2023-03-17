@@ -1,4 +1,4 @@
-From 5c6190de25762e04b4ee2b265760fd5b8afd115e Mon Sep 17 00:00:00 2001
+From 9be8fd92d4deed49d3c90a6d94c67c14980528fc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 2 Jul 2019 17:41:43 -0700
 Subject: [PATCH] Use memset to initialize large structures
@@ -9,10 +9,10 @@ These are over 256 KiB in size.
  1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/video/out/gpu/video.c b/video/out/gpu/video.c
-index e4c4ee9290..0e15837d5e 100644
+index 3b9e07963e..4ccbae16cb 100644
 --- a/video/out/gpu/video.c
 +++ b/video/out/gpu/video.c
-@@ -3514,7 +3514,7 @@ static void frame_perf_data(struct pass_info pass[], struct mp_frame_perf *out)
+@@ -3576,7 +3576,7 @@ static void frame_perf_data(struct pass_info pass[], struct mp_frame_perf *out)
  
  void gl_video_perfdata(struct gl_video *p, struct voctrl_performance_data *out)
  {
@@ -21,7 +21,7 @@ index e4c4ee9290..0e15837d5e 100644
      frame_perf_data(p->pass_fresh,  &out->fresh);
      frame_perf_data(p->pass_redraw, &out->redraw);
  }
-@@ -3955,14 +3955,13 @@ struct gl_video *gl_video_init(struct ra *ra, struct mp_log *log,
+@@ -4011,14 +4011,13 @@ struct gl_video *gl_video_init(struct ra *ra, struct mp_log *log,
                                 struct mpv_global *g)
  {
      struct gl_video *p = talloc_ptrtype(NULL, p);
@@ -44,5 +44,5 @@ index e4c4ee9290..0e15837d5e 100644
      p->pass = p->pass_fresh;
      struct gl_video_opts *opts = p->opts_cache->opts;
 -- 
-2.35.1
+2.37.3
 

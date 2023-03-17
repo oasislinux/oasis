@@ -1,4 +1,4 @@
-From 25a7c939446a456b258e889013a1f3136199f09b Mon Sep 17 00:00:00 2001
+From 153cf9738ea8b6e108ead1707a7a9193f57f3685 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 02:21:16 -0700
 Subject: [PATCH] video/out/gpu: Prevent empty array when no compilers or
@@ -10,62 +10,62 @@ Subject: [PATCH] video/out/gpu: Prevent empty array when no compilers or
  2 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/video/out/gpu/context.c b/video/out/gpu/context.c
-index 6e58cce485..0e68c45b91 100644
+index 2203b5cad9..2836d72513 100644
 --- a/video/out/gpu/context.c
 +++ b/video/out/gpu/context.c
-@@ -110,6 +110,7 @@ static const struct ra_ctx_fns *contexts[] = {
-     &ra_ctx_vulkan_display,
- 
+@@ -117,6 +117,7 @@ static const struct ra_ctx_fns *contexts[] = {
+ #if HAVE_DMABUF_WAYLAND
+     &ra_ctx_wldmabuf,
  #endif
 +    NULL
  };
  
- int ra_ctx_api_help(struct mp_log *log, const struct m_option *opt,
-@@ -117,7 +118,7 @@ int ra_ctx_api_help(struct mp_log *log, const struct m_option *opt,
+ static int ra_ctx_api_help(struct mp_log *log, const struct m_option *opt,
+@@ -124,7 +125,7 @@ static int ra_ctx_api_help(struct mp_log *log, const struct m_option *opt,
  {
      mp_info(log, "GPU APIs (contexts):\n");
      mp_info(log, "    auto (autodetect)\n");
--    for (int n = 0; n < MP_ARRAY_SIZE(contexts); n++)
-+    for (int n = 0; n < MP_ARRAY_SIZE(contexts) - 1; n++)
-         mp_info(log, "    %s (%s)\n", contexts[n]->type, contexts[n]->name);
-     return M_OPT_EXIT;
- }
-@@ -128,7 +129,7 @@ int ra_ctx_validate_api(struct mp_log *log, const struct m_option *opt,
+-    for (int n = 0; n < MP_ARRAY_SIZE(contexts); n++) {
++    for (int n = 0; n < MP_ARRAY_SIZE(contexts) - 1; n++) {
+         if (!contexts[n]->hidden)
+             mp_info(log, "    %s (%s)\n", contexts[n]->type, contexts[n]->name);
+     }
+@@ -137,7 +138,7 @@ static int ra_ctx_validate_api(struct mp_log *log, const struct m_option *opt,
      struct bstr param = bstr0(*value);
      if (bstr_equals0(param, "auto"))
          return 1;
 -    for (int i = 0; i < MP_ARRAY_SIZE(contexts); i++) {
 +    for (int i = 0; i < MP_ARRAY_SIZE(contexts) - 1; i++) {
-         if (bstr_equals0(param, contexts[i]->type))
+         if (bstr_equals0(param, contexts[i]->type) && !contexts[i]->hidden)
              return 1;
      }
-@@ -140,7 +141,7 @@ int ra_ctx_context_help(struct mp_log *log, const struct m_option *opt,
+@@ -149,7 +150,7 @@ static int ra_ctx_context_help(struct mp_log *log, const struct m_option *opt,
  {
      mp_info(log, "GPU contexts (APIs):\n");
      mp_info(log, "    auto (autodetect)\n");
--    for (int n = 0; n < MP_ARRAY_SIZE(contexts); n++)
-+    for (int n = 0; n < MP_ARRAY_SIZE(contexts) - 1; n++)
-         mp_info(log, "    %s (%s)\n", contexts[n]->name, contexts[n]->type);
-     return M_OPT_EXIT;
- }
-@@ -151,7 +152,7 @@ int ra_ctx_validate_context(struct mp_log *log, const struct m_option *opt,
+-    for (int n = 0; n < MP_ARRAY_SIZE(contexts); n++) {
++    for (int n = 0; n < MP_ARRAY_SIZE(contexts) - 1; n++) {
+         if (!contexts[n]->hidden)
+             mp_info(log, "    %s (%s)\n", contexts[n]->name, contexts[n]->type);
+     }
+@@ -162,7 +163,7 @@ static int ra_ctx_validate_context(struct mp_log *log, const struct m_option *op
      struct bstr param = bstr0(*value);
      if (bstr_equals0(param, "auto"))
          return 1;
 -    for (int i = 0; i < MP_ARRAY_SIZE(contexts); i++) {
 +    for (int i = 0; i < MP_ARRAY_SIZE(contexts) - 1; i++) {
-         if (bstr_equals0(param, contexts[i]->name))
+         if (bstr_equals0(param, contexts[i]->name) && !contexts[i]->hidden)
              return 1;
      }
-@@ -176,7 +177,7 @@ struct ra_ctx *ra_ctx_create(struct vo *vo, const char *context_type,
+@@ -186,7 +187,7 @@ struct ra_ctx *ra_ctx_create(struct vo *vo, struct ra_ctx_opts opts)
      bool old_probing = vo->probing;
      vo->probing = opts.probing;
  
 -    for (int i = 0; i < MP_ARRAY_SIZE(contexts); i++) {
 +    for (int i = 0; i < MP_ARRAY_SIZE(contexts) - 1; i++) {
-         if (!opts.probing && strcmp(contexts[i]->name, context_name) != 0)
+         if (contexts[i]->hidden)
              continue;
-         if (!api_auto && strcmp(contexts[i]->type, context_type) != 0)
+         if (!opts.probing && strcmp(contexts[i]->name, opts.context_name) != 0)
 diff --git a/video/out/gpu/spirv.c b/video/out/gpu/spirv.c
 index 67088bc7df..69100497eb 100644
 --- a/video/out/gpu/spirv.c
@@ -79,5 +79,5 @@ index 67088bc7df..69100497eb 100644
  
  static const struct m_opt_choice_alternatives compiler_choices[] = {
 -- 
-2.35.1
+2.37.3
 
