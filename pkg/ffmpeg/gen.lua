@@ -144,6 +144,7 @@ end
 if options.CONFIG_ZLIB then
 	cflags{'-isystem $builddir/pkg/zlib/include'}
 	table.insert(pkg.deps, 'pkg/zlib/headers')
+	table.insert(sources.libavcodec, '$builddir/pkg/zlib/libz.a')
 	table.insert(sources.libavformat, '$builddir/pkg/zlib/libz.a')
 end
 
