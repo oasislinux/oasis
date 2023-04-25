@@ -1,0 +1,38 @@
+From 4c111db979c3bec7496bdb856d3819591d5d85c6 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 24 Apr 2023 21:09:06 -0700
+Subject: [PATCH] Choose larger pieces for larger sizes
+
+---
+ libtransmission/makemeta.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/libtransmission/makemeta.c b/libtransmission/makemeta.c
+index 713f3e5cb..0ebb6d720 100644
+--- a/libtransmission/makemeta.c
++++ b/libtransmission/makemeta.c
+@@ -92,6 +92,21 @@ static uint32_t bestPieceSize(uint64_t totalSize)
+     uint32_t const MiB = 1048576;
+     uint32_t const GiB = 1073741824;
+ 
++    if (totalSize >= 16 * GiB)
++    {
++        return 16 * MiB;
++    }
++
++    if (totalSize >= 8 * GiB)
++    {
++        return 8 * MiB;
++    }
++
++    if (totalSize >= 4 * GiB)
++    {
++        return 4 * MiB;
++    }
++
+     if (totalSize >= 2 * GiB)
+     {
+         return 2 * MiB;
+-- 
+2.37.3
+
