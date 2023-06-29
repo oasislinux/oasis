@@ -34,6 +34,7 @@ return {
 		'src/math/aarch64/sqrtf.c',
 		'src/math/aarch64/trunc.c',
 		'src/math/aarch64/truncf.c',
+		'src/process/aarch64/vfork.s',
 		'src/setjmp/aarch64/longjmp.s',
 		'src/setjmp/aarch64/setjmp.s',
 		'src/signal/aarch64/restore.s',
