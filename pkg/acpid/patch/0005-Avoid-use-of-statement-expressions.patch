@@ -1,4 +1,4 @@
-From 7c59db620d4787759dd201e2ac20998c1d116ab9 Mon Sep 17 00:00:00 2001
+From 979d85c842898463192c7e7dae87798c1df6d471 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 30 Apr 2021 20:02:41 -0700
 Subject: [PATCH] Avoid use of statement-expressions
@@ -102,7 +102,7 @@ index 6c67062..033466e 100644
  				/* a legit error */
  				return r;
 diff --git a/input_layer.c b/input_layer.c
-index 5f050db..6e6cc26 100644
+index 00246b3..f6bddef 100644
 --- a/input_layer.c
 +++ b/input_layer.c
 @@ -42,7 +42,6 @@
@@ -113,7 +113,7 @@ index 5f050db..6e6cc26 100644
  
  #include "input_layer.h"
  
-@@ -298,7 +297,8 @@ static void process_input(int fd)
+@@ -352,7 +351,8 @@ static void process_input(int fd)
  	struct connection *c;
  	char str2[100];
  
@@ -170,10 +170,10 @@ index 39f2336..0000000
 -
 -#endif /* LIBC_COMPAT_H__ */
 diff --git a/libnetlink.c b/libnetlink.c
-index 5546ccb..1478e28 100644
+index d94bd5f..7ad00df 100644
 --- a/libnetlink.c
 +++ b/libnetlink.c
-@@ -24,8 +24,6 @@
+@@ -31,8 +31,6 @@
  #include <time.h>
  #include <sys/uio.h>
  
@@ -182,7 +182,7 @@ index 5546ccb..1478e28 100644
  #include "libnetlink.h"
  
  void rtnl_close(struct rtnl_handle *rth)
-@@ -173,10 +171,11 @@ int rtnl_dump_filter(struct rtnl_handle *rth,
+@@ -180,10 +178,11 @@ int rtnl_dump_filter(struct rtnl_handle *rth,
  		struct nlmsghdr *h;
  
  		iov.iov_len = sizeof(buf);
@@ -196,7 +196,7 @@ index 5546ccb..1478e28 100644
  			continue;
  		}
  
-@@ -274,10 +273,11 @@ int rtnl_talk(struct rtnl_handle *rtnl, struct nlmsghdr *n, pid_t peer,
+@@ -281,10 +280,11 @@ int rtnl_talk(struct rtnl_handle *rtnl, struct nlmsghdr *n, pid_t peer,
  
  	while (1) {
  		iov.iov_len = sizeof(buf);
@@ -210,7 +210,7 @@ index 5546ccb..1478e28 100644
  			continue;
  		}
  		if (status == 0) {
-@@ -376,10 +376,11 @@ int rtnl_listen(struct rtnl_handle *rtnl,
+@@ -383,10 +383,11 @@ int rtnl_listen(struct rtnl_handle *rtnl,
  	iov.iov_base = buf;
  	while (1) {
  		iov.iov_len = sizeof(buf);
@@ -225,10 +225,10 @@ index 5546ccb..1478e28 100644
  		}
  		if (status == 0) {
 diff --git a/netlink.c b/netlink.c
-index 27e3536..d89d280 100644
+index 8254762..695bb33 100644
 --- a/netlink.c
 +++ b/netlink.c
-@@ -41,7 +41,6 @@
+@@ -48,7 +48,6 @@
  #include "libnetlink.h"
  #include "genetlink.h"
  #include "acpi_genetlink.h"
@@ -236,7 +236,7 @@ index 27e3536..d89d280 100644
  
  #include "acpi_ids.h"
  #include "connection_list.h"
-@@ -144,7 +143,8 @@ process_netlink(int fd)
+@@ -151,7 +150,8 @@ process_netlink(int fd)
  	iov.iov_len = sizeof(buf);
  	
  	/* read the data into the buffer */
@@ -295,5 +295,5 @@ index 83b2aa9..15a3b4a 100644
  		}
  		if (cred) {
 -- 
-2.31.1
+2.37.3
 

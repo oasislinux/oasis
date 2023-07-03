@@ -1,4 +1,4 @@
-From a6a138ee8c131b4ce056a5db516496c91610cf2f Mon Sep 17 00:00:00 2001
+From 2ce67cdaf8af1ab4198ef28da002d5275d314c34 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Aug 2020 18:00:54 -0700
 Subject: [PATCH] Avoid void pointer arithmetic
@@ -24,10 +24,10 @@ index ba218d7..08271cb 100644
  	/* places pointers into the message into tb[].  */
  	parse_rtattr(tb, CTRL_ATTR_MAX, attrs, len);
 diff --git a/libnetlink.c b/libnetlink.c
-index 346162a..b1760ba 100644
+index 23ae7dd..24948bf 100644
 --- a/libnetlink.c
 +++ b/libnetlink.c
-@@ -516,7 +516,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
+@@ -523,7 +523,7 @@ int addraw_l(struct nlmsghdr *n, int maxlen, const void *data, int len)
  	}
  
  	memcpy(NLMSG_TAIL(n), data, len);
@@ -50,5 +50,5 @@ index 8f9cb5e..7b2f8bc 100644
  #ifndef IFA_RTA
  #define IFA_RTA(r) \
 -- 
-2.28.0
+2.37.3
 

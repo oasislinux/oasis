@@ -1,4 +1,4 @@
-From 2dfa73cf8b3be174696423996c17e4b30b4f1487 Mon Sep 17 00:00:00 2001
+From c3c72b271de395d0e4421e736700d60f96614725 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 1 May 2021 00:23:39 -0700
 Subject: [PATCH] Fix fread error checking
@@ -13,10 +13,10 @@ and the ferror flag is set.
  1 file changed, 14 insertions(+), 13 deletions(-)
 
 diff --git a/libnetlink.c b/libnetlink.c
-index b1760ba..5546ccb 100644
+index 24948bf..d94bd5f 100644
 --- a/libnetlink.c
 +++ b/libnetlink.c
-@@ -425,7 +425,7 @@ int rtnl_listen(struct rtnl_handle *rtnl,
+@@ -432,7 +432,7 @@ int rtnl_listen(struct rtnl_handle *rtnl,
  int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
  		   void *jarg)
  {
@@ -25,7 +25,7 @@ index b1760ba..5546ccb 100644
  	struct sockaddr_nl nladdr;
  	char   buf[8192];
  	struct nlmsghdr *h = (void*)buf;
-@@ -435,18 +435,19 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
+@@ -442,18 +442,19 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
  	nladdr.nl_pid = 0;
  	nladdr.nl_groups = 0;
  
@@ -51,7 +51,7 @@ index b1760ba..5546ccb 100644
  
  		len = h->nlmsg_len;
  		l = len - sizeof(*h);
-@@ -459,12 +460,11 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
+@@ -466,12 +467,11 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
  
  		status = fread(NLMSG_DATA(h), 1, NLMSG_ALIGN(l), rtnl);
  
@@ -69,7 +69,7 @@ index b1760ba..5546ccb 100644
  			return -1;
  		}
  
-@@ -472,6 +472,7 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
+@@ -479,6 +479,7 @@ int rtnl_from_file(FILE *rtnl, rtnl_filter_t handler,
  		if (err < 0)
  			return err;
  	}
@@ -78,5 +78,5 @@ index b1760ba..5546ccb 100644
  
  int addattr32(struct nlmsghdr *n, int maxlen, int type, __u32 data)
 -- 
-2.31.1
+2.37.3
 
