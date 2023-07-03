@@ -1,0 +1,27 @@
+From 28084c052c3d487e97fb16c99b02e2d02607ddd5 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 2 Jul 2023 18:13:27 -0700
+Subject: [PATCH] Remove use of LFS64
+
+---
+ sock.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sock.c b/sock.c
+index 9e04501..3121fb7 100644
+--- a/sock.c
++++ b/sock.c
+@@ -54,8 +54,8 @@ int non_root_clients;
+ static int
+ isfdtype(int fd, int fdtype)
+ {
+-	struct stat64 st;
+-	if (fstat64(fd, &st) != 0)
++	struct stat st;
++	if (fstat(fd, &st) != 0)
+ 		return -1;
+ 	return ((st.st_mode & S_IFMT) == (mode_t)fdtype);
+ }
+-- 
+2.37.3
+
