@@ -23,6 +23,10 @@
 	path = pkg/blind/src
 	url = git://git.suckless.org/blind
 	ignore = all
+[submodule "pkg/bubblewrap/src"]
+	path = pkg/bubblewrap/src
+	url = https://github.com/containers/bubblewrap.git
+	ignore = all
 [submodule "pkg/bzip2/src"]
 	path = pkg/bzip2/src
 	url = git://sourceware.org/git/bzip2.git

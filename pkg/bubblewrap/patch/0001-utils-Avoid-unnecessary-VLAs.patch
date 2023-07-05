@@ -1,0 +1,51 @@
+From f399ecdc5cc4a3d6563b9ea3c8984c3832d655ea Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 4 Jul 2023 10:44:15 -0700
+Subject: [PATCH] utils: Avoid unnecessary VLAs
+
+---
+ utils.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/utils.c b/utils.c
+index 693273b..6845283 100644
+--- a/utils.c
++++ b/utils.c
+@@ -727,15 +727,14 @@ send_pid_on_socket (int socket)
+   char buf[1] = { 0 };
+   struct msghdr msg = {};
+   struct iovec iov = { buf, sizeof (buf) };
+-  const ssize_t control_len_snd = CMSG_SPACE(sizeof(struct ucred));
+-  char control_buf_snd[control_len_snd];
++  char control_buf_snd[CMSG_SPACE(sizeof(struct ucred))];
+   struct cmsghdr *cmsg;
+   struct ucred *cred;
+ 
+   msg.msg_iov = &iov;
+   msg.msg_iovlen = 1;
+   msg.msg_control = control_buf_snd;
+-  msg.msg_controllen = control_len_snd;
++  msg.msg_controllen = sizeof (control_buf_snd);
+ 
+   cmsg = CMSG_FIRSTHDR(&msg);
+   cmsg->cmsg_level = SOL_SOCKET;
+@@ -769,14 +768,13 @@ read_pid_from_socket (int socket)
+   char recv_buf[1] = { 0 };
+   struct msghdr msg = {};
+   struct iovec iov = { recv_buf, sizeof (recv_buf) };
+-  const ssize_t control_len_rcv = CMSG_SPACE(sizeof(struct ucred));
+-  char control_buf_rcv[control_len_rcv];
++  char control_buf_rcv[CMSG_SPACE(sizeof(struct ucred))];
+   struct cmsghdr* cmsg;
+ 
+   msg.msg_iov = &iov;
+   msg.msg_iovlen = 1;
+   msg.msg_control = control_buf_rcv;
+-  msg.msg_controllen = control_len_rcv;
++  msg.msg_controllen = sizeof (control_buf_rcv);
+ 
+   if (recvmsg (socket, &msg, 0) < 0)
+     die_with_error ("Can't read pid from socket");
+-- 
+2.37.3
+

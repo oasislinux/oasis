@@ -1,0 +1,34 @@
+From 94d4083d5e11206676fc2015ff881141c62ad3a3 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 4 Jul 2023 10:47:29 -0700
+Subject: [PATCH] utils: Avoid empty initializer lists
+
+---
+ utils.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/utils.c b/utils.c
+index 6845283..13d42c7 100644
+--- a/utils.c
++++ b/utils.c
+@@ -725,7 +725,7 @@ void
+ send_pid_on_socket (int socket)
+ {
+   char buf[1] = { 0 };
+-  struct msghdr msg = {};
++  struct msghdr msg = { 0 };
+   struct iovec iov = { buf, sizeof (buf) };
+   char control_buf_snd[CMSG_SPACE(sizeof(struct ucred))];
+   struct cmsghdr *cmsg;
+@@ -766,7 +766,7 @@ int
+ read_pid_from_socket (int socket)
+ {
+   char recv_buf[1] = { 0 };
+-  struct msghdr msg = {};
++  struct msghdr msg = { 0 };
+   struct iovec iov = { recv_buf, sizeof (recv_buf) };
+   char control_buf_rcv[CMSG_SPACE(sizeof(struct ucred))];
+   struct cmsghdr* cmsg;
+-- 
+2.37.3
+

@@ -1,0 +1,529 @@
+'\" t
+.\"     Title: bwrap
+.\"    Author: Alexander Larsson
+.\" Generator: DocBook XSL Stylesheets v1.79.2 <http://docbook.sf.net/>
+.\"      Date: 07/04/2023
+.\"    Manual: User Commands
+.\"    Source: Project Atomic
+.\"  Language: English
+.\"
+.TH "BWRAP" "1" "" "Project Atomic" "User Commands"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+bwrap \- container setup utility
+.SH "SYNOPSIS"
+.HP \w'\fBbwrap\fR\ 'u
+\fBbwrap\fR [\fIOPTION\fR...] [\fICOMMAND\fR]
+.SH "DESCRIPTION"
+.PP
+\fBbwrap\fR
+is a privileged helper for container setup\&. You are unlikely to use it directly from the commandline, although that is possible\&.
+.PP
+It works by creating a new, completely empty, filesystem namespace where the root is on a tmpfs that is invisible from the host, and which will be automatically cleaned up when the last process exits\&. You can then use commandline options to construct the root filesystem and process environment for the command to run in the namespace\&.
+.PP
+By default,
+\fBbwrap\fR
+creates a new mount namespace for the sandbox\&. Optionally it also sets up new user, ipc, pid, network and uts namespaces (but note the user namespace is required if bwrap is not installed setuid root)\&. The application in the sandbox can be made to run with a different UID and GID\&.
+.PP
+If needed (e\&.g\&. when using a PID namespace)
+\fBbwrap\fR
+is running a minimal pid 1 process in the sandbox that is responsible for reaping zombies\&. It also detects when the initial application process (pid 2) dies and reports its exit status back to the original spawner\&. The pid 1 process exits to clean up the sandbox when there are no other processes in the sandbox left\&.
+.SH "OPTIONS"
+.PP
+When options are used multiple times, the last option wins, unless otherwise specified\&.
+.PP
+General options:
+.PP
+\fB\-\-help\fR
+.RS 4
+Print help and exit
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Print version
+.RE
+.PP
+\fB\-\-args \fR\fBFD\fR
+.RS 4
+Parse nul\-separated arguments from the given file descriptor\&. This option can be used multiple times to parse options from multiple sources\&.
+.RE
+.PP
+Options related to kernel namespaces:
+.PP
+\fB\-\-unshare\-user\fR
+.RS 4
+Create a new user namespace
+.RE
+.PP
+\fB\-\-unshare\-user\-try\fR
+.RS 4
+Create a new user namespace if possible else skip it
+.RE
+.PP
+\fB\-\-unshare\-ipc\fR
+.RS 4
+Create a new ipc namespace
+.RE
+.PP
+\fB\-\-unshare\-pid\fR
+.RS 4
+Create a new pid namespace
+.RE
+.PP
+\fB\-\-unshare\-net\fR
+.RS 4
+Create a new network namespace
+.RE
+.PP
+\fB\-\-unshare\-uts\fR
+.RS 4
+Create a new uts namespace
+.RE
+.PP
+\fB\-\-unshare\-cgroup\fR
+.RS 4
+Create a new cgroup namespace
+.RE
+.PP
+\fB\-\-unshare\-cgroup\-try\fR
+.RS 4
+Create a new cgroup namespace if possible else skip it
+.RE
+.PP
+\fB\-\-unshare\-all\fR
+.RS 4
+Unshare all possible namespaces\&. Currently equivalent with:
+\fB\-\-unshare\-user\-try\fR
+\fB\-\-unshare\-ipc\fR
+\fB\-\-unshare\-pid\fR
+\fB\-\-unshare\-net\fR
+\fB\-\-unshare\-uts\fR
+\fB\-\-unshare\-cgroup\-try\fR
+.RE
+.PP
+\fB\-\-share\-net\fR
+.RS 4
+Retain the network namespace, overriding an earlier
+\fB\-\-unshare\-all\fR
+or
+\fB\-\-unshare\-net\fR
+.RE
+.PP
+\fB\-\-userns \fR\fBFD\fR
+.RS 4
+Use an existing user namespace instead of creating a new one\&. The namespace must fulfil the permission requirements for setns(), which generally means that it must be a descendant of the currently active user namespace, owned by the same user\&.
+.sp
+This is incompatible with \-\-unshare\-user, and doesn\*(Aqt work in the setuid version of bubblewrap\&.
+.RE
+.PP
+\fB\-\-userns2 \fR\fBFD\fR
+.RS 4
+After setting up the new namespace, switch into the specified namespace\&. For this to work the specified namespace must be a descendant of the user namespace used for the setup, so this is only useful in combination with \-\-userns\&.
+.sp
+This is useful because sometimes bubblewrap itself creates nested user namespaces (to work around some kernel issues) and \-\-userns2 can be used to enter these\&.
+.RE
+.PP
+\fB\-\-disable\-userns\fR
+.RS 4
+Prevent the process in the sandbox from creating further user namespaces, so that it cannot rearrange the filesystem namespace or do other more complex namespace modification\&. This is currently implemented by setting the
+user\&.max_user_namespaces
+sysctl to 1, and then entering a nested user namespace which is unable to raise that limit in the outer namespace\&. This option requires
+\fB\-\-unshare\-user\fR, and doesn\*(Aqt work in the setuid version of bubblewrap\&.
+.RE
+.PP
+\fB\-\-assert\-userns\-disabled\fR
+.RS 4
+Confirm that the process in the sandbox has been prevented from creating further user namespaces, but without taking any particular action to prevent that\&. For example, this can be combined with
+\fB\-\-userns\fR
+to check that the given user namespace has already been set up to prevent the creation of further user namespaces\&.
+.RE
+.PP
+\fB\-\-pidns \fR\fBFD\fR
+.RS 4
+Use an existing pid namespace instead of creating one\&. This is often used with \-\-userns, because the pid namespace must be owned by the same user namespace that bwrap uses\&.
+.sp
+Note that this can be combined with \-\-unshare\-pid, and in that case it means that the sandbox will be in its own pid namespace, which is a child of the passed in one\&.
+.RE
+.PP
+\fB\-\-uid \fR\fBUID\fR
+.RS 4
+Use a custom user id in the sandbox (requires
+\fB\-\-unshare\-user\fR)
+.RE
+.PP
+\fB\-\-gid \fR\fBGID\fR
+.RS 4
+Use a custom group id in the sandbox (requires
+\fB\-\-unshare\-user\fR)
+.RE
+.PP
+\fB\-\-hostname \fR\fBHOSTNAME\fR
+.RS 4
+Use a custom hostname in the sandbox (requires
+\fB\-\-unshare\-uts\fR)
+.RE
+.PP
+Options about environment setup:
+.PP
+\fB\-\-chdir \fR\fBDIR\fR
+.RS 4
+Change directory to
+DIR
+.RE
+.PP
+\fB\-\-setenv \fR\fBVAR\fR\fB \fR\fBVALUE\fR
+.RS 4
+Set an environment variable
+.RE
+.PP
+\fB\-\-unsetenv \fR\fBVAR\fR
+.RS 4
+Unset an environment variable
+.RE
+.PP
+\fB\-\-clearenv\fR
+.RS 4
+Unset all environment variables, except for
+\fBPWD\fR
+and any that are subsequently set by
+\fB\-\-setenv\fR
+.RE
+.PP
+Options for monitoring the sandbox from the outside:
+.PP
+\fB\-\-lock\-file \fR\fBDEST\fR
+.RS 4
+Take a lock on
+DEST
+while the sandbox is running\&. This option can be used multiple times to take locks on multiple files\&.
+.RE
+.PP
+\fB\-\-sync\-fd \fR\fBFD\fR
+.RS 4
+Keep this file descriptor open while the sandbox is running
+.RE
+.PP
+Filesystem related options\&. These are all operations that modify the filesystem directly, or mounts stuff in the filesystem\&. These are applied in the order they are given as arguments\&.
+.PP
+Any missing parent directories that are required to create a specified destination are automatically created as needed\&. Their permissions are normally set to 0755 (rwxr\-xr\-x)\&. However, if a
+\fB\-\-perms\fR
+option is in effect, and it sets the permissions for group or other to zero, then newly\-created parent directories will also have their corresponding permission set to zero\&.
+\fB\-\-size\fR
+modifies the size of the created mount when preceding a
+\fB\-\-tmpfs\fR
+action;
+\fB\-\-perms\fR
+and
+\fB\-\-size\fR
+can be combined\&.
+.PP
+\fB\-\-perms \fR\fBOCTAL\fR
+.RS 4
+This option does nothing on its own, and must be followed by one of the options that it affects\&. It sets the permissions for the next operation to
+OCTAL\&. Subsequent operations are not affected: for example,
+\-\-perms 0700 \-\-tmpfs /a \-\-tmpfs /b
+will mount
+/a
+with permissions 0700, then return to the default permissions for
+/b\&. Note that
+\fB\-\-perms\fR
+and
+\fB\-\-size\fR
+can be combined:
+\-\-perms 0700 \-\-size 10485760 \-\-tmpfs /s
+will apply permissions as well as a maximum size to the created tmpfs\&.
+.RE
+.PP
+\fB\-\-size \fR\fBBYTES\fR
+.RS 4
+This option does nothing on its own, and must be followed by
+\-\-tmpfs\&. It sets the size in bytes for the next tmpfs\&. For example,
+\-\-size 10485760 \-\-tmpfs /tmp
+will create a tmpfs at
+/tmp
+of size 10MiB\&. Subsequent operations are not affected: for example,
+\-\-size 10485760 \-\-tmpfs /a \-\-tmpfs /b
+will mount
+/a
+with size 10MiB, then return to the default size for
+/b\&. Note that
+\fB\-\-perms\fR
+and
+\fB\-\-size\fR
+can be combined:
+\-\-size 10485760 \-\-perms 0700 \-\-tmpfs /s
+will apply permissions as well as a maximum size to the created tmpfs\&.
+.RE
+.PP
+\fB\-\-bind \fR\fBSRC\fR\fB \fR\fBDEST\fR
+.RS 4
+Bind mount the host path
+SRC
+on
+DEST
+.RE
+.PP
+\fB\-\-bind\-try \fR\fBSRC\fR\fB \fR\fBDEST\fR
+.RS 4
+Equal to
+\fB\-\-bind\fR
+but ignores non\-existent
+SRC
+.RE
+.PP
+\fB\-\-dev\-bind \fR\fBSRC\fR\fB \fR\fBDEST\fR
+.RS 4
+Bind mount the host path
+SRC
+on
+DEST, allowing device access
+.RE
+.PP
+\fB\-\-dev\-bind\-try \fR\fBSRC\fR\fB \fR\fBDEST\fR
+.RS 4
+Equal to
+\fB\-\-dev\-bind\fR
+but ignores non\-existent
+SRC
+.RE
+.PP
+\fB\-\-ro\-bind \fR\fBSRC\fR\fB \fR\fBDEST\fR
+.RS 4
+Bind mount the host path
+SRC
+readonly on
+DEST
+.RE
+.PP
+\fB\-\-ro\-bind\-try \fR\fBSRC\fR\fB \fR\fBDEST\fR
+.RS 4
+Equal to
+\fB\-\-ro\-bind\fR
+but ignores non\-existent
+SRC
+.RE
+.PP
+\fB\-\-remount\-ro \fR\fBDEST\fR
+.RS 4
+Remount the path
+DEST
+as readonly\&. It works only on the specified mount point, without changing any other mount point under the specified path
+.RE
+.PP
+\fB\-\-proc \fR\fBDEST\fR
+.RS 4
+Mount procfs on
+DEST
+.RE
+.PP
+\fB\-\-dev \fR\fBDEST\fR
+.RS 4
+Mount new devtmpfs on
+DEST
+.RE
+.PP
+\fB\-\-tmpfs \fR\fBDEST\fR
+.RS 4
+Mount new tmpfs on
+DEST\&. If the previous option was
+\fB\-\-perms\fR, it sets the mode of the tmpfs\&. Otherwise, the tmpfs has mode 0755\&. If the previous option was
+\fB\-\-size\fR, it sets the size in bytes of the tmpfs\&. Otherwise, the tmpfs has the default size\&.
+.RE
+.PP
+\fB\-\-mqueue \fR\fBDEST\fR
+.RS 4
+Mount new mqueue on
+DEST
+.RE
+.PP
+\fB\-\-dir \fR\fBDEST\fR
+.RS 4
+Create a directory at
+DEST\&. If the directory already exists, its permissions are unmodified, ignoring
+\fB\-\-perms\fR
+(use
+\fB\-\-chmod\fR
+if the permissions of an existing directory need to be changed)\&. If the directory is newly created and the previous option was
+\fB\-\-perms\fR, it sets the mode of the directory\&. Otherwise, newly\-created directories have mode 0755\&.
+.RE
+.PP
+\fB\-\-file \fR\fBFD\fR\fB \fR\fBDEST\fR
+.RS 4
+Copy from the file descriptor
+FD
+to
+DEST\&. If the previous option was
+\fB\-\-perms\fR, it sets the mode of the new file\&. Otherwise, the file has mode 0666 (note that this is not the same as
+\fB\-\-bind\-data\fR)\&.
+.RE
+.PP
+\fB\-\-bind\-data \fR\fBFD\fR\fB \fR\fBDEST\fR
+.RS 4
+Copy from the file descriptor
+FD
+to a file which is bind\-mounted on
+DEST\&. If the previous option was
+\fB\-\-perms\fR, it sets the mode of the new file\&. Otherwise, the file has mode 0600 (note that this is not the same as
+\fB\-\-file\fR)\&.
+.RE
+.PP
+\fB\-\-ro\-bind\-data \fR\fBFD\fR\fB \fR\fBDEST\fR
+.RS 4
+Copy from the file descriptor
+FD
+to a file which is bind\-mounted read\-only on
+DEST\&. If the previous option was
+\fB\-\-perms\fR, it sets the mode of the new file\&. Otherwise, the file has mode 0600 (note that this is not the same as
+\fB\-\-file\fR)\&.
+.RE
+.PP
+\fB\-\-symlink \fR\fBSRC\fR\fB \fR\fBDEST\fR
+.RS 4
+Create a symlink at
+DEST
+with target
+SRC
+.RE
+.PP
+\fB\-\-chmod \fR\fBOCTAL\fR\fB \fR\fBPATH\fR
+.RS 4
+Set the permissions of
+PATH, which must already exist, to
+OCTAL\&.
+.RE
+.PP
+Lockdown options:
+.PP
+\fB\-\-seccomp \fR\fBFD\fR
+.RS 4
+Load and use seccomp rules from
+FD\&. The rules need to be in the form of a compiled cBPF program, as generated by seccomp_export_bpf\&. If this option is given more than once, only the last one is used\&. Use
+\fB\-\-add\-seccomp\-fd\fR
+if multiple seccomp programs are needed\&.
+.RE
+.PP
+\fB\-\-add\-seccomp\-fd \fR\fBFD\fR
+.RS 4
+Load and use seccomp rules from
+FD\&. The rules need to be in the form of a compiled cBPF program, as generated by seccomp_export_bpf\&. This option can be repeated, in which case all the seccomp programs will be loaded in the order given (note that the kernel will evaluate them in reverse order, so the last program on the bwrap command\-line is evaluated first)\&. All of them, except possibly the last, must allow use of the PR_SET_SECCOMP prctl\&. This option cannot be combined with
+\fB\-\-seccomp\fR\&.
+.RE
+.PP
+\fB\-\-exec\-label \fR\fBLABEL\fR
+.RS 4
+Exec Label from the sandbox\&. On an SELinux system you can specify the SELinux context for the sandbox process(s)\&.
+.RE
+.PP
+\fB\-\-file\-label \fR\fBLABEL\fR
+.RS 4
+File label for temporary sandbox content\&. On an SELinux system you can specify the SELinux context for the sandbox content\&.
+.RE
+.PP
+\fB\-\-block\-fd \fR\fBFD\fR
+.RS 4
+Block the sandbox on reading from FD until some data is available\&.
+.RE
+.PP
+\fB\-\-userns\-block\-fd \fR\fBFD\fR
+.RS 4
+Do not initialize the user namespace but wait on FD until it is ready\&. This allow external processes (like newuidmap/newgidmap) to setup the user namespace before it is used by the sandbox process\&.
+.RE
+.PP
+\fB\-\-info\-fd \fR\fBFD\fR
+.RS 4
+Write information in JSON format about the sandbox to FD\&.
+.RE
+.PP
+\fB\-\-json\-status\-fd \fR\fBFD\fR
+.RS 4
+Multiple JSON documents are written to
+FD, one per line (\m[blue]\fB"JSON lines" format\fR\m[]\&\s-2\u[1]\d\s+2)\&. Each line is a single JSON object\&. After
+\fBbwrap\fR
+has started the child process inside the sandbox, it writes an object with a
+child\-pid
+member to the
+\fB\-\-json\-status\-fd\fR
+(this duplicates the older
+\fB\-\-info\-fd\fR)\&. The corresponding value is the process ID of the child process in the pid namespace from which
+\fBbwrap\fR
+was run\&. If available, the namespace IDs are also included in the object with the
+child\-pid; again, this duplicates the older
+\fB\-\-info\-fd\fR\&. When the child process inside the sandbox exits,
+\fBbwrap\fR
+writes an object with an exit\-code member, and then closes the
+\fB\-\-json\-status\-fd\fR\&. The value corresponding to
+exit\-code
+is the exit status of the child, in the usual shell encoding (n if it exited normally with status n, or 128+n if it was killed by signal n)\&. Other members may be added to those objects in future versions of
+\fBbwrap\fR, and other JSON objects may be added before or after the current objects, so readers must ignore members and objects that they do not understand\&.
+.RE
+.PP
+\fB\-\-new\-session\fR
+.RS 4
+Create a new terminal session for the sandbox (calls setsid())\&. This disconnects the sandbox from the controlling terminal which means the sandbox can\*(Aqt for instance inject input into the terminal\&.
+.sp
+Note: In a general sandbox, if you don\*(Aqt use \-\-new\-session, it is recommended to use seccomp to disallow the TIOCSTI ioctl, otherwise the application can feed keyboard input to the terminal\&.
+.RE
+.PP
+\fB\-\-die\-with\-parent\fR
+.RS 4
+Ensures child process (COMMAND) dies when bwrap\*(Aqs parent dies\&. Kills (SIGKILL) all bwrap sandbox processes in sequence from parent to child including COMMAND process when bwrap or bwrap\*(Aqs parent dies\&. See prctl, PR_SET_PDEATHSIG\&.
+.RE
+.PP
+\fB\-\-as\-pid\-1\fR
+.RS 4
+Do not create a process with PID=1 in the sandbox to reap child processes\&.
+.RE
+.PP
+\fB\-\-cap\-add \fR\fBCAP\fR
+.RS 4
+Add the specified capability when running as privileged user\&. It accepts the special value ALL to add all the permitted caps\&.
+.RE
+.PP
+\fB\-\-cap\-drop \fR\fBCAP\fR
+.RS 4
+Drop the specified capability when running as privileged user\&. It accepts the special value ALL to drop all the caps\&. By default no caps are left in the sandboxed process\&. The
+\fB\-\-cap\-add\fR
+and
+\fB\-\-cap\-drop\fR
+options are processed in the order they are specified on the command line\&. Please be careful to the order they are specified\&.
+.RE
+.SH "ENVIRONMENT"
+.PP
+\fBHOME\fR
+.RS 4
+Used as the cwd in the sandbox if
+\fB\-\-chdir\fR
+has not been explicitly specified and the current cwd is not present inside the sandbox\&. The
+\fB\-\-setenv\fR
+option can be used to override the value that is used here\&.
+.RE
+.SH "EXIT STATUS"
+.PP
+The
+\fBbwrap\fR
+command returns the exit status of the initial application process (pid 2 in the sandbox)\&.
+.SH "NOTES"
+.IP " 1." 4
+"JSON lines" format
+.RS 4
+\%https://jsonlines.org/
+.RE

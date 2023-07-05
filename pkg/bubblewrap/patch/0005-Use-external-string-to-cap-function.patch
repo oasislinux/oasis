@@ -1,0 +1,74 @@
+From 1939348d3a1e8238464cd4c52743b04fa52ebed1 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 4 Jul 2023 19:20:51 -0700
+Subject: [PATCH] Use external string-to-cap function
+
+---
+ bubblewrap.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/bubblewrap.c b/bubblewrap.c
+index 608009d..71c8bd0 100644
+--- a/bubblewrap.c
++++ b/bubblewrap.c
+@@ -30,8 +30,8 @@
+ #include <sys/eventfd.h>
+ #include <sys/fsuid.h>
+ #include <sys/signalfd.h>
+-#include <sys/capability.h>
+ #include <sys/prctl.h>
++#include <linux/capability.h>
+ #include <linux/sched.h>
+ #include <linux/seccomp.h>
+ #include <linux/filter.h>
+@@ -44,6 +44,9 @@
+ #define CLONE_NEWCGROUP 0x02000000 /* New cgroup namespace */
+ #endif
+ 
++int capset(void *, void *);
++int capget(void *, void *);
++int cap_from_name(const char *);
+ 
+ /* We limit the size of a tmpfs to half the architecture's address space,
+  * to avoid hitting arbitrary limits in the kernel.
+@@ -2358,7 +2361,7 @@ parse_args_recurse (int          *argcp,
+         }
+       else if (strcmp (arg, "--cap-add") == 0)
+         {
+-          cap_value_t cap;
++          int cap;
+           if (argc < 2)
+             die ("--cap-add takes an argument");
+ 
+@@ -2370,7 +2373,8 @@ parse_args_recurse (int          *argcp,
+             }
+           else
+             {
+-              if (cap_from_name (argv[1], &cap) < 0)
++              cap = cap_from_name (argv[1]);
++              if (cap < 0)
+                 die ("unknown cap: %s", argv[1]);
+ 
+               if (cap < 32)
+@@ -2384,7 +2388,7 @@ parse_args_recurse (int          *argcp,
+         }
+       else if (strcmp (arg, "--cap-drop") == 0)
+         {
+-          cap_value_t cap;
++          int cap;
+           if (argc < 2)
+             die ("--cap-drop takes an argument");
+ 
+@@ -2396,7 +2400,8 @@ parse_args_recurse (int          *argcp,
+             }
+           else
+             {
+-              if (cap_from_name (argv[1], &cap) < 0)
++              cap = cap_from_name (argv[1]);
++              if (cap < 0)
+                 die ("unknown cap: %s", argv[1]);
+ 
+               if (cap < 32)
+-- 
+2.37.3
+

@@ -1,0 +1,63 @@
+From 095786df5a2eb12f7996a183a16912cbb8368105 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 4 Jul 2023 19:04:48 -0700
+Subject: [PATCH] Avoid statement expressions for TEMP_FAILURE_RETRY
+
+---
+ bubblewrap.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
+
+diff --git a/bubblewrap.c b/bubblewrap.c
+index ceb4beb..608009d 100644
+--- a/bubblewrap.c
++++ b/bubblewrap.c
+@@ -44,14 +44,6 @@
+ #define CLONE_NEWCGROUP 0x02000000 /* New cgroup namespace */
+ #endif
+ 
+-#ifndef TEMP_FAILURE_RETRY
+-#define TEMP_FAILURE_RETRY(expression) \
+-  (__extension__                                                              \
+-    ({ long int __result;                                                     \
+-       do __result = (long int) (expression);                                 \
+-       while (__result == -1L && errno == EINTR);                             \
+-       __result; }))
+-#endif
+ 
+ /* We limit the size of a tmpfs to half the architecture's address space,
+  * to avoid hitting arbitrary limits in the kernel.
+@@ -467,7 +459,8 @@ report_child_exit_status (int exitc, int setup_finished_fd)
+   if (opt_json_status_fd == -1 || setup_finished_fd == -1)
+     return;
+ 
+-  s = TEMP_FAILURE_RETRY (read (setup_finished_fd, data, sizeof data));
++  do s = read (setup_finished_fd, data, sizeof data);
++  while (s == -1 && errno == EINTR);
+   if (s == -1 && errno != EAGAIN)
+     die_with_error ("read eventfd");
+   if (s != 1) // Is 0 if pipe closed before exec, is 2 if closed after exec.
+@@ -2953,7 +2946,9 @@ main (int    argc,
+       if (opt_userns_block_fd != -1)
+         {
+           char b[1];
+-          (void) TEMP_FAILURE_RETRY (read (opt_userns_block_fd, b, 1));
++          ssize_t s;
++          do s = read (opt_userns_block_fd, b, 1);
++          while (s == -1 && errno == EINTR);
+           close (opt_userns_block_fd);
+         }
+ 
+@@ -3238,7 +3233,9 @@ main (int    argc,
+   if (opt_block_fd != -1)
+     {
+       char b[1];
+-      (void) TEMP_FAILURE_RETRY (read (opt_block_fd, b, 1));
++      ssize_t s;
++      do s = read (opt_block_fd, b, 1);
++      while (s == -1 && errno == EINTR);
+       close (opt_block_fd);
+     }
+ 
+-- 
+2.37.3
+
