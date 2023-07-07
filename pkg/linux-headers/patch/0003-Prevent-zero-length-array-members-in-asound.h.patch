@@ -1,4 +1,4 @@
-From d3ae5dd27d8158e810c093b85dc4c7df88f01c5d Mon Sep 17 00:00:00 2001
+From 4d7aad2421c783cf57f359638197f0ad2a32a287 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 30 Aug 2021 19:26:32 -0700
 Subject: [PATCH] Prevent zero-length array members in asound.h
@@ -8,10 +8,10 @@ Subject: [PATCH] Prevent zero-length array members in asound.h
  1 file changed, 21 insertions(+), 10 deletions(-)
 
 diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index de6810e94abe..a57304e141ff 100644
+index 0aa955aa8246..2e7ca9236c7a 100644
 --- a/include/uapi/sound/asound.h
 +++ b/include/uapi/sound/asound.h
-@@ -545,22 +545,30 @@ struct __snd_pcm_sync_ptr {
+@@ -550,22 +550,30 @@ struct __snd_pcm_sync_ptr {
  	} c;
  };
  
@@ -48,15 +48,16 @@ index de6810e94abe..a57304e141ff 100644
  	struct __snd_timespec64 tstamp;	/* Timestamp */
  	snd_pcm_state_t suspended_state;/* RO: suspended stream state */
  	__u32 pad3;			/* Needed for 64 bit alignment */
-@@ -568,15 +576,18 @@ struct __snd_pcm_mmap_status64 {
+@@ -573,16 +581,19 @@ struct __snd_pcm_mmap_status64 {
  };
  
  struct __snd_pcm_mmap_control64 {
 -	__pad_before_uframe __pad1;
 +	__PAD_BEFORE_UFRAME(__pad1)
  	snd_pcm_uframes_t appl_ptr;	 /* RW: appl ptr (0...boundary-1) */
--	__pad_before_uframe __pad2;
-+	__PAD_BEFORE_UFRAME(__pad2)
+-	__pad_before_uframe __pad2;	 // This should be __pad_after_uframe, but binary
++	__PAD_BEFORE_UFRAME(__pad2)	 // This should be __pad_after_uframe, but binary
+ 					 // backwards compatibility constraints prevent a fix.
  
 -	__pad_before_uframe __pad3;
 +	__PAD_BEFORE_UFRAME(__pad3)
