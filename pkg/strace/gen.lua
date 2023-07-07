@@ -381,8 +381,8 @@ file('bin/strace', '755', '$outdir/strace')
 
 build('sed', '$outdir/strace.1', '$srcdir/doc/strace.1.in', {
 	expr={
-		[[-e 's,@STRACE_MANPAGE_DATE@,2022-08-12,']],
-		[[-e 's,@VERSION@,5.19,']],
+		[[-e 's,@STRACE_MANPAGE_DATE@,2023-06-11,']],
+		[[-e 's,@VERSION@,6.4,']],
 		[[-e 's,@ENABLE_STACKTRACE_TRUE@,#,']],
 		[[-e 's,@ENABLE_STACKTRACE_FALSE@,,']],
 		[[-e 's,@ENABLE_SECONTEXT_TRUE@,#,']],

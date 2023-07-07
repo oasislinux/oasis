@@ -1,4 +1,4 @@
-From 2aed2fd146be2c7b36f1f618accf166c8be109b6 Mon Sep 17 00:00:00 2001
+From d1c93514cb65877134e8f53b189adbcd5a0e1b43 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 30 Jan 2020 22:32:50 -0800
 Subject: [PATCH] Avoid index ranges
@@ -11,7 +11,7 @@ ignore this for now.
  2 files changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/src/print_mac.c b/src/print_mac.c
-index 38a1f57e8..ebcc708a3 100644
+index cad1013a8..73d7bbe28 100644
 --- a/src/print_mac.c
 +++ b/src/print_mac.c
 @@ -17,8 +17,6 @@
@@ -33,10 +33,10 @@ index 38a1f57e8..ebcc708a3 100644
  
  	return sprint_mac_addr(hwaddr, MIN(size, sz));
 diff --git a/src/util.c b/src/util.c
-index 6e513ede0..88f25aa83 100644
+index a3bea5b76..21fb9560f 100644
 --- a/src/util.c
 +++ b/src/util.c
-@@ -1389,16 +1389,16 @@ dumpstr(struct tcb *const tcp, const kernel_ulong_t addr,
+@@ -1477,16 +1477,16 @@ dumpstr(struct tcb *const tcp, const kernel_ulong_t addr,
  		? 1 + ilog2_klong(len - 1) / HEX_BIT : DUMPSTR_OFFS_MIN_CHARS;
  	kernel_ulong_t i = 0;
  	const unsigned char *src;

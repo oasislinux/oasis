@@ -37,6 +37,7 @@ rtc.c
 sg_io_v3.c
 sigaltstack.c
 sock.c
+sysctl.c
 sysinfo.c
 times.c
 ustat.c

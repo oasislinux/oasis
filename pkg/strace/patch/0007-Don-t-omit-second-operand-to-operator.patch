@@ -1,4 +1,4 @@
-From b77a4eb06db5c9ec06dfb8386364a5966bbcb1a8 Mon Sep 17 00:00:00 2001
+From 3b3898e2a370be0489226da973e18176530e267a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -6,15 +6,15 @@ Subject: [PATCH] Don't omit second operand to '?' operator
 ---
  src/kd_ioctl.c | 2 +-
  src/open.c     | 5 +++--
- src/prctl.c    | 9 ++++-----
+ src/prctl.c    | 8 ++++----
  src/strace.c   | 6 +++---
- 4 files changed, 11 insertions(+), 11 deletions(-)
+ 4 files changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/src/kd_ioctl.c b/src/kd_ioctl.c
-index eadc1a457..35a89ffed 100644
+index ada23d536..fddbd38fb 100644
 --- a/src/kd_ioctl.c
 +++ b/src/kd_ioctl.c
-@@ -449,7 +449,7 @@ kd_kbd_str_entry(struct tcb *const tcp, const kernel_ulong_t arg,
+@@ -457,7 +457,7 @@ kd_kbd_str_entry(struct tcb *const tcp, const kernel_ulong_t arg,
  
  	if (print_quoted_string((char *) val.kb_string,
  				MIN(max_strlen,
@@ -24,7 +24,7 @@ index eadc1a457..35a89ffed 100644
  		tprint_more_data_follows();
  
 diff --git a/src/open.c b/src/open.c
-index d7654d7e8..6c5c4a2a5 100644
+index 6356c5831..df59ea999 100644
 --- a/src/open.c
 +++ b/src/open.c
 @@ -88,8 +88,9 @@ sprint_open_modes64(uint64_t flags)
@@ -40,18 +40,10 @@ index d7654d7e8..6c5c4a2a5 100644
  
  const char *
 diff --git a/src/prctl.c b/src/prctl.c
-index 97f42fe15..c0394782b 100644
+index f6b4dd741..951133a83 100644
 --- a/src/prctl.c
 +++ b/src/prctl.c
-@@ -82,7 +82,6 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
- 	kernel_ulong_t vl = arg & PR_SVE_VL_LEN_MASK;
- 	kernel_ulong_t flags = arg & ~PR_SVE_VL_LEN_MASK;
- 
--	if (!flags && aux)
- 		return NULL;
- 
- 	const char *flags_str = sprintflags_ex("", pr_sve_vl_flags, flags, '\0',
-@@ -91,10 +90,10 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
+@@ -92,10 +92,10 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
  	if (!aux && flags && xlat_verbose(xlat_verbosity) == XLAT_STYLE_VERBOSE)
  	{
  		xsprintf(out, "%#" PRI_klx " /* %s%s%#" PRI_klx " */",
@@ -64,7 +56,7 @@ index 97f42fe15..c0394782b 100644
  	}
  
  	return out;
-@@ -127,10 +126,10 @@ sprint_sme_val(kernel_ulong_t arg, bool aux)
+@@ -128,10 +128,10 @@ sprint_sme_val(kernel_ulong_t arg, bool aux)
  	if (!aux && flags && xlat_verbose(xlat_verbosity) == XLAT_STYLE_VERBOSE)
  	{
  		xsprintf(out, "%#" PRI_klx " /* %s%s%#" PRI_klx " */",
@@ -78,10 +70,10 @@ index 97f42fe15..c0394782b 100644
  
  	return out;
 diff --git a/src/strace.c b/src/strace.c
-index cea52bb22..154ee684f 100644
+index 9cd4ff461..4403bd27e 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -2463,7 +2463,7 @@ init(int argc, char *argv[])
+@@ -2494,7 +2494,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -90,7 +82,7 @@ index cea52bb22..154ee684f 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2572,10 +2572,10 @@ init(int argc, char *argv[])
+@@ -2614,10 +2614,10 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
  			break;
  		case GETOPT_QUAL_QUIET:

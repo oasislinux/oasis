@@ -1,4 +1,4 @@
-From 1ea9b617255ce7ae228fa6fec171a0d960ab7e96 Mon Sep 17 00:00:00 2001
+From 463e94867f84bcb4dc85e18cb4304edea90d8659 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
@@ -20,7 +20,7 @@ Subject: [PATCH] Avoid empty initializer lists
  13 files changed, 17 insertions(+), 17 deletions(-)
 
 diff --git a/src/bpf.c b/src/bpf.c
-index 7bdeb4f65..3c6889eb0 100644
+index 1e72f3e30..7a6406687 100644
 --- a/src/bpf.c
 +++ b/src/bpf.c
 @@ -48,7 +48,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
@@ -55,7 +55,7 @@ index 512ee715d..340201aa3 100644
  	print_array(tcp, waiters, nr_futexes, &buf, sizeof(buf),
  		    tfetch_mem, print_waiter, &data);
 diff --git a/src/sched.c b/src/sched.c
-index acd4d32cf..d7de19ada 100644
+index 010366871..2dda5b872 100644
 --- a/src/sched.c
 +++ b/src/sched.c
 @@ -111,7 +111,7 @@ static void
@@ -68,7 +68,7 @@ index acd4d32cf..d7de19ada 100644
  	bool is_set = false;
  
 diff --git a/src/signal.c b/src/signal.c
-index fc13a6613..f7b6e6e49 100644
+index 98f84d500..8680b10fb 100644
 --- a/src/signal.c
 +++ b/src/signal.c
 @@ -257,7 +257,7 @@ print_sigset_addr_len_limit(struct tcb *const tcp, const kernel_ulong_t addr,
@@ -79,12 +79,12 @@ index fc13a6613..f7b6e6e49 100644
 +	int mask[NSIG_BYTES / sizeof(int)] = {0};
  	if (umoven_or_printaddr(tcp, addr, len, mask))
  		return;
- 	tprints(sprintsigmask_n("", mask, len));
+ 	tprints_string(sprintsigmask_n("", mask, len));
 diff --git a/src/strace.c b/src/strace.c
-index 3f5a00a0a..cea52bb22 100644
+index 5752177b7..9cd4ff461 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -3621,7 +3621,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -3693,7 +3693,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -94,7 +94,7 @@ index 3f5a00a0a..cea52bb22 100644
  		if (res != 0) {
  			res = syscall_exiting_trace(tcp, &ts, res);
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index 12ae01545..a821d8057 100644
+index 321d3a25c..442377130 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
 @@ -313,7 +313,7 @@ btrfs_test_subvol_ioctls(void)

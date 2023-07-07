@@ -1,9 +1,10 @@
-From 8ec1f34a8943d175270cbfde3d3a576512e5d2e6 Mon Sep 17 00:00:00 2001
+From cdecbf8aee12f837e878a568814bb81550412b6b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:33:01 -0700
 Subject: [PATCH] Use __typeof__ spelling of typeof
 
 ---
+ src/bpf.c            | 10 +++++-----
  src/btrfs.c          | 12 ++++++------
  src/defs.h           |  6 +++---
  src/fs_0x94_ioctl.c  |  2 +-
@@ -11,14 +12,65 @@ Subject: [PATCH] Use __typeof__ spelling of typeof
  src/landlock.c       |  4 ++--
  src/list.h           | 10 +++++-----
  src/macros.h         |  2 +-
+ src/print_fields.h   |  2 +-
+ src/s390.c           |  6 +++---
  src/tee.c            |  2 +-
  src/ubi.c            |  2 +-
  tests/btrfs.c        |  2 +-
  tests/fcntl-common.c |  2 +-
- 11 files changed, 23 insertions(+), 23 deletions(-)
+ 14 files changed, 32 insertions(+), 32 deletions(-)
 
+diff --git a/src/bpf.c b/src/bpf.c
+index 7bdeb4f65..1e72f3e30 100644
+--- a/src/bpf.c
++++ b/src/bpf.c
+@@ -1432,7 +1432,7 @@ BEGIN_BPF_CMD_DECODER(BPF_LINK_CREATE)
+ 			tprint_struct_next();
+ 			PRINT_FIELD_U(attr, target_btf_id);
+ 		}
+-		attr_size = offsetofend(typeof(attr), target_btf_id);
++		attr_size = offsetofend(__typeof__(attr), target_btf_id);
+ 		break;
+ 
+ 	/* TODO: prog type == BPF_PROG_TYPE_TRACING */
+@@ -1448,7 +1448,7 @@ BEGIN_BPF_CMD_DECODER(BPF_LINK_CREATE)
+ 			    print_iter_info_array_member, 0);
+ 		tprint_struct_next();
+ 		PRINT_FIELD_U(attr, iter_info_len);
+-		attr_size = offsetofend(typeof(attr), iter_info_len);
++		attr_size = offsetofend(__typeof__(attr), iter_info_len);
+ 		break;
+ 	}
+ 
+@@ -1460,7 +1460,7 @@ BEGIN_BPF_CMD_DECODER(BPF_LINK_CREATE)
+ 		tprint_struct_begin();
+ 		PRINT_FIELD_X(attr.perf_event, bpf_cookie);
+ 		tprint_struct_end();
+-		attr_size = offsetofend(typeof(attr), perf_event.bpf_cookie);
++		attr_size = offsetofend(__typeof__(attr), perf_event.bpf_cookie);
+ 		break;
+ 
+ 	/* TODO: prog type == BPF_PROG_TYPE_KPROBE */
+@@ -1500,7 +1500,7 @@ BEGIN_BPF_CMD_DECODER(BPF_LINK_CREATE)
+ 			    &buf.cookie, sizeof(buf.cookie),
+ 			    tfetch_mem, print_xint_array_member, 0);
+ 		tprint_struct_end();
+-		attr_size = offsetofend(typeof(attr), kprobe_multi.cookies);
++		attr_size = offsetofend(__typeof__(attr), kprobe_multi.cookies);
+ 		break;
+ 	}
+ 
+@@ -1510,7 +1510,7 @@ BEGIN_BPF_CMD_DECODER(BPF_LINK_CREATE)
+ 		 *     can pick up non-zero values in the union at the end
+ 		 *     of the link_create struct.
+ 		 */
+-		attr_size = offsetofend(typeof(attr), flags);
++		attr_size = offsetofend(__typeof__(attr), flags);
+ 	}
+ 
+ print_bpf_link_create_end:
 diff --git a/src/btrfs.c b/src/btrfs.c
-index 349fee657..c641d2408 100644
+index 31ee871b3..76d7a2bec 100644
 --- a/src/btrfs.c
 +++ b/src/btrfs.c
 @@ -216,7 +216,7 @@ btrfs_print_logical_ino_container(struct tcb *tcp,
@@ -48,7 +100,7 @@ index 349fee657..c641d2408 100644
  			    inherit.num_qgroups, &record, sizeof(record),
  			    tfetch_mem, print_uint_array_member, 0);
  	}
-@@ -1169,7 +1169,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+@@ -1170,7 +1170,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
  		PRINT_FIELD_OBJ_PTR(args, key,
  				    print_btrfs_ioctl_search_key,
  				    entering(tcp), !abbrev(tcp));
@@ -57,7 +109,7 @@ index 349fee657..c641d2408 100644
  				      sizeof(args.buf), args.key.nr_items);
  		tprint_struct_end();
  		if (entering(tcp))
-@@ -1205,7 +1205,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+@@ -1206,7 +1206,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
  				    entering(tcp), !abbrev(tcp));
  		tprint_struct_next();
  		PRINT_FIELD_U(args, buf_size);
@@ -66,7 +118,7 @@ index 349fee657..c641d2408 100644
  				      args.buf_size, args.key.nr_items);
  		tprint_struct_end();
  		if (entering(tcp))
-@@ -1283,7 +1283,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
+@@ -1284,7 +1284,7 @@ MPERS_PRINTER_DECL(int, btrfs_ioctl,
  			struct btrfs_ioctl_space_info info;
  			tprint_struct_next();
  			tprints_field_name("spaces");
@@ -76,10 +128,10 @@ index 349fee657..c641d2408 100644
  				    &info, sizeof(info), tfetch_mem,
  				    print_btrfs_ioctl_space_info, 0);
 diff --git a/src/defs.h b/src/defs.h
-index 861b667ff..c44935796 100644
+index d6b54a633..d24b11884 100644
 --- a/src/defs.h
 +++ b/src/defs.h
-@@ -1120,7 +1120,7 @@ print_local_array_ex(struct tcb *tcp,
+@@ -1145,7 +1145,7 @@ print_local_array_ex(struct tcb *tcp,
  # define print_local_array_upto(tcp_, start_addr_, upto_, print_func_)	     \
  	print_local_array_ex((tcp_), (start_addr_),			     \
  			     CLAMP((upto_), 0,				     \
@@ -88,7 +140,7 @@ index 861b667ff..c44935796 100644
  			     sizeof((start_addr_)[0]), (print_func_),        \
  			     NULL, 0, NULL, NULL)
  
-@@ -1986,8 +1986,8 @@ scno_pers_is_valid(kernel_ulong_t scno, unsigned int pers)
+@@ -2027,8 +2027,8 @@ scno_pers_is_valid(kernel_ulong_t scno, unsigned int pers)
  
  # define ILOG2_ITER_(val_, ret_, bit_)					\
  	do {								\
@@ -190,7 +242,7 @@ index 4de4cb3be..f4ec11f0e 100644
  
  #endif /* !STRACE_LIST_H */
 diff --git a/src/macros.h b/src/macros.h
-index 659d47191..57a0123b4 100644
+index f22be23c5..184f016b0 100644
 --- a/src/macros.h
 +++ b/src/macros.h
 @@ -62,7 +62,7 @@
@@ -202,8 +254,52 @@ index 659d47191..57a0123b4 100644
  
  # ifndef offsetofend
  #  define offsetofend(type_, member_)	\
+diff --git a/src/print_fields.h b/src/print_fields.h
+index eca389e7e..b97e86377 100644
+--- a/src/print_fields.h
++++ b/src/print_fields.h
+@@ -774,7 +774,7 @@ tprint_sysret_end(void)
+ # define MAYBE_PRINT_FIELD_LEN(print_prefix_, where_, field_,		\
+ 			len_, print_func_, ...)				\
+ 	do {								\
+-		unsigned int start = offsetof(typeof(where_), field_);	\
++		unsigned int start = offsetof(__typeof__(where_), field_); \
+ 		unsigned int end = start + sizeof((where_).field_);	\
+ 		if (len_ > start) {					\
+ 			print_prefix_;					\
+diff --git a/src/s390.c b/src/s390.c
+index ca71730c4..455144fe7 100644
+--- a/src/s390.c
++++ b/src/s390.c
+@@ -505,7 +505,7 @@ static void
+ print_sthyi_machine(struct tcb *tcp, struct sthyi_machine *hdr, uint16_t size,
+ 		    bool *dummy)
+ {
+-	size_t last_decoded = offsetofend(typeof(*hdr), infmpman);
++	size_t last_decoded = offsetofend(__typeof__(*hdr), infmpman);
+ 	int cnt_val, name_val, id_val;
+ 
+ 	CHECK_SIZE_EX(hdr, last_decoded, size, "machine structure");
+@@ -611,7 +611,7 @@ static void
+ print_sthyi_partition(struct tcb *tcp, struct sthyi_partition *hdr,
+ 		      uint16_t size, bool *mt)
+ {
+-	size_t last_decoded = offsetofend(typeof(*hdr), infpabif);
++	size_t last_decoded = offsetofend(__typeof__(*hdr), infpabif);
+ 	int cnt_val, wcap_val, acap_val, id_val, lpar_val;
+ 
+ 	*mt = false;
+@@ -802,7 +802,7 @@ static void
+ print_sthyi_hypervisor(struct tcb *tcp, struct sthyi_hypervisor *hdr,
+ 		       uint16_t size, int num, bool mt)
+ {
+-	size_t last_decoded = offsetofend(typeof(*hdr), infydifl);
++	size_t last_decoded = offsetofend(__typeof__(*hdr), infydifl);
+ 
+ 	CHECK_SIZE_EX(hdr, last_decoded, size, "hypervisor %d structure", num);
+ 
 diff --git a/src/tee.c b/src/tee.c
-index d7e9b15d9..fc735e0da 100644
+index 25f6e76c5..c62566800 100644
 --- a/src/tee.c
 +++ b/src/tee.c
 @@ -33,7 +33,7 @@ struct tee_ioctl_shm_register_fd_data {
@@ -229,7 +325,7 @@ index bd2d2811e..ff9f88cd0 100644
  	tprint_struct_begin();
  	PRINT_FIELD_D(*p, vol_id);
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index 867d93213..12ae01545 100644
+index d8ef87a96..321d3a25c 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
 @@ -876,7 +876,7 @@ btrfs_print_tree_search_buf(struct btrfs_ioctl_search_key *key,

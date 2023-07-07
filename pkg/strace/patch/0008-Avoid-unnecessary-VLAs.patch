@@ -1,4 +1,4 @@
-From ecb0b8b820e7777d3270e1ba48583fcf6ef6e9ed Mon Sep 17 00:00:00 2001
+From a98e58cc36d6df5935dbedd9e1c2947262b8b67c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:58:46 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
@@ -25,10 +25,10 @@ index e4f362787..ad203748b 100644
  		const size_t c = columns[i];
  
 diff --git a/src/nlattr.c b/src/nlattr.c
-index c0563c804..298f6e6da 100644
+index 1fb394d7c..6f2d54979 100644
 --- a/src/nlattr.c
 +++ b/src/nlattr.c
-@@ -355,7 +355,7 @@ decode_nla_hwaddr(struct tcb *const tcp,
+@@ -357,7 +357,7 @@ decode_nla_hwaddr(struct tcb *const tcp,
  	if (len > MAX_ADDR_LEN)
  		return false;
  
@@ -38,7 +38,7 @@ index c0563c804..298f6e6da 100644
  
  	if (!umoven_or_printaddr(tcp, addr, len, buf)) {
 diff --git a/src/socketutils.c b/src/socketutils.c
-index 4994cd6d9..0a3102347 100644
+index d3a3b9283..e0079456f 100644
 --- a/src/socketutils.c
 +++ b/src/socketutils.c
 @@ -133,7 +133,7 @@ inet_parse_response(const void *const data, const int data_len,
@@ -60,7 +60,7 @@ index 4994cd6d9..0a3102347 100644
  		if (!inet_ntop(diag_msg->idiag_family, diag_msg->id.idiag_dst,
  			       dst_buf, text_size))
 diff --git a/src/syscall.c b/src/syscall.c
-index 92aaee092..159a2a511 100644
+index c636ba37c..687d08bc0 100644
 --- a/src/syscall.c
 +++ b/src/syscall.c
 @@ -287,7 +287,7 @@ decode_socket_subcall(struct tcb *tcp)
@@ -73,10 +73,10 @@ index 92aaee092..159a2a511 100644
  	if (umoven(tcp, tcp->u_arg[1], nargs * current_wordsize, buf) < 0)
  		return;
 diff --git a/src/util.c b/src/util.c
-index c4c4bc0ef..6e513ede0 100644
+index a63d80678..a3bea5b76 100644
 --- a/src/util.c
 +++ b/src/util.c
-@@ -571,8 +571,7 @@ enum sock_proto
+@@ -556,8 +556,7 @@ enum sock_proto
  getfdproto(struct tcb *tcp, int fd)
  {
  #ifdef HAVE_SYS_XATTR_H
@@ -86,7 +86,7 @@ index c4c4bc0ef..6e513ede0 100644
  	ssize_t r;
  	char path[sizeof("/proc/%u/fd/%u") + 2 * sizeof(int)*3];
  
-@@ -580,7 +579,7 @@ getfdproto(struct tcb *tcp, int fd)
+@@ -565,7 +564,7 @@ getfdproto(struct tcb *tcp, int fd)
  		return SOCK_PROTO_UNKNOWN;
  
  	xsprintf(path, "/proc/%u/fd/%u", get_proc_pid(tcp->pid), fd);
