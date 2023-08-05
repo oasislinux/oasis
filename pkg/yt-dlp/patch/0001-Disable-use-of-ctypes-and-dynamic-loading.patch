@@ -1,18 +1,18 @@
-From f36143f1158d68838e715882015cde04ddfb1e28 Mon Sep 17 00:00:00 2001
+From 6fb48eadd5d579289dc303aa341490420e5e7d3a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
- yt_dlp/cookies.py | 94 -----------------------------------------------
- yt_dlp/utils.py   | 84 +-----------------------------------------
- 2 files changed, 2 insertions(+), 176 deletions(-)
+ yt_dlp/cookies.py      | 100 -----------------------------------------
+ yt_dlp/utils/_utils.py |  84 +---------------------------------
+ 2 files changed, 2 insertions(+), 182 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index 8ca7cea2c..3d74c63d4 100644
+index 53fe0ec2d..77f12aa4b 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
-@@ -374,8 +374,6 @@ def decrypt(self, encrypted_value):
+@@ -383,8 +383,6 @@ def decrypt(self, encrypted_value):
  def get_cookie_decryptor(browser_root, browser_keyring_name, logger, *, keyring=None):
      if sys.platform == 'darwin':
          return MacChromeCookieDecryptor(browser_keyring_name, logger)
@@ -21,7 +21,7 @@ index 8ca7cea2c..3d74c63d4 100644
      return LinuxChromeCookieDecryptor(browser_keyring_name, logger, keyring=keyring)
  
  
-@@ -445,43 +443,6 @@ def decrypt(self, encrypted_value):
+@@ -471,43 +469,6 @@ def decrypt(self, encrypted_value):
              return encrypted_value
  
  
@@ -41,7 +41,7 @@ index 8ca7cea2c..3d74c63d4 100644
 -                self._logger.warning('cannot decrypt v10 cookies: no key found', only_once=True)
 -                return None
 -
--            # https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/os_crypt_win.cc
+-            # https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/sync/os_crypt_win.cc
 -            #   kNonceLength
 -            nonce_length = 96 // 8
 -            # boringssl
@@ -58,18 +58,22 @@ index 8ca7cea2c..3d74c63d4 100644
 -        else:
 -            self._cookie_counts['other'] += 1
 -            # any other prefix means the data is DPAPI encrypted
--            # https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/os_crypt_win.cc
+-            # https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/sync/os_crypt_win.cc
 -            return _decrypt_windows_dpapi(encrypted_value, self._logger).decode()
 -
 -
  def _extract_safari_cookies(profile, logger):
-     if profile is not None:
-         logger.error('safari does not support profiles')
-@@ -860,27 +821,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
+     if sys.platform != 'darwin':
+         raise ValueError(f'unsupported platform: {sys.platform}')
+@@ -957,33 +918,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
          return None
  
  
 -def _get_windows_v10_key(browser_root, logger):
+-    """
+-    References:
+-        - [1] https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/sync/os_crypt_win.cc
+-    """
 -    path = _find_most_recently_used_file(browser_root, 'Local State', logger)
 -    if path is None:
 -        logger.error('could not find local state file')
@@ -78,11 +82,13 @@ index 8ca7cea2c..3d74c63d4 100644
 -    with open(path, encoding='utf8') as f:
 -        data = json.load(f)
 -    try:
+-        # kOsCryptEncryptedKeyPrefName in [1]
 -        base64_key = data['os_crypt']['encrypted_key']
 -    except KeyError:
 -        logger.error('no encrypted key in Local State')
 -        return None
 -    encrypted_key = base64.b64decode(base64_key)
+-    # kDPAPIKeyPrefix in [1]
 -    prefix = b'DPAPI'
 -    if not encrypted_key.startswith(prefix):
 -        logger.error('invalid key')
@@ -93,7 +99,7 @@ index 8ca7cea2c..3d74c63d4 100644
  def pbkdf2_sha1(password, salt, iterations, key_length):
      return pbkdf2_hmac('sha1', password, salt, iterations, key_length)
  
-@@ -908,40 +848,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
+@@ -1013,40 +947,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
          return None
  
  
@@ -134,11 +140,11 @@ index 8ca7cea2c..3d74c63d4 100644
  def _config_home():
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
-diff --git a/yt_dlp/utils.py b/yt_dlp/utils.py
-index 994239897..3e27de8d0 100644
---- a/yt_dlp/utils.py
-+++ b/yt_dlp/utils.py
-@@ -2088,64 +2088,7 @@ def __init__(self):
+diff --git a/yt_dlp/utils/_utils.py b/yt_dlp/utils/_utils.py
+index 82d9ba4d5..c30e69416 100644
+--- a/yt_dlp/utils/_utils.py
++++ b/yt_dlp/utils/_utils.py
+@@ -1925,64 +1925,7 @@ def __init__(self):
          super().__init__(self.msg)
  
  
@@ -204,7 +210,7 @@ index 994239897..3e27de8d0 100644
      try:
          import fcntl
  
-@@ -2477,30 +2420,7 @@ def fix_xml_ampersands(xml_str):
+@@ -2315,30 +2258,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
