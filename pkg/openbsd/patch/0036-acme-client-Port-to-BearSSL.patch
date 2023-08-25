@@ -1,35 +1,36 @@
-From 288aa9ed695a489087e0e73ea1d257d2d13a487f Mon Sep 17 00:00:00 2001
+From 01e722b50d1f5b56bd1f4a1673d0d812958cc49c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 23:14:16 -0700
 Subject: [PATCH] acme-client: Port to BearSSL
 
 ---
- usr.sbin/acme-client/acctproc.c   | 305 +++++++++------------------
+ usr.sbin/acme-client/acctproc.c   | 299 +++++++++------------------
  usr.sbin/acme-client/certproc.c   |   5 -
- usr.sbin/acme-client/key.c        | 335 ++++++++++++++++++++++++------
+ usr.sbin/acme-client/key.c        | 333 ++++++++++++++++++++++++------
  usr.sbin/acme-client/key.h        |  22 +-
- usr.sbin/acme-client/keyproc.c    | 195 ++++++-----------
- usr.sbin/acme-client/revokeproc.c | 274 ++++++++++--------------
- 6 files changed, 551 insertions(+), 585 deletions(-)
+ usr.sbin/acme-client/keyproc.c    | 198 ++++++------------
+ usr.sbin/acme-client/revokeproc.c | 235 ++++++++++-----------
+ 6 files changed, 558 insertions(+), 534 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index d243258beef..7704f2a5be1 100644
+index 23d8a1c3a33..3d3e32c1a57 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
-@@ -18,72 +18,30 @@
- #include <sys/stat.h>
+@@ -19,74 +19,29 @@
  
  #include <err.h>
-+#include <errno.h>
+ #include <errno.h>
+-#include <limits.h>
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
  #include <unistd.h>
  
--#include <openssl/pem.h>
+-#include <openssl/bn.h>
+-#include <openssl/ec.h>
+-#include <openssl/ecdsa.h>
 -#include <openssl/evp.h>
 -#include <openssl/rsa.h>
--#include <openssl/rand.h>
 -#include <openssl/err.h>
 +#include <bearssl.h>
  
@@ -97,7 +98,7 @@ index d243258beef..7704f2a5be1 100644
  	else if ((json = json_fmt_thumb_rsa(exp, mod)) == NULL)
  		warnx("json_fmt_thumb_rsa");
  
-@@ -97,31 +55,23 @@ op_thumb_rsa(EVP_PKEY *pkey)
+@@ -100,31 +55,23 @@ op_thumb_rsa(EVP_PKEY *pkey)
   * thumbprint from them.
   */
  static char *
@@ -132,14 +133,14 @@ index d243258beef..7704f2a5be1 100644
 +	else if ((y = base64buf_url(key->ec.pk.q + 1 + len, len)) == NULL)
 +		warnx("base64buf_url");
  	else if ((json = json_fmt_thumb_ec(x, y)) == NULL)
- 		warnx("json_fmt_thumb_rsa");
+ 		warnx("json_fmt_thumb_ec");
  
 -	BN_free(X);
 -	BN_free(Y);
  	free(x);
  	free(y);
  	return json;
-@@ -131,27 +81,26 @@ op_thumb_ec(EVP_PKEY *pkey)
+@@ -134,26 +81,26 @@ op_thumb_ec(EVP_PKEY *pkey)
   * The thumbprint operation is used for the challenge sequence.
   */
  static int
@@ -147,8 +148,7 @@ index d243258beef..7704f2a5be1 100644
 +op_thumbprint(int fd, struct key *pkey)
  {
 -	char		*thumb = NULL, *dig64 = NULL;
--	EVP_MD_CTX	*ctx = NULL;
--	unsigned char	*dig = NULL;
+-	unsigned char	 dig[EVP_MAX_MD_SIZE];
 -	unsigned int	 digsz;
 -	int		 rc = 0;
 +	char			*thumb = NULL, *dig64 = NULL;
@@ -176,42 +176,24 @@ index d243258beef..7704f2a5be1 100644
  		goto out;
  	}
  
-@@ -162,22 +111,10 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
+@@ -164,12 +111,10 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
  	 * it up in the read loop).
  	 */
  
--	if ((dig = malloc(EVP_MAX_MD_SIZE)) == NULL) {
--		warn("malloc");
+-	if (!EVP_Digest(thumb, strlen(thumb), dig, &digsz, EVP_sha256(),
+-	    NULL)) {
+-		warnx("EVP_Digest");
 -		goto out;
--	} else if ((ctx = EVP_MD_CTX_new()) == NULL) {
--		warnx("EVP_MD_CTX_new");
--		goto out;
--	} else if (!EVP_DigestInit_ex(ctx, EVP_sha256(), NULL)) {
--		warnx("EVP_SignInit_ex");
--		goto out;
--	} else if (!EVP_DigestUpdate(ctx, thumb, strlen(thumb))) {
--		warnx("EVP_SignUpdate");
--		goto out;
--	} else if (!EVP_DigestFinal_ex(ctx, dig, &digsz)) {
--		warnx("EVP_SignFinal");
--		goto out;
--	} else if ((dig64 = base64buf_url(dig, digsz)) == NULL) {
+-	}
+-	if ((dig64 = base64buf_url(dig, digsz)) == NULL) {
 +	br_sha256_init(&ctx);
 +	br_sha256_update(&ctx, thumb, strlen(thumb));
 +	br_sha256_out(&ctx, dig);
 +	if ((dig64 = base64buf_url(dig, sizeof(dig))) == NULL) {
  		warnx("base64buf_url");
  		goto out;
- 	} else if (writestr(fd, COMM_THUMB, dig64) < 0)
-@@ -185,19 +122,16 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
- 
- 	rc = 1;
- out:
--	EVP_MD_CTX_free(ctx);
- 	free(thumb);
--	free(dig);
- 	free(dig64);
- 	return rc;
+ 	}
+@@ -184,11 +129,10 @@ out:
  }
  
  static int
@@ -224,7 +206,7 @@ index d243258beef..7704f2a5be1 100644
  
  	*prot = NULL;
  
-@@ -206,12 +140,10 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+@@ -197,12 +141,10 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
  	 * Finally, format the header combined with the nonce.
  	 */
  
@@ -241,7 +223,7 @@ index d243258beef..7704f2a5be1 100644
  	else if ((*prot = json_fmt_protected_rsa(exp, mod, nonce, url)) == NULL)
  		warnx("json_fmt_protected_rsa");
  	else
-@@ -223,35 +155,27 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+@@ -214,35 +156,27 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
  }
  
  static int
@@ -287,7 +269,7 @@ index d243258beef..7704f2a5be1 100644
  	free(x);
  	free(y);
  	return rc;
-@@ -262,21 +186,18 @@ op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+@@ -253,20 +187,18 @@ op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
   * This requires the sender ("fd") to provide the payload and a nonce.
   */
  static int
@@ -296,27 +278,27 @@ index d243258beef..7704f2a5be1 100644
  {
 -	EVP_MD_CTX		*ctx = NULL;
 -	const EVP_MD		*evp_md = NULL;
--	EC_KEY			*ec;
 -	ECDSA_SIG		*ec_sig = NULL;
 -	const BIGNUM		*ec_sig_r = NULL, *ec_sig_s = NULL;
+-	int			 bn_len, sign_len, rc = 0;
 +	br_hash_compat_context	 ctx;
- 	int			 cc, rc = 0;
--	unsigned int		 digsz, bufsz, degree, bn_len, r_len, s_len;
++	int			 sign_len, rc = 0;
 +	unsigned int		 digsz, sigsz;
  	char			*nonce = NULL, *pay = NULL, *pay64 = NULL;
  	char			*prot = NULL, *prot64 = NULL;
 -	char			*sign = NULL, *dig64 = NULL, *fin = NULL;
 +	char			*sign = NULL, *sig64 = NULL, *fin = NULL;
  	char			*url = NULL, *kid = NULL, *alg = NULL;
--	unsigned char		*dig = NULL, *buf = NULL;
 -	const unsigned char	*digp;
+-	unsigned char		*dig = NULL, *buf = NULL;
+-	size_t			 digsz;
 +	unsigned char		 dig[64];
 +	unsigned char		*sig = NULL;
 +	const unsigned char	*oid = NULL;
  
  	/* Read our payload and nonce from the requestor. */
  
-@@ -293,19 +214,22 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -283,19 +215,22 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* Base64-encode the payload. */
  
@@ -345,7 +327,7 @@ index d243258beef..7704f2a5be1 100644
  		break;
  	default:
  		warnx("unknown account key type");
-@@ -319,17 +243,17 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -309,17 +244,17 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  			goto out;
  		}
  	} else {
@@ -369,36 +351,36 @@ index d243258beef..7704f2a5be1 100644
  			goto out;
  		}
  	}
-@@ -350,7 +274,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
- 		goto out;
- 	}
+@@ -342,76 +277,34 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
--	if ((dig = malloc(EVP_PKEY_size(pkey))) == NULL) {
-+	if ((sig = malloc(sigsz)) == NULL) {
- 		warn("malloc");
- 		goto out;
- 	}
-@@ -360,69 +284,29 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
- 	 * sign a SHA256 digest of our message.
- 	 */
+ 	/* Sign the message. */
  
 -	if ((ctx = EVP_MD_CTX_new()) == NULL) {
 -		warnx("EVP_MD_CTX_new");
 -		goto out;
--	} else if (!EVP_SignInit_ex(ctx, evp_md, NULL)) {
--		warnx("EVP_SignInit_ex");
--		goto out;
--	} else if (!EVP_SignUpdate(ctx, sign, strlen(sign))) {
--		warnx("EVP_SignUpdate");
--		goto out;
--	} else if (!EVP_SignFinal(ctx, dig, &digsz, pkey)) {
--		warnx("EVP_SignFinal");
+-	}
+-	if (!EVP_DigestSignInit(ctx, NULL, evp_md, NULL, pkey)) {
+-		warnx("EVP_DigestSignInit");
 -		goto out;
 -	}
+-	if (!EVP_DigestSign(ctx, NULL, &digsz, sign, sign_len)) {
+-		warnx("EVP_DigestSign");
+-		goto out;
+-	}
+-	if ((dig = malloc(digsz)) == NULL) {
 +	ctx.vtable->init(&ctx.vtable);
-+	ctx.vtable->update(&ctx.vtable, sign, strlen(sign));
++	ctx.vtable->update(&ctx.vtable, sign, sign_len);
 +	ctx.vtable->out(&ctx.vtable, dig);
 +	digsz = ctx.vtable->desc >> BR_HASHDESC_OUT_OFF & BR_HASHDESC_OUT_MASK;
++
++	if ((sig = malloc(sigsz)) == NULL) {
+ 		warn("malloc");
+ 		goto out;
+ 	}
+-	if (!EVP_DigestSign(ctx, dig, &digsz, sign, sign_len)) {
+-		warnx("EVP_DigestSign");
+-		goto out;
+-	}
  
 -	switch (EVP_PKEY_base_id(pkey)) {
 -	case EVP_PKEY_RSA:
@@ -413,41 +395,14 @@ index d243258beef..7704f2a5be1 100644
  		}
  		break;
 -	case EVP_PKEY_EC:
--		if ((ec = EVP_PKEY_get0_EC_KEY(pkey)) == NULL) {
--			warnx("EVP_PKEY_get0_EC_KEY");
+-		if (digsz > LONG_MAX) {
+-			warnx("EC signature too long");
 -			goto out;
 -		}
--		degree = EC_GROUP_get_degree(EC_KEY_get0_group(ec));
--		bn_len = (degree + 7) / 8;
 -
--		digp = dig; /* d2i_ECDSA_SIG advances digp */
+-		digp = dig;
 -		if ((ec_sig = d2i_ECDSA_SIG(NULL, &digp, digsz)) == NULL) {
 -			warnx("d2i_ECDSA_SIG");
--			goto out;
--		}
--
--		ECDSA_SIG_get0(ec_sig, &ec_sig_r, &ec_sig_s);
--
--		r_len = BN_num_bytes(ec_sig_r);
--		s_len = BN_num_bytes(ec_sig_s);
--
--		if((r_len > bn_len) || (s_len > bn_len)) {
--			warnx("ECDSA_SIG_get0");
--			goto out;
--		}
--
--		bufsz = 2 * bn_len;
--		if ((buf = calloc(1, bufsz)) == NULL) {
--			warnx("calloc");
--			goto out;
--		}
--
--		/* put r and s in with leading zeros if any */
--		BN_bn2bin(ec_sig_r, buf + bn_len - r_len);
--		BN_bn2bin(ec_sig_s, buf + bufsz - s_len);
--
--		if ((dig64 = base64buf_url(buf, bufsz)) == NULL) {
--			warnx("base64buf_url");
 +	case BR_KEYTYPE_EC:
 +		sigsz = br_ecdsa_sign_raw_get_default()(br_ec_get_default(),
 +		    ctx.vtable, dig, &key->ec.sk, sig);
@@ -456,6 +411,33 @@ index d243258beef..7704f2a5be1 100644
  			goto out;
  		}
 -
+-		if ((ec_sig_r = ECDSA_SIG_get0_r(ec_sig)) == NULL ||
+-		    (ec_sig_s = ECDSA_SIG_get0_s(ec_sig)) == NULL) {
+-			warnx("ECDSA_SIG_get0");
+-			goto out;
+-		}
+-
+-		if ((bn_len = (EVP_PKEY_bits(pkey) + 7) / 8) <= 0) {
+-			warnx("EVP_PKEY_bits");
+-			goto out;
+-		}
+-
+-		if ((buf = calloc(2, bn_len)) == NULL) {
+-			warnx("calloc");
+-			goto out;
+-		}
+-
+-		if (BN_bn2binpad(ec_sig_r, buf, bn_len) != bn_len ||
+-		    BN_bn2binpad(ec_sig_s, buf + bn_len, bn_len) != bn_len) {
+-			warnx("BN_bn2binpad");
+-			goto out;
+-		}
+-
+-		if ((dig64 = base64buf_url(buf, 2 * bn_len)) == NULL) {
+-			warnx("base64buf_url");
+-			goto out;
+-		}
+-
  		break;
  	default:
 -		warnx("EVP_PKEY_base_id");
@@ -463,7 +445,7 @@ index d243258beef..7704f2a5be1 100644
  		goto out;
  	}
  
-@@ -432,7 +316,11 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -421,7 +314,11 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  	 * when we next enter the read loop).
  	 */
  
@@ -476,15 +458,16 @@ index d243258beef..7704f2a5be1 100644
  		warnx("json_fmt_signed");
  		goto out;
  	} else if (writestr(fd, COMM_REQ, fin) < 0)
-@@ -440,7 +328,6 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -429,8 +326,6 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	rc = 1;
  out:
+-	ECDSA_SIG_free(ec_sig);
 -	EVP_MD_CTX_free(ctx);
  	free(pay);
  	free(sign);
  	free(pay64);
-@@ -449,10 +336,9 @@ out:
+@@ -439,10 +334,9 @@ out:
  	free(kid);
  	free(prot);
  	free(prot64);
@@ -497,7 +480,7 @@ index d243258beef..7704f2a5be1 100644
  	return rc;
  }
  
-@@ -460,7 +346,7 @@ int
+@@ -450,7 +344,7 @@ int
  acctproc(int netsock, const char *acctkey, enum keytype keytype)
  {
  	FILE		*f = NULL;
@@ -506,7 +489,7 @@ index d243258beef..7704f2a5be1 100644
  	long		 lval;
  	enum acctop	 op;
  	int		 rc = 0, cc, newacct = 0;
-@@ -486,8 +372,6 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype)
+@@ -476,8 +370,6 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype)
  
  	/* File-system, user, and sandbox jailing. */
  
@@ -515,7 +498,7 @@ index d243258beef..7704f2a5be1 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -565,8 +449,7 @@ out:
+@@ -555,8 +447,7 @@ out:
  	close(netsock);
  	if (f != NULL)
  		fclose(f);
@@ -543,7 +526,7 @@ index f443d573675..85c3897a4b8 100644
  
  #define BEGIN_MARKER "-----BEGIN CERTIFICATE-----"
 diff --git a/usr.sbin/acme-client/key.c b/usr.sbin/acme-client/key.c
-index c3374914547..c9dc9b10b45 100644
+index a6fc437f863..c0e54b15742 100644
 --- a/usr.sbin/acme-client/key.c
 +++ b/usr.sbin/acme-client/key.c
 @@ -17,15 +17,11 @@
@@ -564,13 +547,10 @@ index c3374914547..c9dc9b10b45 100644
  
  #include "key.h"
  
-@@ -33,113 +29,320 @@
-  * Default number of bits when creating a new RSA key.
+@@ -34,111 +30,318 @@
   */
  #define	KBITS 4096
--#define ECCTYPE NID_secp384r1
-+#define ECCTYPE BR_EC_secp384r1
-+
+ 
 +static void
 +prng_init(const br_prng_class **ctx, const void *params, const void *seed, size_t len)
 +{
@@ -590,7 +570,7 @@ index c3374914547..c9dc9b10b45 100644
 +static const br_prng_class prng_class = {
 +	0, prng_init, prng_generate, prng_update
 +}, *prng = &prng_class;
- 
++
  /*
   * Create an RSA key with the default KBITS number of bits.
   */
@@ -691,7 +671,7 @@ index c3374914547..c9dc9b10b45 100644
 +	unsigned char		*der = NULL, *pem = NULL;
 +	size_t			 derlen, pemlen;
  
--	if ((eckey = EC_KEY_new_by_curve_name(ECCTYPE)) == NULL ) {
+-	if ((eckey = EC_KEY_new_by_curve_name(NID_secp384r1)) == NULL ) {
 -		warnx("EC_KEY_new_by_curve_name");
 +	slen = BR_EC_KBUF_PRIV_MAX_SIZE;
 +	plen = BR_EC_KBUF_PUB_MAX_SIZE;
@@ -707,7 +687,7 @@ index c3374914547..c9dc9b10b45 100644
 -	if (!EC_KEY_generate_key(eckey)) {
 -		warnx("EC_KEY_generate_key");
 +	ec = br_ec_get_default();
-+	if (br_ec_keygen(&prng, ec, &key->ec.sk, sbuf, ECCTYPE) == 0) {
++	if (br_ec_keygen(&prng, ec, &key->ec.sk, sbuf, BR_EC_secp384r1) == 0) {
 +		warnx("br_ec_keygen");
  		goto err;
  	}
@@ -978,7 +958,7 @@ index 272d36eb09a..12abdec813c 100644
  
  #endif /* ! KEY_H */
 diff --git a/usr.sbin/acme-client/keyproc.c b/usr.sbin/acme-client/keyproc.c
-index 5fba077b7e4..25e676e7829 100644
+index f0df9f292d4..fc7de74b616 100644
 --- a/usr.sbin/acme-client/keyproc.c
 +++ b/usr.sbin/acme-client/keyproc.c
 @@ -18,55 +18,18 @@
@@ -1082,15 +1062,18 @@ index 5fba077b7e4..25e676e7829 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -145,99 +108,61 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+@@ -145,102 +108,61 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
  	 * Then set it as the X509 requester's key.
  	 */
  
 -	if ((x = X509_REQ_new()) == NULL) {
--		warnx("X509_new");
+-		warnx("X509_REQ_new");
+-		goto out;
+-	} else if (!X509_REQ_set_version(x, 0)) {
+-		warnx("X509_REQ_set_version");
 -		goto out;
 -	} else if (!X509_REQ_set_pubkey(x, pkey)) {
--		warnx("X509_set_pubkey");
+-		warnx("X509_REQ_set_pubkey");
 -		goto out;
 +	req.pkey.key_type = pkey->type;
 +	skey.type = pkey->type;
@@ -1203,7 +1186,7 @@ index 5fba077b7e4..25e676e7829 100644
 +	 * DER then base64. */
  
 -	if ((len = i2d_X509_REQ(x, NULL)) < 0) {
--		warnx("i2d_X509");
+-		warnx("i2d_X509_REQ");
 +	item.enc = x509cert_req_encoder;
 +	item.val = &req;
 +	if ((len = x509cert_sign(&item, &skey, &br_sha256_vtable, NULL)) == 0) {
@@ -1214,13 +1197,13 @@ index 5fba077b7e4..25e676e7829 100644
  		warn("malloc");
  		goto out;
 -	} else if (len != i2d_X509_REQ(x, &dercp)) {
--		warnx("i2d_X509");
+-		warnx("i2d_X509_REQ");
 +	} else if ((len = x509cert_sign(&item, &skey, &br_sha256_vtable, der)) == 0) {
 +		warnx("x509cert_sign");
  		goto out;
  	} else if ((der64 = base64buf_url(der, len)) == NULL) {
  		warnx("base64buf_url");
-@@ -262,12 +187,8 @@ out:
+@@ -265,12 +187,8 @@ out:
  		fclose(f);
  	free(der);
  	free(der64);
@@ -1237,15 +1220,16 @@ index 5fba077b7e4..25e676e7829 100644
  	return rc;
  }
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index c6c012dd9c1..337bcfd8900 100644
+index 58e81233f1a..6d0f2b39d02 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
-@@ -22,93 +22,53 @@
+@@ -22,58 +22,54 @@
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
 +#include <time.h>
  #include <unistd.h>
+ #include <vis.h>
  
 -#include <openssl/pem.h>
 -#include <openssl/x509.h>
@@ -1258,11 +1242,7 @@ index c6c012dd9c1..337bcfd8900 100644
  #define	RENEW_ALLOW (30 * 24 * 60 * 60)
  
 -/*
-- * Convert the X509's expiration time (which is in ASN1_TIME format)
-- * into a time_t value.
-- * There are lots of suggestions on the Internet on how to do this and
-- * they're really, really unsafe.
-- * Adapt those poor solutions to a safe one.
+- * Convert the X509's expiration time into a time_t value.
 - */
 -static time_t
 -X509expires(X509 *x)
@@ -1271,33 +1251,17 @@ index c6c012dd9c1..337bcfd8900 100644
  {
 -	ASN1_TIME	*atim;
 -	struct tm	 t;
--	unsigned char	*str;
--	size_t		 i = 0;
 -
--	atim = X509_get_notAfter(x);
--	str = atim->data;
+-	if ((atim = X509_getm_notAfter(x)) == NULL) {
+-		warnx("missing notAfter");
+-		return -1;
+-	}
+-
 -	memset(&t, 0, sizeof(t));
 -
--	/* Account for 2 and 4-digit time. */
--
--	if (atim->type == V_ASN1_UTCTIME) {
--		if (atim->length <= 2) {
--			warnx("invalid ASN1_TIME");
--			return (time_t)-1;
--		}
--		t.tm_year = (str[0] - '0') * 10 + (str[1] - '0');
--		if (t.tm_year < 70)
--			t.tm_year += 100;
--		i = 2;
--	} else if (atim->type == V_ASN1_GENERALIZEDTIME) {
--		if (atim->length <= 4) {
--			warnx("invalid ASN1_TIME");
--			return (time_t)-1;
--		}
--		t.tm_year = (str[0] - '0') * 1000 + (str[1] - '0') * 100 +
--		    (str[2] - '0') * 10 + (str[3] - '0');
--		t.tm_year -= 1900;
--		i = 4;
+-	if (!ASN1_TIME_to_tm(atim, &t)) {
+-		warnx("invalid ASN1_TIME");
+-		return -1;
 +	br_x509_certificate *cert = ctx;
 +	size_t newlen;
 +	unsigned char *newdata;
@@ -1314,32 +1278,19 @@ index c6c012dd9c1..337bcfd8900 100644
 +		cert->data_len = -1;
  	}
 -
--	/* Now the post-year parts. */
--
--	if (atim->length <= (int)i + 10) {
--		warnx("invalid ASN1_TIME");
--		return (time_t)-1;
--	}
--
--	t.tm_mon = ((str[i + 0] - '0') * 10 + (str[i + 1] - '0')) - 1;
--	t.tm_mday = (str[i + 2] - '0') * 10 + (str[i + 3] - '0');
--	t.tm_hour = (str[i + 4] - '0') * 10 + (str[i + 5] - '0');
--	t.tm_min  = (str[i + 6] - '0') * 10 + (str[i + 7] - '0');
--	t.tm_sec  = (str[i + 8] - '0') * 10 + (str[i + 9] - '0');
--
--	return mktime(&t);
+-	return timegm(&t);
  }
  
  int
  revokeproc(int fd, const char *certfile, int force,
      int revocate, const char *const *alts, size_t altsz)
  {
+-	GENERAL_NAMES			*sans = NULL;
 -	unsigned char			*der = NULL, *dercp;
 -	char				*der64 = NULL;
 -	char				*san = NULL, *str, *tok;
--	int				 rc = 0, cc, i, ssz, len;
+-	int				 rc = 0, cc, i, len;
 -	size_t				*found = NULL;
--	BIO				*bio = NULL;
 +	static const unsigned char	 dnsname[] = {0, 2};
 +	char				 buf[8192], *pos, *sans = NULL, *der64 = NULL;
 +	int				 rc = 0, cc, state, err;
@@ -1355,14 +1306,11 @@ index c6c012dd9c1..337bcfd8900 100644
  	long				 lval;
  	enum revokeop			 op, rop;
  	time_t				 t;
--	const STACK_OF(X509_EXTENSION)	*exts;
--	X509_EXTENSION			*ex;
--	ASN1_OBJECT			*obj;
 -	size_t				 j;
  
  	/*
  	 * First try to open the certificate before we drop privileges
-@@ -123,8 +83,6 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -88,8 +84,6 @@ revokeproc(int fd, const char *certfile, int force,
  
  	/* File-system and sandbox jailing. */
  
@@ -1371,7 +1319,7 @@ index c6c012dd9c1..337bcfd8900 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -148,17 +106,54 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -113,39 +107,84 @@ revokeproc(int fd, const char *certfile, int force,
  		goto out;
  	}
  
@@ -1413,12 +1361,18 @@ index c6c012dd9c1..337bcfd8900 100644
 +			goto out;
 +		}
  	}
+-
+-	/* Cache and sanity check X509v3 extensions. */
+-
+-	if (X509_check_purpose(x, -1, -1) <= 0) {
+-		warnx("%s: invalid X509v3 extensions", certfile);
 +	if (cert.data_len == -1)
-+		goto out;
+ 		goto out;
+-	}
  
  	/* Read out the expiration date. */
  
--	if ((t = X509expires(x)) == (time_t)-1) {
+-	if ((t = X509expires(x)) == -1) {
 -		warnx("X509expires");
 +	br_x509_decoder_init(&xd, NULL, NULL);
 +	br_x509_decoder_push(&xd, cert.data, cert.data_len);
@@ -1429,58 +1383,19 @@ index c6c012dd9c1..337bcfd8900 100644
 +	br_x509_decoder_get_notafter(&xd, &days, &secs);
 +	t = 86400ll * (days - 719528) + 86400;
  
- 	/*
- 	 * Next, the long process to make sure that the SAN entries
-@@ -166,100 +161,66 @@ revokeproc(int fd, const char *certfile, int force,
- 	 * command line.
- 	 */
- 
--	exts = X509_get0_extensions(x);
+-	/* Extract list of SAN entries from the certificate. */
 -
--	/* Scan til we find the SAN NID. */
--
--	for (i = 0; i < sk_X509_EXTENSION_num(exts); i++) {
--		ex = sk_X509_EXTENSION_value(exts, i);
--		assert(ex != NULL);
--		obj = X509_EXTENSION_get_object(ex);
--		assert(obj != NULL);
--		if (NID_subject_alt_name != OBJ_obj2nid(obj))
--			continue;
--
--		if (san != NULL) {
--			warnx("%s: two SAN entries", certfile);
--			goto out;
--		}
--
--		bio = BIO_new(BIO_s_mem());
--		if (bio == NULL) {
--			warnx("BIO_new");
--			goto out;
--		}
--		if (!X509V3_EXT_print(bio, ex, 0, 0)) {
--			warnx("X509V3_EXT_print");
--			goto out;
--		}
--		if ((san = calloc(1, BIO_number_written(bio) + 1)) == NULL) {
--			warn("calloc");
--			goto out;
--		}
--		ssz = BIO_read(bio, san, BIO_number_written(bio));
--		if (ssz < 0 || (unsigned)ssz != BIO_number_written(bio)) {
--			warnx("BIO_read");
--			goto out;
--		}
-+	for (i = 0, altmax = 0; i < altsz; ++i) {
-+		altlen = strlen(alts[i]) + 1;
-+		if (altlen > altmax)
-+			altmax = altlen;
- 	}
--
--	if (san == NULL) {
+-	sans = X509_get_ext_d2i(x, NID_subject_alt_name, NULL, NULL);
+-	if (sans == NULL) {
 -		warnx("%s: does not have a SAN entry", certfile);
 -		if (revocate)
 -			goto out;
 -		force = 2;
++	for (i = 0, altmax = 0; i < altsz; ++i) {
++		altlen = strlen(alts[i]) + 1;
++		if (altlen > altmax)
++			altmax = altlen;
++	}
 +	eltsz = altsz + 1;
 +	if ((elts = calloc(eltsz, sizeof(elts[0]))) == NULL ||
 +	    (sans = calloc(eltsz, altmax)) == NULL) {
@@ -1494,7 +1409,8 @@ index c6c012dd9c1..337bcfd8900 100644
  	}
  
 -	/* An array of buckets: the number of entries found. */
--
++	/* Extract list of SAN entries from the certificate. */
+ 
 -	if ((found = calloc(altsz, sizeof(size_t))) == NULL) {
 -		warn("calloc");
 +	br_x509_minimal_init(&xc, &br_sha256_vtable, NULL, 0);
@@ -1510,46 +1426,63 @@ index c6c012dd9c1..337bcfd8900 100644
  		goto out;
  	}
  
- 	/*
--	 * Parse the SAN line.
- 	 * Make sure that all of the domains are represented only once.
+@@ -154,63 +193,37 @@ revokeproc(int fd, const char *certfile, int force,
+ 	 * configuration file and that all domains are represented only once.
  	 */
  
--	str = san;
--	while ((tok = strsep(&str, ",")) != NULL) {
--		if (*tok == '\0')
+-	for (i = 0; i < sk_GENERAL_NAME_num(sans); i++) {
+-		GENERAL_NAME		*gen_name;
+-		const ASN1_IA5STRING	*name;
+-		const unsigned char	*name_buf;
+-		int			 name_len;
+-		int			 name_type;
+-
+-		gen_name = sk_GENERAL_NAME_value(sans, i);
+-		assert(gen_name != NULL);
+-
+-		name = GENERAL_NAME_get0_value(gen_name, &name_type);
+-		if (name_type != GEN_DNS)
 -			continue;
--		while (isspace((int)*tok))
--			tok++;
--		if (strncmp(tok, "DNS:", 4))
--			continue;
--		tok += 4;
--		for (j = 0; j < altsz; j++)
--			if (strcmp(tok, alts[j]) == 0)
-+	for (i = 0; i < altsz; ++i) {
-+		for (j = 0; j < eltsz; ++j) {
+-
+-		/* name_buf isn't a C string and could contain embedded NULs. */
+-		name_buf = ASN1_STRING_get0_data(name);
+-		name_len = ASN1_STRING_length(name);
+-
+-		for (j = 0; j < altsz; j++) {
+-			if ((size_t)name_len != strlen(alts[j]))
+-				continue;
+-			if (memcmp(name_buf, alts[j], name_len) == 0)
++	for (i = 0; i < altsz; i++) {
++		for (j = 0; j < eltsz; j++) {
 +			if (elts[j].status == 1 &&
 +			    strcmp(alts[i], elts[j].buf) == 0) {
 +				elts[j].status = 0;
  				break;
+-		}
 -		if (j == altsz) {
-+			}
-+		}
-+		if (j == eltsz) {
- 			if (revocate) {
--				warnx("%s: unknown SAN entry: %s", certfile, tok);
-+				warnx("%s: domain not listed: %s", certfile, alts[i]);
- 				goto out;
+-			if (revocate) {
+-				char *visbuf;
+-
+-				visbuf = calloc(4, name_len + 1);
+-				if (visbuf == NULL) {
+-					warn("%s: unexpected SAN", certfile);
+-					goto out;
+-				}
+-				strvisx(visbuf, name_buf, name_len, VIS_SAFE);
+-				warnx("%s: unexpected SAN entry: %s",
+-				    certfile, visbuf);
+-				free(visbuf);
+-				goto out;
  			}
- 			force = 2;
+-			force = 2;
+-			continue;
  		}
 -		if (found[j]++) {
-+	}
-+	for (i = 0; i < eltsz; ++i) {
-+		if (elts[i].status != 0) {
++		if (j == eltsz) {
  			if (revocate) {
--				warnx("%s: duplicate SAN entry: %s", certfile, tok);
-+				warnx("%s: unknown SAN entry: %s", certfile, elts[i].buf);
+-				warnx("%s: duplicate SAN entry: %.*s",
+-				    certfile, name_len, name_buf);
++				warnx("%s: domain not listed: %s", certfile, alts[i]);
  				goto out;
  			}
  			force = 2;
@@ -1558,18 +1491,25 @@ index c6c012dd9c1..337bcfd8900 100644
  
 -	for (j = 0; j < altsz; j++) {
 -		if (found[j])
--			continue;
--		if (revocate) {
++	for (i = 0; i < eltsz; i++) {
++		if (elts[i].status == 0)
+ 			continue;
+ 		if (revocate) {
 -			warnx("%s: domain not listed: %s", certfile, alts[j]);
--			goto out;
--		}
--		force = 2;
--	}
--
- 	/*
- 	 * If we're going to revoke, write the certificate to the
- 	 * netproc in DER and base64-encoded format.
-@@ -280,16 +241,7 @@ revokeproc(int fd, const char *certfile, int force,
++			char *visbuf;
++
++			if (elts[i].status != 1 ||
++			    stravis(&visbuf, elts[i].buf, VIS_SAFE) < 0) {
++				warnx("%s: unexpected SAN", certfile);
++				goto out;
++			}
++			warnx("%s: unexpected SAN entry: %s",
++			    certfile, visbuf);
++			free(visbuf);
+ 			goto out;
+ 		}
+ 		force = 2;
+@@ -236,16 +249,7 @@ revokeproc(int fd, const char *certfile, int force,
  		if (cc <= 0)
  			goto out;
  
@@ -1587,13 +1527,12 @@ index c6c012dd9c1..337bcfd8900 100644
  			warnx("base64buf_url");
  			goto out;
  		} else if (writestr(fd, COMM_CSR, der64) >= 0)
-@@ -342,13 +294,9 @@ out:
+@@ -298,12 +302,9 @@ out:
  	close(fd);
  	if (f != NULL)
  		fclose(f);
 -	X509_free(x);
--	BIO_free(bio);
--	free(san);
+-	GENERAL_NAMES_free(sans);
 -	free(der);
 -	free(found);
 +	free(cert.data);
@@ -1605,5 +1544,5 @@ index c6c012dd9c1..337bcfd8900 100644
  	return rc;
  }
 -- 
-2.35.1
+2.37.3
 

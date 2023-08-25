@@ -1,4 +1,4 @@
-From 391a9687a9bde37d10645f0b69f7502635b026cc Mon Sep 17 00:00:00 2001
+From 8fa1e97f6927bf1afddb5923fff3d29c3389817d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -36,7 +36,7 @@ login.conf with per-user default PATH.
  create mode 100644 usr.bin/doas/persist.c
 
 diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
-index 4d2e09777c8..a91705e8e3f 100644
+index 25827cc7104..3542680faf5 100644
 --- a/usr.bin/doas/doas.1
 +++ b/usr.bin/doas/doas.1
 @@ -22,7 +22,6 @@
@@ -63,7 +63,7 @@ index 4d2e09777c8..a91705e8e3f 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index 5fd9a2b7417..78ff88d48e6 100644
+index 8b684d6006c..27d7b01014e 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -20,8 +20,6 @@
@@ -96,7 +96,7 @@ index 5fd9a2b7417..78ff88d48e6 100644
  {
 -	fprintf(stderr, "usage: doas [-Lns] [-a style] [-C config] [-u user]"
 +	fprintf(stderr, "usage: doas [-Lns] [-C config] [-u user]"
- 	    " command [args]\n");
+ 	    " command [arg ...]\n");
  	exit(1);
  }
 @@ -200,16 +207,28 @@ checkconfig(const char *confpath, int argc, char **argv,
@@ -577,5 +577,5 @@ index 00000000000..4ad1bf1efbf
 +	return 0;
 +}
 -- 
-2.35.1
+2.37.3
 

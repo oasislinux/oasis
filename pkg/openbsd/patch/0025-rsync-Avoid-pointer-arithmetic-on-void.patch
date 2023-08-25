@@ -1,4 +1,4 @@
-From 18fa17d3834528f4dd1b1087a765eb4ae9db23a5 Mon Sep 17 00:00:00 2001
+From b93dee95670eccc6a5c34f1f8a3b828998d0da7b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 Jun 2019 20:06:13 -0700
 Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
@@ -11,7 +11,7 @@ Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
  4 files changed, 14 insertions(+), 13 deletions(-)
 
 diff --git a/usr.bin/rsync/blocks.c b/usr.bin/rsync/blocks.c
-index 81874c8cba0..fbb7495acdf 100644
+index 56790729f27..906733c968e 100644
 --- a/usr.bin/rsync/blocks.c
 +++ b/usr.bin/rsync/blocks.c
 @@ -157,7 +157,7 @@ blk_find(struct sess *sess, struct blkstat *st,
@@ -51,7 +51,7 @@ index 81874c8cba0..fbb7495acdf 100644
  	st->s2 -= osz * map[0];
  
 diff --git a/usr.bin/rsync/downloader.c b/usr.bin/rsync/downloader.c
-index cb84c2bfcd9..c9f0f8e80dc 100644
+index cab6eb23f9f..07ec334f6b4 100644
 --- a/usr.bin/rsync/downloader.c
 +++ b/usr.bin/rsync/downloader.c
 @@ -495,7 +495,7 @@ again:
@@ -64,7 +64,7 @@ index cb84c2bfcd9..c9f0f8e80dc 100644
  		/*
  		 * Now we read from our block.
 diff --git a/usr.bin/rsync/io.c b/usr.bin/rsync/io.c
-index ea35bdb295f..d392e40aeae 100644
+index dc224ae8aed..fcf9e92dbaa 100644
 --- a/usr.bin/rsync/io.c
 +++ b/usr.bin/rsync/io.c
 @@ -117,7 +117,7 @@ io_write_blocking(int fd, const void *buf, size_t sz)
@@ -112,7 +112,7 @@ index ea35bdb295f..d392e40aeae 100644
  	*bufpos += valsz;
  }
  
-@@ -661,7 +661,7 @@ io_unbuffer_buf(const void *buf, size_t *bufpos, size_t bufsz, void *val,
+@@ -662,7 +662,7 @@ io_unbuffer_buf(const void *buf, size_t *bufpos, size_t bufsz, void *val,
  {
  
  	assert(*bufpos + valsz <= bufsz);
@@ -145,5 +145,5 @@ index e2999aa2589..9dd008def01 100644
  				ERR("write");
  				goto out;
 -- 
-2.34.1
+2.37.3
 
