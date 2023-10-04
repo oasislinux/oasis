@@ -31,7 +31,7 @@ build('hooklist', '$outdir/hook-list.h', {
 	'|', '$srcdir/generate-hooklist.sh', '$srcdir/Documentation/githooks.txt'
 })
 
-cc('exec-cmd.c', nil, {cflags=[[$cflags '-DFALLBACK_RUNTIME_PREFIX=""']]})
+cc('exec-cmd.c', nil, {cflags=string.format([[$cflags '-DFALLBACK_RUNTIME_PREFIX="%s"']], config.prefix)})
 cc('common-main.c')
 cc('http.c')
 cc('compat/regex/regex.c', nil, {cflags='$cflags -DGAWK -DNO_MBSUPPORT'})
