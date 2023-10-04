@@ -38,6 +38,7 @@ git-cvsimport.txt
 git-cvsserver.txt
 git-daemon.txt
 git-describe.txt
+git-diagnose.txt
 git-diff-files.txt
 git-diff-index.txt
 git-diff-tree.txt
@@ -167,6 +168,12 @@ gitcvs-migration.txt
 gitdiffcore.txt
 giteveryday.txt
 gitfaq.txt
+gitformat-bundle.txt
+gitformat-chunk.txt
+gitformat-commit-graph.txt
+gitformat-index.txt
+gitformat-pack.txt
+gitformat-signature.txt
 gitglossary.txt
 githooks.txt
 gitignore.txt
@@ -174,6 +181,11 @@ gitk.txt
 gitmailmap.txt
 gitmodules.txt
 gitnamespaces.txt
+gitprotocol-capabilities.txt
+gitprotocol-common.txt
+gitprotocol-http.txt
+gitprotocol-pack.txt
+gitprotocol-v2.txt
 gitremote-helpers.txt
 gitrepository-layout.txt
 gitrevisions.txt

@@ -9,6 +9,7 @@ config/apply.txt
 config/blame.txt
 config/branch.txt
 config/browser.txt
+config/bundle.txt
 config/checkout.txt
 config/clean.txt
 config/clone.txt
@@ -29,6 +30,7 @@ config/filter.txt
 config/fmt-merge-msg.txt
 config/format.txt
 config/fsck.txt
+config/fsmonitor--daemon.txt
 config/gc.txt
 config/gitcvs.txt
 config/gitweb.txt

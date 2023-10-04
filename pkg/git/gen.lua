@@ -56,6 +56,7 @@ lib('libgit.a', [[
 	bloom.c
 	branch.c
 	bulk-checkin.c
+	bundle-uri.c
 	bundle.c
 	cache-tree.c
 	cbtree.c
@@ -68,11 +69,12 @@ lib('libgit.a', [[
 	commit-graph.c
 	commit-reach.c
 	commit.c
+	compat/nonblock.c
 	compat/obstack.c
+	compat/qsort_s.c
 	compat/regex/regex.c.o
 	compat/terminal.c
 	compat/zlib-uncompress2.c
-	compat/qsort_s.c
 	config.c
 	connect.c
 	connected.c
@@ -84,6 +86,7 @@ lib('libgit.a', [[
 	date.c
 	decorate.c
 	delta-islands.c
+	diagnose.c
 	diff-delta.c
 	diff-merges.c
 	diff-lib.c
@@ -113,6 +116,7 @@ lib('libgit.a', [[
 	fsmonitor-ipc.c
 	fsmonitor-settings.c
 	gettext.c
+	git-zlib.c
 	gpg-interface.c
 	graph.c
 	grep.c
@@ -131,7 +135,6 @@ lib('libgit.a', [[
 	list-objects-filter-options.c
 	list-objects-filter.c
 	list-objects.c
-	ll-merge.c
 	lockfile.c
 	log-tree.c
 	ls-refs.c
@@ -139,12 +142,12 @@ lib('libgit.a', [[
 	mailmap.c
 	match-trees.c
 	mem-pool.c
-	merge.c
 	merge-blobs.c
+	merge-ll.c
 	merge-ort.c
 	merge-ort-wrappers.c
 	merge-recursive.c
-	mergesort.c
+	merge.c
 	midx.c
 	name-hash.c
 	negotiator/default.c
@@ -223,6 +226,7 @@ lib('libgit.a', [[
 	sparse-index.c
 	split-index.c
 	stable-qsort.c
+	statinfo.c
 	strbuf.c
 	streaming.c
 	string-list.c
@@ -241,6 +245,7 @@ lib('libgit.a', [[
 	trace2/(
 		tr2_cfg.c
 		tr2_cmd_name.c
+		tr2_ctr.c
 		tr2_dst.c
 		tr2_sid.c
 		tr2_sysenv.c
@@ -249,6 +254,7 @@ lib('libgit.a', [[
 		tr2_tgt_normal.c
 		tr2_tgt_perf.c
 		tr2_tls.c
+		tr2_tmr.c
 	)
 	trailer.c
 	transport-helper.c
@@ -274,7 +280,6 @@ lib('libgit.a', [[
 	ws.c
 	wt-status.c
 	xdiff-interface.c
-	zlib.c
 
 	unix-socket.c
 	unix-stream-server.c
@@ -311,7 +316,7 @@ local builtins = {
 	'annotate',
 	'apply',
 	'archive',
-	'bisect--helper',
+	'bisect',
 	'blame',
 	'branch',
 	'bugreport',
@@ -321,8 +326,8 @@ local builtins = {
 	'check-ignore',
 	'check-mailmap',
 	'check-ref-format',
-	'checkout-index',
 	'checkout--worker',
+	'checkout-index',
 	'checkout',
 	'clean',
 	'clone',
@@ -337,12 +342,12 @@ local builtins = {
 	'credential-store',
 	'credential',
 	'describe',
+	'diagnose',
 	'diff-files',
 	'diff-index',
 	'diff-tree',
 	'diff',
 	'difftool',
-	'env--helper',
 	'fast-export',
 	'fast-import',
 	'fetch-pack',
@@ -455,7 +460,6 @@ end
 
 local scripts = {
 	-- src/Makefile:/^SCRIPT_SH.\+=
-	{'bisect', '755'},
 	{'difftool--helper', '755'},
 	{'filter-branch', '755'},
 	{'merge-octopus', '755'},
