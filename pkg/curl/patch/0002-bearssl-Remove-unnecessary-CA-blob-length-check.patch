@@ -1,4 +1,4 @@
-From 643bad651c570c0e2b5889df4d0cb0803fa58b1e Mon Sep 17 00:00:00 2001
+From f91719c41ecf96fe661a3fa03b5d22b8e6d52402 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 15 Nov 2021 13:10:02 -0800
 Subject: [PATCH] bearssl: Remove unnecessary CA blob length check
@@ -11,10 +11,10 @@ than INT_MAX.
  1 file changed, 3 deletions(-)
 
 diff --git a/lib/vtls/bearssl.c b/lib/vtls/bearssl.c
-index f14eb66a2..ffa7c1166 100644
+index 934149c..32d9a5b 100644
 --- a/lib/vtls/bearssl.c
 +++ b/lib/vtls/bearssl.c
-@@ -129,9 +129,6 @@ static CURLcode load_cafile(struct cafile_source *source,
+@@ -133,9 +133,6 @@ static CURLcode load_cafile(struct cafile_source *source,
        return CURLE_SSL_CACERT_BADFILE;
    }
  
@@ -25,5 +25,5 @@ index f14eb66a2..ffa7c1166 100644
    ca.in_cert = FALSE;
    ca.anchors = NULL;
 -- 
-2.35.1
+2.42.0
 

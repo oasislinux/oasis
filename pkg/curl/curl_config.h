@@ -4,11 +4,16 @@
 /* #undef CURL_CA_PATH */
 /* #undef CURL_DEFAULT_SSL_BACKEND */
 /* #undef CURL_DISABLE_ALTSVC */
+/* #undef CURL_DISABLE_AWS */
+/* #undef CURL_DISABLE_BASIC_AUTH */
+/* #undef CURL_DISABLE_BEARER_AUTH */
+/* #undef CURL_DISABLE_BINDLOCAL */
 /* #undef CURL_DISABLE_COOKIES */
-/* #undef CURL_DISABLE_CRYPTO_AUTH */
 /* #undef CURL_DISABLE_DICT */
+/* #undef CURL_DISABLE_DIGEST_AUTH */
 /* #undef CURL_DISABLE_DOH */
 /* #undef CURL_DISABLE_FILE */
+/* #undef CURL_DISABLE_FORM_API */
 /* #undef CURL_DISABLE_FTP */
 /* #undef CURL_DISABLE_GETOPTIONS */
 /* #undef CURL_DISABLE_GOPHER */
@@ -17,11 +22,13 @@
 /* #undef CURL_DISABLE_HTTP */
 /* #undef CURL_DISABLE_HTTP_AUTH */
 /* #undef CURL_DISABLE_IMAP */
+/* #undef CURL_DISABLE_KERBEROS_AUTH */
 #define CURL_DISABLE_LDAP 1
 #define CURL_DISABLE_LDAPS 1
 /* #undef CURL_DISABLE_LIBCURL_OPTION */
 /* #undef CURL_DISABLE_MIME */
 /* #undef CURL_DISABLE_MQTT */
+/* #undef CURL_DISABLE_NEGOTIATE_AUTH */
 /* #undef CURL_DISABLE_NETRC */
 /* #undef CURL_DISABLE_NTLM */
 /* #undef CURL_DISABLE_OPENSSL_AUTO_LOAD_CONFIG */
@@ -41,29 +48,25 @@
 #define CURL_SA_FAMILY_T sa_family_t
 /* #undef CURL_WITH_MULTI_SSL */
 /* #undef DEBUGBUILD */
-/* #undef EGD_SOCKET */
 #define ENABLE_IPV6 1
 #define GETHOSTNAME_TYPE_ARG2 size_t
 #define HAVE_ALARM 1
+/* #undef HAVE_ARC4RANDOM */
 #define HAVE_ARPA_INET_H 1
-#define HAVE_ARPA_TFTP_H 1
-#define HAVE_ASSERT_H 1
 #define HAVE_ATOMIC 1
 #define HAVE_BASENAME 1
 #define HAVE_BOOL_T 1
-/* #undef HAVE_BORINGSSL */
 /* #undef HAVE_BROTLI */
 /* #undef HAVE_BROTLI_DECODE_H */
 /* #undef HAVE_BUILTIN_AVAILABLE */
 #define HAVE_CLOCK_GETTIME_MONOTONIC 1
+#define HAVE_CLOCK_GETTIME_MONOTONIC_RAW 1
 /* #undef HAVE_CLOSESOCKET */
 /* #undef HAVE_CLOSESOCKET_CAMEL */
-#define HAVE_CONNECT 1
 /* #undef HAVE_CRYPTO_H */
 #define HAVE_DECL_GETPWUID_R 1
 /* #undef HAVE_DECL_GETPWUID_R_MISSING */
 #define HAVE_DLFCN_H 1
-#define HAVE_ERRNO_H 1
 /* #undef HAVE_ERR_H */
 #define HAVE_FCHMOD 1
 #define HAVE_FCNTL 1
@@ -71,6 +74,7 @@
 #define HAVE_FCNTL_O_NONBLOCK 1
 #define HAVE_FNMATCH 1
 #define HAVE_FREEADDRINFO 1
+#define HAVE_FSEEKO 1
 #define HAVE_FSETXATTR 1
 #define HAVE_FSETXATTR_5 1
 /* #undef HAVE_FSETXATTR_6 */
@@ -110,13 +114,17 @@
 #define HAVE_INET_NTOP 1
 #define HAVE_INET_PTON 1
 #define HAVE_INTTYPES_H 1
+#define HAVE_IOCTL 1
 /* #undef HAVE_IOCTLSOCKET */
 /* #undef HAVE_IOCTLSOCKET_CAMEL */
 /* #undef HAVE_IOCTLSOCKET_CAMEL_FIONBIO */
 /* #undef HAVE_IOCTLSOCKET_FIONBIO */
+#define HAVE_IOCTL_FIONBIO 1
+#define HAVE_IOCTL_SIOCGIFADDR 1
 /* #undef HAVE_IO_H */
 /* #undef HAVE_LBER_H */
 /* #undef HAVE_LDAP_H */
+/* #undef HAVE_LDAP_INIT_FD */
 #define HAVE_LDAP_SSL 1
 /* #undef HAVE_LDAP_SSL_H */
 /* #undef HAVE_LDAP_URL_PARSE */
@@ -127,8 +135,6 @@
 /* #undef HAVE_LIBRTMP_RTMP_H */
 /* #undef HAVE_LIBSSH */
 /* #undef HAVE_LIBSSH2 */
-/* #undef HAVE_LIBSSH2_H */
-/* #undef HAVE_LIBSSH_LIBSSH_H */
 /* #undef HAVE_LIBSSL */
 /* #undef HAVE_LIBWOLFSSH */
 #define HAVE_LIBZ 1
@@ -161,7 +167,6 @@
 /* #undef HAVE_OPENSSL_X509_H */
 /* #undef HAVE_PEM_H */
 #define HAVE_PIPE 1
-/* #undef HAVE_PK11_CREATEMANAGEDGENERICOBJECT */
 #define HAVE_POLL_FINE 1
 #define HAVE_POLL_H 1
 #define HAVE_POSIX_STRERROR_R 1
@@ -170,7 +175,6 @@
 #define HAVE_PWD_H 1
 /* #undef HAVE_QUICHE_CONN_SET_QLOG_FD */
 /* #undef HAVE_QUICHE_H */
-/* #undef HAVE_RAND_EGD */
 #define HAVE_RECV 1
 /* #undef HAVE_RSA_H */
 #define HAVE_SCHED_YIELD 1
@@ -184,14 +188,15 @@
 #define HAVE_SIGACTION 1
 #define HAVE_SIGINTERRUPT 1
 #define HAVE_SIGNAL 1
-#define HAVE_SIGNAL_H 1
 #define HAVE_SIGSETJMP 1
+#define HAVE_SNPRINTF 1
 #define HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID 1
 #define HAVE_SOCKET 1
 #define HAVE_SOCKETPAIR 1
 /* #undef HAVE_SOCKET_H */
 /* #undef HAVE_SSL_GET_ECH_STATUS */
 /* #undef HAVE_SSL_H */
+/* #undef HAVE_SSL_SET0_WBIO */
 #define HAVE_STDATOMIC_H 1
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
@@ -204,6 +209,7 @@
 /* #undef HAVE_STRICMP */
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
+#define HAVE_STROPTS_H 1
 #define HAVE_STRTOK_R 1
 #define HAVE_STRTOLL 1
 #define HAVE_STRUCT_SOCKADDR_STORAGE 1
@@ -220,7 +226,6 @@
 #define HAVE_SYS_STAT_H 1
 #define HAVE_SYS_TIME_H 1
 #define HAVE_SYS_TYPES_H 1
-#define HAVE_SYS_UIO_H 1
 #define HAVE_SYS_UN_H 1
 /* #undef HAVE_SYS_UTIME_H */
 #define HAVE_SYS_WAIT_H 1
@@ -234,26 +239,25 @@
 #define HAVE_UTIME_H 1
 #define HAVE_VARIADIC_MACROS_C99 1
 #define HAVE_VARIADIC_MACROS_GCC 1
-/* #undef HAVE_WINCRYPT_H */
 /* #undef HAVE_WINDOWS_H */
-/* #undef HAVE_WINLDAP_H */
 /* #undef HAVE_WINSOCK2_H */
 /* #undef HAVE_WOLFSSH_SSH_H */
 /* #undef HAVE_WOLFSSL_DES_ECB_ENCRYPT */
+/* #undef HAVE_WOLFSSL_FULL_BIO */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_WOLFSSL_USEALPN */
 #define HAVE_WRITABLE_ARGV 1
 /* #undef HAVE_WS2TCPIP_H */
 /* #undef HAVE_X509_H */
-#define HAVE_ZLIB_H 1
 /* #undef HAVE_ZSTD */
 /* #undef HAVE_ZSTD_H */
+/* #undef HAVE__FSEEKI64 */
 #define LT_OBJDIR ".libs/"
 /* #undef NEED_LBER_H */
 /* #undef NEED_REENTRANT */
 /* #undef NEED_THREAD_SAFE */
-#define NTLM_WB_ENABLED 1
-#define NTLM_WB_FILE "/usr/bin/ntlm_auth"
+/* #undef NTLM_WB_ENABLED */
+/* #undef NTLM_WB_FILE */
 #define OS "oasis"
 #define PACKAGE "curl"
 #define PACKAGE_BUGREPORT "a suitable curl mailing list: https://curl.se/mail/"
@@ -263,23 +267,8 @@
 #define PACKAGE_URL ""
 #define PACKAGE_VERSION "-"
 /* #undef RANDOM_FILE */
-#define RECV_TYPE_ARG1 int
-#define RECV_TYPE_ARG2 void *
-#define RECV_TYPE_ARG3 size_t
-#define RECV_TYPE_ARG4 int
-#define RECV_TYPE_RETV ssize_t
-#define SELECT_QUAL_ARG5 
-#define SELECT_TYPE_ARG1 int
-#define SELECT_TYPE_ARG234 fd_set *
-#define SELECT_TYPE_ARG5 struct timeval *
-#define SELECT_TYPE_RETV int
-#define SEND_QUAL_ARG2 const
-#define SEND_TYPE_ARG1 int
-#define SEND_TYPE_ARG2 void *
-#define SEND_TYPE_ARG3 size_t
-#define SEND_TYPE_ARG4 int
-#define SEND_TYPE_RETV ssize_t
 #define SIZEOF_CURL_OFF_T 8
+#define SIZEOF_CURL_SOCKET_T 4
 #define SIZEOF_INT 4
 /* probe SIZEOF_LONG */
 /* #undef SIZEOF_LONG_LONG */
@@ -305,9 +294,8 @@
 /* #undef USE_NGHTTP3 */
 /* #undef USE_NGTCP2 */
 /* #undef USE_NGTCP2_CRYPTO_GNUTLS */
-/* #undef USE_NGTCP2_CRYPTO_OPENSSL */
+/* #undef USE_NGTCP2_CRYPTO_QUICTLS */
 /* #undef USE_NGTCP2_CRYPTO_WOLFSSL */
-/* #undef USE_NSS */
 /* #undef USE_OPENLDAP */
 /* #undef USE_OPENSSL */
 /* #undef USE_QUICHE */
@@ -318,6 +306,7 @@
 /* #undef USE_THREADS_WIN32 */
 /* #undef USE_TLS_SRP */
 #define USE_UNIX_SOCKETS 1
+/* #undef USE_WEBSOCKETS */
 /* #undef USE_WIN32_CRYPTO */
 /* #undef USE_WIN32_IDN */
 /* #undef USE_WIN32_LARGE_FILES */
@@ -327,7 +316,6 @@
 /* #undef USE_WOLFSSH */
 /* #undef USE_WOLFSSL */
 #define VERSION "-"
-/* #undef WANT_IDN_PROTOTYPES */
 #ifndef _ALL_SOURCE
 /* #  undef _ALL_SOURCE */
 #endif
