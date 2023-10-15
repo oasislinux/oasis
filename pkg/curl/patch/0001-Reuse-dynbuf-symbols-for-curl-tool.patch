@@ -1,19 +1,19 @@
-From 04afba4813f504cafb717c48c50de4395fb3ea71 Mon Sep 17 00:00:00 2001
+From 78a6d851168c533469e8e22f210ba1654d377a78 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
-Date: Fri, 16 Oct 2020 19:09:50 -0700
+Date: Sun, 15 Oct 2023 08:33:50 -0600
 Subject: [PATCH] Reuse dynbuf symbols for curl tool
 
 ---
- lib/dynbuf.h | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+ lib/dynbuf.h | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
 diff --git a/lib/dynbuf.h b/lib/dynbuf.h
-index c1e97235d..8b9158051 100644
+index 31a9130..507f5f5 100644
 --- a/lib/dynbuf.h
 +++ b/lib/dynbuf.h
-@@ -24,22 +24,20 @@
-  *
-  ***************************************************************************/
+@@ -26,23 +26,21 @@
+ 
+ #include <curl/curl.h>
  
 -#ifndef BUILDING_LIBCURL
  /* this renames the functions so that the tool code can use the same code
@@ -29,6 +29,7 @@ index c1e97235d..8b9158051 100644
 -#define Curl_dyn_len(a) curlx_dyn_len(a)
 -#define Curl_dyn_reset(a) curlx_dyn_reset(a)
 -#define Curl_dyn_tail(a,b) curlx_dyn_tail(a,b)
+-#define Curl_dyn_setlen(a,b) curlx_dyn_setlen(a,b)
 +#define curlx_dyn_init(a,b) Curl_dyn_init(a,b)
 +#define curlx_dyn_add(a,b) Curl_dyn_add(a,b)
 +#define curlx_dyn_addn(a,b,c) Curl_dyn_addn(a,b,c)
@@ -40,11 +41,12 @@ index c1e97235d..8b9158051 100644
 +#define curlx_dyn_len(a) Curl_dyn_len(a)
 +#define curlx_dyn_reset(a) Curl_dyn_reset(a)
 +#define curlx_dyn_tail(a,b) Curl_dyn_tail(a,b)
++#define curlx_dyn_setlen(a,b) Curl_dyn_setlen(a,b)
  #define curlx_dynbuf dynbuf /* for the struct name */
 -#endif
  
  struct dynbuf {
    char *bufr;    /* point to a null-terminated allocated buffer */
 -- 
-2.35.1
+2.42.0
 

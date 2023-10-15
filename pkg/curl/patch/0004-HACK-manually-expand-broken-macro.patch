@@ -1,0 +1,25 @@
+From e5088b6fecc4897180f601d736c46093a834a162 Mon Sep 17 00:00:00 2001
+From: Randy Palamar <palamar@ualberta.ca>
+Date: Sun, 15 Oct 2023 13:08:51 -0600
+Subject: [PATCH] HACK: manually expand broken macro
+
+---
+ src/tool_setopt.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/tool_setopt.c b/src/tool_setopt.c
+index de3b78f..774f34d 100644
+--- a/src/tool_setopt.c
++++ b/src/tool_setopt.c
+@@ -222,7 +222,7 @@ static char *c_escape(const char *str, curl_off_t len)
+     cutoff = 3;
+   }
+ 
+-  result = curlx_dyn_addn(&escaped, STRCONST(""));
++  result = curlx_dyn_addn(&escaped, "", sizeof("") - 1);
+   for(s = str; !result && len; s++, len--) {
+     /* escape question marks as well, to prevent generating accidental
+        trigraphs */
+-- 
+2.42.0
+

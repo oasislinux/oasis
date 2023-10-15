@@ -1,0 +1,33 @@
+From 82e6a93c229a40c8fdb2f0289bfc5aad83e69bc1 Mon Sep 17 00:00:00 2001
+From: Randy Palamar <palamar@ualberta.ca>
+Date: Sun, 15 Oct 2023 13:11:17 -0600
+Subject: [PATCH] Reuse base64 for curl tool
+
+---
+ lib/curl_base64.h | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/lib/curl_base64.h b/lib/curl_base64.h
+index 7f7cd1d..e6958d9 100644
+--- a/lib/curl_base64.h
++++ b/lib/curl_base64.h
+@@ -24,13 +24,11 @@
+  *
+  ***************************************************************************/
+ 
+-#ifndef BUILDING_LIBCURL
+ /* this renames functions so that the tool code can use the same code
+    without getting symbol collisions */
+-#define Curl_base64_encode(a,b,c,d) curlx_base64_encode(a,b,c,d)
+-#define Curl_base64url_encode(a,b,c,d) curlx_base64url_encode(a,b,c,d)
+-#define Curl_base64_decode(a,b,c) curlx_base64_decode(a,b,c)
+-#endif
++#define curlx_base64_encode(a,b,c,d) Curl_base64_encode(a,b,c,d)
++#define curlx_base64url_encode(a,b,c,d) Curl_base64url_encode(a,b,c,d)
++#define curlx_base64_decode(a,b,c) Curl_base64_decode(a,b,c)
+ 
+ CURLcode Curl_base64_encode(const char *inputbuff, size_t insize,
+                             char **outptr, size_t *outlen);
+-- 
+2.42.0
+
