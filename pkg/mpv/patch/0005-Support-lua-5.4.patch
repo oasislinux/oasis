@@ -1,0 +1,69 @@
+From 8ab50c2f6569389e574546a306bd73da142c060b Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 3 Dec 2023 11:57:01 -0800
+Subject: [PATCH] Support lua 5.4
+
+---
+ player/lua.c       | 5 -----
+ player/lua/osc.lua | 8 ++++----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/player/lua.c b/player/lua.c
+index b3a7167dce..0f2249bc96 100644
+--- a/player/lua.c
++++ b/player/lua.c
+@@ -452,11 +452,6 @@ static int load_lua(struct mp_script_args *args)
+ 
+     stats_register_thread_cputime(ctx->stats, "cpu");
+ 
+-    if (LUA_VERSION_NUM != 501 && LUA_VERSION_NUM != 502) {
+-        MP_FATAL(ctx, "Only Lua 5.1 and 5.2 are supported.\n");
+-        goto error_out;
+-    }
+-
+     lua_State *L = ctx->state = luaL_newstate();
+     if (!L) {
+         MP_FATAL(ctx, "Could not initialize Lua.\n");
+diff --git a/player/lua/osc.lua b/player/lua/osc.lua
+index a244280a35..799b6a16df 100644
+--- a/player/lua/osc.lua
++++ b/player/lua/osc.lua
+@@ -170,7 +170,7 @@ local margins_opts = {
+ function get_virt_scale_factor()
+     local w, h = mp.get_osd_size()
+     if w <= 0 or h <= 0 then
+-        return 0, 0
++        return 1, 1
+     end
+     return osc_param.playresx / w, osc_param.playresy / h
+ end
+@@ -188,7 +188,7 @@ end
+ 
+ function set_virt_mouse_area(x0, y0, x1, y1, name)
+     local sx, sy = get_virt_scale_factor()
+-    mp.set_mouse_area(x0 / sx, y0 / sy, x1 / sx, y1 / sy, name)
++    mp.set_mouse_area(x0 // sx, y0 // sy, x1 // sx, y1 // sy, name)
+ end
+ 
+ function scale_value(x0, x1, y0, y1, val)
+@@ -294,7 +294,7 @@ end
+ 
+ -- multiplies two alpha values, formular can probably be improved
+ function mult_alpha(alphaA, alphaB)
+-    return 255 - (((1-(alphaA/255)) * (1-(alphaB/255))) * 255)
++    return alphaA + alphaB - alphaA * alphaB / 255
+ end
+ 
+ function add_area(name, x1, y1, x2, y2)
+@@ -313,7 +313,7 @@ function ass_append_alpha(ass, alpha, modifier)
+         if state.animation then
+             av = mult_alpha(av, state.animation)
+         end
+-        ar[ai] = av
++        ar[ai] = math.floor(av)
+     end
+ 
+     ass:append(string.format("{\\1a&H%X&\\2a&H%X&\\3a&H%X&\\4a&H%X&}",
+-- 
+2.42.0
+
