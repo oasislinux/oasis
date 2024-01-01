@@ -64,11 +64,11 @@
 /* #undef HAVE_CLOSESOCKET */
 /* #undef HAVE_CLOSESOCKET_CAMEL */
 /* #undef HAVE_CRYPTO_H */
+#define HAVE_DECL_FSEEKO 1
 #define HAVE_DECL_GETPWUID_R 1
 /* #undef HAVE_DECL_GETPWUID_R_MISSING */
 #define HAVE_DLFCN_H 1
 /* #undef HAVE_ERR_H */
-#define HAVE_FCHMOD 1
 #define HAVE_FCNTL 1
 #define HAVE_FCNTL_H 1
 #define HAVE_FCNTL_O_NONBLOCK 1
@@ -237,8 +237,6 @@
 #define HAVE_UTIME 1
 #define HAVE_UTIMES 1
 #define HAVE_UTIME_H 1
-#define HAVE_VARIADIC_MACROS_C99 1
-#define HAVE_VARIADIC_MACROS_GCC 1
 /* #undef HAVE_WINDOWS_H */
 /* #undef HAVE_WINSOCK2_H */
 /* #undef HAVE_WOLFSSH_SSH_H */
