@@ -499,9 +499,9 @@ end
 
 function copy(outdir, srcdir, files)
 	local outs = {}
-	for i, file in ipairs(files) do
+	for file in iterstrings(files) do
 		local out = outdir..'/'..file
-		outs[i] = out
+		table.insert(outs, out)
 		build('copy', out, srcdir..'/'..file)
 	end
 	return outs
