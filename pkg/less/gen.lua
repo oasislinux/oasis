@@ -12,7 +12,8 @@ objects[[
 exe('less', [[
 	main.c screen.c brac.c ch.c charset.c cmdbuf.c
 	command.c cvt.c decode.c edit.c filename.c forwback.c
-	help.c ifile.c input.c jump.c line.c linenum.c
+	help.c ifile.c input.c jump.c
+	line.c linenum.c
 	lsystem.c mark.c optfunc.c option.c opttbl.c os.c
 	output.c pattern.c position.c prompt.c search.c signal.c
 	tags.c ttyin.c version.c.o xbuf.c.o
@@ -27,10 +28,7 @@ file('bin/lessecho', '755', '$outdir/lessecho')
 exe('lesskey', {'lesskey.c', 'lesskey_parse.c.o', 'xbuf.c.o', 'version.c.o'})
 file('bin/lesskey', '755', '$outdir/lesskey')
 
-for _, cmd in ipairs{'less', 'lessecho', 'lesskey'} do
-	build('gzip', '$outdir/'..cmd..'.1.gz', '$srcdir/'..cmd..'.nro')
-	file('share/man/man1/'..cmd..'.1.gz', '644', '$outdir/'..cmd..'.1.gz')
-end
+man({'less.nro', 'lessecho.nro', 'lesskey.nro'}, '1')
 
 sym('bin/more', 'less')
 

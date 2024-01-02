@@ -1,4 +1,3 @@
-#define BINDIR "/bin"
 #define SYSDIR "/etc"
 
 #define	SECURE		SECURE_COMPILE
@@ -57,6 +56,7 @@
 #define	TAGLINE_SIZE	1024	/* Max size of line in tags file */
 #define	TABSTOP_MAX	128	/* Max number of custom tab stops */
 #endif
+#define RETSIGTYPE void
 #define EDIT_PGM "vi"
 #define HAVE_CONST 1
 #define HAVE_CTYPE_H 1
@@ -65,20 +65,22 @@
 #define HAVE_FCHMOD 1
 #define HAVE_FCNTL_H 1
 #define HAVE_FILENO 1
-#define HAVE_FLOAT 1
 #define HAVE_FSYNC 1
 /* #undef HAVE_GNU_REGEX */
 #define HAVE_INTTYPES_H 1
 #define HAVE_LIMITS_H 1
+/* #undef HAVE_LINUX_MAGIC_H */
 #define HAVE_LOCALE 1
-#define HAVE_MEMORY_H 1
 #define HAVE_NANOSLEEP 1
+/* #undef HAVE_NCURSESW_TERMCAP_H */
+/* #undef HAVE_NCURSES_TERMCAP_H */
 #define HAVE_OSPEED 1
 /* #undef HAVE_PCRE */
 /* #undef HAVE_PCRE2 */
 #define HAVE_POLL 1
 #define HAVE_POPEN 1
 #define HAVE_POSIX_REGCOMP 1
+/* #undef HAVE_PROCFS */
 #define HAVE_REALPATH 1
 /* #undef HAVE_REGCMP */
 /* #undef HAVE_REGEXEC2 */
@@ -90,18 +92,21 @@
 #define HAVE_SNPRINTF 1
 #define HAVE_STAT 1
 #define HAVE_STAT_INO 1
+/* #undef HAVE_STDCKDINT_H */
 #define HAVE_STDINT_H 1
 #define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STRERROR 1
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
+#define HAVE_STRSIGNAL 1
 #define HAVE_SYSTEM 1
 #define HAVE_SYS_ERRLIST 1
 #define HAVE_SYS_IOCTL_H 1
 #define HAVE_SYS_STAT_H 1
 /* #undef HAVE_SYS_STREAM_H */
 #define HAVE_SYS_TYPES_H 1
+#define HAVE_SYS_WAIT_H 1
 #define HAVE_TERMCAP_H 1
 #define HAVE_TERMIOS_FUNCS 1
 #define HAVE_TERMIOS_H 1
@@ -127,14 +132,9 @@
 #define PACKAGE_TARNAME "less"
 #define PACKAGE_URL ""
 #define PACKAGE_VERSION "1"
-#define RETSIGTYPE void
 #define SECURE_COMPILE 0
 /* #undef STAT_MACROS_BROKEN */
 #define STDC_HEADERS 1
-#define TIME_WITH_SYS_TIME 1
-#ifndef _DARWIN_USE_64_BIT_INODE
-# define _DARWIN_USE_64_BIT_INODE 1
-#endif
 /* #undef _FILE_OFFSET_BITS */
 /* #undef _LARGE_FILES */
 /* #undef const */
