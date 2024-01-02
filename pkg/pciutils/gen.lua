@@ -37,7 +37,7 @@ exe('lspci', {
 	'libpci.a',
 })
 file('bin/lspci', '755', '$outdir/lspci')
-man({'$srcdir/lspci.man'}, '8')
+man({'lspci.man'}, '8')
 
 exe('setpci', {
 	'setpci.c',
@@ -45,9 +45,9 @@ exe('setpci', {
 	'libpci.a',
 })
 file('bin/setpci', '755', '$outdir/setpci')
-man({'$srcdir/setpci.man'}, '8')
+man({'setpci.man'}, '8')
 
 file('share/pci.ids', '644', '$srcdir/pci.ids')
-man({'$srcdir/pci.ids.man'}, '5')
+man({'pci.ids.man'}, '5')
 
 fetch 'git'

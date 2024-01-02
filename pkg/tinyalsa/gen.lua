@@ -27,7 +27,7 @@ lib('libtinyalsa.a', [[
 
 for _, tool in ipairs{'tinycap', 'tinymix', 'tinypcminfo', 'tinyplay'} do
 	file('bin/'..tool, '755', exe(tool, {'utils/'..tool..'.c', 'libtinyalsa.a'}))
-	man{'$srcdir/utils/'..tool..'.1'}
+	man{'utils/'..tool..'.1'}
 end
 
 fetch 'git'
