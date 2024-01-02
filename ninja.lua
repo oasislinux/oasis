@@ -489,10 +489,10 @@ function man(srcs, section)
 		if not src:match('^[$/]') then
 			src = '$srcdir/'..src
 		end
-		local i = src:find('/', 1, true)
-		local gz = '$outdir'..src:sub(i)..'.gz'
-		build('gzip', gz, src)
 		local srcsection = section or src:match('[^.]*$')
+		local i = src:find('/', 1, true)
+		local gz = '$outdir'..src:sub(i):gsub('[^.]*$', srcsection)..'.gz'
+		build('gzip', gz, src)
 		file('share/man/man'..srcsection..'/'..gz:match('[^/]*$'), '644', gz)
 	end
 end
