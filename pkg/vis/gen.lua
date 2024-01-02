@@ -9,6 +9,7 @@ cflags{
 	'-D CONFIG_SELINUX=0',
 	'-D CONFIG_ACL=0',
 	'-D HAVE_MEMRCHR=1',
+	'-D LUA_COMPAT_APIINTCASTS',
 	'-D _XOPEN_SOURCE=700',
 	[[-D 'VERSION="$version"']],
 	string.format([[-D 'VIS_PATH="%s/share/vis"']], config.prefix),
