@@ -42,6 +42,7 @@ bout
 bsdi
 bsi
 btsnoop
+burp
 bytecode
 c-lang
 c64
@@ -80,8 +81,8 @@ dif
 diff
 digital
 dolby
-dsf
 dump
+dwarfs
 dyadic
 ebml
 edid
@@ -97,6 +98,7 @@ etf
 fcs
 filesystems
 finger
+firmware
 flash
 flif
 fonts
@@ -109,6 +111,7 @@ fusecompress
 games
 gcc
 gconv
+gentoo
 geo
 geos
 gimp
@@ -233,6 +236,7 @@ pgp
 pgp-binary-keys
 pkgadd
 plan9
+playdate
 plus5
 pmem
 polyml
@@ -248,12 +252,14 @@ python
 qt
 revision
 riff
+ringdove
 rpi
 rpm
 rpmsg
 rst
 rtf
 ruby
+rust
 sc
 sccs
 scientific
@@ -279,7 +285,9 @@ sql
 ssh
 ssl
 statistics
+subtitle
 sun
+svf
 sylk
 symbos
 sysex

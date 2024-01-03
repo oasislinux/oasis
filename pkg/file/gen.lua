@@ -1,4 +1,4 @@
-local version = '5.42'
+local version = '5.45'
 cflags{
 	'-Wall',
 	'-Wno-maybe-uninitialized',  -- false positive in src/readelf.c
@@ -28,8 +28,8 @@ pkg.deps = {'$gendir/headers', 'pkg/zlib/headers'}
 
 lib('libmagic.a', [[src/(
 	buffer.c magic.c apprentice.c softmagic.c ascmagic.c
-	encoding.c compress.c is_csv.c is_json.c is_tar.c readelf.c print.c
-	fsmagic.c funcs.c apptype.c der.c
+	encoding.c compress.c is_csv.c is_json.c is_simh.c is_tar.c readelf.c
+	print.c fsmagic.c funcs.c apptype.c der.c
 	cdf.c cdf_time.c readcdf.c
 
 	fmtcheck.c
