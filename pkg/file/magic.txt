@@ -80,7 +80,6 @@ dif
 diff
 digital
 dolby
-dsf
 dump
 dyadic
 ebml
