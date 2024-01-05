@@ -13,11 +13,13 @@ cflags{
 }
 
 build('cat', '$outdir/config.h', {
-	'$dir/config.h',
 	'$builddir/probe/HAVE_IMMINTRIN_H',
+	'$builddir/probe/HAVE__MM_CLMULEPI64_SI128',
 	'$builddir/probe/HAVE__MM_MOVEMASK_EPI8',
 	'$builddir/probe/HAVE___BUILTIN_ASSUME_ALIGNED',
+	'$builddir/probe/HAVE___BUILTIN_BSWAP16',
 	'$builddir/probe/SIZEOF_SIZE_T',
+	'$dir/config.h',
 })
 pkg.deps = {'$outdir/config.h'}
 
@@ -43,9 +45,11 @@ lib('liblzma.a', [[src/(
 			hardware_physmem.c
 			index.c
 			stream_flags_common.c
+			string_conversion.c
 			vli_size.c
 
 			hardware_cputhreads.c
+			outqueue.c
 
 			alone_encoder.c
 			block_buffer_encoder.c
@@ -63,7 +67,6 @@ lib('liblzma.a', [[src/(
 			stream_flags_encoder.c
 			vli_encoder.c
 
-			outqueue.c
 			stream_encoder_mt.c
 
 			alone_decoder.c
@@ -72,6 +75,7 @@ lib('liblzma.a', [[src/(
 			block_decoder.c
 			block_header_decoder.c
 			easy_decoder_memusage.c
+			file_info.c
 			filter_buffer_decoder.c
 			filter_decoder.c
 			filter_flags_decoder.c
@@ -81,6 +85,8 @@ lib('liblzma.a', [[src/(
 			stream_decoder.c
 			stream_flags_decoder.c
 			vli_decoder.c
+
+			stream_decoder_mt.c
 		)
 		delta/(
 			delta_common.c
@@ -112,6 +118,7 @@ lib('liblzma.a', [[src/(
 			ia64.c
 			arm.c
 			armthumb.c
+			arm64.c
 			sparc.c
 		)
 	)

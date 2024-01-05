@@ -1,0 +1,4 @@
+unsigned x = 0xff;
+int main(void) {
+	return __builtin_bswap16(x) & 0xff;
+}

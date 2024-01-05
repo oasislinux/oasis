@@ -1,0 +1,7 @@
+#include <immintrin.h>
+static __m128i x, y;
+__attribute__((__target__("pclmul")))
+int main(void) {
+	_mm_clmulepi64_si128(x, y, 0);
+	return 0;
+}
