@@ -31,6 +31,7 @@ lib('liblzma.a', [[src/(
 			check.c
 			crc32_table.c
 			crc32_fast.c
+			crc64_small.c
 			crc64_table.c
 			crc64_fast.c
 			sha256.c
@@ -44,6 +45,7 @@ lib('liblzma.a', [[src/(
 			index.c
 			stream_flags_common.c
 			vli_size.c
+			string_conversion.c
 
 			hardware_cputhreads.c
 
@@ -72,6 +74,7 @@ lib('liblzma.a', [[src/(
 			block_decoder.c
 			block_header_decoder.c
 			easy_decoder_memusage.c
+			file_info.c
 			filter_buffer_decoder.c
 			filter_decoder.c
 			filter_flags_decoder.c
@@ -81,6 +84,7 @@ lib('liblzma.a', [[src/(
 			stream_decoder.c
 			stream_flags_decoder.c
 			vli_decoder.c
+			stream_decoder_mt.c
 		)
 		delta/(
 			delta_common.c
@@ -112,6 +116,7 @@ lib('liblzma.a', [[src/(
 			ia64.c
 			arm.c
 			armthumb.c
+			arm64.c
 			sparc.c
 		)
 	)
