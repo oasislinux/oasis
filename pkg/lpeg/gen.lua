@@ -12,6 +12,7 @@ lib('liblpeg.a', {
 	'lptree.c',
 	'lpcode.c',
 	'lpprint.c',
+	'lpcset.c',
 })
 
 fetch 'curl'
