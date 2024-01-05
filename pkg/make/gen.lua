@@ -17,8 +17,8 @@ pkg.deps = {
 
 lib('libgnu.a', [[
 	lib/(
-		concat-filename.c exitfail.c findprog-in.c fnmatch.c
-		glob.c xalloc-die.c xconcat-filename.c
+		concat-filename.c findprog-in.c fnmatch.c
+		getloadavg.c glob.c
 	)
 ]])
 
@@ -30,9 +30,10 @@ exe('make', [[
 		getopt1.c guile.c
 		hash.c implicit.c job.c
 		load.c loadapi.c main.c misc.c
-		output.c read.c remake.c
-		rule.c signame.c strcache.c
-		variable.c version.c vpath.c
+		output.c read.c
+		remake.c rule.c shuffle.c
+		signame.c strcache.c variable.c
+		version.c vpath.c
 
 		posixos.c
 		remote-stub.c
