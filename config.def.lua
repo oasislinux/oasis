@@ -7,6 +7,9 @@ return {
 	-- install prefix
 	prefix='',
 
+	-- compress man pages
+	gzman=true,
+
 	-- package/file selection
 	fs={
                 -- Each entry contains a list of packages, a list of patterns to

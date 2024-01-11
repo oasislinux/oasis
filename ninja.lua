@@ -498,8 +498,11 @@ function man(srcs, section)
 			if ext then base = base:sub(1, -(#ext + 2)) end
 			ext = section
 		end
-		build('gzip', out, src)
-		file('share/man/man'..ext..'/'..base..'.'..ext, '644', out)
+		if config.gzman ~= false then
+			build('gzip', out, src)
+			src = out
+		end
+		file('share/man/man'..ext..'/'..base..'.'..ext, '644', src)
 	end
 end
 
