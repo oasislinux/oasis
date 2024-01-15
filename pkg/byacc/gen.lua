@@ -1,7 +1,7 @@
 cflags{
 	'-Wall', '-Wpedantic',
 	'-D HAVE_CONFIG_H',
-	'-D YYPATCH=20230521',
+	'-D YYPATCH=20240109',
 	'-I $dir',
 }
 
