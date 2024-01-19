@@ -9,6 +9,7 @@ lib('libutil.a', {'util.c', 'xml.c'})
 
 local tools = {
 	'sfeed',
+	'sfeed_json',
 	'sfeed_opml_import',
 	'sfeed_plain',
 	'sfeed_web',
