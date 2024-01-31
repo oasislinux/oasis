@@ -53,7 +53,7 @@
 /* probe HAVE_IMMINTRIN_H */
 #define HAVE_INTTYPES_H 1
 #define HAVE_LIMITS_H 1
-/* #undef HAVE_LZIP_DECODER */
+#define HAVE_LZIP_DECODER 1
 #define HAVE_MBRTOWC 1
 #define HAVE_MF_BT2 1
 #define HAVE_MF_BT3 1
