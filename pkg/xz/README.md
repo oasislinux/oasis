@@ -5,6 +5,6 @@ Generated with
 ```
 ./configure \
 	--disable-nls \
-	--disable-lzip-decoder \
+	--enable-lzip-decoder \
 	--disable-microlzma
 ```

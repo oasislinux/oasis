@@ -62,6 +62,7 @@ lib('liblzma.a', [[src/(
 			index_encoder.c
 			stream_buffer_encoder.c
 			stream_encoder.c
+			lzip_decoder.c
 			stream_flags_encoder.c
 			vli_encoder.c
 
