@@ -128,6 +128,6 @@ exe('curl', [[
 ]])
 
 file('bin/curl', '755', '$outdir/curl')
-man{'docs/curl.1'}
+man{'$dir/curl.1'}
 
 fetch 'curl'
