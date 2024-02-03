@@ -22,7 +22,7 @@ lib('libnasm.a', [[
 	nasmlib/(
 		ver.c
 		alloc.c asprintf.c errfile.c
-		crc64.c md5c.c
+		crc32.c crc64.c md5c.c
 		string.c nctype.c
 		file.c mmap.c ilog2.c
 		realpath.c path.c
@@ -50,7 +50,6 @@ lib('libnasm.a', [[
 		stdscan.c
 		strfunc.c tokhash.c
 		segalloc.c
-		preproc-nop.c
 		rdstrnum.c
 		srcfile.c
 	)
@@ -60,7 +59,7 @@ lib('libnasm.a', [[
 		nulldbg.c nullout.c
 		outbin.c outaout.c outcoff.c
 		outelf.c
-		outobj.c outas86.c outrdf2.c
+		outobj.c outas86.c
 		outdbg.c outieee.c outmacho.c
 		codeview.c
 	)
