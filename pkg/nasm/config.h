@@ -8,7 +8,7 @@
 /* #undef CFLAGS_FNO_OMIT_FRAME_POINTER */
 /* #undef CFLAGS_FSANITIZE_ADDRESS */
 /* #undef CFLAGS_FSANITIZE_UNDEFINED */
-/* #undef CFLAGS_FTRIVIAL_AUTO_VAR_INIT_ZERO */
+#define CFLAGS_FTRIVIAL_AUTO_VAR_INIT_ZERO 1
 #define CFLAGS_FVISIBILITY_HIDDEN 1
 #define CFLAGS_FWRAPV 1
 /* #undef CFLAGS_GGDB3 */
@@ -33,7 +33,7 @@
 #define CFLAGS_WERROR_MISSING_PROTOTYPES 1
 #define CFLAGS_WERROR_POINTER_ARITH 1
 #define CFLAGS_WERROR_RETURN_TYPE 1
-/* #undef CFLAGS_WERROR_STRICT_PROTOTYPES */
+#define CFLAGS_WERROR_STRICT_PROTOTYPES 1
 #define CFLAGS_WERROR_TRIGRAPHS 1
 /* #undef CFLAGS_WERROR_UNKNOWN_WARNING_OPTION */
 #define CFLAGS_WERROR_VLA 1
@@ -103,8 +103,9 @@
 #define HAVE_ISASCII 1
 #define HAVE_ISCNTRL 1
 /* #undef HAVE_MACHINE_ENDIAN_H */
-#define HAVE_MEMORY_H 1
 #define HAVE_MEMPCPY 1
+/* #undef HAVE_MEMPSET */
+/* #undef HAVE_MINIX_CONFIG_H */
 #define HAVE_MMAP 1
 #define HAVE_PATHCONF 1
 #define HAVE_REALPATH 1
@@ -114,6 +115,7 @@
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDC_INLINE 1
 #define HAVE_STDINT_H 1
+#define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STDNORETURN_H 1
 #define HAVE_STRCASECMP 1
@@ -140,6 +142,7 @@
 #define HAVE_UINTPTR_T 1
 #define HAVE_UNISTD_H 1
 #define HAVE_VSNPRINTF 1
+#define HAVE_WCHAR_H 1
 /* #undef HAVE__ACCESS */
 /* #undef HAVE__BITSCANREVERSE */
 /* #undef HAVE__BITSCANREVERSE64 */
@@ -180,41 +183,80 @@
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
-#ifndef _GNU_SOURCE
-# define _GNU_SOURCE 1
-#endif
-#ifndef _POSIX_PTHREAD_SEMANTICS
-# define _POSIX_PTHREAD_SEMANTICS 1
-#endif
-#ifndef _TANDEM_SOURCE
-# define _TANDEM_SOURCE 1
+#ifndef _DARWIN_C_SOURCE
+# define _DARWIN_C_SOURCE 1
 #endif
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE 1
+#endif
+#ifndef _HPUX_ALT_XOPEN_SOCKET_API
+# define _HPUX_ALT_XOPEN_SOCKET_API 1
+#endif
+#ifndef _MINIX
+/* # undef _MINIX */
+#endif
+#ifndef _NETBSD_SOURCE
+# define _NETBSD_SOURCE 1
+#endif
+#ifndef _OPENBSD_SOURCE
+# define _OPENBSD_SOURCE 1
+#endif
+#ifndef _POSIX_SOURCE
+/* # undef _POSIX_SOURCE */
+#endif
+#ifndef _POSIX_1_SOURCE
+/* # undef _POSIX_1_SOURCE */
+#endif
+#ifndef _POSIX_PTHREAD_SEMANTICS
+# define _POSIX_PTHREAD_SEMANTICS 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_ATTRIBS_EXT__
+# define __STDC_WANT_IEC_60559_ATTRIBS_EXT__ 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_BFP_EXT__
+# define __STDC_WANT_IEC_60559_BFP_EXT__ 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_DFP_EXT__
+# define __STDC_WANT_IEC_60559_DFP_EXT__ 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_FUNCS_EXT__
+# define __STDC_WANT_IEC_60559_FUNCS_EXT__ 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_TYPES_EXT__
+# define __STDC_WANT_IEC_60559_TYPES_EXT__ 1
+#endif
+#ifndef __STDC_WANT_LIB_EXT2__
+# define __STDC_WANT_LIB_EXT2__ 1
+#endif
+#ifndef __STDC_WANT_MATH_SPEC_FUNCS__
+# define __STDC_WANT_MATH_SPEC_FUNCS__ 1
+#endif
+#ifndef _TANDEM_SOURCE
+# define _TANDEM_SOURCE 1
+#endif
+#ifndef _XOPEN_SOURCE
+/* # undef _XOPEN_SOURCE */
+#endif
 /* #undef WORDS_BIGENDIAN */
 #define WORDS_LITTLEENDIAN 1
-#ifndef _DARWIN_USE_64_BIT_INODE
-# define _DARWIN_USE_64_BIT_INODE 1
-#endif
 /* #undef _FILE_OFFSET_BITS */
 /* #undef _LARGEFILE_SOURCE */
 /* #undef _LARGE_FILES */
-/* #undef _MINIX */
-/* #undef _POSIX_1_SOURCE */
-/* #undef _POSIX_SOURCE */
 /* #undef const */
 #ifndef __cplusplus
 /* #undef inline */
 #endif
-#define restrict __restrict
-#if defined __SUNPRO_CC && !defined __RESTRICT
+#define restrict __restrict__
+#if defined __SUNPRO_CC && !defined __RESTRICT && !defined __restrict__
 # define _Restrict
 # define __restrict__
 #endif
 /* #undef size_t */
 /* #undef snprintf */
-#define typeof __typeof__
+#define typeof __typeof
 /* #undef uintptr_t */
 /* #undef vsnprintf */
 #ifndef alloc_size_func2
