@@ -1,0 +1,32 @@
+From 833b13a4aacbc5fb66dd13f1d6e6d09d152ac623 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 8 Feb 2024 01:16:45 -0800
+Subject: [PATCH] x86: avoid non-standard [a...b] designator
+
+---
+ opcodes/i386-dis.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/opcodes/i386-dis.c b/opcodes/i386-dis.c
+index de9793690a5..fccdaa4f1e4 100644
+--- a/opcodes/i386-dis.c
++++ b/opcodes/i386-dis.c
+@@ -9363,7 +9363,6 @@ print_insn (bfd_vma pc, disassemble_info *info, int intel_syntax)
+ 		    ? intel_syntax
+ 		    : (info->mach & bfd_mach_i386_intel_syntax) != 0,
+     .intel_mnemonic = !SYSV386_COMPAT,
+-    .op_index[0 ... MAX_OPERANDS - 1] = -1,
+     .start_pc = pc,
+     .start_codep = priv.the_buffer,
+     .codep = priv.the_buffer,
+@@ -9488,6 +9487,7 @@ print_insn (bfd_vma pc, disassemble_info *info, int intel_syntax)
+     {
+       op_out[i][0] = 0;
+       ins.op_out[i] = op_out[i];
++      ins.op_index[i] = -1;
+     }
+ 
+   if (OPCODES_SIGSETJMP (priv.bailout) != 0)
+-- 
+2.42.0
+
