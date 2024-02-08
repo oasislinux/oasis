@@ -494,10 +494,8 @@ function man(srcs, section)
 
 		local base = src:match('[^/]*$')
 		local ext = base:match('%.([^.]*)$')
-		if section then
-			if ext then base = base:sub(1, -(#ext + 2)) end
-			ext = section
-		end
+		if ext then base = base:sub(1, -(#ext + 2)) end
+		if section then ext = section end
 		if config.gzman ~= false then
 			build('gzip', out, src)
 			src = out
