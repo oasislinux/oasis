@@ -9,6 +9,7 @@ cflags{
 	havedriver('nouveau'),
 	havedriver('amdgpu'),
 	'-I $dir',
+	'-I $outdir',
 	'-I $srcdir',
 	'-I $srcdir/include/drm',
 	'-isystem $builddir/pkg/linux-headers/include',
@@ -28,8 +29,12 @@ pkg.hdrs = {
 }
 
 pkg.deps = {
+	'$outdir/generated_static_table_fourcc.h',
 	'pkg/linux-headers/headers',
 }
+
+rule('fourcc', 'lua $dir/fourcc.lua <$in >$out')
+build('fourcc', '$outdir/generated_static_table_fourcc.h', {'$srcdir/include/drm/drm_fourcc.h', '|', '$dir/fourcc.lua'})
 
 lib('libdrm.a', {
 	'xf86drm.c',
