@@ -4,9 +4,8 @@ cflags{
 	'-isystem $builddir/pkg/libdrm/include',
 }
 
-pkg.deps = {
-	'pkg/libdrm/headers',
-}
+pkg.hdrs = copy('$outdir/include', '$dir', {'$liftoff.h'})
+pkg.deps = {'pkg/libdrm/headers'}
 
 lib('libliftoff.a', {
 	'alloc.c',
