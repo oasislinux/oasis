@@ -28,7 +28,7 @@
 #define HAVE_EXT2_IOCTLS 1
 /* #undef HAVE_FADVISE64 */
 #define HAVE_FALLOCATE 1
-#define HAVE_FALLOCATE64 1
+/* #undef HAVE_FALLOCATE64 */
 #define HAVE_FCHOWN 1
 #define HAVE_FCNTL 1
 #define HAVE_FDATASYNC 1
