@@ -112,6 +112,7 @@ man1/git-remote-fd.1
 man1/git-remote.1
 man1/git-repack.1
 man1/git-replace.1
+man1/git-replay.1
 man1/git-request-pull.1
 man1/git-rerere.1
 man1/git-reset.1

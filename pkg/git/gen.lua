@@ -123,6 +123,7 @@ lib('libgit.a', [[
 	hash-lookup.c
 	hashmap.c
 	help.c
+	hex-ll.c
 	hex.c
 	hook.c
 	ident.c
@@ -176,6 +177,7 @@ lib('libgit.a', [[
 	parallel-checkout.c
 	parse-options-cb.c
 	parse-options.c
+	parse.c
 	patch-delta.c
 	patch-ids.c
 	path.c
@@ -403,6 +405,7 @@ local builtins = {
 	'remote',
 	'repack',
 	'replace',
+	'replay',
 	'rerere',
 	'reset',
 	'rev-list',

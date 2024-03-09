@@ -113,6 +113,7 @@ git-remote-fd.txt
 git-remote.txt
 git-repack.txt
 git-replace.txt
+git-replay.txt
 git-request-pull.txt
 git-rerere.txt
 git-reset.txt

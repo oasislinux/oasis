@@ -6,6 +6,7 @@ config/advice.txt
 config/alias.txt
 config/am.txt
 config/apply.txt
+config/attr.txt
 config/blame.txt
 config/branch.txt
 config/browser.txt
