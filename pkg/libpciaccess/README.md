@@ -3,5 +3,4 @@
 ## config.h
 Generated with
 
-	./configure \
-		--with-pciids-path=/share/hwdata
+	meson setup --prefix / build
