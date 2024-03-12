@@ -4,5 +4,4 @@
 #define HAVE_STDINT_H 1
 #define HAVE_STRINGS_H 1
 #define HAVE_STRING_H 1
-#define HAVE_ZLIB 1
 #define PCIIDS_PATH "/share/hwdata"

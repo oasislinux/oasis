@@ -3,4 +3,4 @@
 ## config.h
 Generated with
 
-	meson setup --prefix / build
+	meson setup --prefix / -Dzlib=disabled build
