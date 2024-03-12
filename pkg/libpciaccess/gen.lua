@@ -3,9 +3,14 @@ cflags{
 	'-D HAVE_CONFIG_H',
 	'-I $dir',
 	'-I $srcdir/include',
+	'-isystem $builddir/pkg/zlib/include',
 }
 
 pkg.hdrs = copy('$outdir/include', '$srcdir/include', {'pciaccess.h'})
+
+pkg.deps = {
+	'pkg/zlib/headers',
+}
 
 lib('libpciaccess.a', [[src/(
 	common_bridge.c
