@@ -1,12 +1,12 @@
-From a5a3b56a204b398f6ae2e1144c73ec819e23426f Mon Sep 17 00:00:00 2001
+From ab8a58c777d6bc3e33b1f28c80fa5bbada804a4b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 13:38:59 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
 
 ---
  include/bpf_scm.h | 2 +-
- ip/iptuntap.c     | 8 +++-----
- 2 files changed, 4 insertions(+), 6 deletions(-)
+ ip/iptuntap.c     | 5 ++---
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/include/bpf_scm.h b/include/bpf_scm.h
 index 669f0538..9e456030 100644
@@ -22,21 +22,20 @@ index 669f0538..9e456030 100644
  
  	msg->iov.iov_base = &msg->aux;
 diff --git a/ip/iptuntap.c b/ip/iptuntap.c
-index 5095e0f8..8928e503 100644
+index 3cf55055..e149ae16 100644
 --- a/ip/iptuntap.c
 +++ b/ip/iptuntap.c
-@@ -278,9 +278,7 @@ static void show_processes(const char *name)
+@@ -270,8 +270,7 @@ static void show_processes(const char *name)
  
  	fd_path = globbuf.gl_pathv;
  	while (*fd_path) {
--		const char *dev_net_tun = "/dev/net/tun";
--		const size_t linkbuf_len = strlen(dev_net_tun) + 2;
+-		const size_t linkbuf_len = strlen(TUNDEV) + 2;
 -		char linkbuf[linkbuf_len], *fdinfo;
 +		char linkbuf[sizeof(TUNDEV) + 1], *fdinfo;
  		int pid, fd;
  		FILE *f;
  
-@@ -290,13 +288,13 @@ static void show_processes(const char *name)
+@@ -281,7 +280,7 @@ static void show_processes(const char *name)
  		if (pid == getpid())
  			goto next;
  
@@ -45,13 +44,6 @@ index 5095e0f8..8928e503 100644
  		if (err < 0) {
  			perror("readlink");
  			goto next;
- 		}
- 		linkbuf[err] = '\0';
--		if (strcmp(dev_net_tun, linkbuf))
-+		if (strcmp(TUNDEV, linkbuf))
- 			goto next;
- 
- 		if (asprintf(&fdinfo, "/proc/%d/fdinfo/%d", pid, fd) < 0)
 -- 
-2.34.0
+2.44.0
 

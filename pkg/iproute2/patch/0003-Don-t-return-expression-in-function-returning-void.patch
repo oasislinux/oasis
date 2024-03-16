@@ -1,4 +1,4 @@
-From 73e1cde9f80294c730b02c1eb217a4bc82d0168b Mon Sep 17 00:00:00 2001
+From 1b0100dc4efba66f64b64ff86cb25c9312da2848 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Jun 2019 12:14:23 -0700
 Subject: [PATCH] Don't return expression in function returning void
@@ -9,10 +9,10 @@ Subject: [PATCH] Don't return expression in function returning void
  2 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/ip/iplink_xdp.c b/ip/iplink_xdp.c
-index 4a490bc8..0d52bfac 100644
+index 5928dff7..8fe35def 100644
 --- a/ip/iplink_xdp.c
 +++ b/ip/iplink_xdp.c
-@@ -168,9 +168,11 @@ void xdp_dump(FILE *fp, struct rtattr *xdp, bool link, bool details)
+@@ -164,9 +164,11 @@ void xdp_dump(FILE *fp, struct rtattr *xdp, bool link, bool details)
  	mode = rta_getattr_u8(tb[IFLA_XDP_ATTACHED]);
  	if (mode == XDP_ATTACHED_NONE)
  		return;
@@ -28,10 +28,10 @@ index 4a490bc8..0d52bfac 100644
  	else if (mode == XDP_ATTACHED_DRV)
  		fprintf(fp, "xdp");
 diff --git a/ip/ipxfrm.c b/ip/ipxfrm.c
-index fec206ab..92afb7f8 100644
+index b78c712d..c3a5986f 100644
 --- a/ip/ipxfrm.c
 +++ b/ip/ipxfrm.c
-@@ -542,7 +542,7 @@ static void __xfrm_algo_print(struct xfrm_algo *algo, int type, int len,
+@@ -526,7 +526,7 @@ static void __xfrm_algo_print(struct xfrm_algo *algo, int type, int len,
  static inline void xfrm_algo_print(struct xfrm_algo *algo, int type, int len,
  				   FILE *fp, const char *prefix, bool nokeys)
  {
@@ -41,5 +41,5 @@ index fec206ab..92afb7f8 100644
  
  static void xfrm_aead_print(struct xfrm_algo_aead *algo, int len,
 -- 
-2.26.0
+2.44.0
 

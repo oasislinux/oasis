@@ -1,4 +1,4 @@
-From 2a25102281f4863cba9a0f76246006a2dd545cf7 Mon Sep 17 00:00:00 2001
+From 0d20d0e247e074dd3e8892053387295062c3c666 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 29 Jan 2020 15:36:37 -0800
 Subject: [PATCH] Use __typeof__ instead of typeof
@@ -69,10 +69,10 @@ index 7108cea7..36d73d96 100644
  
  #endif /* __LIST_H__ */
 diff --git a/lib/ll_map.c b/lib/ll_map.c
-index 36320f77..f0a6d494 100644
+index 7fe5f0bc..0f7305ab 100644
 --- a/lib/ll_map.c
 +++ b/lib/ll_map.c
-@@ -173,7 +173,7 @@ static void ll_altname_entries_update(struct ll_cache *parent_im,
+@@ -168,7 +168,7 @@ static void ll_altname_entries_update(struct ll_cache *parent_im,
  	 * and if it does not fit 1:1, recreate the cached list
  	 * from scratch.
  	 */
@@ -82,5 +82,5 @@ index 36320f77..f0a6d494 100644
  	rem = RTA_PAYLOAD(proplist);
  	for (i = RTA_DATA(proplist); RTA_OK(i, rem);
 -- 
-2.25.0
+2.44.0
 
