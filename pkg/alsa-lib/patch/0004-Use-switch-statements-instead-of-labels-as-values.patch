@@ -1,4 +1,4 @@
-From b96b61f217562a207c8b310dad13d47c3c4075ba Mon Sep 17 00:00:00 2001
+From 33cc8c8e77a2282c11601a8a1e14fb2e856af0dc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 31 May 2019 17:47:08 -0700
 Subject: [PATCH] Use switch statements instead of labels as values
@@ -6,14 +6,14 @@ Subject: [PATCH] Use switch statements instead of labels as values
 ---
  src/pcm/pcm_adpcm.c       |  20 +-
  src/pcm/pcm_alaw.c        |  20 +-
- src/pcm/pcm_iec958.c      |  20 +-
- src/pcm/pcm_lfloat.c      |  38 +-
+ src/pcm/pcm_iec958.c      |  22 +-
+ src/pcm/pcm_lfloat.c      |  42 +-
  src/pcm/pcm_linear.c      |  22 +-
  src/pcm/pcm_mulaw.c       |  20 +-
- src/pcm/pcm_rate_linear.c |  40 +-
- src/pcm/pcm_route.c       | 161 ++-----
- src/pcm/plugin_ops.h      | 929 ++++++++++++++------------------------
- 9 files changed, 398 insertions(+), 872 deletions(-)
+ src/pcm/pcm_rate_linear.c |  42 +-
+ src/pcm/pcm_route.c       | 163 +++----
+ src/pcm/plugin_ops.h      | 937 ++++++++++++++------------------------
+ 9 files changed, 412 insertions(+), 876 deletions(-)
 
 diff --git a/src/pcm/pcm_adpcm.c b/src/pcm/pcm_adpcm.c
 index fd9b9e8e..d4546cd0 100644
@@ -120,10 +120,10 @@ index 0a889183..f24e6351 100644
  			src += src_step;
  			dst += dst_step;
 diff --git a/src/pcm/pcm_iec958.c b/src/pcm/pcm_iec958.c
-index 1afe7393..afcc5860 100644
+index 1afe7393..8f1cd9e9 100644
 --- a/src/pcm/pcm_iec958.c
 +++ b/src/pcm/pcm_iec958.c
-@@ -149,10 +149,6 @@ static void snd_pcm_iec958_decode(snd_pcm_iec958_t *iec,
+@@ -149,11 +149,8 @@ static void snd_pcm_iec958_decode(snd_pcm_iec958_t *iec,
  				  snd_pcm_uframes_t src_offset,
  				  unsigned int channels, snd_pcm_uframes_t frames)
  {
@@ -132,9 +132,11 @@ index 1afe7393..afcc5860 100644
 -#undef PUT32_LABELS
 -	void *put = put32_labels[iec->getput_idx];
  	unsigned int channel;
++	unsigned int idx = iec->getput_idx;
  	for (channel = 0; channel < channels; ++channel) {
  		const uint32_t *src;
-@@ -168,11 +164,7 @@ static void snd_pcm_iec958_decode(snd_pcm_iec958_t *iec,
+ 		char *dst;
+@@ -168,11 +165,7 @@ static void snd_pcm_iec958_decode(snd_pcm_iec958_t *iec,
  		frames1 = frames;
  		while (frames1-- > 0) {
  			int32_t sample = iec958_to_s32(iec, *src);
@@ -143,11 +145,11 @@ index 1afe7393..afcc5860 100644
 -#include "plugin_ops.h"
 -#undef PUT32_END
 -		after:
-+			put32(dst, sample, iec->getput_idx);
++			put32(dst, sample, idx);
  			src += src_step;
  			dst += dst_step;
  		}
-@@ -186,10 +178,6 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
+@@ -186,10 +179,6 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
  				  snd_pcm_uframes_t src_offset,
  				  unsigned int channels, snd_pcm_uframes_t frames)
  {
@@ -158,7 +160,15 @@ index 1afe7393..afcc5860 100644
  	unsigned int channel;
  	int32_t sample = 0;
  	int counter = iec->counter;
-@@ -216,11 +204,7 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
+@@ -197,6 +186,7 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
+ 			    (iec->status[0] & IEC958_AES0_NONAUDIO) &&
+ 			    (channels == 8);
+ 	int counter_step = single_stream ? ((channels + 1) >> 1) : 1;
++	unsigned int idx = iec->getput_idx;
+ 	for (channel = 0; channel < channels; ++channel) {
+ 		const char *src;
+ 		uint32_t *dst;
+@@ -216,11 +206,7 @@ static void snd_pcm_iec958_encode(snd_pcm_iec958_t *iec,
  			iec->counter = counter;
  
  		while (frames1-- > 0) {
@@ -167,12 +177,12 @@ index 1afe7393..afcc5860 100644
 -#include "plugin_ops.h"
 -#undef GET32_END
 -		after:
-+			sample = get32(src, iec->getput_idx);
++			sample = get32(src, idx);
  			sample = iec958_subframe(iec, sample, channel);
  			// fprintf(stderr, "%d:%08x\n", frames1, sample);
  			*dst = sample;
 diff --git a/src/pcm/pcm_lfloat.c b/src/pcm/pcm_lfloat.c
-index 7785e4b9..2c93657d 100644
+index 7785e4b9..c2e07a57 100644
 --- a/src/pcm/pcm_lfloat.c
 +++ b/src/pcm/pcm_lfloat.c
 @@ -97,13 +97,6 @@ void snd_pcm_lfloat_convert_integer_float(const snd_pcm_channel_area_t *dst_area
@@ -189,7 +199,16 @@ index 7785e4b9..2c93657d 100644
  	unsigned int channel;
  	for (channel = 0; channel < channels; ++channel) {
  		const char *src;
-@@ -121,16 +114,8 @@ void snd_pcm_lfloat_convert_integer_float(const snd_pcm_channel_area_t *dst_area
+@@ -111,8 +104,6 @@ void snd_pcm_lfloat_convert_integer_float(const snd_pcm_channel_area_t *dst_area
+ 		int src_step, dst_step;
+ 		snd_pcm_uframes_t frames1;
+ 		int32_t sample = 0;
+-		snd_tmp_float_t tmp_float;
+-		snd_tmp_double_t tmp_double;
+ 		const snd_pcm_channel_area_t *src_area = &src_areas[channel];
+ 		const snd_pcm_channel_area_t *dst_area = &dst_areas[channel];
+ 		src = snd_pcm_channel_area_addr(src_area, src_offset);
+@@ -121,16 +112,8 @@ void snd_pcm_lfloat_convert_integer_float(const snd_pcm_channel_area_t *dst_area
  		dst_step = snd_pcm_channel_area_step(dst_area);
  		frames1 = frames;
  		while (frames1-- > 0) {
@@ -208,7 +227,7 @@ index 7785e4b9..2c93657d 100644
  			src += src_step;
  			dst += dst_step;
  		}
-@@ -142,13 +127,6 @@ void snd_pcm_lfloat_convert_float_integer(const snd_pcm_channel_area_t *dst_area
+@@ -142,13 +125,6 @@ void snd_pcm_lfloat_convert_float_integer(const snd_pcm_channel_area_t *dst_area
  					  unsigned int channels, snd_pcm_uframes_t frames,
  					  unsigned int put32idx, unsigned int get32floatidx)
  {
@@ -222,7 +241,16 @@ index 7785e4b9..2c93657d 100644
  	unsigned int channel;
  	for (channel = 0; channel < channels; ++channel) {
  		const char *src;
-@@ -166,16 +144,8 @@ void snd_pcm_lfloat_convert_float_integer(const snd_pcm_channel_area_t *dst_area
+@@ -156,8 +132,6 @@ void snd_pcm_lfloat_convert_float_integer(const snd_pcm_channel_area_t *dst_area
+ 		int src_step, dst_step;
+ 		snd_pcm_uframes_t frames1;
+ 		int32_t sample = 0;
+-		snd_tmp_float_t tmp_float;
+-		snd_tmp_double_t tmp_double;
+ 		const snd_pcm_channel_area_t *src_area = &src_areas[channel];
+ 		const snd_pcm_channel_area_t *dst_area = &dst_areas[channel];
+ 		src = snd_pcm_channel_area_addr(src_area, src_offset);
+@@ -166,16 +140,8 @@ void snd_pcm_lfloat_convert_float_integer(const snd_pcm_channel_area_t *dst_area
  		dst_step = snd_pcm_channel_area_step(dst_area);
  		frames1 = frames;
  		while (frames1-- > 0) {
@@ -348,10 +376,10 @@ index 587fa54e..97dae154 100644
  			src += src_step;
  			dst += dst_step;
 diff --git a/src/pcm/pcm_rate_linear.c b/src/pcm/pcm_rate_linear.c
-index 35a4d8ea..56140571 100644
+index 35a4d8ea..366fdad7 100644
 --- a/src/pcm/pcm_rate_linear.c
 +++ b/src/pcm/pcm_rate_linear.c
-@@ -70,13 +70,6 @@ static void linear_expand(struct rate_linear *rate,
+@@ -70,19 +70,13 @@ static void linear_expand(struct rate_linear *rate,
  			  const snd_pcm_channel_area_t *src_areas,
  			  snd_pcm_uframes_t src_offset, unsigned int src_frames)
  {
@@ -365,7 +393,14 @@ index 35a4d8ea..56140571 100644
  	unsigned int get_threshold = rate->pitch;
  	unsigned int channel;
  	unsigned int src_frames1;
-@@ -106,22 +99,14 @@ static void linear_expand(struct rate_linear *rate,
+ 	unsigned int dst_frames1;
+ 	int16_t sample = 0;
+ 	unsigned int pos;
++	unsigned int get_idx = rate->get_idx, put_idx = rate->get_idx;
+ 	
+ 	for (channel = 0; channel < rate->channels; ++channel) {
+ 		const snd_pcm_channel_area_t *src_area = &src_areas[channel];
+@@ -106,22 +100,14 @@ static void linear_expand(struct rate_linear *rate,
  				pos -= get_threshold;
  				old_sample = new_sample;
  				if (src_frames1 < src_frames) {
@@ -374,7 +409,7 @@ index 35a4d8ea..56140571 100644
 -#include "plugin_ops.h"
 -#undef GET16_END
 -				after_get:
-+					sample = get16(src, rate->get_idx);
++					sample = get16(src, get_idx);
  					new_sample = sample;
  				}
  			}
@@ -386,11 +421,11 @@ index 35a4d8ea..56140571 100644
 -#include "plugin_ops.h"
 -#undef PUT16_END
 -		after_put:
-+			put16(dst, sample, rate->put_idx);
++			put16(dst, sample, put_idx);
  			dst += dst_step;
  			dst_frames1++;
  			pos += LINEAR_DIV;
-@@ -192,13 +177,6 @@ static void linear_shrink(struct rate_linear *rate,
+@@ -192,19 +178,13 @@ static void linear_shrink(struct rate_linear *rate,
  			  const snd_pcm_channel_area_t *src_areas,
  			  snd_pcm_uframes_t src_offset, unsigned int src_frames)
  {
@@ -404,7 +439,14 @@ index 35a4d8ea..56140571 100644
  	unsigned int get_increment = rate->pitch;
  	unsigned int channel;
  	unsigned int src_frames1;
-@@ -223,13 +201,7 @@ static void linear_shrink(struct rate_linear *rate,
+ 	unsigned int dst_frames1;
+ 	int16_t sample = 0;
+ 	unsigned int pos;
++	unsigned int get_idx = rate->get_idx, put_idx = rate->get_idx;
+ 
+ 	for (channel = 0; channel < rate->channels; ++channel) {
+ 		const snd_pcm_channel_area_t *src_area = &src_areas[channel];
+@@ -223,13 +203,7 @@ static void linear_shrink(struct rate_linear *rate,
  		src_frames1 = 0;
  		dst_frames1 = 0;
  		while (src_frames1 < src_frames) {
@@ -415,11 +457,11 @@ index 35a4d8ea..56140571 100644
 -#undef GET16_END
 -		after_get:
 -			new_sample = sample;
-+			new_sample = get16(src, rate->get_idx);
++			new_sample = get16(src, get_idx);
  			src += src_step;
  			src_frames1++;
  			pos += get_increment;
-@@ -238,11 +210,7 @@ static void linear_shrink(struct rate_linear *rate,
+@@ -238,11 +212,7 @@ static void linear_shrink(struct rate_linear *rate,
  				old_weight = (pos << (32 - LINEAR_DIV_SHIFT)) / (get_increment >> (LINEAR_DIV_SHIFT - 16));
  				new_weight = 0x10000 - old_weight;
  				sample = (old_sample * old_weight + new_sample * new_weight) >> 16;
@@ -428,12 +470,12 @@ index 35a4d8ea..56140571 100644
 -#include "plugin_ops.h"
 -#undef PUT16_END
 -			after_put:
-+				put16(dst, sample, rate->put_idx);
++				put16(dst, sample, put_idx);
  				dst += dst_step;
  				dst_frames1++;
  				if (CHECK_SANITY(dst_frames1 > dst_frames)) {
 diff --git a/src/pcm/pcm_route.c b/src/pcm/pcm_route.c
-index 737c8fa4..8cfeb175 100644
+index 737c8fa4..f9ba16a1 100644
 --- a/src/pcm/pcm_route.c
 +++ b/src/pcm/pcm_route.c
 @@ -131,10 +131,6 @@ static void snd_pcm_route_convert1_one(const snd_pcm_channel_area_t *dst_area,
@@ -466,7 +508,7 @@ index 737c8fa4..8cfeb175 100644
  		src += src_step;
  		dst += dst_step;
  	}
-@@ -181,10 +172,6 @@ static void snd_pcm_route_convert1_one_getput(const snd_pcm_channel_area_t *dst_
+@@ -181,16 +172,13 @@ static void snd_pcm_route_convert1_one_getput(const snd_pcm_channel_area_t *dst_
  					      const snd_pcm_route_ttable_dst_t* ttable,
  					      const snd_pcm_route_params_t *params)
  {
@@ -477,7 +519,14 @@ index 737c8fa4..8cfeb175 100644
  	const snd_pcm_channel_area_t *src_area = 0;
  	unsigned int srcidx;
  	const char *src;
-@@ -207,18 +194,13 @@ static void snd_pcm_route_convert1_one_getput(const snd_pcm_channel_area_t *dst_
+ 	char *dst;
+ 	int src_step, dst_step;
+ 	uint32_t sample = 0;
++	unsigned int get_idx = params->get_idx, put_idx = params->put_idx;
+ 	for (srcidx = 0; srcidx < ttable->nsrcs && srcidx < src_channels; ++srcidx) {
+ 		unsigned int channel = ttable->srcs[srcidx].channel;
+ 		if (channel >= src_channels)
+@@ -207,18 +195,13 @@ static void snd_pcm_route_convert1_one_getput(const snd_pcm_channel_area_t *dst_
  		return;
  	}
  	
@@ -493,12 +542,12 @@ index 737c8fa4..8cfeb175 100644
 -#include "plugin_ops.h"
 -#undef CONV24_END
 -	after:
-+		sample = get32(src, params->get_idx);
-+		put32(dst, sample, params->put_idx);
++		sample = get32(src, get_idx);
++		put32(dst, sample, put_idx);
  		src += src_step;
  		dst += dst_step;
  	}
-@@ -233,34 +215,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
+@@ -233,34 +216,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
  					const snd_pcm_route_ttable_dst_t* ttable,
  					const snd_pcm_route_params_t *params)
  {
@@ -533,7 +582,15 @@ index 737c8fa4..8cfeb175 100644
  	int nsrcs = ttable->nsrcs;
  	char *dst;
  	int dst_step;
-@@ -301,11 +255,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
+@@ -269,6 +224,7 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
+ 	snd_pcm_route_ttable_src_t src_tt[nsrcs];
+ 	int32_t sample = 0;
+ 	int srcidx, srcidx1 = 0;
++	unsigned get_idx = params->get_idx, put_idx = params->put_idx;
+ 	for (srcidx = 0; srcidx < nsrcs && (unsigned)srcidx < src_channels; ++srcidx) {
+ 		const snd_pcm_channel_area_t *src_area;
+ 		unsigned int channel = ttable->srcs[srcidx].channel;
+@@ -301,11 +257,6 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
  		return;
  	}
  
@@ -545,7 +602,7 @@ index 737c8fa4..8cfeb175 100644
  	dst = snd_pcm_channel_area_addr(dst_area, dst_offset);
  	dst_step = snd_pcm_channel_area_step(dst_area);
  
-@@ -314,83 +263,71 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
+@@ -314,83 +265,71 @@ static void snd_pcm_route_convert1_many(const snd_pcm_channel_area_t *dst_area,
  		sum_t sum;
  
  		/* Zero sum */
@@ -572,7 +629,7 @@ index 737c8fa4..8cfeb175 100644
 -#include "plugin_ops.h"
 -#undef GET32_END
 -		after_get:
-+			sample = get32(src, params->get_idx);
++			sample = get32(src, get_idx);
  
  			/* Sum */
 -			goto *add;
@@ -670,19 +727,20 @@ index 737c8fa4..8cfeb175 100644
 -#undef PUT32_END
 -	after_put32:
 -		
-+		put32(dst, sample, params->put_idx);
++		put32(dst, sample, put_idx);
 +
  		dst += dst_step;
  	}
  }
 diff --git a/src/pcm/plugin_ops.h b/src/pcm/plugin_ops.h
-index 6392073c..049a9486 100644
+index 6392073c..5c89a24f 100644
 --- a/src/pcm/plugin_ops.h
 +++ b/src/pcm/plugin_ops.h
-@@ -19,6 +19,10 @@
+@@ -19,6 +19,11 @@
   *
   */
  
++#include <assert.h>
 +#include <math.h>
 +#include <stdint.h>
 +#include <byteswap.h>
@@ -690,7 +748,7 @@ index 6392073c..049a9486 100644
  #ifndef SX_INLINES
  #define SX_INLINES
  static inline uint32_t sx20(uint32_t x)
-@@ -92,626 +96,353 @@ static inline uint32_t sx24s(uint32_t x)
+@@ -92,626 +97,360 @@ static inline uint32_t sx24s(uint32_t x)
  #define _put_triple_s(ptr,val) _put_triple_le(ptr,val)
  #endif
  
@@ -1054,6 +1112,7 @@ index 6392073c..049a9486 100644
 +	case 125: /* 32s ^> 24s */ as_u32(dst) = sx24s((as_u32c(src) ^ 0x80) << 8); break;
 +	case 126: /* 32s ^> 32h */ as_u32(dst) = bswap_32(as_u32c(src) ^ 0x80); break;
 +	case 127: /* 32s ^> 32s */ as_u32(dst) = as_u32c(src) ^ 0x80; break;
++	default: assert(0);
 +	}
  }
 -#endif
@@ -1164,6 +1223,7 @@ index 6392073c..049a9486 100644
 +	case 29: /* 18h ^> 16h */ return (_get_triple(src) >> 2) ^ 0x8000;
 +	case 30: /* 18s -> 16h */ return _get_triple_s(src) >> 2;
 +	case 31: /* 18s ^> 16h */ return (_get_triple_s(src) >> 2) ^ 0x8000;
++	default: assert(0);
 +	}
  }
 -#endif
@@ -1275,6 +1335,7 @@ index 6392073c..049a9486 100644
 +	case 29: /* 16h ^> 18h */ _put_triple(dst, (uint32_t)(sample ^ 0x8000) << 2); break;
 +	case 30: /* 16h -> 18s */ _put_triple_s(dst, (uint32_t)sample << 2); break;
 +	case 31: /* 16h ^> 18s */ _put_triple_s(dst, (uint32_t)(sample ^ 0x8000) << 2); break;
++	default: assert(0);
 +	}
  }
 -#endif
@@ -1395,6 +1456,7 @@ index 6392073c..049a9486 100644
 +	case 29: /* 18h ^> 32h */ return (_get_triple(src) << 14) ^ 0x80000000;
 +	case 30: /* 18s -> 32h */ return _get_triple_s(src) << 14;
 +	case 31: /* 18s ^> 32h */ return (_get_triple_s(src) << 14) ^ 0x80000000;
++	default: assert(0);
 +	}
  }
 -#endif
@@ -1516,6 +1578,7 @@ index 6392073c..049a9486 100644
 +	case 29: /* 32h ^> 18h */ _put_triple(dst, (sample ^ 0x80000000) >> 14); break;
 +	case 30: /* 32h -> 18s */ _put_triple_s(dst, sample >> 14); break;
 +	case 31: /* 32h ^> 18s */ _put_triple_s(dst, (sample ^ 0x80000000) >> 14); break;
++	default: assert(0);
 +	}
  }
 -#endif
@@ -1558,6 +1621,7 @@ index 6392073c..049a9486 100644
 +	case 3: /* 32h -> (float64)s */
 +		tmp_double.d = (double_t)((int32_t)sample) / (double_t)0x80000000UL;
 +		as_u64(dst) = bswap_64(tmp_double.l); break;
++	default: assert(0);
 +	}
 +}
  
@@ -1638,6 +1702,7 @@ index 6392073c..049a9486 100644
 +		if (tmp_double.d <= -1.0)
 +			return 0x80000000;
 +		return (int32_t)(tmp_double.d * (double_t)0x80000000UL);
++	default: assert(0);
 +	}
 +}
  
