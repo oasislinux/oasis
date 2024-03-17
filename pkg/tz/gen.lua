@@ -1,4 +1,5 @@
 cflags{
+	'-std=c99', '-Wall', '-Wpedantic', '-Wno-maybe-uninitialized',
 	'-I $dir',
 	[[-D 'ZIC_BLOAT_DEFAULT="slim"']],
 }
