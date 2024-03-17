@@ -1,4 +1,7 @@
 cflags{
+	'-std=c99', '-Wall', '-Wpedantic',
+	'-Wno-array-parameter', '-Wno-misleading-indentation',
+	'-D _GNU_SOURCE',
 	'-I $srcdir/lasagna',
 	'-I $outdir',
 }
