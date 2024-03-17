@@ -1,5 +1,5 @@
 cflags{
-	'-std=c99',
+	'-std=c11', '-Wall', '-Wpedantic',
 	'-D _XOPEN_SOURCE=700',
 	'-I $outdir',
 	'-I $srcdir',
