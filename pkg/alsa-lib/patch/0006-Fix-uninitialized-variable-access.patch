@@ -1,0 +1,50 @@
+From 0cbb9f6afb0e9274ccdf8b3390c45afd6576b540 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 16 Mar 2024 18:08:08 -0700
+Subject: [PATCH] Fix uninitialized variable access
+
+---
+ src/pcm/pcm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/pcm/pcm.c b/src/pcm/pcm.c
+index 23b27697..14d868a8 100644
+--- a/src/pcm/pcm.c
++++ b/src/pcm/pcm.c
+@@ -5321,7 +5321,7 @@ EXPORT_SYMBOL int INTERNAL(snd_pcm_hw_params_get_period_size_min)(const snd_pcm_
+ int snd_pcm_hw_params_get_period_size_min(const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir)
+ #endif
+ {
+-	unsigned int _val = *val;
++	unsigned int _val;
+ 	int err = snd_pcm_hw_param_get_min(params, SND_PCM_HW_PARAM_PERIOD_SIZE, &_val, dir);
+ 	if (err >= 0)
+ 		*val = _val;
+@@ -5343,7 +5343,7 @@ EXPORT_SYMBOL int INTERNAL(snd_pcm_hw_params_get_period_size_max)(const snd_pcm_
+ int snd_pcm_hw_params_get_period_size_max(const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir)
+ #endif
+ {
+-	unsigned int _val = *val;
++	unsigned int _val;
+ 	int err = snd_pcm_hw_param_get_max(params, SND_PCM_HW_PARAM_PERIOD_SIZE, &_val, dir);
+ 	if (err >= 0)
+ 		*val = _val;
+@@ -6277,6 +6277,7 @@ EXPORT_SYMBOL int INTERNAL(snd_pcm_hw_params_set_tick_time_first)(snd_pcm_t *pcm
+ int snd_pcm_hw_params_set_tick_time_first(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val, int *dir)
+ #endif
+ {
++	*val = 0;
+ 	return 0;
+ }
+ 
+@@ -6296,6 +6297,7 @@ EXPORT_SYMBOL int INTERNAL(snd_pcm_hw_params_set_tick_time_last)(snd_pcm_t *pcm
+ int snd_pcm_hw_params_set_tick_time_last(snd_pcm_t *pcm, snd_pcm_hw_params_t *params, unsigned int *val, int *dir)
+ #endif
+ {
++	*val = 0;
+ 	return 0;
+ }
+ 
+-- 
+2.44.0
+

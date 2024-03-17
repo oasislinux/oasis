@@ -1,4 +1,6 @@
 cflags{
+	'-std=gnu99', '-Wall', '-Wno-unused-const-variable', '-Wno-maybe-uninitialized',
+	'-D _GNU_SOURCE',
 	'-I $outdir',
 	'-I $dir',
 	'-I $dir/alsa',
@@ -46,9 +48,9 @@ build('objcopy', '$outdir/src/pcm/pcm.nowarn.c.o', '$outdir/src/pcm/pcm.c.o', {
 })
 
 lib('libasound.a', [[src/(
-	conf.c confmisc.c input.c output.c async.c error.c dlmisc.c socket.c shmarea.c userfile.c names.c
+	conf.c confeval.c confmisc.c input.c output.c async.c error.c dlmisc.c socket.c shmarea.c userfile.c names.c
 	control/(
-		cards.c tlv.c namehint.c hcontrol.c
+		cards.c tlv.c eld.c namehint.c hcontrol.c
 		control.c control_hw.c control_empty.c
 		setup.c ctlparse.c
 		control_symbols.c

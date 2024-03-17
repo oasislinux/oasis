@@ -1,0 +1,85 @@
+From 4a4b059a25abbcbfeb8593cdeb3098c2bd19011a Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 16 Mar 2024 20:02:10 -0700
+Subject: [PATCH] Prevent unused definitions in some configurations
+
+---
+ src/dlmisc.c       | 12 ++++++------
+ src/pcm/pcm_rate.c |  2 ++
+ 2 files changed, 8 insertions(+), 6 deletions(-)
+
+diff --git a/src/dlmisc.c b/src/dlmisc.c
+index 96784197..a1ab77c2 100644
+--- a/src/dlmisc.c
++++ b/src/dlmisc.c
+@@ -196,6 +196,8 @@ int snd_dlclose(void *handle)
+ #endif
+ }
+ 
++#ifdef HAVE_LIBDL
++#ifdef VERSIONED_SYMBOLS
+ /**
+  * \brief Verifies a dynamically loaded symbol.
+  * \param handle Library handle, similar to \c dlsym.
+@@ -208,7 +210,6 @@ int snd_dlclose(void *handle)
+  */
+ static int snd_dlsym_verify(void *handle, const char *name, const char *version)
+ {
+-#ifdef HAVE_LIBDL
+ 	int res;
+ 	char *vname;
+ 	
+@@ -225,10 +226,9 @@ static int snd_dlsym_verify(void *handle, const char *name, const char *version)
+ 	if (res < 0)
+ 		SNDERR("unable to verify version for symbol %s", name);
+ 	return res;
+-#else
+-	return 0;
+-#endif
+ }
++#endif
++#endif
+ 
+ /**
+  * \brief Resolves a symbol from a dynamic library - ALSA wrapper for \c dlsym.
+@@ -245,8 +245,6 @@ static int snd_dlsym_verify(void *handle, const char *name, const char *version)
+  */
+ void *snd_dlsym(void *handle, const char *name, const char *version)
+ {
+-	int err;
+-
+ #ifndef PIC
+ 	if (handle == &snd_dlsym_start) {
+ 		/* it's the funny part: */
+@@ -262,6 +260,8 @@ void *snd_dlsym(void *handle, const char *name, const char *version)
+ #endif
+ #ifdef HAVE_LIBDL
+ #ifdef VERSIONED_SYMBOLS
++	int err;
++
+ 	if (version) {
+ 		err = snd_dlsym_verify(handle, name, version);
+ 		if (err < 0)
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index 5f0cc774..509b1b14 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -1453,6 +1453,7 @@ static int rate_open_func(snd_pcm_rate_t *rate, const char *type, const snd_conf
+ }
+ #endif
+ 
++#ifdef PIC
+ /*
+  * If the conf is an array of alternatives then the id of
+  * the first element will be "0" (or maybe NULL). Otherwise assume it is
+@@ -1477,6 +1478,7 @@ static int is_string_array(const snd_config_t *conf)
+ 
+ 	return 1;
+ }
++#endif
+ 
+ /**
+  * \brief Creates a new rate PCM
+-- 
+2.44.0
+

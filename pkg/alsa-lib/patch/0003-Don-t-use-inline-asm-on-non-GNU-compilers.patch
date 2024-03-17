@@ -1,4 +1,4 @@
-From f0732cf0a75f47eddc200bb6fa9c91250e257a3c Mon Sep 17 00:00:00 2001
+From 613de00de55805f1c27b40ad14aae8cc2b81f7eb Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 3 Jul 2019 18:27:09 -0700
 Subject: [PATCH] Don't use inline asm on non-GNU compilers
@@ -8,10 +8,10 @@ Subject: [PATCH] Don't use inline asm on non-GNU compilers
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/include/local.h b/include/local.h
-index ce142d04..df3e6c31 100644
+index 512e4455..a314468b 100644
 --- a/include/local.h
 +++ b/include/local.h
-@@ -265,7 +265,7 @@ extern snd_lib_error_handler_t snd_err_msg;
+@@ -290,7 +290,7 @@ extern snd_lib_error_handler_t snd_err_msg;
  
  #define ASM_NAME(name) __SYMBOL_PREFIX name
  
@@ -21,5 +21,5 @@ index ce142d04..df3e6c31 100644
  
  /* We want the .gnu.warning.SYMBOL section to be unallocated.  */
 -- 
-2.22.0
+2.44.0
 

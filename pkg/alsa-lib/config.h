@@ -18,15 +18,18 @@
 #define BUILD_SEQ "1"
 #define BUILD_TOPOLOGY "1"
 /* #undef BUILD_UCM */
+#define HAVE_ATTRIBUTE_SYMVER 1
 #define HAVE_CLOCK_GETTIME 1
 #define HAVE_DLFCN_H 1
 #define HAVE_EACCESS 1
 #define HAVE_ENDIAN_H 1
 #define HAVE_INTTYPES_H 1
+/* #undef HAVE_LFS */
 /* #undef HAVE_LIBDL */
 #define HAVE_LIBPTHREAD 1
 /* #undef HAVE_LIBRESMGR */
 #define HAVE_LIBRT 1
+#define HAVE_MALLOC_H 1
 #define HAVE_MEMORY_H 1
 #define HAVE_MMX 1
 #define HAVE_PTHREAD_MUTEX_RECURSIVE /**/
@@ -52,10 +55,10 @@
 #define PACKAGE "alsa-lib"
 #define PACKAGE_BUGREPORT ""
 #define PACKAGE_NAME "alsa-lib"
-#define PACKAGE_STRING "alsa-lib 1.2.5.1"
+#define PACKAGE_STRING "alsa-lib 1.2.11"
 #define PACKAGE_TARNAME "alsa-lib"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "1.2.5.1"
+#define PACKAGE_VERSION "1.2.11"
 #define SND_MAX_CARDS 32
 #define STDC_HEADERS 1
 #define SUPPORT_ALOAD "1"
@@ -78,8 +81,13 @@
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
-#define VERSION "1.2.5.1"
+#define VERSION "1.2.11"
 #define VERSIONED_SYMBOLS /**/
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
+#endif
+/* #undef _FILE_OFFSET_BITS */
+/* #undef _LARGE_FILES */
 /* #undef _MINIX */
 /* #undef _POSIX_1_SOURCE */
 /* #undef _POSIX_SOURCE */
