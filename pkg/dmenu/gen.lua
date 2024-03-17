@@ -1,4 +1,6 @@
 cflags{
+	'-std=c99', '-Wall', '-Wpedantic', '-Wno-maybe-uninitialized',
+	'-D _POSIX_C_SOURCE=200809L',
 	[[-D 'VERSION="4.6"']],
 	'-I $dir',
 	'-isystem $builddir/pkg/fontconfig/include',
