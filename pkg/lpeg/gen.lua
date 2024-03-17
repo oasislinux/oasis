@@ -1,5 +1,5 @@
 cflags{
-	'-std=c99',
+	'-std=c99', '-Wall', '-Wpedantic',
 	'-D NDEBUG',
 	'-isystem $builddir/pkg/lua/include',
 }
