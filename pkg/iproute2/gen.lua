@@ -9,8 +9,8 @@ cflags{
 	[[-D 'CONF_USR_DIR="/share/iproute2"']],
 	[[-D 'CONF_ETC_DIR="/etc/iproute2"']],
 	[[-D 'NETNS_RUN_DIR="/run/netns"']],
-	[[-D 'NETNS_RUN_DIR="/etc/netns"']],
-	'-D CONF_COLOR:=COLOR_OPT_AUTO',
+	[[-D 'NETNS_ETC_DIR="/etc/netns"']],
+	'-D CONF_COLOR=COLOR_OPT_AUTO',
 	'-I $srcdir/include',
 	'-I $srcdir/include/uapi',
 	'-I $srcdir/misc',
@@ -27,6 +27,9 @@ lib('libnetlink.a', [[lib/(
 	utils.c utils_math.c rt_names.c ll_map.c ll_types.c ll_proto.c ll_addr.c
 	inet_proto.c namespace.c json_writer.c json_print.c json_print_math.c
 	names.c color.c bpf_legacy.c bpf_glue.c exec.c fs.c cg_map.c ppp_proto.c
+
+	selinux.c
+
 	ax25_ntop.c
 	rose_ntop.c
 	mpls_ntop.c mpls_pton.c
