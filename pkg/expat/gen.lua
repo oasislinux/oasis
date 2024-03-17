@@ -1,4 +1,5 @@
 cflags{
+	'-std=c99', '-Wall',
 	'-D HAVE_EXPAT_CONFIG_H',
 	'-I $dir',
 	'-I $basedir/pkg/openbsd/include',
