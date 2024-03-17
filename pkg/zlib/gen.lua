@@ -1,5 +1,5 @@
 cflags{
-	'-D HAVE_HIDDEN',
+	'-std=c99', '-Wall', '-Wpedantic',
 	'-D HAVE_STDARG_H',
 	'-D HAVE_UNISTD_H',
 	'-D _LARGEFILE64_SOURCE',
