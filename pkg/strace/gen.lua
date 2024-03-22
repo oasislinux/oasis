@@ -97,6 +97,7 @@ local srcs = paths[[src/(
 	bpf_sock_filter.c
 	btrfs.c
 	cacheflush.c
+	cachestat.c
 	capability.c
 	chdir.c
 	chmod.c
@@ -119,6 +120,7 @@ local srcs = paths[[src/(
 	evdev_mpers.c
 	eventfd.c
 	execve.c
+	exitkill.c
 	fadvise.c
 	fallocate.c
 	fanotify.c
@@ -149,7 +151,7 @@ local srcs = paths[[src/(
 	fstatfs.c
 	fstatfs64.c
 	futex.c
-	futex_waitv.c
+	futex2.c
 	gen/gen_hdio.c
 	get_personality.c
 	get_robust_list.c
@@ -186,9 +188,12 @@ local srcs = paths[[src/(
 	link.c
 	lirc_ioctl.c
 	listen.c
+	listmount.c
 	lookup_dcookie.c
 	loop.c
 	lseek.c
+	lsm.c
+	map_shadow_stack.c
 	mem.c
 	membarrier.c
 	memfd_create.c
@@ -316,6 +321,7 @@ local srcs = paths[[src/(
 	stat64.c
 	statfs.c
 	statfs64.c
+	statmount.c
 	statx.c
 	strauss.c
 	string_to_uint.c
@@ -381,8 +387,8 @@ file('bin/strace', '755', '$outdir/strace')
 
 build('sed', '$outdir/strace.1', '$srcdir/doc/strace.1.in', {
 	expr={
-		[[-e 's,@STRACE_MANPAGE_DATE@,2023-06-11,']],
-		[[-e 's,@VERSION@,6.4,']],
+		[[-e 's,@STRACE_MANPAGE_DATE@,2024-03-13,']],
+		[[-e 's,@VERSION@,6.8,']],
 		[[-e 's,@ENABLE_STACKTRACE_TRUE@,#,']],
 		[[-e 's,@ENABLE_STACKTRACE_FALSE@,,']],
 		[[-e 's,@ENABLE_SECONTEXT_TRUE@,#,']],

@@ -1,11 +1,10 @@
-From 463e94867f84bcb4dc85e18cb4304edea90d8659 Mon Sep 17 00:00:00 2001
+From 70c04478b105ab15e3e3a4bfcfcf96ace104b32e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 6 Jul 2019 01:54:05 -0700
 Subject: [PATCH] Avoid empty initializer lists
 
 ---
  src/bpf.c               | 4 ++--
- src/futex_waitv.c       | 2 +-
  src/sched.c             | 2 +-
  src/signal.c            | 2 +-
  src/strace.c            | 2 +-
@@ -17,13 +16,13 @@ Subject: [PATCH] Avoid empty initializer lists
  tests/timer_create.c    | 2 +-
  tests/wait4.c           | 2 +-
  tests/waitid.c          | 2 +-
- 13 files changed, 17 insertions(+), 17 deletions(-)
+ 12 files changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/src/bpf.c b/src/bpf.c
-index 1e72f3e30..7a6406687 100644
+index 690df570d..16f2b7d31 100644
 --- a/src/bpf.c
 +++ b/src/bpf.c
-@@ -48,7 +48,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
+@@ -50,7 +50,7 @@ bpf_cmd_decoder(struct tcb *const tcp,					\
  #define BEGIN_BPF_CMD_DECODER(bpf_cmd)					\
  	static DECL_BPF_CMD_DECODER(decode_ ## bpf_cmd)			\
  	{								\
@@ -32,7 +31,7 @@ index 1e72f3e30..7a6406687 100644
  		size_t attr_size = bpf_cmd ## _struct_size;	\
  		const unsigned int len = MIN(size, attr_size);		\
  		memcpy(&attr, data, len);				\
-@@ -159,7 +159,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
+@@ -161,7 +161,7 @@ print_ebpf_prog(struct tcb *const tcp, const uint64_t addr, const uint32_t len)
  	if (abbrev(tcp)) {
  		printaddr(addr);
  	} else {
@@ -41,19 +40,6 @@ index 1e72f3e30..7a6406687 100644
  		struct ebpf_insn insn;
  
  		print_array(tcp, addr, len, &insn, sizeof(insn),
-diff --git a/src/futex_waitv.c b/src/futex_waitv.c
-index 512ee715d..340201aa3 100644
---- a/src/futex_waitv.c
-+++ b/src/futex_waitv.c
-@@ -49,7 +49,7 @@ print_waiter_array(struct tcb * const tcp, const kernel_ulong_t waiters,
- 		   const unsigned int nr_futexes)
- {
- 	struct futex_waitv buf;
--	struct print_waiter_data data = {};
-+	struct print_waiter_data data = {0};
- 
- 	print_array(tcp, waiters, nr_futexes, &buf, sizeof(buf),
- 		    tfetch_mem, print_waiter, &data);
 diff --git a/src/sched.c b/src/sched.c
 index 010366871..2dda5b872 100644
 --- a/src/sched.c
@@ -81,10 +67,10 @@ index 98f84d500..8680b10fb 100644
  		return;
  	tprints_string(sprintsigmask_n("", mask, len));
 diff --git a/src/strace.c b/src/strace.c
-index 5752177b7..9cd4ff461 100644
+index 649b8d160..9c87e34ed 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -3693,7 +3693,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
+@@ -3891,7 +3891,7 @@ trace_syscall(struct tcb *tcp, unsigned int *sig)
  		syscall_entering_finish(tcp, res);
  		return res;
  	} else {
@@ -94,7 +80,7 @@ index 5752177b7..9cd4ff461 100644
  		if (res != 0) {
  			res = syscall_exiting_trace(tcp, &ts, res);
 diff --git a/tests/btrfs.c b/tests/btrfs.c
-index 321d3a25c..442377130 100644
+index a3161875b..88112e463 100644
 --- a/tests/btrfs.c
 +++ b/tests/btrfs.c
 @@ -313,7 +313,7 @@ btrfs_test_subvol_ioctls(void)
@@ -114,7 +100,7 @@ index 321d3a25c..442377130 100644
 +	struct btrfs_ioctl_vol_args vol_args = {0};
  
  	ioctl(-1, BTRFS_IOC_BALANCE_CTL, 1);
- 	printf("ioctl(-1, %s, %sBTRFS_BALANCE_CTL_PAUSE%s) = -1 EBADF (%m)\n",
+ 	printf("ioctl(-1, %s, %sBTRFS_BALANCE_CTL_PAUSE%s)" RVAL_EBADF,
 @@ -764,7 +764,7 @@ btrfs_print_defrag_range_args(struct btrfs_ioctl_defrag_range_args *args,
  static void
  btrfs_test_defrag_ioctls(void)
@@ -132,9 +118,9 @@ index 321d3a25c..442377130 100644
 +	struct btrfs_ioctl_space_args args = {0};
  
  	ioctl(-1, BTRFS_IOC_SPACE_INFO, NULL);
- 	printf("ioctl(-1, %s, NULL) = -1 EBADF (%m)\n",
+ 	printf("ioctl(-1, %s, NULL)" RVAL_EBADF,
 diff --git a/tests/clock_nanosleep.c b/tests/clock_nanosleep.c
-index 51bd0d7f7..a1053fd1e 100644
+index 13c3dad87..4638d492b 100644
 --- a/tests/clock_nanosleep.c
 +++ b/tests/clock_nanosleep.c
 @@ -39,7 +39,7 @@ main(void)
@@ -147,7 +133,7 @@ index 51bd0d7f7..a1053fd1e 100644
  	const struct itimerval itv = {
  		.it_interval.tv_usec = 222222,
 diff --git a/tests/nanosleep.c b/tests/nanosleep.c
-index 8ff6a86b8..6377f38ee 100644
+index 743105e80..2a7ddff5c 100644
 --- a/tests/nanosleep.c
 +++ b/tests/nanosleep.c
 @@ -53,7 +53,7 @@ main(void)
@@ -160,7 +146,7 @@ index 8ff6a86b8..6377f38ee 100644
  	const struct itimerval itv = { .it_value.tv_usec = 111111 };
  
 diff --git a/tests/restart_syscall.c b/tests/restart_syscall.c
-index e4e83dc09..da83d1dc7 100644
+index a9b1d2291..7fd7fb602 100644
 --- a/tests/restart_syscall.c
 +++ b/tests/restart_syscall.c
 @@ -26,7 +26,7 @@ main(void)
@@ -170,8 +156,8 @@ index e4e83dc09..da83d1dc7 100644
 -	const sigset_t set = {};
 +	const sigset_t set = {0};
  	const struct sigaction act = { .sa_handler = SIG_IGN };
- 	const struct itimerval itv = { .it_value.tv_usec = 111111 };
- 	const struct timespec req = { .tv_nsec = 222222222 };
+ 	const struct itimerval itv = { .it_interval.tv_usec = 22222,
+ 				       .it_value.tv_usec = 11111 };
 diff --git a/tests/setrlimit.c b/tests/setrlimit.c
 index d4953f6f8..60d54fbd8 100644
 --- a/tests/setrlimit.c
@@ -186,12 +172,12 @@ index d4953f6f8..60d54fbd8 100644
  			continue;
  		rlimit[0] = libc_rlim.rlim_cur;
 diff --git a/tests/timer_create.c b/tests/timer_create.c
-index af91da0d3..a0a79f1ad 100644
+index e4357b2cf..8d6cd415f 100644
 --- a/tests/timer_create.c
 +++ b/tests/timer_create.c
 @@ -24,7 +24,7 @@ main(void)
- 	printf("timer_create(CLOCK_REALTIME, NULL, NULL) = -1 %s (%m)\n",
- 	       errno2name());
+ 	printf("timer_create(CLOCK_REALTIME, NULL, NULL) = %s\n",
+ 	       sprintrc(-1));
  
 -	int tid[4] = {};
 +	int tid[4] = {0};
@@ -225,5 +211,5 @@ index 1ed763840..fef941874 100644
  
  	assert(sigprocmask(SIG_BLOCK, &mask, NULL) == 0);
 -- 
-2.37.3
+2.44.0
 

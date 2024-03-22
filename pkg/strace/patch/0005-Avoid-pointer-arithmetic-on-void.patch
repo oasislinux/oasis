@@ -1,4 +1,4 @@
-From 989bfd76544b4f62ade9e35d2476332934d27d86 Mon Sep 17 00:00:00 2001
+From c154f9dfaaccabc52af12ccabc86e9d0c6c18ada Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -12,7 +12,7 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
  5 files changed, 15 insertions(+), 13 deletions(-)
 
 diff --git a/src/netlink_smc_diag.c b/src/netlink_smc_diag.c
-index f7ff06b6b..dbf5be980 100644
+index 74e78b966..c3a28a839 100644
 --- a/src/netlink_smc_diag.c
 +++ b/src/netlink_smc_diag.c
 @@ -42,7 +42,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_req)
@@ -24,7 +24,7 @@ index f7ff06b6b..dbf5be980 100644
  			PRINT_FIELD_FLAGS(req, diag_ext,
  					  smc_diag_extended_flags,
  					  "1<<SMC_DIAG_\?\?\?-1");
-@@ -250,7 +250,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_msg)
+@@ -261,7 +261,7 @@ DECL_NETLINK_DIAG_DECODER(decode_smc_diag_msg)
  	if (len >= sizeof(msg)) {
  		if (!umoven_or_printaddr(tcp, addr + offset,
  					 sizeof(msg) - offset,
@@ -34,7 +34,7 @@ index f7ff06b6b..dbf5be980 100644
  					 smc_states, "SMC_???");
  			tprint_struct_next();
 diff --git a/src/print_timespec.h b/src/print_timespec.h
-index 9603a6bb6..f5f747c42 100644
+index dc5f9d10c..87f7ff973 100644
 --- a/src/print_timespec.h
 +++ b/src/print_timespec.h
 @@ -66,6 +66,8 @@ bool
@@ -60,7 +60,7 @@ index 9603a6bb6..f5f747c42 100644
  
  	tprint_array_end();
 diff --git a/src/sockaddr.c b/src/sockaddr.c
-index 9139da1cd..7126ad2fc 100644
+index ee1ce8828..c1f9b1740 100644
 --- a/src/sockaddr.c
 +++ b/src/sockaddr.c
 @@ -583,7 +583,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
@@ -82,7 +82,7 @@ index 9139da1cd..7126ad2fc 100644
  	const int transport_len = MIN(sa->transport_len,
  				      len - offsetof(struct sockaddr_rxrpc,
 diff --git a/src/tee.c b/src/tee.c
-index fc735e0da..f705a7a94 100644
+index c62566800..1596a5095 100644
 --- a/src/tee.c
 +++ b/src/tee.c
 @@ -69,7 +69,7 @@ tee_fetch_buf_data(struct tcb *const tcp,
@@ -95,7 +95,7 @@ index fc735e0da..f705a7a94 100644
  	    (arg_size + TEE_IOCTL_PARAM_SIZE(*num_params) != buf->buf_len)) {
  		/*
 diff --git a/src/ucopy.c b/src/ucopy.c
-index c769a1916..ed401ae74 100644
+index b4e746b0b..007b5373e 100644
 --- a/src/ucopy.c
 +++ b/src/ucopy.c
 @@ -186,7 +186,7 @@ vm_read_mem(const pid_t pid, void *laddr,
@@ -148,5 +148,5 @@ index c769a1916..ed401ae74 100644
  	}
  
 -- 
-2.37.3
+2.44.0
 

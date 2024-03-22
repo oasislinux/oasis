@@ -1,4 +1,4 @@
-From 3b3898e2a370be0489226da973e18176530e267a Mon Sep 17 00:00:00 2001
+From 586b8d1808d18149a872f0ee1dc8903b9f9e8750 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
@@ -7,8 +7,10 @@ Subject: [PATCH] Don't omit second operand to '?' operator
  src/kd_ioctl.c | 2 +-
  src/open.c     | 5 +++--
  src/prctl.c    | 8 ++++----
- src/strace.c   | 6 +++---
- 4 files changed, 11 insertions(+), 10 deletions(-)
+ src/strace.c   | 8 ++++----
+ src/strauss.c  | 4 +++-
+ src/util.c     | 2 +-
+ 6 files changed, 16 insertions(+), 13 deletions(-)
 
 diff --git a/src/kd_ioctl.c b/src/kd_ioctl.c
 index ada23d536..fddbd38fb 100644
@@ -70,10 +72,10 @@ index f6b4dd741..951133a83 100644
  
  	return out;
 diff --git a/src/strace.c b/src/strace.c
-index 9cd4ff461..4403bd27e 100644
+index 9c87e34ed..13904f6e1 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -2494,7 +2494,7 @@ init(int argc, char *argv[])
+@@ -2609,7 +2609,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -82,7 +84,16 @@ index 9cd4ff461..4403bd27e 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2614,10 +2614,10 @@ init(int argc, char *argv[])
+@@ -2683,7 +2683,7 @@ init(int argc, char *argv[])
+ 				error_opt_arg(c, lopt, optarg);
+ 			break;
+ 		case GETOPT_TIPS:
+-			if (parse_tips_arg(optarg ?: ""))
++			if (parse_tips_arg(optarg ? optarg : ""))
+ 				error_opt_arg(c, lopt, optarg);
+ 			break;
+ 		case GETOPT_ARGV0:
+@@ -2729,10 +2729,10 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
  			break;
  		case GETOPT_QUAL_QUIET:
@@ -95,6 +106,43 @@ index 9cd4ff461..4403bd27e 100644
  			break;
  		case GETOPT_QUAL_DECODE_PID:
  			qualify_decode_pid(optarg);
+diff --git a/src/strauss.c b/src/strauss.c
+index bec85021b..5d49f950a 100644
+--- a/src/strauss.c
++++ b/src/strauss.c
+@@ -367,6 +367,7 @@ print_totd(void)
+ 	struct timeval tv;
+ 	size_t id;
+ 	size_t i;
++	const char *tip;
+ 
+ 	if (printed || show_tips == TIPS_NONE)
+ 		return;
+@@ -386,9 +387,10 @@ print_totd(void)
+ 	for (i = 0; (i < MAX_TIP_LINES) && (tips_tricks_tweaks[id][i] ||
+ 					    (i < (ARRAY_SIZE(tip_right) - 1)));
+ 	     i++) {
++		tip = tips_tricks_tweaks[id][i];
+ 		fprintf(stderr, "%s%-*s%s%s\n",
+ 			tip_left[MIN(i + 1, ARRAY_SIZE(tip_left) - 1)],
+-			w, tips_tricks_tweaks[id][i] ?: "",
++			w, tip ? tip : "",
+ 			tip_right[MIN(i + 1, ARRAY_SIZE(tip_right) - 1)],
+ 			strauss[MIN(3 + i, strauss_lines - 1)]);
+ 	}
+diff --git a/src/util.c b/src/util.c
+index efd390577..5e87559dc 100644
+--- a/src/util.c
++++ b/src/util.c
+@@ -640,7 +640,7 @@ printsocket(struct tcb *tcp, int fd, const char *path)
+ 		return false;
+ 
+ 	const char *details = get_sockaddr_by_inode(tcp, fd, inode);
+-	print_string_in_angle_brackets(details ?: path);
++	print_string_in_angle_brackets(details ? details : path);
+ 
+ 	return true;
+ }
 -- 
-2.37.3
+2.44.0
 
