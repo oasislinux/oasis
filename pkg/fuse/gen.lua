@@ -1,5 +1,5 @@
 cflags{
-	'-std=c11', '-Wall', '-Wpedantic',
+	'-std=gnu11', '-Wall', '-Wpedantic',
 	'-Wno-overflow',  -- ioctl opcode conversion
 	'-D _POSIX_C_SOURCE=200809L',
 	'-I $dir',
