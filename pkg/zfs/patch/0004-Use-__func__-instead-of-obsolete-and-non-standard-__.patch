@@ -1,4 +1,4 @@
-From 35e48da3329aff4eee7bb3ff2ddd81d982cfa307 Mon Sep 17 00:00:00 2001
+From 3b0d7aec7e04881005dcf07f12054cc65c2d3587 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 21 Jan 2023 17:12:32 -0800
 Subject: [PATCH] Use __func__ instead of obsolete and non-standard
@@ -14,162 +14,163 @@ Subject: [PATCH] Use __func__ instead of obsolete and non-standard
  6 files changed, 43 insertions(+), 43 deletions(-)
 
 diff --git a/include/os/freebsd/spl/sys/debug.h b/include/os/freebsd/spl/sys/debug.h
-index 1f820bc33..a5c12daa5 100644
+index 3e67cf0e9..4bb62224e 100644
 --- a/include/os/freebsd/spl/sys/debug.h
 +++ b/include/os/freebsd/spl/sys/debug.h
-@@ -66,18 +66,18 @@ void spl_dumpstack(void);
+@@ -75,18 +75,18 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
+ #define	unlikely(expr) expect((expr) != 0, 0)
  
- /* BEGIN CSTYLED */
  #define	PANIC(fmt, a...)						\
 -	spl_panic(__FILE__, __FUNCTION__, __LINE__, fmt, ## a)
 +	spl_panic(__FILE__, __func__, __LINE__, fmt, ## a)
  
- #define	VERIFY(cond)										\
- 	(void) (unlikely(!(cond)) &&							\
--	    spl_panic(__FILE__, __FUNCTION__, __LINE__,			\
-+	    spl_panic(__FILE__, __func__, __LINE__,			\
- 	    "%s", "VERIFY(" #cond ") failed\n"))
+ #define	VERIFY(cond)							\
+ 	(void) (unlikely(!(cond)) &&					\
+ 	    spl_assert("VERIFY(" #cond ") failed\n",			\
+-	    __FILE__, __FUNCTION__, __LINE__))
++	    __FILE__, __func__, __LINE__))
  
- #define	VERIFY3B(LEFT, OP, RIGHT)	do {					\
+ #define	VERIFY3B(LEFT, OP, RIGHT)	do {				\
  		const boolean_t _verify3_left = (boolean_t)(LEFT);	\
- 		const boolean_t _verify3_right = (boolean_t)(RIGHT);\
+ 		const boolean_t _verify3_right = (boolean_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left OP _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
  		    "VERIFY3(" #LEFT " "  #OP " "  #RIGHT ") "		\
- 		    "failed (%d " #OP " %d)\n",						\
- 		    (boolean_t) (_verify3_left),					\
-@@ -88,7 +88,7 @@ void spl_dumpstack(void);
+ 		    "failed (%d " #OP " %d)\n",				\
+ 		    (boolean_t)(_verify3_left),				\
+@@ -97,7 +97,7 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
  		const int64_t _verify3_left = (int64_t)(LEFT);		\
  		const int64_t _verify3_right = (int64_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left OP _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
  		    "VERIFY3(" #LEFT " "  #OP " "  #RIGHT ") "		\
- 		    "failed (%lld " #OP " %lld)\n",					\
- 		    (long long) (_verify3_left),					\
-@@ -99,7 +99,7 @@ void spl_dumpstack(void);
+ 		    "failed (%lld " #OP " %lld)\n",			\
+ 		    (long long) (_verify3_left),			\
+@@ -108,7 +108,7 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
  		const uint64_t _verify3_left = (uint64_t)(LEFT);	\
  		const uint64_t _verify3_right = (uint64_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left OP _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
  		    "VERIFY3(" #LEFT " "  #OP " "  #RIGHT ") "		\
- 		    "failed (%llu " #OP " %llu)\n",					\
- 		    (unsigned long long) (_verify3_left),			\
-@@ -110,7 +110,7 @@ void spl_dumpstack(void);
+ 		    "failed (%llu " #OP " %llu)\n",			\
+ 		    (unsigned long long) (_verify3_left),		\
+@@ -119,7 +119,7 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
  		const uintptr_t _verify3_left = (uintptr_t)(LEFT);	\
- 		const uintptr_t _verify3_right = (uintptr_t)(RIGHT);\
+ 		const uintptr_t _verify3_right = (uintptr_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left OP _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
  		    "VERIFY3(" #LEFT " "  #OP " "  #RIGHT ") "		\
- 		    "failed (%px " #OP " %px)\n",					\
- 		    (void *) (_verify3_left),						\
-@@ -121,7 +121,7 @@ void spl_dumpstack(void);
- 		const int64_t _verify3_left = (int64_t)(0);			\
+ 		    "failed (%px " #OP " %px)\n",			\
+ 		    (void *) (_verify3_left),				\
+@@ -130,7 +130,7 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
+ 		const int64_t _verify3_left = (int64_t)(0);		\
  		const int64_t _verify3_right = (int64_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left == _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
- 		    "VERIFY3(0 == " #RIGHT ") "						\
- 		    "failed (0 == %lld)\n",							\
- 		    (long long) (_verify3_right));					\
-@@ -155,11 +155,11 @@ void spl_dumpstack(void);
- #define	ASSERT		VERIFY
+ 		    "VERIFY0(0 == " #RIGHT ") "				\
+ 		    "failed (0 == %lld)\n",				\
+ 		    (long long) (_verify3_right));			\
+@@ -170,11 +170,11 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
  #define	IMPLY(A, B) \
- 	((void)(likely((!(A)) || (B)) || \
--	    spl_panic(__FILE__, __FUNCTION__, __LINE__, \
-+	    spl_panic(__FILE__, __func__, __LINE__, \
- 	    "(" #A ") implies (" #B ")")))
+ 	((void)(likely((!(A)) || (B)) ||				\
+ 	    spl_assert("(" #A ") implies (" #B ")",			\
+-	    __FILE__, __FUNCTION__, __LINE__)))
++	    __FILE__, __func__, __LINE__)))
  #define	EQUIV(A, B) \
- 	((void)(likely(!!(A) == !!(B)) || \
--	    spl_panic(__FILE__, __FUNCTION__, __LINE__, \
-+	    spl_panic(__FILE__, __func__, __LINE__, \
- 	    "(" #A ") is equivalent to (" #B ")")))
- /* END CSTYLED */
+ 	((void)(likely(!!(A) == !!(B)) || 				\
+ 	    spl_assert("(" #A ") is equivalent to (" #B ")",		\
+-	    __FILE__, __FUNCTION__, __LINE__)))
++	    __FILE__, __func__, __LINE__)))
  
+ 
+ #endif /* NDEBUG */
 diff --git a/include/os/linux/spl/sys/debug.h b/include/os/linux/spl/sys/debug.h
-index dc6b85eeb..b46c174cd 100644
+index 007238574..ff5d65b0f 100644
 --- a/include/os/linux/spl/sys/debug.h
 +++ b/include/os/linux/spl/sys/debug.h
-@@ -60,18 +60,18 @@ void spl_dumpstack(void);
+@@ -79,18 +79,18 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
+ }
  
- /* BEGIN CSTYLED */
  #define	PANIC(fmt, a...)						\
 -	spl_panic(__FILE__, __FUNCTION__, __LINE__, fmt, ## a)
 +	spl_panic(__FILE__, __func__, __LINE__, fmt, ## a)
  
- #define	VERIFY(cond)										\
- 	(void) (unlikely(!(cond)) &&							\
--	    spl_panic(__FILE__, __FUNCTION__, __LINE__,			\
-+	    spl_panic(__FILE__, __func__, __LINE__,			\
- 	    "%s", "VERIFY(" #cond ") failed\n"))
+ #define	VERIFY(cond)							\
+ 	(void) (unlikely(!(cond)) &&					\
+ 	    spl_assert("VERIFY(" #cond ") failed\n",			\
+-	    __FILE__, __FUNCTION__, __LINE__))
++	    __FILE__, __func__, __LINE__))
  
- #define	VERIFY3B(LEFT, OP, RIGHT)	do {					\
+ #define	VERIFY3B(LEFT, OP, RIGHT)	do {				\
  		const boolean_t _verify3_left = (boolean_t)(LEFT);	\
- 		const boolean_t _verify3_right = (boolean_t)(RIGHT);\
+ 		const boolean_t _verify3_right = (boolean_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left OP _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
  		    "VERIFY3(" #LEFT " "  #OP " "  #RIGHT ") "		\
- 		    "failed (%d " #OP " %d)\n",						\
- 		    (boolean_t) (_verify3_left),					\
-@@ -82,7 +82,7 @@ void spl_dumpstack(void);
+ 		    "failed (%d " #OP " %d)\n",				\
+ 		    (boolean_t)(_verify3_left),				\
+@@ -101,7 +101,7 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
  		const int64_t _verify3_left = (int64_t)(LEFT);		\
  		const int64_t _verify3_right = (int64_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left OP _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
  		    "VERIFY3(" #LEFT " "  #OP " "  #RIGHT ") "		\
- 		    "failed (%lld " #OP " %lld)\n",					\
- 		    (long long) (_verify3_left),					\
-@@ -93,7 +93,7 @@ void spl_dumpstack(void);
+ 		    "failed (%lld " #OP " %lld)\n",			\
+ 		    (long long)(_verify3_left),				\
+@@ -112,7 +112,7 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
  		const uint64_t _verify3_left = (uint64_t)(LEFT);	\
  		const uint64_t _verify3_right = (uint64_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left OP _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
  		    "VERIFY3(" #LEFT " "  #OP " "  #RIGHT ") "		\
- 		    "failed (%llu " #OP " %llu)\n",					\
- 		    (unsigned long long) (_verify3_left),			\
-@@ -104,7 +104,7 @@ void spl_dumpstack(void);
+ 		    "failed (%llu " #OP " %llu)\n",			\
+ 		    (unsigned long long)(_verify3_left),		\
+@@ -123,7 +123,7 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
  		const uintptr_t _verify3_left = (uintptr_t)(LEFT);	\
- 		const uintptr_t _verify3_right = (uintptr_t)(RIGHT);\
+ 		const uintptr_t _verify3_right = (uintptr_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left OP _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
  		    "VERIFY3(" #LEFT " "  #OP " "  #RIGHT ") "		\
- 		    "failed (%px " #OP " %px)\n",					\
- 		    (void *) (_verify3_left),						\
-@@ -115,7 +115,7 @@ void spl_dumpstack(void);
- 		const int64_t _verify3_left = (int64_t)(0);			\
+ 		    "failed (%px " #OP " %px)\n",			\
+ 		    (void *) (_verify3_left),				\
+@@ -134,7 +134,7 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
+ 		const int64_t _verify3_left = (int64_t)(0);		\
  		const int64_t _verify3_right = (int64_t)(RIGHT);	\
  		if (unlikely(!(_verify3_left == _verify3_right)))	\
 -		    spl_panic(__FILE__, __FUNCTION__, __LINE__,		\
 +		    spl_panic(__FILE__, __func__, __LINE__,		\
- 		    "VERIFY3(0 == " #RIGHT ") "						\
- 		    "failed (0 == %lld)\n",							\
- 		    (long long) (_verify3_right));					\
-@@ -155,11 +155,11 @@ void spl_dumpstack(void);
- #define	ASSERT		VERIFY
- #define	IMPLY(A, B) \
- 	((void)(likely((!(A)) || (B)) || \
--	    spl_panic(__FILE__, __FUNCTION__, __LINE__, \
-+	    spl_panic(__FILE__, __func__, __LINE__, \
- 	    "(" #A ") implies (" #B ")")))
- #define	EQUIV(A, B) \
- 	((void)(likely(!!(A) == !!(B)) || \
--	    spl_panic(__FILE__, __FUNCTION__, __LINE__, \
-+	    spl_panic(__FILE__, __func__, __LINE__, \
- 	    "(" #A ") is equivalent to (" #B ")")))
- /* END CSTYLED */
+ 		    "VERIFY0(0 == " #RIGHT ") "				\
+ 		    "failed (0 == %lld)\n",				\
+ 		    (long long) (_verify3_right));			\
+@@ -143,12 +143,12 @@ spl_assert(const char *buf, const char *file, const char *func, int line)
+ #define	VERIFY_IMPLY(A, B) \
+ 	((void)(likely((!(A)) || (B)) ||				\
+ 	    spl_assert("(" #A ") implies (" #B ")",			\
+-	    __FILE__, __FUNCTION__, __LINE__)))
++	    __FILE__, __func__, __LINE__)))
  
+ #define	VERIFY_EQUIV(A, B) \
+ 	((void)(likely(!!(A) == !!(B)) || 				\
+ 	    spl_assert("(" #A ") is equivalent to (" #B ")",		\
+-	    __FILE__, __FUNCTION__, __LINE__)))
++	    __FILE__, __func__, __LINE__)))
+ 
+ /*
+  * Debugging disabled (--disable-debug)
 diff --git a/lib/libspl/include/assert.h b/lib/libspl/include/assert.h
-index 0503ce492..73f33077c 100644
+index af4957dfb..c3a06c119 100644
 --- a/lib/libspl/include/assert.h
 +++ b/lib/libspl/include/assert.h
-@@ -53,17 +53,17 @@ libspl_assert(const char *buf, const char *file, const char *func, int line)
+@@ -69,17 +69,17 @@ libspl_assert(const char *buf, const char *file, const char *func, int line)
  
  #define	VERIFY(cond)							\
  	(void) ((!(cond)) &&						\
@@ -190,7 +191,7 @@ index 0503ce492..73f33077c 100644
  		    "%s %s %s (0x%llx %s 0x%llx)", #LEFT, #OP, #RIGHT,	\
  		    (u_longlong_t)__left, #OP, (u_longlong_t)__right);	\
  } while (0)
-@@ -73,7 +73,7 @@ do {									\
+@@ -89,7 +89,7 @@ do {									\
  	const int64_t __left = (int64_t)(LEFT);				\
  	const int64_t __right = (int64_t)(RIGHT);			\
  	if (!(__left OP __right))					\
@@ -199,7 +200,7 @@ index 0503ce492..73f33077c 100644
  		    "%s %s %s (0x%llx %s 0x%llx)", #LEFT, #OP, #RIGHT,	\
  		    (u_longlong_t)__left, #OP, (u_longlong_t)__right);	\
  } while (0)
-@@ -83,7 +83,7 @@ do {									\
+@@ -99,7 +99,7 @@ do {									\
  	const uint64_t __left = (uint64_t)(LEFT);			\
  	const uint64_t __right = (uint64_t)(RIGHT);			\
  	if (!(__left OP __right))					\
@@ -208,7 +209,7 @@ index 0503ce492..73f33077c 100644
  		    "%s %s %s (0x%llx %s 0x%llx)", #LEFT, #OP, #RIGHT,	\
  		    (u_longlong_t)__left, #OP, (u_longlong_t)__right);	\
  } while (0)
-@@ -93,7 +93,7 @@ do {									\
+@@ -109,7 +109,7 @@ do {									\
  	const uintptr_t __left = (uintptr_t)(LEFT);			\
  	const uintptr_t __right = (uintptr_t)(RIGHT);			\
  	if (!(__left OP __right))					\
@@ -217,7 +218,7 @@ index 0503ce492..73f33077c 100644
  		    "%s %s %s (0x%llx %s 0x%llx)", #LEFT, #OP, #RIGHT,	\
  		    (u_longlong_t)__left, #OP, (u_longlong_t)__right);	\
  } while (0)
-@@ -102,7 +102,7 @@ do {									\
+@@ -118,7 +118,7 @@ do {									\
  do {									\
  	const uint64_t __left = (uint64_t)(LEFT);			\
  	if (!(__left == 0))						\
@@ -226,7 +227,7 @@ index 0503ce492..73f33077c 100644
  		    "%s == 0 (0x%llx == 0)", #LEFT,			\
  		    (u_longlong_t)__left);				\
  } while (0)
-@@ -140,11 +140,11 @@ do {									\
+@@ -154,11 +154,11 @@ do {									\
  #define	IMPLY(A, B) \
  	((void)(((!(A)) || (B)) || \
  	    libspl_assert("(" #A ") implies (" #B ")", \
@@ -241,28 +242,28 @@ index 0503ce492..73f33077c 100644
  #endif  /* NDEBUG */
  
 diff --git a/module/os/freebsd/zfs/crypto_os.c b/module/os/freebsd/zfs/crypto_os.c
-index f342c5e85..0ebc56e95 100644
+index 1f139ea5b..c945a155f 100644
 --- a/module/os/freebsd/zfs/crypto_os.c
 +++ b/module/os/freebsd/zfs/crypto_os.c
-@@ -229,7 +229,7 @@ freebsd_crypt_uio_debug_log(boolean_t encrypt,
+@@ -227,7 +227,7 @@ freebsd_crypt_uio_debug_log(boolean_t encrypt,
  
- 	printf("%s(%s, %p, { %s, %d, %d, %s }, %p, { %d, %p, %u }, "
+ 	printf("%s(%s, %p, { %s, %d, %d, %s }, %p, { %p, %u }, "
  	    "%p, %u, %u)\n",
 -	    __FUNCTION__, encrypt ? "encrypt" : "decrypt", input_sessionp,
 +	    __func__, encrypt ? "encrypt" : "decrypt", input_sessionp,
  	    c_info->ci_algname, c_info->ci_crypt_type,
  	    (unsigned int)c_info->ci_keylen, c_info->ci_name,
- 	    data_uio, key->ck_format, key->ck_data,
-@@ -265,7 +265,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
+ 	    data_uio, key->ck_data,
+@@ -263,7 +263,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
  
  #ifdef FCRYPTO_DEBUG
- 	printf("%s(%p, { %s, %d, %d, %s }, { %d, %p, %u })\n",
+ 	printf("%s(%p, { %s, %d, %d, %s }, { %p, %u })\n",
 -	    __FUNCTION__, sessp,
 +	    __func__, sessp,
  	    c_info->ci_algname, c_info->ci_crypt_type,
  	    (unsigned int)c_info->ci_keylen, c_info->ci_name,
- 	    key->ck_format, key->ck_data, (unsigned int)key->ck_length);
-@@ -331,7 +331,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
+ 	    key->ck_data, (unsigned int)key->ck_length);
+@@ -328,7 +328,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
  bad:
  #ifdef FCRYPTO_DEBUG
  	if (error)
@@ -271,7 +272,7 @@ index f342c5e85..0ebc56e95 100644
  #endif
  	return (error);
  }
-@@ -387,7 +387,7 @@ freebsd_crypt_uio(boolean_t encrypt,
+@@ -384,7 +384,7 @@ freebsd_crypt_uio(boolean_t encrypt,
  out:
  #ifdef FCRYPTO_DEBUG
  	if (error)
@@ -280,16 +281,16 @@ index f342c5e85..0ebc56e95 100644
  #endif
  	if (input_sessionp == NULL) {
  		freebsd_crypt_freesession(session);
-@@ -409,7 +409,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
+@@ -406,7 +406,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
  
  #ifdef FCRYPTO_DEBUG
- 	printf("%s(%p, { %s, %d, %d, %s }, { %d, %p, %u })\n",
+ 	printf("%s(%p, { %s, %d, %d, %s }, { %p, %u })\n",
 -	    __FUNCTION__, sessp,
 +	    __func__, sessp,
  	    c_info->ci_algname, c_info->ci_crypt_type,
  	    (unsigned int)c_info->ci_keylen, c_info->ci_name,
- 	    key->ck_format, key->ck_data, (unsigned int)key->ck_length);
-@@ -463,7 +463,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
+ 	    key->ck_data, (unsigned int)key->ck_length);
+@@ -460,7 +460,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
  #ifdef FCRYPTO_DEBUG
  	printf("%s(%d): Using crypt %s (key length %u [%u bytes]), "
  	    "auth %s (key length %d)\n",
@@ -298,7 +299,7 @@ index f342c5e85..0ebc56e95 100644
  	    xform->name, (unsigned int)key->ck_length,
  	    (unsigned int)key->ck_length/8,
  	    xauth->name, xauth->keysize);
-@@ -489,7 +489,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
+@@ -483,7 +483,7 @@ freebsd_crypt_newsession(freebsd_crypt_session_t *sessp,
  	    CRYPTOCAP_F_HARDWARE | CRYPTOCAP_F_SOFTWARE);
  	if (error != 0) {
  		printf("%s(%d):  crypto_newsession failed with %d\n",
@@ -307,7 +308,7 @@ index f342c5e85..0ebc56e95 100644
  		goto bad;
  	}
  	sessp->fs_sid = sid;
-@@ -569,7 +569,7 @@ freebsd_crypt_uio(boolean_t encrypt,
+@@ -563,7 +563,7 @@ freebsd_crypt_uio(boolean_t encrypt,
  #ifdef FCRYPTO_DEBUG
  	printf("%s(%d): Using crypt %s (key length %u [%u bytes]), "
  	    "auth %s (key length %d)\n",
@@ -316,7 +317,7 @@ index f342c5e85..0ebc56e95 100644
  	    xform->name, (unsigned int)key->ck_length,
  	    (unsigned int)key->ck_length/8,
  	    xauth->name, xauth->keysize);
-@@ -603,7 +603,7 @@ freebsd_crypt_uio(boolean_t encrypt,
+@@ -597,7 +597,7 @@ freebsd_crypt_uio(boolean_t encrypt,
  	auth_desc->crd_alg = xauth->type;
  #ifdef FCRYPTO_DEBUG
  	printf("%s: auth: skip = %u, len = %u, inject = %u\n",
@@ -325,7 +326,7 @@ index f342c5e85..0ebc56e95 100644
  	    auth_desc->crd_inject);
  #endif
  
-@@ -617,7 +617,7 @@ freebsd_crypt_uio(boolean_t encrypt,
+@@ -611,7 +611,7 @@ freebsd_crypt_uio(boolean_t encrypt,
  
  #ifdef FCRYPTO_DEBUG
  	printf("%s: enc: skip = %u, len = %u, inject = %u\n",
@@ -334,7 +335,7 @@ index f342c5e85..0ebc56e95 100644
  	    enc_desc->crd_inject);
  #endif
  
-@@ -634,7 +634,7 @@ out:
+@@ -628,7 +628,7 @@ out:
  bad:
  #ifdef FCRYPTO_DEBUG
  	if (error)
@@ -344,10 +345,10 @@ index f342c5e85..0ebc56e95 100644
  	return (error);
  }
 diff --git a/module/os/freebsd/zfs/zfs_vfsops.c b/module/os/freebsd/zfs/zfs_vfsops.c
-index 05d41d4e3..01b12b12c 100644
+index a972c720d..2d54636bb 100644
 --- a/module/os/freebsd/zfs/zfs_vfsops.c
 +++ b/module/os/freebsd/zfs/zfs_vfsops.c
-@@ -244,7 +244,7 @@ zfs_getquota(zfsvfs_t *zfsvfs, uid_t id, int isgroup, struct dqblk64 *dqp)
+@@ -262,7 +262,7 @@ zfs_getquota(zfsvfs_t *zfsvfs, uid_t id, int isgroup, struct dqblk64 *dqp)
  	if ((error = zap_lookup(zfsvfs->z_os, quotaobj,
  	    buf, sizeof (quota), 1, &quota)) != 0) {
  		dprintf("%s(%d): quotaobj lookup failed\n",
@@ -356,7 +357,7 @@ index 05d41d4e3..01b12b12c 100644
  		goto done;
  	}
  	/*
-@@ -255,7 +255,7 @@ zfs_getquota(zfsvfs_t *zfsvfs, uid_t id, int isgroup, struct dqblk64 *dqp)
+@@ -273,7 +273,7 @@ zfs_getquota(zfsvfs_t *zfsvfs, uid_t id, int isgroup, struct dqblk64 *dqp)
  	error = zap_lookup(zfsvfs->z_os, usedobj, buf, sizeof (used), 1, &used);
  	if (error && error != ENOENT) {
  		dprintf("%s(%d):  usedobj failed; %d\n",
@@ -366,10 +367,10 @@ index 05d41d4e3..01b12b12c 100644
  	}
  	dqp->dqb_curblocks = btodb(used);
 diff --git a/module/os/freebsd/zfs/zio_crypt.c b/module/os/freebsd/zfs/zio_crypt.c
-index 9e0ab52a2..997f2492f 100644
+index b08916b31..204666957 100644
 --- a/module/os/freebsd/zfs/zio_crypt.c
 +++ b/module/os/freebsd/zfs/zio_crypt.c
-@@ -420,7 +420,7 @@ zio_do_crypt_uio_opencrypto(boolean_t encrypt, freebsd_crypt_session_t *sess,
+@@ -409,7 +409,7 @@ zio_do_crypt_uio_opencrypto(boolean_t encrypt, freebsd_crypt_session_t *sess,
  	if (ret != 0) {
  #ifdef FCRYPTO_DEBUG
  		printf("%s(%d):  Returning error %s\n",
@@ -378,9 +379,9 @@ index 9e0ab52a2..997f2492f 100644
  #endif
  		ret = SET_ERROR(encrypt ? EIO : ECKSUM);
  	}
-@@ -1195,7 +1195,7 @@ zio_crypt_do_indirect_mac_checksum_impl(boolean_t generate, void *buf,
+@@ -1176,7 +1176,7 @@ zio_crypt_do_indirect_mac_checksum_impl(boolean_t generate, void *buf,
  
- 	if (bcmp(digestbuf, cksum, ZIO_DATA_MAC_LEN) != 0) {
+ 	if (memcmp(digestbuf, cksum, ZIO_DATA_MAC_LEN) != 0) {
  #ifdef FCRYPTO_DEBUG
 -		printf("%s(%d): Setting ECKSUM\n", __FUNCTION__, __LINE__);
 +		printf("%s(%d): Setting ECKSUM\n", __func__, __LINE__);

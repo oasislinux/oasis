@@ -1,0 +1,39 @@
+From 35672849425882c7a8c24a085c4613beb62d1996 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 22 Mar 2024 19:18:59 -0700
+Subject: [PATCH] zstream: Disable recompress and decompress
+
+These require building a lot more sources, so disable them for now.
+---
+ cmd/zstream/zstream.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/cmd/zstream/zstream.c b/cmd/zstream/zstream.c
+index b1509c1f2..a228f45fa 100644
+--- a/cmd/zstream/zstream.c
++++ b/cmd/zstream/zstream.c
+@@ -40,10 +40,6 @@ zstream_usage(void)
+ 	    "\tzstream dump [-vCd] FILE\n"
+ 	    "\t... | zstream dump [-vCd]\n"
+ 	    "\n"
+-	    "\tzstream decompress [-v] [OBJECT,OFFSET[,TYPE]] ...\n"
+-	    "\n"
+-	    "\tzstream recompress [ -l level] TYPE\n"
+-	    "\n"
+ 	    "\tzstream token resume_token\n"
+ 	    "\n"
+ 	    "\tzstream redup [-v] FILE | ...\n");
+@@ -65,10 +61,6 @@ main(int argc, char *argv[])
+ 
+ 	if (strcmp(subcommand, "dump") == 0) {
+ 		return (zstream_do_dump(argc - 1, argv + 1));
+-	} else if (strcmp(subcommand, "decompress") == 0) {
+-		return (zstream_do_decompress(argc - 1, argv + 1));
+-	} else if (strcmp(subcommand, "recompress") == 0) {
+-		return (zstream_do_recompress(argc - 1, argv + 1));
+ 	} else if (strcmp(subcommand, "token") == 0) {
+ 		return (zstream_do_token(argc - 1, argv + 1));
+ 	} else if (strcmp(subcommand, "redup") == 0) {
+-- 
+2.37.3
+

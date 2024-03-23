@@ -1,4 +1,4 @@
-From 8da3e065051442982e255786a45fd5eea01321a9 Mon Sep 17 00:00:00 2001
+From 4f2a58f0763898a49d2b5d76f92f321947188708 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 17 Jan 2023 12:56:34 -0800
 Subject: [PATCH] Use find -exec rm instead of non-portable -delete
@@ -12,7 +12,7 @@ Subject: [PATCH] Use find -exec rm instead of non-portable -delete
  5 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/config/ax_code_coverage.m4 b/config/ax_code_coverage.m4
-index 3e3c666f3..fbe46db1f 100644
+index cd2498358..83b3dbf30 100644
 --- a/config/ax_code_coverage.m4
 +++ b/config/ax_code_coverage.m4
 @@ -153,7 +153,7 @@ distclean: code-coverage-clean
@@ -25,10 +25,10 @@ index 3e3c666f3..fbe46db1f 100644
  	], [
  		[CODE_COVERAGE_RULES_CHECK='
 diff --git a/module/Makefile.in b/module/Makefile.in
-index b6338430e..d87fb729d 100644
+index 9b34b3dfa..63d18d270 100644
 --- a/module/Makefile.in
 +++ b/module/Makefile.in
-@@ -70,7 +70,7 @@ clean-Linux:
+@@ -71,7 +71,7 @@ clean-Linux:
  @CONFIG_KERNEL_TRUE@	$(MAKE) -C @LINUX_OBJ@ M="$$PWD" @KERNEL_MAKE@ clean
  
  	$(RM) @LINUX_SYMBOLS@ Module.markers
@@ -37,17 +37,17 @@ index b6338430e..d87fb729d 100644
  
  clean-FreeBSD:
  	+$(FMAKE) clean
-@@ -86,7 +86,7 @@ modules_install-Linux:
+@@ -91,7 +91,7 @@ modules_install-Linux: modules_uninstall-Linux-legacy
+ 		KERNELRELEASE=@LINUX_VERSION@
  	@# Remove extraneous build products when packaging
- 	kmoddir=$(INSTALL_MOD_PATH)/lib/modules/@LINUX_VERSION@; \
  	if [ -n "$(DESTDIR)" ]; then \
--		find $$kmoddir -name 'modules.*' -delete; \
-+		find $$kmoddir -name 'modules.*' -exec $(RM) -- {} +; \
+-		find $(KMODDIR) -name 'modules.*' -delete; \
++		find $(KMODDIR) -name 'modules.*' -exec $(RM) -- {} + \
  	fi
  	@# Debian ships tiny fake System.map files that are
  	@# syntactically valid but just say
 diff --git a/tests/zfs-tests/tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh b/tests/zfs-tests/tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh
-index 0d08cf629..7714d02cd 100755
+index 81ee87f8a..903d2856f 100755
 --- a/tests/zfs-tests/tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh
 +++ b/tests/zfs-tests/tests/functional/cli_root/zfs_diff/zfs_diff_timestamp.ksh
 @@ -33,7 +33,7 @@ function cleanup
@@ -60,20 +60,20 @@ index 0d08cf629..7714d02cd 100755
  }
  
 diff --git a/tests/zfs-tests/tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh b/tests/zfs-tests/tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh
-index da0aebe6b..7d5242ee0 100755
+index 157603981..cf60d03c5 100755
 --- a/tests/zfs-tests/tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh
 +++ b/tests/zfs-tests/tests/functional/cli_root/zfs_send/zfs_send_007_pos.ksh
-@@ -61,7 +61,7 @@ test_pool ()
+@@ -61,7 +61,7 @@ function test_pool
  	object=$(ls -i $mntpnt | awk '{print $1}')
  	log_must zfs snapshot $POOL/fs@a
  	while true; do
 -		log_must find $mntpnt/ -type f -delete
 +		log_must find $mntpnt/ -type f -exec rm -- {} +
- 		sync
+ 		sync_all_pools
  		log_must mkfiles "$mntpnt/" 4000
- 		sync
+ 		sync_all_pools
 diff --git a/tests/zfs-tests/tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib b/tests/zfs-tests/tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib
-index b69d2ce02..54f3e459e 100644
+index 93355d0b3..88fc777e1 100644
 --- a/tests/zfs-tests/tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib
 +++ b/tests/zfs-tests/tests/functional/zvol/zvol_misc/zvol_misc_common.kshlib
 @@ -60,7 +60,7 @@ function udev_cleanup

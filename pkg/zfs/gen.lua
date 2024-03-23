@@ -30,6 +30,7 @@ lib('libavl.a', {'module/avl/avl.c'})
 lib('libshare.a', [[
 	lib/libshare/(
 		libshare.c
+		nfs.c
 		os/linux/(nfs.c smb.c)
 	)
 ]])
@@ -38,6 +39,7 @@ lib('libspl.a', [[
 	lib/libspl/(
 		assert.c
 		atomic.c
+		getexecname.c
 		list.c
 		mkdirp.c
 		page.c
@@ -81,9 +83,9 @@ lib('libzutil.a', [[
 		zutil_nicenum.c
 		zutil_pool.c
 		os/linux/(
+			zutil_setproctitle.c
 			zutil_device_path_os.c
 			zutil_import_os.c
-			zutil_compat.c
 		)
 	)
 	libefi.a.d
@@ -96,12 +98,9 @@ lib('libuutil.a', [[
 	lib/libuutil/(
 		uu_alloc.c
 		uu_avl.c
-		uu_dprintf.c
 		uu_ident.c
 		uu_list.c
 		uu_misc.c
-		uu_open.c
-		uu_pname.c
 		uu_string.c
 	)
 	libavl.a
@@ -111,6 +110,7 @@ lib('libuutil.a', [[
 lib('libzfs_core.a', [[
 	lib/libzfs_core/(
 		libzfs_core.c
+		os/linux/libzfs_core_ioctl.c
 	)
 	libzutil.a.d
 ]])
@@ -132,7 +132,6 @@ lib('libzfs.a', [[
 		os/linux/(
 			libzfs_mount_os.c
 			libzfs_pool_os.c
-			libzfs_sendrecv_os.c
 			libzfs_util_os.c
 		)
 	)
@@ -169,12 +168,12 @@ exe('zed', [[
 		zed_log.c
 		zed_strings.c
 		agents/(
+			fmd_api.c
+			fmd_serd.c
 			zfs_agents.c
 			zfs_diagnosis.c
 			zfs_mod.c
 			zfs_retire.c
-			fmd_api.c
-			fmd_serd.c
 		)
 	)
 	libzfs.a.d

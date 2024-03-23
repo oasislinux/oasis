@@ -1,4 +1,4 @@
-From 8a2689c718e4fdf96a5b73e4095866ddf4826135 Mon Sep 17 00:00:00 2001
+From dad6fa581122eaf3eb5c65839a3fd294887ba139 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 21 Jan 2023 17:52:40 -0800
 Subject: [PATCH] Avoid arithmetic on void pointer
@@ -8,10 +8,10 @@ Subject: [PATCH] Avoid arithmetic on void pointer
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/module/zcommon/zfs_fletcher.c b/module/zcommon/zfs_fletcher.c
-index 7a9de4a43..2faee46fe 100644
+index 619ddef02..a99865b2a 100644
 --- a/module/zcommon/zfs_fletcher.c
 +++ b/module/zcommon/zfs_fletcher.c
-@@ -569,7 +569,7 @@ fletcher_4_incremental_impl(boolean_t native, const void *buf, uint64_t size,
+@@ -581,7 +581,7 @@ fletcher_4_incremental_impl(boolean_t native, const void *buf, uint64_t size,
  		fletcher_4_incremental_combine(zcp, len, &nzc);
  
  		size -= len;

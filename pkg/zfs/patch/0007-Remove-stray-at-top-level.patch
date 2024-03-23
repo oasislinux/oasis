@@ -1,28 +1,23 @@
-From 54212b1aebdb3c5ffa7904eed7b9a09490aca1e1 Mon Sep 17 00:00:00 2001
+From b40890a5c47a69abfe96490b053f71be5ab09166 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 21 Jan 2023 17:17:48 -0800
 Subject: [PATCH] Remove stray ';' at top-level
 
 ---
- module/avl/avl.c               |  46 +++----
- module/nvpair/nvpair.c         | 240 ++++++++++++++++-----------------
+ module/avl/avl.c               |  36 ++---
+ module/nvpair/nvpair.c         | 232 ++++++++++++++++-----------------
  module/zcommon/zfs_namecheck.c |  20 +--
- module/zcommon/zfs_prop.c      |  50 +++----
- 4 files changed, 178 insertions(+), 178 deletions(-)
+ module/zcommon/zfs_prop.c      |  42 +++---
+ 4 files changed, 165 insertions(+), 165 deletions(-)
 
 diff --git a/module/avl/avl.c b/module/avl/avl.c
-index f761a8ae7..18dbe1b99 100644
+index 9b74531fa..283c8e297 100644
 --- a/module/avl/avl.c
 +++ b/module/avl/avl.c
-@@ -1052,26 +1052,26 @@ module_init(avl_init);
- module_exit(avl_fini);
- #endif
+@@ -1032,21 +1032,21 @@ done:
+ 	return (AVL_NODE2DATA(node, off));
+ }
  
--ZFS_MODULE_DESCRIPTION("Generic AVL tree implementation");
--ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR);
--ZFS_MODULE_LICENSE(ZFS_META_LICENSE);
--ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);
--
 -EXPORT_SYMBOL(avl_create);
 -EXPORT_SYMBOL(avl_find);
 -EXPORT_SYMBOL(avl_insert);
@@ -41,11 +36,6 @@ index f761a8ae7..18dbe1b99 100644
 -EXPORT_SYMBOL(avl_update_lt);
 -EXPORT_SYMBOL(avl_update_gt);
 -EXPORT_SYMBOL(avl_update);
-+ZFS_MODULE_DESCRIPTION("Generic AVL tree implementation")
-+ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR)
-+ZFS_MODULE_LICENSE(ZFS_META_LICENSE)
-+ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE)
-+
 +EXPORT_SYMBOL(avl_create)
 +EXPORT_SYMBOL(avl_find)
 +EXPORT_SYMBOL(avl_insert)
@@ -65,10 +55,10 @@ index f761a8ae7..18dbe1b99 100644
 +EXPORT_SYMBOL(avl_update_gt)
 +EXPORT_SYMBOL(avl_update)
 diff --git a/module/nvpair/nvpair.c b/module/nvpair/nvpair.c
-index 9834dedd8..6dfebb0ec 100644
+index d9449e47e..5626e2025 100644
 --- a/module/nvpair/nvpair.c
 +++ b/module/nvpair/nvpair.c
-@@ -3256,13 +3256,13 @@ nvs_xdr_nvp_##type(XDR *xdrs, void *ptr, ...)	\
+@@ -3281,13 +3281,13 @@ nvs_xdr_nvp_##type(XDR *xdrs, void *ptr, ...)	\
  #endif
  
  /* BEGIN CSTYLED */
@@ -89,18 +79,9 @@ index 9834dedd8..6dfebb0ec 100644
  /* END CSTYLED */
  
  /*
-@@ -3672,121 +3672,121 @@ module_init(nvpair_init);
- module_exit(nvpair_fini);
- #endif
- 
--ZFS_MODULE_DESCRIPTION("Generic name/value pair implementation");
--ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR);
--ZFS_MODULE_LICENSE(ZFS_META_LICENSE);
--ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);
-+ZFS_MODULE_DESCRIPTION("Generic name/value pair implementation")
-+ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR)
-+ZFS_MODULE_LICENSE(ZFS_META_LICENSE)
-+ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE)
+@@ -3681,116 +3681,116 @@ nvs_xdr(nvstream_t *nvs, nvlist_t *nvl, char *buf, size_t *buflen)
+ 	return (err);
+ }
  
 -EXPORT_SYMBOL(nv_alloc_init);
 -EXPORT_SYMBOL(nv_alloc_reset);
@@ -325,7 +306,7 @@ index 9834dedd8..6dfebb0ec 100644
 +EXPORT_SYMBOL(nvpair_value_nvlist_array)
 +EXPORT_SYMBOL(nvpair_value_hrtime)
 diff --git a/module/zcommon/zfs_namecheck.c b/module/zcommon/zfs_namecheck.c
-index 7ecce451b..5f6b8a3b9 100644
+index 273b219a9..41099c7f0 100644
 --- a/module/zcommon/zfs_namecheck.c
 +++ b/module/zcommon/zfs_namecheck.c
 @@ -453,15 +453,15 @@ pool_namecheck(const char *pool, namecheck_err_t *why, char *what)
@@ -355,21 +336,11 @@ index 7ecce451b..5f6b8a3b9 100644
 -	"Limit to the amount of nesting a path can have. Defaults to 50.");
 +	"Limit to the amount of nesting a path can have. Defaults to 50.")
 diff --git a/module/zcommon/zfs_prop.c b/module/zcommon/zfs_prop.c
-index b4e8fcf1f..9de54aa44 100644
+index 3db6fd13f..13c63a36c 100644
 --- a/module/zcommon/zfs_prop.c
 +++ b/module/zcommon/zfs_prop.c
-@@ -1054,32 +1054,32 @@ module_exit(zcommon_fini);
- 
+@@ -1076,26 +1076,26 @@ module_exit(zcommon_fini);
  #endif
- 
--ZFS_MODULE_DESCRIPTION("Generic ZFS support");
--ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR);
--ZFS_MODULE_LICENSE(ZFS_META_LICENSE);
--ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE);
-+ZFS_MODULE_DESCRIPTION("Generic ZFS support")
-+ZFS_MODULE_AUTHOR(ZFS_META_AUTHOR)
-+ZFS_MODULE_LICENSE(ZFS_META_LICENSE)
-+ZFS_MODULE_VERSION(ZFS_META_VERSION "-" ZFS_META_RELEASE)
  
  /* zfs dataset property functions */
 -EXPORT_SYMBOL(zfs_userquota_prop_prefixes);
