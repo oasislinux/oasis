@@ -48,7 +48,7 @@
 #define CURL_SA_FAMILY_T sa_family_t
 /* #undef CURL_WITH_MULTI_SSL */
 /* #undef DEBUGBUILD */
-#define ENABLE_IPV6 1
+/* #undef ENABLE_IPV6 */
 #define GETHOSTNAME_TYPE_ARG2 size_t
 #define HAVE_ALARM 1
 /* #undef HAVE_ARC4RANDOM */
@@ -105,8 +105,6 @@
 /* #undef HAVE_GSSAPI_GSSAPI_H */
 /* #undef HAVE_GSSAPI_GSSAPI_KRB5_H */
 /* #undef HAVE_GSSGNU */
-/* #undef HAVE_GSSHEIMDAL */
-/* #undef HAVE_GSSMIT */
 /* #undef HAVE_HYPER_H */
 /* #undef HAVE_IDN2_H */
 #define HAVE_IFADDRS_H 1
@@ -161,6 +159,7 @@
 /* #undef HAVE_OPENSSL_CRYPTO_H */
 /* #undef HAVE_OPENSSL_ERR_H */
 /* #undef HAVE_OPENSSL_PEM_H */
+/* #undef HAVE_OPENSSL_QUIC */
 /* #undef HAVE_OPENSSL_RSA_H */
 /* #undef HAVE_OPENSSL_SRP */
 /* #undef HAVE_OPENSSL_SSL_H */
@@ -190,13 +189,14 @@
 #define HAVE_SIGNAL 1
 #define HAVE_SIGSETJMP 1
 #define HAVE_SNPRINTF 1
-#define HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID 1
+/* #undef HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID */
 #define HAVE_SOCKET 1
 #define HAVE_SOCKETPAIR 1
 /* #undef HAVE_SOCKET_H */
 /* #undef HAVE_SSL_GET_ECH_STATUS */
 /* #undef HAVE_SSL_H */
 /* #undef HAVE_SSL_SET0_WBIO */
+/* #undef HAVE_SSL_SET_QUIC_USE_LEGACY_CODEPOINT */
 #define HAVE_STDATOMIC_H 1
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
@@ -237,15 +237,12 @@
 #define HAVE_UTIME 1
 #define HAVE_UTIMES 1
 #define HAVE_UTIME_H 1
-/* #undef HAVE_WINDOWS_H */
-/* #undef HAVE_WINSOCK2_H */
 /* #undef HAVE_WOLFSSH_SSH_H */
 /* #undef HAVE_WOLFSSL_DES_ECB_ENCRYPT */
 /* #undef HAVE_WOLFSSL_FULL_BIO */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_WOLFSSL_USEALPN */
 #define HAVE_WRITABLE_ARGV 1
-/* #undef HAVE_WS2TCPIP_H */
 /* #undef HAVE_X509_H */
 /* #undef HAVE_ZSTD */
 /* #undef HAVE_ZSTD_H */
@@ -256,7 +253,7 @@
 /* #undef NEED_THREAD_SAFE */
 /* #undef NTLM_WB_ENABLED */
 /* #undef NTLM_WB_FILE */
-#define OS "oasis"
+#define OS "x86_64-pc-linux-musl"
 #define PACKAGE "curl"
 #define PACKAGE_BUGREPORT "a suitable curl mailing list: https://curl.se/mail/"
 #define PACKAGE_NAME "curl"
@@ -291,11 +288,15 @@
 /* #undef USE_NGHTTP2 */
 /* #undef USE_NGHTTP3 */
 /* #undef USE_NGTCP2 */
+/* #undef USE_NGTCP2_CRYPTO_BORINGSSL */
 /* #undef USE_NGTCP2_CRYPTO_GNUTLS */
 /* #undef USE_NGTCP2_CRYPTO_QUICTLS */
 /* #undef USE_NGTCP2_CRYPTO_WOLFSSL */
+/* #undef USE_NGTCP2_H3 */
 /* #undef USE_OPENLDAP */
 /* #undef USE_OPENSSL */
+/* #undef USE_OPENSSL_H3 */
+/* #undef USE_OPENSSL_QUIC */
 /* #undef USE_QUICHE */
 /* #undef USE_RUSTLS */
 /* #undef USE_SCHANNEL */
@@ -304,6 +305,7 @@
 /* #undef USE_THREADS_WIN32 */
 /* #undef USE_TLS_SRP */
 #define USE_UNIX_SOCKETS 1
+/* enable websockets support */
 /* #undef USE_WEBSOCKETS */
 /* #undef USE_WIN32_CRYPTO */
 /* #undef USE_WIN32_IDN */
