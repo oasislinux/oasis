@@ -211,9 +211,11 @@ build('awk', '$outdir/default_profile.c', {'$srcdir/misc/mke2fs.conf.in', '|', '
 	expr='-f $srcdir/misc/profile-to-c.awk',
 })
 
+cc('misc/util.c')
+
 exe('bin/mke2fs', [[
 	misc/(
-		mke2fs.c util.c mk_hugefiles.c
+		mke2fs.c util.c.o mk_hugefiles.c
 		create_inode.c
 	)
 	$outdir/default_profile.c
@@ -223,6 +225,26 @@ exe('bin/mke2fs', [[
 ]])
 file('bin/mke2fs', '755', '$outdir/bin/mke2fs')
 substman{'misc/mke2fs.8.in'}
+
+sub('journal.ninja', function()
+	cflags{
+		'-I $srcdir/e2fsck',
+		'-D DEBUGFS',
+	}
+	set('outdir', '$outdir/misc')
+	lib('libjournal.a', [[
+		debugfs/journal.c
+		e2fsck/(revoke.c recovery.c)
+	]])
+end)
+exe('bin/tune2fs', [[
+	misc/(tune2fs.c util.c.o libjournal.a)
+	libsupport.a libext2fs.a libe2p.a libcomm_err.a
+	$builddir/pkg/util-linux/libblkid.a.d
+	$builddir/pkg/util-linux/libuuid.a.d
+]])
+file('bin/tune2fs', '755', '$outdir/bin/tune2fs')
+substman{'misc/tune2fs.8.in'}
 
 exe('bin/e4crypt', [[
 	misc/e4crypt.c
