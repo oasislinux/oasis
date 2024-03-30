@@ -224,4 +224,12 @@ exe('bin/mke2fs', [[
 file('bin/mke2fs', '755', '$outdir/bin/mke2fs')
 substman{'misc/mke2fs.8.in'}
 
+exe('bin/e4crypt', [[
+	misc/e4crypt.c
+	libext2fs.a
+	$builddir/pkg/util-linux/libuuid.a.d
+]])
+file('bin/e4crypt', '755', '$outdir/bin/e4crypt')
+substman{'misc/e4crypt.8.in'}
+
 fetch 'git'
