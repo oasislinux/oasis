@@ -1,18 +1,18 @@
-From 6fb48eadd5d579289dc303aa341490420e5e7d3a Mon Sep 17 00:00:00 2001
+From a391e9bf15ff9627484606b8d134357dcc2120a0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
  yt_dlp/cookies.py      | 100 -----------------------------------------
- yt_dlp/utils/_utils.py |  84 +---------------------------------
- 2 files changed, 2 insertions(+), 182 deletions(-)
+ yt_dlp/utils/_utils.py |  85 +----------------------------------
+ 2 files changed, 2 insertions(+), 183 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index 53fe0ec2d..77f12aa4b 100644
+index 28d174a09..fb1fc67e7 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
-@@ -383,8 +383,6 @@ def decrypt(self, encrypted_value):
+@@ -387,8 +387,6 @@ def decrypt(self, encrypted_value):
  def get_cookie_decryptor(browser_root, browser_keyring_name, logger, *, keyring=None):
      if sys.platform == 'darwin':
          return MacChromeCookieDecryptor(browser_keyring_name, logger)
@@ -21,7 +21,7 @@ index 53fe0ec2d..77f12aa4b 100644
      return LinuxChromeCookieDecryptor(browser_keyring_name, logger, keyring=keyring)
  
  
-@@ -471,43 +469,6 @@ def decrypt(self, encrypted_value):
+@@ -475,43 +473,6 @@ def decrypt(self, encrypted_value):
              return encrypted_value
  
  
@@ -65,7 +65,7 @@ index 53fe0ec2d..77f12aa4b 100644
  def _extract_safari_cookies(profile, logger):
      if sys.platform != 'darwin':
          raise ValueError(f'unsupported platform: {sys.platform}')
-@@ -957,33 +918,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
+@@ -961,33 +922,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
          return None
  
  
@@ -74,7 +74,7 @@ index 53fe0ec2d..77f12aa4b 100644
 -    References:
 -        - [1] https://chromium.googlesource.com/chromium/src/+/refs/heads/main/components/os_crypt/sync/os_crypt_win.cc
 -    """
--    path = _find_most_recently_used_file(browser_root, 'Local State', logger)
+-    path = _newest(_find_files(browser_root, 'Local State', logger))
 -    if path is None:
 -        logger.error('could not find local state file')
 -        return None
@@ -99,7 +99,7 @@ index 53fe0ec2d..77f12aa4b 100644
  def pbkdf2_sha1(password, salt, iterations, key_length):
      return pbkdf2_hmac('sha1', password, salt, iterations, key_length)
  
-@@ -1013,40 +947,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
+@@ -1017,40 +951,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
          return None
  
  
@@ -141,10 +141,10 @@ index 53fe0ec2d..77f12aa4b 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils/_utils.py b/yt_dlp/utils/_utils.py
-index 82d9ba4d5..c30e69416 100644
+index 9efeb6a1c..34e84854c 100644
 --- a/yt_dlp/utils/_utils.py
 +++ b/yt_dlp/utils/_utils.py
-@@ -1925,64 +1925,7 @@ def __init__(self):
+@@ -1478,64 +1478,7 @@ def __init__(self):
          super().__init__(self.msg)
  
  
@@ -210,7 +210,7 @@ index 82d9ba4d5..c30e69416 100644
      try:
          import fcntl
  
-@@ -2315,30 +2258,7 @@ def fix_xml_ampersands(xml_str):
+@@ -1868,31 +1811,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
@@ -235,6 +235,7 @@ index 82d9ba4d5..c30e69416 100644
 -    buf = ctypes.create_string_buffer(len(title_bytes))
 -    buf.value = title_bytes
 -    try:
+-        # PR_SET_NAME = 15      Ref: /usr/include/linux/prctl.h
 -        libc.prctl(15, buf, 0, 0, 0)
 -    except AttributeError:
 -        return  # Strange libc, just skip this
@@ -243,5 +244,5 @@ index 82d9ba4d5..c30e69416 100644
  
  def remove_start(s, start):
 -- 
-2.37.3
+2.44.0
 
