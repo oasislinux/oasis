@@ -8,6 +8,7 @@ lexers/apl.lua
 lexers/applescript.lua
 lexers/asm.lua
 lexers/asp.lua
+lexers/autohotkey.lua
 lexers/autoit.lua
 lexers/awk.lua
 lexers/bash.lua
@@ -51,11 +52,13 @@ lexers/gemini.lua
 lexers/gettext.lua
 lexers/gherkin.lua
 lexers/git-rebase.lua
+lexers/gleam.lua
 lexers/glsl.lua
 lexers/gnuplot.lua
 lexers/go.lua
 lexers/groovy.lua
 lexers/gtkrc.lua
+lexers/hare.lua
 lexers/haskell.lua
 lexers/html.lua
 lexers/icon.lua
@@ -65,6 +68,7 @@ lexers/ini.lua
 lexers/io_lang.lua
 lexers/java.lua
 lexers/javascript.lua
+lexers/jq.lua
 lexers/json.lua
 lexers/jsp.lua
 lexers/julia.lua
@@ -81,6 +85,7 @@ lexers/makefile.lua
 lexers/man.lua
 lexers/markdown.lua
 lexers/matlab.lua
+lexers/mediawiki.lua
 lexers/meson.lua
 lexers/moonscript.lua
 lexers/myrddin.lua
@@ -89,7 +94,9 @@ lexers/networkd.lua
 lexers/nim.lua
 lexers/nsis.lua
 lexers/null.lua
+lexers/objeck.lua
 lexers/objective_c.lua
+lexers/output.lua
 lexers/pascal.lua
 lexers/perl.lua
 lexers/php.lua
@@ -112,6 +119,7 @@ lexers/rest.lua
 lexers/rexx.lua
 lexers/rhtml.lua
 lexers/routeros.lua
+lexers/rpmspec.lua
 lexers/rstats.lua
 lexers/ruby.lua
 lexers/rust.lua
@@ -131,6 +139,9 @@ lexers/tex.lua
 lexers/texinfo.lua
 lexers/text.lua
 lexers/toml.lua
+lexers/troff.lua
+lexers/txt2tags.lua
+lexers/typescript.lua
 lexers/vala.lua
 lexers/vb.lua
 lexers/vbscript.lua
@@ -149,8 +160,7 @@ plugins/digraph.lua
 plugins/filetype.lua
 plugins/number-inc-dec.lua
 plugins/textobject-lexer.lua
-themes/dark-16.lua
-themes/light-16.lua
+themes/base-16.lua
 themes/solarized.lua
 themes/zenburn.lua
 vis-std.lua

@@ -1,4 +1,4 @@
-set('version', 'v0.8')
+set('version', 'v0.9')
 cflags{
 	'-std=c99',
 	'-D CONFIG_HELP=1',
@@ -54,6 +54,7 @@ exe('vis', [[
 	vis-prompt.c
 	vis-registers.c
 	vis-text-objects.c
+	vis-subprocess.c
 	text-regex.c
 	$builddir/pkg/libtermkey/libtermkey.a.d
 	$builddir/pkg/lpeg/liblpeg.a
@@ -79,7 +80,6 @@ for f in iterlines('lua.txt') do
 	file('share/vis/'..f, '644', '$srcdir/lua/'..f)
 end
 sym('share/vis/lexer.lua', 'lexers/lexer.lua')
-sym('share/vis/themes/default-16.lua', 'dark-16.lua')
-sym('share/vis/themes/default-256.lua', 'dark-16.lua')
+sym('share/vis/themes/default-16.lua', 'base-16.lua')
 
 fetch 'git'
