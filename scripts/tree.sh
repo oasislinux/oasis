@@ -1,7 +1,7 @@
 set -e
 
 if [ "$#" != 4 ] ; then
-	echo 'usage: commit.sh repo tag index out' >&2
+	echo 'usage: tree.sh repo tag index out' >&2
 	exit 2
 fi
 
