@@ -17,7 +17,7 @@ exe('quark', {
 	'sock.c',
 	'util.c',
 })
-file('bin/quark', '775', '$outdir/quark')
+file('bin/quark', '755', '$outdir/quark')
 man{'quark.1'}
 
 fetch 'git'
