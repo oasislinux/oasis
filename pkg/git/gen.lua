@@ -36,6 +36,26 @@ cc('common-main.c')
 cc('http.c')
 cc('compat/regex/regex.c', nil, {cflags='$cflags -DGAWK -DNO_MBSUPPORT'})
 
+-- src/Makefile:/^REFTABLE_OBJS./+=
+lib('libreftable.a', [[
+	reftable/(
+		basics.c
+		error.c
+		block.c
+		blocksource.c
+		iter.c
+		publicbasics.c
+		merged.c
+		pq.c
+		reader.c
+		record.c
+		refname.c
+		generic.c
+		stack.c
+		tree.c
+		writer.c
+	) ]] )
+
 -- src/Makefile:/^LIB_OBJS.\+=
 lib('libgit.a', [[
 	abspath.c
@@ -138,6 +158,7 @@ lib('libgit.a', [[
 	list-objects.c
 	lockfile.c
 	log-tree.c
+	loose.c
 	ls-refs.c
 	mailinfo.c
 	mailmap.c
@@ -150,6 +171,7 @@ lib('libgit.a', [[
 	merge-recursive.c
 	merge.c
 	midx.c
+	midx-write.c
 	name-hash.c
 	negotiator/default.c
 	negotiator/noop.c
@@ -158,6 +180,7 @@ lib('libgit.a', [[
 	notes-merge.c
 	notes-utils.c
 	notes.c
+	object-file-convert.c
 	object-file.c
 	object-name.c
 	object.c
@@ -204,6 +227,7 @@ lib('libgit.a', [[
 	refs.c
 	refs/debug.c
 	refs/files-backend.c
+	refs/reftable-backend.c
 	refs/iterator.c
 	refs/packed-backend.c
 	refs/ref-cache.c
@@ -297,6 +321,7 @@ lib('libgit.a', [[
 	compat/linux/procinfo.c
 
 	libxdiff.a
+	libreftable.a
 	$builddir/pkg/zlib/libz.a
 ]])
 
