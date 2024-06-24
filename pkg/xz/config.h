@@ -1,11 +1,12 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 #define ASSUME_RAM 128
 /* #undef ENABLE_NLS */
+/* #undef HAVE_ARM64_CRC32 */
 /* #undef HAVE_BSWAP_16 */
 /* #undef HAVE_BSWAP_32 */
 /* #undef HAVE_BSWAP_64 */
 /* #undef HAVE_BYTESWAP_H */
-/* #undef HAVE_CAPSICUM */
+/* #undef HAVE_CAP_RIGHTS_LIMIT */
 /* #undef HAVE_CC_SHA256_CTX */
 /* #undef HAVE_CC_SHA256_INIT */
 /* #undef HAVE_CFLOCALECOPYPREFERREDLANGUAGES */
@@ -27,9 +28,11 @@
 #define HAVE_DECODER_LZMA1 1
 #define HAVE_DECODER_LZMA2 1
 #define HAVE_DECODER_POWERPC 1
+#define HAVE_DECODER_RISCV 1
 #define HAVE_DECODER_SPARC 1
 #define HAVE_DECODER_X86 1
 #define HAVE_DLFCN_H 1
+/* #undef HAVE_ELF_AUX_INFO */
 #define HAVE_ENCODERS 1
 #define HAVE_ENCODER_ARM 1
 #define HAVE_ENCODER_ARM64 1
@@ -39,20 +42,21 @@
 #define HAVE_ENCODER_LZMA1 1
 #define HAVE_ENCODER_LZMA2 1
 #define HAVE_ENCODER_POWERPC 1
+#define HAVE_ENCODER_RISCV 1
 #define HAVE_ENCODER_SPARC 1
 #define HAVE_ENCODER_X86 1
-#define HAVE_FCNTL_H 1
 #define HAVE_FUNC_ATTRIBUTE_CONSTRUCTOR 1
 #define HAVE_FUTIMENS 1
 /* #undef HAVE_FUTIMES */
 /* #undef HAVE_FUTIMESAT */
+/* #undef HAVE_GETAUXVAL */
 #define HAVE_GETOPT_H 1
 #define HAVE_GETOPT_LONG 1
 /* #undef HAVE_GETTEXT */
 /* #undef HAVE_ICONV */
 /* probe HAVE_IMMINTRIN_H */
 #define HAVE_INTTYPES_H 1
-#define HAVE_LIMITS_H 1
+#define HAVE_LINUX_LANDLOCK 1
 #define HAVE_LZIP_DECODER 1
 #define HAVE_MBRTOWC 1
 #define HAVE_MF_BT2 1
@@ -86,12 +90,12 @@
 #define HAVE_STRUCT_STAT_ST_ATIM_TV_NSEC 1
 /* #undef HAVE_STRUCT_STAT_ST_UATIME */
 /* #undef HAVE_SYMBOL_VERSIONS_LINUX */
+/* #undef HAVE_SYSCTLBYNAME */
 /* #undef HAVE_SYS_BYTEORDER_H */
-/* #undef HAVE_SYS_CAPSICUM_H */
+/* #undef HAVE_SYS_CDEFS_H */
 /* #undef HAVE_SYS_ENDIAN_H */
 #define HAVE_SYS_PARAM_H 1
 #define HAVE_SYS_STAT_H 1
-#define HAVE_SYS_TIME_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_UINTPTR_T 1
 #define HAVE_UNISTD_H 1
@@ -118,10 +122,10 @@
 #define PACKAGE "xz"
 #define PACKAGE_BUGREPORT "xz@tukaani.org"
 #define PACKAGE_NAME "XZ Utils"
-#define PACKAGE_STRING "XZ Utils 5.4.6"
+#define PACKAGE_STRING "XZ Utils 5.6.4"
 #define PACKAGE_TARNAME "xz"
-#define PACKAGE_URL "https://xz.tukaani.org/xz-utils/"
-#define PACKAGE_VERSION "5.4.6"
+#define PACKAGE_URL "https://tukaani.org/xz/"
+#define PACKAGE_VERSION "5.6.4"
 /* #undef PTHREAD_CREATE_JOINABLE */
 /* probe SIZEOF_SIZE_T */
 #define STDC_HEADERS 1
@@ -181,6 +185,9 @@
 #ifndef __STDC_WANT_IEC_60559_DFP_EXT__
 # define __STDC_WANT_IEC_60559_DFP_EXT__ 1
 #endif
+#ifndef __STDC_WANT_IEC_60559_EXT__
+# define __STDC_WANT_IEC_60559_EXT__ 1
+#endif
 #ifndef __STDC_WANT_IEC_60559_FUNCS_EXT__
 # define __STDC_WANT_IEC_60559_FUNCS_EXT__ 1
 #endif
@@ -199,7 +206,7 @@
 #ifndef _XOPEN_SOURCE
 /* # undef _XOPEN_SOURCE */
 #endif
-#define VERSION "5.4.6"
+#define VERSION "5.6.4"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
@@ -211,10 +218,12 @@
 #endif
 /* #undef _FILE_OFFSET_BITS */
 /* #undef _LARGE_FILES */
+/* #undef _TIME_BITS */
 /* #undef _UINT32_T */
 /* #undef _UINT64_T */
 /* #undef _UINT8_T */
 /* #undef __GETOPT_PREFIX */
+/* #undef __MINGW_USE_VC2005_COMPAT */
 /* #undef int32_t */
 /* #undef int64_t */
 /* #undef uint16_t */
