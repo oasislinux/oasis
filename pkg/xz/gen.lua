@@ -121,6 +121,7 @@ lib('liblzma.a', [[src/(
 			armthumb.c
 			arm64.c
 			sparc.c
+			riscv.c
 		)
 	)
 )]])
@@ -135,6 +136,7 @@ exe('xz', [[src/(
 		message.c
 		mytime.c
 		options.c
+		sandbox.c
 		signals.c
 		suffix.c
 		util.c
