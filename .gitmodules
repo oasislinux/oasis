@@ -391,7 +391,6 @@
 [submodule "pkg/xz/src"]
 	path = pkg/xz/src
 	url = https://github.com/tukaani-project/xz.git
-	ignore = all
 [submodule "pkg/zlib/src"]
 	path = pkg/zlib/src
 	url = https://github.com/madler/zlib
