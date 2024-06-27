@@ -1,6 +1,6 @@
 cflags{
 	'-Wpedantic',
-	'-D PREFIX=',
+	([['-D PREFIX="%s"']]):format(config.prefix),
 }
 
 exe('rc', {
