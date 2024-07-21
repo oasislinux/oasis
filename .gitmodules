@@ -383,7 +383,7 @@
 	url = https://anongit.freedesktop.org/git/xkeyboard-config.git
 [submodule "pkg/xz/src"]
 	path = pkg/xz/src
-	url = https://git.tukaani.org/xz.git
+	url = https://github.com/tukaani-project/xz.git
 	ignore = all
 [submodule "pkg/zlib/src"]
 	path = pkg/zlib/src
