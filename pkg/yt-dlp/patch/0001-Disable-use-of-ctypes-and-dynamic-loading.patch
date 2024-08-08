@@ -1,4 +1,4 @@
-From a391e9bf15ff9627484606b8d134357dcc2120a0 Mon Sep 17 00:00:00 2001
+From 85781c9dc7a882b8638dcfdd60da14261178f437 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -9,10 +9,10 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  2 files changed, 2 insertions(+), 183 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index 28d174a09..fb1fc67e7 100644
+index 070d2fcb9..e527fdec4 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
-@@ -387,8 +387,6 @@ def decrypt(self, encrypted_value):
+@@ -400,8 +400,6 @@ def decrypt(self, encrypted_value):
  def get_cookie_decryptor(browser_root, browser_keyring_name, logger, *, keyring=None):
      if sys.platform == 'darwin':
          return MacChromeCookieDecryptor(browser_keyring_name, logger)
@@ -21,7 +21,7 @@ index 28d174a09..fb1fc67e7 100644
      return LinuxChromeCookieDecryptor(browser_keyring_name, logger, keyring=keyring)
  
  
-@@ -475,43 +473,6 @@ def decrypt(self, encrypted_value):
+@@ -488,43 +486,6 @@ def decrypt(self, encrypted_value):
              return encrypted_value
  
  
@@ -65,7 +65,7 @@ index 28d174a09..fb1fc67e7 100644
  def _extract_safari_cookies(profile, logger):
      if sys.platform != 'darwin':
          raise ValueError(f'unsupported platform: {sys.platform}')
-@@ -961,33 +922,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
+@@ -971,33 +932,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
          return None
  
  
@@ -97,9 +97,9 @@ index 28d174a09..fb1fc67e7 100644
 -
 -
  def pbkdf2_sha1(password, salt, iterations, key_length):
-     return pbkdf2_hmac('sha1', password, salt, iterations, key_length)
+     return hashlib.pbkdf2_hmac('sha1', password, salt, iterations, key_length)
  
-@@ -1017,40 +951,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
+@@ -1027,40 +961,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger):
          return None
  
  
@@ -126,7 +126,7 @@ index 28d174a09..fb1fc67e7 100644
 -        None,  # pvReserved: must be NULL
 -        None,  # pPromptStruct: information about prompts to display
 -        0,  # dwFlags
--        ctypes.byref(blob_out)  # pDataOut
+-        ctypes.byref(blob_out),  # pDataOut
 -    )
 -    if not ret:
 -        logger.warning('failed to decrypt with DPAPI', only_once=True)
@@ -141,10 +141,10 @@ index 28d174a09..fb1fc67e7 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils/_utils.py b/yt_dlp/utils/_utils.py
-index 9efeb6a1c..34e84854c 100644
+index 0d3e707c5..357f145d7 100644
 --- a/yt_dlp/utils/_utils.py
 +++ b/yt_dlp/utils/_utils.py
-@@ -1478,64 +1478,7 @@ def __init__(self):
+@@ -1482,64 +1482,7 @@ def __init__(self):
          super().__init__(self.msg)
  
  
@@ -171,7 +171,7 @@ index 9efeb6a1c..34e84854c 100644
 -        ctypes.wintypes.DWORD,      # dwReserved
 -        ctypes.wintypes.DWORD,      # nNumberOfBytesToLockLow
 -        ctypes.wintypes.DWORD,      # nNumberOfBytesToLockHigh
--        ctypes.POINTER(OVERLAPPED)  # Overlapped
+-        ctypes.POINTER(OVERLAPPED),  # Overlapped
 -    ]
 -    LockFileEx.restype = ctypes.wintypes.BOOL
 -    UnlockFileEx = kernel32.UnlockFileEx
@@ -180,7 +180,7 @@ index 9efeb6a1c..34e84854c 100644
 -        ctypes.wintypes.DWORD,      # dwReserved
 -        ctypes.wintypes.DWORD,      # nNumberOfBytesToLockLow
 -        ctypes.wintypes.DWORD,      # nNumberOfBytesToLockHigh
--        ctypes.POINTER(OVERLAPPED)  # Overlapped
+-        ctypes.POINTER(OVERLAPPED),  # Overlapped
 -    ]
 -    UnlockFileEx.restype = ctypes.wintypes.BOOL
 -    whole_low = 0xffffffff
@@ -203,14 +203,14 @@ index 9efeb6a1c..34e84854c 100644
 -        assert f._lock_file_overlapped_p
 -        handle = msvcrt.get_osfhandle(f.fileno())
 -        if not UnlockFileEx(handle, 0, whole_low, whole_high, f._lock_file_overlapped_p):
--            raise OSError('Unlocking file failed: %r' % ctypes.FormatError())
+-            raise OSError(f'Unlocking file failed: {ctypes.FormatError()!r}')
 -
 -else:
 +if True:
      try:
          import fcntl
  
-@@ -1868,31 +1811,7 @@ def fix_xml_ampersands(xml_str):
+@@ -1888,31 +1831,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
