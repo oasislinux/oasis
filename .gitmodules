@@ -372,6 +372,7 @@
 [submodule "pkg/wireguard-tools/src"]
 	path = pkg/wireguard-tools/src
 	url = https://git.zx2c4.com/wireguard-tools
+	ignore = all
 [submodule "pkg/wl9/src"]
 	path = pkg/wl9/src
 	url = https://git.sr.ht/~mcf/wl9

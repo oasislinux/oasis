@@ -1,0 +1,39 @@
+From 2d278467c649c814853b0c43c142f6146512a4fc Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 7 Aug 2024 15:00:01 -0700
+Subject: [PATCH] Use __asm__ keyword instead of asm
+
+---
+ src/curve25519.c | 2 +-
+ src/encoding.c   | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/curve25519.c b/src/curve25519.c
+index 7121d1e..d3bc005 100644
+--- a/src/curve25519.c
++++ b/src/curve25519.c
+@@ -76,7 +76,7 @@ static __always_inline __unused void put_unaligned_le64(u64 s, u8 *d)
+ static noinline void memzero_explicit(void *s, size_t count)
+ {
+ 	memset(s, 0, count);
+-	asm volatile("": :"r"(s) : "memory");
++	__asm__ volatile("": :"r"(s) : "memory");
+ }
+ 
+ #ifdef __SIZEOF_INT128__
+diff --git a/src/encoding.c b/src/encoding.c
+index 9b2cda5..57a7659 100644
+--- a/src/encoding.c
++++ b/src/encoding.c
+@@ -119,7 +119,7 @@ bool key_is_zero(const uint8_t key[static WG_KEY_LEN])
+ 
+ 	for (unsigned int i = 0; i < WG_KEY_LEN; ++i) {
+ 		acc |= key[i];
+-		asm volatile("" : "=r"(acc) : "0"(acc));
++		__asm__ volatile("" : "=r"(acc) : "0"(acc));
+ 	}
+ 	return 1 & ((acc - 1) >> 8);
+ }
+-- 
+2.44.0
+
