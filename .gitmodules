@@ -127,10 +127,10 @@
 	url = https://github.com/PJK/libcbor.git
 [submodule "pkg/libdrm/src"]
 	path = pkg/libdrm/src
-	url = https://anongit.freedesktop.org/git/mesa/drm.git
+	url = https://gitlab.freedesktop.org/mesa/drm.git
 [submodule "pkg/libevdev/src"]
 	path = pkg/libevdev/src
-	url = https://anongit.freedesktop.org/git/libevdev.git
+	url = https://gitlab.freedesktop.org/libevdev/libevdev.git
 	ignore = all
 [submodule "pkg/libevent/src"]
 	path = pkg/libevent/src
@@ -160,7 +160,7 @@
 	ignore = all
 [submodule "pkg/libpciaccess/src"]
 	path = pkg/libpciaccess/src
-	url = https://anongit.freedesktop.org/git/xorg/lib/libpciaccess.git
+	url = https://gitlab.freedesktop.org/xorg/lib/libpciaccess.git
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng
@@ -269,7 +269,7 @@
 	url = https://github.com/madler/pigz
 [submodule "pkg/pixman/src"]
 	path = pkg/pixman/src
-	url = https://anongit.freedesktop.org/git/pixman.git
+	url = https://gitlab.freedesktop.org/pixman/pixman.git
 	ignore = all
 [submodule "pkg/pounce/src"]
 	path = pkg/pounce/src
@@ -364,10 +364,10 @@
 	ignore = all
 [submodule "pkg/wayland-protocols/src"]
 	path = pkg/wayland-protocols/src
-	url = https://anongit.freedesktop.org/git/wayland/wayland-protocols.git
+	url = https://gitlab.freedesktop.org/wayland/wayland-protocols.git
 [submodule "pkg/wayland/src"]
 	path = pkg/wayland/src
-	url = https://anongit.freedesktop.org/git/wayland/wayland.git
+	url = https://gitlab.freedesktop.org/wayland/wayland.git
 	ignore = all
 [submodule "pkg/wireguard-tools/src"]
 	path = pkg/wireguard-tools/src
@@ -384,7 +384,7 @@
 	url = https://git.sr.ht/~mcf/x509cert
 [submodule "pkg/xkeyboard-config/src"]
 	path = pkg/xkeyboard-config/src
-	url = https://anongit.freedesktop.org/git/xkeyboard-config.git
+	url = https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git
 [submodule "pkg/xz/src"]
 	path = pkg/xz/src
 	url = https://github.com/tukaani-project/xz.git
