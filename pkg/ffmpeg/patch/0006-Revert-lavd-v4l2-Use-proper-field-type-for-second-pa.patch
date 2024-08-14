@@ -1,0 +1,32 @@
+From 79f1d1f2e080eb37540083381194751b15d50976 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 14 Aug 2024 17:15:05 -0700
+Subject: [PATCH] Revert "lavd/v4l2: Use proper field type for second parameter
+ of ioctl() with BSD's"
+
+This reverts commit 6ab65792ab8e522f5a8a9f432ca11900f35a9d94.
+---
+ libavdevice/v4l2.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/libavdevice/v4l2.c b/libavdevice/v4l2.c
+index 50ac47ec5a..51291246b3 100644
+--- a/libavdevice/v4l2.c
++++ b/libavdevice/v4l2.c
+@@ -107,10 +107,10 @@ struct video_data {
+     int (*open_f)(const char *file, int oflag, ...);
+     int (*close_f)(int fd);
+     int (*dup_f)(int fd);
+-#if defined(__sun) || defined(__BIONIC__) || defined(__musl__) /* POSIX-like */
+-    int (*ioctl_f)(int fd, int request, ...);
+-#else
++#ifdef __GLIBC__
+     int (*ioctl_f)(int fd, unsigned long int request, ...);
++#else
++    int (*ioctl_f)(int fd, int request, ...);
+ #endif
+     ssize_t (*read_f)(int fd, void *buffer, size_t n);
+     void *(*mmap_f)(void *start, size_t length, int prot, int flags, int fd, int64_t offset);
+-- 
+2.44.0
+

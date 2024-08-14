@@ -1,15 +1,15 @@
-From a071cbecc751b78c4d0ff89356e4c0fca16d266d Mon Sep 17 00:00:00 2001
+From c2589a507009d717c3889cd7c7c3803c79a67a67 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 7 Sep 2021 01:46:57 -0700
 Subject: [PATCH] libavutil: Use config instead of compiler to determine
  support for inline asm
 
 ---
- libavutil/x86/intreadwrite.h | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ libavutil/x86/intreadwrite.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/libavutil/x86/intreadwrite.h b/libavutil/x86/intreadwrite.h
-index 40f375b013..c45e8439e0 100644
+index 5e57d6a8cd..38ced9a7ce 100644
 --- a/libavutil/x86/intreadwrite.h
 +++ b/libavutil/x86/intreadwrite.h
 @@ -25,9 +25,9 @@
@@ -19,24 +19,12 @@ index 40f375b013..c45e8439e0 100644
 -#if HAVE_MMX
 +#if HAVE_MMX_INLINE
  
--#if !HAVE_FAST_64BIT && defined(__MMX__)
-+#if !HAVE_FAST_64BIT
- 
- #define FF_COPY_SWAP_ZERO_USES_MMX
- 
-@@ -61,9 +61,9 @@ static av_always_inline void AV_ZERO64(void *d)
-             :: "mm0");
- }
- 
--#endif /* !HAVE_FAST_64BIT && defined(__MMX__) */
-+#endif /* !HAVE_FAST_64BIT */
- 
 -#ifdef __SSE__
 +#if HAVE_SSE_INLINE
  
  #define AV_COPY128 AV_COPY128
  static av_always_inline void AV_COPY128(void *d, const void *s)
-@@ -79,7 +79,7 @@ static av_always_inline void AV_COPY128(void *d, const void *s)
+@@ -43,7 +43,7 @@ static av_always_inline void AV_COPY128(void *d, const void *s)
  
  #endif /* __SSE__ */
  
@@ -45,7 +33,7 @@ index 40f375b013..c45e8439e0 100644
  
  #define AV_ZERO128 AV_ZERO128
  static av_always_inline void AV_ZERO128(void *d)
-@@ -92,8 +92,8 @@ static av_always_inline void AV_ZERO128(void *d)
+@@ -56,8 +56,8 @@ static av_always_inline void AV_ZERO128(void *d)
              :: "xmm0");
  }
  
@@ -57,5 +45,5 @@ index 40f375b013..c45e8439e0 100644
  
  #endif /* AVUTIL_X86_INTREADWRITE_H */
 -- 
-2.37.3
+2.44.0
 
