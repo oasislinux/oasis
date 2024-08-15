@@ -1,0 +1,70 @@
+From c951d848007b2938b805a4faf32e8c3344d45a43 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 15 Aug 2024 00:28:33 -0700
+Subject: [PATCH] Disable vo_gpu
+
+---
+ options/options.c     | 2 ++
+ video/out/vo.c        | 4 ++++
+ video/out/vo_libmpv.c | 2 ++
+ 3 files changed, 8 insertions(+)
+
+diff --git a/options/options.c b/options/options.c
+index 8640ecb27f..f0f85a5b2d 100644
+--- a/options/options.c
++++ b/options/options.c
+@@ -877,10 +877,12 @@ static const m_option_t mp_opts[] = {
+     {"", OPT_SUBSTRUCT(demux_cache_opts, demux_cache_conf)},
+     {"", OPT_SUBSTRUCT(stream_opts, stream_conf)},
+ 
++#if 0
+     {"", OPT_SUBSTRUCT(ra_ctx_opts, ra_ctx_conf)},
+     {"", OPT_SUBSTRUCT(gl_video_opts, gl_video_conf)},
+     {"", OPT_SUBSTRUCT(gl_next_opts, gl_next_conf)},
+     {"", OPT_SUBSTRUCT(spirv_opts, spirv_conf)},
++#endif
+ 
+ #if HAVE_GL
+     {"", OPT_SUBSTRUCT(opengl_opts, opengl_conf)},
+diff --git a/video/out/vo.c b/video/out/vo.c
+index db29690950..3081f9878d 100644
+--- a/video/out/vo.c
++++ b/video/out/vo.c
+@@ -72,8 +72,10 @@ static const struct vo_driver *const video_out_drivers[] =
+ #if HAVE_ANDROID
+     &video_out_mediacodec_embed,
+ #endif
++#if 0
+     &video_out_gpu,
+     &video_out_gpu_next,
++#endif
+ #if HAVE_VDPAU
+     &video_out_vdpau,
+ #endif
+@@ -304,7 +306,9 @@ static struct vo *vo_create(bool probing, struct mpv_global *global,
+     m_config_cache_set_dispatch_change_cb(vo->opts_cache, vo->in->dispatch,
+                                           update_opts, vo);
+ 
++#if 0
+     vo->gl_opts_cache = m_config_cache_alloc(NULL, global, &gl_video_conf);
++#endif
+     vo->eq_opts_cache = m_config_cache_alloc(NULL, global, &mp_csp_equalizer_conf);
+ 
+     mp_input_set_mouse_transform(vo->input_ctx, NULL, NULL);
+diff --git a/video/out/vo_libmpv.c b/video/out/vo_libmpv.c
+index 7974eed3f7..cf8d7ff477 100644
+--- a/video/out/vo_libmpv.c
++++ b/video/out/vo_libmpv.c
+@@ -112,7 +112,9 @@ struct mpv_render_context {
+ };
+ 
+ const struct render_backend_fns *render_backends[] = {
++#if 0
+     &render_backend_gpu,
++#endif
+     &render_backend_sw,
+     NULL
+ };
+-- 
+2.44.0
+

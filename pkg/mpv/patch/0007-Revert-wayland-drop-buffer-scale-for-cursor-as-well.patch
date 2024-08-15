@@ -1,0 +1,106 @@
+From 59550f4615bbf0a4e8bca23df163abfe37c52636 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 14 Aug 2024 22:52:17 -0700
+Subject: [PATCH] Revert "wayland: drop buffer scale for cursor as well"
+
+This reverts commit f0a6578259f508a8863afcf9a1487872d7ae1878.
+---
+ video/out/wayland_common.c | 32 +++++++++++++++++++++++---------
+ video/out/wayland_common.h |  1 -
+ 2 files changed, 23 insertions(+), 10 deletions(-)
+
+diff --git a/video/out/wayland_common.c b/video/out/wayland_common.c
+index edcc922122..4ccd4bda9c 100644
+--- a/video/out/wayland_common.c
++++ b/video/out/wayland_common.c
+@@ -893,6 +893,7 @@ static void output_handle_done(void *data, struct wl_output *wl_output)
+      * geometry and scaling should be recalculated. */
+     if (wl->current_output && wl->current_output->output == wl_output) {
+         set_surface_scaling(wl);
++        spawn_cursor(wl);
+         set_geometry(wl, false);
+         prepare_resize(wl);
+     }
+@@ -957,6 +958,23 @@ static void surface_handle_enter(void *data, struct wl_surface *wl_surface,
+     if (outputs == 1)
+         update_output_geometry(wl, old_geometry, old_output_geometry);
+ 
++    wl->current_output->has_surface = true;
++    bool force_resize = false;
++
++    if (wl->scaling != wl->current_output->scale) {
++        set_surface_scaling(wl);
++        spawn_cursor(wl);
++        force_resize = true;
++    }
++
++    if (!mp_rect_equals(&old_output_geometry, &wl->current_output->geometry)) {
++        set_geometry(wl, false);
++        force_resize = true;
++    }
++
++    if (!mp_rect_equals(&old_geometry, &wl->geometry) || force_resize)
++        prepare_resize(wl);
++
+     MP_VERBOSE(wl, "Surface entered output %s %s (0x%x), scale = %f, refresh rate = %f Hz\n",
+                wl->current_output->make, wl->current_output->model,
+                wl->current_output->id, wl->scaling, wl->current_output->refresh_rate);
+@@ -1696,7 +1714,6 @@ static bool create_input(struct vo_wayland_state *wl)
+ static int create_viewports(struct vo_wayland_state *wl)
+ {
+     wl->viewport = wp_viewporter_get_viewport(wl->viewporter, wl->surface);
+-    wl->cursor_viewport = wp_viewporter_get_viewport(wl->viewporter, wl->cursor_surface);
+     wl->osd_viewport = wp_viewporter_get_viewport(wl->viewporter, wl->osd_surface);
+     wl->video_viewport = wp_viewporter_get_viewport(wl->viewporter, wl->video_surface);
+ 
+@@ -2009,8 +2026,7 @@ static int set_cursor_visibility(struct vo_wayland_seat *s, bool on)
+             int scale = MPMAX(wl->scaling, 1);
+             wl_pointer_set_cursor(s->pointer, s->pointer_enter_serial, wl->cursor_surface,
+                                   img->hotspot_x / scale, img->hotspot_y / scale);
+-            wp_viewport_set_destination(wl->cursor_viewport, lround(img->width / scale),
+-                                        img->height / scale);
++            wl_surface_set_buffer_scale(wl->cursor_surface, scale);
+             wl_surface_attach(wl->cursor_surface, buffer, 0, 0);
+             wl_surface_damage_buffer(wl->cursor_surface, 0, 0, img->width, img->height);
+         }
+@@ -2145,11 +2161,12 @@ static bool single_output_spanned(struct vo_wayland_state *wl)
+ 
+ static int spawn_cursor(struct vo_wayland_state *wl)
+ {
+-    if (wl->allocated_cursor_scale == wl->scaling) {
++    if (wl->cursor_shape_manager)
++        return 0;
++    if (wl->allocated_cursor_scale == wl->scaling)
+         return 0;
+-    } else if (wl->cursor_theme) {
++    else if (wl->cursor_theme)
+         wl_cursor_theme_destroy(wl->cursor_theme);
+-    }
+ 
+     const char *xcursor_theme = getenv("XCURSOR_THEME");
+     const char *size_str = getenv("XCURSOR_SIZE");
+@@ -2801,9 +2818,6 @@ void vo_wayland_uninit(struct vo *vo)
+     if (wl->viewport)
+         wp_viewport_destroy(wl->viewport);
+ 
+-    if (wl->cursor_viewport)
+-        wp_viewport_destroy(wl->cursor_viewport);
+-
+     if (wl->osd_viewport)
+         wp_viewport_destroy(wl->osd_viewport);
+ 
+diff --git a/video/out/wayland_common.h b/video/out/wayland_common.h
+index 7a2f31918e..f5fcb80445 100644
+--- a/video/out/wayland_common.h
++++ b/video/out/wayland_common.h
+@@ -139,7 +139,6 @@ struct vo_wayland_state {
+     /* viewporter */
+     struct wp_viewporter *viewporter;
+     struct wp_viewport   *viewport;
+-    struct wp_viewport   *cursor_viewport;
+     struct wp_viewport   *osd_viewport;
+     struct wp_viewport   *video_viewport;
+ 
+-- 
+2.44.0
+

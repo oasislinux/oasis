@@ -4,6 +4,6 @@
 
 END {
 	printf("#define VERSION \"%s\"\n", version)
-	print("#define NO_BUILD_TIMESTAMPS")
-	print("#define MPVCOPYRIGHT \"Copyright © 2000-2020 mpv/MPlayer/mplayer2 projects\"")
+	print("#define BUILDDATE \"UNKNOWN\"")
+	print("#define MPVCOPYRIGHT \"Copyright © 2000-2024 mpv/MPlayer/mplayer2 projects\"")
 }

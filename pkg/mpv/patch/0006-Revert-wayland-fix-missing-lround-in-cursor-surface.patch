@@ -1,0 +1,26 @@
+From 2415a57a73ff5cdf9dab16a77a7917ca726ae109 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 14 Aug 2024 22:51:59 -0700
+Subject: [PATCH] Revert "wayland: fix missing lround in cursor surface"
+
+This reverts commit c1029aaa820de8193e2a466039d2acccca610fd6.
+---
+ video/out/wayland_common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/video/out/wayland_common.c b/video/out/wayland_common.c
+index 5c4cccf3ef..edcc922122 100644
+--- a/video/out/wayland_common.c
++++ b/video/out/wayland_common.c
+@@ -2010,7 +2010,7 @@ static int set_cursor_visibility(struct vo_wayland_seat *s, bool on)
+             wl_pointer_set_cursor(s->pointer, s->pointer_enter_serial, wl->cursor_surface,
+                                   img->hotspot_x / scale, img->hotspot_y / scale);
+             wp_viewport_set_destination(wl->cursor_viewport, lround(img->width / scale),
+-                                        lround(img->height / scale));
++                                        img->height / scale);
+             wl_surface_attach(wl->cursor_surface, buffer, 0, 0);
+             wl_surface_damage_buffer(wl->cursor_surface, 0, 0, img->width, img->height);
+         }
+-- 
+2.44.0
+
