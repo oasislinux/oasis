@@ -40,6 +40,24 @@ waylandproto('unstable/text-input/text-input-unstable-v3.xml', {
 	code='text-input-unstable-v3-protocol.c',
 })
 
+waylandproto('staging/content-type/content-type-v1.xml', {
+	client='include/content-type-v1-client-protocol.h',
+	server='include/content-type-v1-server-protocol.h',
+	code='content-type-v1-protocol.c',
+})
+
+waylandproto('staging/fractional-scale/fractional-scale-v1.xml', {
+	client='include/fractional-scale-v1-client-protocol.h',
+	server='include/fractional-scale-v1-server-protocol.h',
+	code='fractional-scale-v1-protocol.c',
+})
+
+waylandproto('staging/single-pixel-buffer/single-pixel-buffer-v1.xml', {
+	client='include/single-pixel-buffer-v1-client-protocol.h',
+	server='include/single-pixel-buffer-v1-server-protocol.h',
+	code='single-pixel-buffer-v1-protocol.c',
+})
+
 pkg.hdrs = {
 	'$outdir/include/presentation-time-client-protocol.h',
 	'$outdir/include/xdg-shell-client-protocol.h',
