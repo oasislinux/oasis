@@ -12,9 +12,10 @@ return {
 
 	-- package/file selection
 	fs={
-                -- Each entry contains a list of packages, a list of patterns to
-                -- include, and a list of patterns to exclude. If no patterns
-                -- are specified, all files from the package are included.
+                -- Each entry contains a list of packages, a list of patterns
+                -- matching files to include from those packages, and a list of
+                -- patterns matching files to exclude. If no patterns are
+                -- specified, all files from the package are included.
 		{sets.core, exclude={'^include/', '^lib/.*%.a$'}},
 
 		-- You may also specify a list of patterns to include or exclude
