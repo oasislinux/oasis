@@ -161,6 +161,9 @@
 [submodule "pkg/libpciaccess/src"]
 	path = pkg/libpciaccess/src
 	url = https://gitlab.freedesktop.org/xorg/lib/libpciaccess.git
+[submodule "pkg/libplacebo/src"]
+	path = pkg/libplacebo/src
+	url = https://code.videolan.org/videolan/libplacebo.git
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng
