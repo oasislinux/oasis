@@ -1,4 +1,4 @@
-From 01e722b50d1f5b56bd1f4a1673d0d812958cc49c Mon Sep 17 00:00:00 2001
+From f34464dc0940837a48e071392a84455df2138c0b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 23:14:16 -0700
 Subject: [PATCH] acme-client: Port to BearSSL
@@ -9,8 +9,8 @@ Subject: [PATCH] acme-client: Port to BearSSL
  usr.sbin/acme-client/key.c        | 333 ++++++++++++++++++++++++------
  usr.sbin/acme-client/key.h        |  22 +-
  usr.sbin/acme-client/keyproc.c    | 198 ++++++------------
- usr.sbin/acme-client/revokeproc.c | 235 ++++++++++-----------
- 6 files changed, 558 insertions(+), 534 deletions(-)
+ usr.sbin/acme-client/revokeproc.c | 237 ++++++++++-----------
+ 6 files changed, 560 insertions(+), 534 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
 index 23d8a1c3a33..3d3e32c1a57 100644
@@ -1220,7 +1220,7 @@ index f0df9f292d4..fc7de74b616 100644
  	return rc;
  }
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index 58e81233f1a..6d0f2b39d02 100644
+index 58e81233f1a..378de35f662 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
 @@ -22,58 +22,54 @@
@@ -1319,7 +1319,7 @@ index 58e81233f1a..6d0f2b39d02 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -113,39 +107,84 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -113,39 +107,86 @@ revokeproc(int fd, const char *certfile, int force,
  		goto out;
  	}
  
@@ -1415,18 +1415,20 @@ index 58e81233f1a..6d0f2b39d02 100644
 -		warn("calloc");
 +	br_x509_minimal_init(&xc, &br_sha256_vtable, NULL, 0);
 +	br_x509_minimal_set_hash(&xc, br_sha256_ID, &br_sha256_vtable);
++	br_x509_minimal_set_hash(&xc, br_sha384_ID, &br_sha384_vtable);
++	br_x509_minimal_set_hash(&xc, br_sha512_ID, &br_sha512_vtable);
 +	br_x509_minimal_set_name_elements(&xc, elts, eltsz);
 +	xc.vtable->start_chain(&xc.vtable, NULL);
 +	xc.vtable->start_cert(&xc.vtable, cert.data_len);
 +	xc.vtable->append(&xc.vtable, cert.data, cert.data_len);
 +	xc.vtable->end_cert(&xc.vtable);
 +	err = xc.vtable->end_chain(&xc.vtable);
-+	if (err != BR_ERR_X509_NOT_TRUSTED) {
++	if (err != BR_ERR_X509_NOT_TRUSTED && err != BR_ERR_X509_EXPIRED) {
 +		warnx("%s: X.509 engine error %d", certfile, err);
  		goto out;
  	}
  
-@@ -154,63 +193,37 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -154,63 +195,37 @@ revokeproc(int fd, const char *certfile, int force,
  	 * configuration file and that all domains are represented only once.
  	 */
  
@@ -1509,7 +1511,7 @@ index 58e81233f1a..6d0f2b39d02 100644
  			goto out;
  		}
  		force = 2;
-@@ -236,16 +249,7 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -236,16 +251,7 @@ revokeproc(int fd, const char *certfile, int force,
  		if (cc <= 0)
  			goto out;
  
@@ -1527,7 +1529,7 @@ index 58e81233f1a..6d0f2b39d02 100644
  			warnx("base64buf_url");
  			goto out;
  		} else if (writestr(fd, COMM_CSR, der64) >= 0)
-@@ -298,12 +302,9 @@ out:
+@@ -298,12 +304,9 @@ out:
  	close(fd);
  	if (f != NULL)
  		fclose(f);
@@ -1544,5 +1546,5 @@ index 58e81233f1a..6d0f2b39d02 100644
  	return rc;
  }
 -- 
-2.37.3
+2.44.0
 
