@@ -77,10 +77,9 @@ you might need, while keeping the base system small and focused.
 A guiding principle is that the `/etc` directory should be simple
 enough for system administrators to understand completely and
 customize appropriately. The most complex file in the default
-configuration is the system initialization script, [`/etc/rc.init`],
-at only 16 lines.
+configuration is the plumb script, [`/etc/plumb`], at only 18 lines.
 
-[`/etc/rc.init`]: https://github.com/oasislinux/etc/blob/master/rc.init
+[`/etc/plumb`]: https://github.com/oasislinux/etc/blob/master/plumb
 
 * Mostly **ISO C conformant**.
 
