@@ -1,4 +1,4 @@
-From 069cbc8a25155771af775ee084ba3519ed5a9602 Mon Sep 17 00:00:00 2001
+From 9ede9b68b8fc87052bd49b55c15e4faaf7c7ff4f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 30 Aug 2021 19:26:32 -0700
 Subject: [PATCH] Prevent zero-length array members in asound.h
@@ -8,10 +8,10 @@ Subject: [PATCH] Prevent zero-length array members in asound.h
  1 file changed, 21 insertions(+), 10 deletions(-)
 
 diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 628d46a0da92..23b0d301e83f 100644
+index 4cd513215bcd..c17462583d67 100644
 --- a/include/uapi/sound/asound.h
 +++ b/include/uapi/sound/asound.h
-@@ -557,22 +557,30 @@ struct __snd_pcm_sync_ptr {
+@@ -558,22 +558,30 @@ struct __snd_pcm_sync_ptr {
  	} c;
  };
  
@@ -48,7 +48,7 @@ index 628d46a0da92..23b0d301e83f 100644
  	struct __snd_timespec64 tstamp;	/* Timestamp */
  	snd_pcm_state_t suspended_state;/* RO: suspended stream state */
  	__u32 pad3;			/* Needed for 64 bit alignment */
-@@ -580,16 +588,19 @@ struct __snd_pcm_mmap_status64 {
+@@ -581,16 +589,19 @@ struct __snd_pcm_mmap_status64 {
  };
  
  struct __snd_pcm_mmap_control64 {
@@ -73,5 +73,5 @@ index 628d46a0da92..23b0d301e83f 100644
  	__u32 flags;
  	__u32 pad1;
 -- 
-2.44.0
+2.45.2
 
