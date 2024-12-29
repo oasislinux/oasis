@@ -1,30 +1,16 @@
-From 586b8d1808d18149a872f0ee1dc8903b9f9e8750 Mon Sep 17 00:00:00 2001
+From e245f2d71d44d2a858517321a01d3ca71147042f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
 
 ---
- src/kd_ioctl.c | 2 +-
- src/open.c     | 5 +++--
- src/prctl.c    | 8 ++++----
- src/strace.c   | 8 ++++----
- src/strauss.c  | 4 +++-
- src/util.c     | 2 +-
- 6 files changed, 16 insertions(+), 13 deletions(-)
+ src/open.c    | 5 +++--
+ src/prctl.c   | 8 ++++----
+ src/strace.c  | 8 ++++----
+ src/strauss.c | 4 +++-
+ src/util.c    | 2 +-
+ 5 files changed, 15 insertions(+), 12 deletions(-)
 
-diff --git a/src/kd_ioctl.c b/src/kd_ioctl.c
-index ada23d536..fddbd38fb 100644
---- a/src/kd_ioctl.c
-+++ b/src/kd_ioctl.c
-@@ -457,7 +457,7 @@ kd_kbd_str_entry(struct tcb *const tcp, const kernel_ulong_t arg,
- 
- 	if (print_quoted_string((char *) val.kb_string,
- 				MIN(max_strlen,
--				   (unsigned int) ret ?: sizeof(val.kb_string)),
-+				   ret ? (unsigned int) ret : sizeof(val.kb_string)),
- 				QUOTE_OMIT_TRAILING_0))
- 		tprint_more_data_follows();
- 
 diff --git a/src/open.c b/src/open.c
 index 6356c5831..df59ea999 100644
 --- a/src/open.c
@@ -42,10 +28,10 @@ index 6356c5831..df59ea999 100644
  
  const char *
 diff --git a/src/prctl.c b/src/prctl.c
-index f6b4dd741..951133a83 100644
+index dbabb3a18..712715b98 100644
 --- a/src/prctl.c
 +++ b/src/prctl.c
-@@ -92,10 +92,10 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
+@@ -98,10 +98,10 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
  	if (!aux && flags && xlat_verbose(xlat_verbosity) == XLAT_STYLE_VERBOSE)
  	{
  		xsprintf(out, "%#" PRI_klx " /* %s%s%#" PRI_klx " */",
@@ -58,7 +44,7 @@ index f6b4dd741..951133a83 100644
  	}
  
  	return out;
-@@ -128,10 +128,10 @@ sprint_sme_val(kernel_ulong_t arg, bool aux)
+@@ -134,10 +134,10 @@ sprint_sme_val(kernel_ulong_t arg, bool aux)
  	if (!aux && flags && xlat_verbose(xlat_verbosity) == XLAT_STYLE_VERBOSE)
  	{
  		xsprintf(out, "%#" PRI_klx " /* %s%s%#" PRI_klx " */",
@@ -72,10 +58,10 @@ index f6b4dd741..951133a83 100644
  
  	return out;
 diff --git a/src/strace.c b/src/strace.c
-index 9c87e34ed..13904f6e1 100644
+index 1a9d53bc8..9ac16c8c3 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -2609,7 +2609,7 @@ init(int argc, char *argv[])
+@@ -2649,7 +2649,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -84,7 +70,7 @@ index 9c87e34ed..13904f6e1 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2683,7 +2683,7 @@ init(int argc, char *argv[])
+@@ -2723,7 +2723,7 @@ init(int argc, char *argv[])
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case GETOPT_TIPS:
@@ -93,7 +79,7 @@ index 9c87e34ed..13904f6e1 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case GETOPT_ARGV0:
-@@ -2729,10 +2729,10 @@ init(int argc, char *argv[])
+@@ -2772,10 +2772,10 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
  			break;
  		case GETOPT_QUAL_QUIET:
@@ -131,7 +117,7 @@ index bec85021b..5d49f950a 100644
  			strauss[MIN(3 + i, strauss_lines - 1)]);
  	}
 diff --git a/src/util.c b/src/util.c
-index efd390577..5e87559dc 100644
+index ada3ba76a..a88dd008d 100644
 --- a/src/util.c
 +++ b/src/util.c
 @@ -640,7 +640,7 @@ printsocket(struct tcb *tcp, int fd, const char *path)

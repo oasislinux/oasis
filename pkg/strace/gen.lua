@@ -115,6 +115,7 @@ local srcs = paths[[src/(
 	dup.c
 	dyxlat.c
 	epoll.c
+	epoll_ioctl.c
 	error_prints.c
 	evdev.c
 	evdev_mpers.c
@@ -212,10 +213,12 @@ local srcs = paths[[src/(
 	net.c
 	netlink.c
 	netlink_crypto.c
+	netlink_generic.c
 	netlink_inet_diag.c
 	netlink_kobject_uevent.c
 	netlink_netfilter.c
 	netlink_netlink_diag.c
+	netlink_nlctrl.c
 	netlink_packet_diag.c
 	netlink_route.c
 	netlink_selinux.c
@@ -387,8 +390,8 @@ file('bin/strace', '755', '$outdir/strace')
 
 build('sed', '$outdir/strace.1', '$srcdir/doc/strace.1.in', {
 	expr={
-		[[-e 's,@STRACE_MANPAGE_DATE@,2024-03-13,']],
-		[[-e 's,@VERSION@,6.8,']],
+		[[-e 's,@STRACE_MANPAGE_DATE@,2024-06-30,']],
+		[[-e 's,@VERSION@,6.12,']],
 		[[-e 's,@ENABLE_STACKTRACE_TRUE@,#,']],
 		[[-e 's,@ENABLE_STACKTRACE_FALSE@,,']],
 		[[-e 's,@ENABLE_SECONTEXT_TRUE@,#,']],

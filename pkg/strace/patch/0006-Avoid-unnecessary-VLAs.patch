@@ -1,4 +1,4 @@
-From ab57c5ea74c7a1ced31c07bb62c43fc766811e01 Mon Sep 17 00:00:00 2001
+From 8c03823959bcb53e16a6555fcc880fe4560cb79f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:58:46 -0700
 Subject: [PATCH] Avoid unnecessary VLAs
@@ -25,10 +25,10 @@ index 2494a44d6..704e3a8d5 100644
  		const size_t c = columns[i];
  
 diff --git a/src/nlattr.c b/src/nlattr.c
-index 1fb394d7c..6f2d54979 100644
+index 9944afb8c..1252510a5 100644
 --- a/src/nlattr.c
 +++ b/src/nlattr.c
-@@ -357,7 +357,7 @@ decode_nla_hwaddr(struct tcb *const tcp,
+@@ -310,7 +310,7 @@ DECL_NLA(hwaddr)
  	if (len > MAX_ADDR_LEN)
  		return false;
  
@@ -60,7 +60,7 @@ index d3a3b9283..e0079456f 100644
  		if (!inet_ntop(diag_msg->idiag_family, diag_msg->id.idiag_dst,
  			       dst_buf, text_size))
 diff --git a/src/syscall.c b/src/syscall.c
-index 6d9e843fe..44d5e9e0b 100644
+index 1f4d86dc1..84d448253 100644
 --- a/src/syscall.c
 +++ b/src/syscall.c
 @@ -287,7 +287,7 @@ decode_socket_subcall(struct tcb *tcp)
@@ -73,7 +73,7 @@ index 6d9e843fe..44d5e9e0b 100644
  	if (umoven(tcp, tcp->u_arg[1], nargs * current_wordsize, buf) < 0)
  		return;
 diff --git a/src/util.c b/src/util.c
-index efd390577..c9e0c6212 100644
+index a88dd008d..eb5896eec 100644
 --- a/src/util.c
 +++ b/src/util.c
 @@ -569,8 +569,7 @@ enum sock_proto
