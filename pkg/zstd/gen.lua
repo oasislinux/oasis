@@ -39,7 +39,7 @@ lib('libzstd.a', [[lib/(
 	)
 	decompress/(
 		huf_decompress.c
-		huf_decompress_amd64.S
+		@x86_64 huf_decompress_amd64.S
 		zstd_ddict.c
 		zstd_decompress.c
 		zstd_decompress_block.c
