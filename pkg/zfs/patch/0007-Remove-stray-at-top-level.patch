@@ -1,4 +1,4 @@
-From b40890a5c47a69abfe96490b053f71be5ab09166 Mon Sep 17 00:00:00 2001
+From 09804181b5df3ffef1bea6869778a5c5949a9992 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 21 Jan 2023 17:17:48 -0800
 Subject: [PATCH] Remove stray ';' at top-level
@@ -55,13 +55,13 @@ index 9b74531fa..283c8e297 100644
 +EXPORT_SYMBOL(avl_update_gt)
 +EXPORT_SYMBOL(avl_update)
 diff --git a/module/nvpair/nvpair.c b/module/nvpair/nvpair.c
-index d9449e47e..5626e2025 100644
+index 903487347..56c256826 100644
 --- a/module/nvpair/nvpair.c
 +++ b/module/nvpair/nvpair.c
 @@ -3281,13 +3281,13 @@ nvs_xdr_nvp_##type(XDR *xdrs, void *ptr, ...)	\
+ 
  #endif
  
- /* BEGIN CSTYLED */
 -NVS_BUILD_XDRPROC_T(char);
 -NVS_BUILD_XDRPROC_T(short);
 -NVS_BUILD_XDRPROC_T(u_short);
@@ -76,10 +76,10 @@ index d9449e47e..5626e2025 100644
 +NVS_BUILD_XDRPROC_T(u_int)
 +NVS_BUILD_XDRPROC_T(longlong_t)
 +NVS_BUILD_XDRPROC_T(u_longlong_t)
- /* END CSTYLED */
  
  /*
-@@ -3681,116 +3681,116 @@ nvs_xdr(nvstream_t *nvs, nvlist_t *nvl, char *buf, size_t *buflen)
+  * The format of xdr encoded nvpair is:
+@@ -3680,116 +3680,116 @@ nvs_xdr(nvstream_t *nvs, nvlist_t *nvl, char *buf, size_t *buflen)
  	return (err);
  }
  
@@ -336,10 +336,10 @@ index 273b219a9..41099c7f0 100644
 -	"Limit to the amount of nesting a path can have. Defaults to 50.");
 +	"Limit to the amount of nesting a path can have. Defaults to 50.")
 diff --git a/module/zcommon/zfs_prop.c b/module/zcommon/zfs_prop.c
-index 3db6fd13f..13c63a36c 100644
+index 40254c8d9..191285825 100644
 --- a/module/zcommon/zfs_prop.c
 +++ b/module/zcommon/zfs_prop.c
-@@ -1076,26 +1076,26 @@ module_exit(zcommon_fini);
+@@ -1110,26 +1110,26 @@ module_exit(zcommon_fini);
  #endif
  
  /* zfs dataset property functions */
@@ -388,5 +388,5 @@ index 3db6fd13f..13c63a36c 100644
 +EXPORT_SYMBOL(zfs_prop_valid_for_type)
 +EXPORT_SYMBOL(zfs_prop_written)
 -- 
-2.37.3
+2.44.0
 

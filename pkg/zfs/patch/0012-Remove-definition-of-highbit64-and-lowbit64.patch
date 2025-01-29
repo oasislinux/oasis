@@ -1,0 +1,65 @@
+From cfc27efc55e81d952d96d7257b60fde6f9dff36d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 29 Jan 2025 01:41:00 -0800
+Subject: [PATCH] Remove definition of highbit64 and lowbit64
+
+For zstream, this is normally defined in lib/libzpool/kernel.c, but
+that pulls in a bunch of other stuff.
+
+Instead, we'll just supply our own versions that support non-GNU
+compilers.
+---
+ cmd/zpool/zpool_util.c | 26 --------------------------
+ cmd/zpool/zpool_util.h |  2 --
+ 2 files changed, 28 deletions(-)
+
+diff --git a/cmd/zpool/zpool_util.c b/cmd/zpool/zpool_util.c
+index e7ff739e5..cd2c86995 100644
+--- a/cmd/zpool/zpool_util.c
++++ b/cmd/zpool/zpool_util.c
+@@ -113,29 +113,3 @@ array64_max(uint64_t array[], unsigned int len)
+ 
+ 	return (max);
+ }
+-
+-/*
+- * Find highest one bit set.
+- * Returns bit number + 1 of highest bit that is set, otherwise returns 0.
+- */
+-int
+-highbit64(uint64_t i)
+-{
+-	if (i == 0)
+-		return (0);
+-
+-	return (NBBY * sizeof (uint64_t) - __builtin_clzll(i));
+-}
+-
+-/*
+- * Find lowest one bit set.
+- * Returns bit number + 1 of lowest bit that is set, otherwise returns 0.
+- */
+-int
+-lowbit64(uint64_t i)
+-{
+-	if (i == 0)
+-		return (0);
+-
+-	return (__builtin_ffsll(i));
+-}
+diff --git a/cmd/zpool/zpool_util.h b/cmd/zpool/zpool_util.h
+index 7f5406f06..f340e7bbc 100644
+--- a/cmd/zpool/zpool_util.h
++++ b/cmd/zpool/zpool_util.h
+@@ -44,8 +44,6 @@ void *safe_realloc(void *, size_t);
+ void zpool_no_memory(void);
+ uint_t num_logs(nvlist_t *nv);
+ uint64_t array64_max(uint64_t array[], unsigned int len);
+-int highbit64(uint64_t i);
+-int lowbit64(uint64_t i);
+ 
+ /*
+  * Misc utility functions
+-- 
+2.44.0
+

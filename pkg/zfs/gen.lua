@@ -7,8 +7,9 @@ cflags{
 	'-I $srcdir/module/icp/include',
 	'-I $srcdir/lib/libspl/include',
 	'-I $srcdir/lib/libspl/include/os/linux',
-	'-I $srcdir/lib/libzutil',
 	'-I $srcdir/lib/libshare',
+	'-I $srcdir/lib/libzpool/include',
+	'-I $srcdir/lib/libzutil',
 	'-I $srcdir/cmd/zpool',
 	'-isystem $builddir/pkg/bearssl/include',
 	'-isystem $builddir/pkg/libtirpc/include',
@@ -38,6 +39,7 @@ lib('libshare.a', [[
 lib('libspl.a', [[
 	lib/libspl/(
 		assert.c
+		backtrace.c
 		atomic.c
 		getexecname.c
 		list.c
@@ -115,6 +117,7 @@ lib('libzfs_core.a', [[
 	libzutil.a.d
 ]])
 
+build('cc', '$outdir/bitutil.c.o', '$dir/bitutil.c')
 lib('libzfs.a', [[
 	lib/libzfs/(
 		libzfs_changelist.c
@@ -145,10 +148,12 @@ lib('libzfs.a', [[
 			zfs_fletcher_superscalar4.c
 			zfs_namecheck.c
 			zfs_prop.c
+			zfs_valstr.c
 			zpool_prop.c
 			zprop_common.c
 		)
 	)
+	bitutil.c.o
 	libnvpair.a.d
 	libuutil.a.d
 	libshare.a.d

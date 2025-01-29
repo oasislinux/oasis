@@ -1,4 +1,4 @@
-From d9bae3dfe72c3680b273e611d01a8adf7cdf7765 Mon Sep 17 00:00:00 2001
+From 2bd6f119c41de4e0f1db37f6ad799d0e08e1fbd6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 17 Jan 2023 12:01:13 -0800
 Subject: [PATCH] Port to BearSSL
@@ -8,7 +8,7 @@ Subject: [PATCH] Port to BearSSL
  1 file changed, 42 insertions(+), 10 deletions(-)
 
 diff --git a/lib/libzfs/libzfs_crypto.c b/lib/libzfs/libzfs_crypto.c
-index 8f2a50d55..867879090 100644
+index 93dfa9cbc..1ee5d3f07 100644
 --- a/lib/libzfs/libzfs_crypto.c
 +++ b/lib/libzfs/libzfs_crypto.c
 @@ -25,7 +25,7 @@
@@ -20,7 +20,7 @@ index 8f2a50d55..867879090 100644
  #if LIBFETCH_DYNAMIC
  #include <dlfcn.h>
  #endif
-@@ -772,6 +772,44 @@ error:
+@@ -773,6 +773,44 @@ error:
  	return (ret);
  }
  
@@ -65,7 +65,7 @@ index 8f2a50d55..867879090 100644
  static int
  derive_key(libzfs_handle_t *hdl, zfs_keyformat_t format, uint64_t iters,
      uint8_t *key_material, uint64_t salt,
-@@ -800,15 +838,9 @@ derive_key(libzfs_handle_t *hdl, zfs_keyformat_t format, uint64_t iters,
+@@ -801,15 +839,9 @@ derive_key(libzfs_handle_t *hdl, zfs_keyformat_t format, uint64_t iters,
  	case ZFS_KEYFORMAT_PASSPHRASE:
  		salt = LE_64(salt);
  
@@ -85,5 +85,5 @@ index 8f2a50d55..867879090 100644
  	default:
  		ret = EINVAL;
 -- 
-2.37.3
+2.44.0
 

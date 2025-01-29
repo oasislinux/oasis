@@ -1,4 +1,4 @@
-From 4f2a58f0763898a49d2b5d76f92f321947188708 Mon Sep 17 00:00:00 2001
+From 206003c44dfb83008b9a890addcdb03ae9883414 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 17 Jan 2023 12:56:34 -0800
 Subject: [PATCH] Use find -exec rm instead of non-portable -delete
@@ -25,10 +25,10 @@ index cd2498358..83b3dbf30 100644
  	], [
  		[CODE_COVERAGE_RULES_CHECK='
 diff --git a/module/Makefile.in b/module/Makefile.in
-index 9b34b3dfa..63d18d270 100644
+index 529ab81dc..8cc36cf93 100644
 --- a/module/Makefile.in
 +++ b/module/Makefile.in
-@@ -71,7 +71,7 @@ clean-Linux:
+@@ -73,7 +73,7 @@ clean-Linux:
  @CONFIG_KERNEL_TRUE@	$(MAKE) -C @LINUX_OBJ@ M="$$PWD" @KERNEL_MAKE@ clean
  
  	$(RM) @LINUX_SYMBOLS@ Module.markers
@@ -37,7 +37,7 @@ index 9b34b3dfa..63d18d270 100644
  
  clean-FreeBSD:
  	+$(FMAKE) clean
-@@ -91,7 +91,7 @@ modules_install-Linux: modules_uninstall-Linux-legacy
+@@ -93,7 +93,7 @@ modules_install-Linux: modules_uninstall-Linux-legacy
  		KERNELRELEASE=@LINUX_VERSION@
  	@# Remove extraneous build products when packaging
  	if [ -n "$(DESTDIR)" ]; then \
@@ -86,5 +86,5 @@ index 93355d0b3..88fc777e1 100644
  	udevadm info --cleanup-db
  }
 -- 
-2.37.3
+2.44.0
 
