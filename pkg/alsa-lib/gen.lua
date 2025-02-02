@@ -91,6 +91,10 @@ lib('libasound.a', [[src/(
 	rawmidi/(
 		rawmidi.c rawmidi_hw.c rawmidi_symbols.c
 	)
+	seq/(
+		seq_hw.c seq.c seq_event.c seqmid.c seq_midi_event.c
+		seq_symbols.c
+	)
 	timer/(
 		timer.c timer_hw.c timer_query.c timer_query_hw.c
 		timer_symbols.c
