@@ -1,0 +1,238 @@
+From bbe8e2f75800633c251adbb34f7f9a1632a0d22a Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 2 Feb 2025 01:34:54 -0800
+Subject: [PATCH] Revert "Handle EINTR when doing I/O on files or sockets"
+
+This reverts commit 0c9646573f140d415cf790310ed17c2ab89f64a3.
+---
+ bind-mount.c |  2 +-
+ bubblewrap.c | 26 +++++++++++++-------------
+ network.c    |  6 +++---
+ utils.c      | 16 ++++++++--------
+ 4 files changed, 25 insertions(+), 25 deletions(-)
+
+diff --git a/bind-mount.c b/bind-mount.c
+index a2e1ac6..c1aa9ce 100644
+--- a/bind-mount.c
++++ b/bind-mount.c
+@@ -405,7 +405,7 @@ bind_mount (int           proc_fd,
+   if (resolved_dest == NULL)
+     return BIND_MOUNT_ERROR_REALPATH_DEST;
+ 
+-  dest_fd = TEMP_FAILURE_RETRY (open (resolved_dest, O_PATH | O_CLOEXEC));
++  dest_fd = open (resolved_dest, O_PATH | O_CLOEXEC);
+   if (dest_fd < 0)
+     {
+       if (failing_path != NULL)
+diff --git a/bubblewrap.c b/bubblewrap.c
+index bc53891..4848713 100644
+--- a/bubblewrap.c
++++ b/bubblewrap.c
+@@ -608,7 +608,7 @@ do_init (int event_fd, pid_t initial_pid)
+ 
+   for (lock = lock_files; lock != NULL; lock = lock->next)
+     {
+-      int fd = TEMP_FAILURE_RETRY (open (lock->path, O_RDONLY | O_CLOEXEC));
++      int fd = open (lock->path, O_RDONLY | O_CLOEXEC);
+       if (fd == -1)
+         die_with_error ("Unable to open lock file %s", lock->path);
+ 
+@@ -619,7 +619,7 @@ do_init (int event_fd, pid_t initial_pid)
+         .l_len = 0
+       };
+ 
+-      if (TEMP_FAILURE_RETRY (fcntl (fd, F_SETLK, &l)) < 0)
++      if (fcntl (fd, F_SETLK, &l) < 0)
+         die_with_error ("Unable to lock file %s", lock->path);
+ 
+       /* Keep fd open to hang on to lock */
+@@ -636,7 +636,7 @@ do_init (int event_fd, pid_t initial_pid)
+       pid_t child;
+       int status;
+ 
+-      child = TEMP_FAILURE_RETRY (wait (&status));
++      child = wait (&status);
+       if (child == initial_pid)
+         {
+           initial_exit_status = propagate_exit_status (status);
+@@ -647,7 +647,7 @@ do_init (int event_fd, pid_t initial_pid)
+               int res UNUSED;
+ 
+               val = initial_exit_status + 1;
+-              res = TEMP_FAILURE_RETRY (write (event_fd, &val, 8));
++              res = write (event_fd, &val, 8);
+               /* Ignore res, if e.g. the parent died and closed event_fd
+                  we don't want to error out here */
+             }
+@@ -1071,10 +1071,10 @@ privileged_op (int         privileged_op_socket,
+       if (arg2 != NULL)
+         strcpy ((char *) buffer + arg2_offset, arg2);
+ 
+-      if (TEMP_FAILURE_RETRY (write (privileged_op_socket, buffer, buffer_size)) != (ssize_t)buffer_size)
++      if (write (privileged_op_socket, buffer, buffer_size) != (ssize_t)buffer_size)
+         die ("Can't write to privileged_op_socket");
+ 
+-      if (TEMP_FAILURE_RETRY (read (privileged_op_socket, buffer, 1)) != 1)
++      if (read (privileged_op_socket, buffer, 1) != 1)
+         die ("Can't read from privileged_op_socket");
+ 
+       return;
+@@ -2824,7 +2824,7 @@ namespace_ids_read (pid_t  pid)
+   NsInfo *info;
+ 
+   dir = xasprintf ("%d/ns", pid);
+-  ns_fd = TEMP_FAILURE_RETRY (openat (proc_fd, dir, O_PATH));
++  ns_fd = openat (proc_fd, dir, O_PATH);
+ 
+   if (ns_fd < 0)
+     die_with_error ("open /proc/%s/ns failed", dir);
+@@ -3046,7 +3046,7 @@ main (int    argc,
+ 
+   /* We need to read stuff from proc during the pivot_root dance, etc.
+      Lets keep a fd to it open */
+-  proc_fd = TEMP_FAILURE_RETRY (open ("/proc", O_PATH));
++  proc_fd = open ("/proc", O_PATH);
+   if (proc_fd == -1)
+     die_with_error ("Can't open /proc");
+ 
+@@ -3213,7 +3213,7 @@ main (int    argc,
+ 
+       /* Let child run now that the uid maps are set up */
+       val = 1;
+-      res = TEMP_FAILURE_RETRY (write (child_wait_fd, &val, 8));
++      res = write (child_wait_fd, &val, 8);
+       /* Ignore res, if e.g. the child died and closed child_wait_fd we don't want to error out here */
+       close (child_wait_fd);
+ 
+@@ -3393,12 +3393,12 @@ main (int    argc,
+               op = read_priv_sec_op (unpriv_socket, buffer, sizeof (buffer),
+                                      &flags, &perms, &size_arg, &arg1, &arg2);
+               privileged_op (-1, op, flags, perms, size_arg, arg1, arg2);
+-              if (TEMP_FAILURE_RETRY (write (unpriv_socket, buffer, 1)) != 1)
++              if (write (unpriv_socket, buffer, 1) != 1)
+                 die ("Can't write to op_socket");
+             }
+           while (op != PRIV_SEP_OP_DONE);
+ 
+-          TEMP_FAILURE_RETRY (waitpid (child, &status, 0));
++          waitpid (child, &status, 0);
+           /* Continue post setup */
+         }
+     }
+@@ -3422,7 +3422,7 @@ main (int    argc,
+    * We're aiming to make /newroot the real root, and get rid of /oldroot. To do
+    * that we need a temporary place to store it before we can unmount it.
+    */
+-  { cleanup_fd int oldrootfd = TEMP_FAILURE_RETRY (open ("/", O_DIRECTORY | O_RDONLY));
++  { cleanup_fd int oldrootfd = open ("/", O_DIRECTORY | O_RDONLY);
+     if (oldrootfd < 0)
+       die_with_error ("can't open /");
+     if (chdir ("/newroot") != 0)
+@@ -3470,7 +3470,7 @@ main (int    argc,
+         {
+           cleanup_fd int sysctl_fd = -1;
+ 
+-          sysctl_fd = TEMP_FAILURE_RETRY (openat (proc_fd, "sys/user/max_user_namespaces", O_WRONLY));
++          sysctl_fd = openat (proc_fd, "sys/user/max_user_namespaces", O_WRONLY);
+ 
+           if (sysctl_fd < 0)
+             die_with_error ("cannot open /proc/sys/user/max_user_namespaces");
+diff --git a/network.c b/network.c
+index 373d606..f6d58a6 100644
+--- a/network.c
++++ b/network.c
+@@ -53,8 +53,8 @@ rtnl_send_request (int              rtnl_fd,
+   struct sockaddr_nl dst_addr = { AF_NETLINK, 0 };
+   ssize_t sent;
+ 
+-  sent = TEMP_FAILURE_RETRY (sendto (rtnl_fd, (void *) header, header->nlmsg_len, 0,
+-                                     (struct sockaddr *) &dst_addr, sizeof (dst_addr)));
++  sent = sendto (rtnl_fd, (void *) header, header->nlmsg_len, 0,
++                 (struct sockaddr *) &dst_addr, sizeof (dst_addr));
+   if (sent < 0)
+     return -1;
+ 
+@@ -71,7 +71,7 @@ rtnl_read_reply (int          rtnl_fd,
+ 
+   while (1)
+     {
+-      received = TEMP_FAILURE_RETRY (recv (rtnl_fd, buffer, sizeof (buffer), 0));
++      received = recv (rtnl_fd, buffer, sizeof (buffer), 0);
+       if (received < 0)
+         return -1;
+ 
+diff --git a/utils.c b/utils.c
+index 8ab89bb..ffe0a0d 100644
+--- a/utils.c
++++ b/utils.c
+@@ -378,7 +378,7 @@ fdwalk (int proc_fd, int (*cb)(void *data,
+   int res = 0;
+   DIR *d;
+ 
+-  dfd = TEMP_FAILURE_RETRY (openat (proc_fd, "self/fd", O_DIRECTORY | O_RDONLY | O_NONBLOCK | O_CLOEXEC | O_NOCTTY));
++  dfd = openat (proc_fd, "self/fd", O_DIRECTORY | O_RDONLY | O_NONBLOCK | O_CLOEXEC | O_NOCTTY);
+   if (dfd == -1)
+     return res;
+ 
+@@ -460,7 +460,7 @@ write_file_at (int         dfd,
+   bool res;
+   int errsv;
+ 
+-  fd = TEMP_FAILURE_RETRY (openat (dfd, path, O_RDWR | O_CLOEXEC, 0));
++  fd = openat (dfd, path, O_RDWR | O_CLOEXEC, 0);
+   if (fd == -1)
+     return -1;
+ 
+@@ -485,7 +485,7 @@ create_file (const char *path,
+   int res;
+   int errsv;
+ 
+-  fd = TEMP_FAILURE_RETRY (creat (path, mode));
++  fd = creat (path, mode);
+   if (fd == -1)
+     return -1;
+ 
+@@ -566,11 +566,11 @@ copy_file (const char *src_path,
+   int res;
+   int errsv;
+ 
+-  sfd = TEMP_FAILURE_RETRY (open (src_path, O_CLOEXEC | O_RDONLY));
++  sfd = open (src_path, O_CLOEXEC | O_RDONLY);
+   if (sfd == -1)
+     return -1;
+ 
+-  dfd = TEMP_FAILURE_RETRY (creat (dst_path, mode));
++  dfd = creat (dst_path, mode);
+   if (dfd == -1)
+     {
+       errsv = errno;
+@@ -647,7 +647,7 @@ load_file_at (int         dfd,
+   char *data;
+   int errsv;
+ 
+-  fd = TEMP_FAILURE_RETRY (openat (dfd, path, O_CLOEXEC | O_RDONLY));
++  fd = openat (dfd, path, O_CLOEXEC | O_RDONLY);
+   if (fd == -1)
+     return NULL;
+ 
+@@ -777,7 +777,7 @@ send_pid_on_socket (int sockfd)
+   cred.gid = getegid ();
+   memcpy (CMSG_DATA (cmsg), &cred, sizeof (cred));
+ 
+-  if (TEMP_FAILURE_RETRY (sendmsg (sockfd, &msg, 0)) < 0)
++  if (sendmsg (sockfd, &msg, 0) < 0)
+     die_with_error ("Can't send pid");
+ }
+ 
+@@ -807,7 +807,7 @@ read_pid_from_socket (int sockfd)
+   msg.msg_control = control_buf_rcv;
+   msg.msg_controllen = sizeof (control_buf_rcv);
+ 
+-  if (TEMP_FAILURE_RETRY (recvmsg (sockfd, &msg, 0)) < 0)
++  if (recvmsg (sockfd, &msg, 0) < 0)
+     die_with_error ("Can't read pid from socket");
+ 
+   if (msg.msg_controllen <= 0)
+-- 
+2.44.0
+

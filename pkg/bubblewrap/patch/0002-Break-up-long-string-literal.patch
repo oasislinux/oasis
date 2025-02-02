@@ -1,4 +1,4 @@
-From 21b0b65179640a795394a9664862d797aaca9120 Mon Sep 17 00:00:00 2001
+From c1dc134f5f2591d364907a2e6102848d76c762a7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 4 Jul 2023 18:57:02 -0700
 Subject: [PATCH] Break up long string literal
@@ -8,18 +8,18 @@ Subject: [PATCH] Break up long string literal
  1 file changed, 2 insertions(+)
 
 diff --git a/bubblewrap.c b/bubblewrap.c
-index 8322ea0..ceb4beb 100644
+index f8728c7..d834618 100644
 --- a/bubblewrap.c
 +++ b/bubblewrap.c
-@@ -339,6 +339,8 @@ usage (int ecode, FILE *out)
+@@ -340,6 +340,8 @@ usage (int ecode, FILE *out)
             "    --dev-bind-try SRC DEST      Equal to --dev-bind but ignores non-existent SRC\n"
             "    --ro-bind SRC DEST           Bind mount the host path SRC readonly on DEST\n"
             "    --ro-bind-try SRC DEST       Equal to --ro-bind but ignores non-existent SRC\n"
 +           );
 +  fprintf (out,
+            "    --bind-fd FD DEST            Bind open directory or path fd on DEST\n"
+            "    --ro-bind-fd FD DEST         Bind open directory or path fd read-only on DEST\n"
             "    --remount-ro DEST            Remount DEST as readonly; does not recursively remount\n"
-            "    --exec-label LABEL           Exec label for the sandbox\n"
-            "    --file-label LABEL           File label for temporary sandbox content\n"
 -- 
-2.37.3
+2.44.0
 

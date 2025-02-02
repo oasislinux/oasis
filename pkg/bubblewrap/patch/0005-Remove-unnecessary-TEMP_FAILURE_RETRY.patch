@@ -1,0 +1,65 @@
+From cd531eb41821e239f3776295c5a2a4e14bbda2a7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 2 Feb 2025 01:40:38 -0800
+Subject: [PATCH] Remove unnecessary TEMP_FAILURE_RETRY
+
+bwrap doesn't use signal handlers.
+---
+ bubblewrap.c | 6 +++---
+ utils.h      | 9 ---------
+ 2 files changed, 3 insertions(+), 12 deletions(-)
+
+diff --git a/bubblewrap.c b/bubblewrap.c
+index 4848713..c593436 100644
+--- a/bubblewrap.c
++++ b/bubblewrap.c
+@@ -479,7 +479,7 @@ report_child_exit_status (int exitc, int setup_finished_fd)
+   if (opt_json_status_fd == -1 || setup_finished_fd == -1)
+     return;
+ 
+-  s = TEMP_FAILURE_RETRY (read (setup_finished_fd, data, sizeof data));
++  s = read (setup_finished_fd, data, sizeof data);
+   if (s == -1 && errno != EAGAIN)
+     die_with_error ("read eventfd");
+   if (s != 1) // Is 0 if pipe closed before exec, is 2 if closed after exec.
+@@ -3207,7 +3207,7 @@ main (int    argc,
+       if (opt_userns_block_fd != -1)
+         {
+           char b[1];
+-          (void) TEMP_FAILURE_RETRY (read (opt_userns_block_fd, b, 1));
++          read (opt_userns_block_fd, b, 1);
+           close (opt_userns_block_fd);
+         }
+ 
+@@ -3505,7 +3505,7 @@ main (int    argc,
+   if (opt_block_fd != -1)
+     {
+       char b[1];
+-      (void) TEMP_FAILURE_RETRY (read (opt_block_fd, b, 1));
++      read (opt_block_fd, b, 1);
+       close (opt_block_fd);
+     }
+ 
+diff --git a/utils.h b/utils.h
+index 079fe7c..bea4e9d 100644
+--- a/utils.h
++++ b/utils.h
+@@ -43,15 +43,6 @@
+ 
+ #define N_ELEMENTS(arr) (sizeof (arr) / sizeof ((arr)[0]))
+ 
+-#ifndef TEMP_FAILURE_RETRY
+-#define TEMP_FAILURE_RETRY(expression) \
+-  (__extension__                                                              \
+-    ({ long int __result;                                                     \
+-       do __result = (long int) (expression);                                 \
+-       while (__result == -1L && errno == EINTR);                             \
+-       __result; }))
+-#endif
+-
+ #define PIPE_READ_END 0
+ #define PIPE_WRITE_END 1
+ 
+-- 
+2.44.0
+
