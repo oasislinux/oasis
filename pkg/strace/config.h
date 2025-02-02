@@ -7,7 +7,7 @@
 #define ASM_SIGRTMIN 32
 /* #undef AVR32 */
 /* #undef BFIN */
-#define COPYRIGHT_YEAR "2023"
+#define COPYRIGHT_YEAR "2024"
 /* #undef CSKY */
 #define ENABLE_ARM_OABI 0
 /* #undef ENABLE_SECONTEXT */
@@ -91,7 +91,6 @@
 #define HAVE_FTRUNCATE 1
 #define HAVE_FUTIMENS 1
 #define HAVE_GCOV_H 1
-/* #undef HAVE_GNU_STUBS */
 /* #undef HAVE_GNU_STUBS_32_H */
 /* #undef HAVE_GNU_STUBS_X32_H */
 #define HAVE_ICONV_H 1
@@ -120,8 +119,8 @@
 /* #undef HAVE_M32_STRUCT_STAT64 */
 /* #undef HAVE_M32_STRUCT_STAT64_ST_MTIME_NSEC */
 /* #undef HAVE_M32_STRUCT_STAT_ST_MTIME_NSEC */
-#define HAVE_MEMORY_H 1
 #define HAVE_MEMPCPY 1
+/* #undef HAVE_MINIX_CONFIG_H */
 #define HAVE_MQUEUE_H 1
 /* #undef HAVE_MX32_MPERS */
 /* #undef HAVE_MX32_SELINUX_RUNTIME */
@@ -161,6 +160,7 @@
 #define HAVE_SIG_ATOMIC_T 1
 #define HAVE_STATIC_ASSERT 1
 #define HAVE_STDINT_H 1
+#define HAVE_STDIO_H 1
 #define HAVE_STDLIB_H 1
 #define HAVE_STPCPY 1
 #define HAVE_STRERROR 1
@@ -298,6 +298,7 @@
 #define HAVE_UNION_BPF_ATTR_BTF_VALUE_TYPE_ID 1
 #define HAVE_UNION_BPF_ATTR_BTF_VMLINUX_VALUE_TYPE_ID 1
 /* #undef HAVE_UNION_BPF_ATTR_DUMMY */
+#define HAVE_UNION_BPF_ATTR_ENABLE_STATS_TYPE 1
 #define HAVE_UNION_BPF_ATTR_EXPECTED_ATTACH_TYPE 1
 #define HAVE_UNION_BPF_ATTR_FD_ARRAY 1
 #define HAVE_UNION_BPF_ATTR_FILE_FLAGS 1
@@ -311,6 +312,8 @@
 #define HAVE_UNION_BPF_ATTR_INNER_MAP_FD 1
 #define HAVE_UNION_BPF_ATTR_INSNS 1
 #define HAVE_UNION_BPF_ATTR_INSN_CNT 1
+#define HAVE_UNION_BPF_ATTR_ITER_CREATE_FLAGS 1
+#define HAVE_UNION_BPF_ATTR_ITER_CREATE_LINK_FD 1
 #define HAVE_UNION_BPF_ATTR_KERN_VERSION 1
 #define HAVE_UNION_BPF_ATTR_KEY 1
 #define HAVE_UNION_BPF_ATTR_KEY_SIZE 1
@@ -332,6 +335,7 @@
 /* #undef HAVE_UNION_BPF_ATTR_LINK_CREATE_SYMS */
 #define HAVE_UNION_BPF_ATTR_LINK_CREATE_TARGET_BTF_ID 1
 #define HAVE_UNION_BPF_ATTR_LINK_CREATE_TARGET_FD 1
+#define HAVE_UNION_BPF_ATTR_LINK_DETACH_LINK_FD 1
 #define HAVE_UNION_BPF_ATTR_LINK_ID 1
 #define HAVE_UNION_BPF_ATTR_LINK_UPDATE_FLAGS 1
 #define HAVE_UNION_BPF_ATTR_LINK_UPDATE_LINK_FD 1
@@ -354,6 +358,10 @@
 #define HAVE_UNION_BPF_ATTR_OPEN_FLAGS 1
 /* #undef HAVE_UNION_BPF_ATTR_PAD */
 #define HAVE_UNION_BPF_ATTR_PATHNAME 1
+#define HAVE_UNION_BPF_ATTR_PATH_FD 1
+#define HAVE_UNION_BPF_ATTR_PROG_BIND_MAP_FLAGS 1
+#define HAVE_UNION_BPF_ATTR_PROG_BIND_MAP_MAP_FD 1
+#define HAVE_UNION_BPF_ATTR_PROG_BIND_MAP_PROG_FD 1
 #define HAVE_UNION_BPF_ATTR_PROG_BTF_FD 1
 #define HAVE_UNION_BPF_ATTR_PROG_FLAGS 1
 #define HAVE_UNION_BPF_ATTR_PROG_ID 1
@@ -399,6 +407,7 @@
 #define HAVE_UNION_BPF_ATTR_VALUE_SIZE 1
 #define HAVE_UNISTD_H 1
 /* #undef HAVE_USTAT_H */
+#define HAVE_WCHAR_H 1
 /* #undef HAVE__STATIC_ASSERT */
 /* probe HAVE___BUILTIN_POPCOUNT */
 #define HAVE___KERNEL_LONG_T 1
@@ -425,10 +434,10 @@
 #define PACKAGE "strace"
 #define PACKAGE_BUGREPORT "strace-devel@lists.strace.io"
 #define PACKAGE_NAME "strace"
-#define PACKAGE_STRING "strace 6.4"
+#define PACKAGE_STRING "strace 6.8"
 #define PACKAGE_TARNAME "strace"
 #define PACKAGE_URL "https://strace.io"
-#define PACKAGE_VERSION "6.4"
+#define PACKAGE_VERSION "6.8"
 /* #undef POWERPC */
 /* #undef POWERPC64 */
 /* #undef POWERPC64LE */
@@ -447,7 +456,7 @@
 /* #undef SPARC */
 /* #undef SPARC64 */
 #define STDC_HEADERS 1
-#define STRACE_MANPAGE_DATE "2023-06-11"
+#define STRACE_MANPAGE_DATE "2024-03-13"
 /* #undef TILE */
 /* #undef USE_DEMANGLE */
 /* #undef USE_LIBDW */
@@ -455,20 +464,65 @@
 #ifndef _ALL_SOURCE
 # define _ALL_SOURCE 1
 #endif
-#ifndef _GNU_SOURCE
-# define _GNU_SOURCE 1
-#endif
-#ifndef _POSIX_PTHREAD_SEMANTICS
-# define _POSIX_PTHREAD_SEMANTICS 1
-#endif
-#ifndef _TANDEM_SOURCE
-# define _TANDEM_SOURCE 1
+#ifndef _DARWIN_C_SOURCE
+# define _DARWIN_C_SOURCE 1
 #endif
 #ifndef __EXTENSIONS__
 # define __EXTENSIONS__ 1
 #endif
+#ifndef _GNU_SOURCE
+# define _GNU_SOURCE 1
+#endif
+#ifndef _HPUX_ALT_XOPEN_SOCKET_API
+# define _HPUX_ALT_XOPEN_SOCKET_API 1
+#endif
+#ifndef _MINIX
+/* # undef _MINIX */
+#endif
+#ifndef _NETBSD_SOURCE
+# define _NETBSD_SOURCE 1
+#endif
+#ifndef _OPENBSD_SOURCE
+# define _OPENBSD_SOURCE 1
+#endif
+#ifndef _POSIX_SOURCE
+/* # undef _POSIX_SOURCE */
+#endif
+#ifndef _POSIX_1_SOURCE
+/* # undef _POSIX_1_SOURCE */
+#endif
+#ifndef _POSIX_PTHREAD_SEMANTICS
+# define _POSIX_PTHREAD_SEMANTICS 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_ATTRIBS_EXT__
+# define __STDC_WANT_IEC_60559_ATTRIBS_EXT__ 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_BFP_EXT__
+# define __STDC_WANT_IEC_60559_BFP_EXT__ 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_DFP_EXT__
+# define __STDC_WANT_IEC_60559_DFP_EXT__ 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_FUNCS_EXT__
+# define __STDC_WANT_IEC_60559_FUNCS_EXT__ 1
+#endif
+#ifndef __STDC_WANT_IEC_60559_TYPES_EXT__
+# define __STDC_WANT_IEC_60559_TYPES_EXT__ 1
+#endif
+#ifndef __STDC_WANT_LIB_EXT2__
+# define __STDC_WANT_LIB_EXT2__ 1
+#endif
+#ifndef __STDC_WANT_MATH_SPEC_FUNCS__
+# define __STDC_WANT_MATH_SPEC_FUNCS__ 1
+#endif
+#ifndef _TANDEM_SOURCE
+# define _TANDEM_SOURCE 1
+#endif
+#ifndef _XOPEN_SOURCE
+/* # undef _XOPEN_SOURCE */
+#endif
 /* #undef USE_UNWINDER */
-#define VERSION "6.4"
+#define VERSION "6.8"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
@@ -481,9 +535,6 @@
 /* #undef X32 */
 #define X86_64 1
 /* #undef XTENSA */
-/* #undef _MINIX */
-/* #undef _POSIX_1_SOURCE */
-/* #undef _POSIX_SOURCE */
 /* #undef gid_t */
 /* #undef typeof */
 /* #undef uid_t */
