@@ -267,6 +267,9 @@
 	path = pkg/pciutils/src
 	url = https://git.kernel.org/pub/scm/utils/pciutils/pciutils.git
 	ignore = all
+[submodule "pkg/pdpmake/src"]
+	path = pkg/pdpmake/src
+	url = https://github.com/rmyorston/pdpmake
 [submodule "pkg/pigz/src"]
 	path = pkg/pigz/src
 	url = https://github.com/madler/pigz
