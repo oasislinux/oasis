@@ -1,3 +1,4 @@
+/* #undef CARES_NO_DEPRECATED */
 /* #undef CURLDEBUG */
 #define CURL_CA_BUNDLE "/etc/ssl/cert.pem"
 /* #undef CURL_CA_FALLBACK */
@@ -48,7 +49,6 @@
 #define CURL_SA_FAMILY_T sa_family_t
 /* #undef CURL_WITH_MULTI_SSL */
 /* #undef DEBUGBUILD */
-#define ENABLE_IPV6 1
 #define GETHOSTNAME_TYPE_ARG2 size_t
 #define HAVE_ALARM 1
 /* #undef HAVE_ARC4RANDOM */
@@ -67,6 +67,7 @@
 #define HAVE_DECL_FSEEKO 1
 #define HAVE_DECL_GETPWUID_R 1
 /* #undef HAVE_DECL_GETPWUID_R_MISSING */
+#define HAVE_DIRENT_H 1
 #define HAVE_DLFCN_H 1
 /* #undef HAVE_ERR_H */
 #define HAVE_FCNTL 1
@@ -105,8 +106,6 @@
 /* #undef HAVE_GSSAPI_GSSAPI_H */
 /* #undef HAVE_GSSAPI_GSSAPI_KRB5_H */
 /* #undef HAVE_GSSGNU */
-/* #undef HAVE_GSSHEIMDAL */
-/* #undef HAVE_GSSMIT */
 /* #undef HAVE_HYPER_H */
 /* #undef HAVE_IDN2_H */
 #define HAVE_IFADDRS_H 1
@@ -131,6 +130,7 @@
 /* #undef HAVE_LIBBROTLIDEC */
 #define HAVE_LIBGEN_H 1
 /* #undef HAVE_LIBIDN2 */
+/* #undef HAVE_LIBPSL_H */
 /* #undef HAVE_LIBRESSL */
 /* #undef HAVE_LIBRTMP_RTMP_H */
 /* #undef HAVE_LIBSSH */
@@ -157,10 +157,12 @@
 /* #undef HAVE_NGTCP2_NGTCP2_CRYPTO_H */
 /* #undef HAVE_NGTCP2_NGTCP2_H */
 /* #undef HAVE_OLD_GSSMIT */
+#define HAVE_OPENDIR 1
 /* #undef HAVE_OPENSSL3 */
 /* #undef HAVE_OPENSSL_CRYPTO_H */
 /* #undef HAVE_OPENSSL_ERR_H */
 /* #undef HAVE_OPENSSL_PEM_H */
+/* #undef HAVE_OPENSSL_QUIC */
 /* #undef HAVE_OPENSSL_RSA_H */
 /* #undef HAVE_OPENSSL_SRP */
 /* #undef HAVE_OPENSSL_SSL_H */
@@ -190,13 +192,15 @@
 #define HAVE_SIGNAL 1
 #define HAVE_SIGSETJMP 1
 #define HAVE_SNPRINTF 1
-#define HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID 1
+/* #undef HAVE_SOCKADDR_IN6_SIN6_SCOPE_ID */
 #define HAVE_SOCKET 1
 #define HAVE_SOCKETPAIR 1
 /* #undef HAVE_SOCKET_H */
-/* #undef HAVE_SSL_GET_ECH_STATUS */
+/* #undef HAVE_SSL_ECH_SET1_ECHCONFIG */
 /* #undef HAVE_SSL_H */
 /* #undef HAVE_SSL_SET0_WBIO */
+/* #undef HAVE_SSL_SET1_ECH_CONFIG_LIST */
+/* #undef HAVE_SSL_SET_QUIC_USE_LEGACY_CODEPOINT */
 #define HAVE_STDATOMIC_H 1
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
@@ -237,15 +241,13 @@
 #define HAVE_UTIME 1
 #define HAVE_UTIMES 1
 #define HAVE_UTIME_H 1
-/* #undef HAVE_WINDOWS_H */
-/* #undef HAVE_WINSOCK2_H */
 /* #undef HAVE_WOLFSSH_SSH_H */
+/* #undef HAVE_WOLFSSL_CTX_GENERATEECHCONFIG */
 /* #undef HAVE_WOLFSSL_DES_ECB_ENCRYPT */
 /* #undef HAVE_WOLFSSL_FULL_BIO */
 /* #undef HAVE_WOLFSSL_GET_PEER_CERTIFICATE */
 /* #undef HAVE_WOLFSSL_USEALPN */
 #define HAVE_WRITABLE_ARGV 1
-/* #undef HAVE_WS2TCPIP_H */
 /* #undef HAVE_X509_H */
 /* #undef HAVE_ZSTD */
 /* #undef HAVE_ZSTD_H */
@@ -254,16 +256,14 @@
 /* #undef NEED_LBER_H */
 /* #undef NEED_REENTRANT */
 /* #undef NEED_THREAD_SAFE */
-/* #undef NTLM_WB_ENABLED */
-/* #undef NTLM_WB_FILE */
-#define OS "oasis"
+#define OS "x86_64-pc-linux-musl"
 #define PACKAGE "curl"
 #define PACKAGE_BUGREPORT "a suitable curl mailing list: https://curl.se/mail/"
 #define PACKAGE_NAME "curl"
 #define PACKAGE_STRING "curl -"
 #define PACKAGE_TARNAME "curl"
 #define PACKAGE_URL ""
-#define PACKAGE_VERSION "-"
+#define PACKAGE_VERSION "8.8.0"
 /* #undef RANDOM_FILE */
 #define SIZEOF_CURL_OFF_T 8
 #define SIZEOF_CURL_SOCKET_T 4
@@ -280,22 +280,28 @@
 /* #undef USE_ECH */
 /* #undef USE_GNUTLS */
 /* #undef USE_GSASL */
+/* #undef USE_HTTPSRR */
 /* #undef USE_HYPER */
+/* #undef USE_IPV6 */
 /* #undef USE_LIBPSL */
 /* #undef USE_LIBRTMP */
 /* #undef USE_LIBSSH */
 /* #undef USE_LIBSSH2 */
-/* #undef USE_MANUAL */
+#define USE_MANUAL 1
 /* #undef USE_MBEDTLS */
 /* #undef USE_MSH3 */
 /* #undef USE_NGHTTP2 */
 /* #undef USE_NGHTTP3 */
 /* #undef USE_NGTCP2 */
+/* #undef USE_NGTCP2_CRYPTO_BORINGSSL */
 /* #undef USE_NGTCP2_CRYPTO_GNUTLS */
 /* #undef USE_NGTCP2_CRYPTO_QUICTLS */
 /* #undef USE_NGTCP2_CRYPTO_WOLFSSL */
+/* #undef USE_NGTCP2_H3 */
 /* #undef USE_OPENLDAP */
 /* #undef USE_OPENSSL */
+/* #undef USE_OPENSSL_H3 */
+/* #undef USE_OPENSSL_QUIC */
 /* #undef USE_QUICHE */
 /* #undef USE_RUSTLS */
 /* #undef USE_SCHANNEL */
@@ -313,7 +319,7 @@
 /* #undef USE_WINDOWS_SSPI */
 /* #undef USE_WOLFSSH */
 /* #undef USE_WOLFSSL */
-#define VERSION "-"
+#define VERSION "8.8.0"
 #ifndef _ALL_SOURCE
 /* #  undef _ALL_SOURCE */
 #endif
@@ -321,8 +327,5 @@
 /* #undef _LARGE_FILES */
 /* #undef const */
 /* #undef in_addr_t */
-#ifndef __cplusplus
-/* #undef inline */
-#endif
 /* #undef size_t */
 /* #undef ssize_t */
