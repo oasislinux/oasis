@@ -1,6 +1,5 @@
 cflags{
 	'-Wall', '-Wpedantic',
-	'-D OPUS_BUILD',
 	'-I $srcdir/include',
 	'-I $srcdir/celt',
 	'-I $srcdir/silk',
@@ -20,6 +19,7 @@ lib('libopus.a', [[
 		opus.c
 		opus_decoder.c
 		opus_encoder.c
+		extensions.c
 		opus_multistream.c
 		opus_multistream_encoder.c
 		opus_multistream_decoder.c
