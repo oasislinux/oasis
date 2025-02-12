@@ -1,0 +1,25 @@
+From 3658dab967b7cad7787bbe79c6c7ffb2cd1301fe Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 2 Feb 2025 03:01:17 -0800
+Subject: [PATCH] Set LUA_ROOT to "/"
+
+---
+ luaconf.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/luaconf.h b/src/luaconf.h
+index 137103ed..29307ab4 100644
+--- a/src/luaconf.h
++++ b/src/luaconf.h
+@@ -223,7 +223,7 @@
+ 
+ #else			/* }{ */
+ 
+-#define LUA_ROOT	"/usr/local/"
++#define LUA_ROOT	"/"
+ #define LUA_LDIR	LUA_ROOT "share/lua/" LUA_VDIR "/"
+ #define LUA_CDIR	LUA_ROOT "lib/lua/" LUA_VDIR "/"
+ 
+-- 
+2.44.0
+
