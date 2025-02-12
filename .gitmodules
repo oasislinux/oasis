@@ -181,6 +181,9 @@
 	path = pkg/libxkbcommon/src
 	url = https://github.com/xkbcommon/libxkbcommon.git
 	ignore = all
+[submodule "pkg/luaposix/src"]
+	path = pkg/luaposix/src
+	url = https://github.com/luaposix/luaposix.git
 [submodule "pkg/mblaze/src"]
 	path = pkg/mblaze/src
 	url = https://github.com/leahneukirchen/mblaze.git
