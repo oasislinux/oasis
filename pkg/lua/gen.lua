@@ -19,7 +19,7 @@ lib('liblua.a', [[src/(
 )]])
 file('lib/liblua.a', '644', '$outdir/liblua.a')
 
-exe('lua', {'src/lua.c', 'liblua.a'})
+exe('lua', {'src/lua.c', 'liblua.a', '$builddir/pkg/luaposix/libluaposix.a'})
 file('bin/lua5.4', '755', '$outdir/lua')
 sym('bin/lua', 'lua5.4')
 exe('luac', {'src/luac.c', 'liblua.a'})

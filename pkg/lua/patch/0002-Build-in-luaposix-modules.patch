@@ -1,0 +1,118 @@
+From 53565af85003022be06bc6662e72a9291d338b14 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 2 Feb 2025 03:03:11 -0800
+Subject: [PATCH] Build in luaposix modules
+
+---
+ lua.c | 88 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 88 insertions(+)
+
+diff --git a/src/lua.c b/src/lua.c
+index 0ff88454..ca160217 100644
+--- a/src/lua.c
++++ b/src/lua.c
+@@ -609,6 +609,35 @@ static void doREPL (lua_State *L) {
+ 
+ /* }================================================================== */
+ 
++int luaopen_posix_ctype(lua_State *L);
++int luaopen_posix_dirent(lua_State *L);
++int luaopen_posix_errno(lua_State *L);
++int luaopen_posix_fcntl(lua_State *L);
++int luaopen_posix_fnmatch(lua_State *L);
++int luaopen_posix_glob(lua_State *L);
++int luaopen_posix_grp(lua_State *L);
++int luaopen_posix_libgen(lua_State *L);
++int luaopen_posix_poll(lua_State *L);
++int luaopen_posix_pwd(lua_State *L);
++int luaopen_posix_sched(lua_State *L);
++int luaopen_posix_signal(lua_State *L);
++int luaopen_posix_stdio(lua_State *L);
++int luaopen_posix_stdlib(lua_State *L);
++int luaopen_posix_sys_msg(lua_State *L);
++int luaopen_posix_sys_resource(lua_State *L);
++int luaopen_posix_sys_socket(lua_State *L);
++int luaopen_posix_sys_stat(lua_State *L);
++int luaopen_posix_sys_statvfs(lua_State *L);
++int luaopen_posix_sys_time(lua_State *L);
++int luaopen_posix_sys_times(lua_State *L);
++int luaopen_posix_sys_utsname(lua_State *L);
++int luaopen_posix_sys_wait(lua_State *L);
++int luaopen_posix_syslog(lua_State *L);
++int luaopen_posix_termio(lua_State *L);
++int luaopen_posix_time(lua_State *L);
++int luaopen_posix_unistd(lua_State *L);
++int luaopen_posix_utime(lua_State *L);
++
+ 
+ /*
+ ** Main body of stand-alone interpreter (to be called in protected mode).
+@@ -632,6 +661,65 @@ static int pmain (lua_State *L) {
+     lua_setfield(L, LUA_REGISTRYINDEX, "LUA_NOENV");
+   }
+   luaL_openlibs(L);  /* open standard libraries */
++  luaL_getsubtable(L, LUA_REGISTRYINDEX, LUA_PRELOAD_TABLE);
++  /* luaposix */
++  lua_pushcfunction(L, luaopen_posix_ctype);
++  lua_setfield(L, -2, "posix.ctype");
++  lua_pushcfunction(L, luaopen_posix_dirent);
++  lua_setfield(L, -2, "posix.dirent");
++  lua_pushcfunction(L, luaopen_posix_errno);
++  lua_setfield(L, -2, "posix.errno");
++  lua_pushcfunction(L, luaopen_posix_fcntl);
++  lua_setfield(L, -2, "posix.fcntl");
++  lua_pushcfunction(L, luaopen_posix_fnmatch);
++  lua_setfield(L, -2, "posix.fnmatch");
++  lua_pushcfunction(L, luaopen_posix_glob);
++  lua_setfield(L, -2, "posix.glob");
++  lua_pushcfunction(L, luaopen_posix_grp);
++  lua_setfield(L, -2, "posix.grp");
++  lua_pushcfunction(L, luaopen_posix_libgen);
++  lua_setfield(L, -2, "posix.libgen");
++  lua_pushcfunction(L, luaopen_posix_poll);
++  lua_setfield(L, -2, "posix.poll");
++  lua_pushcfunction(L, luaopen_posix_pwd);
++  lua_setfield(L, -2, "posix.pwd");
++  lua_pushcfunction(L, luaopen_posix_sched);
++  lua_setfield(L, -2, "posix.sched");
++  lua_pushcfunction(L, luaopen_posix_signal);
++  lua_setfield(L, -2, "posix.signal");
++  lua_pushcfunction(L, luaopen_posix_stdio);
++  lua_setfield(L, -2, "posix.stdio");
++  lua_pushcfunction(L, luaopen_posix_stdlib);
++  lua_setfield(L, -2, "posix.stdlib");
++  lua_pushcfunction(L, luaopen_posix_sys_msg);
++  lua_setfield(L, -2, "posix.sys.msg");
++  lua_pushcfunction(L, luaopen_posix_sys_resource);
++  lua_setfield(L, -2, "posix.sys.resource");
++  lua_pushcfunction(L, luaopen_posix_sys_socket);
++  lua_setfield(L, -2, "posix.sys.socket");
++  lua_pushcfunction(L, luaopen_posix_sys_stat);
++  lua_setfield(L, -2, "posix.sys.stat");
++  lua_pushcfunction(L, luaopen_posix_sys_statvfs);
++  lua_setfield(L, -2, "posix.sys.statvfs");
++  lua_pushcfunction(L, luaopen_posix_sys_time);
++  lua_setfield(L, -2, "posix.sys.time");
++  lua_pushcfunction(L, luaopen_posix_sys_times);
++  lua_setfield(L, -2, "posix.sys.times");
++  lua_pushcfunction(L, luaopen_posix_sys_utsname);
++  lua_setfield(L, -2, "posix.sys.utsname");
++  lua_pushcfunction(L, luaopen_posix_sys_wait);
++  lua_setfield(L, -2, "posix.sys.wait");
++  lua_pushcfunction(L, luaopen_posix_syslog);
++  lua_setfield(L, -2, "posix.syslog");
++  lua_pushcfunction(L, luaopen_posix_termio);
++  lua_setfield(L, -2, "posix.termio");
++  lua_pushcfunction(L, luaopen_posix_time);
++  lua_setfield(L, -2, "posix.time");
++  lua_pushcfunction(L, luaopen_posix_unistd);
++  lua_setfield(L, -2, "posix.unistd");
++  lua_pushcfunction(L, luaopen_posix_utime);
++  lua_setfield(L, -2, "posix.utime");
++  lua_pop(L, 1);
+   createargtable(L, argv, argc, script);  /* create table 'arg' */
+   lua_gc(L, LUA_GCRESTART);  /* start GC... */
+   lua_gc(L, LUA_GCGEN, 0, 0);  /* ...in generational mode */
+-- 
+2.44.0
+
