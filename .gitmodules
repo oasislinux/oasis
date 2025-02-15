@@ -201,6 +201,9 @@
 [submodule "pkg/mupdf/src"]
 	path = pkg/mupdf/src
 	url = https://github.com/oasislinux/mupdf.git
+[submodule "pkg/muon/src"]
+	path = pkg/muon/src
+	url = https://git.sr.ht/~lattis/muon
 [submodule "pkg/musl/src"]
 	path = pkg/musl/src
 	url = git://git.musl-libc.org/musl
