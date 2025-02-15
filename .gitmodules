@@ -213,6 +213,9 @@
 	path = pkg/musl/src
 	url = git://git.musl-libc.org/musl
 	ignore = all
+[submodule "pkg/muon/src"]
+	path = pkg/muon/src
+	url = https://git.sr.ht/~lattis/muon
 [submodule "pkg/ncompress/src"]
 	path = pkg/ncompress/src
 	url = https://github.com/vapier/ncompress.git
