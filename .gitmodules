@@ -289,7 +289,7 @@
 	url = git://git.suckless.org/quark
 [submodule "pkg/rc/src"]
 	path = pkg/rc/src
-	url = https://github.com/benavento/rc.git
+	url = git://shithub.us/cinap_lenrek/rc
 	ignore = all
 [submodule "pkg/samurai/src"]
 	path = pkg/samurai/src

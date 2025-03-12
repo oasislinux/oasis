@@ -1,0 +1,38 @@
+From 0a6a205f8cd48665527fbe4534e32b04e03ca660 Mon Sep 17 00:00:00 2001
+From: kemal <kemalinanc8@gmail.com>
+Date: Sat, 23 Sep 2023 23:52:39 +0000
+Subject: [PATCH] rc: use IOUNIT for io NBUF
+
+---
+ io.c | 2 +-
+ rc.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/io.c b/io.c
+index 7c1a27e..be8f647 100644
+--- a/io.c
++++ b/io.c
+@@ -4,7 +4,7 @@
+ #include "fns.h"
+ 
+ enum {
+-	NBUF = 8192,
++	NBUF = IOUNIT,
+ };
+ 
+ void
+diff --git a/rc.h b/rc.h
+index a688663..3663a1c 100644
+--- a/rc.h
++++ b/rc.h
+@@ -19,6 +19,7 @@
+ #ifndef NSIG
+ #define NSIG 32
+ #endif
++#define IOUNIT	32768
+ #endif
+ 
+ #define	YYMAXDEPTH	500
+-- 
+2.45.2
+

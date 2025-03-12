@@ -1,0 +1,25 @@
+From 64d1d3403037d9ec1895555b8015825c75815f85 Mon Sep 17 00:00:00 2001
+From: hovercats <hovercatswithlasereyes@protonmail.com>
+Date: Wed, 12 Mar 2025 03:36:44 +0100
+Subject: [PATCH] exec.c: fix return type for main
+
+---
+ exec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/exec.c b/exec.c
+index 32e7644..e3d12e5 100644
+--- a/exec.c
++++ b/exec.c
+@@ -221,7 +221,7 @@ shuffleredir(void)
+  * fabricate bootstrap code and start it (*=(argv);. -bq /usr/lib/rcmain $*)
+  * start interpreting code
+  */
+-void
++int
+ main(int argc, char *argv[])
+ {
+ 	code bootstrap[20];
+-- 
+2.45.2
+
