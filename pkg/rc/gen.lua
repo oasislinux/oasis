@@ -1,7 +1,13 @@
 cflags{
 	'-Wpedantic',
+	'-I $srcdir',
+	'-I $outdir',
 	([['-D PREFIX="%s"']]):format(config.prefix),
 }
+
+pkg.deps = {'$outdir/y.tab.h'}
+
+yacc('y', 'syn.y')
 
 exe('rc', {
 	'code.c',
@@ -18,10 +24,10 @@ exe('rc', {
 	'trap.c',
 	'tree.c',
 	'var.c',
-	'y.tab.c',
-	'unix.c',
 	'havefork.c',
-	'prompt-null.c',
+	'unix.c',
+
+	'$outdir/y.tab.c',
 })
 file('bin/rc', '755', '$outdir/rc')
 man{'rc.1'}
