@@ -1,0 +1,25 @@
+From 8cce15805da628c41a09c2fe3dbbf86c061a5ad1 Mon Sep 17 00:00:00 2001
+From: cinap_lenrek <cinap_lenrek@felloff.net>
+Date: Wed, 27 Dec 2023 23:07:06 +0000
+Subject: [PATCH] rc: handle Xeflag in exitnext()
+
+---
+ simple.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/simple.c b/simple.c
+index 6f4d38b..5f325ba 100644
+--- a/simple.c
++++ b/simple.c
+@@ -18,7 +18,7 @@ exitnext(void){
+ loop:
+ 	c=&p->code[p->pc];
+ 	while(1){
+-		if(c->f==Xpopredir || c->f==Xunlocal)
++		if(c->f==Xpopredir || c->f==Xunlocal || c->f==Xeflag)
+ 			c++;
+ 		else if(c->f==Xsrcline)
+ 			c += 2;
+-- 
+2.45.2
+
