@@ -1,4 +1,4 @@
-From 936dcefafa77e985a9e8dd2b6f5ef96df16d4c03 Mon Sep 17 00:00:00 2001
+From 9573da0c85c0b03fe3f11d417af280bca27ecc6b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 11 Aug 2019 03:44:24 +0000
 Subject: [PATCH] Avoid unnecessary VLA
@@ -8,10 +8,10 @@ Subject: [PATCH] Avoid unnecessary VLA
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/src/utils/os_unix.c b/src/utils/os_unix.c
-index 800c50772..447dae31b 100644
+index 679f3a0dc..aca086c22 100644
 --- a/src/utils/os_unix.c
 +++ b/src/utils/os_unix.c
-@@ -801,7 +801,7 @@ int os_exec(const char *program, const char *arg, int wait_completion)
+@@ -831,7 +831,7 @@ int os_exec(const char *program, const char *arg, int wait_completion)
  
  	if (pid == 0) {
  		/* run the external command in the child process */
@@ -21,5 +21,5 @@ index 800c50772..447dae31b 100644
  		char *argv[MAX_ARG + 1];
  		int i;
 -- 
-2.22.0
+2.45.2
 

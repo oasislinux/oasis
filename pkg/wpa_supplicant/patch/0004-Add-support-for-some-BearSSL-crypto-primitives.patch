@@ -1,19 +1,19 @@
-From f7dc64ef991c146a491d0ed0a92d2a5890383143 Mon Sep 17 00:00:00 2001
+From ea00c8e557fe645a1ef0b6c0ebe2209514f9f94f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 15 Nov 2019 20:19:37 -0800
-Subject: [PATCH] Add support for some BearSSL crypo primitives
+Subject: [PATCH] Add support for some BearSSL crypto primitives
 
 ---
- src/crypto/crypto_bearssl.c | 79 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 79 insertions(+)
+ src/crypto/crypto_bearssl.c | 83 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 83 insertions(+)
  create mode 100644 src/crypto/crypto_bearssl.c
 
 diff --git a/src/crypto/crypto_bearssl.c b/src/crypto/crypto_bearssl.c
 new file mode 100644
-index 000000000..bc29f9693
+index 000000000..db2bfbc27
 --- /dev/null
 +++ b/src/crypto/crypto_bearssl.c
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,83 @@
 +/*
 + * Wrapper functions for BearSSL crypto
 + * Copyright (c) 2019, Michael Forney <mforney@mforney.org>
@@ -93,6 +93,10 @@ index 000000000..bc29f9693
 +{
 +	return hmac_vector(key, key_len, 1, &data, &data_len, mac, &br_md5_vtable);
 +}
++
++void crypto_unload(void)
++{
++}
 -- 
-2.24.0
+2.45.2
 

@@ -1,4 +1,4 @@
-From 5fba603af060a3fd3f0436213527b4b2b74cbd0d Mon Sep 17 00:00:00 2001
+From ac2e14a8697e4d3f3fe7237b58e98a387b0c4b9d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 11 Aug 2019 04:00:13 +0000
 Subject: [PATCH] Prevent reference to undefined symbol with CONFIG_NO_RADIUS
@@ -8,10 +8,10 @@ Subject: [PATCH] Prevent reference to undefined symbol with CONFIG_NO_RADIUS
  1 file changed, 3 insertions(+)
 
 diff --git a/src/radius/radius.h b/src/radius/radius.h
-index 630c0f9d0..dd013c415 100644
+index 05fddbaf2..ec21150f7 100644
 --- a/src/radius/radius.h
 +++ b/src/radius/radius.h
-@@ -296,6 +296,7 @@ char * radius_msg_get_tunnel_password(struct radius_msg *msg, int *keylen,
+@@ -330,6 +330,7 @@ char * radius_msg_get_tunnel_password(struct radius_msg *msg, int *keylen,
  				      const u8 *secret, size_t secret_len,
  				      struct radius_msg *sent_msg, size_t n);
  
@@ -19,7 +19,7 @@ index 630c0f9d0..dd013c415 100644
  static inline int radius_msg_add_attr_int32(struct radius_msg *msg, u8 type,
  					    u32 value)
  {
-@@ -315,6 +316,8 @@ static inline int radius_msg_get_attr_int32(struct radius_msg *msg, u8 type,
+@@ -349,6 +350,8 @@ static inline int radius_msg_get_attr_int32(struct radius_msg *msg, u8 type,
  	*value = ntohl(val);
  	return 0;
  }
@@ -29,5 +29,5 @@ index 630c0f9d0..dd013c415 100644
  			    size_t *len, const u8 *start);
  int radius_msg_count_attr(struct radius_msg *msg, u8 type, int min_len);
 -- 
-2.22.0
+2.45.2
 

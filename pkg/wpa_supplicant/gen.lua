@@ -25,12 +25,14 @@ exe('bin/wpa_supplicant', [[
 		ctrl_iface_common.c
 		hw_features_common.c
 		ieee802_11_common.c
+		ptksa_cache.c
 		wpa_common.c
 	)
 	src/crypto/(
 		aes-internal-dec.c
 		aes-internal-enc.c
 		aes-internal.c
+		aes-omac1.c
 		aes-unwrap.c
 		aes-wrap.c
 		crypto_bearssl.c
@@ -60,9 +62,15 @@ exe('bin/wpa_supplicant', [[
 		wpa.c
 		wpa_ie.c
 	)
-	src/utils/(bitfield.c radiotap.c)
+	src/utils/(
+		bitfield.c
+		config.c
+		crc32.c
+		ip_addr.c
+		radiotap.c
+	)
 	wpa_supplicant/(
-		blacklist.c
+		bssid_ignore.c
 		bss.c
 		config.c
 		config_file.c
@@ -77,7 +85,7 @@ exe('bin/wpa_supplicant', [[
 		rrm.c
 		scan.c
 		sme.c
-		wmm_ac.c
+		twt.c
 		wpa_supplicant.c
 		wpas_glue.c
 	)
