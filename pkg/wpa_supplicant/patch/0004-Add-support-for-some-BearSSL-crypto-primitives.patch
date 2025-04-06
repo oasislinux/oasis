@@ -1,19 +1,19 @@
-From e6ef6ceba52f7d80f82dd91e1c6a121e11caefa5 Mon Sep 17 00:00:00 2001
+From f20f3e1c7f498bbc2a83a749ed38a795d54a5c25 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 15 Nov 2019 20:19:37 -0800
 Subject: [PATCH] Add support for some BearSSL crypto primitives
 
 ---
- src/crypto/crypto_bearssl.c | 165 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 165 insertions(+)
+ src/crypto/crypto_bearssl.c | 171 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 171 insertions(+)
  create mode 100644 src/crypto/crypto_bearssl.c
 
 diff --git a/src/crypto/crypto_bearssl.c b/src/crypto/crypto_bearssl.c
 new file mode 100644
-index 000000000..c207f22bc
+index 000000000..4f1b64e24
 --- /dev/null
 +++ b/src/crypto/crypto_bearssl.c
-@@ -0,0 +1,165 @@
+@@ -0,0 +1,171 @@
 +/*
 + * Wrapper functions for BearSSL crypto
 + * Copyright (c) 2019, Michael Forney <mforney@mforney.org>
@@ -29,8 +29,8 @@ index 000000000..c207f22bc
 +#include "md5.h"
 +#include "crypto.h"
 +
-+int digest_vector(size_t num_elem, const u8 *addr[], const size_t *len, u8 *out,
-+                  const br_hash_class *hash)
++static int digest_vector(size_t num_elem, const u8 *addr[], const size_t *len,
++			 u8 *out, const br_hash_class *hash)
 +{
 +	br_hash_compat_context ctx;
 +	size_t i;
@@ -74,6 +74,12 @@ index 000000000..c207f22bc
 +                       const u8 *addr[], const size_t *len, u8 *mac)
 +{
 +	return hmac_vector(key, key_len, num_elem, addr, len, mac, &br_sha256_vtable);
++}
++
++int hmac_sha256(const u8 *key, size_t key_len, const u8 *data,
++		size_t data_len, u8 *mac)
++{
++	return hmac_sha256_vector(key, key_len, 1, &data, &data_len, mac);
 +}
 +
 +int hmac_sha1_vector(const u8 *key, size_t key_len, size_t num_elem,
