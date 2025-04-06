@@ -29,9 +29,6 @@ exe('bin/wpa_supplicant', [[
 		wpa_common.c
 	)
 	src/crypto/(
-		aes-internal-dec.c
-		aes-internal-enc.c
-		aes-internal.c
 		aes-omac1.c
 		aes-unwrap.c
 		aes-wrap.c

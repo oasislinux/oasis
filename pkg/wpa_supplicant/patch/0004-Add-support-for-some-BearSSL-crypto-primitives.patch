@@ -1,19 +1,19 @@
-From ea00c8e557fe645a1ef0b6c0ebe2209514f9f94f Mon Sep 17 00:00:00 2001
+From e6ef6ceba52f7d80f82dd91e1c6a121e11caefa5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 15 Nov 2019 20:19:37 -0800
 Subject: [PATCH] Add support for some BearSSL crypto primitives
 
 ---
- src/crypto/crypto_bearssl.c | 83 +++++++++++++++++++++++++++++++++++++
- 1 file changed, 83 insertions(+)
+ src/crypto/crypto_bearssl.c | 165 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 165 insertions(+)
  create mode 100644 src/crypto/crypto_bearssl.c
 
 diff --git a/src/crypto/crypto_bearssl.c b/src/crypto/crypto_bearssl.c
 new file mode 100644
-index 000000000..db2bfbc27
+index 000000000..c207f22bc
 --- /dev/null
 +++ b/src/crypto/crypto_bearssl.c
-@@ -0,0 +1,83 @@
+@@ -0,0 +1,165 @@
 +/*
 + * Wrapper functions for BearSSL crypto
 + * Copyright (c) 2019, Michael Forney <mforney@mforney.org>
@@ -92,6 +92,88 @@ index 000000000..db2bfbc27
 +             u8 *mac)
 +{
 +	return hmac_vector(key, key_len, 1, &data, &data_len, mac, &br_md5_vtable);
++}
++
++void *aes_encrypt_init(const u8 *key, size_t len)
++{
++	br_aes_ct64_cbcenc_keys *ctx;
++
++	if (len != 16 && len != 24 && len != 32)
++		return NULL;
++	ctx = os_malloc(sizeof *ctx);
++	if (ctx == NULL)
++		return NULL;
++	br_aes_ct64_cbcenc_init(ctx, key, len);
++	return ctx;
++}
++
++int aes_encrypt(void *ctx, const u8 *plain, u8 *crypt)
++{
++	unsigned char iv[br_aes_ct64_BLOCK_SIZE];
++
++	memset(iv, 0, sizeof iv);
++	memcpy(crypt, plain, br_aes_ct64_BLOCK_SIZE);
++	br_aes_ct64_cbcenc_run(ctx, iv, crypt, br_aes_ct64_BLOCK_SIZE);
++	return 0;
++}
++
++void aes_encrypt_deinit(void *ctx)
++{
++	os_free(ctx);
++}
++
++void *aes_decrypt_init(const u8 *key, size_t len)
++{
++	br_aes_ct64_cbcdec_keys *ctx;
++
++	if (len != 16 && len != 24 && len != 32)
++		return NULL;
++	ctx = os_malloc(sizeof *ctx);
++	if (ctx == NULL)
++		return NULL;
++	br_aes_ct64_cbcdec_init(ctx, key, len);
++	return ctx;
++}
++
++int aes_decrypt(void *ctx, const u8 *plain, u8 *crypt)
++{
++	unsigned char iv[br_aes_ct64_BLOCK_SIZE];
++
++	memset(iv, 0, sizeof iv);
++	memcpy(crypt, plain, br_aes_ct64_BLOCK_SIZE);
++	br_aes_ct64_cbcdec_run(ctx, iv, crypt, br_aes_ct64_BLOCK_SIZE);
++	return 0;
++}
++
++void aes_decrypt_deinit(void *ctx)
++{
++	os_free(ctx);
++}
++
++int aes_128_cbc_encrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
++{
++	br_aes_ct64_cbcenc_keys ctx;
++	u8 ivbuf[br_aes_ct64_BLOCK_SIZE];
++
++	if (data_len & 0xF)
++		return -1;
++	memcpy(ivbuf, iv, sizeof ivbuf);
++	br_aes_ct64_cbcenc_init(&ctx, key, 16);
++	br_aes_ct64_cbcenc_run(&ctx, ivbuf, data, data_len);
++	return 0;
++}
++
++int aes_128_cbc_decrypt(const u8 *key, const u8 *iv, u8 *data, size_t data_len)
++{
++	br_aes_ct64_cbcdec_keys ctx;
++	u8 ivbuf[br_aes_ct64_BLOCK_SIZE];
++
++	if (data_len & 0xF)
++		return -1;
++	memcpy(ivbuf, iv, sizeof ivbuf);
++	br_aes_ct64_cbcdec_init(&ctx, key, 16);
++	br_aes_ct64_cbcdec_run(&ctx, ivbuf, data, data_len);
++	return 0;
 +}
 +
 +void crypto_unload(void)
