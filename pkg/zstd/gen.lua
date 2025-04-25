@@ -35,9 +35,11 @@ lib('libzstd.a', [[lib/(
 		zstd_lazy.c
 		zstd_ldm.c
 		zstd_opt.c
+		zstd_preSplit.c
 		zstdmt_compress.c
 	)
 	decompress/(
+		@x86_64 huf_decompress_amd64.S
 		huf_decompress.c
 		zstd_ddict.c
 		zstd_decompress.c
@@ -46,7 +48,7 @@ lib('libzstd.a', [[lib/(
 )]])
 
 exe('zstd', [[
-	programs/(zstdcli.c util.c timefn.c fileio.c)
+	programs/(zstdcli.c util.c timefn.c fileio.c fileio_asyncio.c)
 	libzstd.a
 ]])
 file('bin/zstd', '755', '$outdir/zstd')
