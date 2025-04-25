@@ -1,4 +1,4 @@
-From 7bc019c4c96b4eae8fe05dd31c4ea781441d437c Mon Sep 17 00:00:00 2001
+From fe88b59e4028952b4d157f0934e14b9eed058cd9 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 10 Jun 2019 01:47:01 -0700
 Subject: [PATCH] Only use __asm__ on GNU-compatible compilers
@@ -8,10 +8,10 @@ Subject: [PATCH] Only use __asm__ on GNU-compatible compilers
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/lib/common/cpu.h b/lib/common/cpu.h
-index cb210593..3c43f816 100644
+index 3f15d560..8d73a2ab 100644
 --- a/lib/common/cpu.h
 +++ b/lib/common/cpu.h
-@@ -82,7 +82,7 @@ MEM_STATIC ZSTD_cpuid_t ZSTD_cpuid(void) {
+@@ -118,7 +118,7 @@ MEM_STATIC ZSTD_cpuid_t ZSTD_cpuid(void) {
            : "a"(7), "c"(0)
            : "edx");
      }
@@ -21,5 +21,5 @@ index cb210593..3c43f816 100644
      __asm__("cpuid" : "=a"(n) : "a"(0) : "ebx", "ecx", "edx");
      if (n >= 1) {
 -- 
-2.29.2
+2.45.2
 
