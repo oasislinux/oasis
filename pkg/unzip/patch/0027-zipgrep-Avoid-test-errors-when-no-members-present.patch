@@ -1,0 +1,24 @@
+From 765b05298e4959bea8a77295704c9461fa9218d1 Mon Sep 17 00:00:00 2001
+From: Kevin Locke <kevin@kevinlocke.name>
+Date: Mon, 28 Apr 2025 12:57:34 -0700
+Subject: [PATCH] zipgrep: Avoid test errors when no members present
+
+---
+ unix/zipgrep | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/unix/zipgrep b/unix/zipgrep
+index 69cd6ba..b9d2316 100755
+--- a/unix/zipgrep
++++ b/unix/zipgrep
+@@ -44,6 +44,7 @@ if test -n "$opt"; then
+   opt="-$opt"
+ fi
+ 
++sts=0
+ status_grep_global=1
+ IFS='
+ '
+-- 
+2.45.2
+

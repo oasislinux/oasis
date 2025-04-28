@@ -1,0 +1,26 @@
+From 94b2d0b50a3a231ef91319e8e633b7ea62f0e2db Mon Sep 17 00:00:00 2001
+From: Roy Tam <roytam@gmail.com>
+Date: Mon, 28 Apr 2025 12:57:34 -0700
+Subject: [PATCH] Handle Microsoft ZIP64 files by ignoring invalid "Total
+ number of disks" field
+
+---
+ process.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/process.c b/process.c
+index a7d5b87..b385f1e 100644
+--- a/process.c
++++ b/process.c
+@@ -1281,7 +1281,7 @@ static int find_ecrec64(__G__ searchlen)         /* return PK-class error */
+     fprintf(stdout,"\nnumber of disks (ECR) %u, (ECLOC64) %lu\n",
+             G.ecrec.number_this_disk, ecloc64_total_disks); fflush(stdout);
+ #endif
+-    if ((G.ecrec.number_this_disk != 0xFFFF) &&
++    if ((G.ecrec.number_this_disk != 0xFFFF) && ecloc64_total_disks &&
+         (G.ecrec.number_this_disk != ecloc64_total_disks - 1)) {
+       /* Note: For some unknown reason, the developers at PKWARE decided to
+          store the "zip64 total disks" value as a counter starting from 1,
+-- 
+2.45.2
+

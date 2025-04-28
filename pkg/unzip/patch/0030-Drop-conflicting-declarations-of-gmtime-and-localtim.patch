@@ -1,0 +1,25 @@
+From 7fb1835d3ec1654edd2b1b88575cc9eedb1b0f03 Mon Sep 17 00:00:00 2001
+From: Santiago Vila <sanvila@debian.org>
+Date: Mon, 28 Apr 2025 12:57:34 -0700
+Subject: [PATCH] Drop conflicting declarations of gmtime() and localtime()
+
+---
+ unix/unxcfg.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/unix/unxcfg.h b/unix/unxcfg.h
+index c98c3b9..a3ad576 100644
+--- a/unix/unxcfg.h
++++ b/unix/unxcfg.h
+@@ -118,7 +118,7 @@ typedef struct stat z_stat;
+ #  endif
+ #else
+ #  include <time.h>
+-   struct tm *gmtime(), *localtime();
++/*   struct tm *gmtime(), *localtime(); */
+ #endif
+ 
+ #if (defined(BSD4_4) || (defined(SYSV) && defined(MODERN)))
+-- 
+2.45.2
+

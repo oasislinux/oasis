@@ -1,0 +1,27 @@
+From 39d270017e54c35683eab58de5059eda6d697c97 Mon Sep 17 00:00:00 2001
+From: Vincent Lefevre <vincent@vinc17.net>
+Date: Mon, 28 Apr 2025 12:57:34 -0700
+Subject: [PATCH] Do not escape shell-special characters in "pat"
+
+---
+ unix/zipgrep | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/unix/zipgrep b/unix/zipgrep
+index b9d2316..3ac7612 100755
+--- a/unix/zipgrep
++++ b/unix/zipgrep
+@@ -49,10 +49,6 @@ status_grep_global=1
+ IFS='
+ '
+ 
+-# Escape shell-special characters in "pat".
+-pat=` echo "$pat" | \
+- sed -e 's/\\\\/\\\\\\\\/g' -e 's/|/\\\|/g' -e 's/&/\\\&/g' `
+-
+ # Use "unzip -Z1" to get a listing of the specified members from the
+ # specified archive.  Escape any backslashes in a file name.
+ for i in `unzip -Z1 "$zipfile" ${1+"$@"} | sed -e 's/\\\\/\\\\\\\\/g' `; do
+-- 
+2.45.2
+
