@@ -1,0 +1,35 @@
+From 6a142118edf4a31922568bf7696615e63c71c49e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 28 Apr 2025 13:14:22 -0700
+Subject: [PATCH] Fix type signature of utp_on_overhead
+
+Our branch of libutp uses standard C99 types.
+---
+ libtransmission/peer-io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libtransmission/peer-io.c b/libtransmission/peer-io.c
+index cbdc85a2f..49e7e313d 100644
+--- a/libtransmission/peer-io.c
++++ b/libtransmission/peer-io.c
+@@ -554,7 +554,7 @@ static void utp_on_error(void* closure, int errcode)
+     }
+ }
+ 
+-static void utp_on_overhead(void* closure, uint8_t /* bool */ send, size_t count, int type UNUSED)
++static void utp_on_overhead(void* closure, bool send, size_t count, int type UNUSED)
+ {
+     tr_peerIo* io = closure;
+ 
+@@ -606,7 +606,7 @@ static void dummy_on_error(void* closure UNUSED, int errcode UNUSED)
+ {
+ }
+ 
+-static void dummy_on_overhead(void* closure UNUSED, uint8_t /* bool */ send UNUSED, size_t count UNUSED, int type UNUSED)
++static void dummy_on_overhead(void* closure UNUSED, bool send UNUSED, size_t count UNUSED, int type UNUSED)
+ {
+ }
+ 
+-- 
+2.45.2
+

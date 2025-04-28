@@ -36,15 +36,15 @@ cflags{
 	'-D __TRANSMISSION__',
 	'-I $dir',
 	'-I $srcdir',
-	'-I $srcdir/third-party',
-	'-I $srcdir/third-party/libb64/include',
-	'-I $srcdir/third-party/libnatpmp',
 	'-isystem $builddir/pkg/bearssl/include',
 	'-isystem $builddir/pkg/curl/include',
 	'-isystem $builddir/pkg/libevent/include',
 	'-isystem $builddir/pkg/libutp/include',
 	'-isystem $builddir/pkg/zlib/include',
 	'-isystem $builddir/pkg/openbsd/include',
+	'-isystem $srcdir/third-party',
+	'-isystem $srcdir/third-party/libb64/include',
+	'-isystem $srcdir/third-party/libnatpmp',
 	'-include config.h',
 }
 
