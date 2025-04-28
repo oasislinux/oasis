@@ -5,6 +5,8 @@
 #define _PATH_SFTP_SERVER "/libexec/sftp-server"
 #define _PATH_SSH_ASKPASS_DEFAULT "/libexec/ssh-askpass"
 #define _PATH_SSH_KEY_SIGN "/libexec/ssh-keysign"
+#define _PATH_SSHD_SESSION "/libexec/sshd-session"
+#define _PATH_SSHD_AUTH "/libexec/sshd-auth"
 #define _PATH_SSH_PIDDIR "/run"
 #define _PATH_SSH_PKCS11_HELPER "/libexec/ssh-pkcs11-helper"
 #define _PATH_SSH_SK_HELPER "/libexec/ssh-sk-helper"
@@ -84,6 +86,8 @@
 #define HAVE_ATTRIBUTE__NONNULL__ 1
 /* #undef HAVE_ATTRIBUTE__SENTINEL__ */
 /* #undef HAVE_AUG_GET_MACHINE */
+/* #undef HAVE_AUTH_HOSTOK */
+/* #undef HAVE_AUTH_TIMEOK */
 #define HAVE_B64_NTOP 1
 #define HAVE_B64_PTON 1
 #define HAVE_BASENAME 1
@@ -101,6 +105,8 @@
 /* #undef HAVE_BSTRING_H */
 #define HAVE_BZERO 1
 #define HAVE_CALLOC 1
+/* #undef HAVE_CAPH_CACHE_TZDATA */
+/* #undef HAVE_CAPSICUM_HELPERS_H */
 /* #undef HAVE_CAP_RIGHTS_LIMIT */
 #define HAVE_CLOCK 1
 #define HAVE_CLOCK_GETTIME 1
@@ -118,16 +124,20 @@
 /* #undef HAVE_DECL_AUTHENTICATE */
 #define HAVE_DECL_BZERO 1
 #define HAVE_DECL_FTRUNCATE 1
+#define HAVE_DECL_GETENTROPY 1
 #define HAVE_DECL_GETPEEREID 0
 #define HAVE_DECL_GLOB_NOMATCH 1
 /* #undef HAVE_DECL_GSS_C_NT_HOSTBASED_SERVICE */
 #define HAVE_DECL_HOWMANY 1
+#define HAVE_DECL_HTOLE64 1
 #define HAVE_DECL_H_ERRNO 1
+#define HAVE_DECL_LE32TOH 1
+#define HAVE_DECL_LE64TOH 1
 /* #undef HAVE_DECL_LOGINFAILED */
 /* #undef HAVE_DECL_LOGINRESTRICTIONS */
 /* #undef HAVE_DECL_LOGINSUCCESS */
 #define HAVE_DECL_MAXSYMLINKS 1
-#define HAVE_DECL_MEMMEM 0
+#define HAVE_DECL_MEMMEM 1
 #define HAVE_DECL_NFDBITS 1
 #define HAVE_DECL_OFFSETOF 1
 #define HAVE_DECL_O_NONBLOCK 1
@@ -171,6 +181,7 @@
 #define HAVE_FIDO_CRED_SET_PROT 1
 #define HAVE_FIDO_DEV_GET_TOUCH_BEGIN 1
 #define HAVE_FIDO_DEV_GET_TOUCH_STATUS 1
+#define HAVE_FIDO_DEV_IS_WINHELLO 1
 #define HAVE_FIDO_DEV_SUPPORTS_CRED_PROT 1
 /* #undef HAVE_FLOATINGPOINT_H */
 #define HAVE_FLOCK 1
@@ -189,6 +200,7 @@
 /* #undef HAVE_GETAUDIT */
 /* #undef HAVE_GETAUDIT_ADDR */
 #define HAVE_GETCWD 1
+#define HAVE_GETENTROPY 1
 #define HAVE_GETGROUPLIST 1
 /* #undef HAVE_GETGRSET */
 /* #undef HAVE_GETLASTLOGXBYNAME */
@@ -379,7 +391,7 @@
 /* #undef HAVE_SHA512UPDATE */
 #define HAVE_SHADOW_H 1
 #define HAVE_SIGACTION 1
-/* #undef HAVE_SIGHANDLER_T */
+#define HAVE_SIGHANDLER_T 1
 /* #undef HAVE_SIGVEC */
 #define HAVE_SIG_ATOMIC_T 1
 #define HAVE_SIZE_T 1
@@ -431,7 +443,6 @@
 #define HAVE_STRUCT_STAT_ST_MTIME 1
 #define HAVE_STRUCT_TIMESPEC 1
 #define HAVE_STRUCT_TIMEVAL 1
-/* #undef HAVE_SWAP32 */
 #define HAVE_SYSCONF 1
 /* #undef HAVE_SYSLEN_IN_UTMPX */
 /* #undef HAVE_SYS_AUDIT_H */
@@ -473,6 +484,7 @@
 #define HAVE_TCGETPGRP 1
 #define HAVE_TCSENDBREAK 1
 #define HAVE_TIME 1
+#define HAVE_TIMEGM 1
 #define HAVE_TIME_H 1
 /* #undef HAVE_TIME_IN_UTMP */
 /* #undef HAVE_TIME_IN_UTMPX */
@@ -533,6 +545,7 @@
 /* #undef KRB5 */
 /* #undef LASTLOG_WRITE_PUTUTXLINE */
 #define LINK_OPNOTSUPP_ERRNO EPERM
+/* #undef LINUX_MEMLOCK_ONFAULT */
 #define LINUX_OOM_ADJUST 1
 /* #undef LLONG_MAX */
 /* #undef LLONG_MIN */
@@ -541,6 +554,7 @@
 /* #undef LOCKED_PASSWD_SUBSTR */
 /* #undef LOGIN_NEEDS_UTMPX */
 /* #undef MAIL_DIRECTORY */
+/* #undef MISSING_BUILTIN_POPCOUNT */
 /* #undef NEED_SETPGRP */
 /* #undef NO_ATTRIBUTE_ON_PROTOTYPE_ARGS */
 /* #undef NO_ATTRIBUTE_ON_RETURN_TYPE */
@@ -561,11 +575,12 @@
 /* #undef SANDBOX_CAPSICUM */
 /* #undef SANDBOX_DARWIN */
 /* #undef SANDBOX_NULL */
-/* #undef SANDBOX_PLEDGE */
+/* #undef SANDBOX_RLIMIT */
+/* #undef SANDBOX_SECCOMP_FILTER */
 /* #undef SANDBOX_SKIP_RLIMIT_FSIZE */
 /* #undef SANDBOX_SKIP_RLIMIT_NOFILE */
 /* #undef SANDBOX_SOLARIS */
-/* #undef SANDBOX_SYSTRACE */
+/* #undef SECCOMP_AUDIT_ARCH */
 /* #undef SETEUID_BREAKS_SETUID */
 #define SIZEOF_INT 4
 #define SIZEOF_LONG_INT SIZEOF_LONG
@@ -573,6 +588,7 @@
 #define SIZEOF_SHORT_INT 2
 /* probe SIZEOF_TIME_T */
 #define SNPRINTF_CONST const
+/* #undef SOCK_HAS_LEN */
 #define SPT_TYPE SPT_REUSEARGV
 /* #undef SSHD_ACQUIRES_CTTY */
 /* #undef SSHD_PAM_SERVICE */
@@ -589,6 +605,7 @@
 #define STDC_HEADERS 1
 /* #undef SUPERUSER_PATH */
 /* #undef SYSLOG_R_SAFE_IN_SIGHAND */
+/* #undef SYSTEMD_NOTIFY */
 #define SYS_RDOMAIN_LINUX 1
 /* #undef UNIXWARE_LONG_PASSWORDS */
 #define USER_PATH "/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin"
@@ -602,6 +619,7 @@
 /* #undef USE_SOLARIS_PRIVS */
 /* #undef USE_SOLARIS_PROCESS_CONTRACTS */
 /* #undef USE_SOLARIS_PROJECTS */
+/* #undef USE_WTMPDB */
 #define VARIABLE_DECLARATION_AFTER_CODE 1
 /* #undef VARIABLE_LENGTH_ARRAYS */
 /* #undef WITH_ABBREV_NO_TTY */

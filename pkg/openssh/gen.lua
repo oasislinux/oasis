@@ -85,21 +85,30 @@ lib('libssh.a', [[
 	ssh-pkcs11.c smult_curve25519_ref.c
 	poly1305.c chacha.c cipher-chachapoly.c cipher-chachapoly-bearssl.c
 	ssh-ed25519.c digest-bearssl.c digest-libc.c
-	hmac.c sc25519.c ge25519.c fe25519.c ed25519.c verify.c hash.c
-	kex.c kexdh.c kexgex.c kexecdh.c kexc25519.c
+	hmac.c ed25519.c hash.c
+	kex.c kex-names.c kexdh.c kexgex.c kexecdh.c kexc25519.c
 	kexgexc.c kexgexs.c
-	kexsntrup761x25519.c sntrup761.c kexgen.c
+	kexsntrup761x25519.c kexmlkem768x25519.c sntrup761.c kexgen.c
 	sftp-realpath.c platform-pledge.c platform-tracing.c platform-misc.c
 	sshbuf-io.c
 
 	ssh-sk-client.c
 
-	sftp-common.c sftp-client.c sftp-glob.c sftp-server.c
-
 	libopenbsd-compat.a
 	$builddir/pkg/bearssl/libbearssl.a
 	$builddir/pkg/libfido2/libfido2.a.d
 	$builddir/pkg/zlib/libz.a
+]])
+
+lib('sftp-client.a', [[
+	sftp-common.c
+	sftp-client.c
+	sftp-glob.c
+]])
+
+lib('sftp-server.a', [[
+	sftp-common.c.o
+	sftp-server.c
 ]])
 
 exe('ssh', [[
@@ -110,25 +119,48 @@ exe('ssh', [[
 file('bin/ssh', '755', '$outdir/ssh')
 
 exe('sshd', [[
-	sshd.c auth-rhosts.c auth-passwd.c
-	audit.c audit-bsm.c audit-linux.c platform.c
-	sshpty.c sshlogin.c servconf.c serverloop.c
-	auth.c auth2.c auth-options.c session.c
-	auth2-chall.c groupaccess.c
-	auth-bsdauth.c auth2-hostbased.c auth2-kbdint.c
-	auth2-none.c auth2-passwd.c auth2-pubkey.c
-	monitor.c monitor_wrap.c auth-krb5.c
-	auth2-gss.c gss-serv.c gss-serv-krb5.c
-	loginrec.c auth-pam.c auth-shadow.c auth-sia.c
-	srclimit.c
-	sandbox-null.c sandbox-rlimit.c sandbox-systrace.c sandbox-darwin.c
-	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-pledge.c
-	sandbox-solaris.c uidswap.c
+	sshd.c
+	platform-listen.c
+	servconf.c sshpty.c srclimit.c groupaccess.c auth2-methods.c
 	libssh.a.d
 ]])
 file('bin/sshd', '755', '$outdir/sshd')
 
-exe('scp', {'scp.c', 'libssh.a.d'})
+-- used by sshd-session and sshd-auth
+lib('sshd-common.a', [[
+	auth-rhosts.c auth-passwd.c
+	audit.c audit-bsm.c audit-linux.c platform.c
+	sshpty.c.o sshlogin.c.o servconf.c.o serverloop.c
+	auth.c auth2.c auth2-methods.c.o auth-options.c session.c
+	auth2-chall.c groupaccess.c.o
+	auth-bsdauth.c auth2-hostbased.c auth2-kbdint.c
+	auth2-none.c auth2-passwd.c auth2-pubkey.c auth2-pubkeyfile.c
+	monitor_wrap.c auth-krb5.c
+	auth2-gss.c gss-serv.c gss-serv-krb5.c
+	loginrec.c auth-pam.c auth-shadow.c auth-sia.c
+	uidswap.c
+]])
+
+exe('sshd-session', [[
+	sshd-session.c
+	monitor.c platform-listen.c.o
+	sshd-common.a
+	sftp-server.a
+	libssh.a.d
+]])
+file('libexec/sshd-session', '755', '$outdir/sshd-session')
+
+exe('sshd-auth', [[
+	sshd-auth.c
+	sandbox-null.c sandbox-rlimit.c sandbox-darwin.c
+	sandbox-seccomp-filter.c sandbox-capsicum.c sandbox-solaris.c
+	sshd-common.a
+	sftp-server.a
+	libssh.a.d
+]])
+file('libexec/sshd-auth', '755', '$outdir/sshd-auth')
+
+exe('scp', {'scp.c', 'sftp-client.a', 'libssh.a.d'})
 file('bin/scp', '755', '$outdir/scp')
 
 exe('ssh-add', {'ssh-add.c', 'libssh.a.d'})
@@ -146,10 +178,10 @@ file('bin/ssh-keyscan', '755', '$outdir/ssh-keyscan')
 exe('ssh-sk-helper', {'ssh-sk-helper.c', 'ssh-sk.c', 'sk-usbhid.c', 'libssh.a.d'})
 file('libexec/ssh-sk-helper', '755', '$outdir/ssh-sk-helper')
 
-exe('sftp-server', {'sftp-server-main.c', 'libssh.a.d'})
+exe('sftp-server', {'sftp-server-main.c', 'sftp-server.a', 'libssh.a.d'})
 file('libexec/sftp-server', '755', '$outdir/sftp-server')
 
-exe('sftp', {'sftp.c', 'libssh.a.d'})
+exe('sftp', {'sftp.c', 'sftp-usergroup.c', 'sftp-client.a', 'libssh.a.d'})
 file('bin/sftp', '755', '$outdir/sftp')
 
 man{
