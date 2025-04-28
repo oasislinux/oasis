@@ -392,12 +392,16 @@ end
 
 function fetch(method)
 	local script
+	local deps = {'|', '$dir/ver', script}
 	if method == 'local' then
 		script = '$dir/fetch.sh'
 	else
 		script = '$basedir/scripts/fetch-'..method..'.sh'
+		if method == 'curl' then
+			table.insert(deps, '$builddir/pkg/pax/host/pax')
+		end
 	end
-	build('fetch', '$dir/fetch', {'|', '$dir/ver', script}, {script=script})
+	build('fetch', '$dir/fetch', deps, {script=script})
 	if basedir ~= '.' then
 		build('phony', '$gendir/fetch', '$dir/fetch')
 	end

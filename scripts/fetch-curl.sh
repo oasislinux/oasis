@@ -20,7 +20,7 @@ if ! sh "$OLDPWD/scripts/checksum.sh" -c sha256 2>/dev/null ; then
 fi
 
 while read -r _ archive ; do
-	sh "$OLDPWD/scripts/extract.sh" "$archive" -s ',^[^/]*,src,' '*/*'
+	sh "$OLDPWD/scripts/extract.sh" "$archive" -s ',^[^/]*,src,'
 done <sha256
 
 if [ -d patch ] ; then

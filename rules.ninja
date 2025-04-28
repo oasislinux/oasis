@@ -125,7 +125,7 @@ rule fspec-tar
   command = $builddir/pkg/fspec-sync/host/fspec-tar <$in | zstd >$out
 
 rule fetch
-  command = cd $basedir && sh $$OLDPWD/$script $gendir && touch $$OLDPWD/$out
+  command = cd $basedir && PAX=$$OLDPWD/$builddir/pkg/pax/host/pax sh $$OLDPWD/$script $gendir && touch $$OLDPWD/$out
   description = 	FETCH	$gendir
   restat = 1
   generator = 1
