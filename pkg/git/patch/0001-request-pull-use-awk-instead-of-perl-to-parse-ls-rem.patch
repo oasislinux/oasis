@@ -1,4 +1,4 @@
-From 1b87b640fac0fa52de5da8d2c57d038cc0cef5b1 Mon Sep 17 00:00:00 2001
+From 742272838f08fa1b9fe47ef842253ac84a502ee7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 16 Mar 2021 17:21:31 -0700
 Subject: [PATCH] request-pull: use awk instead of perl to parse ls-remote
@@ -9,7 +9,7 @@ Subject: [PATCH] request-pull: use awk instead of perl to parse ls-remote
  1 file changed, 29 insertions(+), 19 deletions(-)
 
 diff --git a/git-request-pull.sh b/git-request-pull.sh
-index 2d0e44656c..0e3cf644e0 100755
+index 775ba8ea11..a7177c5e1c 100755
 --- a/git-request-pull.sh
 +++ b/git-request-pull.sh
 @@ -82,37 +82,47 @@ die "fatal: No commits in common between $base and $head"
@@ -74,11 +74,11 @@ index 2d0e44656c..0e3cf644e0 100755
  	}
  '
  
--set fnord $(git ls-remote "$url" | @@PERL@@ -e "$find_matching_ref" "${remote:-HEAD}" "$headrev")
+-set fnord $(git ls-remote "$url" | @PERL_PATH@ -e "$find_matching_ref" "${remote:-HEAD}" "$headrev")
 +set fnord $(git ls-remote "$url" | awk -v "head=${remote:-HEAD}" -v "headrev=$headrev" "$find_matching_ref")
  remote_sha1=$2
  ref=$3
  
 -- 
-2.34.0
+2.45.2
 

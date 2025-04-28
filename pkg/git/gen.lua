@@ -8,6 +8,7 @@ cflags{
 }
 
 pkg.deps = {
+	'$outdir/version-def.h',
 	'$outdir/command-list.h',
 	'$outdir/config-list.h',
 	'$outdir/hook-list.h',
@@ -15,20 +16,29 @@ pkg.deps = {
 	'pkg/zlib/headers',
 }
 
-rule('cmdlist', 'cd $srcdir && ./generate-cmdlist.sh $$OLDPWD/$in >$$OLDPWD/$out')
+rule('cmdlist', '$srcdir/generate-cmdlist.sh $srcdir $out')
 build('cmdlist', '$outdir/command-list.h', {
-	'$srcdir/command-list.txt',
-	'|', '$srcdir/generate-cmdlist.sh', expand{'$srcdir/Documentation/', lines('commands.txt')},
+	'|', '$srcdir/generate-cmdlist.sh', '$srcdir/command-list.txt',
+	expand{'$srcdir/Documentation/', lines('commands.txt')},
 })
 
-rule('configlist', 'cd $srcdir && ./generate-configlist.sh >$$OLDPWD/$out')
+rule('configlist', '$srcdir/generate-configlist.sh $srcdir $out')
 build('configlist', '$outdir/config-list.h', {
-	'|', '$srcdir/generate-configlist.sh', expand{'$srcdir/Documentation/', lines('configs.txt')},
+	'|', '$srcdir/generate-configlist.sh',
+	expand{'$srcdir/Documentation/', lines('configs.txt')},
 })
 
-rule('hooklist', 'cd $srcdir && ./generate-hooklist.sh >$$OLDPWD/$out')
+rule('hooklist', '$srcdir/generate-hooklist.sh $srcdir $out')
 build('hooklist', '$outdir/hook-list.h', {
-	'|', '$srcdir/generate-hooklist.sh', '$srcdir/Documentation/githooks.txt'
+	'|', '$srcdir/generate-hooklist.sh', '$srcdir/Documentation/githooks.adoc'
+})
+
+build('sed', '$outdir/version-def.h', '$srcdir/version-def.h.in', {
+	expr={
+		[[-e 's,@GIT_VERSION@,2.49.0,']],
+		[[-e 's,@GIT_BUILT_FROM_COMMIT@,,']],
+		[[-e 's,@GIT_USER_AGENT@,git/2.49.0,']],
+	},
 })
 
 cc('exec-cmd.c', nil, {cflags=string.format([[$cflags '-DFALLBACK_RUNTIME_PREFIX="%s"']], config.prefix)})
@@ -44,14 +54,12 @@ lib('libreftable.a', [[
 		block.c
 		blocksource.c
 		iter.c
-		publicbasics.c
 		merged.c
 		pq.c
 		reader.c
 		record.c
-		refname.c
-		generic.c
 		stack.c
+		system.c
 		tree.c
 		writer.c
 	)
@@ -90,12 +98,13 @@ lib('libgit.a', [[
 	commit-graph.c
 	commit-reach.c
 	commit.c
+	common-exit.c
+	common-init.c
 	compat/nonblock.c
 	compat/obstack.c
 	compat/qsort_s.c
 	compat/regex/regex.c.o
 	compat/terminal.c
-	compat/zlib-uncompress2.c
 	config.c
 	connect.c
 	connected.c
@@ -205,6 +214,7 @@ lib('libgit.a', [[
 	patch-delta.c
 	patch-ids.c
 	path.c
+	path-walk.c
 	pathspec.c
 	pkt-line.c
 	preload-index.c
@@ -216,6 +226,7 @@ lib('libgit.a', [[
 	protocol.c
 	protocol-caps.c
 	prune-packed.c
+	pseudo-merge.c
 	quote.c
 	range-diff.c
 	reachable.c
@@ -344,6 +355,7 @@ local builtins = {
 	'annotate',
 	'apply',
 	'archive',
+	'backfill',
 	'bisect',
 	'blame',
 	'branch',
@@ -426,6 +438,7 @@ local builtins = {
 	'rebase',
 	'receive-pack',
 	'reflog',
+	'refs',
 	'remote-ext',
 	'remote-fd',
 	'remote',
@@ -519,9 +532,8 @@ for _, name in ipairs{'git-receive-pack', 'git-upload-archive', 'git-upload-pack
 end
 
 -- templates
-dir('share/git-core/templates/branches', '755')
-file('share/git-core/templates/description', '644', '$srcdir/templates/this--description')
-file('share/git-core/templates/info/exclude', '644', '$srcdir/templates/info--exclude')
+file('share/git-core/templates/description', '644', '$srcdir/templates/description')
+file('share/git-core/templates/info/exclude', '644', '$srcdir/templates/info/exclude')
 -- Skip the sample hooks and install an empty directory instead.
 dir('share/git-core/templates/hooks', '755')
 

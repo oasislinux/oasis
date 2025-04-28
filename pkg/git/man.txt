@@ -5,6 +5,7 @@ man1/git-annotate.1
 man1/git-apply.1
 man1/git-archimport.1
 man1/git-archive.1
+man1/git-backfill.1
 man1/git-bisect.1
 man1/git-blame.1
 man1/git-branch.1
@@ -107,6 +108,7 @@ man1/git-read-tree.1
 man1/git-rebase.1
 man1/git-receive-pack.1
 man1/git-reflog.1
+man1/git-refs.1
 man1/git-remote-ext.1
 man1/git-remote-fd.1
 man1/git-remote.1
@@ -189,6 +191,7 @@ man7/giteveryday.7
 man7/gitfaq.7
 man7/gitglossary.7
 man7/gitnamespaces.7
+man7/gitpacking.7
 man7/gitremote-helpers.7
 man7/gitrevisions.7
 man7/gitsubmodules.7
