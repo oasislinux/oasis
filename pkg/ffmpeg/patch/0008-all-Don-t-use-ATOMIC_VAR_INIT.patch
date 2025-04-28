@@ -1,0 +1,113 @@
+From 16aa2a5923497b440d526b34e12ea0961215d17f Mon Sep 17 00:00:00 2001
+From: Andreas Rheinhardt <andreas.rheinhardt@outlook.com>
+Date: Sat, 23 Mar 2024 13:38:06 +0100
+Subject: [PATCH] all: Don't use ATOMIC_VAR_INIT
+
+C11 required to use ATOMIC_VAR_INIT to statically initialize
+atomic objects with static storage duration. Yet this macro
+was unsuitable for initializing structures [1] and was actually
+unneeded for all known implementations (this includes our
+compatibility fallback implementations which simply wrap the value
+in parentheses: #define ATOMIC_VAR_INIT(value) (value)).
+Therefore C17 deprecated the macro and C23 actually removed it [2].
+
+Since commit 5ff0eb34d2b1089d3dd9f27fdb51520001709138 we default
+to C17 if the compiler supports it; Clang warns about ATOMIC_VAR_INIT
+in this mode. Given that no implementation ever needed this macro,
+this commit stops using it to avoid this warning.
+
+[1]: https://www.open-std.org/jtc1/sc22/wg14/www/docs/n2396.htm#dr_485
+[2]: https://en.cppreference.com/w/c/atomic/ATOMIC_VAR_INIT
+
+Signed-off-by: Andreas Rheinhardt <andreas.rheinhardt@outlook.com>
+---
+ configure                | 4 ++--
+ fftools/ffmpeg.c         | 2 +-
+ libavformat/allformats.c | 4 ++--
+ libavutil/cpu.c          | 6 +++---
+ libavutil/mem.c          | 2 +-
+ 5 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/configure b/configure
+index 86425130bd..2bee29ff73 100755
+--- a/configure
++++ b/configure
+@@ -6620,8 +6620,8 @@ check_headers asm/types.h
+ # some configurations also require linking to libatomic, so try
+ # both with -latomic and without
+ for LATOMIC in "-latomic" ""; do
+-    check_builtin stdatomic stdatomic.h                                                 \
+-        "atomic_int foo, bar = ATOMIC_VAR_INIT(-1); atomic_store(&foo, 0); foo += bar"  \
++    check_builtin stdatomic stdatomic.h                                \
++        "atomic_int foo, bar = -1; atomic_store(&foo, 0); foo += bar"  \
+         $LATOMIC && eval stdatomic_extralibs="\$LATOMIC" && break
+ done
+ 
+diff --git a/fftools/ffmpeg.c b/fftools/ffmpeg.c
+index 4a0c7d5c4d..d89a697616 100644
+--- a/fftools/ffmpeg.c
++++ b/fftools/ffmpeg.c
+@@ -157,7 +157,7 @@ void term_exit(void)
+ 
+ static volatile int received_sigterm = 0;
+ static volatile int received_nb_signals = 0;
+-static atomic_int transcode_init_done = ATOMIC_VAR_INIT(0);
++static atomic_int transcode_init_done = 0;
+ static volatile int ffmpeg_exited = 0;
+ static int64_t copy_ts_first_pts = AV_NOPTS_VALUE;
+ 
+diff --git a/libavformat/allformats.c b/libavformat/allformats.c
+index e15d0fa6d7..9df42bb87a 100644
+--- a/libavformat/allformats.c
++++ b/libavformat/allformats.c
+@@ -576,8 +576,8 @@ extern const FFInputFormat  ff_vapoursynth_demuxer;
+ #include "libavformat/muxer_list.c"
+ #include "libavformat/demuxer_list.c"
+ 
+-static atomic_uintptr_t indev_list_intptr  = ATOMIC_VAR_INIT(0);
+-static atomic_uintptr_t outdev_list_intptr = ATOMIC_VAR_INIT(0);
++static atomic_uintptr_t indev_list_intptr  = 0;
++static atomic_uintptr_t outdev_list_intptr = 0;
+ 
+ const AVOutputFormat *av_muxer_iterate(void **opaque)
+ {
+diff --git a/libavutil/cpu.c b/libavutil/cpu.c
+index 48d195168c..d4f947360a 100644
+--- a/libavutil/cpu.c
++++ b/libavutil/cpu.c
+@@ -49,8 +49,8 @@
+ #include <unistd.h>
+ #endif
+ 
+-static atomic_int cpu_flags = ATOMIC_VAR_INIT(-1);
+-static atomic_int cpu_count = ATOMIC_VAR_INIT(-1);
++static atomic_int cpu_flags = -1;
++static atomic_int cpu_count = -1;
+ 
+ static int get_cpu_flags(void)
+ {
+@@ -208,7 +208,7 @@ int av_parse_cpu_caps(unsigned *flags, const char *s)
+ 
+ int av_cpu_count(void)
+ {
+-    static atomic_int printed = ATOMIC_VAR_INIT(0);
++    static atomic_int printed = 0;
+ 
+     int nb_cpus = 1;
+     int count   = 0;
+diff --git a/libavutil/mem.c b/libavutil/mem.c
+index 62163b4cb3..02d4cb791f 100644
+--- a/libavutil/mem.c
++++ b/libavutil/mem.c
+@@ -69,7 +69,7 @@ void  free(void *ptr);
+  * dynamic libraries and remove -Wl,-Bsymbolic from the linker flags.
+  * Note that this will cost performance. */
+ 
+-static atomic_size_t max_alloc_size = ATOMIC_VAR_INIT(INT_MAX);
++static atomic_size_t max_alloc_size = INT_MAX;
+ 
+ void av_max_alloc(size_t max){
+     atomic_store_explicit(&max_alloc_size, max, memory_order_relaxed);
+-- 
+2.45.2
+
