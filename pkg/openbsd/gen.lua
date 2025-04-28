@@ -85,10 +85,9 @@ exe('pax', [[bin/pax/(
 	gen_subs.c getoldopt.c options.c pat_rep.c pax.c sel_subs.c tables.c
 	tar.c tty_subs.c
 ) libbsd.a]])
-file('bin/pax', '755', '$outdir/pax')
-sym('bin/tar', 'pax')
-sym('bin/cpio', 'pax')
-man{'bin/pax/pax.1', 'bin/pax/tar.1', 'bin/pax/cpio.1'}
+file('bin/tar', '755', '$outdir/pax')
+sym('bin/cpio', 'tar')
+man{'bin/pax/tar.1', 'bin/pax/cpio.1'}
 
 -- rsync
 exe('rsync', [[

@@ -17,6 +17,7 @@ return {
 		'openbsd',
 		'openntpd',
 		'openssh',
+		'pax',
 		'perp',
 		'pigz',
 		'rc',
