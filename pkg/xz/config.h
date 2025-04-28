@@ -18,6 +18,7 @@
 #define HAVE_CLOCK_MONOTONIC 1
 /* #undef HAVE_COMMONCRYPTO_COMMONDIGEST_H */
 #define HAVE_CPUID_H 1
+/* #undef HAVE_CRC_X86_ASM */
 /* #undef HAVE_DCGETTEXT */
 #define HAVE_DECODERS 1
 #define HAVE_DECODER_ARM 1
@@ -57,6 +58,7 @@
 /* probe HAVE_IMMINTRIN_H */
 #define HAVE_INTTYPES_H 1
 #define HAVE_LINUX_LANDLOCK 1
+/* #undef HAVE_LOONGARCH_CRC32 */
 #define HAVE_LZIP_DECODER 1
 #define HAVE_MBRTOWC 1
 #define HAVE_MF_BT2 1
@@ -104,6 +106,7 @@
 #endif
 /* #undef HAVE_UTIME */
 /* #undef HAVE_UTIMES */
+#define HAVE_VASPRINTF 1
 #define HAVE_VISIBILITY 1
 #define HAVE_WCHAR_H 1
 #define HAVE_WCWIDTH 1
@@ -122,10 +125,10 @@
 #define PACKAGE "xz"
 #define PACKAGE_BUGREPORT "xz@tukaani.org"
 #define PACKAGE_NAME "XZ Utils"
-#define PACKAGE_STRING "XZ Utils 5.6.4"
+#define PACKAGE_STRING "XZ Utils 5.8.1"
 #define PACKAGE_TARNAME "xz"
 #define PACKAGE_URL "https://tukaani.org/xz/"
-#define PACKAGE_VERSION "5.6.4"
+#define PACKAGE_VERSION "5.8.1"
 /* #undef PTHREAD_CREATE_JOINABLE */
 /* probe SIZEOF_SIZE_T */
 #define STDC_HEADERS 1
@@ -206,7 +209,7 @@
 #ifndef _XOPEN_SOURCE
 /* # undef _XOPEN_SOURCE */
 #endif
-#define VERSION "5.6.4"
+#define VERSION "5.8.1"
 #if defined AC_APPLE_UNIVERSAL_BUILD
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1

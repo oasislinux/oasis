@@ -31,9 +31,7 @@ lib('liblzma.a', [[src/(
 	liblzma/(
 		check/(
 			check.c
-			crc32_table.c
 			crc32_fast.c
-			crc64_table.c
 			crc64_fast.c
 			sha256.c
 		)
@@ -146,8 +144,10 @@ exe('xz', [[src/(
 		tuklib_open_stdxxx.c
 		tuklib_progname.c
 		tuklib_exit.c
-		tuklib_mbstr_width.c
 		tuklib_mbstr_fw.c
+		tuklib_mbstr_nonprint.c
+		tuklib_mbstr_width.c
+		tuklib_mbstr_wrap.c
 	)
 ) liblzma.a]])
 
