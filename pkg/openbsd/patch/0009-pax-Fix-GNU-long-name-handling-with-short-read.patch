@@ -1,4 +1,4 @@
-From ec3fd37495e977af375a98a472d19ae0ccbcd874 Mon Sep 17 00:00:00 2001
+From f88fb1145beac6cce7012b506579d23e0b9826a2 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 3 Dec 2016 20:49:24 -0800
 Subject: [PATCH] pax: Fix GNU long name handling with short read
@@ -10,7 +10,7 @@ Subject: [PATCH] pax: Fix GNU long name handling with short read
  3 files changed, 51 insertions(+), 44 deletions(-)
 
 diff --git a/bin/pax/ar_subs.c b/bin/pax/ar_subs.c
-index e5b0a4ee5d1..f0a55abe2f7 100644
+index f018108af59..4c49efa1362 100644
 --- a/bin/pax/ar_subs.c
 +++ b/bin/pax/ar_subs.c
 @@ -37,6 +37,7 @@
@@ -47,7 +47,7 @@ index e5b0a4ee5d1..f0a55abe2f7 100644
  
  		/*
  		 * check for pattern, and user specified options match.
-@@ -208,15 +202,8 @@ extract(void)
+@@ -245,15 +239,8 @@ extract(void)
  	 * says it is done
  	 */
  	while (next_head(arcn) == 0) {
@@ -64,7 +64,7 @@ index e5b0a4ee5d1..f0a55abe2f7 100644
  
  		/*
  		 * check for pattern, and user specified options match. When
-@@ -1243,3 +1230,48 @@ get_arc(void)
+@@ -1282,3 +1269,48 @@ get_arc(void)
  	paxwarn(1, "Sorry, unable to determine archive format.");
  	return(-1);
  }
@@ -114,10 +114,10 @@ index e5b0a4ee5d1..f0a55abe2f7 100644
 +	return 1;
 +}
 diff --git a/bin/pax/buf_subs.c b/bin/pax/buf_subs.c
-index 68534dcbe25..e84f9e0d3d6 100644
+index 25dfed5b69b..e3e22a09cc6 100644
 --- a/bin/pax/buf_subs.c
 +++ b/bin/pax/buf_subs.c
-@@ -673,9 +673,7 @@ rd_wrfile(ARCHD *arcn, int ofd, off_t *left)
+@@ -676,9 +676,7 @@ rd_wrfile(ARCHD *arcn, int ofd, off_t *left)
  	 * pass the blocksize of the file being written to the write routine,
  	 * if the size is zero, use the default MINFBSZ
  	 */
@@ -129,10 +129,10 @@ index 68534dcbe25..e84f9e0d3d6 100644
  			sz = (int)sb.st_blksize;
  	} else
 diff --git a/bin/pax/file_subs.c b/bin/pax/file_subs.c
-index 89b4872988b..8aa3d249923 100644
+index 9f482480a3b..ae0caf29f6c 100644
 --- a/bin/pax/file_subs.c
 +++ b/bin/pax/file_subs.c
-@@ -919,7 +919,6 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
+@@ -924,7 +924,6 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
  	char *end;
  	int wcnt;
  	char *st = str;
@@ -140,7 +140,7 @@ index 89b4872988b..8aa3d249923 100644
  
  	/*
  	 * while we have data to process
-@@ -978,29 +977,7 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
+@@ -983,29 +982,7 @@ file_write(int fd, char *str, int cnt, int *rem, int *isempt, int sz,
  		/*
  		 * have non-zero data in this file system block, have to write
  		 */
@@ -172,5 +172,5 @@ index 89b4872988b..8aa3d249923 100644
  			return(-1);
  		}
 -- 
-2.26.2
+2.49.0
 

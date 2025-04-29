@@ -1,0 +1,38 @@
+From dc49fca08adc0fd8cd9565f2aeca6dc2c8d1fbd2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 4 Jun 2020 21:44:26 -0700
+Subject: [PATCH] pax: Use memcpy to set TMAGIC and TVERSION to avoid warning
+
+---
+ bin/pax/tar.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/bin/pax/tar.c b/bin/pax/tar.c
+index a0cbb31b547..095eef85af0 100644
+--- a/bin/pax/tar.c
++++ b/bin/pax/tar.c
+@@ -1055,8 +1055,8 @@ wr_xheader(ARCHD *arcn, struct xheader *xhdr)
+ 	memset(hdblk, 0, sizeof(hdblk));
+ 	hd = (HD_USTAR *)hdblk;
+ 	hd->typeflag = XHDRTYPE;
+-	strncpy(hd->magic, TMAGIC, TMAGLEN);
+-	strncpy(hd->version, TVERSION, TVERSLEN);
++	memcpy(hd->magic, TMAGIC, TMAGLEN);
++	memcpy(hd->version, TVERSION, TVERSLEN);
+ 	if (ul_oct(size, hd->size, sizeof(hd->size), 3))
+ 		return -1;
+ 
+@@ -1263,8 +1263,8 @@ wr_ustar_or_pax(ARCHD *arcn, int ustar)
+ 		break;
+ 	}
+ 
+-	strncpy(hd->magic, TMAGIC, TMAGLEN);
+-	strncpy(hd->version, TVERSION, TVERSLEN);
++	memcpy(hd->magic, TMAGIC, TMAGLEN);
++	memcpy(hd->version, TVERSION, TVERSLEN);
+ 
+ 	/*
+ 	 * set the remaining fields. Some versions want all 16 bits of mode
+-- 
+2.49.0
+

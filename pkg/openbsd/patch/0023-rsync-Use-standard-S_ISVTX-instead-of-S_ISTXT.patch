@@ -1,4 +1,4 @@
-From d5670219baefe6769a42984abb93e19d8a43dada Mon Sep 17 00:00:00 2001
+From 6e087cd1f746eb636de0ec1769db6b4aac65e666 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 14 Jun 2019 12:42:15 -0700
 Subject: [PATCH] rsync: Use standard S_ISVTX instead of S_ISTXT
@@ -8,7 +8,7 @@ Subject: [PATCH] rsync: Use standard S_ISVTX instead of S_ISTXT
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/usr.bin/rsync/receiver.c b/usr.bin/rsync/receiver.c
-index 6e5b01670cd..67510b3e932 100644
+index 256a788b4f0..5dcc33b20fd 100644
 --- a/usr.bin/rsync/receiver.c
 +++ b/usr.bin/rsync/receiver.c
 @@ -87,7 +87,7 @@ rsync_set_metadata(struct sess *sess, int newfile,
@@ -20,7 +20,7 @@ index 6e5b01670cd..67510b3e932 100644
  	}
  
  	/* Conditionally adjust file permissions. */
-@@ -148,7 +148,7 @@ rsync_set_metadata_at(struct sess *sess, int newfile, int rootfd,
+@@ -149,7 +149,7 @@ rsync_set_metadata_at(struct sess *sess, int newfile, int rootfd,
  				    "to user.group: %u.%u", f->path, uid, gid);
  		} else
  			LOG4("%s: updated uid and/or gid", f->path);
@@ -30,5 +30,5 @@ index 6e5b01670cd..67510b3e932 100644
  
  	/* Conditionally adjust file permissions. */
 -- 
-2.34.1
+2.49.0
 

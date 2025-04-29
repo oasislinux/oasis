@@ -1,4 +1,4 @@
-From 901940cdf7fc13516ff55e81df0b546eb7c74595 Mon Sep 17 00:00:00 2001
+From 7f16d268831910c1d219b8a4f38b364bba34c710 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 18 Apr 2016 01:16:12 -0700
 Subject: [PATCH] tar: Default to stdin
@@ -8,10 +8,10 @@ Subject: [PATCH] tar: Default to stdin
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/bin/pax/options.c b/bin/pax/options.c
-index 5db0948858c..dbb4b816c37 100644
+index cd3f5f6285c..9dd2ea0ce25 100644
 --- a/bin/pax/options.c
 +++ b/bin/pax/options.c
-@@ -937,7 +937,7 @@ tar_options(int argc, char **argv)
+@@ -968,7 +968,7 @@ tar_options(int argc, char **argv)
  	if ((arcname == NULL) || (*arcname == '\0')) {
  		arcname = getenv("TAPE");
  		if ((arcname == NULL) || (*arcname == '\0'))
@@ -21,5 +21,5 @@ index 5db0948858c..dbb4b816c37 100644
  	if ((arcname[0] == '-') && (arcname[1]== '\0'))
  		arcname = NULL;
 -- 
-2.25.0
+2.49.0
 

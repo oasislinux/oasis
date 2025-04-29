@@ -1,4 +1,4 @@
-From 0d3a091280d0874fb561c83431803eb2489876cb Mon Sep 17 00:00:00 2001
+From bf938d0fd70582d8d7942c2f04c2d4209b9b8633 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 5 Aug 2019 21:42:54 -0700
 Subject: [PATCH] Include sys/sysmacros.h if necessary
@@ -11,7 +11,7 @@ Subject: [PATCH] Include sys/sysmacros.h if necessary
  4 files changed, 14 insertions(+)
 
 diff --git a/bin/pax/cpio.c b/bin/pax/cpio.c
-index 92fe965163a..3832b1e87aa 100644
+index be0316d8dd9..fbcf032e091 100644
 --- a/bin/pax/cpio.c
 +++ b/bin/pax/cpio.c
 @@ -41,6 +41,10 @@
@@ -26,7 +26,7 @@ index 92fe965163a..3832b1e87aa 100644
  #include "cpio.h"
  #include "extern.h"
 diff --git a/bin/pax/gen_subs.c b/bin/pax/gen_subs.c
-index 42c70804fb7..405dd2c24ed 100644
+index fcda4d37391..928cfcd3657 100644
 --- a/bin/pax/gen_subs.c
 +++ b/bin/pax/gen_subs.c
 @@ -45,6 +45,9 @@
@@ -40,10 +40,10 @@ index 42c70804fb7..405dd2c24ed 100644
  #include "pax.h"
  #include "extern.h"
 diff --git a/bin/pax/tar.c b/bin/pax/tar.c
-index 9d8a92d9d13..e84a9c69a09 100644
+index ef22a9fd2d8..a0cbb31b547 100644
 --- a/bin/pax/tar.c
 +++ b/bin/pax/tar.c
-@@ -45,6 +45,9 @@
+@@ -47,6 +47,9 @@
  #include <stdlib.h>
  #include <string.h>
  #include <unistd.h>
@@ -54,7 +54,7 @@ index 9d8a92d9d13..e84a9c69a09 100644
  #include "pax.h"
  #include "extern.h"
 diff --git a/usr.bin/rsync/flist.c b/usr.bin/rsync/flist.c
-index 392ba494423..5f15487623a 100644
+index cdc9f1da1dd..8832420cce0 100644
 --- a/usr.bin/rsync/flist.c
 +++ b/usr.bin/rsync/flist.c
 @@ -16,6 +16,10 @@
@@ -69,5 +69,5 @@ index 392ba494423..5f15487623a 100644
  #include <assert.h>
  #include <errno.h>
 -- 
-2.34.1
+2.49.0
 

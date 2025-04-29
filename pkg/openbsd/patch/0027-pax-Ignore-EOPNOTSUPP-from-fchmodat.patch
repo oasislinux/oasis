@@ -1,4 +1,4 @@
-From 0f49ae38698a163f7954d28bbaba473b6bf28239 Mon Sep 17 00:00:00 2001
+From 38b0c680777d5eb9cc69cd8fbc38fe3dc5a0927a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 10 Jan 2020 21:40:03 -0800
 Subject: [PATCH] pax: Ignore EOPNOTSUPP from fchmodat
@@ -9,10 +9,10 @@ Linux does not support changing the mode of symlinks.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/bin/pax/file_subs.c b/bin/pax/file_subs.c
-index 8aa3d249923..2c0994feca6 100644
+index ae0caf29f6c..429705976dc 100644
 --- a/bin/pax/file_subs.c
 +++ b/bin/pax/file_subs.c
-@@ -795,7 +795,7 @@ void
+@@ -800,7 +800,7 @@ void
  set_pmode(char *fnm, mode_t mode)
  {
  	mode &= ABITS;
@@ -22,5 +22,5 @@ index 8aa3d249923..2c0994feca6 100644
  }
  
 -- 
-2.26.2
+2.49.0
 

@@ -1,22 +1,22 @@
-From f34464dc0940837a48e071392a84455df2138c0b Mon Sep 17 00:00:00 2001
+From 1ab0f94943e02c49d88a358351914f9032a5bca3 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 23:14:16 -0700
 Subject: [PATCH] acme-client: Port to BearSSL
 
 ---
- usr.sbin/acme-client/acctproc.c   | 299 +++++++++------------------
+ usr.sbin/acme-client/acctproc.c   | 298 +++++++++------------------
  usr.sbin/acme-client/certproc.c   |   5 -
- usr.sbin/acme-client/key.c        | 333 ++++++++++++++++++++++++------
+ usr.sbin/acme-client/key.c        | 329 ++++++++++++++++++++++++------
  usr.sbin/acme-client/key.h        |  22 +-
  usr.sbin/acme-client/keyproc.c    | 198 ++++++------------
  usr.sbin/acme-client/revokeproc.c | 237 ++++++++++-----------
- 6 files changed, 560 insertions(+), 534 deletions(-)
+ 6 files changed, 564 insertions(+), 525 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index 23d8a1c3a33..3d3e32c1a57 100644
+index 9e97a8bb760..8d66dac49d9 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
-@@ -19,74 +19,29 @@
+@@ -19,73 +19,29 @@
  
  #include <err.h>
  #include <errno.h>
@@ -28,7 +28,6 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  
 -#include <openssl/bn.h>
 -#include <openssl/ec.h>
--#include <openssl/ecdsa.h>
 -#include <openssl/evp.h>
 -#include <openssl/rsa.h>
 -#include <openssl/err.h>
@@ -98,7 +97,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  	else if ((json = json_fmt_thumb_rsa(exp, mod)) == NULL)
  		warnx("json_fmt_thumb_rsa");
  
-@@ -100,31 +55,23 @@ op_thumb_rsa(EVP_PKEY *pkey)
+@@ -99,31 +55,23 @@ op_thumb_rsa(EVP_PKEY *pkey)
   * thumbprint from them.
   */
  static char *
@@ -140,7 +139,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  	free(x);
  	free(y);
  	return json;
-@@ -134,26 +81,26 @@ op_thumb_ec(EVP_PKEY *pkey)
+@@ -133,26 +81,26 @@ op_thumb_ec(EVP_PKEY *pkey)
   * The thumbprint operation is used for the challenge sequence.
   */
  static int
@@ -176,7 +175,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  		goto out;
  	}
  
-@@ -164,12 +111,10 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
+@@ -163,12 +111,10 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
  	 * it up in the read loop).
  	 */
  
@@ -193,7 +192,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  		warnx("base64buf_url");
  		goto out;
  	}
-@@ -184,11 +129,10 @@ out:
+@@ -183,11 +129,10 @@ out:
  }
  
  static int
@@ -206,7 +205,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  
  	*prot = NULL;
  
-@@ -197,12 +141,10 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+@@ -196,12 +141,10 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
  	 * Finally, format the header combined with the nonce.
  	 */
  
@@ -223,7 +222,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  	else if ((*prot = json_fmt_protected_rsa(exp, mod, nonce, url)) == NULL)
  		warnx("json_fmt_protected_rsa");
  	else
-@@ -214,35 +156,27 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+@@ -213,35 +156,27 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
  }
  
  static int
@@ -269,7 +268,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  	free(x);
  	free(y);
  	return rc;
-@@ -253,20 +187,18 @@ op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+@@ -252,20 +187,18 @@ op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
   * This requires the sender ("fd") to provide the payload and a nonce.
   */
  static int
@@ -298,7 +297,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  
  	/* Read our payload and nonce from the requestor. */
  
-@@ -283,19 +215,22 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -282,19 +215,22 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* Base64-encode the payload. */
  
@@ -327,7 +326,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  		break;
  	default:
  		warnx("unknown account key type");
-@@ -309,17 +244,17 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -308,17 +244,17 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  			goto out;
  		}
  	} else {
@@ -351,7 +350,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  			goto out;
  		}
  	}
-@@ -342,76 +277,34 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -341,76 +277,34 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* Sign the message. */
  
@@ -445,7 +444,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  		goto out;
  	}
  
-@@ -421,7 +314,11 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -420,7 +314,11 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  	 * when we next enter the read loop).
  	 */
  
@@ -458,7 +457,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  		warnx("json_fmt_signed");
  		goto out;
  	} else if (writestr(fd, COMM_REQ, fin) < 0)
-@@ -429,8 +326,6 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -428,8 +326,6 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	rc = 1;
  out:
@@ -467,7 +466,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  	free(pay);
  	free(sign);
  	free(pay64);
-@@ -439,10 +334,9 @@ out:
+@@ -438,10 +334,9 @@ out:
  	free(kid);
  	free(prot);
  	free(prot64);
@@ -480,7 +479,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  	return rc;
  }
  
-@@ -450,7 +344,7 @@ int
+@@ -449,7 +344,7 @@ int
  acctproc(int netsock, const char *acctkey, enum keytype keytype)
  {
  	FILE		*f = NULL;
@@ -489,7 +488,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  	long		 lval;
  	enum acctop	 op;
  	int		 rc = 0, cc, newacct = 0;
-@@ -476,8 +370,6 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype)
+@@ -475,8 +370,6 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype)
  
  	/* File-system, user, and sandbox jailing. */
  
@@ -498,7 +497,7 @@ index 23d8a1c3a33..3d3e32c1a57 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -555,8 +447,7 @@ out:
+@@ -554,8 +447,7 @@ out:
  	close(netsock);
  	if (f != NULL)
  		fclose(f);
@@ -526,10 +525,10 @@ index f443d573675..85c3897a4b8 100644
  
  #define BEGIN_MARKER "-----BEGIN CERTIFICATE-----"
 diff --git a/usr.sbin/acme-client/key.c b/usr.sbin/acme-client/key.c
-index a6fc437f863..c0e54b15742 100644
+index 9ece3059d4e..9599a7fdbd5 100644
 --- a/usr.sbin/acme-client/key.c
 +++ b/usr.sbin/acme-client/key.c
-@@ -17,15 +17,11 @@
+@@ -17,14 +17,11 @@
   */
  
  #include <err.h>
@@ -540,14 +539,13 @@ index a6fc437f863..c0e54b15742 100644
 -#include <openssl/evp.h>
 -#include <openssl/pem.h>
 -#include <openssl/rsa.h>
--#include <openssl/ecdsa.h>
 -#include <openssl/ec.h>
 -#include <openssl/obj_mac.h>
 +#include <bearssl.h>
  
  #include "key.h"
  
-@@ -34,111 +30,318 @@
+@@ -33,102 +30,320 @@
   */
  #define	KBITS 4096
  
@@ -587,22 +585,20 @@ index a6fc437f863..c0e54b15742 100644
 +	unsigned char	*der = NULL, *pem = NULL;
 +	size_t		 derlen, pemlen;
  
--	/* First, create the context and the key. */
-+	/* First, allocate and generate the key. */
- 
 -	if ((ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL)) == NULL) {
 -		warnx("EVP_PKEY_CTX_new_id");
 -		goto err;
--	} else if (EVP_PKEY_keygen_init(ctx) <= 0) {
+-	}
+-	if (EVP_PKEY_keygen_init(ctx) <= 0) {
 -		warnx("EVP_PKEY_keygen_init");
 +	slen = BR_RSA_KBUF_PRIV_SIZE(KBITS);
 +	plen = BR_RSA_KBUF_PUB_SIZE(KBITS);
 +	if ((key = malloc(sizeof(*key) + slen + plen)) == NULL) {
 +		warnx("malloc");
  		goto err;
--	} else if (EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, KBITS) <= 0) {
+ 	}
+-	if (EVP_PKEY_CTX_set_rsa_keygen_bits(ctx, KBITS) <= 0) {
 -		warnx("EVP_PKEY_set_rsa_keygen_bits");
-+	}
 +	key->type = BR_KEYTYPE_RSA;
 +	key->datasz = slen + plen;
 +	sbuf = key->data;
@@ -611,9 +607,9 @@ index a6fc437f863..c0e54b15742 100644
 +	    &key->rsa.pk, pbuf, KBITS, 0x10001)) {
 +		warnx("br_rsa_keygen");
  		goto err;
--	} else if (EVP_PKEY_keygen(ctx, &pkey) <= 0) {
+ 	}
+-	if (EVP_PKEY_keygen(ctx, &pkey) <= 0) {
 -		warnx("EVP_PKEY_keygen");
-+	}
 +
 +	/* Compute the private exponent. */
 +
@@ -625,7 +621,8 @@ index a6fc437f863..c0e54b15742 100644
 -	/* Serialise the key to the disc. */
 +	/* Serialise the key to the disk. */
  
--	if (PEM_write_PrivateKey(f, pkey, NULL, NULL, 0, NULL, NULL))
+-	if (!PEM_write_PrivateKey(f, pkey, NULL, NULL, 0, NULL, NULL)) {
+-		warnx("%s: PEM_write_PrivateKey", fname);
 +	derlen = br_encode_rsa_raw_der(NULL, &key->rsa.sk, &key->rsa.pk,
 +	    d, sizeof(d));
 +	if ((der = malloc(derlen)) == NULL) {
@@ -639,30 +636,31 @@ index a6fc437f863..c0e54b15742 100644
 +		goto err;
 +	}
 +	br_pem_encode(pem, der, derlen, BR_ENCODE_PEM_RSA_RAW, 0);
-+	if (fwrite(pem, 1, pemlen, f) == pemlen)
- 		goto out;
++	if (fwrite(pem, 1, pemlen, f) != pemlen) {
++		warn("write private key");
+ 		goto err;
+ 	}
  
--	warnx("%s: PEM_write_PrivateKey", fname);
-+	warn("write private key");
- 
- err:
--	EVP_PKEY_free(pkey);
--	pkey = NULL;
-+	free(key);
-+	key = NULL;
- out:
 -	EVP_PKEY_CTX_free(ctx);
 -	return pkey;
 +	free(der);
 +	free(pem);
 +	return key;
+ 
+ err:
+-	EVP_PKEY_free(pkey);
+-	EVP_PKEY_CTX_free(ctx);
++	free(der);
++	free(pem);
++	free(key);
+ 	return NULL;
  }
  
 -EVP_PKEY *
 +struct key *
  ec_key_create(FILE *f, const char *fname)
  {
--	EC_KEY		*eckey = NULL;
+-	EVP_PKEY_CTX	*ctx = NULL;
 -	EVP_PKEY	*pkey = NULL;
 +	struct key 		*key = NULL;
 +	const br_ec_impl	*ec;
@@ -671,45 +669,42 @@ index a6fc437f863..c0e54b15742 100644
 +	unsigned char		*der = NULL, *pem = NULL;
 +	size_t			 derlen, pemlen;
  
--	if ((eckey = EC_KEY_new_by_curve_name(NID_secp384r1)) == NULL ) {
--		warnx("EC_KEY_new_by_curve_name");
+-	if ((ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_EC, NULL)) == NULL) {
+-		warnx("EVP_PKEY_CTX_new_id");
+-		goto err;
+-	}
+-	if (EVP_PKEY_keygen_init(ctx) <= 0) {
+-		warnx("EVP_PKEY_keygen_init");
 +	slen = BR_EC_KBUF_PRIV_MAX_SIZE;
 +	plen = BR_EC_KBUF_PUB_MAX_SIZE;
 +	if ((key = malloc(sizeof(*key) + slen + plen)) == NULL) {
 +		warn("malloc");
  		goto err;
  	}
+-	if (EVP_PKEY_CTX_set_ec_paramgen_curve_nid(ctx, NID_secp384r1) <= 0) {
+-		warnx("EVP_PKEY_CTX_set_ec_paramgen_curve_nid");
 +	key->type = BR_KEYTYPE_EC;
 +	key->datasz = slen + plen;
 +	sbuf = key->data;
 +	pbuf = key->data + slen;
- 
--	if (!EC_KEY_generate_key(eckey)) {
--		warnx("EC_KEY_generate_key");
++
 +	ec = br_ec_get_default();
 +	if (br_ec_keygen(&prng, ec, &key->ec.sk, sbuf, BR_EC_secp384r1) == 0) {
 +		warnx("br_ec_keygen");
  		goto err;
  	}
--
--	/* set OPENSSL_EC_NAMED_CURVE to be able to load the key */
--
--	EC_KEY_set_asn1_flag(eckey, OPENSSL_EC_NAMED_CURVE);
--
--	/* Serialise the key to the disc in EC format */
--
--	if (!PEM_write_ECPrivateKey(f, eckey, NULL, NULL, 0, NULL, NULL)) {
--		warnx("%s: PEM_write_ECPrivateKey", fname);
+-	if (EVP_PKEY_keygen(ctx, &pkey) <= 0) {
+-		warnx("EVP_PKEY_keygen");
 +	if (br_ec_compute_pub(ec, &key->ec.pk, pbuf, &key->ec.sk) == 0) {
 +		warnx("br_ec_compute_pub");
  		goto err;
  	}
  
--	/* Convert the EC key into a PKEY structure */
+-	/* Serialise the key to the disc. */
 +	/* Serialise the key to the disk in EC format */
  
--	if ((pkey = EVP_PKEY_new()) == NULL) {
--		warnx("EVP_PKEY_new");
+-	if (!PEM_write_PrivateKey(f, pkey, NULL, NULL, 0, NULL, NULL)) {
+-		warnx("%s: PEM_write_PrivateKey", fname);
 +	if ((derlen = br_encode_ec_raw_der(NULL, &key->ec.sk,
 +	    &key->ec.pk)) == 0) {
 +		warnx("br_encode_ec_raw_der");
@@ -717,44 +712,42 @@ index a6fc437f863..c0e54b15742 100644
 +	}
 +	if ((der = malloc(derlen)) == NULL) {
 +		warn("malloc");
- 		goto err;
- 	}
--	if (!EVP_PKEY_set1_EC_KEY(pkey, eckey)) {
--		warnx("EVP_PKEY_assign_EC_KEY");
++		goto err;
++	}
 +	br_encode_ec_raw_der(der, &key->ec.sk, &key->ec.pk);
 +	pemlen = br_pem_encode(NULL, der, derlen, BR_ENCODE_PEM_EC_RAW, 0);
 +	if ((pem = malloc(pemlen + 1)) == NULL) {
 +		warn("malloc");
++		goto err;
++	}
++	br_pem_encode(pem, der, derlen, BR_ENCODE_PEM_EC_RAW, 0);
++	if (fwrite(pem, 1, pemlen, f) != pemlen) {
++		warn("write private key");
  		goto err;
  	}
-+	br_pem_encode(pem, der, derlen, BR_ENCODE_PEM_EC_RAW, 0);
-+	if (fwrite(pem, 1, pemlen, f) == pemlen)
-+		goto out;
  
--	goto out;
-+	warn("write private key");
- 
- err:
--	EVP_PKEY_free(pkey);
--	pkey = NULL;
-+	free(key);
-+	key = NULL;
- out:
--	EC_KEY_free(eckey);
+-	EVP_PKEY_CTX_free(ctx);
 -	return pkey;
 +	free(der);
 +	free(pem);
 +	return key;
+ 
+ err:
+-	EVP_PKEY_free(pkey);
+-	EVP_PKEY_CTX_free(ctx);
++	free(der);
++	free(pem);
++	free(key);
+ 	return NULL;
  }
  
+-EVP_PKEY *
 +static void
 +append_skey(void *ctx, const void *src, size_t len)
 +{
 +	br_skey_decoder_push(ctx, src, len);
 +}
- 
--
--EVP_PKEY *
++
 +struct key *
  key_load(FILE *f, const char *fname)
  {
@@ -772,7 +765,11 @@ index a6fc437f863..c0e54b15742 100644
 +	const br_ec_private_key		*ec;
 +	const char			*name = NULL;
 +	uint32_t			 pubexp;
-+
+ 
+-	pkey = PEM_read_PrivateKey(f, NULL, NULL, NULL);
+-	if (pkey == NULL) {
+-		warnx("%s: PEM_read_PrivateKey", fname);
+-		return NULL;
 +	br_pem_decoder_init(&pemctx);
 +	br_skey_decoder_init(&keyctx);
 +	while (type == 0) {
@@ -817,8 +814,14 @@ index a6fc437f863..c0e54b15742 100644
 +			warnx("%s: PEM decoding failed", fname);
 +			goto err;
 +		}
-+	}
-+
+ 	}
+-	if (EVP_PKEY_base_id(pkey) == EVP_PKEY_RSA ||
+-	    EVP_PKEY_base_id(pkey) == EVP_PKEY_EC)
+-		return pkey;
+ 
+-	warnx("%s: unsupported key type", fname);
+-	EVP_PKEY_free(pkey);
+-	return NULL;
 +	switch (type) {
 +	case BR_KEYTYPE_RSA:
 +		rsa = br_skey_decoder_get_rsa(&keyctx);
@@ -833,11 +836,7 @@ index a6fc437f863..c0e54b15742 100644
 +		}
 +		datasz += 4 + rsa->plen + rsa->qlen + rsa->dplen + rsa->dqlen +
 +		    rsa->iqlen;
- 
--	pkey = PEM_read_PrivateKey(f, NULL, NULL, NULL);
--	if (pkey == NULL) {
--		warnx("%s: PEM_read_PrivateKey", fname);
--		return NULL;
++
 +		if ((key = malloc(sizeof(*key) + datasz)) == NULL) {
 +			warn("malloc");
 +			goto err;
@@ -907,14 +906,8 @@ index a6fc437f863..c0e54b15742 100644
 +		br_ec_compute_pub(ecimpl, &key->ec.pk,
 +		    key->ec.sk.x + key->ec.sk.xlen, &key->ec.sk);
 +		goto out;
- 	}
--	if (EVP_PKEY_base_id(pkey) == EVP_PKEY_RSA ||
--	    EVP_PKEY_base_id(pkey) == EVP_PKEY_EC)
--		return pkey;
- 
--	warnx("%s: unsupported key type", fname);
--	EVP_PKEY_free(pkey);
--	return NULL;
++	}
++
 +	warnx("%s: missing private key", fname);
 +
 +err:
@@ -1546,5 +1539,5 @@ index 58e81233f1a..378de35f662 100644
  	return rc;
  }
 -- 
-2.44.0
+2.49.0
 

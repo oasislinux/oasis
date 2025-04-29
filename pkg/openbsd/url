@@ -1,5 +1,5 @@
 remote-name
-url = "https://cdn.openbsd.org/pub/OpenBSD/7.3/src.tar.gz"
+url = "https://cdn.openbsd.org/pub/OpenBSD/7.7/src.tar.gz"
 
 remote-name
-url = "https://cdn.openbsd.org/pub/OpenBSD/7.3/sys.tar.gz"
+url = "https://cdn.openbsd.org/pub/OpenBSD/7.7/sys.tar.gz"

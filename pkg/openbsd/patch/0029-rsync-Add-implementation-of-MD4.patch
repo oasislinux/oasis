@@ -1,4 +1,4 @@
-From 01657f2c1445cf4874337a0966a76f24ba9c9536 Mon Sep 17 00:00:00 2001
+From f6b4408dd3b8ddfa1dca692e1c52643d857d8102 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 15 Apr 2020 22:10:06 -0700
 Subject: [PATCH] rsync: Add implementation of MD4
@@ -7,11 +7,12 @@ Subject: [PATCH] rsync: Add implementation of MD4
  usr.bin/rsync/Makefile     |   2 +-
  usr.bin/rsync/blocks.c     |   2 +-
  usr.bin/rsync/downloader.c |   2 +-
+ usr.bin/rsync/extern.h     |   3 +-
  usr.bin/rsync/hash.c       |   2 +-
  usr.bin/rsync/md4.c        | 266 +++++++++++++++++++++++++++++++++++++
  usr.bin/rsync/md4.h        |  47 +++++++
  usr.bin/rsync/sender.c     |   2 +-
- 7 files changed, 318 insertions(+), 5 deletions(-)
+ 8 files changed, 320 insertions(+), 6 deletions(-)
  create mode 100644 usr.bin/rsync/md4.c
  create mode 100644 usr.bin/rsync/md4.h
 
@@ -29,7 +30,7 @@ index 3c60f18e07f..172045ce7ac 100644
  LDADD+= -lcrypto -lm -lutil
  DPADD+= ${LIBCRYPTO} ${LIBM} ${LIBUTIL}
 diff --git a/usr.bin/rsync/blocks.c b/usr.bin/rsync/blocks.c
-index 906733c968e..0a8c3f485d1 100644
+index 8f4bcb532e1..f21c9178487 100644
 --- a/usr.bin/rsync/blocks.c
 +++ b/usr.bin/rsync/blocks.c
 @@ -26,7 +26,7 @@
@@ -54,8 +55,22 @@ index 07ec334f6b4..6543851fd2c 100644
  
  #include "extern.h"
  
+diff --git a/usr.bin/rsync/extern.h b/usr.bin/rsync/extern.h
+index 55d7bc26ae2..d6b02fd4ad4 100644
+--- a/usr.bin/rsync/extern.h
++++ b/usr.bin/rsync/extern.h
+@@ -19,7 +19,8 @@
+ 
+ #include <stdint.h>
+ #include <sys/types.h>
+-#include <openssl/md4.h>
++
++#include "md4.h"
+ 
+ /*
+  * This is the rsync protocol version that we support.
 diff --git a/usr.bin/rsync/hash.c b/usr.bin/rsync/hash.c
-index b87c56f527c..44ae0d26282 100644
+index 37529e951b4..e3f52047404 100644
 --- a/usr.bin/rsync/hash.c
 +++ b/usr.bin/rsync/hash.c
 @@ -21,7 +21,7 @@
@@ -393,7 +408,7 @@ index 00000000000..ebf5bb555a0
 +
 +#endif
 diff --git a/usr.bin/rsync/sender.c b/usr.bin/rsync/sender.c
-index 9dd008def01..2aeb99b64a0 100644
+index 6469e7f27e5..81b25b9ee78 100644
 --- a/usr.bin/rsync/sender.c
 +++ b/usr.bin/rsync/sender.c
 @@ -26,7 +26,7 @@
@@ -406,5 +421,5 @@ index 9dd008def01..2aeb99b64a0 100644
  #include "extern.h"
  
 -- 
-2.35.1
+2.49.0
 

@@ -1,4 +1,4 @@
-From 6c278af8cc6a9fcb94b9bbe572b0bd3f7dd492c1 Mon Sep 17 00:00:00 2001
+From 05fd24cc7b3f1b73a58d41d70ef725925007165c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 2 Dec 2019 21:11:04 -0800
 Subject: [PATCH] nc: Portability fixes from libressl-portable
@@ -8,7 +8,7 @@ Subject: [PATCH] nc: Portability fixes from libressl-portable
  1 file changed, 48 insertions(+), 7 deletions(-)
 
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index c8f1cdd9f75..7369ed85619 100644
+index 8c60fd18826..b5129c2204d 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
 @@ -93,9 +93,13 @@ int	zflag;					/* Port Scan Flag */
@@ -64,7 +64,7 @@ index c8f1cdd9f75..7369ed85619 100644
  
  	/* Cruft to make sure options are clean, and used properly. */
  	if (argc == 1 && family == AF_UNIX) {
-@@ -927,7 +937,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
+@@ -923,7 +933,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
      char *ipaddr)
  {
  	struct addrinfo *res, *res0;
@@ -76,7 +76,7 @@ index c8f1cdd9f75..7369ed85619 100644
  
  	if ((error = getaddrinfo(host, port, &hints, &res0)))
  		errx(1, "getaddrinfo for host \"%s\" port %s: %s", host,
-@@ -942,8 +955,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
+@@ -938,8 +951,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
  		if (sflag || pflag) {
  			struct addrinfo ahints, *ares;
  
@@ -87,7 +87,7 @@ index c8f1cdd9f75..7369ed85619 100644
  			memset(&ahints, 0, sizeof(struct addrinfo));
  			ahints.ai_family = res->ai_family;
  			ahints.ai_socktype = uflag ? SOCK_DGRAM : SOCK_STREAM;
-@@ -1035,8 +1050,11 @@ int
+@@ -1031,8 +1046,11 @@ int
  local_listen(const char *host, const char *port, struct addrinfo hints)
  {
  	struct addrinfo *res, *res0;
@@ -100,7 +100,7 @@ index c8f1cdd9f75..7369ed85619 100644
  
  	/* Allow nodename to be null. */
  	hints.ai_flags |= AI_PASSIVE;
-@@ -1056,9 +1074,11 @@ local_listen(const char *host, const char *port, struct addrinfo hints)
+@@ -1052,9 +1070,11 @@ local_listen(const char *host, const char *port, struct addrinfo hints)
  		    res->ai_protocol)) == -1)
  			continue;
  
@@ -112,7 +112,7 @@ index c8f1cdd9f75..7369ed85619 100644
  
  		set_common_sockopts(s, res->ai_family);
  
-@@ -1557,11 +1577,13 @@ set_common_sockopts(int s, int af)
+@@ -1559,11 +1579,13 @@ set_common_sockopts(int s, int af)
  {
  	int x = 1;
  
@@ -126,7 +126,7 @@ index c8f1cdd9f75..7369ed85619 100644
  	if (Dflag) {
  		if (setsockopt(s, SOL_SOCKET, SO_DEBUG,
  		    &x, sizeof(x)) == -1)
-@@ -1572,9 +1594,16 @@ set_common_sockopts(int s, int af)
+@@ -1574,9 +1596,16 @@ set_common_sockopts(int s, int af)
  		    IP_TOS, &Tflag, sizeof(Tflag)) == -1)
  			err(1, "set IP ToS");
  
@@ -143,7 +143,7 @@ index c8f1cdd9f75..7369ed85619 100644
  	}
  	if (Iflag) {
  		if (setsockopt(s, SOL_SOCKET, SO_RCVBUF,
-@@ -1598,13 +1627,17 @@ set_common_sockopts(int s, int af)
+@@ -1600,13 +1629,17 @@ set_common_sockopts(int s, int af)
  	}
  
  	if (minttl != -1) {
@@ -162,7 +162,7 @@ index c8f1cdd9f75..7369ed85619 100644
  	}
  }
  
-@@ -1829,14 +1862,22 @@ help(void)
+@@ -1831,14 +1864,22 @@ help(void)
  	\t-P proxyuser\tUsername for proxy authentication\n\
  	\t-p port\t	Specify local port for remote connects\n\
  	\t-R CAfile	CA bundle\n\
@@ -190,5 +190,5 @@ index c8f1cdd9f75..7369ed85619 100644
  	\t-W recvlimit	Terminate after receiving a number of packets\n\
  	\t-w timeout	Timeout for connects and final net reads\n\
 -- 
-2.37.3
+2.49.0
 

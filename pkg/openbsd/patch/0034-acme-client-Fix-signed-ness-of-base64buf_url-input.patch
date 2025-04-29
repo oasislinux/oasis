@@ -1,4 +1,4 @@
-From cc94758cade79724cc820e654ae12bee639c2692 Mon Sep 17 00:00:00 2001
+From 67ffb8812ee7ac5fe23a5149ff643d1f392fb1f5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 20:10:05 -0700
 Subject: [PATCH] acme-client: Fix signed-ness of base64buf_url input
@@ -13,10 +13,10 @@ This make most of the pointer casts unnecessary.
  5 files changed, 18 insertions(+), 14 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index e3a0eb64dec..23d8a1c3a33 100644
+index da3d49107ae..9e97a8bb760 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
-@@ -43,8 +43,9 @@
+@@ -42,8 +42,9 @@
  static char *
  bn2string(const BIGNUM *bn)
  {
@@ -28,7 +28,7 @@ index e3a0eb64dec..23d8a1c3a33 100644
  
  	/* Extract big-endian representation of BIGNUM. */
  
-@@ -52,7 +53,7 @@ bn2string(const BIGNUM *bn)
+@@ -51,7 +52,7 @@ bn2string(const BIGNUM *bn)
  	if ((buf = malloc(len)) == NULL) {
  		warn("malloc");
  		return NULL;
@@ -37,7 +37,7 @@ index e3a0eb64dec..23d8a1c3a33 100644
  		warnx("BN_bn2bin");
  		free(buf);
  		return NULL;
-@@ -168,7 +169,7 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
+@@ -167,7 +168,7 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
  		warnx("EVP_Digest");
  		goto out;
  	}
@@ -46,7 +46,7 @@ index e3a0eb64dec..23d8a1c3a33 100644
  		warnx("base64buf_url");
  		goto out;
  	}
-@@ -282,7 +283,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -281,7 +282,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* Base64-encode the payload. */
  
@@ -55,7 +55,7 @@ index e3a0eb64dec..23d8a1c3a33 100644
  		warnx("base64buf_url");
  		goto out;
  	}
-@@ -325,7 +326,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -324,7 +325,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* The header combined with the nonce, base64. */
  
@@ -64,7 +64,7 @@ index e3a0eb64dec..23d8a1c3a33 100644
  		warnx("base64buf_url");
  		goto out;
  	}
-@@ -364,7 +365,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -363,7 +364,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	switch (EVP_PKEY_base_id(pkey)) {
  	case EVP_PKEY_RSA:
@@ -73,7 +73,7 @@ index e3a0eb64dec..23d8a1c3a33 100644
  			warnx("base64buf_url");
  			goto out;
  		}
-@@ -403,7 +404,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -402,7 +403,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  			goto out;
  		}
  
@@ -96,12 +96,12 @@ index 2b6377f0d81..0d84ad4b458 100644
  	size_t	 i, sz;
  	char	*buf;
 diff --git a/usr.sbin/acme-client/extern.h b/usr.sbin/acme-client/extern.h
-index 32d4b4b3d85..701733df786 100644
+index 915f80e3992..5b0950b0693 100644
 --- a/usr.sbin/acme-client/extern.h
 +++ b/usr.sbin/acme-client/extern.h
-@@ -245,7 +245,7 @@ int		 checkexit_ext(int *, pid_t, enum comp);
+@@ -244,7 +244,7 @@ int		 checkexit_ext(int *, pid_t, enum comp);
+  * Returns a buffer or NULL on allocation error.
   */
- size_t		 base64buf(char *, const char *, size_t);
  size_t		 base64len(size_t);
 -char		*base64buf_url(const char *, size_t);
 +char		*base64buf_url(const unsigned char *, size_t);
@@ -156,5 +156,5 @@ index 0f1bf32678b..58e81233f1a 100644
  			goto out;
  		} else if ((der64 = base64buf_url(der, len)) == NULL) {
 -- 
-2.37.3
+2.49.0
 

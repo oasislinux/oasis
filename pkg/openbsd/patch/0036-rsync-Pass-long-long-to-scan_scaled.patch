@@ -1,4 +1,4 @@
-From 0e9ff28bc2e5bd4828b98b50333d12a6d24486fe Mon Sep 17 00:00:00 2001
+From 0b46c097e66f06fc7e5b4817e6cfdbb145bf4825 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 27 Apr 2022 20:03:45 -0700
 Subject: [PATCH] rsync: Pass long long * to scan_scaled
@@ -9,10 +9,10 @@ off_t might not be long long.
  1 file changed, 5 insertions(+), 2 deletions(-)
 
 diff --git a/usr.bin/rsync/main.c b/usr.bin/rsync/main.c
-index dd175597914..5d7f055a9ae 100644
+index d59848f0214..477adbbba50 100644
 --- a/usr.bin/rsync/main.c
 +++ b/usr.bin/rsync/main.c
-@@ -353,6 +353,7 @@ main(int argc, char *argv[])
+@@ -361,6 +361,7 @@ main(int argc, char *argv[])
  	struct fargs	*fargs;
  	char		**args;
  	const char	*errstr;
@@ -20,7 +20,7 @@ index dd175597914..5d7f055a9ae 100644
  
  	/* Global pledge. */
  
-@@ -488,12 +489,14 @@ basedir:
+@@ -509,12 +510,14 @@ basedir:
  			opts.basedir[basedir_cnt++] = optarg;
  			break;
  		case OP_MAX_SIZE:
@@ -35,8 +35,8 @@ index dd175597914..5d7f055a9ae 100644
  				err(1, "bad min-size");
 +			opts.max_size = size;
  			break;
- 		case OP_VERSION:
- 			fprintf(stderr, "openrsync: protocol version %u\n",
+ 		case 'h':
+ 		default:
 -- 
-2.37.3
+2.49.0
 

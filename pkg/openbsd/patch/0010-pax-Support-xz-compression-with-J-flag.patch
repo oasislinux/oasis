@@ -1,4 +1,4 @@
-From 86ce82bfd12c6db2468e3db4afd843cf081f71b2 Mon Sep 17 00:00:00 2001
+From c0b84520a7c92b67b195c6ec9ed9185438810380 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 3 Dec 2016 23:50:27 -0800
 Subject: [PATCH] pax: Support xz compression with -J flag
@@ -8,10 +8,10 @@ Subject: [PATCH] pax: Support xz compression with -J flag
  1 file changed, 22 insertions(+), 3 deletions(-)
 
 diff --git a/bin/pax/options.c b/bin/pax/options.c
-index 560478f2681..27de25d655b 100644
+index 9dd2ea0ce25..63f17f2c1c7 100644
 --- a/bin/pax/options.c
 +++ b/bin/pax/options.c
-@@ -154,6 +154,7 @@ static int xz_id(char *_blk, int _size);
+@@ -156,6 +156,7 @@ static int xz_id(char *_blk, int _size);
  #define GZIP_CMD	"gzip"		/* command to run as gzip */
  #define COMPRESS_CMD	"compress"	/* command to run as compress */
  #define BZIP2_CMD	"bzip2"		/* command to run as bzip2 */
@@ -19,7 +19,7 @@ index 560478f2681..27de25d655b 100644
  
  /*
   *	Format specific routine table
-@@ -300,7 +301,7 @@ pax_options(int argc, char **argv)
+@@ -312,7 +313,7 @@ pax_options(int argc, char **argv)
  	/*
  	 * process option flags
  	 */
@@ -28,7 +28,7 @@ index 560478f2681..27de25d655b 100644
  	    != -1) {
  		switch (c) {
  		case 'a':
-@@ -556,6 +557,12 @@ pax_options(int argc, char **argv)
+@@ -568,6 +569,12 @@ pax_options(int argc, char **argv)
  			Hflag = 1;
  			flg |= CHF;
  			break;
@@ -41,16 +41,16 @@ index 560478f2681..27de25d655b 100644
  		case 'L':
  			/*
  			 * follow symlinks
-@@ -731,7 +738,7 @@ tar_options(int argc, char **argv)
+@@ -744,7 +751,7 @@ tar_options(int argc, char **argv)
  	 * process option flags
  	 */
  	while ((c = getoldopt(argc, argv,
--	    "b:cef:hjmopqruts:vwxzBC:HI:LNOPXZ014578")) != -1) {
-+	    "b:cef:hjmopqruts:vwxzBC:HI:JLNOPXZ014578")) != -1) {
+-	    "b:cef:hjmopqruts:vwxzBC:F:HI:LNOPXZ014578")) != -1) {
++	    "b:cef:hjmopqruts:vwxzBC:F:HI:JLNOPXZ014578")) != -1) {
  		switch (c) {
  		case 'b':
  			/*
-@@ -880,6 +887,12 @@ tar_options(int argc, char **argv)
+@@ -911,6 +918,12 @@ tar_options(int argc, char **argv)
  			incfiles[nincfiles - 1].file = optarg;
  			incfiles[nincfiles - 1].dir = chdname;
  			break;
@@ -63,7 +63,7 @@ index 560478f2681..27de25d655b 100644
  		case 'L':
  			/*
  			 * follow symlinks
-@@ -1163,7 +1176,7 @@ cpio_options(int argc, char **argv)
+@@ -1194,7 +1207,7 @@ cpio_options(int argc, char **argv)
  	dflag = 1;
  	act = -1;
  	nodirs = 1;
@@ -72,7 +72,7 @@ index 560478f2681..27de25d655b 100644
  		switch (c) {
  			case 'a':
  				/*
-@@ -1347,6 +1360,12 @@ cpio_options(int argc, char **argv)
+@@ -1378,6 +1391,12 @@ cpio_options(int argc, char **argv)
  				(void)fputs("\n\n", stderr);
  				cpio_usage();
  				break;
@@ -86,5 +86,5 @@ index 560478f2681..27de25d655b 100644
  				/*
  				 * follow symbolic links
 -- 
-2.37.3
+2.49.0
 

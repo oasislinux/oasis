@@ -1,4 +1,4 @@
-From f855b534ca2c34c3691a0c89d1be482a33a3610c Mon Sep 17 00:00:00 2001
+From e62d415fb66744cac915dc1873e09774a705d536 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 4 Jun 2020 21:36:11 -0700
 Subject: [PATCH] pax: Fix some incorrect format specifiers
@@ -9,7 +9,7 @@ Subject: [PATCH] pax: Fix some incorrect format specifiers
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/bin/pax/cpio.c b/bin/pax/cpio.c
-index 3832b1e87aa..769a9dfb990 100644
+index fbcf032e091..1242ad0d8a7 100644
 --- a/bin/pax/cpio.c
 +++ b/bin/pax/cpio.c
 @@ -214,7 +214,7 @@ rd_ln_nm(ARCHD *arcn)
@@ -22,19 +22,19 @@ index 3832b1e87aa..769a9dfb990 100644
  		return(-1);
  	}
 diff --git a/bin/pax/gen_subs.c b/bin/pax/gen_subs.c
-index 405dd2c24ed..7eb82007e3b 100644
+index 928cfcd3657..897a688327e 100644
 --- a/bin/pax/gen_subs.c
 +++ b/bin/pax/gen_subs.c
-@@ -109,7 +109,7 @@ ls_list(ARCHD *arcn, time_t now, FILE *fp)
- 	if (strftime(f_date, sizeof(f_date), TIMEFMT(sbp->st_mtime, now),
- 	    localtime(&(sbp->st_mtime))) == 0)
+@@ -112,7 +112,7 @@ ls_list(ARCHD *arcn, time_t now, FILE *fp)
+ 	else if (strftime(f_date, sizeof(f_date), TIMEFMT(sbp->st_mtime, now),
+ 	    tm) == 0)
  		f_date[0] = '\0';
 -	(void)fprintf(fp, "%s%2u %-*.*s %-*.*s ", f_mode, sbp->st_nlink,
 +	(void)fprintf(fp, "%s%2u %-*.*s %-*.*s ", f_mode, (unsigned)sbp->st_nlink,
  		NAME_WIDTH, UT_NAMESIZE, user_from_uid(sbp->st_uid, 0),
  		NAME_WIDTH, UT_NAMESIZE, group_from_gid(sbp->st_gid, 0));
  
-@@ -121,7 +121,7 @@ ls_list(ARCHD *arcn, time_t now, FILE *fp)
+@@ -124,7 +124,7 @@ ls_list(ARCHD *arcn, time_t now, FILE *fp)
  		    (unsigned long)MAJOR(sbp->st_rdev),
  		    (unsigned long)MINOR(sbp->st_rdev));
  	else {
@@ -44,5 +44,5 @@ index 405dd2c24ed..7eb82007e3b 100644
  
  	/*
 -- 
-2.27.0
+2.49.0
 

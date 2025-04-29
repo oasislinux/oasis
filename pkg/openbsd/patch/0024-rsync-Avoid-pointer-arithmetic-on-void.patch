@@ -1,4 +1,4 @@
-From b93dee95670eccc6a5c34f1f8a3b828998d0da7b Mon Sep 17 00:00:00 2001
+From 3823d88a12d7c95de2d4b68796b5faa7f550caed Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 Jun 2019 20:06:13 -0700
 Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
@@ -11,10 +11,10 @@ Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
  4 files changed, 14 insertions(+), 13 deletions(-)
 
 diff --git a/usr.bin/rsync/blocks.c b/usr.bin/rsync/blocks.c
-index 56790729f27..906733c968e 100644
+index d1d9b19c31e..8f4bcb532e1 100644
 --- a/usr.bin/rsync/blocks.c
 +++ b/usr.bin/rsync/blocks.c
-@@ -157,7 +157,7 @@ blk_find(struct sess *sess, struct blkstat *st,
+@@ -163,7 +163,7 @@ blk_find(struct sess *sess, struct blkstat *st,
  	if (!recomp) {
  		fhash = (st->s1 & 0xFFFF) | (st->s2 << 16);
  	} else {
@@ -23,7 +23,7 @@ index 56790729f27..906733c968e 100644
  		st->s1 = fhash & 0xFFFF;
  		st->s2 = fhash >> 16;
  	}
-@@ -170,7 +170,7 @@ blk_find(struct sess *sess, struct blkstat *st,
+@@ -176,7 +176,7 @@ blk_find(struct sess *sess, struct blkstat *st,
  	if (st->hint < blks->blksz &&
  	    fhash == blks->blks[st->hint].chksum_short &&
  	    (size_t)osz == blks->blks[st->hint].len) {
@@ -32,7 +32,7 @@ index 56790729f27..906733c968e 100644
  		have_md = 1;
  		if (memcmp(md, blks->blks[st->hint].chksum_long, blks->csum) == 0) {
  			LOG4("%s: found matching hinted match: "
-@@ -203,7 +203,7 @@ blk_find(struct sess *sess, struct blkstat *st,
+@@ -209,7 +209,7 @@ blk_find(struct sess *sess, struct blkstat *st,
  		    (intmax_t)ent->blk->offs, ent->blk->len);
  
  		if (have_md == 0) {
@@ -41,7 +41,7 @@ index 56790729f27..906733c968e 100644
  			have_md = 1;
  		}
  
-@@ -221,7 +221,7 @@ blk_find(struct sess *sess, struct blkstat *st,
+@@ -227,7 +227,7 @@ blk_find(struct sess *sess, struct blkstat *st,
  	 * block in the sequence.
  	 */
  
@@ -122,7 +122,7 @@ index dc224ae8aed..fcf9e92dbaa 100644
  }
  
 diff --git a/usr.bin/rsync/sender.c b/usr.bin/rsync/sender.c
-index e2999aa2589..9dd008def01 100644
+index c54fbc2dae0..6469e7f27e5 100644
 --- a/usr.bin/rsync/sender.c
 +++ b/usr.bin/rsync/sender.c
 @@ -128,7 +128,7 @@ send_up_fsm(struct sess *sess, size_t *phase,
@@ -134,7 +134,7 @@ index e2999aa2589..9dd008def01 100644
  
  		up->stat.curpos += sz;
  		if (up->stat.curpos == up->stat.curlen)
-@@ -557,7 +557,8 @@ rsync_sender(struct sess *sess, int fdin,
+@@ -561,7 +561,8 @@ rsync_sender(struct sess *sess, int fdin,
  		if ((pfd[1].revents & POLLOUT) && wbufsz > 0) {
  			assert(pfd[2].fd == -1);
  			assert(wbufsz - wbufpos);
@@ -145,5 +145,5 @@ index e2999aa2589..9dd008def01 100644
  				ERR("write");
  				goto out;
 -- 
-2.37.3
+2.49.0
 

@@ -1,4 +1,4 @@
-From 0a32d4f555441c1928547f8f08a6373a6c9d8bf1 Mon Sep 17 00:00:00 2001
+From e2bc701601abc23299d9a694cb3173bdb44fff83 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 4 Jun 2020 21:36:24 -0700
 Subject: [PATCH] rsync: Fix some incorrect format specifiers
@@ -9,10 +9,10 @@ Subject: [PATCH] rsync: Fix some incorrect format specifiers
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/usr.bin/rsync/fargs.c b/usr.bin/rsync/fargs.c
-index 7ccb5bff7d2..ef1aaf37c87 100644
+index cbc8537f38c..0b1c255550d 100644
 --- a/usr.bin/rsync/fargs.c
 +++ b/usr.bin/rsync/fargs.c
-@@ -132,9 +132,9 @@ fargs_cmdline(struct sess *sess, const struct fargs *f, size_t *skip)
+@@ -134,9 +134,9 @@ fargs_cmdline(struct sess *sess, const struct fargs *f, size_t *skip)
  		/* --devices is sent as -D --no-specials */
  		addargs(&args, "--no-specials");
  	if (sess->opts->max_size >= 0)
@@ -22,13 +22,13 @@ index 7ccb5bff7d2..ef1aaf37c87 100644
 -		addargs(&args, "--min-size=%lld", sess->opts->min_size);
 +		addargs(&args, "--min-size=%jd", (intmax_t)sess->opts->min_size);
  
- 	/* only add --compare-dest, etc if this is the sender */
- 	if (sess->opts->alt_base_mode != 0 &&
+ 	/* extra options for the receiver (local is sender) */
+ 	if (f->mode == FARGS_SENDER) {
 diff --git a/usr.bin/rsync/uploader.c b/usr.bin/rsync/uploader.c
-index 678b6c96218..951a5ee4133 100644
+index 6cb6d054da7..09fedfaadbc 100644
 --- a/usr.bin/rsync/uploader.c
 +++ b/usr.bin/rsync/uploader.c
-@@ -1010,7 +1010,7 @@ rsync_uploader(struct upload *u, int *fileinfd,
+@@ -1020,7 +1020,7 @@ rsync_uploader(struct upload *u, int *fileinfd,
  			init_blk(&blk.blks[i], &blk, offs, i, mbuf, sess);
  			offs += blk.len;
  			LOG3(
@@ -38,5 +38,5 @@ index 678b6c96218..951a5ee4133 100644
  			i++;
  		} while (i < blk.blksz);
 -- 
-2.35.1
+2.49.0
 

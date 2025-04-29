@@ -1,4 +1,4 @@
-From 8fa1e97f6927bf1afddb5923fff3d29c3389817d Mon Sep 17 00:00:00 2001
+From cca6c84b472255c4d015d7d97225791796f61392 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -63,7 +63,7 @@ index 25827cc7104..3542680faf5 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index 8b684d6006c..27d7b01014e 100644
+index 3999b2e2f64..32532359267 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -20,8 +20,6 @@
@@ -99,7 +99,7 @@ index 8b684d6006c..27d7b01014e 100644
  	    " command [arg ...]\n");
  	exit(1);
  }
-@@ -200,16 +207,28 @@ checkconfig(const char *confpath, int argc, char **argv,
+@@ -203,16 +210,28 @@ checkconfig(const char *confpath, int argc, char **argv,
  }
  
  static int
@@ -135,7 +135,7 @@ index 8b684d6006c..27d7b01014e 100644
  	if (!challenge) {
  		char host[HOST_NAME_MAX + 1];
  
-@@ -222,14 +241,12 @@ authuser_checkpass(char *myname, char *login_style)
+@@ -225,14 +244,12 @@ authuser_checkpass(char *myname, char *login_style)
  	response = readpassphrase(challenge, rbuf, sizeof(rbuf),
  	    RPP_REQUIRE_TTY);
  	if (response == NULL && errno == ENOTTY) {
@@ -153,7 +153,7 @@ index 8b684d6006c..27d7b01014e 100644
  		warnx("Authentication failed");
  		return AUTH_FAILED;
  	}
-@@ -238,79 +255,36 @@ authuser_checkpass(char *myname, char *login_style)
+@@ -241,79 +258,36 @@ authuser_checkpass(char *myname, char *login_style)
  }
  
  static void
@@ -241,7 +241,7 @@ index 8b684d6006c..27d7b01014e 100644
  	struct passwd mypwstore, targpwstore;
  	struct passwd *mypw, *targpw;
  	const struct rule *rule;
-@@ -323,28 +297,20 @@ main(int argc, char **argv)
+@@ -326,28 +300,20 @@ main(int argc, char **argv)
  	int nflag = 0;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
@@ -273,10 +273,10 @@ index 8b684d6006c..27d7b01014e 100644
  		case 'u':
  			if (parseuid(optarg, &target) != 0)
  				errx(1, "unknown user");
-@@ -414,50 +380,30 @@ main(int argc, char **argv)
- 	cmd = argv[0];
- 	if (!permit(uid, groups, ngroups, &rule, target, cmd,
- 	    (const char **)argv + 1)) {
+@@ -418,50 +384,30 @@ main(int argc, char **argv)
+ 	rv = permit(uid, groups, ngroups, &rule, target, cmd,
+ 	    (const char **)argv + 1);
+ 	if (rv != 0) {
 -		syslog(LOG_AUTHPRIV | LOG_NOTICE,
 -		    "command not permitted for %s: %s", mypw->pw_name, cmdline);
 -		errc(1, EPERM, NULL);
@@ -334,7 +334,7 @@ index 8b684d6006c..27d7b01014e 100644
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
-@@ -471,23 +417,17 @@ main(int argc, char **argv)
+@@ -475,23 +421,17 @@ main(int argc, char **argv)
  		err(1, "pledge");
  
  	if (!(rule->options & NOLOG)) {
@@ -360,7 +360,7 @@ index 8b684d6006c..27d7b01014e 100644
  		errx(1, "%s: command not found", cmd);
  	err(1, "%s", cmd);
 diff --git a/usr.bin/doas/doas.h b/usr.bin/doas/doas.h
-index b98fe353b18..6567625c471 100644
+index ce6a03618ac..363e2626c23 100644
 --- a/usr.bin/doas/doas.h
 +++ b/usr.bin/doas/doas.h
 @@ -29,13 +29,17 @@ extern struct rule **rules;
@@ -379,7 +379,7 @@ index b98fe353b18..6567625c471 100644
 +int setpersist(int fd);
 +int clearpersist(void);
 +
- #define PERMIT	1
+ #define PERMIT	-1
  #define DENY	2
  
 diff --git a/usr.bin/doas/env.c b/usr.bin/doas/env.c
@@ -577,5 +577,5 @@ index 00000000000..4ad1bf1efbf
 +	return 0;
 +}
 -- 
-2.37.3
+2.49.0
 

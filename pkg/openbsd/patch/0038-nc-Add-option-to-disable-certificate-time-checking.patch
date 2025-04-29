@@ -1,4 +1,4 @@
-From 506272f64ba252c562e3036d14713de780817d1a Mon Sep 17 00:00:00 2001
+From 5e993fe93c590d60b05948e22b51dfc34c3eac4b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 20 May 2021 13:44:35 -0700
 Subject: [PATCH] nc: Add option to disable certificate time checking
@@ -9,7 +9,7 @@ Subject: [PATCH] nc: Add option to disable certificate time checking
  2 files changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/usr.bin/nc/nc.1 b/usr.bin/nc/nc.1
-index 0ef318e0e6f..5858ef763dc 100644
+index 76b6dc018ea..9e13b84acf7 100644
 --- a/usr.bin/nc/nc.1
 +++ b/usr.bin/nc/nc.1
 @@ -249,6 +249,8 @@ may be one of:
@@ -22,7 +22,7 @@ index 0ef318e0e6f..5858ef763dc 100644
  which requires a client certificate on incoming connections; or
  .Cm muststaple ,
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index 7369ed85619..29d2cb3bf29 100644
+index b5129c2204d..d1ed530eb2c 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
 @@ -70,8 +70,9 @@
@@ -46,7 +46,7 @@ index 7369ed85619..29d2cb3bf29 100644
  		if (TLSopt & TLS_NOVERIFY) {
  			if (tls_expecthash != NULL)
  				errx(1, "-H and -T noverify may not be used "
-@@ -1705,6 +1708,7 @@ process_tls_opt(char *s, int *flags)
+@@ -1707,6 +1710,7 @@ process_tls_opt(char *s, int *flags)
  		{ "muststaple",		TLS_MUSTSTAPLE,		NULL },
  		{ "noverify",		TLS_NOVERIFY,		NULL },
  		{ "noname",		TLS_NONAME,		NULL },
@@ -55,5 +55,5 @@ index 7369ed85619..29d2cb3bf29 100644
  		{ NULL,			-1,			NULL },
  	};
 -- 
-2.37.3
+2.49.0
 
