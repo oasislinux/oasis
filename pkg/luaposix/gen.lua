@@ -65,3 +65,5 @@ for _, f in ipairs(files) do
 	file('share/lua/5.4/posix/'..f, '644', '$srcdir/lib/posix/'..f)
 end
 file('share/lua/5.4/posix/version.lua', '644', '$outdir/version.lua')
+
+fetch 'git'
