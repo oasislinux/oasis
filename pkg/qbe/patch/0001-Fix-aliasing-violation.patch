@@ -1,0 +1,50 @@
+From 70d0e4d5052565eb7124d00542249c0059c26378 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Mon, 28 Apr 2025 22:44:49 -0700
+Subject: [PATCH] Fix aliasing violation
+
+---
+ emit.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/emit.c b/emit.c
+index 04837a5..19fd56d 100644
+--- a/emit.c
++++ b/emit.c
+@@ -155,7 +155,7 @@ emitfin(FILE *f, char *sec[3])
+ {
+ 	Asmbits *b;
+ 	int lg, i;
+-	union { int32_t i; float f; } u;
++	union { int32_t i32; float f32; int64_t i64; double f64; } u;
+ 
+ 	if (!stash)
+ 		return;
+@@ -174,18 +174,18 @@ emitfin(FILE *f, char *sec[3])
+ 						"\n\t.quad %"PRId64
+ 						"\n\t.quad 0\n\n",
+ 						(int64_t)b->n);
+-				else if (lg == 3)
++				else if (lg == 3) {
++					u.i64 = b->n;
+ 					fprintf(f,
+ 						"\n\t.quad %"PRId64
+ 						" /* %f */\n\n",
+-						(int64_t)b->n,
+-						*(double *)&b->n);
+-				else if (lg == 2) {
+-					u.i = b->n;
++						u.i64, u.f64);
++				} else if (lg == 2) {
++					u.i32 = b->n;
+ 					fprintf(f,
+ 						"\n\t.int %"PRId32
+ 						" /* %f */\n\n",
+-						u.i, (double)u.f);
++						u.i32, u.f32);
+ 				}
+ 			}
+ 		}
+-- 
+2.45.2
+
