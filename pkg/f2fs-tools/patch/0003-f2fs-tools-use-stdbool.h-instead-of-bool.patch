@@ -1,0 +1,39 @@
+From 0ebcbf62ffd89f4d05c06290055f5a423017e151 Mon Sep 17 00:00:00 2001
+From: Jaegeuk Kim <jaegeuk@kernel.org>
+Date: Thu, 24 Oct 2024 20:33:38 +0000
+Subject: [PATCH] f2fs-tools: use stdbool.h instead of bool
+
+The existing bool definition is broken for c23, where bool is now a keyword.
+
+Signed-off-by: Elliott Hughes <enh@google.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ include/f2fs_fs.h | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+index 4d99fb7..5b3760b 100644
+--- a/include/f2fs_fs.h
++++ b/include/f2fs_fs.h
+@@ -17,6 +17,8 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <stdbool.h>
++
+ #ifdef HAVE_CONFIG_H
+ #include <config.h>
+ #endif
+@@ -74,9 +76,6 @@ typedef u_int16_t	u16;
+ typedef u_int8_t	u8;
+ typedef u32		block_t;
+ typedef u32		nid_t;
+-#ifndef bool
+-typedef u8		bool;
+-#endif
+ typedef unsigned long	pgoff_t;
+ typedef unsigned short	umode_t;
+ 
+-- 
+2.49.0
+
