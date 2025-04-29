@@ -1,8 +1,13 @@
 cflags{
 	'-std=c99',
 	'-D _GNU_SOURCE',
-	'-I $srcdir/ext/include',
 	'-include $dir/config.h',
+	'-I $srcdir/ext/include',
+	'-isystem $builddir/pkg/lua/include',
+}
+
+pkg.deps = {
+	'pkg/lua/headers',
 }
 
 build('sed', '$outdir/version.lua', '$srcdir/lib/posix/version.lua.in', {
