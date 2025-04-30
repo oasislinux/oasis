@@ -17,9 +17,9 @@ fi
 read -r _ archive <sha256
 sh "$OLDPWD/scripts/extract.sh" "$archive" -s ',^[^/]*,src,' \
 	'linux-*/Makefile' \
-	'linux-*/arch/*/include/uapi' \
-	'linux-*/arch/*/syscalls' \
-	'linux-*/include/uapi' \
+	'linux-*/arch/*/include/uapi/' \
+	'linux-*/arch/*/entry/syscalls/' \
+	'linux-*/include/uapi/' \
 	'linux-*/scripts/unifdef.c'
 
 if [ -d patch ] ; then
