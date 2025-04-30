@@ -1,13 +1,31 @@
+local arch = ({
+	aarch64='aarch64',
+	x86_64='x86_64',
+})[config.target.platform:match('[^-]*')]
+-- NOTE: strace is architecture specific, skip generation on unsupported archs
+if not arch then return end
+
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-D IN_STRACE',
 	-- it is important that the arch-specific directory is searched first
-	'-I $srcdir/src/linux/x86_64',
+	'-I $srcdir/src/linux/'..arch,
 	'-I $srcdir/src/linux/generic',
 	'-I $srcdir/src',
 	'-I $outdir',
 	'-isystem $builddir/pkg/linux-headers/include',
 }
+
+local arch_cflags = {}
+arch_cflags['aarch64'] = {'-D AARCH64=1'}
+arch_cflags['x86_64']  = {
+	'-D X86_64=1',
+	'-D HAVE_STRUCT_KVM_CPUID2=1',
+	'-D HAVE_STRUCT_USER_DESC=1',
+	'-D HAVE_STRUCT_USER_DESC_LM=1',
+	'-D HAVE_STRUCT___OLD_KERNEL_STAT=1',
+}
+cflags(arch_cflags[arch])
 
 build('cat', '$outdir/config.h', {
 	'$builddir/probe/HAVE___BUILTIN_POPCOUNT',
@@ -22,16 +40,21 @@ build('sed', '$outdir/ioctl_iocdef.h', '$outdir/ioctl_iocdef.i', {
 sub('tools.ninja', function()
 	toolchain(config.host)
 	cflags{
-		'-D X86_64=1',
-		'-I $srcdir/src/linux/x86_64',
+		'-I $srcdir/src/linux/'..arch,
 		'-I $srcdir/src/linux',
 		'-I $outdir',
 	}
+	cflags(arch_cflags[arch])
 
-	for i = 0, 2 do
+	local arch_h_count = {
+		aarch64=1,
+		x86_64=2,
+	}
+
+	for i = 0, arch_h_count[arch] do
 		build('cat', '$outdir/ioctls_all'..i..'.h', {
-			'$srcdir/src/linux/x86_64/ioctls_inc'..i..'.h',
-			'$srcdir/src/linux/x86_64/ioctls_arch'..i..'.h',
+			'$srcdir/src/linux/'..arch..'/ioctls_inc'..i..'.h',
+			'$srcdir/src/linux/'..arch..'/ioctls_arch'..i..'.h',
 		})
 		build('cc', '$outdir/ioctlsort'..i..'.c.o', {
 			'$srcdir/src/ioctlsort.c',
