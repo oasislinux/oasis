@@ -88,4 +88,7 @@ return {
 		'velox',
 		'xkeyboard-config',
 	},
+	experimental={
+		'libarchive',
+	},
 }
