@@ -130,7 +130,7 @@ file('bin/sshd', '755', '$outdir/sshd')
 lib('sshd-common.a', [[
 	auth-rhosts.c auth-passwd.c
 	audit.c audit-bsm.c audit-linux.c platform.c
-	sshpty.c.o sshlogin.c.o servconf.c.o serverloop.c
+	sshpty.c.o sshlogin.c servconf.c.o serverloop.c
 	auth.c auth2.c auth2-methods.c.o auth-options.c session.c
 	auth2-chall.c groupaccess.c.o
 	auth-bsdauth.c auth2-hostbased.c auth2-kbdint.c
