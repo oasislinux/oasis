@@ -397,9 +397,9 @@ function fetch(method)
 		script = '$dir/fetch.sh'
 	else
 		script = '$basedir/scripts/fetch-'..method..'.sh'
-		if method == 'curl' then
-			table.insert(deps, '$builddir/pkg/pax/host/pax')
-		end
+	end
+	if method ~= 'git' then
+		table.insert(deps, '$builddir/pkg/pax/host/pax')
 	end
 	build('fetch', '$dir/fetch', deps, {script=script})
 	if basedir ~= '.' then
