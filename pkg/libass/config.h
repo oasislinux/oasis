@@ -3,7 +3,6 @@
 /* #undef CONFIG_DIRECTWRITE */
 /* #undef CONFIG_FONTCONFIG */
 #define CONFIG_FREETYPE 1
-#define CONFIG_FRIBIDI 1
 /* #undef CONFIG_HARFBUZZ */
 #define CONFIG_ICONV 1
 /* #undef CONFIG_LARGE_TILES */
