@@ -49,8 +49,8 @@ rule('convert_font', '$outdir/convert_font $in $out 2>/dev/null')
 build('convert_font', '$outdir/cursor/cursor_data.h', {'$srcdir/cursor/cursor.pcf', '|', '$outdir/convert_font'})
 
 pkg.deps = {
+	'$gendir/headers',
 	'$outdir/wayland-drm-server-protocol.h',
-	'$outdir/include/swc-server-protocol.h',
 	'$outdir/cursor/cursor_data.h',
 	'pkg/fontconfig/headers',
 	'pkg/libdrm/headers',
