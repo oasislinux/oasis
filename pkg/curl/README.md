@@ -8,6 +8,8 @@ Generated with
 		--disable-smb \
 		--with-ca-bundle=/etc/ssl/cert.pem \
 		--with-bearssl \
+		--without-libpsl \
+		--enable-docs \
 		CPPFLAGS='-I/src/oasis/out/pkg/bearssl/include -I/src/oasis/out/pkg/zlib/include' \
 		LDFLAGS='-L/src/oasis/out/pkg/bearssl -L/src/oasis/out/pkg/zlib'
 
