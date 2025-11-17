@@ -8,6 +8,7 @@ packages:
 - ninja
 - tzdata-utils
 - wayland-dev
+- xz
 sources:
 - https://github.com/michaelforney/oasis
 secrets:
