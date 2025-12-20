@@ -1,4 +1,4 @@
-From 1b166dc9a491440db655fa3c7b49df329683ef45 Mon Sep 17 00:00:00 2001
+From 511e4a7bcac247315393b0175e3bc5c93a980f8e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -9,10 +9,10 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  2 files changed, 2 insertions(+), 187 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index fad323c90..5e5c9df81 100644
+index 23f90d610..c3cbee897 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
-@@ -416,8 +416,6 @@ def decrypt(self, encrypted_value):
+@@ -430,8 +430,6 @@ def decrypt(self, encrypted_value):
  def get_cookie_decryptor(browser_root, browser_keyring_name, logger, *, keyring=None, meta_version=None):
      if sys.platform == 'darwin':
          return MacChromeCookieDecryptor(browser_keyring_name, logger, meta_version=meta_version)
@@ -21,7 +21,7 @@ index fad323c90..5e5c9df81 100644
      return LinuxChromeCookieDecryptor(browser_keyring_name, logger, keyring=keyring, meta_version=meta_version)
  
  
-@@ -511,46 +509,6 @@ def decrypt(self, encrypted_value):
+@@ -525,46 +523,6 @@ def decrypt(self, encrypted_value):
              return encrypted_value
  
  
@@ -66,9 +66,9 @@ index fad323c90..5e5c9df81 100644
 -
 -
  def _extract_safari_cookies(profile, logger):
-     if sys.platform != 'darwin':
+     if sys.platform not in ('darwin', 'ios'):
          raise ValueError(f'unsupported platform: {sys.platform}')
-@@ -997,33 +955,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
+@@ -1010,33 +968,6 @@ def _get_mac_keyring_password(browser_keyring_name, logger):
          return None
  
  
@@ -102,7 +102,7 @@ index fad323c90..5e5c9df81 100644
  def pbkdf2_sha1(password, salt, iterations, key_length):
      return hashlib.pbkdf2_hmac('sha1', password, salt, iterations, key_length)
  
-@@ -1057,41 +988,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger, hash_pr
+@@ -1070,41 +1001,6 @@ def _decrypt_aes_gcm(ciphertext, key, nonce, authentication_tag, logger, hash_pr
          return None
  
  
@@ -145,10 +145,10 @@ index fad323c90..5e5c9df81 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils/_utils.py b/yt_dlp/utils/_utils.py
-index 699bf1e7f..710668036 100644
+index b0ca95024..6ef5bbb44 100644
 --- a/yt_dlp/utils/_utils.py
 +++ b/yt_dlp/utils/_utils.py
-@@ -1506,64 +1506,7 @@ def __init__(self):
+@@ -1518,64 +1518,7 @@ def __init__(self):
          super().__init__(self.msg)
  
  
@@ -214,7 +214,7 @@ index 699bf1e7f..710668036 100644
      try:
          import fcntl
  
-@@ -1912,31 +1855,7 @@ def fix_xml_ampersands(xml_str):
+@@ -1929,31 +1872,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
@@ -248,5 +248,5 @@ index 699bf1e7f..710668036 100644
  
  def remove_start(s, start):
 -- 
-2.45.2
+2.49.0
 
