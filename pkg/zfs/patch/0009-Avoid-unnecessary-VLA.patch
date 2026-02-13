@@ -1,4 +1,4 @@
-From fac76bb5a8d1b03db9aa68c3bd72999ce76b8ca5 Mon Sep 17 00:00:00 2001
+From a7e3c7c35da68b5ad709858b6da1362d4ab92439 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 21 Jan 2023 17:41:15 -0800
 Subject: [PATCH] Avoid unnecessary VLA
@@ -8,10 +8,10 @@ Subject: [PATCH] Avoid unnecessary VLA
  1 file changed, 8 insertions(+), 9 deletions(-)
 
 diff --git a/cmd/zpool/zpool_vdev.c b/cmd/zpool/zpool_vdev.c
-index fbd4b81df..a45ab7af5 100644
+index d1e9ef76d..cc31634fa 100644
 --- a/cmd/zpool/zpool_vdev.c
 +++ b/cmd/zpool/zpool_vdev.c
-@@ -910,8 +910,7 @@ check_replication(nvlist_t *config, nvlist_t *newroot)
+@@ -902,8 +902,7 @@ check_replication(nvlist_t *config, nvlist_t *newroot)
  static int
  zero_label(const char *path)
  {
@@ -21,7 +21,7 @@ index fbd4b81df..a45ab7af5 100644
  	int err, fd;
  
  	if ((fd = open(path, O_WRONLY|O_EXCL)) < 0) {
-@@ -920,20 +919,20 @@ zero_label(const char *path)
+@@ -912,20 +911,20 @@ zero_label(const char *path)
  		return (-1);
  	}
  
@@ -50,5 +50,5 @@ index fbd4b81df..a45ab7af5 100644
  	}
  
 -- 
-2.37.3
+2.49.0
 

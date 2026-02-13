@@ -1,4 +1,4 @@
-From 2c79a37719c4f115ad718adae6856f903f5a1e7b Mon Sep 17 00:00:00 2001
+From e00198f10a46b0376c26d4feb67b667b27570ce5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 17 Jan 2023 13:07:11 -0800
 Subject: [PATCH] Use __asm__ instead of asm to compile with -std=c99
@@ -9,10 +9,10 @@ Subject: [PATCH] Use __asm__ instead of asm to compile with -std=c99
  2 files changed, 65 insertions(+), 65 deletions(-)
 
 diff --git a/module/zcommon/zfs_fletcher_intel.c b/module/zcommon/zfs_fletcher_intel.c
-index 34590a155..9213d083c 100644
+index 570076ba2..96b82992e 100644
 --- a/module/zcommon/zfs_fletcher_intel.c
 +++ b/module/zcommon/zfs_fletcher_intel.c
-@@ -83,18 +83,18 @@ fletcher_4_avx2_fini(fletcher_4_ctx_t *ctx, zio_cksum_t *zcp)
+@@ -84,18 +84,18 @@ fletcher_4_avx2_fini(fletcher_4_ctx_t *ctx, zio_cksum_t *zcp)
  
  #define	FLETCHER_4_AVX2_RESTORE_CTX(ctx)				\
  {									\
@@ -39,7 +39,7 @@ index 34590a155..9213d083c 100644
  }
  
  
-@@ -107,15 +107,15 @@ fletcher_4_avx2_native(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+@@ -108,15 +108,15 @@ fletcher_4_avx2_native(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
  	FLETCHER_4_AVX2_RESTORE_CTX(ctx);
  
  	do {
@@ -61,7 +61,7 @@ index 34590a155..9213d083c 100644
  }
  
  static void
-@@ -130,20 +130,20 @@ fletcher_4_avx2_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+@@ -131,20 +131,20 @@ fletcher_4_avx2_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
  
  	FLETCHER_4_AVX2_RESTORE_CTX(ctx);
  
@@ -91,10 +91,10 @@ index 34590a155..9213d083c 100644
  
  static boolean_t fletcher_4_avx2_valid(void)
 diff --git a/module/zcommon/zfs_fletcher_sse.c b/module/zcommon/zfs_fletcher_sse.c
-index 8ab9b9acb..b942de4a2 100644
+index 96aaf1622..fb0599a12 100644
 --- a/module/zcommon/zfs_fletcher_sse.c
 +++ b/module/zcommon/zfs_fletcher_sse.c
-@@ -82,18 +82,18 @@ fletcher_4_sse2_fini(fletcher_4_ctx_t *ctx, zio_cksum_t *zcp)
+@@ -83,18 +83,18 @@ fletcher_4_sse2_fini(fletcher_4_ctx_t *ctx, zio_cksum_t *zcp)
  
  #define	FLETCHER_4_SSE_RESTORE_CTX(ctx)					\
  {									\
@@ -121,7 +121,7 @@ index 8ab9b9acb..b942de4a2 100644
  }
  
  static void
-@@ -104,21 +104,21 @@ fletcher_4_sse2_native(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+@@ -105,21 +105,21 @@ fletcher_4_sse2_native(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
  
  	FLETCHER_4_SSE_RESTORE_CTX(ctx);
  
@@ -156,7 +156,7 @@ index 8ab9b9acb..b942de4a2 100644
  	} while ((ip += 2) < ipend);
  
  	FLETCHER_4_SSE_SAVE_CTX(ctx);
-@@ -135,13 +135,13 @@ fletcher_4_sse2_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+@@ -136,13 +136,13 @@ fletcher_4_sse2_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
  	do {
  		uint32_t scratch1 = BSWAP_32(ip[0]);
  		uint32_t scratch2 = BSWAP_32(ip[1]);
@@ -177,7 +177,7 @@ index 8ab9b9acb..b942de4a2 100644
  	} while ((ip += 2) < ipend);
  
  	FLETCHER_4_SSE_SAVE_CTX(ctx);
-@@ -179,23 +179,23 @@ fletcher_4_ssse3_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
+@@ -180,23 +180,23 @@ fletcher_4_ssse3_byteswap(fletcher_4_ctx_t *ctx, const void *buf, uint64_t size)
  
  	FLETCHER_4_SSE_RESTORE_CTX(ctx);
  
@@ -217,5 +217,5 @@ index 8ab9b9acb..b942de4a2 100644
  
  	FLETCHER_4_SSE_SAVE_CTX(ctx);
 -- 
-2.37.3
+2.49.0
 

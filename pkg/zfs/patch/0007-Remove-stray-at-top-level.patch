@@ -1,4 +1,4 @@
-From 09804181b5df3ffef1bea6869778a5c5949a9992 Mon Sep 17 00:00:00 2001
+From 69cd3c5ced5cf3b1337d62a0cdcff53113dedeb0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 21 Jan 2023 17:17:48 -0800
 Subject: [PATCH] Remove stray ';' at top-level
@@ -11,10 +11,10 @@ Subject: [PATCH] Remove stray ';' at top-level
  4 files changed, 165 insertions(+), 165 deletions(-)
 
 diff --git a/module/avl/avl.c b/module/avl/avl.c
-index 9b74531fa..283c8e297 100644
+index 67cbcd3ad..e908181ff 100644
 --- a/module/avl/avl.c
 +++ b/module/avl/avl.c
-@@ -1032,21 +1032,21 @@ done:
+@@ -1033,21 +1033,21 @@ done:
  	return (AVL_NODE2DATA(node, off));
  }
  
@@ -55,10 +55,10 @@ index 9b74531fa..283c8e297 100644
 +EXPORT_SYMBOL(avl_update_gt)
 +EXPORT_SYMBOL(avl_update)
 diff --git a/module/nvpair/nvpair.c b/module/nvpair/nvpair.c
-index 903487347..56c256826 100644
+index eb8c14b4a..99f94322e 100644
 --- a/module/nvpair/nvpair.c
 +++ b/module/nvpair/nvpair.c
-@@ -3281,13 +3281,13 @@ nvs_xdr_nvp_##type(XDR *xdrs, void *ptr, ...)	\
+@@ -3282,13 +3282,13 @@ nvs_xdr_nvp_##type(XDR *xdrs, void *ptr, ...)	\
  
  #endif
  
@@ -79,8 +79,8 @@ index 903487347..56c256826 100644
  
  /*
   * The format of xdr encoded nvpair is:
-@@ -3680,116 +3680,116 @@ nvs_xdr(nvstream_t *nvs, nvlist_t *nvl, char *buf, size_t *buflen)
- 	return (err);
+@@ -3915,118 +3915,118 @@ nvlist_snprintf(char *buf, size_t size, nvlist_t *list, int indent)
+ 	return (len);
  }
  
 -EXPORT_SYMBOL(nv_alloc_init);
@@ -250,6 +250,8 @@ index 903487347..56c256826 100644
 +EXPORT_SYMBOL(nvlist_lookup_nvpair)
 +EXPORT_SYMBOL(nvlist_exists)
  
+ EXPORT_SYMBOL(nvlist_snprintf);
+ 
  /* processing nvpair */
 -EXPORT_SYMBOL(nvpair_name);
 -EXPORT_SYMBOL(nvpair_type);
@@ -306,10 +308,10 @@ index 903487347..56c256826 100644
 +EXPORT_SYMBOL(nvpair_value_nvlist_array)
 +EXPORT_SYMBOL(nvpair_value_hrtime)
 diff --git a/module/zcommon/zfs_namecheck.c b/module/zcommon/zfs_namecheck.c
-index 273b219a9..41099c7f0 100644
+index deb0547c1..f156de98f 100644
 --- a/module/zcommon/zfs_namecheck.c
 +++ b/module/zcommon/zfs_namecheck.c
-@@ -453,15 +453,15 @@ pool_namecheck(const char *pool, namecheck_err_t *why, char *what)
+@@ -454,15 +454,15 @@ pool_namecheck(const char *pool, namecheck_err_t *why, char *what)
  	return (0);
  }
  
@@ -336,10 +338,10 @@ index 273b219a9..41099c7f0 100644
 -	"Limit to the amount of nesting a path can have. Defaults to 50.");
 +	"Limit to the amount of nesting a path can have. Defaults to 50.")
 diff --git a/module/zcommon/zfs_prop.c b/module/zcommon/zfs_prop.c
-index 40254c8d9..191285825 100644
+index 9190ae036..85ac6f8dd 100644
 --- a/module/zcommon/zfs_prop.c
 +++ b/module/zcommon/zfs_prop.c
-@@ -1110,26 +1110,26 @@ module_exit(zcommon_fini);
+@@ -1133,26 +1133,26 @@ module_exit(zcommon_fini);
  #endif
  
  /* zfs dataset property functions */
@@ -388,5 +390,5 @@ index 40254c8d9..191285825 100644
 +EXPORT_SYMBOL(zfs_prop_valid_for_type)
 +EXPORT_SYMBOL(zfs_prop_written)
 -- 
-2.44.0
+2.49.0
 
