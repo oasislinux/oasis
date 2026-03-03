@@ -1,0 +1,229 @@
+From b5f9694c693d4f3fad53191a9e5d3983255feef6 Mon Sep 17 00:00:00 2001
+From: Yonggang Luo <luoyonggang@gmail.com>
+Date: Tue, 20 Jun 2023 22:37:01 +0800
+Subject: [PATCH] add pthread_mutex_clocklock and pthread_cond_clockdwait
+
+These two functions are already implemented in glibc, android bionic libc, qnx libc
+
+Signed-off-by: Yonggang Luo <luoyonggang@gmail.com>
+---
+ compat/time32/pthread_cond_clockwait_time32.c  |  9 +++++++++
+ compat/time32/pthread_mutex_clocklock_time32.c |  9 +++++++++
+ compat/time32/time32.h                         |  2 ++
+ include/pthread.h                              |  4 ++++
+ src/include/pthread.h                          |  2 ++
+ src/thread/pthread_cond_clockwait.c            |  8 ++++----
+ src/thread/pthread_cond_timedwait.c            |  9 +++++++++
+ src/thread/pthread_mutex_clocklock.c           | 12 ++++++------
+ src/thread/pthread_mutex_timedlock.c           |  8 ++++++++
+ 9 files changed, 53 insertions(+), 10 deletions(-)
+ create mode 100644 compat/time32/pthread_cond_clockwait_time32.c
+ create mode 100644 compat/time32/pthread_mutex_clocklock_time32.c
+ create mode 100644 src/thread/pthread_cond_timedwait.c
+ create mode 100644 src/thread/pthread_mutex_timedlock.c
+
+diff --git a/compat/time32/pthread_cond_clockwait_time32.c b/compat/time32/pthread_cond_clockwait_time32.c
+new file mode 100644
+index 00000000..e6864f08
+--- /dev/null
++++ b/compat/time32/pthread_cond_clockwait_time32.c
+@@ -0,0 +1,9 @@
++#include "time32.h"
++#include <time.h>
++#include <pthread.h>
++
++int __pthread_cond_clockwait_time32(pthread_cond_t *restrict c, pthread_mutex_t *restrict m, clockid_t clock, const struct timespec32 *restrict ts32)
++{
++	return pthread_cond_clockwait(c, m, clock, !ts32 ? 0 : (&(struct timespec){
++		.tv_sec = ts32->tv_sec, .tv_nsec = ts32->tv_nsec}));
++}
+diff --git a/compat/time32/pthread_mutex_clocklock_time32.c b/compat/time32/pthread_mutex_clocklock_time32.c
+new file mode 100644
+index 00000000..d54e85a7
+--- /dev/null
++++ b/compat/time32/pthread_mutex_clocklock_time32.c
+@@ -0,0 +1,9 @@
++#include "time32.h"
++#include <time.h>
++#include <pthread.h>
++
++int __pthread_mutex_clocklock_time32(pthread_mutex_t *restrict m, clockid_t clk, const struct timespec32 *restrict ts32)
++{
++	return pthread_mutex_clocklock(m, clk, !ts32 ? 0 : (&(struct timespec){
++		.tv_sec = ts32->tv_sec, .tv_nsec = ts32->tv_nsec}));
++}
+diff --git a/compat/time32/time32.h b/compat/time32/time32.h
+index fdec17c3..1267f255 100644
+--- a/compat/time32/time32.h
++++ b/compat/time32/time32.h
+@@ -59,7 +59,9 @@ int __mtx_timedlock_time32() __asm__("mtx_timedlock");
+ int __nanosleep_time32() __asm__("nanosleep");
+ int __ppoll_time32() __asm__("ppoll");
+ int __pselect_time32() __asm__("pselect");
++int __pthread_cond_clockwait_time32() __asm__("pthread_cond_clockwait");
+ int __pthread_cond_timedwait_time32() __asm__("pthread_cond_timedwait");
++int __pthread_mutex_clocklock_time32() __asm__("pthread_mutex_clocklock");
+ int __pthread_mutex_timedlock_time32() __asm__("pthread_mutex_timedlock");
+ int __pthread_rwlock_timedrdlock_time32() __asm__("pthread_rwlock_timedrdlock");
+ int __pthread_rwlock_timedwrlock_time32() __asm__("pthread_rwlock_timedwrlock");
+diff --git a/include/pthread.h b/include/pthread.h
+index 89fd9ff7..7fb2d162 100644
+--- a/include/pthread.h
++++ b/include/pthread.h
+@@ -107,6 +107,7 @@ int pthread_mutex_init(pthread_mutex_t *__restrict, const pthread_mutexattr_t *_
+ int pthread_mutex_lock(pthread_mutex_t *);
+ int pthread_mutex_unlock(pthread_mutex_t *);
+ int pthread_mutex_trylock(pthread_mutex_t *);
++int pthread_mutex_clocklock(pthread_mutex_t *__restrict, clockid_t, const struct timespec *__restrict);
+ int pthread_mutex_timedlock(pthread_mutex_t *__restrict, const struct timespec *__restrict);
+ int pthread_mutex_destroy(pthread_mutex_t *);
+ int pthread_mutex_consistent(pthread_mutex_t *);
+@@ -117,6 +118,7 @@ int pthread_mutex_setprioceiling(pthread_mutex_t *__restrict, int, int *__restri
+ int pthread_cond_init(pthread_cond_t *__restrict, const pthread_condattr_t *__restrict);
+ int pthread_cond_destroy(pthread_cond_t *);
+ int pthread_cond_wait(pthread_cond_t *__restrict, pthread_mutex_t *__restrict);
++int pthread_cond_clockwait(pthread_cond_t *__restrict, pthread_mutex_t *__restrict, clockid_t, const struct timespec *__restrict);
+ int pthread_cond_timedwait(pthread_cond_t *__restrict, pthread_mutex_t *__restrict, const struct timespec *__restrict);
+ int pthread_cond_broadcast(pthread_cond_t *);
+ int pthread_cond_signal(pthread_cond_t *);
+@@ -229,7 +231,9 @@ int pthread_timedjoin_np(pthread_t, void **, const struct timespec *);
+ #endif
+ 
+ #if _REDIR_TIME64
++__REDIR(pthread_mutex_clocklock, __pthread_mutex_clocklock_time64);
+ __REDIR(pthread_mutex_timedlock, __pthread_mutex_timedlock_time64);
++__REDIR(pthread_cond_clockwait, __pthread_cond_clockwait_time64);
+ __REDIR(pthread_cond_timedwait, __pthread_cond_timedwait_time64);
+ __REDIR(pthread_rwlock_timedrdlock, __pthread_rwlock_timedrdlock_time64);
+ __REDIR(pthread_rwlock_timedwrlock, __pthread_rwlock_timedwrlock_time64);
+diff --git a/src/include/pthread.h b/src/include/pthread.h
+index 7167d3e1..d7fe7974 100644
+--- a/src/include/pthread.h
++++ b/src/include/pthread.h
+@@ -12,9 +12,11 @@ hidden int __pthread_join(pthread_t, void **);
+ hidden int __pthread_mutex_lock(pthread_mutex_t *);
+ hidden int __pthread_mutex_trylock(pthread_mutex_t *);
+ hidden int __pthread_mutex_trylock_owner(pthread_mutex_t *);
++hidden int __pthread_mutex_clocklock(pthread_mutex_t *restrict, clockid_t, const struct timespec *restrict);
+ hidden int __pthread_mutex_timedlock(pthread_mutex_t *restrict, const struct timespec *restrict);
+ hidden int __pthread_mutex_unlock(pthread_mutex_t *);
+ hidden int __private_cond_signal(pthread_cond_t *, int);
++hidden int __pthread_cond_clockwait(pthread_cond_t *restrict, pthread_mutex_t *restrict, clockid_t, const struct timespec *restrict);
+ hidden int __pthread_cond_timedwait(pthread_cond_t *restrict, pthread_mutex_t *restrict, const struct timespec *restrict);
+ hidden int __pthread_key_create(pthread_key_t *, void (*)(void *));
+ hidden int __pthread_key_delete(pthread_key_t);
+diff --git a/src/thread/pthread_cond_clockwait.c b/src/thread/pthread_cond_clockwait.c
+index c5b35a6c..4d178c27 100644
+--- a/src/thread/pthread_cond_clockwait.c
++++ b/src/thread/pthread_cond_clockwait.c
+@@ -59,10 +59,10 @@ enum {
+ 	LEAVING,
+ };
+ 
+-int __pthread_cond_timedwait(pthread_cond_t *restrict c, pthread_mutex_t *restrict m, const struct timespec *restrict ts)
++int __pthread_cond_clockwait(pthread_cond_t *restrict c, pthread_mutex_t *restrict m, clockid_t clk, const struct timespec *restrict ts)
+ {
+ 	struct waiter node = { 0 };
+-	int e, seq, clock = c->_c_clock, cs, shared=0, oldstate, tmp;
++	int e, seq, cs, shared=0, oldstate, tmp;
+ 	volatile int *fut;
+ 
+ 	if ((m->_m_type&15) && (m->_m_lock&INT_MAX) != __pthread_self()->tid)
+@@ -97,7 +97,7 @@ int __pthread_cond_timedwait(pthread_cond_t *restrict c, pthread_mutex_t *restri
+ 	__pthread_setcancelstate(PTHREAD_CANCEL_MASKED, &cs);
+ 	if (cs == PTHREAD_CANCEL_DISABLE) __pthread_setcancelstate(cs, 0);
+ 
+-	do e = __timedwait_cp(fut, seq, clock, ts, !shared);
++	do e = __timedwait_cp(fut, seq, clk, ts, !shared);
+ 	while (*fut==seq && (!e || e==EINTR));
+ 	if (e == EINTR) e = 0;
+ 
+@@ -210,4 +210,4 @@ int __private_cond_signal(pthread_cond_t *c, int n)
+ 	return 0;
+ }
+ 
+-weak_alias(__pthread_cond_timedwait, pthread_cond_timedwait);
++weak_alias(__pthread_cond_clockwait, pthread_cond_clockwait);
+diff --git a/src/thread/pthread_cond_timedwait.c b/src/thread/pthread_cond_timedwait.c
+new file mode 100644
+index 00000000..da803df7
+--- /dev/null
++++ b/src/thread/pthread_cond_timedwait.c
+@@ -0,0 +1,9 @@
++#include "pthread_impl.h"
++
++int __pthread_cond_timedwait(pthread_cond_t *restrict c, pthread_mutex_t *restrict m, const struct timespec *restrict ts)
++{
++	int clock = c->_c_clock;
++	return __pthread_cond_clockwait(c, m, clock, ts);
++}
++
++weak_alias(__pthread_cond_timedwait, pthread_cond_timedwait);
+diff --git a/src/thread/pthread_mutex_clocklock.c b/src/thread/pthread_mutex_clocklock.c
+index 87f89287..4a0a945f 100644
+--- a/src/thread/pthread_mutex_clocklock.c
++++ b/src/thread/pthread_mutex_clocklock.c
+@@ -18,7 +18,7 @@ static int __futex4(volatile void *addr, int op, int val, const struct timespec
+ 	return __syscall(SYS_futex, addr, op, val, to);
+ }
+ 
+-static int pthread_mutex_timedlock_pi(pthread_mutex_t *restrict m, const struct timespec *restrict at)
++static int pthread_mutex_timedlock_pi(pthread_mutex_t *restrict m, clockid_t clk, const struct timespec *restrict at)
+ {
+ 	int type = m->_m_type;
+ 	int priv = (type & 128) ^ 128;
+@@ -48,12 +48,12 @@ static int pthread_mutex_timedlock_pi(pthread_mutex_t *restrict m, const struct
+ 	case EDEADLK:
+ 		if ((type&3) == PTHREAD_MUTEX_ERRORCHECK) return e;
+ 	}
+-	do e = __timedwait(&(int){0}, 0, CLOCK_REALTIME, at, 1);
++	do e = __timedwait(&(int){0}, 0, clk, at, 1);
+ 	while (e != ETIMEDOUT);
+ 	return e;
+ }
+ 
+-int __pthread_mutex_timedlock(pthread_mutex_t *restrict m, const struct timespec *restrict at)
++int __pthread_mutex_clocklock(pthread_mutex_t *restrict m, clockid_t clk, const struct timespec *restrict at)
+ {
+ 	if ((m->_m_type&15) == PTHREAD_MUTEX_NORMAL
+ 	    && !a_cas(&m->_m_lock, 0, EBUSY))
+@@ -65,7 +65,7 @@ int __pthread_mutex_timedlock(pthread_mutex_t *restrict m, const struct timespec
+ 	r = __pthread_mutex_trylock(m);
+ 	if (r != EBUSY) return r;
+ 
+-	if (type&8) return pthread_mutex_timedlock_pi(m, at);
++	if (type&8) return pthread_mutex_timedlock_pi(m, clk, at);
+ 
+ 	int spins = 100;
+ 	while (spins-- && m->_m_lock && !m->_m_waiters) a_spin();
+@@ -82,11 +82,11 @@ int __pthread_mutex_timedlock(pthread_mutex_t *restrict m, const struct timespec
+ 		a_inc(&m->_m_waiters);
+ 		t = r | 0x80000000;
+ 		a_cas(&m->_m_lock, r, t);
+-		r = __timedwait(&m->_m_lock, t, CLOCK_REALTIME, at, priv);
++		r = __timedwait(&m->_m_lock, t, clk, at, priv);
+ 		a_dec(&m->_m_waiters);
+ 		if (r && r != EINTR) break;
+ 	}
+ 	return r;
+ }
+ 
+-weak_alias(__pthread_mutex_timedlock, pthread_mutex_timedlock);
++weak_alias(__pthread_mutex_clocklock, pthread_mutex_clocklock);
+diff --git a/src/thread/pthread_mutex_timedlock.c b/src/thread/pthread_mutex_timedlock.c
+new file mode 100644
+index 00000000..14a87065
+--- /dev/null
++++ b/src/thread/pthread_mutex_timedlock.c
+@@ -0,0 +1,8 @@
++#include "pthread_impl.h"
++
++int __pthread_mutex_timedlock(pthread_mutex_t *restrict m, const struct timespec *restrict at)
++{
++	return __pthread_mutex_clocklock(m, CLOCK_REALTIME, at);
++}
++
++weak_alias(__pthread_mutex_timedlock, pthread_mutex_timedlock);
+-- 
+2.49.0
+

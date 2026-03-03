@@ -1,0 +1,56 @@
+From 167003894e360f7a868fbd9439e87c6b17902376 Mon Sep 17 00:00:00 2001
+From: Yonggang Luo <luoyonggang@gmail.com>
+Date: Tue, 20 Jun 2023 22:36:59 +0800
+Subject: [PATCH] trim spaces of pthread_cond_timedwait.c and
+ pthread_mutex_timedlock.c
+
+Signed-off-by: Yonggang Luo <luoyonggang@gmail.com>
+---
+ src/thread/pthread_cond_timedwait.c  | 6 +++---
+ src/thread/pthread_mutex_timedlock.c | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/thread/pthread_cond_timedwait.c b/src/thread/pthread_cond_timedwait.c
+index 6b761455..c5b35a6c 100644
+--- a/src/thread/pthread_cond_timedwait.c
++++ b/src/thread/pthread_cond_timedwait.c
+@@ -121,12 +121,12 @@ int __pthread_cond_timedwait(pthread_cond_t *restrict c, pthread_mutex_t *restri
+ 		 * via the futex notify below. */
+ 
+ 		lock(&c->_c_lock);
+-		
++
+ 		if (c->_c_head == &node) c->_c_head = node.next;
+ 		else if (node.prev) node.prev->next = node.next;
+ 		if (c->_c_tail == &node) c->_c_tail = node.prev;
+ 		else if (node.next) node.next->prev = node.prev;
+-		
++
+ 		unlock(&c->_c_lock);
+ 
+ 		if (node.notify) {
+@@ -156,7 +156,7 @@ relock:
+ 		if (val>0) a_cas(&m->_m_lock, val, val|0x80000000);
+ 		unlock_requeue(&node.prev->barrier, &m->_m_lock, m->_m_type & (8|128));
+ 	} else if (!(m->_m_type & 8)) {
+-		a_dec(&m->_m_waiters);		
++		a_dec(&m->_m_waiters);
+ 	}
+ 
+ 	/* Since a signal was consumed, cancellation is not permitted. */
+diff --git a/src/thread/pthread_mutex_timedlock.c b/src/thread/pthread_mutex_timedlock.c
+index 9279fc54..87f89287 100644
+--- a/src/thread/pthread_mutex_timedlock.c
++++ b/src/thread/pthread_mutex_timedlock.c
+@@ -66,7 +66,7 @@ int __pthread_mutex_timedlock(pthread_mutex_t *restrict m, const struct timespec
+ 	if (r != EBUSY) return r;
+ 
+ 	if (type&8) return pthread_mutex_timedlock_pi(m, at);
+-	
++
+ 	int spins = 100;
+ 	while (spins-- && m->_m_lock && !m->_m_waiters) a_spin();
+ 
+-- 
+2.49.0
+

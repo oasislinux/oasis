@@ -1,0 +1,25 @@
+From 2bcfd41fe21f396f528fb863afeaf1328341a681 Mon Sep 17 00:00:00 2001
+From: Yonggang Luo <luoyonggang@gmail.com>
+Date: Tue, 20 Jun 2023 22:37:00 +0800
+Subject: [PATCH] Rename files for implement pthread_mutex_clocklock and
+ pthread_cond_clockwait
+
+Signed-off-by: Yonggang Luo <luoyonggang@gmail.com>
+---
+ src/thread/{pthread_cond_timedwait.c => pthread_cond_clockwait.c} | 0
+ .../{pthread_mutex_timedlock.c => pthread_mutex_clocklock.c}      | 0
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ rename src/thread/{pthread_cond_timedwait.c => pthread_cond_clockwait.c} (100%)
+ rename src/thread/{pthread_mutex_timedlock.c => pthread_mutex_clocklock.c} (100%)
+
+diff --git a/src/thread/pthread_cond_timedwait.c b/src/thread/pthread_cond_clockwait.c
+similarity index 100%
+rename from src/thread/pthread_cond_timedwait.c
+rename to src/thread/pthread_cond_clockwait.c
+diff --git a/src/thread/pthread_mutex_timedlock.c b/src/thread/pthread_mutex_clocklock.c
+similarity index 100%
+rename from src/thread/pthread_mutex_timedlock.c
+rename to src/thread/pthread_mutex_clocklock.c
+-- 
+2.49.0
+
