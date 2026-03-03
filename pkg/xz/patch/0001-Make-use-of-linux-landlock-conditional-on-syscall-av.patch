@@ -1,0 +1,30 @@
+From 938c7df38eee723e8baa459c9457968fdd63c952 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 3 Mar 2026 15:06:24 -0800
+Subject: [PATCH] Make use of linux landlock conditional on syscall
+ availability
+
+This is also checked in the configure test, but to simplify building
+on oasis, just use the preprocessor.
+---
+ src/xz/sandbox.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/xz/sandbox.h b/src/xz/sandbox.h
+index 98b9862a..866b1478 100644
+--- a/src/xz/sandbox.h
++++ b/src/xz/sandbox.h
+@@ -9,6 +9,10 @@
+ //
+ ///////////////////////////////////////////////////////////////////////////////
+ 
++#if !defined(SYS_landlock_create_ruleset) || !defined(SYS_landlock_restrict_self)
++# undef HAVE_LINUX_LANDLOCK
++#endif
++
+ #if defined(HAVE_PLEDGE) || defined(HAVE_LINUX_LANDLOCK) \
+ 		|| defined(HAVE_CAP_RIGHTS_LIMIT)
+ #	define ENABLE_SANDBOX 1
+-- 
+2.49.0
+
