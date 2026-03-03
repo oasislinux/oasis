@@ -202,10 +202,6 @@
 [submodule "pkg/msmtp/src"]
 	path = pkg/msmtp/src
 	url = https://github.com/marlam/msmtp-mirror
-[submodule "pkg/mtdev/src"]
-	path = pkg/mtdev/src
-	url = http://bitmath.org/git/mtdev.git
-	ignore = all
 [submodule "pkg/mupdf/src"]
 	path = pkg/mupdf/src
 	url = https://github.com/oasislinux/mupdf.git

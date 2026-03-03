@@ -19,4 +19,4 @@ lib('libmtdev.a', {
 	'src/match_four.c',
 })
 
-fetch 'git'
+fetch 'curl'
