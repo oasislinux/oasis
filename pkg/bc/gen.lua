@@ -1,5 +1,5 @@
 cflags{
-	'-std=c23', '-Wall', '-Wpedantic',
+	'-std=c99', '-Wall', '-Wpedantic',
 	'-D _POSIX_C_SOURCE=200809L',
 	'-I $dir',
 	'-I $srcdir/h',

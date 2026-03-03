@@ -1,5 +1,5 @@
 cflags{
-	'-std=c23',
+	'-std=c11',
 	'-Wall', '-Wpedantic', '-Wvla',
 	'-D _GNU_SOURCE',
 	'-I $dir',
