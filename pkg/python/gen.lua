@@ -6,6 +6,13 @@ cflags{
 	'-isystem $builddir/pkg/linux-headers/include',
 }
 
+if config.target.platform:match('[^-]*') == 'x86_64' then
+	cflags{
+		'-D HAVE_GCC_ASM_FOR_X64=1',
+		'-D HAVE_GCC_ASM_FOR_X87=1',
+	}
+end
+
 pkg.deps = {'pkg/linux-headers/headers'}
 local libs = {}
 local modules = load 'modules.lua'
