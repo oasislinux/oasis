@@ -1,4 +1,4 @@
-From 511e4a7bcac247315393b0175e3bc5c93a980f8e Mon Sep 17 00:00:00 2001
+From b610594f76f11d6f4708f0aeb541959d6e7a65e4 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
@@ -9,7 +9,7 @@ Subject: [PATCH] Disable use of ctypes and dynamic loading
  2 files changed, 2 insertions(+), 187 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index 23f90d610..c3cbee897 100644
+index 831b3a2c8..5c79b3c25 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
 @@ -430,8 +430,6 @@ def decrypt(self, encrypted_value):
@@ -145,10 +145,10 @@ index 23f90d610..c3cbee897 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils/_utils.py b/yt_dlp/utils/_utils.py
-index b0ca95024..6ef5bbb44 100644
+index 74bb6dcdb..8dc79958a 100644
 --- a/yt_dlp/utils/_utils.py
 +++ b/yt_dlp/utils/_utils.py
-@@ -1518,64 +1518,7 @@ def __init__(self):
+@@ -1523,64 +1523,7 @@ def __init__(self):
          super().__init__(self.msg)
  
  
@@ -214,7 +214,7 @@ index b0ca95024..6ef5bbb44 100644
      try:
          import fcntl
  
-@@ -1929,31 +1872,7 @@ def fix_xml_ampersands(xml_str):
+@@ -1934,31 +1877,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
