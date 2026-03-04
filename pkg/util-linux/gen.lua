@@ -13,9 +13,6 @@ build('cat', '$outdir/config.h', {
 	'$dir/config.h',
 })
 
-build('sed', '$outdir/libsmartcols.h', '$srcdir/libsmartcols/src/libsmartcols.h.in', {
-	expr='s,@LIBSMARTCOLS_VERSION@,$version,',
-})
 build('sed', '$outdir/blkid.h', '$srcdir/libblkid/src/blkid.h.in', {
 	expr={
 		'-e /@LIBBLKID_VERSION@/d',
@@ -30,6 +27,9 @@ build('sed', '$outdir/libfdisk.h', '$srcdir/libfdisk/src/libfdisk.h.in', {
 		'-e /@LIBFDISK_PATCH_VERSION@/d',
 	},
 })
+build('sed', '$outdir/libsmartcols.h', '$srcdir/libsmartcols/src/libsmartcols.h.in', {
+	expr='s,@LIBSMARTCOLS_VERSION@,$version,',
+})
 
 pkg.hdrs = {
 	copy('$outdir/include/uuid', '$srcdir/libuuid/src', {'uuid.h'}),
@@ -37,8 +37,9 @@ pkg.hdrs = {
 }
 pkg.deps = {
 	'$outdir/config.h',
-	'$outdir/libsmartcols.h',
+	'$outdir/blkid.h',
 	'$outdir/libfdisk.h',
+	'$outdir/libsmartcols.h',
 	'pkg/linux-headers/headers',
 }
 
