@@ -1,4 +1,4 @@
-From 70d0e4d5052565eb7124d00542249c0059c26378 Mon Sep 17 00:00:00 2001
+From bccbc4107f6b3ad8fc14ad5409e46aa6ba933785 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 28 Apr 2025 22:44:49 -0700
 Subject: [PATCH] Fix aliasing violation
@@ -8,10 +8,10 @@ Subject: [PATCH] Fix aliasing violation
  1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/emit.c b/emit.c
-index 04837a5..19fd56d 100644
+index 4bd67d1..672af89 100644
 --- a/emit.c
 +++ b/emit.c
-@@ -155,7 +155,7 @@ emitfin(FILE *f, char *sec[3])
+@@ -159,7 +159,7 @@ emitfin(FILE *f, char *sec[3])
  {
  	Asmbits *b;
  	int lg, i;
@@ -20,7 +20,7 @@ index 04837a5..19fd56d 100644
  
  	if (!stash)
  		return;
-@@ -174,18 +174,18 @@ emitfin(FILE *f, char *sec[3])
+@@ -178,18 +178,18 @@ emitfin(FILE *f, char *sec[3])
  						"\n\t.quad %"PRId64
  						"\n\t.quad 0\n\n",
  						(int64_t)b->n);
@@ -46,5 +46,5 @@ index 04837a5..19fd56d 100644
  			}
  		}
 -- 
-2.45.2
+2.49.0
 
