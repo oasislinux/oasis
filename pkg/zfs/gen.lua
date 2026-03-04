@@ -8,6 +8,7 @@ cflags{
 	'-I $srcdir/lib/libspl/include',
 	'-I $srcdir/lib/libspl/include/os/linux',
 	'-I $srcdir/lib/libshare',
+	'-I $srcdir/lib/libzfs_core',
 	'-I $srcdir/lib/libzpool/include',
 	'-I $srcdir/lib/libzutil',
 	'-I $srcdir/cmd/zpool',
@@ -48,6 +49,7 @@ lib('libspl.a', [[
 		strlcat.c
 		strlcpy.c
 		timestamp.c
+		tunables.c
 		os/linux/(
 			getexecname.c
 			gethostid.c
@@ -114,6 +116,7 @@ lib('libzfs_core.a', [[
 		libzfs_core.c
 		os/linux/libzfs_core_ioctl.c
 	)
+	libnvpair.a.d
 	libzutil.a.d
 ]])
 
