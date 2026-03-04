@@ -2,6 +2,7 @@ cflags{
 	'-std=c99', '-Wall',
 	'-D _GNU_SOURCE',
 	[[-D 'RUNSTATEDIR="/run"']],
+	'-I $srcdir/src/uapi/linux',
 }
 
 exe('wg', [[
