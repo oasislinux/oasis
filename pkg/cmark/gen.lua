@@ -10,25 +10,25 @@ pkg.hdrs = {
 }
 
 lib('libcmark.a', expand{'src/', {
-	'cmark.c',
-	'node.c',
-	'iterator.c',
 	'blocks.c',
-	'inlines.c',
-	'scanners.c',
-	'utf8.c',
 	'buffer.c',
-	'references.c',
-	'render.c',
-	'man.c',
-	'xml.c',
-	'html.c',
+	'cmark.c',
+	'cmark_ctype.c',
 	'commonmark.c',
-	'latex.c',
 	'houdini_href_e.c',
 	'houdini_html_e.c',
 	'houdini_html_u.c',
-	'cmark_ctype.c',
+	'html.c',
+	'inlines.c',
+	'iterator.c',
+	'latex.c',
+	'man.c',
+	'node.c',
+	'references.c',
+	'render.c',
+	'scanners.c',
+	'utf8.c',
+	'xml.c',
 }})
 file('lib/libcmark.a', '644', '$outdir/libcmark.a')
 
