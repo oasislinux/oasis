@@ -309,6 +309,7 @@ return {
 		["America/Eirunepe"]=false,
 		["America/Rio_Branco"]=false,
 		["America/Santiago"]=false,
+		["America/Coyhaique"]=false,
 		["America/Punta_Arenas"]=false,
 		["Pacific/Easter"]=false,
 		["Antarctica/Palmer"]=false,
