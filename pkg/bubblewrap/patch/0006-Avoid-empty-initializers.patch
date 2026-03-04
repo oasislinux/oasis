@@ -1,0 +1,36 @@
+From 323a274d3f02819891156b1e5827f810b6642ae2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 4 Mar 2026 14:26:50 -0800
+Subject: [PATCH] Avoid empty initializers
+
+These are standard as of C23, but fix it anyway to avoid -Wpedantic
+warnings on older gcc versions.
+---
+ utils.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/utils.c b/utils.c
+index ffe0a0d..c843599 100644
+--- a/utils.c
++++ b/utils.c
+@@ -756,7 +756,7 @@ void
+ send_pid_on_socket (int sockfd)
+ {
+   char buf[1] = { 0 };
+-  struct msghdr msg = {};
++  struct msghdr msg = { 0 };
+   struct iovec iov = { buf, sizeof (buf) };
+   _Alignas(struct cmsghdr) char control_buf_snd[CMSG_SPACE(sizeof(struct ucred))];
+   struct cmsghdr *cmsg;
+@@ -797,7 +797,7 @@ int
+ read_pid_from_socket (int sockfd)
+ {
+   char recv_buf[1] = { 0 };
+-  struct msghdr msg = {};
++  struct msghdr msg = { 0 };
+   struct iovec iov = { recv_buf, sizeof (recv_buf) };
+   _Alignas(struct cmsghdr) char control_buf_rcv[CMSG_SPACE(sizeof(struct ucred))];
+   struct cmsghdr* cmsg;
+-- 
+2.49.0
+
