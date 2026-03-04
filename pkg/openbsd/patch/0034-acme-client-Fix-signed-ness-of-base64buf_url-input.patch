@@ -1,4 +1,4 @@
-From 67ffb8812ee7ac5fe23a5149ff643d1f392fb1f5 Mon Sep 17 00:00:00 2001
+From d287356e4da2f2bc232df9bc13821738ffbe5299 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 20:10:05 -0700
 Subject: [PATCH] acme-client: Fix signed-ness of base64buf_url input
@@ -96,7 +96,7 @@ index 2b6377f0d81..0d84ad4b458 100644
  	size_t	 i, sz;
  	char	*buf;
 diff --git a/usr.sbin/acme-client/extern.h b/usr.sbin/acme-client/extern.h
-index 915f80e3992..5b0950b0693 100644
+index 46a1387f5bc..37820e6cfb6 100644
 --- a/usr.sbin/acme-client/extern.h
 +++ b/usr.sbin/acme-client/extern.h
 @@ -244,7 +244,7 @@ int		 checkexit_ext(int *, pid_t, enum comp);
@@ -132,10 +132,10 @@ index a3b6666c279..f0df9f292d4 100644
  		goto out;
  	} else if ((der64 = base64buf_url(der, len)) == NULL) {
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index 0f1bf32678b..58e81233f1a 100644
+index 65170078226..493a9ea9752 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
-@@ -63,7 +63,9 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -77,7 +77,9 @@ revokeproc(int fd, const char *certfile, int force,
      int revocate, const char *const *alts, size_t altsz)
  {
  	GENERAL_NAMES			*sans = NULL;
@@ -146,7 +146,7 @@ index 0f1bf32678b..58e81233f1a 100644
  	int				 rc = 0, cc, i, len;
  	size_t				*found = NULL;
  	FILE				*f = NULL;
-@@ -240,7 +242,7 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -260,7 +262,7 @@ revokeproc(int fd, const char *certfile, int force,
  		} else if ((der = dercp = malloc(len)) == NULL) {
  			warn("malloc");
  			goto out;

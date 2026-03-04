@@ -1,4 +1,4 @@
-From 1ab0f94943e02c49d88a358351914f9032a5bca3 Mon Sep 17 00:00:00 2001
+From 6abdd6eef47b5ff9a34536acbec947d2c9a3cebc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 23:14:16 -0700
 Subject: [PATCH] acme-client: Port to BearSSL
@@ -9,8 +9,8 @@ Subject: [PATCH] acme-client: Port to BearSSL
  usr.sbin/acme-client/key.c        | 329 ++++++++++++++++++++++++------
  usr.sbin/acme-client/key.h        |  22 +-
  usr.sbin/acme-client/keyproc.c    | 198 ++++++------------
- usr.sbin/acme-client/revokeproc.c | 237 ++++++++++-----------
- 6 files changed, 564 insertions(+), 525 deletions(-)
+ usr.sbin/acme-client/revokeproc.c | 260 +++++++++++------------
+ 6 files changed, 566 insertions(+), 546 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
 index 9e97a8bb760..8d66dac49d9 100644
@@ -1213,10 +1213,10 @@ index f0df9f292d4..fc7de74b616 100644
  	return rc;
  }
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index 58e81233f1a..378de35f662 100644
+index 493a9ea9752..82e31792f3b 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
-@@ -22,58 +22,54 @@
+@@ -22,73 +22,53 @@
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
@@ -1232,29 +1232,46 @@ index 58e81233f1a..378de35f662 100644
  
  #include "extern.h"
  
- #define	RENEW_ALLOW (30 * 24 * 60 * 60)
- 
 -/*
-- * Convert the X509's expiration time into a time_t value.
+- * Convert the X509's notAfter time into a time_t value.
 - */
 -static time_t
--X509expires(X509 *x)
+-X509notafter(X509 *x)
+-{
+-	ASN1_TIME	*atim;
+-	struct tm	 t;
+-
+-	if ((atim = X509_getm_notAfter(x)) == NULL)
+-		return -1;
+-
+-	memset(&t, 0, sizeof(t));
+-
+-	if (!ASN1_TIME_to_tm(atim, &t))
+-		return -1;
+-
+-	return timegm(&t);
+-}
+-
+-/*
+- * Convert the X509's notBefore time into a time_t value.
+- */
+-static time_t
+-X509notbefore(X509 *x)
 +static void
 +append_cert(void *ctx, const void *buf, size_t len)
  {
 -	ASN1_TIME	*atim;
 -	struct tm	 t;
 -
--	if ((atim = X509_getm_notAfter(x)) == NULL) {
--		warnx("missing notAfter");
+-	if ((atim = X509_getm_notBefore(x)) == NULL)
 -		return -1;
--	}
 -
 -	memset(&t, 0, sizeof(t));
 -
--	if (!ASN1_TIME_to_tm(atim, &t)) {
--		warnx("invalid ASN1_TIME");
+-	if (!ASN1_TIME_to_tm(atim, &t))
 -		return -1;
+-
+-	return timegm(&t);
 +	br_x509_certificate *cert = ctx;
 +	size_t newlen;
 +	unsigned char *newdata;
@@ -1269,9 +1286,7 @@ index 58e81233f1a..378de35f662 100644
 +	} else {
 +		warn("realloc");
 +		cert->data_len = -1;
- 	}
--
--	return timegm(&t);
++	}
  }
  
  int
@@ -1298,12 +1313,13 @@ index 58e81233f1a..378de35f662 100644
 +	uint32_t			 days, secs;
  	long				 lval;
  	enum revokeop			 op, rop;
- 	time_t				 t;
+ 	time_t				 notafter, notbefore, cert_validity;
+ 	time_t				 remaining_validity, renew_allow;
 -	size_t				 j;
  
  	/*
  	 * First try to open the certificate before we drop privileges
-@@ -88,8 +84,6 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -103,8 +83,6 @@ revokeproc(int fd, const char *certfile, int force,
  
  	/* File-system and sandbox jailing. */
  
@@ -1312,7 +1328,7 @@ index 58e81233f1a..378de35f662 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -113,39 +107,86 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -128,44 +106,88 @@ revokeproc(int fd, const char *certfile, int force,
  		goto out;
  	}
  
@@ -1365,25 +1381,22 @@ index 58e81233f1a..378de35f662 100644
  
  	/* Read out the expiration date. */
  
--	if ((t = X509expires(x)) == -1) {
--		warnx("X509expires");
+-	if ((notafter = X509notafter(x)) == -1) {
+-		warnx("X509notafter");
 +	br_x509_decoder_init(&xd, NULL, NULL);
 +	br_x509_decoder_push(&xd, cert.data, cert.data_len);
 +	if ((err = br_x509_decoder_last_error(&xd)) != 0) {
 +		warnx("%s: X.509 decoding error %d", certfile, err);
  		goto out;
  	}
-+	br_x509_decoder_get_notafter(&xd, &days, &secs);
-+	t = 86400ll * (days - 719528) + 86400;
- 
--	/* Extract list of SAN entries from the certificate. */
 -
--	sans = X509_get_ext_d2i(x, NID_subject_alt_name, NULL, NULL);
--	if (sans == NULL) {
--		warnx("%s: does not have a SAN entry", certfile);
--		if (revocate)
--			goto out;
--		force = 2;
+-	if ((notbefore = X509notbefore(x)) == -1) {
+-		warnx("X509notbefore");
++	br_x509_decoder_get_notafter(&xd, &days, &secs);
++	notafter = 86400ll * (days - 719528) + 86400;
++	br_x509_decoder_get_notbefore(&xd, &days, &secs);
++	notbefore = 86400ll * (days - 719528) + 86400;
++
 +	for (i = 0, altmax = 0; i < altsz; ++i) {
 +		altlen = strlen(alts[i]) + 1;
 +		if (altlen > altmax)
@@ -1393,8 +1406,17 @@ index 58e81233f1a..378de35f662 100644
 +	if ((elts = calloc(eltsz, sizeof(elts[0]))) == NULL ||
 +	    (sans = calloc(eltsz, altmax)) == NULL) {
 +		warn("calloc");
-+		goto out;
-+	}
+ 		goto out;
+ 	}
+-
+-	/* Extract list of SAN entries from the certificate. */
+-
+-	sans = X509_get_ext_d2i(x, NID_subject_alt_name, NULL, NULL);
+-	if (sans == NULL) {
+-		warnx("%s: does not have a SAN entry", certfile);
+-		if (revocate)
+-			goto out;
+-		force = 2;
 +	for (i = 0; i < eltsz; ++i) {
 +		elts[i].oid = dnsname;
 +		elts[i].buf = sans + i * altmax;
@@ -1421,7 +1443,7 @@ index 58e81233f1a..378de35f662 100644
  		goto out;
  	}
  
-@@ -154,63 +195,37 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -174,63 +196,37 @@ revokeproc(int fd, const char *certfile, int force,
  	 * configuration file and that all domains are represented only once.
  	 */
  
@@ -1504,7 +1526,7 @@ index 58e81233f1a..378de35f662 100644
  			goto out;
  		}
  		force = 2;
-@@ -236,16 +251,7 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -256,16 +252,7 @@ revokeproc(int fd, const char *certfile, int force,
  		if (cc <= 0)
  			goto out;
  
@@ -1522,7 +1544,7 @@ index 58e81233f1a..378de35f662 100644
  			warnx("base64buf_url");
  			goto out;
  		} else if (writestr(fd, COMM_CSR, der64) >= 0)
-@@ -298,12 +304,9 @@ out:
+@@ -339,12 +326,9 @@ out:
  	close(fd);
  	if (f != NULL)
  		fclose(f);
