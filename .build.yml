@@ -24,13 +24,13 @@ tasks:
     curl -LO http://musl.cc/x86_64-linux-musl-cross.tgz
     tar xzf x86_64-linux-musl-cross.tgz
 - build: |
-    PATH=$HOME/x86_64-linux-musl-cross/bin:$HOME/bin:$PATH
+    PATH=$HOME/x86_64-linux-musl-cross/bin:$PATH
     cd oasis
     cat >config.lua <<EOF
     return {
     	builddir='out',
     	fs=dofile 'fs.lua',
-    	target={platform='x86_64-linux-musl', cflags='-Os -fPIE -pipe', ldflags='-s -static-pie', mc='6m', pie=true},
+    	target={platform='x86_64-linux-musl', cflags='-Os -fPIE -pipe', ldflags='-s -static-pie', pie=true},
     	host={cflags='-pipe', ldflags=''},
     	repo={path='$HOME/root-x86_64.git', flags='--bare', tag='tree', branch=os.getenv('SET')},
     }
@@ -38,9 +38,6 @@ tasks:
     # build everything
     echo 'return {exclude={}}' >fs.lua
     SET=all lua setup.lua
-    ninja out/pkg/mc/bin/6m out/pkg/mc/bin/muse
-    mkdir $HOME/bin
-    cp out/pkg/mc/bin/6m out/pkg/mc/bin/muse $HOME/bin
     ninja
     # build individual sets
     cat >fs.lua <<EOF

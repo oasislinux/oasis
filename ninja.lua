@@ -245,7 +245,6 @@ function toolchain(tc)
 	set('cc', tc.cc or (tc.platform and tc.platform..'-cc') or 'cc')
 	set('ld', tc.ld or (tc.platform and tc.platform..'-ld') or 'ld')
 	set('objcopy', tc.objcopy or (tc.platform and tc.platform..'-objcopy') or 'objcopy')
-	set('mc', tc.mc or 'false')
 
 	set('cflags', tc.cflags)
 	set('ldflags', tc.ldflags)

@@ -188,9 +188,6 @@
 	path = pkg/mblaze/src
 	url = https://github.com/leahneukirchen/mblaze.git
 	ignore = all
-[submodule "pkg/mc/src"]
-	path = pkg/mc/src
-	url = https://github.com/oridb/mc
 [submodule "pkg/mgba/src"]
 	path = pkg/mgba/src
 	url = https://github.com/mgba-emu/mgba.git

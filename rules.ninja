@@ -45,12 +45,6 @@ rule rsp
 rule nasm
   command = nasm $nasmflags -o $out $in
 
-rule mc
-  command = $mc $mcflags -o $out $in
-
-rule muse
-  command = muse $museflags -o $out $in
-
 rule probe
   command = sh $basedir/scripts/probe.sh $var $out $cc $cflags $ldflags -o /dev/null -x c $in
 

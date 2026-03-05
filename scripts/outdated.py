@@ -19,7 +19,6 @@ skip = set([
 	'adobe-source-fonts',
 	'cproc',
 	'libutp',
-	'mc',
 	'openbsd',
 	'qbe',
 	'sbase',
