@@ -3,10 +3,12 @@ cflags{
 	'-D _GNU_SOURCE',
 	'-include $dir/config.h',
 	'-I $srcdir/ext/include',
+	'-isystem $builddir/pkg/linux-headers/include',
 	'-isystem $builddir/pkg/lua/include',
 }
 
 pkg.deps = {
+	'pkg/linux-headers/headers',
 	'pkg/lua/headers',
 }
 
