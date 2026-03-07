@@ -127,6 +127,7 @@ return {
 		'src/dirent/dirfd.c',
 		'src/dirent/fdopendir.c',
 		'src/dirent/opendir.c',
+		'src/dirent/posix_getdents.c',
 		'src/dirent/readdir.c',
 		'src/dirent/readdir_r.c',
 		'src/dirent/rewinddir.c',
