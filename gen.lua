@@ -36,6 +36,14 @@ build('fspec-tar', '$outdir/root.tar.zst', {'$outdir/root.fspec', '|', '$builddi
 --rule('gensquashfs', 'gensquashfs -F $in -D . -f -c gzip $out')
 --build('gensquashfs', '$outdir/root.squashfs', {'$outdir/root.sqfslist'})
 
-build('phony', 'build.ninja', 'ninja', {generator='1'})
+build('phony', 'build.ninja', 'local.ninja', {generator='1'})
+build('gen', 'local.ninja', {
+	'|',
+	'$basedir/ninja.lua',
+	'$basedir/sets.lua',
+	'$basedir/setup.lua',
+	'config.lua',
+	'$gendir/gen',
+})
 
 io.write('default $builddir/root.tree\n')

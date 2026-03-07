@@ -21,8 +21,6 @@ if not config.prefix then
 	config.prefix = ''
 end
 
-local recurse = not arg[1]
-
 local function gen(gendir)
 	local dir = basedir..'/'..gendir
 	local outdir = config.builddir..'/'..gendir
@@ -35,13 +33,7 @@ local function gen(gendir)
 		inputs={
 			index={},
 			fspec={},
-			gen={
-				'$basedir/ninja.lua',
-				'$basedir/sets.lua',
-				'$basedir/setup.lua',
-				'config.lua',
-			},
-			ninja={'$gendir/local.ninja'},
+			gen={},
 			fetch={},
 		},
 		fspec={},
@@ -56,8 +48,7 @@ local function gen(gendir)
 	end
 	load('gen.lua')
 
-	build('gen', '$gendir/local.ninja', {'|', pkg.inputs.gen})
-	phony('ninja', pkg.inputs.ninja)
+	build('phony', '$gendir/gen', pkg.inputs.gen)
 
 	if pkg.hdrs then
 		phony('headers', pkg.hdrs)
@@ -127,19 +118,16 @@ end
 function subgen(dir)
 	local file = '$gendir/'..dir..'/local.ninja'
 	subninja(file)
-	table.insert(pkg.inputs.ninja, '$gendir/'..dir..'/ninja')
+	table.insert(pkg.inputs.gen, '$gendir/'..dir..'/gen')
 	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
 	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/tree.fspec')
-	local cmd = ('exec test -f %s/%s/local.ninja'):format(pkg.gendir, dir)
-	if recurse or not os.execute(cmd) then
-		local oldpkg, oldout = pkg, io.output()
-		if pkg.gendir ~= '.' then
-			dir = pkg.gendir..'/'..dir
-		end
-		gen(dir)
-		pkg = oldpkg
-		io.output(oldout)
+	local oldpkg, oldout = pkg, io.output()
+	if pkg.gendir ~= '.' then
+		dir = pkg.gendir..'/'..dir
 	end
+	gen(dir)
+	pkg = oldpkg
+	io.output(oldout)
 end
 
-gen(arg[1] or '.')
+gen('.')
