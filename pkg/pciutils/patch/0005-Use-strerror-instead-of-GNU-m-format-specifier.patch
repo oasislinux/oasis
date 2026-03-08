@@ -1,4 +1,4 @@
-From 05925c2cbd72dc84a825a8a618efb5975b9d75ea Mon Sep 17 00:00:00 2001
+From 580ba693ee76deacd347b41321d060e313ac81d7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Aug 2020 17:16:31 -0700
 Subject: [PATCH] Use strerror instead of GNU %m format specifier
@@ -8,7 +8,7 @@ Subject: [PATCH] Use strerror instead of GNU %m format specifier
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/ls-kernel.c b/ls-kernel.c
-index 4199402..e75f9af 100644
+index 3eb660b..5370974 100644
 --- a/ls-kernel.c
 +++ b/ls-kernel.c
 @@ -6,6 +6,7 @@
@@ -18,8 +18,8 @@ index 4199402..e75f9af 100644
 +#include <errno.h>
  #include <stdio.h>
  #include <string.h>
- #include <unistd.h>
-@@ -124,12 +125,12 @@ show_kernel_init(void)
+ 
+@@ -123,12 +124,12 @@ show_kernel_init(void)
      {
        f = fopen(name, "r");
        if (!f)
@@ -35,5 +35,5 @@ index 4199402..e75f9af 100644
        sprintf(name, "/lib/modules/%s/modules.pcimap", uts.release);
        f = fopen(name, "r");
 -- 
-2.28.0
+2.49.0
 

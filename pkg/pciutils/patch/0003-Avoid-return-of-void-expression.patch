@@ -1,4 +1,4 @@
-From 2aa934cc516aab5a008bf2155b6acb284816ebb8 Mon Sep 17 00:00:00 2001
+From 5c9eda6fe8fda73dfd5b5b78bc3edd88463817aa Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Aug 2020 16:23:49 -0700
 Subject: [PATCH] Avoid return of void expression
@@ -10,23 +10,23 @@ Subject: [PATCH] Avoid return of void expression
  3 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/lib/filter.c b/lib/filter.c
-index 7ca56a8..d43c912 100644
+index c0f9b04..910a313 100644
 --- a/lib/filter.c
 +++ b/lib/filter.c
-@@ -223,7 +223,7 @@ pci_filter_match_v30(struct pci_filter_v30 *f, struct pci_dev *d)
-   return pci_filter_match_v33(&new, d);
- }
+@@ -302,7 +302,7 @@ pci_filter_match_v30(struct pci_filter_v30 *f, struct pci_dev *d)
+ // Version 3.3 is the same as version 3.8, only device_class_mask and prog_if were not implemented
+ // (their positions in struct pci_filter were declared as RFU).
  
--STATIC_ALIAS(void pci_filter_init(struct pci_access *a, struct pci_filter *f), pci_filter_init_v33(a, f))
-+STATIC_ALIAS_VOID(void pci_filter_init(struct pci_access *a, struct pci_filter *f), pci_filter_init_v33(a, f))
+-STATIC_ALIAS(void pci_filter_init(struct pci_access *a, struct pci_filter *f), pci_filter_init_v38(a, f))
++STATIC_ALIAS_VOID(void pci_filter_init(struct pci_access *a, struct pci_filter *f), pci_filter_init_v38(a, f))
+ DEFINE_ALIAS(void pci_filter_init_v33(struct pci_access *a, struct pci_filter *f), pci_filter_init_v38)
  SYMBOL_VERSION(pci_filter_init_v30, pci_filter_init@LIBPCI_3.0)
- SYMBOL_VERSION(pci_filter_init_v33, pci_filter_init@@LIBPCI_3.3)
- 
+ SYMBOL_VERSION(pci_filter_init_v33, pci_filter_init@LIBPCI_3.3)
 diff --git a/lib/init.c b/lib/init.c
-index 4703dbd..e660f36 100644
+index 2213141..a11fef0 100644
 --- a/lib/init.c
 +++ b/lib/init.c
-@@ -245,7 +245,7 @@ pci_init_v35(struct pci_access *a)
+@@ -316,7 +316,7 @@ pci_init_v35(struct pci_access *a)
    a->methods->init(a);
  }
  
@@ -36,10 +36,10 @@ index 4703dbd..e660f36 100644
  SYMBOL_VERSION(pci_init_v30, pci_init@LIBPCI_3.0)
  SYMBOL_VERSION(pci_init_v35, pci_init@@LIBPCI_3.5)
 diff --git a/lib/internal.h b/lib/internal.h
-index 17c27e1..d516e30 100644
+index ed0e94f..749632a 100644
 --- a/lib/internal.h
 +++ b/lib/internal.h
-@@ -26,6 +26,7 @@
+@@ -33,6 +33,7 @@
  #else
  #define VERSIONED_ABI
  #define STATIC_ALIAS(_decl, _for) _decl { return _for; }
@@ -48,5 +48,5 @@ index 17c27e1..d516e30 100644
  #define SYMBOL_VERSION(_int, _ext)
  #endif
 -- 
-2.28.0
+2.49.0
 
