@@ -1,6 +1,11 @@
 cflags{
 	'-Wall', '-Wpedantic', '-Wno-parentheses',
 	'-I $dir',
+	'-isystem $builddir/pkg/linux-headers/include',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 lib('libpci.a', [[
