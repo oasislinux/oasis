@@ -1,4 +1,4 @@
-From 580ba693ee76deacd347b41321d060e313ac81d7 Mon Sep 17 00:00:00 2001
+From 9e6d578db0a4a55be5dbba40aba78e830181734d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Aug 2020 17:16:31 -0700
 Subject: [PATCH] Use strerror instead of GNU %m format specifier
@@ -8,18 +8,18 @@ Subject: [PATCH] Use strerror instead of GNU %m format specifier
  1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/ls-kernel.c b/ls-kernel.c
-index 3eb660b..5370974 100644
+index 13b29f7..1f7933a 100644
 --- a/ls-kernel.c
 +++ b/ls-kernel.c
-@@ -6,6 +6,7 @@
-  *	Can be freely distributed and used under the terms of the GNU GPL.
+@@ -8,6 +8,7 @@
+  *	SPDX-License-Identifier: GPL-2.0-or-later
   */
  
 +#include <errno.h>
  #include <stdio.h>
  #include <string.h>
  
-@@ -123,12 +124,12 @@ show_kernel_init(void)
+@@ -125,12 +126,12 @@ show_kernel_init(void)
      {
        f = fopen(name, "r");
        if (!f)

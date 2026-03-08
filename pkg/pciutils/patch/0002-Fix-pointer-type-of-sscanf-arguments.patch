@@ -1,19 +1,19 @@
-From 6da3c0b830dcd4e9819f113c925605b2d5b46699 Mon Sep 17 00:00:00 2001
+From 1419e1101d2420db610a98a83bd41f0535ed70cb Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 16 Aug 2020 16:23:10 -0700
 Subject: [PATCH] Fix pointer type of sscanf arguments
 
 ---
- lib/dump.c  | 8 ++++----
- lib/sysfs.c | 4 ++--
- ls-kernel.c | 2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ lib/dump.c  | 10 +++++-----
+ lib/sysfs.c |  4 ++--
+ ls-kernel.c |  2 +-
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/lib/dump.c b/lib/dump.c
-index c0f9291..da814a4 100644
+index 00ebc9e..59af0a1 100644
 --- a/lib/dump.c
 +++ b/lib/dump.c
-@@ -60,7 +60,7 @@ dump_init(struct pci_access *a)
+@@ -62,7 +62,7 @@ dump_init(struct pci_access *a)
    FILE *f;
    char buf[256];
    struct pci_dev *dev = NULL;
@@ -22,24 +22,26 @@ index c0f9291..da814a4 100644
  
    if (!name)
      a->error("dump: File name not given.");
-@@ -79,9 +79,9 @@ dump_init(struct pci_access *a)
+@@ -81,10 +81,10 @@ dump_init(struct pci_access *a)
  	*z-- = 0;
        len = z - buf + 1;
        mn = 0;
 -      if (dump_validate(buf, "##:##.# ") && sscanf(buf, "%x:%x.%d", &bn, &dn, &fn) == 3 ||
 -	  dump_validate(buf, "####:##:##.# ") && sscanf(buf, "%x:%x:%x.%d", &mn, &bn, &dn, &fn) == 4 ||
--	  dump_validate(buf, "#####:##:##.# ") && sscanf(buf, "%x:%x:%x.%d", &mn, &bn, &dn, &fn) == 4)
+-	  dump_validate(buf, "#####:##:##.# ") && sscanf(buf, "%x:%x:%x.%d", &mn, &bn, &dn, &fn) == 4 ||
+-	  dump_validate(buf, "######:##:##.# ") && sscanf(buf, "%x:%x:%x.%d", &mn, &bn, &dn, &fn) == 4)
 +      if (dump_validate(buf, "##:##.# ") && sscanf(buf, "%x:%x.%u", &bn, &dn, &fn) == 3 ||
 +	  dump_validate(buf, "####:##:##.# ") && sscanf(buf, "%x:%x:%x.%u", &mn, &bn, &dn, &fn) == 4 ||
-+	  dump_validate(buf, "#####:##:##.# ") && sscanf(buf, "%x:%x:%x.%u", &mn, &bn, &dn, &fn) == 4)
++	  dump_validate(buf, "#####:##:##.# ") && sscanf(buf, "%x:%x:%x.%u", &mn, &bn, &dn, &fn) == 4 ||
++	  dump_validate(buf, "######:##:##.# ") && sscanf(buf, "%x:%x:%x.%u", &mn, &bn, &dn, &fn) == 4)
  	{
  	  dev = pci_get_dev(a, mn, bn, dn, fn);
  	  dump_alloc_data(dev, 256);
 diff --git a/lib/sysfs.c b/lib/sysfs.c
-index ffa4f9d..84490e9 100644
+index 7dedc0b..4f5c003 100644
 --- a/lib/sysfs.c
 +++ b/lib/sysfs.c
-@@ -254,7 +254,7 @@ static void sysfs_scan(struct pci_access *a)
+@@ -257,7 +257,7 @@ static void sysfs_scan(struct pci_access *a)
  	continue;
  
        d = pci_alloc_dev(a);
@@ -48,7 +50,7 @@ index ffa4f9d..84490e9 100644
  	a->error("sysfs_scan: Couldn't parse entry name %s", entry->d_name);
  
        /* Ensure kernel provided domain that fits in a signed integer */
-@@ -395,7 +395,7 @@ sysfs_fill_info(struct pci_dev *d, unsigned int flags)
+@@ -398,7 +398,7 @@ sysfs_fill_info(struct pci_dev *d, unsigned int flags)
  	  name = name ? name+1 : name;
  	  parent = NULL;
  
@@ -58,10 +60,10 @@ index ffa4f9d..84490e9 100644
  	      if (parent->domain == (int)domain && parent->bus == bus && parent->dev == dev && parent->func == func)
  	        break;
 diff --git a/ls-kernel.c b/ls-kernel.c
-index b90a469..3eb660b 100644
+index c939c52..13b29f7 100644
 --- a/ls-kernel.c
 +++ b/ls-kernel.c
-@@ -155,7 +155,7 @@ show_kernel_init(void)
+@@ -157,7 +157,7 @@ show_kernel_init(void)
        *c++ = 0;
  
        e = xmalloc(sizeof(*e) + strlen(line));

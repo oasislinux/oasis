@@ -6,4 +6,4 @@
 #define PCI_HAVE_64BIT_ADDRESS
 #define PCI_IDS "pci.ids"
 #define PCI_PATH_IDS_DIR "/share"
-#define PCILIB_VERSION "3.9.0"
+#define PCILIB_VERSION "3.14.0"
