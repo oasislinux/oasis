@@ -74,6 +74,7 @@ return {
 		'pounce',
 		'sshfs',
 		'transmission',
+		'wireguard-tools',
 		'wpa_supplicant',
 	},
 	desktop={
