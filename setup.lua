@@ -20,6 +20,24 @@ config = dofile 'config.lua'
 if not config.prefix then
 	config.prefix = ''
 end
+if not config.distdir then
+	config.distdir = 'dist'
+end
+
+local function shellpath(path, base)
+	if path == '.' then return base end
+	local abs = path:find('^/')
+	path = "'"..path:gsub([[']], [['\'']]).."'"
+	if abs then return path end
+	return base..'/'..path
+end
+local f = io.open('paths.sh', 'w')
+f:write(string.format([[
+basedir=%s
+builddir=%s
+distdir=%s
+]], shellpath(basedir, '$PWD'), shellpath(config.builddir, '$PWD'), shellpath(config.distdir, '$basedir')))
+f:close()
 
 local function gen(gendir)
 	local dir = basedir..'/'..gendir

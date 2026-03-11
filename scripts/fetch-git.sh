@@ -5,9 +5,11 @@ if [ "$#" != 1 ] ; then
 	exit 2
 fi
 
-cd "$1"
+. ./paths.sh
+cd "$basedir/$1"
 
 git submodule update --init --checkout src
 if [ -d patch ] ; then
-	git -C src am --keep-non-patch --whitespace=nowarn "$PWD"/patch/*.patch
+	cd src
+	git am --keep-non-patch --whitespace=nowarn ../patch/*.patch
 fi

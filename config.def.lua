@@ -4,6 +4,9 @@ return {
 	-- build output directory
 	builddir='out',
 
+	-- distfile directory
+	distdir='dist',
+
 	-- install prefix
 	prefix='',
 

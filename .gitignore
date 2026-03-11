@@ -1,6 +1,7 @@
 /config.ninja
 /config.lua
 /out
+/paths.sh
 fetch
 local.ninja
 .*.swp

@@ -1,5 +1,4 @@
 /bfd.ninja
-/binutils-2.39.tar.xz
 /binutils.ninja
 /gas.ninja
 /ld.ninja

@@ -1,21 +1,21 @@
 set -e
 
+. ./paths.sh
 dir=$1
 shift
 
-cd "$dir"
+cd "$distdir"
 
-if [ -e src ] ; then
-        rm -rf src
+if ! sh "$basedir/scripts/checksum.sh" -c "$basedir/$dir/sha256" 2>/dev/null ; then
+        curl -L -K "$basedir/$dir/url" -O
+        sh "$basedir/scripts/checksum.sh" -c "$basedir/$dir/sha256"
 fi
 
-if ! sh "$OLDPWD/scripts/checksum.sh" -c sha256 2>/dev/null ; then
-        curl -L -K url -O
-        sh "$OLDPWD/scripts/checksum.sh" -c sha256
-fi
+cd "$basedir/$dir"
+rm -rf src
 
 read -r _ archive <sha256
-sh "$OLDPWD/scripts/extract.sh" "$archive" -s ',^[^/]*,src,' \
+sh "$basedir/scripts/extract.sh" "$distdir/$archive" -s ',^[^/]*,src,' \
 	'linux-*/Makefile' \
 	'linux-*/arch/*/include/uapi/' \
 	'linux-*/arch/*/entry/syscalls/' \
@@ -23,5 +23,5 @@ sh "$OLDPWD/scripts/extract.sh" "$archive" -s ',^[^/]*,src,' \
 	'linux-*/scripts/unifdef.c'
 
 if [ -d patch ] ; then
-	git apply -v --whitespace=nowarn --directory "$dir/src" patch/*
+	git apply -v --whitespace=nowarn --directory "$dir/src" patch/*.patch
 fi
