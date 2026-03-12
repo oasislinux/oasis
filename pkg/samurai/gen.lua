@@ -13,6 +13,7 @@ exe('samu', {
 	'tool.c',
 	'tree.c',
 	'util.c',
+	'os-posix.c',
 })
 file('bin/samu', '755', '$outdir/samu')
 man{'samu.1'}
