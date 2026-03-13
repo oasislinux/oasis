@@ -1,5 +1,5 @@
 remote-name
-url = "https://cdn.openbsd.org/pub/OpenBSD/7.8/src.tar.gz"
+url = "https://cloudflare.cdn.openbsd.org/pub/OpenBSD/7.8/src.tar.gz"
 
 remote-name
-url = "https://cdn.openbsd.org/pub/OpenBSD/7.8/sys.tar.gz"
+url = "https://cloudflare.cdn.openbsd.org/pub/OpenBSD/7.8/sys.tar.gz"
