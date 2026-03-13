@@ -1,4 +1,4 @@
-From d9162eab76d43c1cbd289665c1b02a7e062a2017 Mon Sep 17 00:00:00 2001
+From 74dc839d640c8df63e597c5826458bb6a3b57cb2 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 6 Sep 2021 18:05:22 -0700
 Subject: [PATCH] Avoid use of long double
@@ -8,26 +8,26 @@ Subject: [PATCH] Avoid use of long double
  1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/lib/strutils.c b/lib/strutils.c
-index 5b5e686aa..ac1a0f527 100644
+index 54746fcae..fb42fb0cf 100644
 --- a/lib/strutils.c
 +++ b/lib/strutils.c
-@@ -459,6 +459,7 @@ err:
+@@ -456,6 +456,7 @@ err:
  	errx(STRTOXX_EXIT_CODE, "%s: '%s'", errmesg, str);
  }
  
 +#if 0
- long double strtold_or_err(const char *str, const char *errmesg)
+ int ul_strtold(const char *str, long double *num)
  {
- 	double num;
-@@ -479,6 +480,7 @@ err:
+ 	char *end = NULL;
+@@ -483,6 +484,7 @@ long double strtold_or_err(const char *str, const char *errmesg)
  
  	errx(STRTOXX_EXIT_CODE, "%s: '%s'", errmesg, str);
  }
 +#endif
  
- long strtol_or_err(const char *str, const char *errmesg)
+ uintmax_t strtosize_or_err(const char *str, const char *errmesg)
  {
-@@ -538,9 +540,9 @@ uintmax_t strtosize_or_err(const char *str, const char *errmesg)
+@@ -500,9 +502,9 @@ uintmax_t strtosize_or_err(const char *str, const char *errmesg)
  
  void strtotimeval_or_err(const char *str, struct timeval *tv, const char *errmesg)
  {
@@ -40,5 +40,5 @@ index 5b5e686aa..ac1a0f527 100644
  	tv->tv_usec = (suseconds_t)((user_input - tv->tv_sec) * 1000000);
  }
 -- 
-2.32.0
+2.49.0
 

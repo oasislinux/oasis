@@ -1,4 +1,4 @@
-From ad5d729e363236dbdcf15b82d8575bd5d9db77ea Mon Sep 17 00:00:00 2001
+From 965ca8368f78249ab7e64e4b7686e6b0d7d77084 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 12 Mar 2019 17:13:45 -0700
 Subject: [PATCH] Avoid statement expressions min/max
@@ -7,22 +7,25 @@ Subject: [PATCH] Avoid statement expressions min/max
  include/c.h                        | 24 ++++++++++--------------
  include/strutils.h                 |  3 ++-
  lib/mbsalign.c                     |  2 +-
+ lib/sysfs.c                        |  4 ++--
+ libblkid/src/probe.c               |  4 ++--
  libblkid/src/superblocks/befs.c    |  6 +++---
  libblkid/src/superblocks/exfat.c   |  2 +-
  libblkid/src/superblocks/iso9660.c |  4 ++--
  libblkid/src/superblocks/minix.c   |  4 ++--
+ libblkid/src/superblocks/romfs.c   |  2 +-
  libfdisk/src/alignment.c           |  8 ++++----
  libfdisk/src/context.c             |  4 ++--
  libfdisk/src/gpt.c                 |  4 ++--
- libsmartcols/src/calculate.c       |  8 ++++----
- libsmartcols/src/column.c          |  2 +-
- 12 files changed, 34 insertions(+), 37 deletions(-)
+ libsmartcols/src/calculate.c       |  6 +++---
+ libsmartcols/src/column.c          |  7 ++++---
+ 15 files changed, 41 insertions(+), 43 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
-index b420b5187..fe82a8847 100644
+index 3ba42306c..1ba8c2beb 100644
 --- a/include/c.h
 +++ b/include/c.h
-@@ -141,21 +141,17 @@
+@@ -145,21 +145,17 @@
  # define FALSE 0
  #endif
  
@@ -52,27 +55,27 @@ index b420b5187..fe82a8847 100644
 +	return x < y ? x : y;
 +}
  
- #ifndef cmp_numbers
- # define cmp_numbers(x, y) __extension__ ({	\
+ #ifndef abs_diff
+ # define abs_diff(x, y) __extension__ ({        \
 diff --git a/include/strutils.h b/include/strutils.h
-index 7969a84d0..45c1768f0 100644
+index a7177fc23..273aaedb8 100644
 --- a/include/strutils.h
 +++ b/include/strutils.h
-@@ -70,7 +70,8 @@ static inline void xstrncpy(char *dest, const char *src, size_t n)
+@@ -90,7 +90,8 @@ static inline int xstrncpy(char *dest, const char *src, size_t n)
  
  	if (!len)
- 		return;
+ 		return 0;
 -	len = min(len, n - 1);
 +	if (n - 1 < len)
 +		len = n - 1;
  	memcpy(dest, src, len);
  	dest[len] = 0;
- }
+ 	return len;
 diff --git a/lib/mbsalign.c b/lib/mbsalign.c
-index e251202af..f3ea1a2df 100644
+index b4ab7becd..ea531119b 100644
 --- a/lib/mbsalign.c
 +++ b/lib/mbsalign.c
-@@ -614,7 +614,7 @@ mbsalign_unibyte:
+@@ -629,7 +629,7 @@ mbsalign_unibyte:
  
        dest = mbs_align_pad (dest, dest_end, start_spaces, padchar);
        space_left = dest_end - dest;
@@ -81,11 +84,49 @@ index e251202af..f3ea1a2df 100644
        mbs_align_pad (dest, dest_end, end_spaces, padchar);
      }
  #ifdef HAVE_WIDECHAR
+diff --git a/lib/sysfs.c b/lib/sysfs.c
+index c888617b7..7ecfdc9a8 100644
+--- a/lib/sysfs.c
++++ b/lib/sysfs.c
+@@ -479,9 +479,9 @@ static int sysfs_devchain_is_removable(char *chain)
+ 			close(fd);
+ 
+ 			if (rc > 0) {
+-				if (strncmp(buf, "fixed", min(rc, 5)) == 0) {
++				if (strncmp(buf, "fixed", umin(rc, 5)) == 0) {
+ 					return 0;
+-				} else if (strncmp(buf, "removable", min(rc, 9)) == 0) {
++				} else if (strncmp(buf, "removable", umin(rc, 9)) == 0) {
+ 					return 1;
+ 				}
+ 			}
+diff --git a/libblkid/src/probe.c b/libblkid/src/probe.c
+index a38f5990e..8aea0cd5f 100644
+--- a/libblkid/src/probe.c
++++ b/libblkid/src/probe.c
+@@ -1021,7 +1021,7 @@ static uint64_t blkid_get_io_size(int fd)
+ 	for (i = 0; i < ARRAY_SIZE(ioctls); i++) {
+ 		r = ioctl(fd, ioctls[i], &s);
+ 		if (r == 0 && is_power_of_2(s) && s >= DEFAULT_SECTOR_SIZE)
+-			return min(s, 1U << 16);
++			return umin(s, 1U << 16);
+ 	}
+ 
+ 	return DEFAULT_SECTOR_SIZE;
+@@ -2009,7 +2009,7 @@ static void blkid_probe_log_csum_mismatch(blkid_probe pr, size_t n, const void *
+ {
+ 	char csum_hex[256];
+ 	char expected_hex[sizeof(csum_hex)];
+-	int hex_size = min(sizeof(csum_hex), n * 2);
++	int hex_size = umin(sizeof(csum_hex), n * 2);
+ 
+ 	for (int i = 0; i < hex_size; i+=2) {
+ 		snprintf(&csum_hex[i], sizeof(csum_hex) - i, "%02X", ((const unsigned char *) csum)[i / 2]);
 diff --git a/libblkid/src/superblocks/befs.c b/libblkid/src/superblocks/befs.c
-index 211feae9f..35c2b19c4 100644
+index 5d082a949..322118601 100644
 --- a/libblkid/src/superblocks/befs.c
 +++ b/libblkid/src/superblocks/befs.c
-@@ -257,7 +257,7 @@ static int32_t compare_keys(const char keys1[], uint16_t keylengths1[],
+@@ -264,7 +264,7 @@ static int32_t compare_keys(const char keys1[], uint16_t keylengths1[],
  
  	key1 = &keys1[keystart1];
  
@@ -94,7 +135,7 @@ index 211feae9f..35c2b19c4 100644
  
  	if (result == 0)
  		return keylength1 - keylength2;
-@@ -386,8 +386,8 @@ static int get_uuid(blkid_probe pr, const struct befs_super_block *bs,
+@@ -393,8 +393,8 @@ static int get_uuid(blkid_probe pr, const struct befs_super_block *bs,
  
  	bi_size = (uint64_t)FS16_TO_CPU(bs->root_dir.len, fs_le) <<
  		FS32_TO_CPU(bs->block_shift, fs_le);
@@ -106,10 +147,10 @@ index 211feae9f..35c2b19c4 100644
  	offset = 0;
  
 diff --git a/libblkid/src/superblocks/exfat.c b/libblkid/src/superblocks/exfat.c
-index f586ec786..3c0448027 100644
+index a7d3e0298..a67e6f5e0 100644
 --- a/libblkid/src/superblocks/exfat.c
 +++ b/libblkid/src/superblocks/exfat.c
-@@ -126,7 +126,7 @@ static int probe_exfat(blkid_probe pr, const struct blkid_idmag *mag)
+@@ -259,7 +259,7 @@ static int probe_exfat(blkid_probe pr, const struct blkid_idmag *mag)
  	label = find_label(pr, sb);
  	if (label)
  		blkid_probe_set_utf8label(pr, label->name,
@@ -119,13 +160,13 @@ index f586ec786..3c0448027 100644
  	else if (errno)
  		return -errno;
 diff --git a/libblkid/src/superblocks/iso9660.c b/libblkid/src/superblocks/iso9660.c
-index 289a325c8..ac4cc274f 100644
+index a7a364f30..6567dc519 100644
 --- a/libblkid/src/superblocks/iso9660.c
 +++ b/libblkid/src/superblocks/iso9660.c
-@@ -228,8 +228,8 @@ static int probe_iso9660(blkid_probe pr, const struct blkid_idmag *mag)
- 		unsigned char *desc =
+@@ -257,8 +257,8 @@ static int probe_iso9660(blkid_probe pr, const struct blkid_idmag *mag)
+ 		const unsigned char *desc =
  			blkid_probe_get_buffer(pr,
- 					off,
+ 					off + (is_hs ? 8 : 0), /* High Sierra has 8 bytes before descriptor with Volume Descriptor LBN value */
 -					max(sizeof(struct boot_record),
 -					    sizeof(struct iso_volume_descriptor)));
 +					umax(sizeof(struct boot_record),
@@ -134,7 +175,7 @@ index 289a325c8..ac4cc274f 100644
  		if (desc == NULL || desc[0] == ISO_VD_END)
  			break;
 diff --git a/libblkid/src/superblocks/minix.c b/libblkid/src/superblocks/minix.c
-index b521efb2b..d1fb64f64 100644
+index dba299d23..b18bcf89e 100644
 --- a/libblkid/src/superblocks/minix.c
 +++ b/libblkid/src/superblocks/minix.c
 @@ -83,8 +83,8 @@ static int probe_minix(blkid_probe pr,
@@ -148,8 +189,21 @@ index b521efb2b..d1fb64f64 100644
  	if (!data)
  		return errno ? -errno : 1;
  	version = get_minix_version(data, &swabme);
+diff --git a/libblkid/src/superblocks/romfs.c b/libblkid/src/superblocks/romfs.c
+index 86c09adc3..ac2f0ba78 100644
+--- a/libblkid/src/superblocks/romfs.c
++++ b/libblkid/src/superblocks/romfs.c
+@@ -27,7 +27,7 @@ struct romfs_super_block {
+ static int romfs_verify_csum(blkid_probe pr, const struct blkid_idmag *mag,
+ 		const struct romfs_super_block *ros)
+ {
+-	uint32_t csummed_size = min((uint32_t) 512,
++	uint32_t csummed_size = umin((uint32_t) 512,
+ 			be32_to_cpu(ros->ros_full_size));
+ 	const unsigned char *csummed;
+ 	uint32_t csum;
 diff --git a/libfdisk/src/alignment.c b/libfdisk/src/alignment.c
-index 3ae721913..a1a05f48a 100644
+index 2c7a00486..6fc1b9b9d 100644
 --- a/libfdisk/src/alignment.c
 +++ b/libfdisk/src/alignment.c
 @@ -38,7 +38,7 @@
@@ -179,8 +233,8 @@ index 3ae721913..a1a05f48a 100644
  					cxt->alignment_offset) / cxt->sector_size;
  
  			if (direction == FDISK_ALIGN_UP && res < lba)
-@@ -398,7 +398,7 @@ int fdisk_apply_user_device_properties(struct fdisk_context *cxt)
- 	fdisk_reset_alignment(cxt);
+@@ -405,7 +405,7 @@ int fdisk_apply_user_device_properties(struct fdisk_context *cxt)
+ 		return rc;
  
  	if (cxt->user_grain) {
 -		unsigned long granularity = max(cxt->phy_sector_size, cxt->min_io_size);
@@ -189,10 +243,10 @@ index 3ae721913..a1a05f48a 100644
  		cxt->grain = cxt->user_grain < granularity ? granularity : cxt->user_grain;
  		DBG(CXT, ul_debugobj(cxt, "new grain: %lu", cxt->grain));
 diff --git a/libfdisk/src/context.c b/libfdisk/src/context.c
-index 083b255d3..a3bfff993 100644
+index 3b2a4d25f..b1363bbd9 100644
 --- a/libfdisk/src/context.c
 +++ b/libfdisk/src/context.c
-@@ -919,7 +919,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
+@@ -920,7 +920,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
  	/* the current layout */
  	fdisk_get_partitions(cxt, &tb);
  	/* maximal number of partitions */
@@ -201,7 +255,7 @@ index 083b255d3..a3bfff993 100644
  
  	while (fdisk_diff_tables(org, tb, &itr, &pa, &change) == 0) {
  		if (change == FDISK_DIFF_UNCHANGED)
-@@ -976,7 +976,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
+@@ -977,7 +977,7 @@ int fdisk_reread_changes(struct fdisk_context *cxt, struct fdisk_table *org)
  			/* Let's follow the Linux kernel and reduce
                           * DOS extended partition to 1 or 2 sectors.
  			 */
@@ -211,10 +265,10 @@ index 083b255d3..a3bfff993 100644
  		if (partx_add_partition(cxt->dev_fd, pa->partno + 1,
  					pa->start * ssf, sz) != 0) {
 diff --git a/libfdisk/src/gpt.c b/libfdisk/src/gpt.c
-index 5fd9b4d73..97e23767d 100644
+index 85040fb6b..76a6ab65b 100644
 --- a/libfdisk/src/gpt.c
 +++ b/libfdisk/src/gpt.c
-@@ -504,7 +504,7 @@ static int gpt_mknew_pmbr(struct fdisk_context *cxt)
+@@ -506,7 +506,7 @@ static int gpt_mknew_pmbr(struct fdisk_context *cxt)
  	pmbr->partition_record[0].end_track    = 0xFF;
  	pmbr->partition_record[0].starting_lba = cpu_to_le32(1);
  	pmbr->partition_record[0].size_in_lba  =
@@ -223,7 +277,7 @@ index 5fd9b4d73..97e23767d 100644
  
  	return 0;
  }
-@@ -956,7 +956,7 @@ static int valid_pmbr(struct fdisk_context *cxt)
+@@ -958,7 +958,7 @@ static int valid_pmbr(struct fdisk_context *cxt)
  			/* Note that gpt_write_pmbr() overwrites PMBR, but we want to keep it valid already
  			 * in memory too to disable warnings when valid_pmbr() called next time */
  			pmbr->partition_record[part].size_in_lba  =
@@ -233,45 +287,37 @@ index 5fd9b4d73..97e23767d 100644
  		}
  	}
 diff --git a/libsmartcols/src/calculate.c b/libsmartcols/src/calculate.c
-index 974fc340c..0c11627a7 100644
+index 77e843397..d0e892187 100644
 --- a/libsmartcols/src/calculate.c
 +++ b/libsmartcols/src/calculate.c
-@@ -57,7 +57,7 @@ static int count_cell_width(struct libscols_table *tb,
+@@ -66,11 +66,11 @@ static int count_cell_width(struct libscols_table *tb,
  
- 	if (len == (size_t) -1)		/* ignore broken multibyte strings */
- 		len = 0;
--	cl->width_max = max(len, cl->width_max);
-+	cl->width_max = umax(len, cl->width_max);
- 
- 	if (cl->is_extreme && cl->width_avg && len > cl->width_avg * 2)
- 		return 0;
-@@ -66,10 +66,10 @@ static int count_cell_width(struct libscols_table *tb,
- 		cl->extreme_sum += len;
- 		cl->extreme_count++;
- 	}
--	cl->width = max(len, cl->width);
-+	cl->width = umax(len, cl->width);
  	if (scols_column_is_tree(cl)) {
- 		size_t treewidth = buffer_get_safe_art_size(buf);
+ 		size_t treewidth = ul_buffer_get_safe_pointer_width(buf, SCOLS_BUFPTR_TREEEND);
 -		cl->width_treeart = max(cl->width_treeart, treewidth);
 +		cl->width_treeart = umax(cl->width_treeart, treewidth);
  	}
- 	return 0;
- }
-@@ -115,7 +115,7 @@ static int count_column_width(struct libscols_table *tb,
- 		if (data) {
- 			size_t len = scols_table_is_noencoding(tb) ?
- 					mbs_width(data) : mbs_safe_width(data);
--			cl->width_min = max(cl->width_min, len);
-+			cl->width_min = umax(cl->width_min, len);
- 		} else
- 			no_header = 1;
+ 
+ 	ce->width = len;
+-	cl->wstat.width_max = max(len, cl->wstat.width_max);
++	cl->wstat.width_max = umax(len, cl->wstat.width_max);
+ done:
+ 	scols_table_reset_cursor(tb);
+ 	return rc;
+@@ -178,7 +178,7 @@ static int count_column_width(struct libscols_table *tb,
+ 		size_t len = scols_table_is_noencoding(tb) ?
+ 				mbs_width(data) : mbs_safe_width(data);
+ 
+-		st->width_min = max(st->width_min, len);
++		st->width_min = umax(st->width_min, len);
+ 	} else
+ 		no_header = 1;
  
 diff --git a/libsmartcols/src/column.c b/libsmartcols/src/column.c
-index c11df69f5..1285d42e6 100644
+index e83d297fc..151adcfe0 100644
 --- a/libsmartcols/src/column.c
 +++ b/libsmartcols/src/column.c
-@@ -347,7 +347,7 @@ size_t scols_wrapnl_chunksize(const struct libscols_column *cl __attribute__((un
+@@ -574,7 +574,7 @@ size_t scols_wrapnl_chunksize(const struct libscols_column *cl __attribute__((un
  					mbs_width(data) :
  					mbs_safe_width(data);
  		}
@@ -280,6 +326,19 @@ index c11df69f5..1285d42e6 100644
  		data = p;
  	}
  
+@@ -1068,9 +1068,10 @@ int scols_column_greatest_wrap(
+ 	while (scols_column_next_wrap(cl, ce, data) == 0) {
+ 		size_t sz = strlen(*data);
+ 
+-		maxsz = max(maxsz, sz);
+-		if (maxsz == sz)
++		if (maxsz <= sz) {
++			maxsz = sz;
+ 			res = *data;
++		}
+ 	}
+ 
+ 	*data = res;
 -- 
-2.37.3
+2.49.0
 

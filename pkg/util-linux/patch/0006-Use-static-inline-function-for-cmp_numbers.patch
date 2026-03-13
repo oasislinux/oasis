@@ -1,4 +1,4 @@
-From f9e192ecdbfd369fe42da4c9b8a3ab90cfa6f10f Mon Sep 17 00:00:00 2001
+From 8dc8b17a429e26984936fb04b21a62a857c433bf Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 25 Jun 2019 00:13:43 -0700
 Subject: [PATCH] Use static inline function for cmp_numbers
@@ -10,12 +10,12 @@ uintmax_t.
  1 file changed, 5 insertions(+), 7 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
-index fe82a8847..eb48e7f77 100644
+index 1ba8c2beb..0c923112d 100644
 --- a/include/c.h
 +++ b/include/c.h
-@@ -153,13 +153,11 @@ umin(uintmax_t x, uintmax_t y)
- 	return x < y ? x : y;
- }
+@@ -165,13 +165,11 @@ umin(uintmax_t x, uintmax_t y)
+ 	_a > _b ? _a - _b : _b - _a; })
+ #endif
  
 -#ifndef cmp_numbers
 -# define cmp_numbers(x, y) __extension__ ({	\
@@ -30,8 +30,8 @@ index fe82a8847..eb48e7f77 100644
 +	return x == y ? 0 : x > y ? 1 : -1;
 +}
  
- #ifndef offsetof
- #define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+ 
+ #ifndef cmp_timespec
 -- 
-2.31.1
+2.49.0
 

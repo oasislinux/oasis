@@ -1,4 +1,4 @@
-From edb05302e2c747253afd4698bc445e36c8726306 Mon Sep 17 00:00:00 2001
+From 7f1d554cb07e8ada1842983e8ff8fa4dfe2ecf55 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 18 Jun 2019 02:29:07 -0700
 Subject: [PATCH] Avoid a few unnecessary statement expressions
@@ -8,10 +8,10 @@ Subject: [PATCH] Avoid a few unnecessary statement expressions
  1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/include/c.h b/include/c.h
-index b891ad480..b420b5187 100644
+index dcb2d683c..3ba42306c 100644
 --- a/include/c.h
 +++ b/include/c.h
-@@ -176,9 +176,8 @@
+@@ -210,9 +210,8 @@
   * @member:	the name of the member within the struct.
   */
  #ifndef container_of
@@ -22,8 +22,8 @@ index b891ad480..b420b5187 100644
 +	((type *)( (char *)ptr - offsetof(type,member) ))
  #endif
  
- #ifndef HAVE_PROGRAM_INVOCATION_SHORT_NAME
-@@ -256,11 +255,11 @@ errmsg(char doexit, int excode, char adderr, const char *fmt, ...)
+ #define read_unaligned_member(p, m) __extension__ ({          \
+@@ -310,11 +309,11 @@ void __err_oom(const char *file, unsigned int line)
  
  /* Don't use inline function to avoid '#include "nls.h"' in c.h
   */
@@ -37,7 +37,7 @@ index b891ad480..b420b5187 100644
  
  /* After failed execvp() */
  #define EX_EXEC_FAILED		126	/* Program located, but not usable. */
-@@ -387,10 +386,10 @@ static inline int xusleep(useconds_t usec)
+@@ -481,10 +480,10 @@ static inline void __attribute__((__noreturn__)) ul_sig_err(int excode, const ch
  
  #define UTIL_LINUX_VERSION _("%s from %s\n"), program_invocation_short_name, PACKAGE_STRING
  
@@ -48,8 +48,8 @@ index b891ad480..b420b5187 100644
 -})
 +} while (0)
  
- /*
-  * seek stuff
+ static inline void print_features(const char *const*features, const char *prefix)
+ {
 -- 
-2.31.1
+2.49.0
 

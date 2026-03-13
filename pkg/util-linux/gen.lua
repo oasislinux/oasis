@@ -1,4 +1,4 @@
-set('version', '2.37.0')
+set('version', '2.41.3')
 cflags{
 	'-include $dir/config.h',
 	'-I $outdir',
@@ -50,6 +50,8 @@ lib('libcommon.a', [[
 		canonicalize.c
 		crc32.c
 		crc32c.c
+		crc64.c
+		c_strtod.c
 		encode.c
 		env.c
 		fileutils.c
@@ -59,24 +61,25 @@ lib('libcommon.a', [[
 		match.c
 		mbsalign.c
 		md5.c
-		pager.c
 		pwdutils.c
 		randutils.c
 		sha1.c
+		sha256.c
 		signames.c
 		strutils.c
 		strv.c
 		timeutils.c
 		ttyutils.c
+		xxhash.c
 
 		linux_version.c
-		procutils.c
 		loopdev.c
 
 		cpuset.c
 
 		path.c
 		sysfs.c
+		procfs.c
 	)
 ]])
 
@@ -122,6 +125,7 @@ lib('libblkid.a', [[
 			bitlocker.c
 			bluestore.c
 			btrfs.c
+			cs_fvault2.c
 			cramfs.c
 			ddf_raid.c
 			drbd.c
@@ -226,7 +230,6 @@ lib('libsmartcols.a', [[
 		print.c
 		print-api.c
 		version.c
-		buffer.c
 		calculate.c
 		grouping.c
 		walk.c
@@ -257,16 +260,17 @@ lib('libuuid.a', [[
 
 exe('fdisk', [[
 	disk-utils/(fdisk.c fdisk-menu.c fdisk-list.c)
+	lib/pager.c
 	libfdisk.a.d libsmartcols.a.d
 ]])
 file('bin/fdisk', '755', '$outdir/fdisk')
-man{'$dir/man/fdisk.8'}
+man{'disk-utils/fdisk.8'}
 
 exe('losetup', [[
 	sys-utils/losetup.c
 	libsmartcols.a.d libcommon.a
 ]])
 file('bin/losetup', '755', '$outdir/losetup')
-man{'$dir/man/losetup.8'}
+man{'sys-utils/losetup.8'}
 
-fetch 'git'
+fetch 'curl'
