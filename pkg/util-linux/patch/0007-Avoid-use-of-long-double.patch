@@ -1,14 +1,14 @@
-From 74dc839d640c8df63e597c5826458bb6a3b57cb2 Mon Sep 17 00:00:00 2001
+From 7a6a46d6811acd06661f4f3f2e36d69157b695bf Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 6 Sep 2021 18:05:22 -0700
 Subject: [PATCH] Avoid use of long double
 
 ---
- lib/strutils.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ lib/strutils.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/lib/strutils.c b/lib/strutils.c
-index 54746fcae..fb42fb0cf 100644
+index 54746fcae..efadd67ff 100644
 --- a/lib/strutils.c
 +++ b/lib/strutils.c
 @@ -456,6 +456,7 @@ err:
@@ -27,7 +27,7 @@ index 54746fcae..fb42fb0cf 100644
  
  uintmax_t strtosize_or_err(const char *str, const char *errmesg)
  {
-@@ -500,9 +502,9 @@ uintmax_t strtosize_or_err(const char *str, const char *errmesg)
+@@ -500,18 +502,18 @@ uintmax_t strtosize_or_err(const char *str, const char *errmesg)
  
  void strtotimeval_or_err(const char *str, struct timeval *tv, const char *errmesg)
  {
@@ -38,6 +38,17 @@ index 54746fcae..fb42fb0cf 100644
 +	user_input = strtod_or_err(str, errmesg);
  	tv->tv_sec = (time_t) user_input;
  	tv->tv_usec = (suseconds_t)((user_input - tv->tv_sec) * 1000000);
+ }
+ 
+ void strtotimespec_or_err(const char *str, struct timespec *ts, const char *errmesg)
+ {
+-	long double user_input;
++	double user_input;
+ 
+-	user_input = strtold_or_err(str, errmesg);
++	user_input = strtod_or_err(str, errmesg);
+ 	ts->tv_sec = (time_t) user_input;
+ 	ts->tv_nsec = (long)((user_input - ts->tv_sec) * 1000000000);
  }
 -- 
 2.49.0
