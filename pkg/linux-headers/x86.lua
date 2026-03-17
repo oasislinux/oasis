@@ -67,4 +67,5 @@ return {
 			abi='common|64',
 		},
 	},
+	generic={},
 }

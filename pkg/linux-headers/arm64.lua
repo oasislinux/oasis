@@ -20,4 +20,8 @@ return {
 	'asm/ucontext.h',
 	'asm/unistd.h',
 	unistd={},
+	generic={
+		-- <awk '$1 == "generic-y" {printf "\\t\\t'\'%s\'',\\n", $3}' src/arch/arm64/include/uapi/asm/Kbuild
+		'kvm_para.h',
+	},
 }

@@ -72,12 +72,19 @@ pkg.hdrs = {
 for _, file in ipairs(archfiles) do
 	archfiles[file] = true
 end
+
+local function wrap(file)
+	local out = '$outdir/include/asm/'..file
+	build('wrapper', out, nil, {file=file})
+	table.insert(pkg.hdrs, out)
+end
 for _, file in ipairs(mandatory) do
 	if not archfiles['asm/'..file] then
-		local out = '$outdir/include/asm/'..file
-		build('wrapper', out, nil, {file=file})
-		table.insert(pkg.hdrs, out)
+		wrap(file)
 	end
+end
+for _, file in ipairs(archfiles.generic) do
+	wrap(file)
 end
 
 for _, spec in ipairs(archfiles.unistd) do
