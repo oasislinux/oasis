@@ -84,7 +84,6 @@ for _, spec in ipairs(archfiles.unistd) do
 	local out = '$outdir/include/asm/'..spec.dst
 	build('awk', out, {'$srcdir/'..spec.src, '|', '$dir/unistd.awk'}, {
 		expr={
-			'-v arch='..arch,
 			'-v file='..spec.dst,
 			string.format([[-v abi='%s']], spec.abi),
 			'-v off='..(spec.off or ''),

@@ -1,8 +1,8 @@
 BEGIN {
-	guard = toupper("_ASM_" arch "_" file)
+	guard = toupper("_ASM_" file)
 	gsub(/[^A-Za-z0-9_]/, "_", guard)
 	print "#ifndef " guard
-	print "#define " guard " 1"
+	print "#define " guard
 	print ""
 }
 
@@ -13,6 +13,7 @@ $0 ~ /^[^#]+/ && $2 ~ "^(" abi ")$" {
 }
 
 END {
+	print ""
 	print ""
 	print "#endif /* " guard " */"
 }
