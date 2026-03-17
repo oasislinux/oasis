@@ -20,6 +20,7 @@ sh "$basedir/scripts/extract.sh" "$distdir/$archive" -s ',^[^/]*,src,' \
 	'linux-*/arch/*/include/uapi/' \
 	'linux-*/arch/*/entry/syscalls/' \
 	'linux-*/include/uapi/' \
+	'linux-*/scripts/syscall.tbl' \
 	'linux-*/scripts/unifdef.c'
 
 if [ -d patch ] ; then

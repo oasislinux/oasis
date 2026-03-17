@@ -19,7 +19,13 @@ return {
 	'asm/sve_context.h',
 	'asm/ucontext.h',
 	'asm/unistd.h',
-	unistd={},
+	unistd={
+		{
+			dst='unistd_64.h',
+			src='scripts/syscall.tbl',
+			abi='common|64|renameat|rlimit|memfd_secret',
+		},
+	},
 	generic={
 		-- <awk '$1 == "generic-y" {printf "\\t\\t'\'%s\'',\\n", $3}' src/arch/arm64/include/uapi/asm/Kbuild
 		'kvm_para.h',
