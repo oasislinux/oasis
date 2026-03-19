@@ -1,4 +1,4 @@
-From 535cd53babbd4d827c7330e223c5e17b1f5128c3 Mon Sep 17 00:00:00 2001
+From 25102012a19a67f3153e8024890751ee45335a5f Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 31 May 2021 16:37:09 -0700
 Subject: [PATCH] Break out of input loop when UI is hidden
@@ -10,10 +10,10 @@ with M-l, which restores curses mode when using NetBSD's libcurses.
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/input.c b/input.c
-index 820bf3c..f396fbd 100644
+index 9334315..a958b89 100644
 --- a/input.c
 +++ b/input.c
-@@ -543,7 +543,7 @@ void inputRead(void) {
+@@ -544,7 +544,7 @@ void inputRead(void) {
  
  	wint_t ch;
  	static bool paste, style, literal;
@@ -23,5 +23,5 @@ index 820bf3c..f396fbd 100644
  		size_t pos = edits[tab.id].pos;
  		bool spr = uiSpoilerReveal;
 -- 
-2.34.1
+2.49.0
 

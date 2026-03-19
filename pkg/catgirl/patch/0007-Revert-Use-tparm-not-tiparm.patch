@@ -1,0 +1,26 @@
+From 571ea66d558bd85a13ee92bb6c2ccd476836bc47 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 19 Mar 2026 03:12:11 -0700
+Subject: [PATCH] Revert "Use tparm, not tiparm"
+
+This reverts commit b5bd702c3cb9eab341bfca312b0a5cad3f5368be.
+---
+ ui.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ui.c b/ui.c
+index d231aac..9e19e4e 100644
+--- a/ui.c
++++ b/ui.c
+@@ -157,7 +157,7 @@ void uiDraw(void) {
+ 	if (!to_status_line) return;
+ 	if (!strcmp(uiTitle, prevTitle)) return;
+ 	strcpy(prevTitle, uiTitle);
+-	putp(tparm(to_status_line, 0));
++	putp(tiparm(to_status_line, 0));
+ 	putp(uiTitle);
+ 	putp(from_status_line);
+ 	fflush(stdout);
+-- 
+2.49.0
+

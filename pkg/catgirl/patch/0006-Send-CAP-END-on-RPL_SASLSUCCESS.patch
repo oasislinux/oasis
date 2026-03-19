@@ -1,4 +1,4 @@
-From 0379f92f9ccd424a741cf38fb7dee7bdf0333588 Mon Sep 17 00:00:00 2001
+From e8bda36978b91df532394a10e66589272f549959 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 19 Mar 2026 02:48:24 -0700
 Subject: [PATCH] Send CAP END on RPL_SASLSUCCESS
@@ -16,10 +16,10 @@ SASL.
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/handle.c b/handle.c
-index a4f1015..e3d6884 100644
+index b973161..1c13343 100644
 --- a/handle.c
 +++ b/handle.c
-@@ -229,7 +229,7 @@ static void handleAuthenticate(struct Message *msg) {
+@@ -252,7 +252,7 @@ static void handleAuthenticate(struct Message *msg) {
  	explicit_bzero(self.plainPass, strlen(self.plainPass));
  }
  
@@ -27,8 +27,8 @@ index a4f1015..e3d6884 100644
 +static void handleReplySASLSuccess(struct Message *msg) {
  	(void)msg;
  	ircFormat("CAP END\r\n");
- }
-@@ -1367,7 +1367,7 @@ static const struct Handler {
+ 	handleReplyGeneric(msg);
+@@ -1403,7 +1403,7 @@ static const struct Handler {
  	{ "704", +ReplyHelp, handleReplyHelp },
  	{ "705", +ReplyHelp, handleReplyHelp },
  	{ "706", -ReplyHelp, NULL },
