@@ -1,0 +1,42 @@
+From 0379f92f9ccd424a741cf38fb7dee7bdf0333588 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 19 Mar 2026 02:48:24 -0700
+Subject: [PATCH] Send CAP END on RPL_SASLSUCCESS
+
+soju does not send 900 RPL_LOGGEDIN after SASL authentication[0]
+in order to show the one from the upstream network.
+
+We already sent CAP END *unless* doing SASL, so it makes sense to
+look for 903 RPL_SASLSUCCESS to send CAP END when we *are* doing
+SASL.
+
+[0] https://github.com/ircv3/ircv3-specifications/pull/476
+---
+ handle.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/handle.c b/handle.c
+index a4f1015..e3d6884 100644
+--- a/handle.c
++++ b/handle.c
+@@ -229,7 +229,7 @@ static void handleAuthenticate(struct Message *msg) {
+ 	explicit_bzero(self.plainPass, strlen(self.plainPass));
+ }
+ 
+-static void handleReplyLoggedIn(struct Message *msg) {
++static void handleReplySASLSuccess(struct Message *msg) {
+ 	(void)msg;
+ 	ircFormat("CAP END\r\n");
+ }
+@@ -1367,7 +1367,7 @@ static const struct Handler {
+ 	{ "704", +ReplyHelp, handleReplyHelp },
+ 	{ "705", +ReplyHelp, handleReplyHelp },
+ 	{ "706", -ReplyHelp, NULL },
+-	{ "900", 0, handleReplyLoggedIn },
++	{ "903", 0, handleReplySASLSuccess },
+ 	{ "904", 0, handleErrorSASLFail },
+ 	{ "905", 0, handleErrorSASLFail },
+ 	{ "906", 0, handleErrorSASLFail },
+-- 
+2.49.0
+
