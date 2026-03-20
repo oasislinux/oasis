@@ -398,6 +398,7 @@ function fetch(method)
 		script = '$basedir/scripts/fetch-'..method..'.sh'
 	end
 	if method ~= 'git' then
+		table.insert(deps, '||')
 		table.insert(deps, '$builddir/pkg/pax/host/pax')
 	end
 	build('fetch', '$dir/fetch', deps, {script=script})
