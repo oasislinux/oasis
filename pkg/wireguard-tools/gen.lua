@@ -3,6 +3,11 @@ cflags{
 	'-D _GNU_SOURCE',
 	[[-D 'RUNSTATEDIR="/run"']],
 	'-I $srcdir/src/uapi/linux',
+	'-isystem $builddir/pkg/linux-headers/include',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 exe('wg', [[
