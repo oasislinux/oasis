@@ -1,0 +1,25 @@
+From 76e58adea4e85a0ac0db3339a8e7179378dc1b44 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 22:09:15 -0700
+Subject: [PATCH] Remove use of conditional operator with no second operand
+
+---
+ src/ipc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/ipc.c b/src/ipc.c
+index 1155bd5..d747553 100644
+--- a/src/ipc.c
++++ b/src/ipc.c
+@@ -72,7 +72,7 @@ cleanup:
+ 		free(list.buffer);
+ 		return NULL;
+ 	}
+-	return list.buffer ?: strdup("\0");
++	return list.buffer ? list.buffer : strdup("\0");
+ }
+ 
+ int ipc_get_device(struct wgdevice **dev, const char *iface)
+-- 
+2.49.0
+

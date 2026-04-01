@@ -1,0 +1,122 @@
+From 30dafd9bd223318058b5c2e5577bf4cf5b853f6d Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 22:05:31 -0700
+Subject: [PATCH] Avoid use of statement expressions
+
+---
+ src/ipc-uapi.h | 65 +++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 41 insertions(+), 24 deletions(-)
+
+diff --git a/src/ipc-uapi.h b/src/ipc-uapi.h
+index 1d8a271..e9f4059 100644
+--- a/src/ipc-uapi.h
++++ b/src/ipc-uapi.h
+@@ -124,16 +124,16 @@ out:
+ 	return ret;
+ }
+ 
+-#define NUM(max) ({ \
+-	unsigned long long num; \
+-	char *end; \
+-	if (!char_is_digit(value[0])) \
+-		break; \
+-	num = strtoull(value, &end, 10); \
+-	if (*end || num > max) \
+-		break; \
+-	num; \
+-})
++static bool num_from_str(const char *value, unsigned long long max, unsigned long long *num)
++{
++	char *end;
++	if (!char_is_digit(value[0]))
++		return false;
++	*num = strtoull(value, &end, 10);
++	if (*end || *num > max)
++		return false;
++	return true;
++}
+ 
+ static int userspace_get_device(struct wgdevice **out, const char *iface)
+ {
+@@ -144,6 +144,7 @@ static int userspace_get_device(struct wgdevice **out, const char *iface)
+ 	char *key = NULL, *value;
+ 	FILE *f;
+ 	int ret = -EPROTO;
++	unsigned long long num;
+ 
+ 	*out = dev = calloc(1, sizeof(*dev));
+ 	if (!dev)
+@@ -178,10 +179,14 @@ static int userspace_get_device(struct wgdevice **out, const char *iface)
+ 			curve25519_generate_public(dev->public_key, dev->private_key);
+ 			dev->flags |= WGDEVICE_HAS_PRIVATE_KEY | WGDEVICE_HAS_PUBLIC_KEY;
+ 		} else if (!peer && !strcmp(key, "listen_port")) {
+-			dev->listen_port = NUM(0xffffU);
++			if (!num_from_str(value, 0xffffU, &num))
++				break;
++			dev->listen_port = num;
+ 			dev->flags |= WGDEVICE_HAS_LISTEN_PORT;
+ 		} else if (!peer && !strcmp(key, "fwmark")) {
+-			dev->fwmark = NUM(0xffffffffU);
++			if (!num_from_str(value, 0xffffffffU, &num))
++				break;
++			dev->fwmark = num;
+ 			dev->flags |= WGDEVICE_HAS_FWMARK;
+ 		} else if (!strcmp(key, "public_key")) {
+ 			struct wgpeer *new_peer = calloc(1, sizeof(*new_peer));
+@@ -242,7 +247,9 @@ static int userspace_get_device(struct wgdevice **out, const char *iface)
+ 			}
+ 			freeaddrinfo(resolved);
+ 		} else if (peer && !strcmp(key, "persistent_keepalive_interval")) {
+-			peer->persistent_keepalive_interval = NUM(0xffffU);
++			if (!num_from_str(value, 0xffffU, &num))
++				break;
++			peer->persistent_keepalive_interval = num;
+ 			peer->flags |= WGPEER_HAS_PERSISTENT_KEEPALIVE_INTERVAL;
+ 		} else if (peer && !strcmp(key, "allowed_ip")) {
+ 			struct wgallowedip *new_allowedip;
+@@ -271,16 +278,27 @@ static int userspace_get_device(struct wgdevice **out, const char *iface)
+ 			allowedip->cidr = strtoul(mask, &end, 10);
+ 			if (*end || allowedip->family == AF_UNSPEC || (allowedip->family == AF_INET6 && allowedip->cidr > 128) || (allowedip->family == AF_INET && allowedip->cidr > 32))
+ 				break;
+-		} else if (peer && !strcmp(key, "last_handshake_time_sec"))
+-			peer->last_handshake_time.tv_sec = NUM(0x7fffffffffffffffULL);
+-		else if (peer && !strcmp(key, "last_handshake_time_nsec"))
+-			peer->last_handshake_time.tv_nsec = NUM(0x7fffffffffffffffULL);
+-		else if (peer && !strcmp(key, "rx_bytes"))
+-			peer->rx_bytes = NUM(0xffffffffffffffffULL);
+-		else if (peer && !strcmp(key, "tx_bytes"))
+-			peer->tx_bytes = NUM(0xffffffffffffffffULL);
+-		else if (!strcmp(key, "errno"))
+-			ret = -NUM(0x7fffffffU);
++		} else if (peer && !strcmp(key, "last_handshake_time_sec")) {
++			if (!num_from_str(value, 0x7fffffffffffffffULL, &num))
++				break;
++			peer->last_handshake_time.tv_sec = num;
++		} else if (peer && !strcmp(key, "last_handshake_time_nsec")) {
++			if (!num_from_str(value, 0x7fffffffffffffffULL, &num))
++				break;
++			peer->last_handshake_time.tv_nsec = num;
++		} else if (peer && !strcmp(key, "rx_bytes")) {
++			if (!num_from_str(value, 0xffffffffffffffffULL, &num))
++				break;
++			peer->rx_bytes = num;
++		} else if (peer && !strcmp(key, "tx_bytes")) {
++			if (!num_from_str(value, 0xffffffffffffffffULL, &num))
++				break;
++			peer->tx_bytes = num;
++		} else if (!strcmp(key, "errno")) {
++			if (!num_from_str(value, 0x7fffffffU, &num))
++				break;
++			ret = -num;
++		}
+ 	}
+ 	ret = -EPROTO;
+ err:
+@@ -294,4 +312,3 @@ err:
+ 	return ret;
+ 
+ }
+-#undef NUM
+-- 
+2.49.0
+

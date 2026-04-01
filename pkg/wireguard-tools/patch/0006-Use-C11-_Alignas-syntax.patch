@@ -1,0 +1,39 @@
+From feeec4c812886ae1a36767ebeb20b5de7e8b8711 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 22:11:16 -0700
+Subject: [PATCH] Use C11 _Alignas syntax
+
+---
+ src/curve25519.c | 2 +-
+ src/pubkey.c     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/curve25519.c b/src/curve25519.c
+index e67591c..d8625cb 100644
+--- a/src/curve25519.c
++++ b/src/curve25519.c
+@@ -71,7 +71,7 @@ static noinline void memzero_explicit(void *s, size_t count)
+ 
+ void curve25519_generate_public(uint8_t pub[static CURVE25519_KEY_SIZE], const uint8_t secret[static CURVE25519_KEY_SIZE])
+ {
+-	static const uint8_t basepoint[CURVE25519_KEY_SIZE] __aligned(sizeof(uintptr_t)) = { 9 };
++	static const uint8_t _Alignas(sizeof(uintptr_t)) basepoint[CURVE25519_KEY_SIZE] = { 9 };
+ 
+ 	curve25519(pub, secret, basepoint);
+ }
+diff --git a/src/pubkey.c b/src/pubkey.c
+index f191592..0b4ca8d 100644
+--- a/src/pubkey.c
++++ b/src/pubkey.c
+@@ -13,7 +13,7 @@
+ 
+ int pubkey_main(int argc, const char *argv[])
+ {
+-	uint8_t key[WG_KEY_LEN] __attribute__((aligned(sizeof(uintptr_t))));
++	uint8_t _Alignas(sizeof(uintptr_t)) key[WG_KEY_LEN];
+ 	char base64[WG_KEY_LEN_BASE64];
+ 	int trailing_char;
+ 
+-- 
+2.49.0
+

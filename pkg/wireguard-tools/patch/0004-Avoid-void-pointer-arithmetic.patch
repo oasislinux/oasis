@@ -1,0 +1,88 @@
+From 473d80b14bbb494a55385ca7f6ab8d246fc8e004 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 22:07:10 -0700
+Subject: [PATCH] Avoid void pointer arithmetic
+
+---
+ src/netlink.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/src/netlink.h b/src/netlink.h
+index f9729ee..3868b65 100644
+--- a/src/netlink.h
++++ b/src/netlink.h
+@@ -105,12 +105,12 @@ static void *mnl_nlmsg_put_extra_header(struct nlmsghdr *nlh, size_t size)
+ 
+ static void *mnl_nlmsg_get_payload(const struct nlmsghdr *nlh)
+ {
+-	return (void *)nlh + MNL_NLMSG_HDRLEN;
++	return (char *)nlh + MNL_NLMSG_HDRLEN;
+ }
+ 
+ static void *mnl_nlmsg_get_payload_offset(const struct nlmsghdr *nlh, size_t offset)
+ {
+-	return (void *)nlh + MNL_NLMSG_HDRLEN + MNL_ALIGN(offset);
++	return (char *)nlh + MNL_NLMSG_HDRLEN + MNL_ALIGN(offset);
+ }
+ 
+ static bool mnl_nlmsg_ok(const struct nlmsghdr *nlh, int len)
+@@ -123,12 +123,12 @@ static bool mnl_nlmsg_ok(const struct nlmsghdr *nlh, int len)
+ static struct nlmsghdr *mnl_nlmsg_next(const struct nlmsghdr *nlh, int *len)
+ {
+ 	*len -= MNL_ALIGN(nlh->nlmsg_len);
+-	return (struct nlmsghdr *)((void *)nlh + MNL_ALIGN(nlh->nlmsg_len));
++	return (struct nlmsghdr *)((char *)nlh + MNL_ALIGN(nlh->nlmsg_len));
+ }
+ 
+ static void *mnl_nlmsg_get_payload_tail(const struct nlmsghdr *nlh)
+ {
+-	return (void *)nlh + MNL_ALIGN(nlh->nlmsg_len);
++	return (char *)nlh + MNL_ALIGN(nlh->nlmsg_len);
+ }
+ 
+ static bool mnl_nlmsg_seq_ok(const struct nlmsghdr *nlh, unsigned int seq)
+@@ -153,7 +153,7 @@ static uint16_t mnl_attr_get_payload_len(const struct nlattr *attr)
+ 
+ static void *mnl_attr_get_payload(const struct nlattr *attr)
+ {
+-	return (void *)attr + MNL_ATTR_HDRLEN;
++	return (char *)attr + MNL_ATTR_HDRLEN;
+ }
+ 
+ static bool mnl_attr_ok(const struct nlattr *attr, int len)
+@@ -165,7 +165,7 @@ static bool mnl_attr_ok(const struct nlattr *attr, int len)
+ 
+ static struct nlattr *mnl_attr_next(const struct nlattr *attr)
+ {
+-	return (struct nlattr *)((void *)attr + MNL_ALIGN(attr->nla_len));
++	return (struct nlattr *)((char *)attr + MNL_ALIGN(attr->nla_len));
+ }
+ 
+ static int mnl_attr_type_valid(const struct nlattr *attr, uint16_t max)
+@@ -315,7 +315,7 @@ static void mnl_attr_put(struct nlmsghdr *nlh, uint16_t type, size_t len,
+ 	nlh->nlmsg_len += MNL_ALIGN(payload_len);
+ 	pad = MNL_ALIGN(len) - len;
+ 	if (pad > 0)
+-		memset(mnl_attr_get_payload(attr) + len, 0, pad);
++		memset((char *)mnl_attr_get_payload(attr) + len, 0, pad);
+ }
+ 
+ static void mnl_attr_put_u16(struct nlmsghdr *nlh, uint16_t type, uint16_t data)
+@@ -379,12 +379,12 @@ static struct nlattr *mnl_attr_nest_start_check(struct nlmsghdr *nlh, size_t buf
+ 
+ static void mnl_attr_nest_end(struct nlmsghdr *nlh, struct nlattr *start)
+ {
+-	start->nla_len = mnl_nlmsg_get_payload_tail(nlh) - (void *)start;
++	start->nla_len = (char *)mnl_nlmsg_get_payload_tail(nlh) - (char *)start;
+ }
+ 
+ static void mnl_attr_nest_cancel(struct nlmsghdr *nlh, struct nlattr *start)
+ {
+-	nlh->nlmsg_len -= mnl_nlmsg_get_payload_tail(nlh) - (void *)start;
++	nlh->nlmsg_len -= (char *)mnl_nlmsg_get_payload_tail(nlh) - (char *)start;
+ }
+ 
+ static int mnl_cb_noop(__attribute__((unused)) const struct nlmsghdr *nlh, __attribute__((unused)) void *data)
+-- 
+2.49.0
+

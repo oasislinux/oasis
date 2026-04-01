@@ -1,0 +1,82 @@
+From 503ef43e485e76f015b95f3c24233e691ff55e32 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 15:17:55 -0700
+Subject: [PATCH] Use portable int pack/unpack routines
+
+These compile to the exact same assembly on gcc with -O2.
+---
+ src/curve25519.c | 38 +++++++++++---------------------------
+ 1 file changed, 11 insertions(+), 27 deletions(-)
+
+diff --git a/src/curve25519.c b/src/curve25519.c
+index d3bc005..e67591c 100644
+--- a/src/curve25519.c
++++ b/src/curve25519.c
+@@ -8,16 +8,6 @@
+ #include <stdint.h>
+ #include <string.h>
+ 
+-#ifndef __BYTE_ORDER__
+-#include <sys/param.h>
+-#if !defined(BYTE_ORDER) || !defined(BIG_ENDIAN) || !defined(LITTLE_ENDIAN)
+-#error "Unable to determine endianness."
+-#endif
+-#define __BYTE_ORDER__ BYTE_ORDER
+-#define __ORDER_BIG_ENDIAN__ BIG_ENDIAN
+-#define __ORDER_LITTLE_ENDIAN__ LITTLE_ENDIAN
+-#endif
+-
+ #ifdef __linux__
+ #include <linux/types.h>
+ typedef __u64 u64;
+@@ -30,15 +20,6 @@ typedef uint32_t u32, __le32;
+ typedef uint8_t u8;
+ typedef int64_t s64;
+ #endif
+-#if __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
+-#define le64_to_cpup(a) __builtin_bswap64(*(a))
+-#define le32_to_cpup(a) __builtin_bswap32(*(a))
+-#define cpu_to_le64(a) __builtin_bswap64(a)
+-#else
+-#define le64_to_cpup(a) (*(a))
+-#define le32_to_cpup(a) (*(a))
+-#define cpu_to_le64(a) (a)
+-#endif
+ #ifndef __unused
+ #define __unused  __attribute__((unused))
+ #endif
+@@ -57,20 +38,23 @@ typedef int64_t s64;
+ 
+ static __always_inline __unused __le32 get_unaligned_le32(const u8 *a)
+ {
+-	__le32 l;
+-	__builtin_memcpy(&l, a, sizeof(l));
+-	return le32_to_cpup(&l);
++	return (__le32)a[0] | (__le32)a[1] << 8 | (__le32)a[2] << 16 | (__le32)a[3] << 24;
+ }
+ static __always_inline __unused __le64 get_unaligned_le64(const u8 *a)
+ {
+-	__le64 l;
+-	__builtin_memcpy(&l, a, sizeof(l));
+-	return le64_to_cpup(&l);
++	return (__le64)a[0] | (__le64)a[1] << 8 | (__le64)a[2] << 16 | (__le64)a[3] << 24 |
++	       (__le64)a[4] << 32 | (__le64)a[5] << 40 | (__le64)a[6] << 48 | (__le64)a[7] << 56;
+ }
+ static __always_inline __unused void put_unaligned_le64(u64 s, u8 *d)
+ {
+-	__le64 l = cpu_to_le64(s);
+-	__builtin_memcpy(d, &l, sizeof(l));
++	d[0] = s;
++	d[1] = s >> 8;
++	d[2] = s >> 16;
++	d[3] = s >> 24;
++	d[4] = s >> 32;
++	d[5] = s >> 40;
++	d[6] = s >> 48;
++	d[7] = s >> 56;
+ }
+ 
+ static noinline void memzero_explicit(void *s, size_t count)
+-- 
+2.49.0
+
