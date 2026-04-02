@@ -1,4 +1,4 @@
-From c154f9dfaaccabc52af12ccabc86e9d0c6c18ada Mon Sep 17 00:00:00 2001
+From 1bd3c3baab04866e76014412c839e3f954485207 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:25:13 -0700
 Subject: [PATCH] Avoid pointer arithmetic on `void *`
@@ -6,10 +6,10 @@ Subject: [PATCH] Avoid pointer arithmetic on `void *`
 ---
  src/netlink_smc_diag.c |  4 ++--
  src/print_timespec.h   |  6 ++++--
- src/sockaddr.c         |  4 ++--
+ src/sockaddr.c         |  6 +++---
  src/tee.c              |  2 +-
  src/ucopy.c            | 12 ++++++------
- 5 files changed, 15 insertions(+), 13 deletions(-)
+ 5 files changed, 16 insertions(+), 14 deletions(-)
 
 diff --git a/src/netlink_smc_diag.c b/src/netlink_smc_diag.c
 index 74e78b966..c3a28a839 100644
@@ -60,10 +60,19 @@ index dc5f9d10c..87f7ff973 100644
  
  	tprint_array_end();
 diff --git a/src/sockaddr.c b/src/sockaddr.c
-index ee1ce8828..c1f9b1740 100644
+index 874821c60..98220288d 100644
 --- a/src/sockaddr.c
 +++ b/src/sockaddr.c
-@@ -583,7 +583,7 @@ print_sockaddr_data_ll(struct tcb *tcp, const void *const buf,
+@@ -605,7 +605,7 @@ print_sockaddr_data_tipc(struct tcb *tcp, const void *const buf,
+ 	tprint_struct_next();
+ 	tprints_field_name("addr");
+ 
+-	const void *const addr_buf = buf + offsetof(struct sockaddr_tipc, addr);
++	const void *const addr_buf = (char *)buf + offsetof(struct sockaddr_tipc, addr);
+ 	const int addr_len = sizeof(struct sockaddr_tipc) - offsetof(struct sockaddr_tipc, addr);
+ 
+ 	switch (sa->addrtype) {
+@@ -657,7 +657,7 @@ print_sockaddr_data_tipc(struct tcb *tcp, const void *const buf,
  static void
  print_sockaddr_data_raw(const void *const buf, const int addrlen)
  {
@@ -72,7 +81,7 @@ index ee1ce8828..c1f9b1740 100644
  	const int datalen = addrlen - SIZEOF_SA_FAMILY;
  
  	tprints_field_name("sa_data");
-@@ -780,7 +780,7 @@ print_sockaddr_data_rxrpc(struct tcb *tcp, const void *const buf,
+@@ -854,7 +854,7 @@ print_sockaddr_data_rxrpc(struct tcb *tcp, const void *const buf,
  	tprints_field_name("transport");
  	tprint_struct_begin();
  
@@ -82,10 +91,10 @@ index ee1ce8828..c1f9b1740 100644
  	const int transport_len = MIN(sa->transport_len,
  				      len - offsetof(struct sockaddr_rxrpc,
 diff --git a/src/tee.c b/src/tee.c
-index c62566800..1596a5095 100644
+index 08754212a..dca390adb 100644
 --- a/src/tee.c
 +++ b/src/tee.c
-@@ -69,7 +69,7 @@ tee_fetch_buf_data(struct tcb *const tcp,
+@@ -56,7 +56,7 @@ tee_fetch_buf_data(struct tcb *const tcp,
  		tee_print_buf(buf);
  		return RVAL_IOCTL_DECODED;
  	}
@@ -148,5 +157,5 @@ index b4e746b0b..007b5373e 100644
  	}
  
 -- 
-2.44.0
+2.49.0
 

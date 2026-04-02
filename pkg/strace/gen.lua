@@ -86,6 +86,7 @@ local srcs = paths[[src/(
 	access.c
 	affinity.c
 	aio.c
+	alarm.c
 	alpha.c
 	basic_filters.c
 	bind.c
@@ -121,6 +122,7 @@ local srcs = paths[[src/(
 	evdev_mpers.c
 	eventfd.c
 	execve.c
+	exit.c
 	exitkill.c
 	fadvise.c
 	fallocate.c
@@ -138,10 +140,12 @@ local srcs = paths[[src/(
 	fetch_struct_stat64.c
 	fetch_struct_statfs.c
 	fetch_struct_xfs_quotastat.c
+	file_attr.c
 	file_handle.c
 	filter_qualify.c
 	filter_seccomp.c
 	flock.c
+	fs_0x15_ioctl.c
 	fs_0x94_ioctl.c
 	fs_f_ioctl.c
 	fs_x_ioctl.c
@@ -170,6 +174,7 @@ local srcs = paths[[src/(
 	io_uring.c
 	ioctl.c
 	ioperm.c
+	iopl.c
 	ioprio.c
 	ipc.c
 	ipc_msg.c
@@ -190,6 +195,7 @@ local srcs = paths[[src/(
 	lirc_ioctl.c
 	listen.c
 	listmount.c
+	listns.c
 	lookup_dcookie.c
 	loop.c
 	lseek.c
@@ -225,13 +231,13 @@ local srcs = paths[[src/(
 	netlink_smc_diag.c
 	netlink_sock_diag.c
 	netlink_unix_diag.c
+	nice.c
 	nlattr.c
 	nsfs.c
 	numa.c
 	number_set.c
 	oldstat.c
 	open.c
-	open_tree.c
 	or1k_atomic.c
 	pathtrace.c
 	perf.c
@@ -306,6 +312,7 @@ local srcs = paths[[src/(
 	seccomp.c
 	seccomp_ioctl.c
 	sendfile.c
+	set_tid_address.c
 	sg_io_v3.c
 	sg_io_v4.c
 	shutdown.c
@@ -390,8 +397,8 @@ file('bin/strace', '755', '$outdir/strace')
 
 build('sed', '$outdir/strace.1', '$srcdir/doc/strace.1.in', {
 	expr={
-		[[-e 's,@STRACE_MANPAGE_DATE@,2024-06-30,']],
-		[[-e 's,@VERSION@,6.12,']],
+		[[-e 's,@STRACE_MANPAGE_DATE@,2025-11-13,']],
+		[[-e 's,@VERSION@,6.19,']],
 		[[-e 's,@ENABLE_STACKTRACE_TRUE@,#,']],
 		[[-e 's,@ENABLE_STACKTRACE_FALSE@,,']],
 		[[-e 's,@ENABLE_SECONTEXT_TRUE@,#,']],

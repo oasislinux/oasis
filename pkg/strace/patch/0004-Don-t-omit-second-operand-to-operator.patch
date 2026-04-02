@@ -1,18 +1,32 @@
-From e245f2d71d44d2a858517321a01d3ca71147042f Mon Sep 17 00:00:00 2001
+From 2a87525db61778ad915273dea37a17ae88e7a1f1 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 7 Jul 2019 21:53:16 -0700
 Subject: [PATCH] Don't omit second operand to '?' operator
 
 ---
- src/open.c    | 5 +++--
- src/prctl.c   | 8 ++++----
- src/strace.c  | 8 ++++----
- src/strauss.c | 4 +++-
- src/util.c    | 2 +-
- 5 files changed, 15 insertions(+), 12 deletions(-)
+ src/defs.h    |  2 +-
+ src/open.c    |  5 +++--
+ src/prctl.c   |  8 ++++----
+ src/strace.c  | 10 +++++-----
+ src/strauss.c |  4 +++-
+ src/util.c    |  4 ++--
+ 6 files changed, 18 insertions(+), 15 deletions(-)
 
+diff --git a/src/defs.h b/src/defs.h
+index 47e1c71f6..cd63f9d35 100644
+--- a/src/defs.h
++++ b/src/defs.h
+@@ -404,7 +404,7 @@ struct tcb {
+ # define has_seccomp_filter(tcp)	((tcp)->flags & TCB_SECCOMP_FILTER)
+ 
+ extern const struct_sysent stub_sysent;
+-# define tcp_sysent(tcp) (tcp->s_ent ?: &stub_sysent)
++# define tcp_sysent(tcp) (tcp->s_ent ? tcp->s_ent : &stub_sysent)
+ # define n_args(tcp) MIN(tcp_sysent(tcp)->nargs, MAX_ARGS)
+ 
+ # include "xlat.h"
 diff --git a/src/open.c b/src/open.c
-index 6356c5831..df59ea999 100644
+index 00bb697d0..77e6b2d9a 100644
 --- a/src/open.c
 +++ b/src/open.c
 @@ -88,8 +88,9 @@ sprint_open_modes64(uint64_t flags)
@@ -28,10 +42,10 @@ index 6356c5831..df59ea999 100644
  
  const char *
 diff --git a/src/prctl.c b/src/prctl.c
-index dbabb3a18..712715b98 100644
+index e4d6de888..89101e5cd 100644
 --- a/src/prctl.c
 +++ b/src/prctl.c
-@@ -98,10 +98,10 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
+@@ -99,10 +99,10 @@ sprint_sve_val(kernel_ulong_t arg, bool aux)
  	if (!aux && flags && xlat_verbose(xlat_verbosity) == XLAT_STYLE_VERBOSE)
  	{
  		xsprintf(out, "%#" PRI_klx " /* %s%s%#" PRI_klx " */",
@@ -44,7 +58,7 @@ index dbabb3a18..712715b98 100644
  	}
  
  	return out;
-@@ -134,10 +134,10 @@ sprint_sme_val(kernel_ulong_t arg, bool aux)
+@@ -135,10 +135,10 @@ sprint_sme_val(kernel_ulong_t arg, bool aux)
  	if (!aux && flags && xlat_verbose(xlat_verbosity) == XLAT_STYLE_VERBOSE)
  	{
  		xsprintf(out, "%#" PRI_klx " /* %s%s%#" PRI_klx " */",
@@ -58,10 +72,10 @@ index dbabb3a18..712715b98 100644
  
  	return out;
 diff --git a/src/strace.c b/src/strace.c
-index 1a9d53bc8..9ac16c8c3 100644
+index ee80de0bc..74a09dc7a 100644
 --- a/src/strace.c
 +++ b/src/strace.c
-@@ -2649,7 +2649,7 @@ init(int argc, char *argv[])
+@@ -2636,7 +2636,7 @@ init(int argc, char *argv[])
  			break;
  		case GETOPT_TS:
  			tflag_long_set = true;
@@ -70,7 +84,7 @@ index 1a9d53bc8..9ac16c8c3 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case 'T':
-@@ -2723,7 +2723,7 @@ init(int argc, char *argv[])
+@@ -2710,7 +2710,7 @@ init(int argc, char *argv[])
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case GETOPT_TIPS:
@@ -79,8 +93,12 @@ index 1a9d53bc8..9ac16c8c3 100644
  				error_opt_arg(c, lopt, optarg);
  			break;
  		case GETOPT_ARGV0:
-@@ -2772,10 +2772,10 @@ init(int argc, char *argv[])
+@@ -2759,13 +2759,13 @@ init(int argc, char *argv[])
  			qualify_kvm(optarg);
+ 			break;
+ 		case GETOPT_QUAL_NAMESPACE:
+-			qualify_namespace(optarg ?: namespace_qual);
++			qualify_namespace(optarg ? optarg : namespace_qual);
  			break;
  		case GETOPT_QUAL_QUIET:
 -			qualify_quiet(optarg ?: qflag_qual);
@@ -117,7 +135,7 @@ index bec85021b..5d49f950a 100644
  			strauss[MIN(3 + i, strauss_lines - 1)]);
  	}
 diff --git a/src/util.c b/src/util.c
-index ada3ba76a..a88dd008d 100644
+index 0d6d7da45..e6d6ee667 100644
 --- a/src/util.c
 +++ b/src/util.c
 @@ -640,7 +640,7 @@ printsocket(struct tcb *tcp, int fd, const char *path)
@@ -129,6 +147,15 @@ index ada3ba76a..a88dd008d 100644
  
  	return true;
  }
+@@ -1394,7 +1394,7 @@ printpathn(struct tcb *const tcp, const kernel_ulong_t addr, unsigned int n)
+ 	if (nul_seen < 0)
+ 		printaddr(addr);
+ 	else {
+-		print_quoted_cstring(path, (unsigned int) nul_seen ?: n);
++		print_quoted_cstring(path, nul_seen ? (unsigned int) nul_seen : n);
+ 
+ 		if (nul_seen)
+ 			selinux_printfilecon(tcp, path);
 -- 
-2.44.0
+2.49.0
 

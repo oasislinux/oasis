@@ -1,0 +1,85 @@
+From 8fbfd70d38e4dbff3c4ec6c9362ad7c765e5089f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 23:28:49 -0700
+Subject: [PATCH] Use ISO C alignment and attribute syntax
+
+---
+ src/gcc_compat.h | 4 ++--
+ src/quota.c      | 4 ++--
+ src/rtnl_link.c  | 4 ++--
+ src/sockaddr.c   | 4 ++--
+ 4 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/src/gcc_compat.h b/src/gcc_compat.h
+index 35291b747..7e576d35c 100644
+--- a/src/gcc_compat.h
++++ b/src/gcc_compat.h
+@@ -54,8 +54,8 @@
+ #  define ATTRIBUTE_PACKED	__attribute__((__packed__))
+ # else
+ #  define ATTRIBUTE_FORMAT(args)	/* empty */
+-#  define ATTRIBUTE_ALIGNED(arg)	/* empty */
+-#  define ATTRIBUTE_PACKED	/* empty */
++#  define ATTRIBUTE_ALIGNED(arg)	_Alignas(arg)
++#  define ATTRIBUTE_PACKED	[[gnu::packed]]
+ # endif
+ 
+ /*
+diff --git a/src/quota.c b/src/quota.c
+index c3aeda229..bf6ca186c 100644
+--- a/src/quota.c
++++ b/src/quota.c
+@@ -36,7 +36,7 @@
+  * leads to problems when it is used on 32-bit tracee which does not have such
+  * padding.
+  */
+-struct if_dqblk {
++struct ATTRIBUTE_PACKED if_dqblk {
+ 	uint64_t dqb_bhardlimit;
+ 	uint64_t dqb_bsoftlimit;
+ 	uint64_t dqb_curspace;
+@@ -46,7 +46,7 @@ struct if_dqblk {
+ 	uint64_t dqb_btime;
+ 	uint64_t dqb_itime;
+ 	uint32_t dqb_valid;
+-} ATTRIBUTE_PACKED;
++};
+ 
+ struct if_nextdqblk {
+ 	uint64_t dqb_bhardlimit;
+diff --git a/src/rtnl_link.c b/src/rtnl_link.c
+index acc244560..e345e87d3 100644
+--- a/src/rtnl_link.c
++++ b/src/rtnl_link.c
+@@ -926,10 +926,10 @@ decode_ifla_vf_guid(struct tcb *const tcp,
+ 	 * aligned;  trying to handle both possible attribute sizes.
+ 	 */
+ 	union {
+-		struct {
++		struct ATTRIBUTE_PACKED {
+ 			uint32_t vf;
+ 			uint64_t guid;
+-		} ATTRIBUTE_PACKED ivg_32;
++		} ivg_32;
+ 		struct {
+ 			uint32_t vf;
+ 			uint64_t ATTRIBUTE_ALIGNED(8) guid;
+diff --git a/src/sockaddr.c b/src/sockaddr.c
+index 98220288d..afa2fd6a8 100644
+--- a/src/sockaddr.c
++++ b/src/sockaddr.c
+@@ -757,9 +757,9 @@ print_sockaddr_data_bt(struct tcb *tcp, const void *const buf,
+ 		uint16_t			hci_channel;
+ 	};
+ 
+-	struct bdaddr {
++	struct ATTRIBUTE_PACKED bdaddr {
+ 		uint8_t				b[6];
+-	} ATTRIBUTE_PACKED;
++	};
+ 
+ 	struct sockaddr_sco {
+ 		/* sa_family_t */ uint16_t	sco_family;
+-- 
+2.49.0
+
