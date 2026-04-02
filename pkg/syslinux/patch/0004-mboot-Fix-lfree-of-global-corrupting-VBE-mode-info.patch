@@ -1,0 +1,29 @@
+From bdff605833a02c85afb179214b7b1737ac9d5ae4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 1 Mar 2022 12:39:56 -0800
+Subject: [PATCH] mboot: Fix lfree() of global, corrupting VBE mode info
+
+mi is freed at the end of this function, and is not used after this
+assignment. Setting mi to the address of the global vesa_info.mi
+here results in corruption of VBE info passed to the kernel.
+
+Signed-off-by: Michael Forney <mforney@mforney.org>
+---
+ com32/mboot/initvesa.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/com32/mboot/initvesa.c b/com32/mboot/initvesa.c
+index 9111ec27..ae7c160e 100644
+--- a/com32/mboot/initvesa.c
++++ b/com32/mboot/initvesa.c
+@@ -190,7 +190,6 @@ void set_graphics_mode(const struct multiboot_header *mbh,
+     if (!bestpxf)
+ 	goto out;		/* No mode found */
+ 
+-    mi = &vesa_info.mi;
+     mode = bestmode;
+ 
+     /* Now set video mode */
+-- 
+2.49.0
+
