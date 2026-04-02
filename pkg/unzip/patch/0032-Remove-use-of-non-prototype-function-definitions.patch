@@ -1,0 +1,2128 @@
+From e53bad1be991d7b1d544625c92d4ff346946a635 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 19:56:35 -0700
+Subject: [PATCH] Remove use of non-prototype function definitions
+
+---
+ amiga/smakefile    |   2 +-
+ aosvs/make_unz.cli |   2 +-
+ crc32.c            |   9 +--
+ crypt.c            |  37 +++++-----
+ envargs.c          |   8 +--
+ explode.c          |  37 ++++++----
+ extract.c          | 120 ++++++++++++---------------------
+ fileio.c           | 164 +++++++++++++++++++++------------------------
+ inflate.c          |  50 +++++++-------
+ list.c             |   9 +--
+ match.c            |  31 ++++-----
+ process.c          | 161 ++++++++++++++++++--------------------------
+ ttyio.c            |  60 +++++++++--------
+ ubz2err.c          |   3 +-
+ unix/configure     |   5 --
+ unix/unix.c        |  56 +++++-----------
+ unshrink.c         |   7 +-
+ unzip.c            |  39 ++++-------
+ unzip.h            |  57 +++-------------
+ zipinfo.c          |  37 ++++------
+ 20 files changed, 360 insertions(+), 534 deletions(-)
+
+diff --git a/amiga/smakefile b/amiga/smakefile
+index 48818f9..bf5c282 100644
+--- a/amiga/smakefile
++++ b/amiga/smakefile
+@@ -275,7 +275,7 @@ CCPUOPTSF = CPU=$(CUSECPU) $(CUTIL)
+ # cpu flags for UnzipSFX and MakeSFX (ensures portability to all Amigas)
+ CCPUOPTXM = CPU=ANY
+ 
+-CDEFINES = $(CMEMLIB) $(CDEFINES) DEF=AMIGA DEF=PROTO
++CDEFINES = $(CMEMLIB) $(CDEFINES) DEF=AMIGA
+ COPTIONS = CODE=NEAR NMINC VERBOSE STRINGMERGE PARAMETERS=BOTH
+ COPTIONS = $(COPTIONS) ERRORREXX NOERRORCONSOLE MEMSIZE=HUGE $(CLIST) $(CXREF)
+ COPTIONS = $(COPTIONS) $(CSTACK) STRICT UNSCHAR NOICONS
+diff --git a/aosvs/make_unz.cli b/aosvs/make_unz.cli
+index 8daf91e..0704944 100644
+--- a/aosvs/make_unz.cli
++++ b/aosvs/make_unz.cli
+@@ -1,5 +1,5 @@
+ push
+ prompt pop
+ searchlist :c_4.10 :c_4.10:lang_rt [!searchlist]
+-cc/link/NOUNX/NOSEA SYSV/DEFINE TERMIO/DEFINE AOS_VS/DEFINE=1 PROTO/DEFINE S_IFLNK/DEFINE=0120000 TIME.H/INCLUDE <unzip crc32 crypt envargs explode extract fileio globals inflate list match process ttyio ubz2err unreduce unshrink zipinfo aosvs>.c
++cc/link/NOUNX/NOSEA SYSV/DEFINE TERMIO/DEFINE AOS_VS/DEFINE=1 S_IFLNK/DEFINE=0120000 TIME.H/INCLUDE <unzip crc32 crypt envargs explode extract fileio globals inflate list match process ttyio ubz2err unreduce unshrink zipinfo aosvs>.c
+ pop
+diff --git a/crc32.c b/crc32.c
+index 02f504d..036d9e3 100644
+--- a/crc32.c
++++ b/crc32.c
+@@ -677,13 +677,14 @@ void free_crc_table()
+ 
+ 
+ /* ========================================================================= */
+-ulg crc32(crc, buf, len)
+-    ulg crc;                    /* crc shift register */
+-    register ZCONST uch *buf;   /* pointer to bytes to pump through */
+-    extent len;                 /* number of bytes in buf[] */
+ /* Run a set of bytes through the crc shift register.  If buf is a NULL
+    pointer, then initialize the crc shift register contents instead.
+    Return the current crc in either case. */
++ulg crc32(
++    ulg crc,                    /* crc shift register */
++    register ZCONST uch *buf,   /* pointer to bytes to pump through */
++    extent len                  /* number of bytes in buf[] */
++)
+ {
+   register z_uint4 c;
+   register ZCONST ulg near *crc_32_tab;
+diff --git a/crypt.c b/crypt.c
+index a8975f2..74ddc2a 100644
+--- a/crypt.c
++++ b/crypt.c
+@@ -146,8 +146,7 @@
+ /***********************************************************************
+  * Return the next byte in the pseudo-random sequence
+  */
+-int decrypt_byte(__G)
+-    __GDEF
++int decrypt_byte(__GPRO)
+ {
+     unsigned temp;  /* POTENTIAL BUG:  temp*(temp^1) may overflow in an
+                      * unpredictable manner on 16-bit systems; not a problem
+@@ -160,9 +159,10 @@ int decrypt_byte(__G)
+ /***********************************************************************
+  * Update the encryption keys with the next byte of plain text
+  */
+-int update_keys(__G__ c)
+-    __GDEF
+-    int c;                      /* byte of plain text */
++int update_keys(
++    __GPRO__
++    int c                       /* byte of plain text */
++)
+ {
+     GLOBAL(keys[0]) = CRC32(GLOBAL(keys[0]), c, CRY_CRC_TAB);
+     GLOBAL(keys[1]) = (GLOBAL(keys[1])
+@@ -180,9 +180,10 @@ int update_keys(__G__ c)
+  * Initialize the encryption keys and the random header according to
+  * the given password.
+  */
+-void init_keys(__G__ passwd)
+-    __GDEF
+-    ZCONST char *passwd;        /* password string with which to modify keys */
++void init_keys(
++    __GPRO__
++    ZCONST char *passwd         /* password string with which to modify keys */
++)
+ {
+ #ifdef IZ_CRC_BE_OPTIMIZ
+     if (cry_crctb_p == NULL) {
+@@ -209,8 +210,7 @@ void init_keys(__G__ passwd)
+  * crypt-crc32-table.
+  */
+ #ifdef IZ_CRC_BE_OPTIMIZ
+-local z_uint4 near *crytab_init(__G)
+-    __GDEF
++local z_uint4 near *crytab_init(__GPRO)
+ {
+     int i;
+ 
+@@ -450,9 +450,7 @@ unsigned zfwrite(buf, item_size, nb, f)
+  * Get the password and set up keys for current zipfile member.
+  * Return PK_ class error.
+  */
+-int decrypt(__G__ passwrd)
+-    __GDEF
+-    ZCONST char *passwrd;
++int decrypt(__GPRO__ ZCONST char *passwrd)
+ {
+     ush b;
+     int n, r;
+@@ -536,9 +534,7 @@ int decrypt(__G__ passwrd)
+ /***********************************************************************
+  * Test the password.  Return -1 if bad, 0 if OK.
+  */
+-local int testp(__G__ h)
+-    __GDEF
+-    ZCONST uch *h;
++local int testp(__GPRO__ ZCONST uch *h)
+ {
+     int r;
+     char *key_translated;
+@@ -591,10 +587,11 @@ local int testp(__G__ h)
+ } /* end function testp() */
+ 
+ 
+-local int testkey(__G__ h, key)
+-    __GDEF
+-    ZCONST uch *h;      /* decrypted header */
+-    ZCONST char *key;   /* decryption password to test */
++local int testkey(
++    __GPRO__
++    ZCONST uch *h,      /* decrypted header */
++    ZCONST char *key    /* decryption password to test */
++)
+ {
+     ush b;
+ #ifdef ZIP10
+diff --git a/envargs.c b/envargs.c
+index f0a230d..05a7902 100644
+--- a/envargs.c
++++ b/envargs.c
+@@ -46,10 +46,7 @@ static int count_args OF((ZCONST char *));
+ 
+ /* envargs() returns PK-style error code */
+ 
+-int envargs(Pargc, Pargv, envstr, envstr2)
+-    int *Pargc;
+-    char ***Pargv;
+-    ZCONST char *envstr, *envstr2;
++int envargs(int *Pargc, char ***Pargv, ZCONST char *envstr, ZCONST char *envstr2)
+ {
+     char *envptr;       /* value returned by getenv */
+     char *bufptr;       /* copy of env info */
+@@ -176,8 +173,7 @@ int envargs(Pargc, Pargv, envstr, envstr2)
+ 
+ 
+ 
+-static int count_args(s)
+-    ZCONST char *s;
++static int count_args(ZCONST char *s)
+ {
+     int count = 0;
+     char ch;
+diff --git a/explode.c b/explode.c
+index 3b558c2..9d79467 100644
+--- a/explode.c
++++ b/explode.c
+@@ -219,13 +219,14 @@ static ZCONST ush cpdist8[] =
+ }
+ 
+ 
+-static int get_tree(__G__ l, n)
+-     __GDEF
+-unsigned *l;            /* bit lengths */
+-unsigned n;             /* number expected */
+ /* Get the bit lengths for a code representation from the compressed
+    stream.  If get_tree() returns 4, then there is an error in the data.
+    Otherwise zero is returned. */
++static int get_tree(
++    __GDEF
++    unsigned *l,        /* bit lengths */
++    unsigned n          /* number expected */
++)
+ {
+   unsigned i;           /* bytes remaining in list */
+   unsigned k;           /* lengths entered */
+@@ -250,13 +251,18 @@ unsigned n;             /* number expected */
+ 
+ 
+ 
+-static int explode_lit(__G__ tb, tl, td, bb, bl, bd, bdl)
+-     __GDEF
+-struct huft *tb, *tl, *td;      /* literal, length, and distance tables */
+-unsigned bb, bl, bd;            /* number of bits decoded by those */
+-unsigned bdl;                   /* number of distance low bits */
+ /* Decompress the imploded data using coded literals and a sliding
+    window (of size 2^(6+bdl) bytes). */
++static int explode_lit(
++    __GPRO__
++    struct huft *tb,
++    struct huft *tl,
++    struct huft *td,    /* literal, length, and distance tables */
++    unsigned bb,
++    unsigned bl,
++    unsigned bd,        /* number of bits decoded by those */
++    unsigned bdl        /* number of distance low bits */
++)
+ {
+   zusz_t s;             /* bytes to decompress */
+   register unsigned e;  /* table entry flag/number of extra bits */
+@@ -368,13 +374,16 @@ unsigned bdl;                   /* number of distance low bits */
+ 
+ 
+ 
+-static int explode_nolit(__G__ tl, td, bl, bd, bdl)
+-     __GDEF
+-struct huft *tl, *td;   /* length and distance decoder tables */
+-unsigned bl, bd;        /* number of bits decoded by tl[] and td[] */
+-unsigned bdl;           /* number of distance low bits */
+ /* Decompress the imploded data using uncoded literals and a sliding
+    window (of size 2^(6+bdl) bytes). */
++static int explode_nolit(
++    __GPRO__
++    struct huft *tl,
++    struct huft *td,    /* length and distance decoder tables */
++    unsigned bl,
++    unsigned bd,        /* number of bits decoded by tl[] and td[] */
++    unsigned bdl        /* number of distance low bits */
++)
+ {
+   zusz_t s;             /* bytes to decompress */
+   register unsigned e;  /* table entry flag/number of extra bits */
+diff --git a/extract.c b/extract.c
+index 6712ed0..114f6c5 100644
+--- a/extract.c
++++ b/extract.c
+@@ -346,9 +346,7 @@ typedef struct {
+  * Return the index of the first span in cover whose beg is greater than val.
+  * If there is no such span, then cover->num is returned.
+  */
+-static size_t cover_find(cover, val)
+-    cover_t *cover;
+-    bound_t val;
++static size_t cover_find(cover_t *cover, bound_t val)
+ {
+     size_t lo = 0, hi = cover->num;
+     while (lo < hi) {
+@@ -362,9 +360,7 @@ static size_t cover_find(cover, val)
+ }
+ 
+ /* Return true if val lies within any one of the spans in cover. */
+-static int cover_within(cover, val)
+-    cover_t *cover;
+-    bound_t val;
++static int cover_within(cover_t *cover, bound_t val)
+ {
+     size_t pos = cover_find(cover, val);
+     return pos > 0 && val < cover->span[pos - 1].end;
+@@ -382,10 +378,7 @@ static int cover_within(cover, val)
+  * end, then -1 is returned. If the list needs to be grown but the memory
+  * allocation fails, then -2 is returned.
+  */
+-static int cover_add(cover, beg, end)
+-    cover_t *cover;
+-    bound_t beg;
+-    bound_t end;
++static int cover_add(cover_t *cover, bound_t beg, bound_t end)
+ {
+     size_t pos;
+     int prec, foll;
+@@ -449,8 +442,8 @@ static int cover_add(cover, beg, end)
+ /*  Function extract_or_test_files()  */
+ /**************************************/
+ 
+-int extract_or_test_files(__G)    /* return PK-type error code */
+-     __GDEF
++/* return PK-type error code */
++int extract_or_test_files(__GPRO)
+ {
+     unsigned i, j;
+     zoff_t cd_bufstart;
+@@ -975,8 +968,8 @@ int extract_or_test_files(__G)    /* return PK-type error code */
+ /*  Function store_info()  */
+ /***************************/
+ 
+-static int store_info(__G)   /* return 0 if skipping, 1 if OK */
+-    __GDEF
++/* return 0 if skipping, 1 if OK */
++static int store_info(__GPRO)
+ {
+ #ifdef USE_BZIP2
+ #  define UNKN_BZ2 (G.crec.compression_method!=BZIPPED)
+@@ -1152,8 +1145,7 @@ static int store_info(__G)   /* return 0 if skipping, 1 if OK */
+ /*  Function find_compr_idx()  */
+ /*******************************/
+ 
+-unsigned find_compr_idx(compr_methodnum)
+-    unsigned compr_methodnum;
++unsigned find_compr_idx(unsigned compr_methodnum)
+ {
+     unsigned i;
+ 
+@@ -1172,22 +1164,19 @@ unsigned find_compr_idx(compr_methodnum)
+ /*  Function extract_or_test_entrylist()  */
+ /******************************************/
+ 
+-static int extract_or_test_entrylist(__G__ numchunk,
+-                pfilnum, pnum_bad_pwd, pold_extra_bytes,
+-#ifdef SET_DIR_ATTRIB
+-                pnum_dirs, pdirlist,
+-#endif
+-                error_in_archive)    /* return PK-type error code */
+-    __GDEF
+-    unsigned numchunk;
+-    ulg *pfilnum;
+-    ulg *pnum_bad_pwd;
+-    zoff_t *pold_extra_bytes;
++/* return PK-type error code */
++static int extract_or_test_entrylist(
++    __GPRO__
++    unsigned numchunk,
++    ulg *pfilnum,
++    ulg *pnum_bad_pwd,
++    zoff_t *pold_extra_bytes,
+ #ifdef SET_DIR_ATTRIB
+-    unsigned *pnum_dirs;
+-    direntry **pdirlist;
++    unsigned *pnum_dirs,
++    direntry **pdirlist,
+ #endif
+-    int error_in_archive;
++    int error_in_archive
++)
+ {
+     unsigned i;
+     int renamed, query;
+@@ -1799,8 +1788,8 @@ reprompt:
+ /*  Function extract_or_test_member()  */
+ /***************************************/
+ 
+-static int extract_or_test_member(__G)    /* return PK-type error code */
+-     __GDEF
++/* return PK-type error code */
++static int extract_or_test_member(__GPRO)
+ {
+     char *nul="[empty] ", *txt="[text]  ", *bin="[binary]";
+ #ifdef CMS_MVS
+@@ -2218,10 +2207,7 @@ static int extract_or_test_member(__G)    /* return PK-type error code */
+ /*  Function TestExtraField()  */
+ /*******************************/
+ 
+-static int TestExtraField(__G__ ef, ef_len)
+-    __GDEF
+-    uch *ef;
+-    unsigned ef_len;
++static int TestExtraField(__GPRO__ uch *ef, unsigned ef_len)
+ {
+     ush ebID;
+     unsigned ebLen;
+@@ -2418,22 +2404,14 @@ static int TestExtraField(__G__ ef, ef_len)
+ /*  Function test_compr_eb()  */
+ /******************************/
+ 
+-#ifdef PROTO
+ static int test_compr_eb(
+     __GPRO__
+     uch *eb,
+     unsigned eb_size,
+     unsigned compr_offset,
+     int (*test_uc_ebdata)(__GPRO__ uch *eb, unsigned eb_size,
+-                          uch *eb_ucptr, ulg eb_ucsize))
+-#else /* !PROTO */
+-static int test_compr_eb(__G__ eb, eb_size, compr_offset, test_uc_ebdata)
+-    __GDEF
+-    uch *eb;
+-    unsigned eb_size;
+-    unsigned compr_offset;
+-    int (*test_uc_ebdata)();
+-#endif /* ?PROTO */
++                          uch *eb_ucptr, ulg eb_ucsize)
++)
+ {
+     ulg eb_ucsize;
+     uch *eb_ucptr;
+@@ -2493,12 +2471,11 @@ static int test_compr_eb(__G__ eb, eb_size, compr_offset, test_uc_ebdata)
+ /*  Function memextract()  */
+ /***************************/
+ 
+-int memextract(__G__ tgt, tgtsize, src, srcsize)  /* extract compressed */
+-    __GDEF                                        /*  extra field block; */
+-    uch *tgt;                                     /*  return PK-type error */
+-    ulg tgtsize;                                  /*  level */
+-    ZCONST uch *src;
+-    ulg srcsize;
++/* extract compressed */
++/*  extra field block; */
++/*  return PK-type error */
++/*  level */
++int memextract(__GPRO__ uch *tgt, ulg tgtsize, ZCONST uch *src, ulg srcsize)
+ {
+     zoff_t old_csize=G.csize;
+     uch   *old_inptr=G.inptr;
+@@ -2582,10 +2559,7 @@ int memextract(__G__ tgt, tgtsize, src, srcsize)  /* extract compressed */
+ /*  Function memflush()  */
+ /*************************/
+ 
+-int memflush(__G__ rawbuf, size)
+-    __GDEF
+-    ZCONST uch *rawbuf;
+-    ulg size;
++int memflush(__GPRO__ ZCONST uch *rawbuf, ulg size)
+ {
+     if (size > G.outsize)
+         /* Here, PK_DISK is a bit off-topic, but in the sense of marking
+@@ -2622,13 +2596,7 @@ int memflush(__G__ rawbuf, size)
+  * - Deflation (see memextract())
+  * The IZVMS block data is returned in malloc'd space.
+  */
+-uch *extract_izvms_block(__G__ ebdata, size, retlen, init, needlen)
+-    __GDEF
+-    ZCONST uch *ebdata;
+-    unsigned size;
+-    unsigned *retlen;
+-    ZCONST uch *init;
+-    unsigned needlen;
++uch *extract_izvms_block(__GPRO__ ZCONST uch *ebdata, unsigned size, unsigned *retlen, ZCONST uch *init, unsigned needlen)
+ {
+     uch *ucdata;       /* Pointer to block allocated */
+     int cmptype;
+@@ -2684,10 +2652,11 @@ uch *extract_izvms_block(__G__ ebdata, size, retlen, init, needlen)
+  *  else
+  *      putbit(0)
+  */
+-static void decompress_bits(outptr, needlen, bitptr)
+-    uch *outptr;        /* Pointer into output block */
+-    unsigned needlen;   /* Size of uncompressed block */
+-    ZCONST uch *bitptr; /* Pointer into compressed data */
++static void decompress_bits(
++    uch *outptr,        /* Pointer into output block */
++    unsigned needlen,   /* Size of uncompressed block */
++    ZCONST uch *bitptr  /* Pointer into compressed data */
++)
+ {
+     ulg bitbuf = 0;
+     int bitcnt = 0;
+@@ -2730,9 +2699,7 @@ static void decompress_bits(outptr, needlen, bitptr)
+ /* Function set_deferred_symlink() */
+ /***********************************/
+ 
+-static void set_deferred_symlink(__G__ slnk_entry)
+-    __GDEF
+-    slinkentry *slnk_entry;
++static void set_deferred_symlink(__GPRO__ slinkentry *slnk_entry)
+ {
+     extent ucsize = slnk_entry->targetlen;
+     char *linkfname = slnk_entry->fname;
+@@ -2787,10 +2754,8 @@ static void set_deferred_symlink(__G__ slnk_entry)
+ /*  Function fnfilter()  */        /* here instead of in list.c for SFX */
+ /*************************/
+ 
+-char *fnfilter(raw, space, size)   /* convert name to safely printable form */
+-    ZCONST char *raw;
+-    uch *space;
+-    extent size;
++/* convert name to safely printable form */
++char *fnfilter(ZCONST char *raw, uch *space, extent size)
+ {
+ #ifndef NATIVE   /* ASCII:  filter ANSI escape codes, etc. */
+     ZCONST uch *r=(ZCONST uch *)raw;
+@@ -2913,8 +2878,8 @@ char *fnfilter(raw, space, size)   /* convert name to safely printable form */
+ /*  Function dircomp()  */
+ /************************/
+ 
+-static int Cdecl dircomp(a, b)  /* used by qsort(); swiped from Zip */
+-    ZCONST zvoid *a, *b;
++/* used by qsort(); swiped from Zip */
++static int Cdecl dircomp(ZCONST zvoid *a, ZCONST zvoid *b)
+ {
+     /* order is significant:  this sorts in reverse order (deepest first) */
+     return strcmp((*(direntry **)b)->fn, (*(direntry **)a)->fn);
+@@ -2930,9 +2895,8 @@ static int Cdecl dircomp(a, b)  /* used by qsort(); swiped from Zip */
+ /*  Function UZbunzip2()  */
+ /**************************/
+ 
+-int UZbunzip2(__G)
+-__GDEF
+ /* decompress a bzipped entry using the libbz2 routines */
++int UZbunzip2(__GPRO)
+ {
+     int retval = 0;     /* return code: 0 = "no error" */
+     int err=BZ_OK;
+diff --git a/fileio.c b/fileio.c
+index 50a74fc..dff4c73 100644
+--- a/fileio.c
++++ b/fileio.c
+@@ -220,8 +220,8 @@ static ZCONST char Far ExtraFieldCorrupt[] =
+ /* Function open_input_file() */
+ /******************************/
+ 
+-int open_input_file(__G)    /* return 1 if open failed */
+-    __GDEF
++/* return 1 if open failed */
++int open_input_file(__GPRO__)
+ {
+     /*
+      *  open the zipfile for reading and in BINARY mode to prevent cr/lf
+@@ -271,8 +271,8 @@ int open_input_file(__G)    /* return 1 if open failed */
+ /* Function open_outfile() */
+ /***************************/
+ 
+-int open_outfile(__G)           /* return 1 if fail */
+-    __GDEF
++/* return 1 if fail */
++int open_outfile(__GPRO__)
+ {
+ #ifdef DLL
+     if (G.redirect_data)
+@@ -524,8 +524,7 @@ int open_outfile(__G)           /* return 1 if fail */
+ /* function undefer_input() */
+ /****************************/
+ 
+-void undefer_input(__G)
+-    __GDEF
++void undefer_input(__GPRO__)
+ {
+     if (G.incnt > 0)
+         G.csize += G.incnt;
+@@ -553,8 +552,7 @@ void undefer_input(__G)
+ /* function defer_leftover_input() */
+ /***********************************/
+ 
+-void defer_leftover_input(__G)
+-    __GDEF
++void defer_leftover_input(__GPRO__)
+ {
+     if ((zoff_t)G.incnt > G.csize) {
+         /* (G.csize < MAXINT), we can safely cast it to int !! */
+@@ -576,10 +574,8 @@ void defer_leftover_input(__G)
+ /* Function readbuf() */
+ /**********************/
+ 
+-unsigned readbuf(__G__ buf, size)   /* return number of bytes read into buf */
+-    __GDEF
+-    char *buf;
+-    register unsigned size;
++/* return number of bytes read into buf */
++unsigned readbuf(__GPRO__ char *buf, register unsigned size)
+ {
+     register unsigned count;
+     unsigned n;
+@@ -619,8 +615,8 @@ unsigned readbuf(__G__ buf, size)   /* return number of bytes read into buf */
+ /* Function readbyte() */
+ /***********************/
+ 
+-int readbyte(__G)   /* refill inbuf and return a byte if available, else EOF */
+-    __GDEF
++/* refill inbuf and return a byte if available, else EOF */
++int readbyte(__GPRO)
+ {
+     if (G.mem_mode)
+         return EOF;
+@@ -679,8 +675,8 @@ int readbyte(__G)   /* refill inbuf and return a byte if available, else EOF */
+ /* Function fillinbuf() */
+ /************************/
+ 
+-int fillinbuf(__G) /* like readbyte() except returns number of bytes in inbuf */
+-    __GDEF
++/* like readbyte() except returns number of bytes in inbuf */
++int fillinbuf(__GPRO)
+ {
+     if (G.mem_mode ||
+                   (G.incnt = read(G.zipfd, (char *)G.inbuf, INBUFSIZ)) <= 0)
+@@ -713,9 +709,7 @@ int fillinbuf(__G) /* like readbyte() except returns number of bytes in inbuf */
+ /* Function seek_zipf() */
+ /************************/
+ 
+-int seek_zipf(__G__ abs_offset)
+-    __GDEF
+-    zoff_t abs_offset;
++int seek_zipf(__GPRO__ zoff_t abs_offset)
+ {
+ /*
+  *  Seek to the block boundary of the block which includes abs_offset,
+@@ -784,11 +778,7 @@ int seek_zipf(__G__ abs_offset)
+ /* Function flush() */   /* returns PK error codes: */
+ /********************/   /* if tflag => always 0; PK_DISK if write error */
+ 
+-int flush(__G__ rawbuf, size, unshrink)
+-    __GDEF
+-    uch *rawbuf;
+-    ulg size;
+-    int unshrink;
++int flush(__GPRO__ uch *rawbuf, ulg size, int unshrink)
+ #if (defined(USE_DEFLATE64) && defined(__16BIT__))
+ {
+     int ret;
+@@ -812,11 +802,12 @@ int flush(__G__ rawbuf, size, unshrink)
+ /* Function partflush() */  /* returns PK error codes: */
+ /************************/  /* if tflag => always 0; PK_DISK if write error */
+ 
+-static int partflush(__G__ rawbuf, size, unshrink)
+-    __GDEF
+-    uch *rawbuf;        /* cannot be ZCONST, gets passed to (*G.message)() */
+-    ulg size;
+-    int unshrink;
++static int partflush(
++    __GPRO__
++    uch *rawbuf,        /* cannot be ZCONST, gets passed to (*G.message)() */
++    ulg size,
++    int unshrink
++)
+ #endif /* USE_DEFLATE64 && __16BIT__ */
+ {
+     register uch *p;
+@@ -1090,10 +1081,11 @@ static int partflush(__G__ rawbuf, size, unshrink)
+ /* Function is_vms_varlen_txt() */
+ /********************************/
+ 
+-static int is_vms_varlen_txt(__G__ ef_buf, ef_len)
+-    __GDEF
+-    uch *ef_buf;        /* buffer containing extra field */
+-    unsigned ef_len;    /* total length of extra field */
++static int is_vms_varlen_txt(
++    __GPRO__
++    uch *ef_buf,        /* buffer containing extra field */
++    unsigned ef_len     /* total length of extra field */
++)
+ {
+     unsigned eb_id;
+     unsigned eb_len;
+@@ -1216,8 +1208,7 @@ static int is_vms_varlen_txt(__G__ ef_buf, ef_len)
+ /* Function disk_error() */
+ /*************************/
+ 
+-static int disk_error(__G)
+-    __GDEF
++static int disk_error(__GPRO)
+ {
+     /* OK to use slide[] here because this file is finished regardless */
+     Info(slide, 0x4a1, ((char *)slide, LoadFarString(DiskFullQuery),
+@@ -1245,11 +1236,12 @@ static int disk_error(__G)
+ /* Function UzpMessagePrnt() */
+ /*****************************/
+ 
+-int UZ_EXP UzpMessagePrnt(pG, buf, size, flag)
+-    zvoid *pG;   /* globals struct:  always passed */
+-    uch *buf;    /* preformatted string to be printed */
+-    ulg size;    /* length of string (may include nulls) */
+-    int flag;    /* flag bits */
++int UZ_EXP UzpMessagePrnt(
++    zvoid *pG,   /* globals struct:  always passed */
++    uch *buf,    /* preformatted string to be printed */
++    ulg size,    /* length of string (may include nulls) */
++    int flag     /* flag bits */
++)
+ {
+     /* IMPORTANT NOTE:
+      *    The name of the first parameter of UzpMessagePrnt(), which passes
+@@ -1488,11 +1480,12 @@ int UZ_EXP UzpMessageNull(pG, buf, size, flag)
+ /* Function UzpInput() */   /* GRR:  this is a placeholder for now */
+ /***********************/
+ 
+-int UZ_EXP UzpInput(pG, buf, size, flag)
+-    zvoid *pG;    /* globals struct:  always passed */
+-    uch *buf;     /* preformatted string to be printed */
+-    int *size;    /* (address of) size of buf and of returned string */
+-    int flag;     /* flag bits (bit 0: no echo) */
++int UZ_EXP UzpInput(
++    zvoid *pG,    /* globals struct:  always passed */
++    uch *buf,     /* preformatted string to be printed */
++    int *size,    /* (address of) size of buf and of returned string */
++    int flag      /* flag bits (bit 0: no echo) */
++)
+ {
+     /* tell picky compilers to shut up about "unused variable" warnings */
+     pG = pG; buf = buf; flag = flag;
+@@ -1512,10 +1505,11 @@ int UZ_EXP UzpInput(pG, buf, size, flag)
+ /* Function UzpMorePause() */
+ /***************************/
+ 
+-void UZ_EXP UzpMorePause(pG, prompt, flag)
+-    zvoid *pG;            /* globals struct:  always passed */
+-    ZCONST char *prompt;  /* "--More--" prompt */
+-    int flag;             /* 0 = any char OK; 1 = accept only '\n', ' ', q */
++void UZ_EXP UzpMorePause(
++    zvoid *pG,            /* globals struct:  always passed */
++    ZCONST char *prompt,  /* "--More--" prompt */
++    int flag              /* 0 = any char OK; 1 = accept only '\n', ' ', q */
++)
+ {
+     uch c;
+ 
+@@ -1574,13 +1568,14 @@ void UZ_EXP UzpMorePause(pG, prompt, flag)
+ /* Function UzpPassword() */
+ /**************************/
+ 
+-int UZ_EXP UzpPassword (pG, rcnt, pwbuf, size, zfn, efn)
+-    zvoid *pG;         /* pointer to UnZip's internal global vars */
+-    int *rcnt;         /* retry counter */
+-    char *pwbuf;       /* buffer for password */
+-    int size;          /* size of password buffer */
+-    ZCONST char *zfn;  /* name of zip archive */
+-    ZCONST char *efn;  /* name of archive entry being processed */
++int UZ_EXP UzpPassword(
++    zvoid *pG,         /* pointer to UnZip's internal global vars */
++    int *rcnt,         /* retry counter */
++    char *pwbuf,       /* buffer for password */
++    int size,          /* size of password buffer */
++    ZCONST char *zfn,  /* name of zip archive */
++    ZCONST char *efn   /* name of archive entry being processed */
++)
+ {
+ #if CRYPT
+     int r = IZ_PW_ENTERED;
+@@ -1647,8 +1642,8 @@ int UZ_EXP UzpPassword (pG, rcnt, pwbuf, size, zfn, efn)
+ /* Function handler() */
+ /**********************/
+ 
+-void handler(signal)   /* upon interrupt, turn on echo and exit cleanly */
+-    int signal;
++/* upon interrupt, turn on echo and exit cleanly */
++void handler(int signal)
+ {
+     GETGLOBALS();
+ 
+@@ -1711,8 +1706,7 @@ ZCONST ush ydays[] =
+ /* Function dos_to_unix_time() */ /* used for freshening/updating/timestamps */
+ /*******************************/
+ 
+-time_t dos_to_unix_time(dosdatetime)
+-    ulg dosdatetime;
++time_t dos_to_unix_time(ulg dosdatetime)
+ {
+     time_t m_time;
+ 
+@@ -1897,9 +1891,10 @@ time_t dos_to_unix_time(dosdatetime)
+ /* Function check_for_newer() */  /* used for overwriting/freshening/updating */
+ /******************************/
+ 
+-int check_for_newer(__G__ filename)  /* return 1 if existing file is newer */
+-    __GDEF                           /*  or equal; 0 if older; -1 if doesn't */
+-    char *filename;                  /*  exist yet */
++/* return 1 if existing file is newer */
++/*  or equal; 0 if older; -1 if doesn't */
++/*  exist yet */
++int check_for_newer(__GPRO__ char *filename)
+ {
+     time_t existing, archive;
+ #ifdef USE_EF_UT_TIME
+@@ -2016,10 +2011,12 @@ int check_for_newer(__G__ filename)  /* return 1 if existing file is newer */
+ /* Function do_string() */
+ /************************/
+ 
+-int do_string(__G__ length, option)   /* return PK-type error code */
+-    __GDEF
+-    unsigned int length;        /* without prototype, ush converted to this */
+-    int option;
++/* return PK-type error code */
++int do_string(
++    __GPRO__
++    unsigned int length,        /* without prototype, ush converted to this */
++    int option
++)
+ {
+     unsigned comment_bytes_left;
+     unsigned int block_len;
+@@ -2446,8 +2443,7 @@ int do_string(__G__ length, option)   /* return PK-type error code */
+ /* Function makeword() */
+ /***********************/
+ 
+-ush makeword(b)
+-    ZCONST uch *b;
++ush makeword(ZCONST uch *b)
+ {
+     /*
+      * Convert Intel style 'short' integer to non-Intel non-16-bit
+@@ -2464,8 +2460,7 @@ ush makeword(b)
+ /* Function makelong() */
+ /***********************/
+ 
+-ulg makelong(sig)
+-    ZCONST uch *sig;
++ulg makelong(ZCONST uch *sig)
+ {
+     /*
+      * Convert intel style 'long' variable to non-Intel non-16-bit
+@@ -2485,8 +2480,7 @@ ulg makelong(sig)
+ /* Function makeint64() */
+ /************************/
+ 
+-zusz_t makeint64(sig)
+-    ZCONST uch *sig;
++zusz_t makeint64(ZCONST uch *sig)
+ {
+ #ifdef LARGE_FILE_SUPPORT
+     /*
+@@ -2524,11 +2518,7 @@ zusz_t makeint64(sig)
+ /*********************/
+ 
+ /* Format a zoff_t value in a cylindrical buffer set. */
+-char *fzofft(__G__ val, pre, post)
+-    __GDEF
+-    zoff_t val;
+-    ZCONST char *pre;
+-    ZCONST char *post;
++char *fzofft(__GPRO__ zoff_t val, ZCONST char *pre, ZCONST char *post)
+ {
+     /* Storage cylinder. (now in globals.h) */
+     /*static char fzofft_buf[FZOFFT_NUM][FZOFFT_LEN];*/
+@@ -2581,9 +2571,10 @@ char *fzofft(__G__ val, pre, post)
+ /* Function str2iso() */
+ /**********************/
+ 
+-char *str2iso(dst, src)
+-    char *dst;                          /* destination buffer */
+-    register ZCONST char *src;          /* source string */
++char *str2iso(
++    char *dst,                          /* destination buffer */
++    register ZCONST char *src           /* source string */
++)
+ {
+ #ifdef INTERN_TO_ISO
+     INTERN_TO_ISO(src, dst);
+@@ -2607,9 +2598,10 @@ char *str2iso(dst, src)
+ /* Function str2oem() */
+ /**********************/
+ 
+-char *str2oem(dst, src)
+-    char *dst;                          /* destination buffer */
+-    register ZCONST char *src;          /* source string */
++char *str2oem(
++    char *dst,                          /* destination buffer */
++    register ZCONST char *src           /* source string */
++)
+ {
+ #ifdef INTERN_TO_OEM
+     INTERN_TO_OEM(src, dst);
+@@ -2702,9 +2694,7 @@ zvoid *memcpy(dst, src, len)
+ /* Function zstrnicmp() */
+ /************************/
+ 
+-int zstrnicmp(s1, s2, n)
+-    register ZCONST char *s1, *s2;
+-    register unsigned n;
++int zstrnicmp(register ZCONST char *s1, register ZCONST char *s2, register unsigned n)
+ {
+     for (; n > 0;  --n, ++s1, ++s2) {
+ 
+diff --git a/inflate.c b/inflate.c
+index 2c37999..81bf089 100644
+--- a/inflate.c
++++ b/inflate.c
+@@ -718,11 +718,7 @@ uzinflate_cleanup_exit:
+ 
+ /* Function prototypes */
+ #ifndef OF
+-#  ifdef __STDC__
+-#    define OF(a) a
+-#  else
+-#    define OF(a) ()
+-#  endif
++#  define OF(a) a
+ #endif /* !OF */
+ int inflate_codes OF((__GPRO__ struct huft *tl, struct huft *td,
+                       unsigned bl, unsigned bd));
+@@ -929,12 +925,13 @@ static ZCONST unsigned dbits = 6;
+ 
+ #ifndef ASM_INFLATECODES
+ 
+-int inflate_codes(__G__ tl, td, bl, bd)
+-     __GDEF
+-struct huft *tl, *td;   /* literal/length and distance decoder tables */
+-unsigned bl, bd;        /* number of bits decoded by tl[] and td[] */
+ /* inflate (decompress) the codes in a deflated (compressed) block.
+    Return an error code or zero if it all goes ok. */
++int inflate_codes(
++    __GPRO__
++    struct huft *tl, struct huft *td, /* literal/length and distance decoder tables */
++    unsigned bl, unsigned bd          /* number of bits decoded by tl[] and td[] */
++)
+ {
+   register unsigned e;  /* table entry flag/number of extra bits */
+   unsigned d;           /* index for copy */
+@@ -1383,10 +1380,11 @@ cleanup_and_exit:
+ 
+ 
+ 
+-static int inflate_block(__G__ e)
+-  __GDEF
+-  int *e;               /* last block flag */
+ /* decompress an inflated block */
++static int inflate_block(
++  __GPRO__
++  int *e                /* last block flag */
++)
+ {
+   unsigned t;           /* block type */
+   register ulg b;       /* bit buffer */
+@@ -1434,10 +1432,8 @@ cleanup_and_exit:
+ 
+ 
+ 
+-int inflate(__G__ is_defl64)
+-    __GDEF
+-    int is_defl64;
+ /* decompress an inflated entry */
++int inflate(__GPRO__ int is_defl64)
+ {
+   int e;                /* last block flag */
+   int r;                /* result code */
+@@ -1548,15 +1544,6 @@ int inflate_free(__G)
+ #define N_MAX 288       /* maximum number of codes in any set */
+ 
+ 
+-int huft_build(__G__ b, n, s, d, e, t, m)
+-  __GDEF
+-  ZCONST unsigned *b;   /* code lengths in bits (all assumed <= BMAX) */
+-  unsigned n;           /* number of codes (assumed <= N_MAX) */
+-  unsigned s;           /* number of simple-valued codes (0..s-1) */
+-  ZCONST ush *d;        /* list of base values for non-simple codes */
+-  ZCONST uch *e;        /* list of extra bits for non-simple codes */
+-  struct huft **t;      /* result: starting table */
+-  unsigned *m;          /* maximum lookup bits, returns actual */
+ /* Given a list of code lengths and a maximum table size, make a set of
+    tables to decode that set of codes.  Return zero on success, one if
+    the given code set is incomplete (the tables are still built in this
+@@ -1565,6 +1552,16 @@ int huft_build(__G__ b, n, s, d, e, t, m)
+    The code with value 256 is special, and the tables are constructed
+    so that no bits beyond that code are fetched when that code is
+    decoded. */
++int huft_build(
++  __GPRO__
++  ZCONST unsigned *b,   /* code lengths in bits (all assumed <= BMAX) */
++  unsigned n,           /* number of codes (assumed <= N_MAX) */
++  unsigned s,           /* number of simple-valued codes (0..s-1) */
++  ZCONST ush *d,        /* list of base values for non-simple codes */
++  ZCONST uch *e,        /* list of extra bits for non-simple codes */
++  struct huft **t,      /* result: starting table */
++  unsigned *m           /* maximum lookup bits, returns actual */
++)
+ {
+   unsigned a;                   /* counter for codes of length k */
+   unsigned c[BMAX+1];           /* bit length count table */
+@@ -1754,11 +1751,12 @@ int huft_build(__G__ b, n, s, d, e, t, m)
+ 
+ 
+ 
+-int huft_free(t)
+-struct huft *t;         /* table to free */
+ /* Free the malloc'ed tables built by huft_build(), which makes a linked
+    list of the tables it made, with the links in a dummy first entry of
+    each table. */
++int huft_free(
++    struct huft *t          /* table to free */
++)
+ {
+   register struct huft *p, *q;
+ 
+diff --git a/list.c b/list.c
+index e488109..3454037 100644
+--- a/list.c
++++ b/list.c
+@@ -562,10 +562,8 @@ static int fn_is_dir(__G)    /* returns TRUE if G.filename is directory */
+ /* Function get_time_stamp() */
+ /*****************************/
+ 
+-int get_time_stamp(__G__ last_modtime, nmember)  /* return PK-type error code */
+-    __GDEF
+-    time_t *last_modtime;
+-    ulg *nmember;
++/* return PK-type error code */
++int get_time_stamp(__GPRO__ time_t *last_modtime, ulg *nmember)
+ {
+     int do_this_file=FALSE, error, error_in_archive=PK_COOL;
+     ulg j;
+@@ -705,8 +703,7 @@ int get_time_stamp(__G__ last_modtime, nmember)  /* return PK-type error code */
+ /* Function ratio() */    /* also used by ZipInfo routines */
+ /********************/
+ 
+-int ratio(uc, c)
+-    zusz_t uc, c;
++int ratio(zusz_t uc, zusz_t c)
+ {
+     zusz_t denom;
+ 
+diff --git a/match.c b/match.c
+index f634409..0957576 100644
+--- a/match.c
++++ b/match.c
+@@ -122,10 +122,7 @@ static int namecmp OF((ZCONST char *s1, ZCONST char *s2));
+ 
+ /* match() is a shell to recmatch() to return only Boolean values. */
+ 
+-int match(string, pattern, ignore_case __WDL)
+-    ZCONST char *string, *pattern;
+-    int ignore_case;
+-    __WDLDEF
++int match(ZCONST char *string, ZCONST char *pattern, int ignore_case __WDLPRO)
+ {
+ #if (defined(MSDOS) && defined(DOSWILD))
+     char *dospattern;
+@@ -164,15 +161,16 @@ int match(string, pattern, ignore_case __WDL)
+ 
+ 
+ 
+-static int recmatch(p, s, ic __WDL)
+-    ZCONST uch *p;        /* sh pattern to match */
+-    ZCONST uch *s;        /* string to which to match it */
+-    int ic;               /* true for case insensitivity */
+-    __WDLDEF              /* directory sepchar for WildStopAtDir mode, or 0 */
+ /* Recursively compare the sh pattern p with the string s and return 1 if
+  * they match, and 0 or 2 if they don't or if there is a syntax error in the
+  * pattern.  This routine recurses on itself no more deeply than the number
+  * of characters in the pattern. */
++static int recmatch(
++    ZCONST uch *p,        /* sh pattern to match */
++    ZCONST uch *s,        /* string to which to match it */
++    int ic                /* true for case insensitivity */
++    __WDLPRO              /* directory sepchar for WildStopAtDir mode, or 0 */
++)
+ {
+     unsigned int c;       /* pattern char or start of range in [-] loop */
+ 
+@@ -340,8 +338,7 @@ static int recmatch(p, s, ic __WDL)
+ 
+ 
+ 
+-static char *isshexp(p)
+-ZCONST char *p;
++static char *isshexp(ZCONST char *p)
+ /* If p is a sh expression, a pointer to the first special character is
+    returned.  Otherwise, NULL is returned. */
+ {
+@@ -355,8 +352,7 @@ ZCONST char *p;
+ 
+ 
+ 
+-static int namecmp(s1, s2)
+-    ZCONST char *s1, *s2;
++static int namecmp(ZCONST char *s1, ZCONST char *s2)
+ {
+     int d;
+ 
+@@ -376,10 +372,11 @@ static int namecmp(s1, s2)
+ 
+ 
+ 
+-
+-int iswild(p)        /* originally only used for stat()-bug workaround in */
+-    ZCONST char *p;  /*  VAX C, Turbo/Borland C, Watcom C, Atari MiNT libs; */
+-{                    /*  now used in process_zipfiles() as well */
++/* originally only used for stat()-bug workaround in */
++/*  VAX C, Turbo/Borland C, Watcom C, Atari MiNT libs; */
++/*  now used in process_zipfiles() as well */
++int iswild(ZCONST char *p)
++{
+     for (; *p; INCSTR(p))
+         if (*p == '\\' && *(p+1))
+             ++p;
+diff --git a/process.c b/process.c
+index b385f1e..a4ec6a8 100644
+--- a/process.c
++++ b/process.c
+@@ -233,8 +233,8 @@ static ZCONST char Far ZipfileCommTrunc1[] =
+ /* Function process_zipfiles() */
+ /*******************************/
+ 
+-int process_zipfiles(__G)    /* return PK-type error code */
+-    __GDEF
++/* return PK-type error code */
++int process_zipfiles(__GPRO__)
+ {
+ #ifndef SFX
+     char *lastzipfn = (char *)NULL;
+@@ -570,8 +570,8 @@ int process_zipfiles(__G)    /* return PK-type error code */
+ /* Function free_G_buffers() */
+ /*****************************/
+ 
+-void free_G_buffers(__G)     /* releases all memory allocated in global vars */
+-    __GDEF
++/* releases all memory allocated in global vars */
++void free_G_buffers(__GPRO)
+ {
+ #ifndef SFX
+     unsigned i;
+@@ -656,9 +656,8 @@ void free_G_buffers(__G)     /* releases all memory allocated in global vars */
+ /* Function do_seekable() */
+ /**************************/
+ 
+-static int do_seekable(__G__ lastchance)        /* return PK-type error code */
+-    __GDEF
+-    int lastchance;
++/* return PK-type error code */
++static int do_seekable(__GPRO__ int lastchance)
+ {
+ #ifndef SFX
+     /* static int no_ecrec = FALSE;  SKM: moved to globals.h */
+@@ -1042,14 +1041,12 @@ static int do_seekable(__G__ lastchance)        /* return PK-type error code */
+    The file has to be opened previously
+ */
+ #ifdef USE_STRM_INPUT
+-static zoff_t file_size(file)
+-    FILE *file;
++static zoff_t file_size(FILE *file)
+ {
+     int sts;
+     size_t siz;
+ #else /* !USE_STRM_INPUT */
+-static zoff_t file_size(fh)
+-    int fh;
++static zoff_t file_size(int fh)
+ {
+     int siz;
+ #endif /* ?USE_STRM_INPUT */
+@@ -1124,12 +1121,8 @@ static zoff_t file_size(fh)
+ /* Function rec_find() */
+ /***********************/
+ 
+-static int rec_find(__G__ searchlen, signature, rec_size)
+-    /* return 0 when rec found, 1 when not found, 2 in case of read error */
+-    __GDEF
+-    zoff_t searchlen;
+-    char* signature;
+-    int rec_size;
++/* return 0 when rec found, 1 when not found, 2 in case of read error */
++static int rec_find(__GPRO__ zoff_t searchlen, char *signature, int rec_size)
+ {
+     int i, numblks, found=FALSE;
+     zoff_t tail_len;
+@@ -1207,8 +1200,7 @@ static int rec_find(__G__ searchlen, signature, rec_size)
+ /* Function check_ecrec_zip64() */
+ /********************************/
+ 
+-static int check_ecrec_zip64(__G)
+-    __GDEF
++static int check_ecrec_zip64(__GPRO)
+ {
+     return G.ecrec.offset_start_central_directory  == 0xFFFFFFFFL
+         || G.ecrec.size_central_directory          == 0xFFFFFFFFL
+@@ -1225,9 +1217,8 @@ static int check_ecrec_zip64(__G)
+ /* Function find_ecrec64() */
+ /***************************/
+ 
+-static int find_ecrec64(__G__ searchlen)         /* return PK-class error */
+-    __GDEF
+-    zoff_t searchlen;
++/* return PK-class error */
++static int find_ecrec64(__GPRO__ zoff_t searchlen)
+ {
+     ec_byte_rec64 byterec;          /* buf for ecrec64 */
+     ec_byte_loc64 byterecL;         /* buf for ecrec64 locator */
+@@ -1455,9 +1446,8 @@ static int find_ecrec64(__G__ searchlen)         /* return PK-class error */
+ /* Function find_ecrec() */
+ /*************************/
+ 
+-static int find_ecrec(__G__ searchlen)          /* return PK-class error */
+-    __GDEF
+-    zoff_t searchlen;
++/* return PK-class error */
++static int find_ecrec(__GPRO__ zoff_t searchlen)
+ {
+     int found = FALSE;
+     int error_in_archive;
+@@ -1600,8 +1590,8 @@ static int find_ecrec(__G__ searchlen)          /* return PK-class error */
+ /* Function process_zip_cmmnt() */
+ /********************************/
+ 
+-static int process_zip_cmmnt(__G)       /* return PK-type error code */
+-    __GDEF
++/* return PK-type error code */
++static int process_zip_cmmnt(__GPRO)
+ {
+     int error = PK_COOL;
+ 
+@@ -1703,8 +1693,8 @@ static int process_zip_cmmnt(__G)       /* return PK-type error code */
+ /* Function process_cdir_file_hdr() */
+ /************************************/
+ 
+-int process_cdir_file_hdr(__G)    /* return PK-type error code */
+-    __GDEF
++/* return PK-type error code */
++int process_cdir_file_hdr(__GPRO)
+ {
+     int error;
+ 
+@@ -1791,8 +1781,8 @@ int process_cdir_file_hdr(__G)    /* return PK-type error code */
+ /* Function get_cdir_ent() */
+ /***************************/
+ 
+-static int get_cdir_ent(__G)    /* return PK-type error code */
+-    __GDEF
++/* return PK-type error code */
++static int get_cdir_ent(__GPRO)
+ {
+     cdir_byte_hdr byterec;
+ 
+@@ -1853,8 +1843,8 @@ static int get_cdir_ent(__G)    /* return PK-type error code */
+ /* Function process_local_file_hdr() */
+ /*************************************/
+ 
+-int process_local_file_hdr(__G)    /* return PK-type error code */
+-    __GDEF
++/* return PK-type error code */
++int process_local_file_hdr(__GPRO)
+ {
+     local_byte_hdr byterec;
+ 
+@@ -1902,10 +1892,11 @@ int process_local_file_hdr(__G)    /* return PK-type error code */
+ /* Function getZip64Data() */
+ /*******************************/
+ 
+-int getZip64Data(__G__ ef_buf, ef_len)
+-    __GDEF
+-    ZCONST uch *ef_buf; /* buffer containing extra field */
+-    unsigned ef_len;    /* total length of extra field */
++int getZip64Data(
++    __GPRO__
++    ZCONST uch *ef_buf, /* buffer containing extra field */
++    unsigned ef_len     /* total length of extra field */
++)
+ {
+     unsigned eb_id;
+     unsigned eb_len;
+@@ -2009,10 +2000,11 @@ int getZip64Data(__G__ ef_buf, ef_len)
+ /* Function getUnicodeData() */
+ /*******************************/
+ 
+-int getUnicodeData(__G__ ef_buf, ef_len)
+-    __GDEF
+-    ZCONST uch *ef_buf; /* buffer containing extra field */
+-    unsigned ef_len;    /* total length of extra field */
++int getUnicodeData(
++    __GPRO__
++    ZCONST uch *ef_buf, /* buffer containing extra field */
++    unsigned ef_len     /* total length of extra field */
++)
+ {
+     unsigned eb_id;
+     unsigned eb_len;
+@@ -2157,8 +2149,7 @@ static int utf8_to_ucs4_string OF((ZCONST char *utf8, ulg *ucs4buf,
+  * Returns the number of bytes used by the first character in a UTF-8
+  * string, or -1 if the UTF-8 is invalid or null.
+  */
+-static int utf8_char_bytes(utf8)
+-  ZCONST char *utf8;
++static int utf8_char_bytes(ZCONST char *utf8)
+ {
+   int      t, r;
+   unsigned lead;
+@@ -2196,8 +2187,7 @@ static int utf8_char_bytes(utf8)
+  * Returns ~0 (= -1 in twos-complement notation) and does not advance the
+  * pointer when input is ill-formed.
+  */
+-static ulg ucs4_char_from_utf8(utf8)
+-  ZCONST char **utf8;
++static ulg ucs4_char_from_utf8(ZCONST char **utf8)
+ {
+   ulg  ret;
+   int  t, bytes;
+@@ -2224,9 +2214,7 @@ static ulg ucs4_char_from_utf8(utf8)
+  * Returns the number of bytes put into utf8buf to represent ch, from 1 to 6,
+  * or -1 if ch is too large to represent.  utf8buf must have room for 6 bytes.
+  */
+-static int utf8_from_ucs4_char(utf8buf, ch)
+-  char *utf8buf;
+-  ulg ch;
++static int utf8_from_ucs4_char(char *utf8buf, ulg ch)
+ {
+   int trailing = 0;
+   int leadmask = 0x80;
+@@ -2264,10 +2252,7 @@ static int utf8_from_ucs4_char(utf8buf, ch)
+  *
+  * Return UCS count.  Now returns int so can return -1.
+  */
+-static int utf8_to_ucs4_string(utf8, ucs4buf, buflen)
+-  ZCONST char *utf8;
+-  ulg *ucs4buf;
+-  int buflen;
++static int utf8_to_ucs4_string(ZCONST char *utf8, ulg *ucs4buf, int buflen)
+ {
+   int count = 0;
+ 
+@@ -2293,10 +2278,7 @@ static int utf8_to_ucs4_string(utf8, ucs4buf, buflen)
+  *
+  *
+  */
+-static int ucs4_string_to_utf8(ucs4, utf8buf, buflen)
+-  ZCONST ulg *ucs4;
+-  char *utf8buf;
+-  int buflen;
++static int ucs4_string_to_utf8(ZCONST ulg *ucs4, char *utf8buf, int buflen)
+ {
+   char mb[6];
+   int  count = 0;
+@@ -2327,8 +2309,7 @@ static int ucs4_string_to_utf8(ucs4, utf8buf, buflen)
+  *
+  * Wrapper: counts the actual unicode characters in a UTF-8 string.
+  */
+-static int utf8_chars(utf8)
+-  ZCONST char *utf8;
++static int utf8_chars(ZCONST char *utf8)
+ {
+   return utf8_to_ucs4_string(utf8, NULL, 0);
+ }
+@@ -2353,8 +2334,7 @@ static int utf8_chars(utf8)
+ /* is_ascii_string
+  * Checks if a string is all ascii
+  */
+-int is_ascii_string(mbstring)
+-  ZCONST char *mbstring;
++int is_ascii_string(ZCONST char *mbstring)
+ {
+   char *p;
+   uch c;
+@@ -2368,8 +2348,7 @@ int is_ascii_string(mbstring)
+ }
+ 
+ /* local to UTF-8 */
+-char *local_to_utf8_string(local_string)
+-  ZCONST char *local_string;
++char *local_to_utf8_string(ZCONST char *local_string)
+ {
+   return wide_to_utf8_string(local_to_wide_string(local_string));
+ }
+@@ -2408,8 +2387,7 @@ char *local_to_utf8_string(local_string)
+  /* set this to the max bytes an escape can be */
+ #define MAX_ESCAPE_BYTES 8
+ 
+-char *wide_to_escape_string(wide_char)
+-  zwchar wide_char;
++char *wide_to_escape_string(zwchar wide_char)
+ {
+   int i;
+   zwchar w = wide_char;
+@@ -2447,8 +2425,7 @@ char *wide_to_escape_string(wide_char)
+ 
+ #if 0 /* currently unused */
+ /* returns the wide character represented by the escape string */
+-zwchar escape_string_to_wide(escape_string)
+-  ZCONST char *escape_string;
++zwchar escape_string_to_wide(ZCONST char *escape_string)
+ {
+   int i;
+   zwchar w;
+@@ -2497,9 +2474,7 @@ zwchar escape_string_to_wide(escape_string)
+ 
+ #ifndef WIN32  /* WIN32 supplies a special variant of this function */
+ /* convert wide character string to multi-byte character string */
+-char *wide_to_local_string(wide_string, escape_all)
+-  ZCONST zwchar *wide_string;
+-  int escape_all;
++char *wide_to_local_string(ZCONST zwchar *wide_string, int escape_all)
+ {
+   int i;
+   wchar_t wc;
+@@ -2591,8 +2566,7 @@ char *wide_to_local_string(wide_string, escape_all)
+ 
+ #if 0 /* currently unused */
+ /* convert local string to display character set string */
+-char *local_to_display_string(local_string)
+-  ZCONST char *local_string;
++char *local_to_display_string(ZCONST char *local_string)
+ {
+   char *display_string;
+ 
+@@ -2624,9 +2598,7 @@ char *local_to_display_string(local_string)
+ #endif /* unused */
+ 
+ /* UTF-8 to local */
+-char *utf8_to_local_string(utf8_string, escape_all)
+-  ZCONST char *utf8_string;
+-  int escape_all;
++char *utf8_to_local_string(ZCONST char *utf8_string, int escape_all)
+ {
+   zwchar *wide;
+   char *loc = NULL;
+@@ -2645,8 +2617,7 @@ char *utf8_to_local_string(utf8_string, escape_all)
+ 
+ #if 0 /* currently unused */
+ /* convert multi-byte character string to wide character string */
+-zwchar *local_to_wide_string(local_string)
+-  ZCONST char *local_string;
++zwchar *local_to_wide_string(ZCONST char *local_string)
+ {
+   int wsize;
+   wchar_t *wc_string;
+@@ -2679,8 +2650,7 @@ zwchar *local_to_wide_string(local_string)
+ 
+ 
+ /* convert wide string to UTF-8 */
+-char *wide_to_utf8_string(wide_string)
+-  ZCONST zwchar *wide_string;
++char *wide_to_utf8_string(ZCONST zwchar *wide_string)
+ {
+   int mbcount;
+   char *utf8_string;
+@@ -2701,8 +2671,7 @@ char *wide_to_utf8_string(wide_string)
+ #endif /* unused */
+ 
+ /* convert UTF-8 string to wide string */
+-zwchar *utf8_to_wide_string(utf8_string)
+-  ZCONST char *utf8_string;
++zwchar *utf8_to_wide_string(ZCONST char *utf8_string)
+ {
+   int wcount;
+   zwchar *wide_string;
+@@ -2729,10 +2698,11 @@ zwchar *utf8_to_wide_string(utf8_string)
+ #ifdef USE_EF_UT_TIME
+ 
+ #ifdef IZ_HAVE_UXUIDGID
+-static int read_ux3_value(dbuf, uidgid_sz, p_uidgid)
+-    ZCONST uch *dbuf;   /* buffer a uid or gid value */
+-    unsigned uidgid_sz; /* size of uid/gid value */
+-    ulg *p_uidgid;      /* return storage: uid or gid value */
++static int read_ux3_value(
++    ZCONST uch *dbuf,   /* buffer a uid or gid value */
++    unsigned uidgid_sz, /* size of uid/gid value */
++    ulg *p_uidgid       /* return storage: uid or gid value */
++)
+ {
+     zusz_t uidgid64;
+ 
+@@ -2763,14 +2733,14 @@ static int read_ux3_value(dbuf, uidgid_sz, p_uidgid)
+ /* Function ef_scan_for_izux() */
+ /*******************************/
+ 
+-unsigned ef_scan_for_izux(ef_buf, ef_len, ef_is_c, dos_mdatetime,
+-                          z_utim, z_uidgid)
+-    ZCONST uch *ef_buf; /* buffer containing extra field */
+-    unsigned ef_len;    /* total length of extra field */
+-    int ef_is_c;        /* flag indicating "is central extra field" */
+-    ulg dos_mdatetime;  /* last_mod_file_date_time in DOS format */
+-    iztimes *z_utim;    /* return storage: atime, mtime, ctime */
+-    ulg *z_uidgid;      /* return storage: uid and gid */
++unsigned ef_scan_for_izux(
++    ZCONST uch *ef_buf, /* buffer containing extra field */
++    unsigned ef_len,    /* total length of extra field */
++    int ef_is_c,        /* flag indicating "is central extra field" */
++    ulg dos_mdatetime,  /* last_mod_file_date_time in DOS format */
++    iztimes *z_utim,    /* return storage: atime, mtime, ctime */
++    ulg *z_uidgid       /* return storage: uid and gid */
++)
+ {
+     unsigned flags = 0;
+     unsigned eb_id;
+@@ -3138,9 +3108,10 @@ unsigned ef_scan_for_izux(ef_buf, ef_len, ef_is_c, dos_mdatetime,
+ /* Function getRISCOSexfield() */
+ /*******************************/
+ 
+-zvoid *getRISCOSexfield(ef_buf, ef_len)
+-    ZCONST uch *ef_buf; /* buffer containing extra field */
+-    unsigned ef_len;    /* total length of extra field */
++zvoid *getRISCOSexfield(
++    ZCONST uch *ef_buf, /* buffer containing extra field */
++    unsigned ef_len     /* total length of extra field */
++)
+ {
+     unsigned eb_id;
+     unsigned eb_len;
+diff --git a/ttyio.c b/ttyio.c
+index a1a13b1..f71e97f 100644
+--- a/ttyio.c
++++ b/ttyio.c
+@@ -303,9 +303,10 @@ int tt_getch()
+ /*
+  * Turn echo off for file descriptor f.  Assumes that f is a tty device.
+  */
+-void Echoff(__G__ f)
+-    __GDEF
+-    int f;                    /* file descriptor for which to turn echo off */
++void Echoff(
++    __GPRO__
++    int f                     /* file descriptor for which to turn echo off */
++)
+ {
+     struct sgttyb sg;         /* tty device structure */
+ 
+@@ -318,8 +319,7 @@ void Echoff(__G__ f)
+ /*
+  * Turn echo back on for file descriptor echofd.
+  */
+-void Echon(__G)
+-    __GDEF
++void Echon(__GPRO)
+ {
+     struct sgttyb sg;         /* tty device structure */
+ 
+@@ -350,9 +350,7 @@ void Echon(__G)
+ 
+ #if (defined(TIOCGWINSZ) && !defined(M_UNIX))
+ 
+-int screensize(tt_rows, tt_cols)
+-    int *tt_rows;
+-    int *tt_cols;
++int screensize(int *tt_rows, int *tt_cols)
+ {
+     struct winsize wsz;
+ #ifdef DEBUG_WINSZ
+@@ -436,9 +434,10 @@ int screensize(tt_rows, tt_cols)
+ /*
+  * Get a character from the given file descriptor without echo or newline.
+  */
+-int zgetch(__G__ f)
+-    __GDEF
+-    int f;                      /* file descriptor from which to read */
++int zgetch(
++    __GPRO__
++    int f                       /* file descriptor from which to read */
++)
+ {
+ #if (defined(USE_SYSV_TERMIO) || defined(USE_POSIX_TERMIOS))
+     char oldmin, oldtim;
+@@ -481,9 +480,10 @@ int zgetch(__G__ f)
+ #ifndef VMS     /* VMS supplies its own variant of getch() */
+ 
+ 
+-int zgetch(__G__ f)
+-    __GDEF
+-    int f;    /* file descriptor from which to read (must be open already) */
++int zgetch(
++    __GPRO__
++    int f     /* file descriptor from which to read (must be open already) */
++)
+ {
+     char c, c2;
+ 
+@@ -547,11 +547,12 @@ int zgetch(__G__ f)
+ /* This is the getp() function for all systems (with TTY type user interface)
+  * that supply a working `non-echo' getch() function for "raw" console input.
+  */
+-char *getp(__G__ m, p, n)
+-    __GDEF
+-    ZCONST char *m;             /* prompt for password */
+-    char *p;                    /* return value: line input */
+-    int n;                      /* bytes available in p[] */
++char *getp(
++    __GPRO__
++    ZCONST char *m,             /* prompt for password */
++    char *p,                    /* return value: line input */
++    int n                       /* bytes available in p[] */
++)
+ {
+     char c;                     /* one-byte buffer for read() to use */
+     int i;                      /* number of characters input */
+@@ -599,11 +600,12 @@ char *getp(__G__ m, p, n)
+ #  endif
+ #endif
+ 
+-char *getp(__G__ m, p, n)
+-    __GDEF
+-    ZCONST char *m;             /* prompt for password */
+-    char *p;                    /* return value: line input */
+-    int n;                      /* bytes available in p[] */
++char *getp(
++    __GPRO__
++    ZCONST char *m,             /* prompt for password */
++    char *p,                    /* return value: line input */
++    int n                       /* bytes available in p[] */
++)
+ {
+     char c;                     /* one-byte buffer for read() to use */
+     int i;                      /* number of characters input */
+@@ -652,11 +654,11 @@ char *getp(__G__ m, p, n)
+ 
+ #if (defined(VMS) || defined(CMS_MVS))
+ 
+-char *getp(__G__ m, p, n)
+-    __GDEF
+-    ZCONST char *m;             /* prompt for password */
+-    char *p;                    /* return value: line input */
+-    int n;                      /* bytes available in p[] */
++char *getp(
++    __GPRO__
++    ZCONST char *m,             /* prompt for password */
++    char *p,                    /* return value: line input */
++    int n                       /* bytes available in p[] */
+ {
+     char c;                     /* one-byte buffer for read() to use */
+     int i;                      /* number of characters input */
+diff --git a/ubz2err.c b/ubz2err.c
+index f384489..5293b1f 100644
+--- a/ubz2err.c
++++ b/ubz2err.c
+@@ -45,8 +45,7 @@
+  * BZ_NO_STDIO), required to handle fatal internal bug-type errors of
+  * the bzip2 library.
+  */
+-void bz_internal_error(bzerrcode)
+-    int bzerrcode;
++void bz_internal_error(int bzerrcode)
+ {
+     GETGLOBALS();
+ 
+diff --git a/unix/configure b/unix/configure
+index 785d8dd..dffebcf 100755
+--- a/unix/configure
++++ b/unix/configure
+@@ -189,11 +189,6 @@ if [ $? -ne 0 ]; then
+   done
+ fi
+ 
+-echo Check for prototypes
+-echo "int main(int argc, char *argv[]) { return 0; }" > conftest.c
+-$CC $CFLAGS -c conftest.c > /dev/null 2>/dev/null
+-[ $? -ne 0 ] && CFLAGSR="${CFLAGSR} -DNO_PROTO"
+-
+ # const check currently handles mips cc and non ANSI compilers.
+ # does it need more ?
+ echo Check the handling of const
+diff --git a/unix/unix.c b/unix/unix.c
+index 816e3da..9d14cdf 100644
+--- a/unix/unix.c
++++ b/unix/unix.c
+@@ -186,9 +186,8 @@ struct dirent *readdir(dirp)
+ /* Function do_wild() */   /* for porting: dir separator; match(ignore_case) */
+ /**********************/
+ 
+-char *do_wild(__G__ wildspec)
+-    __GDEF
+-    ZCONST char *wildspec;  /* only used first time on a given dir */
++/* only used first time on a given dir */
++char *do_wild(__GPRO__ ZCONST char *wildspec)
+ {
+ /* these statics are now declared in SYSTEM_SPECIFIC_GLOBALS in unxcfg.h:
+     static DIR *wild_dir = (DIR *)NULL;
+@@ -328,9 +327,7 @@ char *do_wild(__G__ wildspec)
+  * file as the user or group.  The new option -K bypasses this check.
+  */
+ 
+-static unsigned filtattr(__G__ perms)
+-    __GDEF
+-    unsigned perms;
++static unsigned filtattr(__GPRO__ unsigned perms)
+ {
+     /* keep setuid/setgid/tacky perms? */
+     if (!uO.K_flag)
+@@ -347,8 +344,7 @@ static unsigned filtattr(__G__ perms)
+ /* Function mapattr() */
+ /**********************/
+ 
+-int mapattr(__G)
+-    __GDEF
++int mapattr(__GPRO)
+ {
+     int r;
+     ulg tmp = G.crec.external_file_attributes;
+@@ -495,9 +491,6 @@ int mapattr(__G)
+ /*  Function mapname()  */
+ /************************/
+ 
+-int mapname(__G__ renamed)
+-    __GDEF
+-    int renamed;
+ /*
+  * returns:
+  *  MPN_OK          - no problem detected
+@@ -508,6 +501,7 @@ int mapname(__G__ renamed)
+  *  MPN_NOMEM       - error (memory allocation failed) -> skip entry
+  *  [also MPN_VOL_LABEL, MPN_CREATED_DIR]
+  */
++int mapname(__GPRO__ int renamed)
+ {
+     char pathcomp[FILNAMSIZ];      /* path-component buffer */
+     char *pp, *cp=(char *)NULL;    /* character pointers */
+@@ -748,10 +742,6 @@ int mapname(__G__ renamed)
+ /* Function checkdir() */
+ /***********************/
+ 
+-int checkdir(__G__ pathcomp, flag)
+-    __GDEF
+-    char *pathcomp;
+-    int flag;
+ /*
+  * returns:
+  *  MPN_OK          - no problem detected
+@@ -762,6 +752,7 @@ int checkdir(__G__ pathcomp, flag)
+  *  MPN_ERR_TOOLONG - path is too long
+  *  MPN_NOMEM       - can't allocate memory for filename buffers
+  */
++int checkdir(__GPRO__ char *pathcomp, int flag)
+ {
+  /* static int rootlen = 0; */  /* length of rootpath */
+  /* static char *rootpath;  */  /* user's "extract-to" directory */
+@@ -1039,12 +1030,7 @@ int mkdir(path, mode)
+ 
+ 
+ #if (!defined(MTS) || defined(SET_DIR_ATTRIB))
+-static int get_extattribs OF((__GPRO__ iztimes *pzt, ulg z_uidgid[2]));
+-
+-static int get_extattribs(__G__ pzt, z_uidgid)
+-    __GDEF
+-    iztimes *pzt;
+-    ulg z_uidgid[2];
++static int get_extattribs(__GPRO__ iztimes *pzt, ulg z_uidgid[2])
+ {
+ /*---------------------------------------------------------------------------
+     Convert from MSDOS-format local time and date to Unix-format 32-bit GMT
+@@ -1099,8 +1085,8 @@ static int get_extattribs(__G__ pzt, z_uidgid)
+ /* Function close_outfile() */
+ /****************************/
+ 
+-void close_outfile(__G)    /* GRR: change to return PK-style warning level */
+-    __GDEF
++/* GRR: change to return PK-style warning level */
++void close_outfile(__GPRO)
+ {
+     union {
+         iztimes t3;             /* mtime, atime, ctime */
+@@ -1273,9 +1259,7 @@ void close_outfile(__G)    /* GRR: change to return PK-style warning level */
+ 
+ 
+ #if (defined(SYMLINKS) && defined(SET_SYMLINK_ATTRIBS))
+-int set_symlnk_attribs(__G__ slnk_entry)
+-    __GDEF
+-    slinkentry *slnk_entry;
++int set_symlnk_attribs(__GPRO__ slinkentry *slnk_entry)
+ {
+     if (slnk_entry->attriblen > 0) {
+ # if (!defined(NO_LCHOWN))
+@@ -1321,9 +1305,7 @@ int set_symlnk_attribs(__G__ slnk_entry)
+ #  endif
+ 
+ 
+-int defer_dir_attribs(__G__ pd)
+-    __GDEF
+-    direntry **pd;
++int defer_dir_attribs(__GPRO__ direntry **pd)
+ {
+     uxdirattr *d_entry;
+ 
+@@ -1343,9 +1325,7 @@ int defer_dir_attribs(__G__ pd)
+ } /* end function defer_dir_attribs() */
+ 
+ 
+-int set_direc_attribs(__G__ d)
+-    __GDEF
+-    direntry *d;
++int set_direc_attribs(__GPRO__ direntry *d)
+ {
+     int errval = PK_OK;
+ 
+@@ -1394,9 +1374,7 @@ int set_direc_attribs(__G__ d)
+ /*  Function stamp_file()  */
+ /***************************/
+ 
+-int stamp_file(fname, modtime)
+-    ZCONST char *fname;
+-    time_t modtime;
++int stamp_file(ZCONST char *fname, time_t modtime)
+ {
+     ztimbuf tp;
+ 
+@@ -1416,8 +1394,7 @@ int stamp_file(fname, modtime)
+ /*  Function version()  */
+ /************************/
+ 
+-void version(__G)
+-    __GDEF
++void version(__GPRO)
+ {
+ #if (defined(__GNUC__) && defined(NX_CURRENT_COMPILER_RELEASE))
+     char cc_namebuf[40];
+@@ -1784,10 +1761,7 @@ static ulg LG(ulg val)
+ 
+ 
+ 
+-static void qlfix(__G__ ef_ptr, ef_len)
+-    __GDEF
+-    uch *ef_ptr;
+-    unsigned ef_len;
++static void qlfix(__GPRO__ uch *ef_ptr, unsigned ef_len)
+ {
+     while (ef_len >= EB_HEADSIZE)
+     {
+diff --git a/unshrink.c b/unshrink.c
+index ae993e9..2c3e781 100644
+--- a/unshrink.c
++++ b/unshrink.c
+@@ -97,8 +97,7 @@ static void  partial_clear  OF((__GPRO__ int lastcodeused));
+ /* Function unshrink() */
+ /***********************/
+ 
+-int unshrink(__G)
+-     __GDEF
++int unshrink(__GPRO)
+ {
+     uch *stacktop = stack + (HSIZE - 1);
+     register uch *newstr;
+@@ -304,9 +303,7 @@ int unshrink(__G)
+ /* Function partial_clear() */      /* no longer recursive... */
+ /****************************/
+ 
+-static void partial_clear(__G__ lastcodeused)
+-    __GDEF
+-    int lastcodeused;
++static void partial_clear(__GPRO__ int lastcodeused)
+ {
+     register shrint code;
+ 
+diff --git a/unzip.c b/unzip.c
+index 1abaccb..9a2cf60 100644
+--- a/unzip.c
++++ b/unzip.c
+@@ -710,9 +710,8 @@ See \"unzip -hh\" or unzip.txt for more help.  Examples:\n\
+ /*  main() / UzpMain() stub  */
+ /*****************************/
+ 
+-int MAIN(argc, argv)   /* return PK-type error code (except under VMS) */
+-    int argc;
+-    char *argv[];
++/* return PK-type error code (except under VMS) */
++int MAIN(int argc, char *argv[])
+ {
+     int r;
+ 
+@@ -729,10 +728,7 @@ int MAIN(argc, argv)   /* return PK-type error code (except under VMS) */
+ /*  Primary UnZip entry point  */
+ /*******************************/
+ 
+-int unzip(__G__ argc, argv)
+-    __GDEF
+-    int argc;
+-    char *argv[];
++int unzip(__GPRO__ int argc, char *argv[])
+ {
+ #ifndef NO_ZIPINFO
+     char *p;
+@@ -1286,12 +1282,8 @@ cleanup_and_exit:
+ /* Function setsignalhandler() */
+ /*******************************/
+ 
+-static int setsignalhandler(__G__ p_savedhandler_chain, signal_type,
+-                            newhandler)
+-    __GDEF
+-    savsigs_info **p_savedhandler_chain;
+-    int signal_type;
+-    void (*newhandler)(int);
++static int setsignalhandler(__GPRO__ savsigs_info **p_savedhandler_chain, int signal_type,
++                            void (*newhandler)(int))
+ {
+     savsigs_info *savsig;
+ 
+@@ -1323,10 +1315,7 @@ static int setsignalhandler(__G__ p_savedhandler_chain, signal_type,
+ /* Function uz_opts() */
+ /**********************/
+ 
+-int uz_opts(__G__ pargc, pargv)
+-    __GDEF
+-    int *pargc;
+-    char ***pargv;
++int uz_opts(__GPRO__ int *pargc, char ***pargv)
+ {
+     char **argv, *s;
+     int argc, c, error=FALSE, negative=0, showhelp=0;
+@@ -1971,9 +1960,8 @@ opts_done:  /* yes, very ugly...but only used by UnZipSFX with -x xlist */
+ #    endif
+ #  endif
+ 
+-int usage(__G__ error)   /* return PK-type error code */
+-    __GDEF
+-    int error;
++/* return PK-type error code */
++int usage(__GPRO__ int error)
+ {
+     Info(slide, error? 1 : 0, ((char *)slide, LoadFarString(UnzipSFXBanner),
+       UZ_MAJORVER, UZ_MINORVER, UZ_PATCHLEVEL, UZ_BETALEVEL,
+@@ -2005,9 +1993,8 @@ int usage(__G__ error)   /* return PK-type error code */
+ #    define QUOTS ""
+ #  endif
+ 
+-int usage(__G__ error)   /* return PK-type error code */
+-    __GDEF
+-    int error;
++/* return PK-type error code */
++int usage(__GPRO__ int error)
+ {
+     int flag = (error? 1 : 0);
+ 
+@@ -2082,8 +2069,7 @@ You must quote non-lowercase options and filespecs, unless SET PROC/PARSE=EXT.\
+ #ifndef SFX
+ 
+ /* Print extended help to stdout. */
+-static void help_extended(__G)
+-    __GDEF
++static void help_extended(__GPRO)
+ {
+     extent i;             /* counter for help array */
+ 
+@@ -2332,8 +2318,7 @@ extern char *getenv();
+ /* Function show_version_info() */
+ /********************************/
+ 
+-static void show_version_info(__G)
+-    __GDEF
++static void show_version_info(__GPRO)
+ {
+     if (uO.qflag > 3)                           /* "unzip -vqqqq" */
+         Info(slide, 0, ((char *)slide, "%d\n",
+diff --git a/unzip.h b/unzip.h
+index ed24a5b..9891467 100644
+--- a/unzip.h
++++ b/unzip.h
+@@ -211,51 +211,33 @@ freely, subject to the above disclaimer and the following restrictions:
+  * or Convex?, or AtheOS, or BeOS.
+  */
+ #if (defined(__STDC__) || defined(MSDOS) || defined(OS2) || defined(WIN32))
+-#  ifndef PROTO
+-#    define PROTO
+-#  endif
+ #  ifndef MODERN
+ #    define MODERN
+ #  endif
+ #endif
+ #if (defined(__IBMC__) || defined(__BORLANDC__) || defined(__WATCOMC__))
+-#  ifndef PROTO
+-#    define PROTO
+-#  endif
+ #  ifndef MODERN
+ #    define MODERN
+ #  endif
+ #endif
+ #if (defined(__EMX__) || defined(__CYGWIN__))
+-#  ifndef PROTO
+-#    define PROTO
+-#  endif
+ #  ifndef MODERN
+ #    define MODERN
+ #  endif
+ #endif
+ #if (defined(MACOS) || defined(ATARI_ST) || defined(RISCOS) || defined(THEOS))
+-#  ifndef PROTO
+-#    define PROTO
+-#  endif
+ #  ifndef MODERN
+ #    define MODERN
+ #  endif
+ #endif
+ /* Sequent running Dynix/ptx:  non-modern compiler */
+ #if (defined(_AIX) || defined(sgi) || (defined(_SEQUENT_) && !defined(PTX)))
+-#  ifndef PROTO
+-#    define PROTO
+-#  endif
+ #  ifndef MODERN
+ #    define MODERN
+ #  endif
+ #endif
+ #if (defined(CMS_MVS) || defined(__ATHEOS__) || defined(__BEOS__))
+ /* || defined(CONVEX) ? */
+-#  ifndef PROTO
+-#    define PROTO
+-#  endif
+ #  ifndef MODERN
+ #    define MODERN
+ #  endif
+@@ -267,17 +249,7 @@ freely, subject to the above disclaimer and the following restrictions:
+ #  endif
+ #endif
+ 
+-/* turn off prototypes if requested */
+-#if (defined(NOPROTO) && defined(PROTO))
+-#  undef PROTO
+-#endif
+-
+-/* used to remove arguments in function prototypes for non-ANSI C */
+-#ifdef PROTO
+-#  define OF(a) a
+-#else
+-#  define OF(a) ()
+-#endif
++#define OF(a) a
+ 
+ /* enable the "const" keyword only if MODERN and if not otherwise instructed */
+ #ifdef MODERN
+@@ -405,24 +377,15 @@ typedef unsigned long   ulg;    /*  predefined on some systems) & match zip  */
+ #endif /* !_IZ_TYPES_DEFINED */
+ 
+ /* InputFn is not yet used and is likely to change: */
+-#ifdef PROTO
+-   typedef int   (UZ_EXP MsgFn)     (zvoid *pG, uch *buf, ulg size, int flag);
+-   typedef int   (UZ_EXP InputFn)   (zvoid *pG, uch *buf, int *size, int flag);
+-   typedef void  (UZ_EXP PauseFn)   (zvoid *pG, ZCONST char *prompt, int flag);
+-   typedef int   (UZ_EXP PasswdFn)  (zvoid *pG, int *rcnt, char *pwbuf,
+-                                     int size, ZCONST char *zfn,
+-                                     ZCONST char *efn);
+-   typedef int   (UZ_EXP StatCBFn)  (zvoid *pG, int fnflag, ZCONST char *zfn,
+-                                     ZCONST char *efn, ZCONST zvoid *details);
+-   typedef void  (UZ_EXP UsrIniFn)  (void);
+-#else /* !PROTO */
+-   typedef int   (UZ_EXP MsgFn)     ();
+-   typedef int   (UZ_EXP InputFn)   ();
+-   typedef void  (UZ_EXP PauseFn)   ();
+-   typedef int   (UZ_EXP PasswdFn)  ();
+-   typedef int   (UZ_EXP StatCBFn)  ();
+-   typedef void  (UZ_EXP UsrIniFn)  ();
+-#endif /* ?PROTO */
++typedef int   (UZ_EXP MsgFn)     (zvoid *pG, uch *buf, ulg size, int flag);
++typedef int   (UZ_EXP InputFn)   (zvoid *pG, uch *buf, int *size, int flag);
++typedef void  (UZ_EXP PauseFn)   (zvoid *pG, ZCONST char *prompt, int flag);
++typedef int   (UZ_EXP PasswdFn)  (zvoid *pG, int *rcnt, char *pwbuf,
++                                  int size, ZCONST char *zfn,
++                                  ZCONST char *efn);
++typedef int   (UZ_EXP StatCBFn)  (zvoid *pG, int fnflag, ZCONST char *zfn,
++                                  ZCONST char *efn, ZCONST zvoid *details);
++typedef void  (UZ_EXP UsrIniFn)  (void);
+ 
+ typedef struct _UzpBuffer {    /* rxstr */
+     ulg   strlength;           /* length of string */
+diff --git a/zipinfo.c b/zipinfo.c
+index 0be3e5b..94d5430 100644
+--- a/zipinfo.c
++++ b/zipinfo.c
+@@ -446,10 +446,7 @@ static ZCONST char Far DecimalTime[] = "%04u%02u%02u.%02u%02u%02u";
+ /*  Function zi_opts()  */
+ /************************/
+ 
+-int zi_opts(__G__ pargc, pargv)
+-    int *pargc;
+-    char ***pargv;
+-    __GDEF
++int zi_opts(__GPRO__ int *pargc, char ***pargv)
+ {
+     char   **argv, *s;
+     int    argc, c, error=FALSE, negative=0;
+@@ -635,8 +632,7 @@ int zi_opts(__G__ pargc, pargv)
+ /*  Function zi_end_central()  */
+ /*******************************/
+ 
+-void zi_end_central(__G)
+-    __GDEF
++void zi_end_central(__GPRO)
+ {
+ /*---------------------------------------------------------------------------
+     Print out various interesting things about the zipfile.
+@@ -702,8 +698,8 @@ void zi_end_central(__G)
+ /*  Function zipinfo()  */
+ /************************/
+ 
+-int zipinfo(__G)   /* return PK-type error code */
+-    __GDEF
++/* return PK-type error code */
++int zipinfo(__GPRO)
+ {
+     int do_this_file=FALSE, error, error_in_archive=PK_COOL;
+     int *fn_matched=NULL, *xn_matched=NULL;
+@@ -984,11 +980,12 @@ int zipinfo(__G)   /* return PK-type error code */
+ /*  Function zi_long()  */
+ /************************/
+ 
+-static int zi_long(__G__ pEndprev, error_in_archive)
+-    /* return PK-type error code */
+-    __GDEF
+-    zusz_t *pEndprev;                /* for zi_long() check of extra bytes */
+-    int error_in_archive;            /* may signal premature return */
++/* return PK-type error code */
++static int zi_long(
++    __GPRO__
++    zusz_t *pEndprev,                /* for zi_long() check of extra bytes */
++    int error_in_archive             /* may signal premature return */
++)
+ {
+ #ifdef USE_EF_UT_TIME
+     iztimes z_utime;
+@@ -1872,8 +1869,8 @@ ef_default_display:
+ /*  Function zi_short()  */
+ /*************************/
+ 
+-static int zi_short(__G)   /* return PK-type error code */
+-    __GDEF
++/* return PK-type error code */
++static int zi_short(__GPRO)
+ {
+ #ifdef USE_EF_UT_TIME
+     iztimes     z_utime;
+@@ -2207,9 +2204,7 @@ static int zi_short(__G)   /* return PK-type error code */
+ /*  Function zi_showMacTypeCreator()  */
+ /**************************************/
+ 
+-static void zi_showMacTypeCreator(__G__ ebfield)
+-    __GDEF
+-    uch *ebfield;
++static void zi_showMacTypeCreator(__GPRO__ uch *ebfield)
+ {
+     /* not every Type / Creator character is printable */
+     if (isprint(native(ebfield[0])) && isprint(native(ebfield[1])) &&
+@@ -2242,11 +2237,7 @@ static void zi_showMacTypeCreator(__G__ ebfield)
+ /*  Function zi_time()  */
+ /************************/
+ 
+-static char *zi_time(__G__ datetimez, modtimez, d_t_str)
+-    __GDEF
+-    ZCONST ulg *datetimez;
+-    ZCONST time_t *modtimez;
+-    char *d_t_str;
++static char *zi_time(__GPRO__ ZCONST ulg *datetimez, ZCONST time_t *modtimez, char *d_t_str)
+ {
+     unsigned yr, mo, dy, hh, mm, ss;
+     char monthbuf[4];
+-- 
+2.49.0
+
