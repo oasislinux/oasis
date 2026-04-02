@@ -1,0 +1,67 @@
+From dcc5033eb17003d078525e146e2a4fec29f71f84 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 21:37:21 -0700
+Subject: [PATCH] Use C23 syntax for packed attribute and alignment
+
+---
+ include/linux-private/linux/gen_stats.h | 4 ++--
+ include/linux-private/linux/if_ether.h  | 4 ++--
+ include/linux-private/linux/socket.h    | 3 ++-
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux-private/linux/gen_stats.h b/include/linux-private/linux/gen_stats.h
+index 24a861c0..f2e3d45e 100644
+--- a/include/linux-private/linux/gen_stats.h
++++ b/include/linux-private/linux/gen_stats.h
+@@ -25,10 +25,10 @@ struct gnet_stats_basic {
+ 	__u64	bytes;
+ 	__u32	packets;
+ };
+-struct gnet_stats_basic_packed {
++struct [[gnu::packed]] gnet_stats_basic_packed {
+ 	__u64	bytes;
+ 	__u32	packets;
+-} __attribute__ ((packed));
++};
+ 
+ /**
+  * struct gnet_stats_rate_est - rate estimator
+diff --git a/include/linux-private/linux/if_ether.h b/include/linux-private/linux/if_ether.h
+index 8c36f63e..8887d042 100644
+--- a/include/linux-private/linux/if_ether.h
++++ b/include/linux-private/linux/if_ether.h
+@@ -158,11 +158,11 @@
+ #endif
+ 
+ #if __UAPI_DEF_ETHHDR
+-struct ethhdr {
++struct [[gnu::packed]] ethhdr {
+ 	unsigned char	h_dest[ETH_ALEN];	/* destination eth addr	*/
+ 	unsigned char	h_source[ETH_ALEN];	/* source ether addr	*/
+ 	__be16		h_proto;		/* packet type ID field	*/
+-} __attribute__((packed));
++};
+ #endif
+ 
+ 
+diff --git a/include/linux-private/linux/socket.h b/include/linux-private/linux/socket.h
+index 268b9482..93a7b713 100644
+--- a/include/linux-private/linux/socket.h
++++ b/include/linux-private/linux/socket.h
+@@ -12,11 +12,12 @@
+ typedef unsigned short __kernel_sa_family_t;
+ 
+ struct __kernel_sockaddr_storage {
++	_Alignas(_K_SS_ALIGNSIZE)   /* force desired alignment */
+ 	__kernel_sa_family_t	ss_family;		/* address family */
+ 	/* Following field(s) are implementation specific */
+ 	char		__data[_K_SS_MAXSIZE - sizeof(unsigned short)];
+ 				/* space to achieve desired size, */
+ 				/* _SS_MAXSIZE value minus size of ss_family */
+-} __attribute__ ((aligned(_K_SS_ALIGNSIZE)));	/* force desired alignment */
++};
+ 
+ #endif /* _LINUX_SOCKET_H */
+-- 
+2.49.0
+
