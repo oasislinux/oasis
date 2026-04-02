@@ -1,0 +1,72 @@
+From e56ced6e0a1529fcfb956645760bd31e1ad438c2 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 1 Apr 2026 21:18:53 -0700
+Subject: [PATCH] Use C23 attribute syntax
+
+---
+ extlinux/btrfs.h | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/extlinux/btrfs.h b/extlinux/btrfs.h
+index 17a10be3..521a1605 100644
+--- a/extlinux/btrfs.h
++++ b/extlinux/btrfs.h
+@@ -33,27 +33,27 @@ typedef u16 __le16;
+ /*
+  *  * this is used for both forward and backward root refs
+  *   */
+-struct btrfs_root_ref {
++struct [[gnu::packed]] btrfs_root_ref {
+         __le64 dirid;
+         __le64 sequence;
+         __le16 name_len;
+-} __attribute__ ((__packed__));
++};
+ 
+-struct btrfs_disk_key {
++struct [[gnu::packed]] btrfs_disk_key {
+         __le64 objectid;
+         u8 type;
+         __le64 offset;
+-} __attribute__ ((__packed__));
++};
+ 
+-struct btrfs_dir_item {
++struct [[gnu::packed]] btrfs_dir_item {
+         struct btrfs_disk_key location;
+         __le64 transid;
+         __le16 data_len;
+         __le16 name_len;
+         u8 type;
+-} __attribute__ ((__packed__));
++};
+ 
+-struct btrfs_super_block {
++struct [[gnu::packed]] btrfs_super_block {
+         uint8_t csum[32];
+         uint8_t fsid[16];
+         uint64_t bytenr;
+@@ -81,7 +81,7 @@ struct btrfs_super_block {
+         uint8_t root_level;
+         uint8_t chunk_root_level;
+         uint8_t log_root_level;
+-        struct btrfs_dev_item {
++        struct [[gnu::packed]] btrfs_dev_item {
+                 uint64_t devid;
+                 uint64_t total_bytes;
+                 uint64_t bytes_used;
+@@ -96,9 +96,9 @@ struct btrfs_super_block {
+                 uint8_t bandwidth;
+                 uint8_t uuid[16];
+                 uint8_t fsid[16];
+-        } __attribute__ ((__packed__)) dev_item;
++        } dev_item;
+         uint8_t label[256];
+-} __attribute__ ((__packed__));
++};
+ 
+ #define BTRFS_IOCTL_MAGIC 0x94
+ #define BTRFS_VOL_NAME_MAX 255
+-- 
+2.49.0
+
