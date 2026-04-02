@@ -1,15 +1,79 @@
-From 69cd3c5ced5cf3b1337d62a0cdcff53113dedeb0 Mon Sep 17 00:00:00 2001
+From d50aef8a972d303bdf17e32c99964279f9db710c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 21 Jan 2023 17:17:48 -0800
 Subject: [PATCH] Remove stray ';' at top-level
 
 ---
+ lib/libspl/include/sys/simd.h  |  52 ++++----
  module/avl/avl.c               |  36 ++---
- module/nvpair/nvpair.c         | 232 ++++++++++++++++-----------------
+ module/nvpair/nvpair.c         | 236 ++++++++++++++++-----------------
  module/zcommon/zfs_namecheck.c |  20 +--
  module/zcommon/zfs_prop.c      |  42 +++---
- 4 files changed, 165 insertions(+), 165 deletions(-)
+ 5 files changed, 193 insertions(+), 193 deletions(-)
 
+diff --git a/lib/libspl/include/sys/simd.h b/lib/libspl/include/sys/simd.h
+index 4772a5416..61f854d91 100644
+--- a/lib/libspl/include/sys/simd.h
++++ b/lib/libspl/include/sys/simd.h
+@@ -213,32 +213,32 @@ __cpuid_has_ ## name(void)					\
+ /*
+  * Define functions for user-space CPUID features testing
+  */
+-CPUID_FEATURE_CHECK(sse, SSE);
+-CPUID_FEATURE_CHECK(sse2, SSE2);
+-CPUID_FEATURE_CHECK(sse3, SSE3);
+-CPUID_FEATURE_CHECK(ssse3, SSSE3);
+-CPUID_FEATURE_CHECK(sse4_1, SSE4_1);
+-CPUID_FEATURE_CHECK(sse4_2, SSE4_2);
+-CPUID_FEATURE_CHECK(avx, AVX);
+-CPUID_FEATURE_CHECK(avx2, AVX2);
+-CPUID_FEATURE_CHECK(osxsave, OSXSAVE);
+-CPUID_FEATURE_CHECK(bmi1, BMI1);
+-CPUID_FEATURE_CHECK(bmi2, BMI2);
+-CPUID_FEATURE_CHECK(avx512f, AVX512F);
+-CPUID_FEATURE_CHECK(avx512cd, AVX512CD);
+-CPUID_FEATURE_CHECK(avx512dq, AVX512DQ);
+-CPUID_FEATURE_CHECK(avx512bw, AVX512BW);
+-CPUID_FEATURE_CHECK(avx512ifma, AVX512IFMA);
+-CPUID_FEATURE_CHECK(avx512vbmi, AVX512VBMI);
+-CPUID_FEATURE_CHECK(avx512pf, AVX512PF);
+-CPUID_FEATURE_CHECK(avx512er, AVX512ER);
+-CPUID_FEATURE_CHECK(avx512vl, AVX512VL);
+-CPUID_FEATURE_CHECK(aes, AES);
+-CPUID_FEATURE_CHECK(pclmulqdq, PCLMULQDQ);
+-CPUID_FEATURE_CHECK(movbe, MOVBE);
+-CPUID_FEATURE_CHECK(shani, SHA_NI);
+-CPUID_FEATURE_CHECK(vaes, VAES);
+-CPUID_FEATURE_CHECK(vpclmulqdq, VPCLMULQDQ);
++CPUID_FEATURE_CHECK(sse, SSE)
++CPUID_FEATURE_CHECK(sse2, SSE2)
++CPUID_FEATURE_CHECK(sse3, SSE3)
++CPUID_FEATURE_CHECK(ssse3, SSSE3)
++CPUID_FEATURE_CHECK(sse4_1, SSE4_1)
++CPUID_FEATURE_CHECK(sse4_2, SSE4_2)
++CPUID_FEATURE_CHECK(avx, AVX)
++CPUID_FEATURE_CHECK(avx2, AVX2)
++CPUID_FEATURE_CHECK(osxsave, OSXSAVE)
++CPUID_FEATURE_CHECK(bmi1, BMI1)
++CPUID_FEATURE_CHECK(bmi2, BMI2)
++CPUID_FEATURE_CHECK(avx512f, AVX512F)
++CPUID_FEATURE_CHECK(avx512cd, AVX512CD)
++CPUID_FEATURE_CHECK(avx512dq, AVX512DQ)
++CPUID_FEATURE_CHECK(avx512bw, AVX512BW)
++CPUID_FEATURE_CHECK(avx512ifma, AVX512IFMA)
++CPUID_FEATURE_CHECK(avx512vbmi, AVX512VBMI)
++CPUID_FEATURE_CHECK(avx512pf, AVX512PF)
++CPUID_FEATURE_CHECK(avx512er, AVX512ER)
++CPUID_FEATURE_CHECK(avx512vl, AVX512VL)
++CPUID_FEATURE_CHECK(aes, AES)
++CPUID_FEATURE_CHECK(pclmulqdq, PCLMULQDQ)
++CPUID_FEATURE_CHECK(movbe, MOVBE)
++CPUID_FEATURE_CHECK(shani, SHA_NI)
++CPUID_FEATURE_CHECK(vaes, VAES)
++CPUID_FEATURE_CHECK(vpclmulqdq, VPCLMULQDQ)
+ 
+ /*
+  * Detect register set support
 diff --git a/module/avl/avl.c b/module/avl/avl.c
 index 67cbcd3ad..e908181ff 100644
 --- a/module/avl/avl.c
@@ -55,7 +119,7 @@ index 67cbcd3ad..e908181ff 100644
 +EXPORT_SYMBOL(avl_update_gt)
 +EXPORT_SYMBOL(avl_update)
 diff --git a/module/nvpair/nvpair.c b/module/nvpair/nvpair.c
-index eb8c14b4a..99f94322e 100644
+index eb8c14b4a..906e7c142 100644
 --- a/module/nvpair/nvpair.c
 +++ b/module/nvpair/nvpair.c
 @@ -3282,13 +3282,13 @@ nvs_xdr_nvp_##type(XDR *xdrs, void *ptr, ...)	\
@@ -170,6 +234,8 @@ index eb8c14b4a..99f94322e 100644
 -
 -EXPORT_SYMBOL(nvlist_lookup_nvpair);
 -EXPORT_SYMBOL(nvlist_exists);
+-
+-EXPORT_SYMBOL(nvlist_snprintf);
 +EXPORT_SYMBOL(nvlist_alloc)
 +EXPORT_SYMBOL(nvlist_free)
 +EXPORT_SYMBOL(nvlist_size)
@@ -249,8 +315,8 @@ index eb8c14b4a..99f94322e 100644
 +
 +EXPORT_SYMBOL(nvlist_lookup_nvpair)
 +EXPORT_SYMBOL(nvlist_exists)
- 
- EXPORT_SYMBOL(nvlist_snprintf);
++
++EXPORT_SYMBOL(nvlist_snprintf)
  
  /* processing nvpair */
 -EXPORT_SYMBOL(nvpair_name);
