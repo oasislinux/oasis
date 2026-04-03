@@ -1,17 +1,17 @@
-From 3823d88a12d7c95de2d4b68796b5faa7f550caed Mon Sep 17 00:00:00 2001
+From 2dc242877741913abaf8685c616406812d507e17 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 Jun 2019 20:06:13 -0700
 Subject: [PATCH] rsync: Avoid pointer arithmetic on `void *`
 
 ---
- usr.bin/rsync/blocks.c     |  8 ++++----
+ usr.bin/rsync/blocks.c     | 12 ++++++------
  usr.bin/rsync/downloader.c |  2 +-
  usr.bin/rsync/io.c         | 12 ++++++------
  usr.bin/rsync/sender.c     |  5 +++--
- 4 files changed, 14 insertions(+), 13 deletions(-)
+ 4 files changed, 16 insertions(+), 15 deletions(-)
 
 diff --git a/usr.bin/rsync/blocks.c b/usr.bin/rsync/blocks.c
-index d1d9b19c31e..8f4bcb532e1 100644
+index d1d9b19c31e..9aca8c217a6 100644
 --- a/usr.bin/rsync/blocks.c
 +++ b/usr.bin/rsync/blocks.c
 @@ -163,7 +163,7 @@ blk_find(struct sess *sess, struct blkstat *st,
@@ -50,6 +50,24 @@ index d1d9b19c31e..8f4bcb532e1 100644
  	st->s1 -= map[0];
  	st->s2 -= osz * map[0];
  
+@@ -287,7 +287,7 @@ blk_match(struct sess *sess, const struct blkset *blks,
+ 		    blk->len, blk->idx);
+ 		tok = -(blk->idx + 1);
+ 
+-		hash_file_buf(&st->ctx, st->map + last, sz + blk->len);
++		hash_file_buf(&st->ctx, (char *)st->map + last, sz + blk->len);
+ 
+ 		/*
+ 		 * Write the data we have, then follow it with
+@@ -312,7 +312,7 @@ blk_match(struct sess *sess, const struct blkset *blks,
+ 	LOG4("%s: flushing %s %jd B", path,
+ 	    last == 0 ? "whole" : "remaining", (intmax_t)sz);
+ 
+-	hash_file_buf(&st->ctx, st->map + last, sz);
++	hash_file_buf(&st->ctx, (char *)st->map + last, sz);
+ 
+ 	st->total += sz;
+ 	st->dirty += sz;
 diff --git a/usr.bin/rsync/downloader.c b/usr.bin/rsync/downloader.c
 index cab6eb23f9f..07ec334f6b4 100644
 --- a/usr.bin/rsync/downloader.c
