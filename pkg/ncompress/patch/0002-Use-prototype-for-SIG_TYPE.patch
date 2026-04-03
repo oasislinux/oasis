@@ -1,0 +1,25 @@
+From 62f8f697809fb2579ac2cc39aa9907140b4b1249 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 2 Apr 2026 17:31:35 -0700
+Subject: [PATCH] Use prototype for SIG_TYPE
+
+---
+ compress.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/compress.c b/compress.c
+index 691ff2b..a7bd65a 100644
+--- a/compress.c
++++ b/compress.c
+@@ -169,7 +169,7 @@
+ #endif
+ 
+ #ifndef SIG_TYPE
+-#	define	SIG_TYPE	void (*)()
++#	define	SIG_TYPE	void (*)(int)
+ #endif
+ 
+ #if defined(AMIGA) || defined(DOS) || defined(MINGW) || defined(WINDOWS)
+-- 
+2.49.0
+
