@@ -1,4 +1,4 @@
-From a16c45e3c7b271fb74a83d84e83189858b9b88bb Mon Sep 17 00:00:00 2001
+From 08eee219f4fa095dcafdea8b0d8eee6da8fe87db Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 24 Apr 2019 00:07:34 -0700
 Subject: [PATCH] Use plain vsyslog for OPENSSL_showfatal
@@ -6,14 +6,14 @@ Subject: [PATCH] Use plain vsyslog for OPENSSL_showfatal
 The compat version just ignores the second argument anyway, and
 patching it out allows us to continue to ignore the compat functions.
 ---
- crypto/cryptlib.c | 3 +--
+ crypto/crypto_legacy.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/crypto/cryptlib.c b/crypto/cryptlib.c
-index 38d31e7ac..d6eface9b 100644
---- a/crypto/cryptlib.c
-+++ b/crypto/cryptlib.c
-@@ -345,11 +345,10 @@ OPENSSL_cpuid_setup(void)
+diff --git a/crypto/crypto_legacy.c b/crypto/crypto_legacy.c
+index dcaa632..3c63111 100644
+--- a/crypto/crypto_legacy.c
++++ b/crypto/crypto_legacy.c
+@@ -316,11 +316,10 @@ LCRYPTO_ALIAS(OPENSSL_cpu_caps);
  static void
  OPENSSL_showfatal(const char *fmta, ...)
  {
@@ -21,11 +21,11 @@ index 38d31e7ac..d6eface9b 100644
  	va_list ap;
  
  	va_start(ap, fmta);
--	vsyslog_r(LOG_INFO|LOG_LOCAL2, &sdata, fmta, ap);
-+	vsyslog(LOG_INFO|LOG_LOCAL2, fmta, ap);
+-	vsyslog_r(LOG_CONS|LOG_LOCAL2, &sdata, fmta, ap);
++	vsyslog(LOG_CONS|LOG_LOCAL2, fmta, ap);
  	va_end(ap);
  }
  
 -- 
-2.21.0
+2.49.0
 

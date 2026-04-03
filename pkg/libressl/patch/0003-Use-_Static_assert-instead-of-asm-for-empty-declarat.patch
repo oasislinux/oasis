@@ -1,0 +1,53 @@
+From 20e0b159b36aabcdd7b33c07f8a20b4dd9c2a25f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 2 Apr 2026 23:45:13 -0700
+Subject: [PATCH] Use _Static_assert instead of asm("") for empty declaration
+
+Also, use the same technique for LCRYPTO_USED.
+---
+ crypto/hidden/crypto_namespace.h | 6 +++---
+ ssl/hidden/ssl_namespace.h       | 4 ++--
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/crypto/hidden/crypto_namespace.h b/crypto/hidden/crypto_namespace.h
+index 43c8718..4ad8ce0 100644
+--- a/crypto/hidden/crypto_namespace.h
++++ b/crypto/hidden/crypto_namespace.h
+@@ -42,13 +42,13 @@
+ #  define LCRYPTO_USED(x)	typeof(x) x asm("_libre_"#x)
+ #endif
+ #else
+-# define LCRYPTO_UNUSED(x)
+-# define LCRYPTO_USED(x)
++# define LCRYPTO_UNUSED(x)	_Static_assert(1, "")
++# define LCRYPTO_USED(x)	_Static_assert(1, "")
+ # define LCRYPTO_ALIAS1(pre,x)
+ #ifdef _MSC_VER
+ # define LCRYPTO_ALIAS(x)
+ #else
+-# define LCRYPTO_ALIAS(x)	asm("")
++# define LCRYPTO_ALIAS(x)	_Static_assert(1, "")
+ #endif /* _MSC_VER */
+ #endif
+ 
+diff --git a/ssl/hidden/ssl_namespace.h b/ssl/hidden/ssl_namespace.h
+index 763dcd7..d48c95e 100644
+--- a/ssl/hidden/ssl_namespace.h
++++ b/ssl/hidden/ssl_namespace.h
+@@ -34,11 +34,11 @@
+ #endif
+ #else
+ #define LSSL_UNUSED(x)
+-#define LSSL_USED(x)
++#define LSSL_USED(x)		_Static_assert(1, "")
+ #ifdef _MSC_VER
+ #define LSSL_ALIAS(x)
+ #else
+-#define LSSL_ALIAS(x)		asm("")
++#define LSSL_ALIAS(x)		_Static_assert(1, "")
+ #endif /* _MSC_VER */
+ #endif
+ 
+-- 
+2.49.0
+

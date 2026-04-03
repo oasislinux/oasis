@@ -1,0 +1,25 @@
+From 5825db2081409ded9b815461c4ff05839215baa5 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 3 Apr 2026 02:27:29 -0700
+Subject: [PATCH] Use void * for printf %p format specifier
+
+---
+ crypto/bio/bio_cb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/crypto/bio/bio_cb.c b/crypto/bio/bio_cb.c
+index 990cb20..35f9f18 100644
+--- a/crypto/bio/bio_cb.c
++++ b/crypto/bio/bio_cb.c
+@@ -78,7 +78,7 @@ BIO_debug_callback(BIO *bio, int cmd, const char *argp, int argi, long argl,
+ 	if (BIO_CB_RETURN & cmd)
+ 		r = ret;
+ 
+-	nbuf = snprintf(buf, sizeof(buf), "BIO[%p]: ", bio);
++	nbuf = snprintf(buf, sizeof(buf), "BIO[%p]: ", (void *)bio);
+ 	if (nbuf < 0)
+ 		nbuf = 0;	/* Ignore error; continue printing. */
+ 	if (nbuf >= sizeof(buf))
+-- 
+2.49.0
+
