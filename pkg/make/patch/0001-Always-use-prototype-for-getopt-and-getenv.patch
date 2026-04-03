@@ -1,0 +1,72 @@
+From c83c5ddf95c8fb3f39e03a206d34f46faadb2fe7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 2 Apr 2026 17:54:53 -0700
+Subject: [PATCH] Always use prototype for getopt and getenv
+
+---
+ src/getopt.c | 15 ++-------------
+ src/getopt.h |  7 -------
+ 2 files changed, 2 insertions(+), 20 deletions(-)
+
+diff --git a/src/getopt.c b/src/getopt.c
+index 7a792de8..3673aecf 100644
+--- a/src/getopt.c
++++ b/src/getopt.c
+@@ -39,6 +39,8 @@ this program.  If not, see <https://www.gnu.org/licenses/>.  */
+ #endif
+ 
+ #include <stdio.h>
++#include <stdlib.h>
++#include <unistd.h>
+ 
+ /* Comment out all this code if we are using the GNU C Library, and are not
+    actually compiling the library itself.  This code is part of the GNU C
+@@ -59,15 +61,6 @@ this program.  If not, see <https://www.gnu.org/licenses/>.  */
+ #ifndef ELIDE_CODE
+ 
+ 
+-/* This needs to come after some library #include
+-   to get __GNU_LIBRARY__ defined.  */
+-#ifdef	__GNU_LIBRARY__
+-/* Don't include stdlib.h for non-GNU C libraries because some of them
+-   contain conflicting prototypes for getopt.  */
+-# include <stdlib.h>
+-# include <unistd.h>
+-#endif	/* GNU C library.  */
+-
+ #ifdef VMS
+ # include <unixlib.h>
+ # if HAVE_STRING_H - 0
+@@ -201,10 +194,6 @@ static char *posixly_correct;
+ /* Avoid depending on library functions or files
+    whose names are inconsistent.  */
+ 
+-#ifndef getenv
+-extern char *getenv ();
+-#endif
+-
+ static char *
+ my_index (const char *str, int chr)
+ {
+diff --git a/src/getopt.h b/src/getopt.h
+index df18ceeb..a6cc6217 100644
+--- a/src/getopt.h
++++ b/src/getopt.h
+@@ -96,14 +96,7 @@ struct option
+ #define optional_argument	2
+ 
+ #if defined (__STDC__) && __STDC__
+-#ifdef __GNU_LIBRARY__
+-/* Many other libraries have conflicting prototypes for getopt, with
+-   differences in the consts, in stdlib.h.  To avoid compilation
+-   errors, only prototype getopt for the GNU C library.  */
+ extern int getopt (int argc, char *const *argv, const char *shortopts);
+-#else /* not __GNU_LIBRARY__ */
+-extern int getopt ();
+-#endif /* __GNU_LIBRARY__ */
+ extern int getopt_long (int argc, char *const *argv, const char *shortopts,
+ 		        const struct option *longopts, int *longind);
+ extern int getopt_long_only (int argc, char *const *argv,
+-- 
+2.49.0
+
