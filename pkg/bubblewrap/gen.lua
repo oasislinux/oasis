@@ -3,6 +3,11 @@ cflags{
 	'-Wall', '-Wpedantic', '-Wvla',
 	'-D _GNU_SOURCE',
 	'-I $dir',
+	'-isystem $builddir/pkg/linux-headers/include',
+}
+
+pkg.deps = {
+	'pkg/linux-headers/headers',
 }
 
 build('awk', '$outdir/caps.h', {
