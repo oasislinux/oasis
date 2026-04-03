@@ -1,26 +1,68 @@
-From 5b997ce94b67bfd5c3f1a34c33fb14b11a8b5c81 Mon Sep 17 00:00:00 2001
+From 1aa57013bfe9e7bf73c8a6da3f1493c72a42a5fc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 2 Apr 2026 17:17:27 -0700
 Subject: [PATCH] fts: Use prototype in declaration of fts_compar
 
 In C23, empty parenthesis indications a function taking no arguments.
 ---
- include/fts.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/fts.h      | 8 +++++---
+ lib/libc/gen/fts.c | 3 ++-
+ 2 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/include/fts.h b/include/fts.h
-index a5b3aff91e7..ef25e88d298 100644
+index a5b3aff91e7..c2be7cfee71 100644
 --- a/include/fts.h
 +++ b/include/fts.h
-@@ -46,7 +46,7 @@ typedef struct {
+@@ -37,6 +37,8 @@
+ 
+ #include <sys/cdefs.h>
+ 
++typedef struct _ftsent FTSENT;
++
+ typedef struct {
+ 	struct _ftsent *fts_cur;	/* current node */
+ 	struct _ftsent *fts_child;	/* linked list of children */
+@@ -46,7 +48,7 @@ typedef struct {
  	int fts_rfd;			/* fd for root */
  	size_t fts_pathlen;		/* sizeof(path) */
  	int fts_nitems;			/* elements in the sort array */
 -	int (*fts_compar)();		/* compare function */
-+	int (*fts_compar)(const void *, const void *); /* compare function */
++	int (*fts_compar)(const FTSENT **, const FTSENT **); /* compare function */
  
  #define	FTS_COMFOLLOW	0x0001		/* follow command line symlinks */
  #define	FTS_LOGICAL	0x0002		/* logical walk */
+@@ -62,7 +64,7 @@ typedef struct {
+ 	int fts_options;		/* fts_open options, global flags */
+ } FTS;
+ 
+-typedef struct _ftsent {
++struct _ftsent {
+ 	struct _ftsent *fts_cycle;	/* cycle node */
+ 	struct _ftsent *fts_parent;	/* parent directory */
+ 	struct _ftsent *fts_link;	/* next file in directory */
+@@ -113,7 +115,7 @@ typedef struct _ftsent {
+ 
+ 	struct stat *fts_statp;		/* stat(2) information */
+ 	char fts_name[1];		/* file name */
+-} FTSENT;
++};
+ 
+ __BEGIN_DECLS
+ FTSENT	*fts_children(FTS *, int);
+diff --git a/lib/libc/gen/fts.c b/lib/libc/gen/fts.c
+index 86585190a99..444d969c299 100644
+--- a/lib/libc/gen/fts.c
++++ b/lib/libc/gen/fts.c
+@@ -897,7 +897,8 @@ fts_sort(FTS *sp, FTSENT *head, int nitems)
+ 	}
+ 	for (ap = sp->fts_array, p = head; p; p = p->fts_link)
+ 		*ap++ = p;
+-	qsort(sp->fts_array, nitems, sizeof(FTSENT *), sp->fts_compar);
++	qsort(sp->fts_array, nitems, sizeof(FTSENT *),
++	    (int (*)(const void *, const void *))sp->fts_compar);
+ 	for (head = *(ap = sp->fts_array); --nitems; ++ap)
+ 		ap[0]->fts_link = ap[1];
+ 	ap[0]->fts_link = NULL;
 -- 
 2.49.0
 
