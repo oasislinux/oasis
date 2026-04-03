@@ -84,6 +84,7 @@
 #define HAVE_ASPRINTF 1
 /* #undef HAVE_ATTRIBUTE__BOUNDED__ */
 #define HAVE_ATTRIBUTE__NONNULL__ 1
+#define HAVE_ATTRIBUTE__NONSTRING__ 1
 /* #undef HAVE_ATTRIBUTE__SENTINEL__ */
 /* #undef HAVE_AUG_GET_MACHINE */
 /* #undef HAVE_AUTH_HOSTOK */
@@ -131,6 +132,7 @@
 #define HAVE_DECL_HOWMANY 1
 #define HAVE_DECL_HTOLE64 1
 #define HAVE_DECL_H_ERRNO 1
+#define HAVE_DECL_INFINITY 1
 #define HAVE_DECL_LE32TOH 1
 #define HAVE_DECL_LE64TOH 1
 /* #undef HAVE_DECL_LOGINFAILED */
@@ -149,6 +151,7 @@
 #define HAVE_DECL_WRITEV 1
 #define HAVE_DECL__GETLONG 0
 #define HAVE_DECL__GETSHORT 0
+/* #undef HAVE_DECL___BUILTIN_INFF */
 /* #undef HAVE_DEV_PTMX */
 /* #undef HAVE_DEV_PTS_AND_PTC */
 #define HAVE_DIRENT_H 1
@@ -192,6 +195,7 @@
 #define HAVE_FREEZERO 1
 #define HAVE_FSBLKCNT_T 1
 #define HAVE_FSFILCNT_T 1
+#define HAVE_FSTATAT 1
 #define HAVE_FSTATFS 1
 #define HAVE_FSTATVFS 1
 #define HAVE_FUTIMES 1
@@ -303,6 +307,7 @@
 #define HAVE_MEMMOVE 1
 /* #undef HAVE_MEMSET_S */
 #define HAVE_MKDTEMP 1
+#define HAVE_MMAP 1
 #define HAVE_MODE_T 1
 #define HAVE_NANOSLEEP 1
 /* #undef HAVE_NDIR_H */
@@ -313,6 +318,8 @@
 /* #undef HAVE_NEXT */
 #define HAVE_NFDS_T 1
 /* #undef HAVE_NGETADDRINFO */
+/* #undef HAVE_NLIST */
+/* #undef HAVE_NLIST_H */
 #define HAVE_NL_LANGINFO 1
 /* #undef HAVE_NSLEEP */
 /* #undef HAVE_OGETADDRINFO */
@@ -427,6 +434,7 @@
 #define HAVE_STRTOUL 1
 #define HAVE_STRTOULL 1
 #define HAVE_STRUCT_ADDRINFO 1
+#define HAVE_STRUCT_DIRENT_D_TYPE 1
 #define HAVE_STRUCT_IN6_ADDR 1
 /* #undef HAVE_STRUCT_PASSWD_PW_CHANGE */
 /* #undef HAVE_STRUCT_PASSWD_PW_CLASS */
@@ -500,8 +508,10 @@
 #define HAVE_UINTMAX_T 1
 #define HAVE_UINTXX_T 1
 #define HAVE_UNISTD_H 1
+#define HAVE_UNLINKAT 1
 #define HAVE_UNSETENV 1
 #define HAVE_UNSIGNED_LONG_LONG 1
+#define HAVE_UNVEIL 1
 #define HAVE_UPDWTMP 1
 #define HAVE_UPDWTMPX 1
 /* #undef HAVE_USERSEC_H */
@@ -571,6 +581,8 @@
 #define PAM_TTY_KLUDGE 1
 /* #undef PASSWD_NEEDS_USERNAME */
 /* #undef PLATFORM_SYS_DIR_UID */
+#define PLEDGE_EXTRA_INET /**/
+/* #undef POLL_NFDS_T_ULONG */
 /* #undef PTY_ZEROREAD */
 /* #undef SANDBOX_CAPSICUM */
 /* #undef SANDBOX_DARWIN */
@@ -592,7 +604,6 @@
 #define SPT_TYPE SPT_REUSEARGV
 /* #undef SSHD_ACQUIRES_CTTY */
 /* #undef SSHD_PAM_SERVICE */
-/* #undef SSHPAM_CHAUTHTOK_NEEDS_RUID */
 /* #undef SSH_AUDIT_EVENTS */
 /* #undef SSH_IOBUFSZ */
 #define SSH_PRIVSEP_USER "sshd"

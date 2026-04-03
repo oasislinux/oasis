@@ -10,12 +10,12 @@ cflags{
 	archflags[arch] or '-D SANDBOX_RLIMIT=1',
 	'-I $outdir',
 	'-I $srcdir',
+	'-I $dir/include',
 	'-isystem $basedir/pkg/openbsd/include',
 	'-isystem $builddir/pkg/bearssl/include',
 	'-isystem $builddir/pkg/libfido2/include',
 	'-isystem $builddir/pkg/linux-headers/include',
 	'-isystem $builddir/pkg/zlib/include',
-	'-idirafter $srcdir/openbsd-compat',
 }
 
 pkg.deps = {
@@ -64,14 +64,6 @@ lib('libssh.a', [[
 	krl.c
 	bitmap.c
 
-	ssh-xmss.c
-	sshkey-xmss.c
-	xmss_commons.c
-	xmss_fast.c
-	xmss_hash.c
-	xmss_hash_address.c
-	xmss_wots.c
-
 	authfd.c authfile.c
 	canohost.c channels.c cipher.c cipher-aes.c cipher-aesctr.c
 	cleanup.c
@@ -81,17 +73,18 @@ lib('libssh.a', [[
 	atomicio.c dispatch.c mac.c misc.c utf8.c
 	monitor_fdpass.c rijndael.c ssh-ecdsa.c ssh-ecdsa-sk.c
 	ssh-ed25519-sk.c ssh-rsa.c dh.c
-	msg.c progressmeter.c dns.c entropy.c gss-genr.c umac.c umac128.c
-	ssh-pkcs11.c smult_curve25519_ref.c
+	msg.c dns.c entropy.c gss-genr.c umac.c umac128.c
+	smult_curve25519_ref.c
 	poly1305.c chacha.c cipher-chachapoly.c cipher-chachapoly-bearssl.c
 	ssh-ed25519.c digest-bearssl.c digest-libc.c
-	hmac.c ed25519.c hash.c
+	hmac.c ed25519.c
 	kex.c kex-names.c kexdh.c kexgex.c kexecdh.c kexc25519.c
 	kexgexc.c kexgexs.c
 	kexsntrup761x25519.c kexmlkem768x25519.c sntrup761.c kexgen.c
 	sftp-realpath.c platform-pledge.c platform-tracing.c platform-misc.c
-	sshbuf-io.c
+	sshbuf-io.c misc-agent.c ssherr-libcrypto.c
 
+	ssh-pkcs11-client.c
 	ssh-sk-client.c
 
 	libopenbsd-compat.a
@@ -104,6 +97,8 @@ lib('sftp-client.a', [[
 	sftp-common.c
 	sftp-client.c
 	sftp-glob.c
+
+	progressmeter.c
 ]])
 
 lib('sftp-server.a', [[
@@ -166,7 +161,7 @@ file('bin/scp', '755', '$outdir/scp')
 exe('ssh-add', {'ssh-add.c', 'libssh.a.d'})
 file('bin/ssh-add', '755', '$outdir/ssh-add')
 
-exe('ssh-agent', {'ssh-agent.c', 'ssh-pkcs11-client.c', 'libssh.a.d'})
+exe('ssh-agent', {'ssh-agent.c', 'libssh.a.d'})
 file('bin/ssh-agent', '755', '$outdir/ssh-agent')
 
 exe('ssh-keygen', {'ssh-keygen.c', 'sshsig.c', 'libssh.a.d'})
