@@ -1,0 +1,63 @@
+From 537b64d1d0b49c4e74c66e2de98ce2dee51a1905 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Thu, 2 Apr 2026 17:24:45 -0700
+Subject: [PATCH] oksh: Avoid implicit parameter conversion to char *
+
+kb_entry.seq is always used with string functions, so make it a
+char * instead.
+---
+ emacs.c | 4 ++--
+ misc.c  | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/emacs.c b/emacs.c
+index 78ac2e4..b2c7ab2 100644
+--- a/emacs.c
++++ b/emacs.c
+@@ -78,7 +78,7 @@ typedef enum {
+ /* keybindings */
+ struct kb_entry {
+ 	TAILQ_ENTRY(kb_entry)	entry;
+-	unsigned char		*seq;
++	char			*seq;
+ 	int			len;
+ 	struct x_ftab		*ftab;
+ 	void			*args;
+@@ -1343,7 +1343,7 @@ kb_add_string(kb_func func, void *args, char *str)
+ 	count = strlen(str);
+ 
+ 	k = alloc(sizeof *k + count + 1, AEDIT);
+-	k->seq = (unsigned char *)(k + 1);
++	k->seq = (char *)(k + 1);
+ 	k->len = count;
+ 	k->ftab = xf;
+ 	k->args = args ? strdup(args) : NULL;
+diff --git a/misc.c b/misc.c
+index 428f183..9696230 100644
+--- a/misc.c
++++ b/misc.c
+@@ -714,10 +714,10 @@ do_gmatch(const unsigned char *s, const unsigned char *se,
+ }
+ 
+ static int
+-posix_cclass(const unsigned char *pattern, int test, const unsigned char **ep)
++posix_cclass(const char *pattern, int test, const unsigned char **ep)
+ {
+ 	const struct cclass *cc;
+-	const unsigned char *colon;
++	const char *colon;
+ 	size_t len;
+ 	int rval = 0;
+ 
+@@ -754,7 +754,7 @@ cclass(const unsigned char *p, int sub)
+ 		if ((p[0] == MAGIC && p[1] == '[' && p[2] == ':') ||
+ 		    (p[0] == '[' && p[1] == ':')) {
+ 			do {
+-				const char *pp = p + (*p == MAGIC) + 2;
++				const char *pp = (char *)p + (*p == MAGIC) + 2;
+ 				rv = posix_cclass(pp, sub, &p);
+ 				switch (rv) {
+ 				case 1:
+-- 
+2.49.0
+
