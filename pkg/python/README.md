@@ -11,3 +11,6 @@ Generated with
 
 Use libtls's conversative default set of cipher suites since the
 python default uses `@SECLEVEL=2`, which is not supported by libressl.
+
+`HAVE_GCC_ASM_FOR_X64` and `HAVE_GCC_ASM_FOR_X87` were guarded by
+`#ifdef __x86_64__` for compatibility with other architectures.

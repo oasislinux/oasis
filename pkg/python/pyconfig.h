@@ -133,8 +133,10 @@
 #define HAVE_GAI_STRERROR 1
 /* #undef HAVE_GAMMA */
 /* #undef HAVE_GCC_ASM_FOR_MC68881 */
+#ifdef __x86_64__
 #define HAVE_GCC_ASM_FOR_X64 1
 #define HAVE_GCC_ASM_FOR_X87 1
+#endif
 #define HAVE_GCC_UINT128_T 1
 #define HAVE_GETADDRINFO 1
 #define HAVE_GETC_UNLOCKED 1
