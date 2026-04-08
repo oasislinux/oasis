@@ -2,7 +2,6 @@ image: alpine/edge
 packages:
 - bison
 - curl
-- libarchive-tools
 - lua5.1
 - nasm
 - ninja
