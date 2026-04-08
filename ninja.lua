@@ -300,11 +300,12 @@ function objects(srcs, deps, args)
 	end
 	for src in fn, srcs do
 		local rule = rules[src:match('[^.]*$')]
+		local obj = src
 		if rule then
-			src = compile(rule, src, deps, args)
+			obj = compile(rule, src, deps, args)
 		end
 		nobjs = nobjs + 1
-		objs[nobjs] = src
+		objs[nobjs] = obj
 	end
 	return objs
 end

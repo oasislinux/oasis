@@ -1,4 +1,4 @@
-From 53565af85003022be06bc6662e72a9291d338b14 Mon Sep 17 00:00:00 2001
+From 5d8ca4500e360108a8ce7fae0a5e5c03844c854d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 2 Feb 2025 03:03:11 -0800
 Subject: [PATCH] Build in luaposix modules
@@ -8,12 +8,12 @@ Subject: [PATCH] Build in luaposix modules
  1 file changed, 88 insertions(+)
 
 diff --git a/src/lua.c b/src/lua.c
-index 0ff88454..ca160217 100644
+index 5054583d..4e12fe5e 100644
 --- a/src/lua.c
 +++ b/src/lua.c
-@@ -609,6 +609,35 @@ static void doREPL (lua_State *L) {
+@@ -697,6 +697,35 @@ static void doREPL (lua_State *L) {
+ #endif
  
- /* }================================================================== */
  
 +int luaopen_posix_ctype(lua_State *L);
 +int luaopen_posix_dirent(lua_State *L);
@@ -44,13 +44,13 @@ index 0ff88454..ca160217 100644
 +int luaopen_posix_unistd(lua_State *L);
 +int luaopen_posix_utime(lua_State *L);
 +
- 
  /*
  ** Main body of stand-alone interpreter (to be called in protected mode).
-@@ -632,6 +661,65 @@ static int pmain (lua_State *L) {
+ ** Reads the options and handles them all.
+@@ -719,6 +748,65 @@ static int pmain (lua_State *L) {
      lua_setfield(L, LUA_REGISTRYINDEX, "LUA_NOENV");
    }
-   luaL_openlibs(L);  /* open standard libraries */
+   luai_openlibs(L);  /* open standard libraries */
 +  luaL_getsubtable(L, LUA_REGISTRYINDEX, LUA_PRELOAD_TABLE);
 +  /* luaposix */
 +  lua_pushcfunction(L, luaopen_posix_ctype);
@@ -112,7 +112,7 @@ index 0ff88454..ca160217 100644
 +  lua_pop(L, 1);
    createargtable(L, argv, argc, script);  /* create table 'arg' */
    lua_gc(L, LUA_GCRESTART);  /* start GC... */
-   lua_gc(L, LUA_GCGEN, 0, 0);  /* ...in generational mode */
+   lua_gc(L, LUA_GCGEN);  /* ...in generational mode */
 -- 
-2.44.0
+2.49.0
 
