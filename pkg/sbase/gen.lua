@@ -1,5 +1,5 @@
 cflags{
-	'-std=c99', '-Wall', '-Wpedantic', '-Wno-maybe-uninitialized',
+	'-std=c99', '-Wall', '-Wpedantic', '-Wno-maybe-uninitialized', '-Wno-parentheses',
 	'-D _DEFAULT_SOURCE',
 	'-D _BSD_SOURCE',
 	'-D _XOPEN_SOURCE=700',
@@ -10,6 +10,7 @@ lib('libutil.a', [[libutil/(
 	concat.c
 	cp.c
 	crypt.c
+	confirm.c
 	ealloc.c
 	enmasse.c
 	eprintf.c
@@ -39,6 +40,7 @@ lib('libutil.a', [[libutil/(
 	strcasestr.c
 	strlcat.c
 	strlcpy.c
+	strnsubst.c
 	strsep.c
 	strtonum.c
 	unescape.c
@@ -66,8 +68,8 @@ lib('libutf.a', [[libutf/(
 	utftorunestr.c
 )]])
 
-rule('getconf', '$srcdir/getconf.sh >$out')
-build('getconf', '$outdir/getconf.h', {'|', '$srcdir/getconf.sh'})
+rule('getconf', '$srcdir/scripts/getconf.sh >$out')
+build('getconf', '$outdir/getconf.h', {'|', '$srcdir/scripts/getconf.sh'})
 
 local cmds = {
 	'basename',
