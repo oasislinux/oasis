@@ -72,6 +72,7 @@ return {
 		'nginx',
 		'nsd',
 		'pounce',
+		'sfeed',
 		'sshfs',
 		'transmission',
 		'wireguard-tools',
