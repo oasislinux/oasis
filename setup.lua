@@ -1,5 +1,8 @@
 #!/bin/lua
 
+-- prevent accidental use of undefined globals
+setmetatable(_G, {__index=function(_, var) error('undefined global \''..var..'\'') end})
+
 -- Lua 5.1 compatibility
 do
 	local os_execute = os.execute
