@@ -64,7 +64,7 @@
 #define SIZEOF_LONG 8
 #define SIZEOF_LONG_LONG 8
 #define STDC_HEADERS 1
-#define TARGET "x86_64-pc-linux-musl"
+/* #undef TARGET "x86_64-pc-linux-musl" */
 #define TARGET_PREPENDS_UNDERSCORE 0
 #define TYPEOF_STRUCT_STAT_ST_ATIM_IS_STRUCT_TIMESPEC 1
 /* #undef USE_BINARY_FOPEN */

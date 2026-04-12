@@ -6,9 +6,9 @@
 /* #undef AIX_WEAK_SUPPORT */
 /* #undef BROKEN_ASSERT */
 /* #undef CROSS_COMPILE */
-#define DEFAULT_ARCH "x86_64"
+/* #undef DEFAULT_ARCH "x86_64" */
 /* #undef DEFAULT_CRIS_ARCH */
-#define DEFAULT_EMULATION "i386elf"
+/* #undef DEFAULT_EMULATION "i386elf" */
 #define DEFAULT_FLAG_COMPRESS_DEBUG 1
 #define DEFAULT_GENERATE_BUILD_NOTES 0
 #define DEFAULT_GENERATE_ELF_STT_COMMON 0
@@ -18,8 +18,12 @@
 #define DEFAULT_RISCV_ATTR 1
 /* #undef DEFAULT_RISCV_ISA_SPEC */
 /* #undef DEFAULT_RISCV_PRIV_SPEC */
+#ifdef __x86_64__
 #define DEFAULT_X86_USED_NOTE 1
-#define EMULATIONS &i386elf,
+#else
+#define DEFAULT_X86_USED_NOTE 0
+#endif
+/* #undef EMULATIONS &i386elf */
 /* #undef ENABLE_CHECKING */
 /* #undef ENABLE_NLS */
 #define HAVE_DECL_ASPRINTF 1
@@ -73,13 +77,13 @@
 #define PACKAGE_VERSION "2.39"
 #define STDC_HEADERS 1
 /* #undef STRICTCOFF */
-#define TARGET_ALIAS "x86_64-linux-musl"
+/* #undef TARGET_ALIAS "x86_64-linux-musl" */
 /* #undef TARGET_BYTES_BIG_ENDIAN */
-#define TARGET_CANONICAL "x86_64-pc-linux-musl"
-#define TARGET_CPU "x86_64"
-#define TARGET_OS "linux-musl"
+/* #undef TARGET_CANONICAL "x86_64-pc-linux-musl" */
+/* #undef TARGET_CPU "x86_64" */
+/* #undef TARGET_OS "linux-musl" */
 /* #undef TARGET_SOLARIS_COMMENT */
-#define TARGET_VENDOR "pc"
+/* #undef TARGET_VENDOR "pc" */
 /* #undef TARGET_WITH_CPU */
 /* #undef USE_BINARY_FOPEN */
 /* #undef USE_EMULATIONS */

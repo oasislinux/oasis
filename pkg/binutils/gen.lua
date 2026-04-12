@@ -1,11 +1,30 @@
+local arch = targetarch({'x86_64','aarch64'})
+if not arch then
+	return
+end
+
 local version = setmetatable({2, 39}, {__index=function() return 0 end})
 local defvec = 'x86_64_elf64_vec'
 local selvecs = {[defvec]=true, i386_elf32_vec=true}
 local selarchs = {i386=true}
+
+defvec = (arch == 'aarch64' and 'aarch64_elf64_le_vec') or defvec
+selvecs = (arch == 'aarch64' and {[defvec]=true}) or selvecs
+selarchs = (arch == 'aarch64' and {aarch64=true}) or selarchs
+
+local vendor = (arch == 'aarch64' and 'unknown') or 'pc'
+local osname = config.target.platform:match('%a+-%a+$')
+
 local emuls = {
 	'elf_x86_64',
 	'elf_i386',
 }
+
+emuls = (arch == 'aarch64' and {
+	'aarch64elf',
+	'aarch64linux',
+	'aarch64elfb',
+}) or emuls
 
 cflags{
 	'-std=c99', '-Wall', '-Wno-return-local-addr', '-Wno-stringop-truncation',
@@ -88,6 +107,10 @@ sub('bfd.ninja', function()
 	build('sed', '$outdir/bfd/pex64igen.c', '$srcdir/bfd/peXXigen.c', {expr='-e s,XX,pex64,g'})
 	build('sed', '$outdir/bfd/peigen.c', '$srcdir/bfd/peXXigen.c', {expr='-e s,XX,pe,g'})
 
+	if arch == 'aarch64' then
+		build('sed', '$outdir/bfd/elf64-aarch64.c', '$srcdir/bfd/elfnn-aarch64.c', {expr='-e s,NN,64,g'})
+	end
+
 	-- src/bfd/config.bfd
 	for _, vec in ipairs(table.keys(selvecs)) do
 		if vec:find('elf64') or vec:find('mips_elf32_n') then
@@ -108,6 +131,11 @@ sub('bfd.ninja', function()
 		['peigen.c']='$outdir/bfd/peigen.c',
 		['pex64igen.c']='$outdir/bfd/pex64igen.c',
 	}
+
+	if arch == 'aarch64' then
+		special['elf64-aarch64.c']='$outdir/bfd/elf64-aarch64.c'
+	end
+
 	for vec, vecsrcs in pairs(load 'vec.lua') do
 		if selvecs[vec] then
 			for src in iterstrings(vecsrcs) do
@@ -145,7 +173,6 @@ sub('bfd.ninja', function()
 			init.c libbfd.c linker.c merge.c opncls.c reloc.c
 			section.c simple.c stab-syms.c stabs.c syms.c targets.c.o
 			binary.c ihex.c srec.c tekhex.c verilog.c
-
 			archive64.c
 		)]],
 		table.keys(srcs),
@@ -176,6 +203,7 @@ end)
 sub('binutils.ninja', function()
 	cflags{
 		string.format([[-D 'LOCALEDIR="%s/share/locale"']], config.prefix),
+		string.format([[-D 'TARGET="%s-%s-%s"']], arch, vendor, osname),
 		'-D bin_dummy_emulation=bin_vanilla_emulation',
 		'-I $dir/binutils',
 		'-I $srcdir/binutils',
@@ -220,16 +248,29 @@ sub('binutils.ninja', function()
 end)
 
 sub('gas.ninja', function()
+
 	cflags{
 		'-I $dir/gas',
 		'-I $outdir/gas',
 		'-I $srcdir/gas',
 		'-I $srcdir/gas/config',
 		'-I $srcdir',
+		string.format([[-D 'EMULATIONS=&%s,']], emuls[1]),
+		string.format([[-D 'DEFAULT_EMULATION="%s"']], emuls[1]),
+		string.format([[-D 'TARGET_ALIAS="%s"']], config.target.platform),
+		string.format([[-D 'TARGET_CPU="%s"']], arch),
+		string.format([[-D 'DEFAULT_ARCH="%s"']], arch),
+		string.format([[-D 'TARGET_OS="%s"']], osname),
+		string.format([[-D 'TARGET_VENDOR="%s"']], plat),
+		string.format([[-D 'TARGET_CANONICAL="%s-%s-%s"']], arch, plat, osname),
 	}
-	build('copy', '$outdir/gas/targ-cpu.h', '$srcdir/gas/config/tc-i386.h')
+
+	local target = 'tc-i386'
+	target = (arch == 'aarch64' and 'tc-aarch64') or target
+	build('copy', '$outdir/gas/targ-cpu.h', '$srcdir/gas/config/'..target..'.h')
 	build('copy', '$outdir/gas/targ-env.h', '$srcdir/gas/config/te-linux.h')
 	build('copy', '$outdir/gas/obj-format.h', '$srcdir/gas/config/obj-elf.h')
+
 	local deps = {
 		'$gendir/deps',
 		'$outdir/gas/targ-cpu.h',
@@ -237,7 +278,7 @@ sub('gas.ninja', function()
 		'$outdir/gas/obj-format.h',
 	}
 	-- src/gas/Makefile.am:/^GAS_CFILES
-	exe('bin/as', [[
+	exe('bin/as', string.format([[
 		gas/(
 			app.c
 			as.c
@@ -270,11 +311,11 @@ sub('gas.ninja', function()
 			symbols.c
 			write.c
 
-			config/(tc-i386.c obj-elf.c atof-ieee.c)
+			config/(%s.c obj-elf.c atof-ieee.c)
 		)
 		libopcodes.a
 		libbfd.a.d
-	]], deps)
+	]], target), deps)
 	file('bin/as', '755', '$outdir/bin/as')
 	sym(string.format('bin/%s-as', config.target.platform), 'as')
 	man{'gas/doc/as.1'}
@@ -314,7 +355,10 @@ sub('ld.ninja', function()
 	cc('ld/ldmain.c', nil, {cflags={
 		'$cflags',
 		string.format([[-D 'DEFAULT_EMULATION="%s"']], emuls[1]),
-		string.format([[-D 'TARGET="%s"']], 'x86_64-pc-linux-musl'),
+		string.format([[-D 'TARGET="%s"']],
+			(arch == 'x86_64' and config.target.platform) or
+			-- On aarch64 ldmain expects a full triplet, otherwise it won't match
+			string.format('%s-%s-%s', arch, vendor, osname)),
 	}})
 	exe('bin/ld', {
 		-- src/ld/Makefile.am:/^ld_new_SOURCES

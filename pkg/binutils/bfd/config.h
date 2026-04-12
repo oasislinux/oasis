@@ -2,7 +2,9 @@
 #  error config.h must be #included before system headers
 #endif
 #define __CONFIG_H__ 1
+#ifdef __x86_64__
 #define CORE_HEADER "hosts/x86-64linux.h"
+#endif
 #define DEFAULT_LD_Z_SEPARATE_CODE 1
 /* #undef ENABLE_CHECKING */
 /* #undef ENABLE_NLS */
