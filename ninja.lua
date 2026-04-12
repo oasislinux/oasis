@@ -167,6 +167,18 @@ function load(file)
 	return dofile(string.format('%s/%s/%s', basedir, pkg.gendir, file))
 end
 
+function targetarch(archs)
+	if type(archs) ~= 'table' then
+		error('expected table')
+	end
+	for _, a in pairs(archs) do
+		if a == config.target.platform:match('[^-]*') then
+			return a
+		end
+	end
+	return nil
+end
+
 --
 -- base constructs
 --
