@@ -1,0 +1,67 @@
+From 7077cb239f9405b02b4db968dff0d2fa16698893 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 13 Nov 2021 11:28:29 -0800
+Subject: [PATCH] Disallow empty wildcards and wildcards at TLD level
+
+---
+ src/x509/x509_minimal.c  | 10 +++++++++-
+ src/x509/x509_minimal.t0 | 10 +++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
+
+diff --git a/src/x509/x509_minimal.c b/src/x509/x509_minimal.c
+index 04f149b..fc5fa6b 100644
+--- a/src/x509/x509_minimal.c
++++ b/src/x509/x509_minimal.c
+@@ -1474,13 +1474,21 @@ br_x509_minimal_run(void *t0ctx)
+ 	if (n2 >= 2 && CTX->pad[1] == '*' && CTX->pad[2] == '.') {
+ 		size_t u;
+ 
++		u = 3;
++		while (u <= n2 && CTX->pad[u] != '.') {
++			u ++;
++		}
++		if (u > n2) {
++			T0_PUSH(0);
++			T0_RET();
++		}
+ 		u = 0;
+ 		while (u < n1 && CTX->server_name[u] != '.') {
+ 			u ++;
+ 		}
+ 		u ++;
+ 		n1 -= u;
+-		if ((n2 - 2) == n1
++		if (u > 1 && (n2 - 2) == n1
+ 			&& eqnocase(&CTX->pad[3], CTX->server_name + u, n1))
+ 		{
+ 			T0_PUSHi(-1);
+diff --git a/src/x509/x509_minimal.t0 b/src/x509/x509_minimal.t0
+index 80a3701..d3d01da 100644
+--- a/src/x509/x509_minimal.t0
++++ b/src/x509/x509_minimal.t0
+@@ -778,13 +778,21 @@ cc: match-server-name ( -- bool ) {
+ 	if (n2 >= 2 && CTX->pad[1] == '*' && CTX->pad[2] == '.') {
+ 		size_t u;
+ 
++		u = 3;
++		while (u <= n2 && CTX->pad[u] != '.') {
++			u ++;
++		}
++		if (u > n2) {
++			T0_PUSH(0);
++			T0_RET();
++		}
+ 		u = 0;
+ 		while (u < n1 && CTX->server_name[u] != '.') {
+ 			u ++;
+ 		}
+ 		u ++;
+ 		n1 -= u;
+-		if ((n2 - 2) == n1
++		if (u > 1 && (n2 - 2) == n1
+ 			&& eqnocase(&CTX->pad[3], CTX->server_name + u, n1))
+ 		{
+ 			T0_PUSHi(-1);
+-- 
+2.49.0
+
