@@ -350,6 +350,9 @@
 [submodule "pkg/ubase/src"]
 	path = pkg/ubase/src
 	url = https://github.com/michaelforney/ubase
+[submodule "pkg/u-config/src"]
+	path = pkg/u-config/src
+	url = https://github.com/skeeto/u-config
 [submodule "pkg/unbound/src"]
 	path = pkg/unbound/src
 	url = https://github.com/NLnetlabs/unbound.git
