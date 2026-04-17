@@ -1,6 +1,9 @@
 cflags{
 	'-std=c99',
 	'-Wall', '-Wpedantic',
+	string.format([[-D 'PKG_CONFIG_PREFIX="%s"']], config.prefix),
+	[[-D 'PKG_CONFIG_SYSTEM_INCLUDE_PATH=PKG_CONFIG_PREFIX "/include"']],
+	[[-D 'PKG_CONFIG_SYSTEM_LIBRARY_PATH=PKG_CONFIG_PREFIX "/lib"']],
 }
 
 exe('u-config', {'main_posix.c'})
