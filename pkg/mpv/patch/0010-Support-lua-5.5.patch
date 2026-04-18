@@ -1,0 +1,73 @@
+From 9bb8684e0aed0aad524212a7e44869305abe7b42 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 18 Apr 2026 16:37:54 -0700
+Subject: [PATCH] Support lua 5.5
+
+---
+ player/lua/defaults.lua  | 1 +
+ player/lua/options.lua   | 3 ++-
+ player/lua/stats.lua     | 1 +
+ player/lua/ytdl_hook.lua | 2 +-
+ 4 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/player/lua/defaults.lua b/player/lua/defaults.lua
+index baa3a2461e..0e52f9991f 100644
+--- a/player/lua/defaults.lua
++++ b/player/lua/defaults.lua
+@@ -787,6 +787,7 @@ function mp_utils.subprocess(t)
+     cmd.name = "subprocess"
+     cmd.capture_stdout = true
+     for k, v in pairs(t) do
++        local k = k
+         if k == "cancellable" then
+             k = "playback_only"
+         elseif k == "max_size" then
+diff --git a/player/lua/options.lua b/player/lua/options.lua
+index b05b73427b..7f2a062868 100644
+--- a/player/lua/options.lua
++++ b/player/lua/options.lua
+@@ -69,6 +69,7 @@ local function read_options(options, identifier, on_update)
+         msg.verbose("Opened config file " .. conffilename .. ".")
+         local linecounter = 1
+         for line in f:lines() do
++            local line = line
+             if line:sub(#line) == "\r" then
+                 line = line:sub(1, #line - 1)
+             end
+@@ -111,7 +112,7 @@ local function read_options(options, identifier, on_update)
+     local function parse_opts(full, options)
+         for key, val in pairs(full) do
+             if string.find(key, prefix, 1, true) == 1 then
+-                key = string.sub(key, string.len(prefix)+1)
++                local key = string.sub(key, string.len(prefix)+1)
+ 
+                 -- match found values with defaults
+                 if option_types[key] == nil then
+diff --git a/player/lua/stats.lua b/player/lua/stats.lua
+index 3d093c7e2e..6b4319a9bd 100644
+--- a/player/lua/stats.lua
++++ b/player/lua/stats.lua
+@@ -443,6 +443,7 @@ local function get_kbinfo_lines()
+         bind.subject = cmd_subject(bind.cmd)
+         if bind.subject ~= "ignore" then
+             ordered[#ordered+1] = bind
++            local _
+             _,_, bind.mods = bind.key:find("(.*)%+.")
+             _, bind.mods_count = bind.key:gsub("%+.", "")
+             if bind.key:len() > kspaces:len() then
+diff --git a/player/lua/ytdl_hook.lua b/player/lua/ytdl_hook.lua
+index 3161da6194..279ae53ae6 100644
+--- a/player/lua/ytdl_hook.lua
++++ b/player/lua/ytdl_hook.lua
+@@ -152,7 +152,7 @@ local function parse_cookies(cookies_line)
+     local cookies = {}
+     local cookie = {}
+     for stem in cookies_line:gmatch('[^;]+') do
+-        stem = stem:gsub("^%s*(.-)%s*$", "%1")
++        local stem = stem:gsub("^%s*(.-)%s*$", "%1")
+         local name, value = stem:match('^(.-)=(.+)$')
+         if name and name ~= "" and value then
+             local cmp_name = name:lower()
+-- 
+2.49.0
+
