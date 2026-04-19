@@ -4,7 +4,7 @@
 Generated with
 
 	./configure \
-		--target=x86_64-linux-musl \
+		--build=x86_64-unknown-linux-musl \
 		--disable-gold \
 		--disable-libctf \
 		--disable-nls \

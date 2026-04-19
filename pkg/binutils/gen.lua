@@ -12,9 +12,6 @@ defvec = (arch == 'aarch64' and 'aarch64_elf64_le_vec') or defvec
 selvecs = (arch == 'aarch64' and {[defvec]=true}) or selvecs
 selarchs = (arch == 'aarch64' and {aarch64=true}) or selarchs
 
-local vendor = (arch == 'aarch64' and 'unknown') or 'pc'
-local osname = config.target.platform:match('%a+-%a+$')
-
 local emuls = {
 	'elf_x86_64',
 	'elf_i386',
@@ -203,7 +200,7 @@ end)
 sub('binutils.ninja', function()
 	cflags{
 		string.format([[-D 'LOCALEDIR="%s/share/locale"']], config.prefix),
-		string.format([[-D 'TARGET="%s-%s-%s"']], arch, vendor, osname),
+		string.format([[-D 'TARGET="%s-unknown-linux-musl"']], arch),
 		'-D bin_dummy_emulation=bin_vanilla_emulation',
 		'-I $dir/binutils',
 		'-I $srcdir/binutils',
@@ -257,12 +254,10 @@ sub('gas.ninja', function()
 		'-I $srcdir',
 		string.format([[-D 'EMULATIONS=&%s,']], emuls[1]),
 		string.format([[-D 'DEFAULT_EMULATION="%s"']], emuls[1]),
-		string.format([[-D 'TARGET_ALIAS="%s"']], config.target.platform),
+		string.format([[-D 'TARGET_ALIAS="%s-linux-musl"']], arch),
 		string.format([[-D 'TARGET_CPU="%s"']], arch),
 		string.format([[-D 'DEFAULT_ARCH="%s"']], arch),
-		string.format([[-D 'TARGET_OS="%s"']], osname),
-		string.format([[-D 'TARGET_VENDOR="%s"']], plat),
-		string.format([[-D 'TARGET_CANONICAL="%s-%s-%s"']], arch, plat, osname),
+		string.format([[-D 'TARGET_CANONICAL="%s-unknown-linux-musl"']], arch),
 	}
 
 	local target = 'tc-i386'
@@ -355,10 +350,7 @@ sub('ld.ninja', function()
 	cc('ld/ldmain.c', nil, {cflags={
 		'$cflags',
 		string.format([[-D 'DEFAULT_EMULATION="%s"']], emuls[1]),
-		string.format([[-D 'TARGET="%s"']],
-			(arch == 'x86_64' and config.target.platform) or
-			-- On aarch64 ldmain expects a full triplet, otherwise it won't match
-			string.format('%s-%s-%s', arch, vendor, osname)),
+		string.format([[-D 'TARGET="%s-unknown-linux-musl"']], arch)
 	}})
 	exe('bin/ld', {
 		-- src/ld/Makefile.am:/^ld_new_SOURCES

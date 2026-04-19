@@ -77,13 +77,13 @@
 #define PACKAGE_VERSION "2.39"
 #define STDC_HEADERS 1
 /* #undef STRICTCOFF */
-/* #undef TARGET_ALIAS "x86_64-linux-musl" */
+/* #undef TARGET_ALIAS */
 /* #undef TARGET_BYTES_BIG_ENDIAN */
-/* #undef TARGET_CANONICAL "x86_64-pc-linux-musl" */
-/* #undef TARGET_CPU "x86_64" */
-/* #undef TARGET_OS "linux-musl" */
+/* #undef TARGET_CANONICAL */
+/* #undef TARGET_CPU */
+#define TARGET_OS "linux-musl"
 /* #undef TARGET_SOLARIS_COMMENT */
-/* #undef TARGET_VENDOR "pc" */
+#define TARGET_VENDOR "unknown"
 /* #undef TARGET_WITH_CPU */
 /* #undef USE_BINARY_FOPEN */
 /* #undef USE_EMULATIONS */
