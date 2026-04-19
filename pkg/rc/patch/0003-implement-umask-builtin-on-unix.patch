@@ -1,0 +1,100 @@
+From 5f3ce26ce56378ff2bfd7662627a02c1be8da6ce Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sun, 19 Apr 2026 14:11:15 -0700
+Subject: [PATCH] implement umask builtin on unix
+
+---
+ exec.h |  2 +-
+ unix.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+), 1 deletion(-)
+
+diff --git a/exec.h b/exec.h
+index 69b1004..ee8edab 100644
+--- a/exec.h
++++ b/exec.h
+@@ -77,7 +77,7 @@ extern void (*builtinfunc(char *name))(void);
+ void execcd(void), execwhatis(void), execeval(void), execexec(void);
+ int execforkexec(void);
+ void execexit(void), execshift(void);
+-void execwait(void), execumask(void), execdot(void), execflag(void);
++void execwait(void), execdot(void), execflag(void);
+ void execfunc(var*), execcmds(io*, char*, var*, redir*);
+ void startfunc(var*, word*, var*, redir*);
+ 
+diff --git a/unix.c b/unix.c
+index 05d883c..cbb2054 100644
+--- a/unix.c
++++ b/unix.c
+@@ -12,9 +12,12 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include <dirent.h>
++#include <limits.h>
++#include <sys/stat.h>
+ #include <sys/wait.h>
+ 
+ static void execfinit(void);
++static void execumask(void);
+ 
+ builtin Builtin[] = {
+ 	"cd",		execcd,
+@@ -24,6 +27,7 @@ builtin Builtin[] = {
+ 	"exit",		execexit,
+ 	"shift",	execshift,
+ 	"wait",		execwait,
++	"umask",	execumask,
+ 	".",		execdot,
+ 	"flag",		execflag,
+ 	"finit",	execfinit,
+@@ -81,6 +85,48 @@ execfinit(void)
+ 	start(rdfns, 2, runq->local, runq->redir);
+ }
+ 
++static int
++octal(char *s)
++{
++	int n = 0;
++
++	while(n<INT_MAX/8 && '0'<=*s && *s<='7')
++		n = n*8+*s++-'0';
++	return *s=='\0' ? n : -1;
++}
++
++static void
++execumask(void)
++{
++	int m;
++	struct io *out;
++	char *e;
++
++	switch(count(runq->argv->words)){
++	case 2:
++		m = octal(runq->argv->words->next->word);
++		if(m>=0 && m<=07777) {
++			umask(m);
++			break;
++		}
++		/* fallthrough */
++	default:
++		pfmt(err, "Usage: umask [umask]\n");
++		setstatus("umask usage");
++		poplist();
++		return;
++	case 1:
++		umask(m = umask(0));
++		out = openiofd(mapfd(1));
++		pfmt(out, "%o\n", m);
++		flushio(out);
++		free(closeiostr(out));
++		break;
++	}
++	setstatus("");
++	poplist();
++}
++
+ static int
+ cmpenv(const void *aa, const void *ab)
+ {
+-- 
+2.49.0
+
