@@ -1,0 +1,164 @@
+From 82316253f508e421bd6f3498310fad3d65779627 Mon Sep 17 00:00:00 2001
+From: hovercats <hovercatswithlasereyes@protonmail.com>
+Date: Sat, 25 Apr 2026 16:54:31 +0200
+Subject: [PATCH] convert $PATH to $path
+
+---
+ exec.c |  1 +
+ fns.h  |  1 +
+ rc.h   |  1 +
+ var.c  | 96 +++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 4 files changed, 95 insertions(+), 4 deletions(-)
+
+diff --git a/exec.c b/exec.c
+index e499d9f..1c11e4a 100644
+--- a/exec.c
++++ b/exec.c
+@@ -244,6 +244,7 @@ main(int argc, char *argv[])
+ 	Trapinit();
+ 	Vinit();
+ 	inttoascii(num, mypid = getpid());
++	pathinit();
+ 	setvar("pid", newword(num, (word *)0));
+ 	setvar("cflag", flag['c']?newword(flag['c'][0], (word *)0)
+ 				:(word *)0);
+diff --git a/fns.h b/fns.h
+index 1644d1e..a99f6fa 100644
+--- a/fns.h
++++ b/fns.h
+@@ -49,6 +49,7 @@ int	mapfd(int);
+ int	match(char*, char*, int);
+ char*	makepath(char*, char*);
+ void	panic(char*, int);
++void	pathinit(void);
+ void	pfln(io*, char*, int);
+ void	poplist(void);
+ void	popword(void);
+diff --git a/rc.h b/rc.h
+index a688663..3f48cce 100644
+--- a/rc.h
++++ b/rc.h
+@@ -117,6 +117,7 @@ struct var{
+ 	int	pc;		/* pc of start of function */
+ 	char	fnchanged;
+ 	char	changed;
++	void	(*changefn)(var*);
+ 	char	name[];
+ };
+ var *vlook(char*), *gvlook(char*), *newvar(char*, var*);
+diff --git a/var.c b/var.c
+index 73b01fa..9ea49bd 100644
+--- a/var.c
++++ b/var.c
+@@ -93,12 +93,74 @@ vlook(char *name)
+ }
+ 
+ void
+-setvar(char *name, word *val)
++_setvar(char *name, word *val, int callfn)
+ {
+-	var *v = vlook(name);
++	struct var *v = vlook(name);
+ 	freewords(v->val);
+-	v->val = val;
+-	v->changed = 1;
++	v->val=val;
++	v->changed=1;
++	if(callfn && v->changefn)
++		v->changefn(v);
++}
++
++void
++setvar(char *name, word *val)
++{
++	_setvar(name, val, 1);
++}
++
++void
++bigpath(var *v)
++{
++	/* convert $PATH to $path */
++	char *p, *q;
++	word **l, *w;
++
++	if(v->val == 0){
++		_setvar("path", 0, 0);
++		return;
++	}
++	p = v->val->word;
++	w = 0;
++	l = &w;
++	/*
++	 * Doesn't handle escaped colon nonsense.
++	 */
++	if(p[0] == 0)
++		p = 0;
++	while(p){
++		q = strchr(p, ':');
++		if(q)
++			*q = 0;
++		*l = newword(p[0] ? p : ".", 0);
++		l = &(*l)->next;
++		if(q){
++			*q = ':';
++			p = q+1;
++		}else
++			p = 0;
++	}
++	_setvar("path", w, 0);
++}
++
++char*
++list2strcolon(word *words)
++{
++	char *value, *s, *t;
++	int len = 0;
++	word *ap;
++	for(ap = words;ap;ap = ap->next)
++		len+=1+strlen(ap->word);
++	value = emalloc(len+1);
++	s = value;
++	for(ap = words;ap;ap = ap->next){
++		for(t = ap->word;*t;) *s++=*t++;
++		*s++=':';
++	}
++	if(s==value)
++		*s='\0';
++	else s[-1]='\0';
++	return value;
+ }
+ 
+ void
+@@ -107,3 +169,29 @@ freevar(var *v)
+ 	freewords(v->val);
+ 	free(v);
+ }
++
++void
++littlepath(var *v)
++{
++	/* convert $path to $PATH */
++	char *p;
++	word *w;
++
++	p = list2strcolon(v->val);
++	w = new(word);
++	w->word = p;
++	w->next = 0;
++	_setvar("PATH", w, 1);	/* 1: recompute $path to expose colon problems */
++}
++
++void
++pathinit(void)
++{
++	var *v;
++
++	v = gvlook("path");
++	v->changefn = littlepath;
++	v = gvlook("PATH");
++	v->changefn = bigpath;
++	bigpath(v);
++}
+-- 
+2.49.0
+
