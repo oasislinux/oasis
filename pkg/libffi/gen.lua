@@ -17,7 +17,7 @@ build('sed', '$outdir/include/ffi.h', '$srcdir/include/ffi.h.in', {
 })
 
 pkg.hdrs = {
-	copy('$outdir/include', '$srcdir/src/'..({x86_64='x86', aarch64='aarch64'})[arch], {'ffitarget.h'}),
+	copy('$outdir/include', '$srcdir/src/'..({x86_64='x86', aarch64='aarch64', riscv64='riscv'})[arch], {'ffitarget.h'}),
 	'$outdir/include/ffi.h',
 	install=true,
 }
@@ -31,6 +31,7 @@ lib('libffi.a', [[
 		prep_cif.c types.c raw_api.c java_raw_api.c closures.c
 		@aarch64 aarch64/(ffi.c sysv.S)
 		@x86_64 x86/(ffi64.c unix64.S ffiw64.c win64.S)
+		@riscv64 riscv/(ffi.c sysv.S)
 	)
 ]])
 file('lib/libffi.a', '644', '$outdir/libffi.a')
