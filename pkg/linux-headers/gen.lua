@@ -1,6 +1,7 @@
 local arch = ({
 	aarch64='arm64',
 	x86_64='x86',
+	riscv64='riscv',
 })[config.target.platform:match('[^-]*')]
 sub('tools.ninja', function()
 	toolchain(config.host)
