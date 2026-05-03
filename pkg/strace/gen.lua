@@ -1,13 +1,28 @@
+local targets = {
+	aarch64={
+		cflags={'-D AARCH64=1'},
+		ioctls=1,
+	},
+	x86_64={
+		cflags={'-D X86_64=1'},
+		ioctls=2,
+	},
+}
+local arch = config.target.platform:match('[^-]*')
+local targ = targets[arch]
+if not targ then return end
+
 cflags{
 	'-D HAVE_CONFIG_H',
 	'-D IN_STRACE',
 	-- it is important that the arch-specific directory is searched first
-	'-I $srcdir/src/linux/x86_64',
+	'-I $srcdir/src/linux/'..arch,
 	'-I $srcdir/src/linux/generic',
 	'-I $srcdir/src',
 	'-I $outdir',
 	'-isystem $builddir/pkg/linux-headers/include',
 }
+cflags(targ.cflags)
 
 build('cat', '$outdir/config.h', {
 	'$builddir/probe/HAVE___BUILTIN_POPCOUNT',
@@ -22,16 +37,16 @@ build('sed', '$outdir/ioctl_iocdef.h', '$outdir/ioctl_iocdef.i', {
 sub('tools.ninja', function()
 	toolchain(config.host)
 	cflags{
-		'-D X86_64=1',
-		'-I $srcdir/src/linux/x86_64',
+		'-I $srcdir/src/linux/'..arch,
 		'-I $srcdir/src/linux',
 		'-I $outdir',
 	}
+	cflags(targ.cflags)
 
-	for i = 0, 2 do
+	for i = 0, targ.ioctls do
 		build('cat', '$outdir/ioctls_all'..i..'.h', {
-			'$srcdir/src/linux/x86_64/ioctls_inc'..i..'.h',
-			'$srcdir/src/linux/x86_64/ioctls_arch'..i..'.h',
+			'$srcdir/src/linux/'..arch..'/ioctls_inc'..i..'.h',
+			'$srcdir/src/linux/'..arch..'/ioctls_arch'..i..'.h',
 		})
 		build('cc', '$outdir/ioctlsort'..i..'.c.o', {
 			'$srcdir/src/ioctlsort.c',
@@ -379,9 +394,6 @@ build('sed', '$outdir/sys_func.h', expand{'$srcdir/', srcs}, {
 
 pkg.deps = {
 	'$outdir/config.h',
-	'$outdir/ioctlent0.h',
-	'$outdir/ioctlent1.h',
-	'$outdir/ioctlent2.h',
 	'$outdir/native_printer_decls.h',
 	'$outdir/native_printer_defs.h',
 	'$outdir/printers.h',
@@ -390,6 +402,10 @@ pkg.deps = {
 	'$outdir/sys_func.h',
 	'pkg/linux-headers/headers',
 }
+
+for i = 0, targ.ioctls do
+	table.insert(pkg.deps, '$outdir/ioctlent'..i..'.h')
+end
 
 lib('libstrace.a', srcs)
 exe('strace', {'src/strace.c', 'libstrace.a'})

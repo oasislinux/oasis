@@ -1,12 +1,14 @@
-From 5f3ce26ce56378ff2bfd7662627a02c1be8da6ce Mon Sep 17 00:00:00 2001
+From 0f88ba02c7bbcb91b428bfb294831769e521a81b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 19 Apr 2026 14:11:15 -0700
 Subject: [PATCH] implement umask builtin on unix
 
 ---
- exec.h |  2 +-
- unix.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+), 1 deletion(-)
+ exec.h   |  2 +-
+ fns.h    |  1 +
+ simple.c |  2 +-
+ unix.c   | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 49 insertions(+), 2 deletions(-)
 
 diff --git a/exec.h b/exec.h
 index 69b1004..ee8edab 100644
@@ -21,6 +23,31 @@ index 69b1004..ee8edab 100644
  void execfunc(var*), execcmds(io*, char*, var*, redir*);
  void startfunc(var*, word*, var*, redir*);
  
+diff --git a/fns.h b/fns.h
+index 339f08b..1644d1e 100644
+--- a/fns.h
++++ b/fns.h
+@@ -45,6 +45,7 @@ int	havewaitpid(int);
+ int	idchr(int);
+ void	inttoascii(char*, int);
+ void	kinit(void);
++int	mapfd(int);
+ int	match(char*, char*, int);
+ char*	makepath(char*, char*);
+ void	panic(char*, int);
+diff --git a/simple.c b/simple.c
+index 362b77b..1a9d27d 100644
+--- a/simple.c
++++ b/simple.c
+@@ -287,7 +287,7 @@ execshift(void)
+ 	poplist();
+ }
+ 
+-static int
++int
+ mapfd(int fd)
+ {
+ 	redir *rp;
 diff --git a/unix.c b/unix.c
 index 05d883c..cbb2054 100644
 --- a/unix.c

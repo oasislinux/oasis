@@ -1,0 +1,29 @@
+From 4afa9df2337512bb53e44b0e43153f786e0d36f7 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 2 May 2026 17:48:38 -0700
+Subject: [PATCH] libsupport: fix type compatibility between prototype and
+ definition
+
+quota_write_inode was changed to take a qtype bitmask in 2d2d799c
+(Clean up codes for adding new quota type), but the prototype was
+updated incorrectly to use the enum type.
+---
+ lib/support/quotaio.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/support/quotaio.h b/lib/support/quotaio.h
+index 60689700..3e054ee8 100644
+--- a/lib/support/quotaio.h
++++ b/lib/support/quotaio.h
+@@ -223,7 +223,7 @@ void quota_data_add(quota_ctx_t qctx, struct ext2_inode_large *inode,
+ 		    ext2_ino_t ino, qsize_t space);
+ void quota_data_sub(quota_ctx_t qctx, struct ext2_inode_large *inode,
+ 		    ext2_ino_t ino, qsize_t space);
+-errcode_t quota_write_inode(quota_ctx_t qctx, enum quota_type qtype);
++errcode_t quota_write_inode(quota_ctx_t qctx, unsigned int qtype_bits);
+ errcode_t quota_update_limits(quota_ctx_t qctx, ext2_ino_t qf_ino,
+ 			      enum quota_type type);
+ errcode_t quota_compute_usage(quota_ctx_t qctx);
+-- 
+2.49.0
+

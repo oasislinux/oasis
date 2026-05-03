@@ -226,7 +226,9 @@
 #define HAVE_STRUCT_IOCB_AIO_RW_FLAGS 1
 #define HAVE_STRUCT_KBDIACRSUC 1
 #define HAVE_STRUCT_KBDIACRUC 1
+#if __x86_64__
 #define HAVE_STRUCT_KVM_CPUID2 1
+#endif /* __x86_64__ */
 #define HAVE_STRUCT_KVM_REGS 1
 #define HAVE_STRUCT_KVM_RUN_FLAGS 1
 #define HAVE_STRUCT_KVM_RUN_IMMEDIATE_EXIT 1
@@ -263,13 +265,17 @@
 #define HAVE_STRUCT_TERMIOS2 1
 /* #undef HAVE_STRUCT_TERMIOS_C_ISPEED */
 /* #undef HAVE_STRUCT_TERMIOS_C_OSPEED */
+#if __x86_64__
 #define HAVE_STRUCT_USER_DESC 1
 #define HAVE_STRUCT_USER_DESC_LM 1
+#endif /* __x86_64__ */
 #define HAVE_STRUCT_UTSNAME_DOMAINNAME 1
 /* #undef HAVE_STRUCT___AIO_SIGSET */
 #define HAVE_STRUCT___KERNEL_SOCK_TIMEVAL 1
 #define HAVE_STRUCT___KERNEL_TIMESPEC 1
+#if __x86_64__
 #define HAVE_STRUCT___OLD_KERNEL_STAT 1
+#endif /* __x86_64__ */
 #define HAVE_SYNC_FILE_RANGE 1
 #define HAVE_SYS_EVENTFD_H 1
 #define HAVE_SYS_FANOTIFY_H 1
@@ -590,9 +596,7 @@
 # endif
 #endif
 /* #undef X32 */
-#ifdef __x86_64__
-# define X86_64 1
-#endif
+/* #undef X86_64 */
 /* #undef XTENSA */
 /* #undef gid_t */
 /* #undef typeof */
