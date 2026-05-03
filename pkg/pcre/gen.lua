@@ -1,6 +1,7 @@
+local arch = config.target.platform:match('[^-]*')
 cflags{
 	'-D HAVE_CONFIG_H',
-	'-I $dir',
+	arch == 'riscv64' and '-I $dir/riscv' or '-I $dir',
 	'-I $srcdir',
 	'-I $outdir/include',
 }
