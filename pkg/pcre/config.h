@@ -64,7 +64,9 @@
 /* #undef PTHREAD_CREATE_JOINABLE */
 #define STDC_HEADERS 1
 #ifdef __GNUC__
+#if defined(__x86_64__) || defined(__aarch64__)
 #define SUPPORT_JIT /**/
+#endif
 #endif
 /* #undef SUPPORT_LIBBZ2 */
 /* #undef SUPPORT_LIBEDIT */
@@ -73,7 +75,9 @@
 /* #undef SUPPORT_PCRE16 */
 /* #undef SUPPORT_PCRE32 */
 #define SUPPORT_PCRE8 /**/
+#if defined(__x86_64__) || defined(__aarch64__)
 #define SUPPORT_PCREGREP_JIT /**/
+#endif
 #define SUPPORT_UCP /**/
 #define SUPPORT_UTF /**/
 /* #undef SUPPORT_VALGRIND */
