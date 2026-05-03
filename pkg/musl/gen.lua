@@ -116,7 +116,22 @@ for _, lib in ipairs{'libm.a', 'librt.a', 'libpthread.a', 'libcrypt.a', 'libutil
 end
 
 local startfiles = {'$outdir/libc.a'}
-for _, src in ipairs{'crt1.c', 'rcrt1.c', 'Scrt1.c', arch..'/crti.s', arch..'/crtn.s'} do
+
+local crts = (arch == 'riscv64') and {
+	'crt1.c',
+	'rcrt1.c',
+	'Scrt1.c',
+	'crti.c',
+	'crtn.c',
+} or {
+	'crt1.c',
+	'rcrt1.c',
+	'Scrt1.c',
+	arch..'/crti.s',
+	arch..'/crtn.s',
+}
+
+for _, src in ipairs(crts) do
 	local obj = src:gsub('.-(%w*)%.[cs]$', '%1.o')
 	local out = '$outdir/'..obj
 	build('cc', out, {'$srcdir/crt/'..src, '|', '$gendir/deps'}, {cflags='$cflags $cflags_nossp'})
