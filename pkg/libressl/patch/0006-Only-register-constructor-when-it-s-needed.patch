@@ -1,0 +1,41 @@
+From 6d05b8b7d632a5ee054afb29ba995d2c7aee68c4 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 5 May 2026 10:14:11 -0700
+Subject: [PATCH] Only register constructor when it's needed
+
+---
+ crypto/crypto_init.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/crypto/crypto_init.c b/crypto/crypto_init.c
+index ae4914e35..2c8c6e81c 100644
+--- a/crypto/crypto_init.c
++++ b/crypto/crypto_init.c
+@@ -37,15 +37,9 @@ static pthread_once_t crypto_init_once = PTHREAD_ONCE_INIT;
+ static pthread_t crypto_init_thread;
+ static int crypto_init_cleaned_up;
+ 
++#ifdef HAVE_CRYPTO_CPU_CAPS_INIT
+ void openssl_init_crypto_constructor(void)  __attribute__((constructor));
+ 
+-#ifndef HAVE_CRYPTO_CPU_CAPS_INIT
+-void
+-crypto_cpu_caps_init(void)
+-{
+-}
+-#endif
+-
+ /*
+  * This function is invoked as a constructor when the library is loaded. The
+  * code run from here must not allocate memory or trigger signals. The only
+@@ -56,6 +50,7 @@ openssl_init_crypto_constructor(void)
+ {
+ 	crypto_cpu_caps_init();
+ }
++#endif
+ 
+ /*
+  * This is used by various configure scripts to check availability of libcrypto,
+-- 
+2.49.0
+
