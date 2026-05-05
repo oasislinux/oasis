@@ -1,0 +1,31 @@
+From 23ef3611eba5f3604f7c535f670c81b2ae3bc44e Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 5 May 2026 15:40:32 -0700
+Subject: [PATCH] Use C23-compatible struct attribute location
+
+---
+ src/include/efi.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/include/efi.h b/src/include/efi.h
+index bb4ddfa..1a2ac93 100644
+--- a/src/include/efi.h
++++ b/src/include/efi.h
+@@ -52,12 +52,12 @@ extern ssize_t make_linux_load_option(uint8_t **data, size_t *data_size,
+ 		       uint8_t *optional_data, size_t optional_data_size);
+ extern ssize_t get_extra_args(uint8_t *data, ssize_t data_size);
+ 
+-typedef struct {
++typedef struct __attribute__((packed)) {
+ 	uint8_t		mirror_version;
+ 	uint8_t		mirror_memory_below_4gb;
+ 	uint16_t	mirror_amount_above_4gb;
+ 	uint8_t		mirror_status;
+-} __attribute__((packed)) ADDRESS_RANGE_MIRROR_VARIABLE_DATA;
++} ADDRESS_RANGE_MIRROR_VARIABLE_DATA;
+ 
+ #define        MIRROR_VERSION  1
+ 
+-- 
+2.49.0
+
