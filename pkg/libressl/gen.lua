@@ -574,7 +574,6 @@ lib('libssl.a', [[ssl/(
 	ssl_kex.c
 	ssl_lib.c
 	ssl_methods.c
-	ssl_packet.c
 	ssl_pkt.c
 	ssl_rsa.c
 	ssl_seclevel.c
