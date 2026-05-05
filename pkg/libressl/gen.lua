@@ -7,16 +7,15 @@ cflags{
 	'-D __BEGIN_HIDDEN_DECLS=',
 	'-D __END_HIDDEN_DECLS=',
 	[[-D '__warn_references(sym,msg)=_Static_assert(1, "")']],
+	'-I $dir',
 	'-I $srcdir/crypto/hidden',
 	'-I $srcdir/ssl/hidden',
 	'-I $srcdir/include',
 	'-I $srcdir/crypto',
-	'-I $srcdir/crypto/arch/amd64',
 	'-I $srcdir/crypto/aes',
 	'-I $srcdir/crypto/asn1',
 	'-I $srcdir/crypto/bio',
 	'-I $srcdir/crypto/bn',
-	'-I $srcdir/crypto/bn/arch/amd64',
 	'-I $srcdir/crypto/bytestring',
 	'-I $srcdir/crypto/conf',
 	'-I $srcdir/crypto/curve25519',
@@ -121,7 +120,6 @@ lib('libcrypto.a', [[crypto/(
 	crypto_legacy.c
 	crypto_lock.c
 	crypto_memory.c
-	arch/amd64/crypto_cpu_caps.c
 	aes/(
 		aes.c
 		aes_core.c
