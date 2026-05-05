@@ -1,0 +1,100 @@
+From 231312a3daf987ed248138d9f8298304b090fd87 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 5 May 2026 11:16:31 -0700
+Subject: [PATCH] Use preferred syntax location for struct attributes
+
+This aligns with the syntax for C23 attributes affecting struct/union
+types
+
+This is what is recommended in the gcc manual, and is supported by
+gcc all the way back to gcc 3.
+---
+ src/common/qca-vendor-attr.h |  8 ++++----
+ src/drivers/nl80211_copy.h   | 16 ++++++++--------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/src/common/qca-vendor-attr.h b/src/common/qca-vendor-attr.h
+index 6f51803e9..982d309f1 100644
+--- a/src/common/qca-vendor-attr.h
++++ b/src/common/qca-vendor-attr.h
+@@ -15,14 +15,14 @@
+  * compiler dependencies.
+  */
+ 
+-struct qca_avoid_freq_range {
++struct __attribute__ ((packed)) qca_avoid_freq_range {
+ 	u32 start_freq;
+ 	u32 end_freq;
+-} __attribute__ ((packed));
++};
+ 
+-struct qca_avoid_freq_list {
++struct __attribute__ ((packed)) qca_avoid_freq_list {
+ 	u32 count;
+ 	struct qca_avoid_freq_range range[0];
+-} __attribute__ ((packed));
++};
+ 
+ #endif /* QCA_VENDOR_ATTR_H */
+diff --git a/src/drivers/nl80211_copy.h b/src/drivers/nl80211_copy.h
+index dced2c49d..9a8d6c163 100644
+--- a/src/drivers/nl80211_copy.h
++++ b/src/drivers/nl80211_copy.h
+@@ -3545,10 +3545,10 @@ enum nl80211_sta_p2p_ps_status {
+  *
+  * Both mask and set contain bits as per &enum nl80211_sta_flags.
+  */
+-struct nl80211_sta_flag_update {
++struct __attribute__((packed)) nl80211_sta_flag_update {
+ 	__u32 mask;
+ 	__u32 set;
+-} __attribute__((packed));
++};
+ 
+ /**
+  * enum nl80211_he_gi - HE guard interval
+@@ -5556,12 +5556,12 @@ enum nl80211_packet_pattern_attr {
+  * %NL80211_ATTR_COALESCE_RULE in the capability information given
+  * by the kernel to userspace.
+  */
+-struct nl80211_pattern_support {
++struct __attribute__((packed)) nl80211_pattern_support {
+ 	__u32 max_patterns;
+ 	__u32 min_pattern_len;
+ 	__u32 max_pattern_len;
+ 	__u32 max_pkt_offset;
+-} __attribute__((packed));
++};
+ 
+ /* only for backward compatibility */
+ #define __NL80211_WOWLAN_PKTPAT_INVALID __NL80211_PKTPAT_INVALID
+@@ -5807,11 +5807,11 @@ enum nl80211_wowlan_tcp_attrs {
+  * This struct is carried in %NL80211_ATTR_COALESCE_RULE in the
+  * capability information given by the kernel to userspace.
+  */
+-struct nl80211_coalesce_rule_support {
++struct __attribute__((packed)) nl80211_coalesce_rule_support {
+ 	__u32 max_rules;
+ 	struct nl80211_pattern_support pat;
+ 	__u32 max_delay;
+-} __attribute__((packed));
++};
+ 
+ /**
+  * enum nl80211_attr_coalesce_rule - coalesce rule attribute
+@@ -6844,10 +6844,10 @@ enum nl80211_sched_scan_plan {
+  *	of this field is according to &enum nl80211_band.
+  * @delta: value used to adjust the RSSI value of matching BSS in dB.
+  */
+-struct nl80211_bss_select_rssi_adjust {
++struct __attribute__((packed)) nl80211_bss_select_rssi_adjust {
+ 	__u8 band;
+ 	__s8 delta;
+-} __attribute__((packed));
++};
+ 
+ /**
+  * enum nl80211_bss_select_attr - attributes for bss selection.
+-- 
+2.49.0
+
