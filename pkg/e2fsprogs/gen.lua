@@ -1,6 +1,6 @@
 set('version', '1.46.4')
 cflags{
-	'-std=c99', '-Wall',
+	'-Wall',
 	'-Wno-address-of-packed-member', '-Wno-format-truncation',
 	'-Wno-unused-variable', '-Wno-stringop-truncation',
 	'-Wno-stringop-overflow', '-Wno-unused-label',

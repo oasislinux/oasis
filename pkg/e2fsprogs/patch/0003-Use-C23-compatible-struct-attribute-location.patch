@@ -1,0 +1,132 @@
+From 24e33084b41cce0a56be3eba45e5b42580769066 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 5 May 2026 16:22:54 -0700
+Subject: [PATCH] Use C23-compatible struct attribute location
+
+---
+ lib/ext2fs/ext2_fs.h       |  8 ++++----
+ lib/ext2fs/rbtree.h        |  6 +++---
+ lib/support/quotaio_tree.h |  4 ++--
+ lib/support/quotaio_v2.h   | 12 ++++++------
+ 4 files changed, 15 insertions(+), 15 deletions(-)
+
+diff --git a/lib/ext2fs/ext2_fs.h b/lib/ext2fs/ext2_fs.h
+index 01d2573b..755cf956 100644
+--- a/lib/ext2fs/ext2_fs.h
++++ b/lib/ext2fs/ext2_fs.h
+@@ -633,19 +633,19 @@ struct ext2_inode *EXT2_INODE(struct ext2_inode_large *large_inode)
+  * Policy provided via an ioctl on the topmost directory. This
+  * structure is also in the kernel.
+  */
+-struct ext4_encryption_policy {
++struct __attribute__((__packed__)) ext4_encryption_policy {
+   char version;
+   char contents_encryption_mode;
+   char filenames_encryption_mode;
+   char flags;
+   char master_key_descriptor[EXT4_KEY_DESCRIPTOR_SIZE];
+-} __attribute__((__packed__));
++};
+ 
+-struct ext4_encryption_key {
++struct __attribute__((__packed__)) ext4_encryption_key {
+         __u32 mode;
+         char raw[EXT4_MAX_KEY_SIZE];
+         __u32 size;
+-} __attribute__((__packed__));
++};
+ 
+ /*
+  * Structure of the super block
+diff --git a/lib/ext2fs/rbtree.h b/lib/ext2fs/rbtree.h
+index f718ad24..d9116d91 100644
+--- a/lib/ext2fs/rbtree.h
++++ b/lib/ext2fs/rbtree.h
+@@ -98,15 +98,15 @@ static inline struct page * rb_insert_page_cache(struct inode * inode,
+ #include <stdint.h>
+ #include "compiler.h"
+ 
+-struct rb_node
++/* The alignment might seem pointless, but allegedly CRIS needs it */
++struct __attribute__((aligned(sizeof(long)))) rb_node
+ {
+ 	uintptr_t  rb_parent_color;
+ #define	RB_RED		0
+ #define	RB_BLACK	1
+ 	struct rb_node *rb_right;
+ 	struct rb_node *rb_left;
+-} __attribute__((aligned(sizeof(long))));
+-    /* The alignment might seem pointless, but allegedly CRIS needs it */
++};
+ 
+ struct rb_root
+ {
+diff --git a/lib/support/quotaio_tree.h b/lib/support/quotaio_tree.h
+index b0b7257f..6499ae92 100644
+--- a/lib/support/quotaio_tree.h
++++ b/lib/support/quotaio_tree.h
+@@ -19,7 +19,7 @@ typedef __u32 qid_t;        /* Type in which we store ids in memory */
+  *  Structure of header of block with quota structures. It is padded to 16 bytes
+  *  so there will be space for exactly 21 quota-entries in a block
+  */
+-struct qt_disk_dqdbheader {
++struct __attribute__((packed)) qt_disk_dqdbheader {
+ 	__le32 dqdh_next_free;	/* Number of next block with free
+ 					 * entry */
+ 	__le32 dqdh_prev_free; /* Number of previous block with free
+@@ -27,7 +27,7 @@ struct qt_disk_dqdbheader {
+ 	__le16 dqdh_entries; /* Number of valid entries in block */
+ 	__le16 dqdh_pad1;
+ 	__le32 dqdh_pad2;
+-} __attribute__ ((packed));
++};
+ 
+ struct dquot;
+ struct quota_handle;
+diff --git a/lib/support/quotaio_v2.h b/lib/support/quotaio_v2.h
+index de2db278..36237363 100644
+--- a/lib/support/quotaio_v2.h
++++ b/lib/support/quotaio_v2.h
+@@ -15,16 +15,16 @@
+ /* Supported version of quota-tree format */
+ #define V2_VERSION 1
+ 
+-struct v2_disk_dqheader {
++struct __attribute__ ((packed)) v2_disk_dqheader {
+ 	__le32 dqh_magic;	/* Magic number identifying file */
+ 	__le32 dqh_version;	/* File version */
+-} __attribute__ ((packed));
++};
+ 
+ /* Flags for version specific files */
+ #define V2_DQF_MASK  0x0000	/* Mask for all valid ondisk flags */
+ 
+ /* Header with type and version specific information */
+-struct v2_disk_dqinfo {
++struct __attribute__ ((packed)) v2_disk_dqinfo {
+ 	__le32 dqi_bgrace;	/* Time before block soft limit becomes
+ 				 * hard limit */
+ 	__le32 dqi_igrace;	/* Time before inode soft limit becomes
+@@ -34,9 +34,9 @@ struct v2_disk_dqinfo {
+ 	__le32 dqi_free_blk;	/* Number of first free block in the list */
+ 	__le32 dqi_free_entry;	/* Number of block with at least one
+ 					 * free entry */
+-} __attribute__ ((packed));
++};
+ 
+-struct v2r1_disk_dqblk {
++struct __attribute__ ((packed)) v2r1_disk_dqblk {
+ 	__le32 dqb_id;	/* id this quota applies to */
+ 	__le32 dqb_pad;
+ 	__le64 dqb_ihardlimit;	/* absolute limit on allocated inodes */
+@@ -49,6 +49,6 @@ struct v2r1_disk_dqblk {
+ 	__le64 dqb_curspace;	/* current space occupied (in bytes) */
+ 	__le64 dqb_btime;	/* time limit for excessive disk use */
+ 	__le64 dqb_itime;	/* time limit for excessive inode use */
+-} __attribute__ ((packed));
++};
+ 
+ #endif
+-- 
+2.49.0
+

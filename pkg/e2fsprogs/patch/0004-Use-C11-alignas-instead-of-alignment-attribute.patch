@@ -1,0 +1,74 @@
+From f1314a4699e2e7bad5504ea860cdc5a0fe81225f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 5 May 2026 16:31:39 -0700
+Subject: [PATCH] Use C11 alignas instead of alignment attribute
+
+---
+ lib/ext2fs/rbtree.h | 6 ++++--
+ misc/tune2fs.c      | 7 ++++---
+ 2 files changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/lib/ext2fs/rbtree.h b/lib/ext2fs/rbtree.h
+index d9116d91..2809626f 100644
+--- a/lib/ext2fs/rbtree.h
++++ b/lib/ext2fs/rbtree.h
+@@ -94,13 +94,15 @@ static inline struct page * rb_insert_page_cache(struct inode * inode,
+ #ifndef	_LINUX_RBTREE_H
+ #define	_LINUX_RBTREE_H
+ 
++#include <stdalign.h>
+ #include <stdlib.h>
+ #include <stdint.h>
+ #include "compiler.h"
+ 
+-/* The alignment might seem pointless, but allegedly CRIS needs it */
+-struct __attribute__((aligned(sizeof(long)))) rb_node
++struct rb_node
+ {
++	/* The alignment might seem pointless, but allegedly CRIS needs it */
++	alignas(long)
+ 	uintptr_t  rb_parent_color;
+ #define	RB_RED		0
+ #define	RB_BLACK	1
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 4200104e..ace381b7 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -36,6 +36,7 @@ extern char *optarg;
+ extern int optind;
+ #endif
+ #include <pwd.h>
++#include <stdalign.h>
+ #include <stdio.h>
+ #ifdef HAVE_STDLIB_H
+ #include <stdlib.h>
+@@ -251,7 +252,7 @@ static int remove_journal_device(ext2_filsys fs)
+ {
+ 	char		*journal_path;
+ 	ext2_filsys	jfs;
+-	char		buf[SUPERBLOCK_SIZE] __attribute__ ((aligned(8)));
++	alignas(8) char	buf[SUPERBLOCK_SIZE];
+ 	journal_superblock_t	*jsb;
+ 	int		i, nr_users;
+ 	errcode_t	retval;
+@@ -2868,7 +2869,7 @@ fs_update_journal_user(struct ext2_super_block *sb, __u8 old_uuid[UUID_SIZE])
+ 	__u8 *j_uuid;
+ 	char *journal_path;
+ 	char uuid[UUID_STR_SIZE];
+-	char buf[SUPERBLOCK_SIZE] __attribute__ ((aligned(8)));
++	alignas(8) char buf[SUPERBLOCK_SIZE];
+ 
+ 	if (!ext2fs_has_feature_journal(sb) || uuid_is_null(sb->s_journal_uuid))
+ 		return 0;
+@@ -3269,7 +3270,7 @@ _("Warning: The journal is dirty. You may wish to replay the journal like:\n\n"
+ 	if (U_flag) {
+ 		int set_csum = 0;
+ 		dgrp_t i;
+-		char buf[SUPERBLOCK_SIZE] __attribute__ ((aligned(8)));
++		alignas(8) char buf[SUPERBLOCK_SIZE];
+ 		__u8 old_uuid[UUID_SIZE];
+ 
+ 		if (ext2fs_has_feature_stable_inodes(fs->super)) {
+-- 
+2.49.0
+
