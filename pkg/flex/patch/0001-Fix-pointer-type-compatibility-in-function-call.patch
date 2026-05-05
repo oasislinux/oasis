@@ -1,0 +1,34 @@
+From ad32c666052a2bf91c7ee0f4107629fd98459e67 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 5 May 2026 13:26:46 -0700
+Subject: [PATCH] Fix pointer type compatibility in function call
+
+---
+ src/misc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/misc.c b/src/misc.c
+index ef27833..fbf839f 100644
+--- a/src/misc.c
++++ b/src/misc.c
+@@ -512,7 +512,7 @@ unsigned char myesc (unsigned char array[])
+ 			c = array[sptr];
+ 			array[sptr] = '\0';
+ 
+-			esc_char = (unsigned char) strtoul (array + 1, NULL, 8);
++			esc_char = (unsigned char) strtoul ((char *)array + 1, NULL, 8);
+ 
+ 			array[sptr] = c;
+ 
+@@ -534,7 +534,7 @@ unsigned char myesc (unsigned char array[])
+ 			c = array[sptr];
+ 			array[sptr] = '\0';
+ 
+-			esc_char = (unsigned char) strtoul (array + 2, NULL, 16);
++			esc_char = (unsigned char) strtoul ((char *)array + 2, NULL, 16);
+ 
+ 			array[sptr] = c;
+ 
+-- 
+2.49.0
+
