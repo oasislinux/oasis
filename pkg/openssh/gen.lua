@@ -27,9 +27,10 @@ pkg.deps = {
 }
 
 build('cat', '$outdir/config.h', {
-	'$dir/config.h',
+	'$builddir/probe/HAVE___BUILTIN_POPCOUNT',
 	'$builddir/probe/SIZEOF_LONG',
 	'$builddir/probe/SIZEOF_TIME_T',
+	'$dir/config.h',
 })
 
 lib('libopenbsd-compat.a', [[openbsd-compat/(
