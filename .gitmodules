@@ -167,6 +167,7 @@
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng
+	ignore = all
 [submodule "pkg/libtirpc/src"]
 	path = pkg/libtirpc/src
 	url = git://git.linux-nfs.org/projects/steved/libtirpc.git
@@ -350,6 +351,7 @@
 [submodule "pkg/u-config/src"]
 	path = pkg/u-config/src
 	url = https://github.com/skeeto/u-config
+	ignore = all
 [submodule "pkg/unbound/src"]
 	path = pkg/unbound/src
 	url = https://github.com/NLnetlabs/unbound.git

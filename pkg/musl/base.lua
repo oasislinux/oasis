@@ -1575,4 +1575,12 @@ return {
 		'termios.h',
 		'vt.h',
 	},
+	crts={
+		-- <cd src && printf "\t\t'%s',\n" crt/*.c
+		'crt/Scrt1.c',
+		'crt/crt1.c',
+		'crt/crti.c',
+		'crt/crtn.c',
+		'crt/rcrt1.c',
+	},
 }

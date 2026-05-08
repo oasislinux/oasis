@@ -1,0 +1,321 @@
+From 5d0f1e71012ca1b5bc9c8e802004f764727aa828 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 2 May 2026 22:37:25 -0700
+Subject: [PATCH] Use C23-compatible attribute locations
+
+---
+ include/f2fs_fs.h | 108 +++++++++++++++++++++++-----------------------
+ 1 file changed, 54 insertions(+), 54 deletions(-)
+
+diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+index 5b3760b..6158de9 100644
+--- a/include/f2fs_fs.h
++++ b/include/f2fs_fs.h
+@@ -626,12 +626,12 @@ enum {
+  * For superblock
+  */
+ #pragma pack(push, 1)
+-struct f2fs_device {
++struct __attribute__((packed)) f2fs_device {
+ 	__u8 path[MAX_PATH_LEN];
+ 	__le32 total_segments;
+-} __attribute__((packed));
++};
+ 
+-struct f2fs_super_block {
++struct __attribute__((packed)) f2fs_super_block {
+ 	__le32 magic;			/* Magic Number */
+ 	__le16 major_ver;		/* Major Version */
+ 	__le16 minor_ver;		/* Minor Version */
+@@ -676,7 +676,7 @@ struct f2fs_super_block {
+ 	__le16  s_encoding_flags;	/* Filename charset encoding flags */
+ 	__u8 reserved[306];		/* valid reserved region */
+ 	__le32 crc;			/* checksum of superblock */
+-} __attribute__((packed));
++};
+ 
+ /*
+  * For checkpoint
+@@ -698,7 +698,7 @@ struct f2fs_super_block {
+ 
+ #define F2FS_CP_PACKS		2	/* # of checkpoint packs */
+ 
+-struct f2fs_checkpoint {
++struct __attribute__((packed)) f2fs_checkpoint {
+ 	__le64 checkpoint_ver;		/* checkpoint block version number */
+ 	__le64 user_block_count;	/* # of user blocks */
+ 	__le64 valid_block_count;	/* # of valid blocks in main area */
+@@ -727,7 +727,7 @@ struct f2fs_checkpoint {
+ 
+ 	/* SIT and NAT version bitmap */
+ 	unsigned char sit_nat_version_bitmap[1];
+-} __attribute__((packed));
++};
+ 
+ #define CP_BITMAP_OFFSET	\
+ 	(offsetof(struct f2fs_checkpoint, sit_nat_version_bitmap))
+@@ -744,23 +744,23 @@ struct f2fs_checkpoint {
+  */
+ #define F2FS_ORPHANS_PER_BLOCK	1020
+ 
+-struct f2fs_orphan_block {
++struct __attribute__((packed)) f2fs_orphan_block {
+ 	__le32 ino[F2FS_ORPHANS_PER_BLOCK];	/* inode numbers */
+ 	__le32 reserved;	/* reserved */
+ 	__le16 blk_addr;	/* block index in current CP */
+ 	__le16 blk_count;	/* Number of orphan inode blocks in CP */
+ 	__le32 entry_count;	/* Total number of orphan nodes in current CP */
+ 	__le32 check_sum;	/* CRC32 for orphan inode block */
+-} __attribute__((packed));
++};
+ 
+ /*
+  * For NODE structure
+  */
+-struct f2fs_extent {
++struct __attribute__((packed)) f2fs_extent {
+ 	__le32 fofs;		/* start file offset of the extent */
+ 	__le32 blk_addr;	/* start block address of the extent */
+ 	__le32 len;		/* lengh of the extent */
+-} __attribute__((packed));
++};
+ 
+ #define F2FS_NAME_LEN		255
+ 
+@@ -838,7 +838,7 @@ struct f2fs_extent {
+  * inode flags
+  */
+ #define F2FS_COMPR_FL		0x00000004 /* Compress file */
+-struct f2fs_inode {
++struct __attribute__((packed)) f2fs_inode {
+ 	__le16 i_mode;			/* file mode */
+ 	__u8 i_advise;			/* file hints */
+ 	__u8 i_inline;			/* file inline flags */
+@@ -871,7 +871,7 @@ struct f2fs_inode {
+ 	struct f2fs_extent i_ext;	/* caching a largest extent */
+ 
+ 	union {
+-		struct {
++		struct __attribute__((packed)) {
+ 			__le16 i_extra_isize;	/* extra inode attribute size */
+ 			__le16 i_inline_xattr_size;	/* inline xattr size, unit: 4 bytes */
+ 			__le32 i_projid;	/* project id */
+@@ -883,21 +883,21 @@ struct f2fs_inode {
+ 			__u8 i_log_cluster_size;	/* log of cluster size */
+ 			__le16 i_padding;		/* padding */
+ 			__le32 i_extra_end[0];	/* for attribute size calculation */
+-		} __attribute__((packed));
++		};
+ 		__le32 i_addr[DEF_ADDRS_PER_INODE];	/* Pointers to data blocks */
+ 	};
+ 	__le32 i_nid[5];		/* direct(2), indirect(2),
+ 						double_indirect(1) node id */
+-} __attribute__((packed));
++};
+ 
+ 
+-struct direct_node {
++struct __attribute__((packed)) direct_node {
+ 	__le32 addr[DEF_ADDRS_PER_BLOCK];	/* array of data block address */
+-} __attribute__((packed));
++};
+ 
+-struct indirect_node {
++struct __attribute__((packed)) indirect_node {
+ 	__le32 nid[NIDS_PER_BLOCK];	/* array of data block address */
+-} __attribute__((packed));
++};
+ 
+ enum {
+ 	COLD_BIT_SHIFT = 0,
+@@ -908,15 +908,15 @@ enum {
+ 
+ #define XATTR_NODE_OFFSET	((((unsigned int)-1) << OFFSET_BIT_SHIFT) \
+ 				>> OFFSET_BIT_SHIFT)
+-struct node_footer {
++struct __attribute__((packed)) node_footer {
+ 	__le32 nid;		/* node id */
+ 	__le32 ino;		/* inode nunmber */
+ 	__le32 flag;		/* include cold/fsync/dentry marks and offset */
+ 	__le64 cp_ver;		/* checkpoint version */
+ 	__le32 next_blkaddr;	/* next node page block address */
+-} __attribute__((packed));
++};
+ 
+-struct f2fs_node {
++struct __attribute__((packed)) f2fs_node {
+ 	/* can be one of three types: inode, direct, and indirect types */
+ 	union {
+ 		struct f2fs_inode i;
+@@ -924,7 +924,7 @@ struct f2fs_node {
+ 		struct indirect_node in;
+ 	};
+ 	struct node_footer footer;
+-} __attribute__((packed));
++};
+ 
+ /*
+  * For NAT entries
+@@ -934,15 +934,15 @@ struct f2fs_node {
+ 
+ #define DEFAULT_NAT_ENTRY_RATIO		20
+ 
+-struct f2fs_nat_entry {
++struct __attribute__((packed)) f2fs_nat_entry {
+ 	__u8 version;		/* latest version of cached nat entry */
+ 	__le32 ino;		/* inode number */
+ 	__le32 block_addr;	/* block address */
+-} __attribute__((packed));
++};
+ 
+-struct f2fs_nat_block {
++struct __attribute__((packed)) f2fs_nat_block {
+ 	struct f2fs_nat_entry entries[NAT_ENTRY_PER_BLOCK];
+-} __attribute__((packed));
++};
+ 
+ /*
+  * For SIT entries
+@@ -977,15 +977,15 @@ struct f2fs_nat_block {
+ 	((le16_to_cpu((raw_sit)->vblocks) & ~SIT_VBLOCKS_MASK)	\
+ 	 >> SIT_VBLOCKS_SHIFT)
+ 
+-struct f2fs_sit_entry {
++struct __attribute__((packed)) f2fs_sit_entry {
+ 	__le16 vblocks;				/* reference above */
+ 	__u8 valid_map[SIT_VBLOCK_MAP_SIZE];	/* bitmap for valid blocks */
+ 	__le64 mtime;				/* segment age for cleaning */
+-} __attribute__((packed));
++};
+ 
+-struct f2fs_sit_block {
++struct __attribute__((packed)) f2fs_sit_block {
+ 	struct f2fs_sit_entry entries[SIT_ENTRY_PER_BLOCK];
+-} __attribute__((packed));
++};
+ 
+ /*
+  * For segment summary
+@@ -1008,25 +1008,25 @@ struct f2fs_sit_block {
+ #define SUM_ENTRIES_SIZE	(SUMMARY_SIZE * ENTRIES_IN_SUM)
+ 
+ /* a summary entry for a 4KB-sized block in a segment */
+-struct f2fs_summary {
++struct __attribute__((packed)) f2fs_summary {
+ 	__le32 nid;		/* parent node id */
+ 	union {
+ 		__u8 reserved[3];
+-		struct {
++		struct __attribute__((packed)) {
+ 			__u8 version;		/* node version number */
+ 			__le16 ofs_in_node;	/* block index in parent node */
+-		} __attribute__((packed));
++		};
+ 	};
+-} __attribute__((packed));
++};
+ 
+ /* summary block type, node or data, is stored to the summary_footer */
+ #define SUM_TYPE_NODE		(1)
+ #define SUM_TYPE_DATA		(0)
+ 
+-struct summary_footer {
++struct __attribute__((packed)) summary_footer {
+ 	unsigned char entry_type;	/* SUM_TYPE_XXX */
+ 	__le32 check_sum;		/* summary checksum */
+-} __attribute__((packed));
++};
+ 
+ #define SUM_JOURNAL_SIZE	(F2FS_BLKSIZE - SUM_FOOTER_SIZE -\
+ 				SUM_ENTRIES_SIZE)
+@@ -1054,32 +1054,32 @@ enum {
+ 	SIT_JOURNAL
+ };
+ 
+-struct nat_journal_entry {
++struct __attribute__((packed)) nat_journal_entry {
+ 	__le32 nid;
+ 	struct f2fs_nat_entry ne;
+-} __attribute__((packed));
++};
+ 
+-struct nat_journal {
++struct __attribute__((packed)) nat_journal {
+ 	struct nat_journal_entry entries[NAT_JOURNAL_ENTRIES];
+ 	__u8 reserved[NAT_JOURNAL_RESERVED];
+-} __attribute__((packed));
++};
+ 
+-struct sit_journal_entry {
++struct __attribute__((packed)) sit_journal_entry {
+ 	__le32 segno;
+ 	struct f2fs_sit_entry se;
+-} __attribute__((packed));
++};
+ 
+-struct sit_journal {
++struct __attribute__((packed)) sit_journal {
+ 	struct sit_journal_entry entries[SIT_JOURNAL_ENTRIES];
+ 	__u8 reserved[SIT_JOURNAL_RESERVED];
+-} __attribute__((packed));
++};
+ 
+-struct f2fs_extra_info {
++struct __attribute__((packed)) f2fs_extra_info {
+ 	__le64 kbytes_written;
+ 	__u8 reserved[EXTRA_INFO_RESERVED];
+-} __attribute__((packed));
++};
+ 
+-struct f2fs_journal {
++struct __attribute__((packed)) f2fs_journal {
+ 	union {
+ 		__le16 n_nats;
+ 		__le16 n_sits;
+@@ -1090,14 +1090,14 @@ struct f2fs_journal {
+ 		struct sit_journal sit_j;
+ 		struct f2fs_extra_info info;
+ 	};
+-} __attribute__((packed));
++};
+ 
+ /* 4KB-sized summary block structure */
+-struct f2fs_summary_block {
++struct __attribute__((packed)) f2fs_summary_block {
+ 	struct f2fs_summary entries[ENTRIES_IN_SUM];
+ 	struct f2fs_journal journal;
+ 	struct summary_footer footer;
+-} __attribute__((packed));
++};
+ 
+ /*
+  * For directory operations
+@@ -1133,21 +1133,21 @@ typedef __le32	f2fs_hash_t;
+ #define MIN_INLINE_DENTRY_SIZE		40	/* just include '.' and '..' entries */
+ 
+ /* One directory entry slot representing F2FS_SLOT_LEN-sized file name */
+-struct f2fs_dir_entry {
++struct __attribute__((packed)) f2fs_dir_entry {
+ 	__le32 hash_code;	/* hash code of file name */
+ 	__le32 ino;		/* inode number */
+ 	__le16 name_len;	/* lengh of file name */
+ 	__u8 file_type;		/* file type */
+-} __attribute__((packed));
++};
+ 
+ /* 4KB-sized directory entry block */
+-struct f2fs_dentry_block {
++struct __attribute__((packed)) f2fs_dentry_block {
+ 	/* validity bitmap for directory entries in each block */
+ 	__u8 dentry_bitmap[SIZE_OF_DENTRY_BITMAP];
+ 	__u8 reserved[SIZE_OF_RESERVED];
+ 	struct f2fs_dir_entry dentry[NR_DENTRY_IN_BLOCK];
+ 	__u8 filename[NR_DENTRY_IN_BLOCK][F2FS_SLOT_LEN];
+-} __attribute__((packed));
++};
+ #pragma pack(pop)
+ 
+ /* for inline stuff */
+-- 
+2.49.0
+

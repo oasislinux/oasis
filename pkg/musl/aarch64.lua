@@ -57,4 +57,9 @@ return {
 		'signal.h',
 		'user.h',
 	},
+	crts={
+		-- <cd src && printf "\t\t'%s',\n" crt/aarch64/*.[csS]
+		'crt/aarch64/crti.s',
+		'crt/aarch64/crtn.s',
+	},
 }

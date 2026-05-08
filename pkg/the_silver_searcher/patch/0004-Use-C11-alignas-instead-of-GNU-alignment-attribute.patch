@@ -1,0 +1,47 @@
+From fa8a0ee0f3060807240fa402569f9c9e71cdfefe Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 2 May 2026 21:45:23 -0700
+Subject: [PATCH] Use C11 alignas instead of GNU alignment attribute
+
+---
+ src/search.c | 2 +-
+ src/search.h | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/search.c b/src/search.c
+index 2245818..b65e2d5 100644
+--- a/src/search.c
++++ b/src/search.c
+@@ -4,7 +4,7 @@
+ 
+ size_t alpha_skip_lookup[256];
+ size_t *find_skip_lookup;
+-uint8_t h_table[H_SIZE] __attribute__((aligned(64)));
++alignas(64) uint8_t h_table[H_SIZE];
+ 
+ work_queue_t *work_queue;
+ work_queue_t *work_queue_tail;
+diff --git a/src/search.h b/src/search.h
+index a1bc5d7..96420aa 100644
+--- a/src/search.h
++++ b/src/search.h
+@@ -6,6 +6,7 @@
+ #include <fcntl.h>
+ #include <limits.h>
+ #include <pcre.h>
++#include <stdalign.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+@@ -33,7 +34,7 @@
+ 
+ extern size_t alpha_skip_lookup[256];
+ extern size_t *find_skip_lookup;
+-extern uint8_t h_table[H_SIZE] __attribute__((aligned(64)));
++extern alignas(64) uint8_t h_table[H_SIZE];
+ 
+ struct work_queue_t {
+     char *path;
+-- 
+2.49.0
+

@@ -1,0 +1,41 @@
+From fdcdedd42db2f608171acb26675a0b7ccd688386 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 2 May 2026 19:23:56 -0700
+Subject: [PATCH] Use standard C noreturn when available
+
+---
+ src/u-config.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/src/u-config.c b/src/u-config.c
+index f95fa48..5ed51fc 100644
+--- a/src/u-config.c
++++ b/src/u-config.c
+@@ -16,6 +16,15 @@ typedef          char    byte;
+ #define new(a, t, n)  (t *)alloc(a, sizeof(t), n)
+ #define s8(s)         {(u8 *)s, countof(s)-1}
+ #define S(s)          (s8)s8(s)
++#if __STDC_VERSION__ >= 202311L
++#define noreturn [[noreturn]]
++#elif __STDC_VERSION__ >= 201112L
++#define noreturn _Noreturn
++#elif defined(__GNUC__)
++#define noreturn __attribute__((noreturn))
++#else
++#define noreturn
++#endif
+ 
+ typedef struct os os;
+ 
+@@ -83,7 +92,7 @@ static s8node *os_listing(os *, arena *, s8 path);
+ static void os_write(os *, i32 fd, s8);
+ 
+ // Immediately exit the program with a non-zero status.
+-static void os_fail(os *) __attribute((noreturn));
++noreturn static void os_fail(os *);
+ 
+ 
+ // Application
+-- 
+2.49.0
+

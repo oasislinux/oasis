@@ -37,7 +37,7 @@
 #define STDC_HEADERS 1
 /* #undef TM_IN_SYS_TIME */
 #define VERSION "1.6.43"
-#define restrict __restrict__
+/* #undef restrict */
 #if defined __SUNPRO_CC && !defined __RESTRICT && !defined __restrict__
 # define _Restrict
 # define __restrict__

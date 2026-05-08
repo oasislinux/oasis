@@ -1,0 +1,106 @@
+From 66baaca2086d2640d55d91e3c0918990b30ba5cd Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Sat, 2 May 2026 22:03:07 -0700
+Subject: [PATCH] Move attributes to C23-compatible location
+
+---
+ include/imx8image.h | 16 ++++++++--------
+ include/imximage.h  |  8 ++++----
+ tools/imagetool.h   |  4 ++--
+ 3 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/include/imx8image.h b/include/imx8image.h
+index 00c614ab6c..6e85d602a0 100644
+--- a/include/imx8image.h
++++ b/include/imx8image.h
+@@ -94,7 +94,7 @@
+ 
+ #define CONTAINER_IMAGE_ARRAY_START_OFFSET	0x2000
+ 
+-typedef struct {
++typedef struct __packed {
+ 	uint8_t version;
+ 	uint16_t length;
+ 	uint8_t tag;
+@@ -103,9 +103,9 @@ typedef struct {
+ 	uint16_t blob_offset;
+ 	uint16_t signature_offset;
+ 	uint32_t reserved;
+-} __packed sig_blk_hdr_t;
++} sig_blk_hdr_t;
+ 
+-typedef struct {
++typedef struct __packed {
+ 	uint32_t offset;
+ 	uint32_t size;
+ 	uint64_t dst;
+@@ -114,9 +114,9 @@ typedef struct {
+ 	uint32_t meta;
+ 	uint8_t hash[HASH_MAX_LEN];
+ 	uint8_t iv[IV_MAX_LEN];
+-} __packed boot_img_t;
++} boot_img_t;
+ 
+-typedef struct {
++typedef struct __packed {
+ 	uint8_t version;
+ 	uint16_t length;
+ 	uint8_t tag;
+@@ -130,11 +130,11 @@ typedef struct {
+ 	sig_blk_hdr_t sig_blk_hdr;
+ 	uint32_t sigblk_size;
+ 	uint32_t padding;
+-} __packed flash_header_v3_t;
++} flash_header_v3_t;
+ 
+-typedef struct {
++typedef struct  __packed {
+ 	flash_header_v3_t fhdr[MAX_NUM_OF_CONTAINER];
+-}  __packed imx_header_v3_t;
++} imx_header_v3_t;
+ 
+ struct image_array {
+ 	char *name;
+diff --git a/include/imximage.h b/include/imximage.h
+index 1ed3284f15..e6734003bd 100644
+--- a/include/imximage.h
++++ b/include/imximage.h
+@@ -138,17 +138,17 @@ typedef struct {
+ 	uint32_t value;
+ } dcd_addr_data_t;
+ 
+-typedef struct {
++typedef struct __attribute__((packed)) {
+ 	uint8_t tag;
+ 	uint16_t length;
+ 	uint8_t version;
+-} __attribute__((packed)) ivt_header_t;
++} ivt_header_t;
+ 
+-typedef struct {
++typedef struct __attribute__((packed)) {
+ 	uint8_t tag;
+ 	uint16_t length;
+ 	uint8_t param;
+-} __attribute__((packed)) write_dcd_command_t;
++} write_dcd_command_t;
+ 
+ struct dcd_v2_cmd {
+ 	write_dcd_command_t write_dcd_command;
+diff --git a/tools/imagetool.h b/tools/imagetool.h
+index 2801ea9e9f..7f5e66135c 100644
+--- a/tools/imagetool.h
++++ b/tools/imagetool.h
+@@ -328,7 +328,7 @@ extern struct image_type_params *__start_image_type[], *__stop_image_type[];
+ 		.fflag_handle = _fflag_handle, \
+ 		.vrec_header = _vrec_header \
+ 	}; \
+-	static struct image_type_params *SECTION(image_type) __used \
+-		__cat(image_type_ptr_, _id) = &__cat(image_type_, _id)
++	static struct image_type_params * __cat(image_type_ptr_, _id) \
++		SECTION(image_type) __used = &__cat(image_type_, _id)
+ 
+ #endif /* _IMAGETOOL_H_ */
+-- 
+2.49.0
+

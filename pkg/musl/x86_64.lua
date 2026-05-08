@@ -65,4 +65,9 @@ return {
 		'stat.h',
 		'user.h',
 	},
+	crts={
+		-- <cd src && printf "\t\t'%s',\n" crt/x86_64/*.[csS]
+		'crt/x86_64/crti.s',
+		'crt/x86_64/crtn.s',
+	},
 }

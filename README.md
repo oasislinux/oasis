@@ -10,7 +10,7 @@ systems you might be familiar with, and is closer to a BSD.
 There are many features that distinguish it from other operating
 systems:
 
-* Completely **statically linked**.
+* Completely statically linked.
 
 All software in the base system is linked statically, including the
 display server ([velox]) and web browser ([netsurf]). Compared to
@@ -21,7 +21,7 @@ self-contained binaries that can easily be copied to other systems.
 [velox]: https://github.com/michaelforney/velox
 [netsurf]: https://www.netsurf-browser.org
 
-* **Fast builds** that are **100% reproducible**.
+* Fast reproducible builds.
 
 All packages are built with [samurai], using build manifests generated
 by [Lua scripts]. This involves considerable up-front packaging
@@ -33,14 +33,14 @@ even across package boundaries.
 [samurai]: https://github.com/michaelforney/samurai
 [Lua scripts]: https://github.com/oasislinux/oasis/blob/master/pkg/nasm/gen.lua
 
-* **Minimal bootstrap dependencies**.
+* Minimal bootstrap dependencies.
 
 Any POSIX system with git, lua, curl, a sha256 utility, standard
 compression utilities, and an `x86_64-linux-musl` cross compiler
 can be used to bootstrap oasis. This makes it trivial to cross-compile,
 even from non-Linux systems such as macOS or OpenBSD.
 
-* **BearSSL** is the system TLS and crypto library.
+* BearSSL is the system TLS and crypto library.
 
 BearSSL is incredibly small and well written, but is not widely
 adopted. Through the use of libcurl, which now has native BearSSL
@@ -51,16 +51,16 @@ Only a [few optional packages] still require LibreSSL.
 [libtls-bearssl]: https://sr.ht/~mcf/libtls-bearssl
 [few optional packages]: https://github.com/oasislinux/oasis/issues/14
 
-* **No package manager**.
+* No package manager.
 
 Instead, you configure a set of [specifications] of what files from
 which packages to include on your system, and the build system
 writes the resulting filesystem tree into a git repository. This
 can then be merged into `/`, or pulled from another machine.
 
-[specifications]: https://github.com/oasislinux/oasis/blob/master/config.def.lua#L12-L15
+[specifications]: https://github.com/oasislinux/oasis/blob/master/config.def.lua#L16-L28
 
-* Integrates well with **OS-agnostic package systems**.
+* Integrates well with OS-agnostic package systems.
 
 Although the aim is to provide a complete system, there is a lot
 of free software out there, a lot of which does not match up well
@@ -72,7 +72,7 @@ you might need, while keeping the base system small and focused.
 [pkgsrc]: https://github.com/oasislinux/oasis/wiki/pkgsrc
 [nix]: https://nixos.org/nix
 
-* Extremely **simple system configuration**.
+* Extremely simple system configuration.
 
 A guiding principle is that the `/etc` directory should be simple
 enough for system administrators to understand completely and
@@ -82,7 +82,7 @@ at only 16 lines.
 
 [`/etc/rc.init`]: https://github.com/oasislinux/etc/blob/master/rc.init
 
-* Mostly **ISO C conformant**.
+* Mostly ISO C conformant.
 
 A major goal of oasis is to build with [cproc], a C compiler which
 is much stricter about the ISO C standard than gcc or clang, and
@@ -158,6 +158,12 @@ likely still install it via pkgsrc or nix.
 
 [sets]: https://github.com/oasislinux/oasis/blob/master/sets.lua
 [pkg]: https://github.com/oasislinux/oasis/blob/master/pkg
+
+## Screenshot
+
+People like screenshots, so here's one of oasis:
+
+![Screenshot](https://github.com/oasislinux/oasis/wiki/oasis.png)
 
 ## Contact
 
