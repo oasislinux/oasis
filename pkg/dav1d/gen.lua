@@ -1,4 +1,3 @@
-local arch = config.target.platform:match('[^-]*')
 cflags{
 	'-Wall', '-Wno-maybe-uninitialized',
 	'-D _XOPEN_SOURCE=700',
@@ -7,7 +6,7 @@ cflags{
 	'-I $srcdir/tools',
 	'-I $outdir',
 	'-I $outdir/include/dav1d',
-	arch == 'riscv64' and '-I $dir/riscv' or '-I $dir',
+	'-I $dir',
 }
 nasmflags{
 	'-i $srcdir/src/',
