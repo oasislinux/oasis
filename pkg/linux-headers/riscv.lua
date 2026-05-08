@@ -17,9 +17,18 @@ return {
 	'asm/vendor/mips.h',
 	'asm/vendor/sifive.h',
 	'asm/vendor/thead.h',
-	unistd = {},
-	generic={
-		-- <awk '$1 == "generic-y" {printf "\\t\\t'\'%s\'',\\n", $3}' src/arch/riscv/include/uapi/asm/Kbuild
-		'kvm_para.h',
-	},		
+	unistd = {
+		-- arch/riscv/kernel/Makefile.syscalls
+		{
+			dst='unistd_32.h',
+			src='scripts/syscall.tbl',
+			abi='common|32|riscv|memfd_secret',
+		},
+		{
+			dst='unistd_64.h',
+			src='scripts/syscall.tbl',
+			abi='common|64|riscv|rlimit|memfd_secret',
+		},
+	},
+	generic={},		
 }
