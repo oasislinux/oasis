@@ -28,7 +28,7 @@ return {
 		'src/thread/riscv64/syscall_cp.s',
 	},
 	bits={
-		-- <cd src/arch/riscv/bits && printf "\t\t'%s',\n" *.h
+		-- <cd src/arch/riscv64/bits && printf "\t\t'%s',\n" *.h
 		'fenv.h',
 		'float.h',
 		'setjmp.h',
