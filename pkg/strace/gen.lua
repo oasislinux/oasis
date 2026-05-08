@@ -3,6 +3,10 @@ local targets = {
 		cflags={'-D AARCH64=1'},
 		ioctls=1,
 	},
+	riscv64={
+		cflags={'-D RISCV64=1'},
+		ioctls=0,
+	},
 	x86_64={
 		cflags={'-D X86_64=1'},
 		ioctls=2,
@@ -75,7 +79,7 @@ makempers('printers.h', 'printers.awk')
 makempers('native_printer_decls.h', 'printerdecls.awk')
 makempers('native_printer_defs.h', 'printerdefs.awk')
 
-build('cpp', '$outdir/syscallent.i', '$srcdir/src/linux/x86_64/syscallent.h')
+build('cpp', '$outdir/syscallent.i', '$srcdir/src/linux/'..arch..'/syscallent.h')
 build('awk', '$outdir/scno-syscallent.h', {'$outdir/syscallent.i', '|', '$dir/scno.awk'}, {
 	expr='-f $dir/scno.awk',
 })
@@ -86,11 +90,12 @@ local syscalls = expand{'$srcdir/src/linux/', {
 	'32/syscallent.h',
 	'64/syscallent.h',
 	'arm/syscallent.h',
-	'i386/syscallent.h',
-	'sparc/syscallent.h',
-	'sparc64/syscallent.h',
 	'generic/subcallent.h',
 	'generic/syscallent-common.h',
+	'i386/syscallent.h',
+	'riscv64/syscallent.h',
+	'sparc/syscallent.h',
+	'sparc64/syscallent.h',
 	'x86_64/syscallent.h',
 }}
 build('awk', '$outdir/sen.h', {syscalls, '|', '$dir/sen.awk'}, {
