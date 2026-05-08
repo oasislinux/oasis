@@ -1,4 +1,12 @@
+local targets = {
+	aarch64={name='AARCH64', dir='aarch64'},
+	riscv64={name='RISCV', dir='riscv64'},
+	x86_64={name='X86_64', dir='x86'},
+}
 local arch = config.target.platform:match('[^-]*')
+local targ = targets[arch]
+if not targ then return end
+
 cflags{
 	'-Wall', '-Wno-deprecated-declarations',
 	'-I $dir',
@@ -9,7 +17,7 @@ cflags{
 build('sed', '$outdir/include/ffi.h', '$srcdir/include/ffi.h.in', {
 	expr={
 		'-e s,@VERSION@,3.3,',
-		string.format('-e s,@TARGET@,%s,', arch:upper()),
+		string.format('-e s,@TARGET@,%s,', targ.name),
 		'-e s,@HAVE_LONG_DOUBLE@,1,',
 		'-e s,@HAVE_LONG_DOUBLE_VARIANT@,0,',
 		'-e s,@FFI_EXEC_TRAMPOLINE_TABLE@,0,',
@@ -17,7 +25,7 @@ build('sed', '$outdir/include/ffi.h', '$srcdir/include/ffi.h.in', {
 })
 
 pkg.hdrs = {
-	copy('$outdir/include', '$srcdir/src/'..({x86_64='x86', aarch64='aarch64', riscv64='riscv'})[arch], {'ffitarget.h'}),
+	copy('$outdir/include', '$srcdir/src/'..targ.dir, {'ffitarget.h'}),
 	'$outdir/include/ffi.h',
 	install=true,
 }
