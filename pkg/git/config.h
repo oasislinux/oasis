@@ -7,16 +7,17 @@
 #define GIT_HOST_CPU "unknown"
 #define GIT_HTML_PATH "share/doc/git-doc"
 #define GIT_INFO_PATH "share/info"
-#define GIT_LOCALE_PATH "/share/locale"
+#define GIT_LOCALE_PATH "share/locale"
 #define GIT_MAN_PATH "share/man"
 #define HAVE_ALLOCA_H
 #define HAVE_PATHS_H
 #define HAVE_DEV_TTY
 #define HAVE_CLOCK_GETTIME
 #define HAVE_CLOCK_MONOTONIC
-#define HAVE_SYNC_FILE_RANGE
 #define HAVE_GETRANDOM
 #define HAVE_GETDELIM
+#define HAVE_SYNC_FILE_RANGE
+#define HAVE_SYSINFO
 #define NO_GETTEXT
 #define NO_OPENSSL
 #define NO_SYS_POLL_H

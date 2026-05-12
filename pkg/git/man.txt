@@ -41,6 +41,7 @@ man1/git-describe.1
 man1/git-diagnose.1
 man1/git-diff-files.1
 man1/git-diff-index.1
+man1/git-diff-pairs.1
 man1/git-diff-tree.1
 man1/git-diff.1
 man1/git-difftool.1
@@ -62,6 +63,7 @@ man1/git-grep.1
 man1/git-gui.1
 man1/git-hash-object.1
 man1/git-help.1
+man1/git-history.1
 man1/git-hook.1
 man1/git-http-backend.1
 man1/git-http-fetch.1
@@ -72,6 +74,7 @@ man1/git-init-db.1
 man1/git-init.1
 man1/git-instaweb.1
 man1/git-interpret-trailers.1
+man1/git-last-modified.1
 man1/git-log.1
 man1/git-ls-files.1
 man1/git-ls-remote.1
@@ -115,6 +118,7 @@ man1/git-remote.1
 man1/git-repack.1
 man1/git-replace.1
 man1/git-replay.1
+man1/git-repo.1
 man1/git-request-pull.1
 man1/git-rerere.1
 man1/git-reset.1
@@ -169,6 +173,7 @@ man5/gitformat-bundle.5
 man5/gitformat-chunk.5
 man5/gitformat-commit-graph.5
 man5/gitformat-index.5
+man5/gitformat-loose.5
 man5/gitformat-pack.5
 man5/gitformat-signature.5
 man5/githooks.5
@@ -186,6 +191,7 @@ man7/gitcli.7
 man7/gitcore-tutorial.7
 man7/gitcredentials.7
 man7/gitcvs-migration.7
+man7/gitdatamodel.7
 man7/gitdiffcore.7
 man7/giteveryday.7
 man7/gitfaq.7

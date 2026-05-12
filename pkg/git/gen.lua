@@ -16,28 +16,28 @@ pkg.deps = {
 	'pkg/zlib/headers',
 }
 
-rule('cmdlist', '$srcdir/generate-cmdlist.sh $srcdir $out')
+rule('cmdlist', '$srcdir/tools/generate-cmdlist.sh $srcdir $out')
 build('cmdlist', '$outdir/command-list.h', {
-	'|', '$srcdir/generate-cmdlist.sh', '$srcdir/command-list.txt',
+	'|', '$srcdir/tools/generate-cmdlist.sh', '$srcdir/command-list.txt',
 	expand{'$srcdir/Documentation/', lines('commands.txt')},
 })
 
-rule('configlist', '$srcdir/generate-configlist.sh $srcdir $out')
+rule('configlist', '$srcdir/tools/generate-configlist.sh $srcdir $out')
 build('configlist', '$outdir/config-list.h', {
-	'|', '$srcdir/generate-configlist.sh',
+	'|', '$srcdir/tools/generate-configlist.sh',
 	expand{'$srcdir/Documentation/', lines('configs.txt')},
 })
 
-rule('hooklist', '$srcdir/generate-hooklist.sh $srcdir $out')
+rule('hooklist', '$srcdir/tools/generate-hooklist.sh $srcdir $out')
 build('hooklist', '$outdir/hook-list.h', {
-	'|', '$srcdir/generate-hooklist.sh', '$srcdir/Documentation/githooks.adoc'
+	'|', '$srcdir/tools/generate-hooklist.sh', '$srcdir/Documentation/githooks.adoc'
 })
 
 build('sed', '$outdir/version-def.h', '$srcdir/version-def.h.in', {
 	expr={
-		[[-e 's,@GIT_VERSION@,2.49.0,']],
+		[[-e 's,@GIT_VERSION@,2.54.0,']],
 		[[-e 's,@GIT_BUILT_FROM_COMMIT@,,']],
-		[[-e 's,@GIT_USER_AGENT@,git/2.49.0,']],
+		[[-e 's,@GIT_USER_AGENT@,git/2.54.0,']],
 	},
 })
 
@@ -45,25 +45,6 @@ cc('exec-cmd.c', nil, {cflags=string.format([[$cflags '-DFALLBACK_RUNTIME_PREFIX
 cc('common-main.c')
 cc('http.c')
 cc('compat/regex/regex.c', nil, {cflags='$cflags -DGAWK -DNO_MBSUPPORT'})
-
--- src/Makefile:/^REFTABLE_OBJS.\+=
-lib('libreftable.a', [[
-	reftable/(
-		basics.c
-		error.c
-		block.c
-		blocksource.c
-		iter.c
-		merged.c
-		pq.c
-		reader.c
-		record.c
-		stack.c
-		system.c
-		tree.c
-		writer.c
-	)
-]])
 
 -- src/Makefile:/^LIB_OBJS.\+=
 lib('libgit.a', [[
@@ -84,7 +65,6 @@ lib('libgit.a', [[
 	blob.c
 	bloom.c
 	branch.c
-	bulk-checkin.c
 	bundle-uri.c
 	bundle.c
 	cache-tree.c
@@ -102,9 +82,11 @@ lib('libgit.a', [[
 	common-init.c
 	compat/nonblock.c
 	compat/obstack.c
+	compat/open.c
 	compat/qsort_s.c
 	compat/regex/regex.c.o
 	compat/terminal.c
+	compiler-tricks/not-constant.c
 	config.c
 	connect.c
 	connected.c
@@ -151,6 +133,7 @@ lib('libgit.a', [[
 	graph.c
 	grep.c
 	hash-lookup.c
+	hash.c
 	hashmap.c
 	help.c
 	hex-ll.c
@@ -178,7 +161,6 @@ lib('libgit.a', [[
 	merge-ll.c
 	merge-ort.c
 	merge-ort-wrappers.c
-	merge-recursive.c
 	merge.c
 	midx.c
 	midx-write.c
@@ -194,6 +176,10 @@ lib('libgit.a', [[
 	object-file.c
 	object-name.c
 	object.c
+	odb.c
+	odb/source.c
+	odb/source-files.c
+	odb/streaming.c
 	oid-array.c
 	oidmap.c
 	oidset.c
@@ -203,6 +189,7 @@ lib('libgit.a', [[
 	pack-check.c
 	pack-mtimes.c
 	pack-objects.c
+	pack-refs.c
 	pack-revindex.c
 	pack-write.c
 	packfile.c
@@ -244,8 +231,31 @@ lib('libgit.a', [[
 	refs/packed-backend.c
 	refs/ref-cache.c
 	refspec.c
+	reftable/(
+		basics.c
+		block.c
+		blocksource.c
+		error.c
+		fsck.c
+		iter.c
+		merged.c
+		pq.c
+		record.c
+		stack.c
+		system.c
+		table.c
+		tree.c
+		writer.c
+	)
 	remote.c
+	repack.c
+	repack-cruft.c
+	repack-filtered.c
+	repack-geometry.c
+	repack-midx.c
+	repack-promisor.c
 	replace-object.c
+	replay.c
 	repo-settings.c
 	repository.c
 	rerere.c
@@ -266,7 +276,6 @@ lib('libgit.a', [[
 	stable-qsort.c
 	statinfo.c
 	strbuf.c
-	streaming.c
 	string-list.c
 	strmap.c
 	strvec.c
@@ -318,6 +327,15 @@ lib('libgit.a', [[
 	ws.c
 	wt-status.c
 	xdiff-interface.c
+	xdiff/(
+		xdiffi.c
+		xemit.c
+		xhistogram.c
+		xmerge.c
+		xpatience.c
+		xprepare.c
+		xutils.c
+	)
 
 	unix-socket.c
 	unix-stream-server.c
@@ -332,21 +350,8 @@ lib('libgit.a', [[
 
 	compat/linux/procinfo.c
 
-	libxdiff.a
-	libreftable.a
 	$builddir/pkg/zlib/libz.a
 ]])
-
--- src/Makefile:/^XDIFF_OBJS.\+=
-lib('libxdiff.a', [[xdiff/(
-	xdiffi.c
-	xemit.c
-	xhistogram.c
-	xmerge.c
-	xpatience.c
-	xprepare.c
-	xutils.c
-)]])
 
 -- src/Makefile:/^BUILTIN_OBJS.\+=
 local builtins = {
@@ -385,6 +390,7 @@ local builtins = {
 	'diagnose',
 	'diff-files',
 	'diff-index',
+	'diff-pairs',
 	'diff-tree',
 	'diff',
 	'difftool',
@@ -402,10 +408,12 @@ local builtins = {
 	'grep',
 	'hash-object',
 	'help',
+	'history',
 	'hook',
 	'index-pack',
 	'init-db',
 	'interpret-trailers',
+	'last-modified',
 	'log',
 	'ls-files',
 	'ls-remote',
@@ -445,6 +453,7 @@ local builtins = {
 	'repack',
 	'replace',
 	'replay',
+	'repo',
 	'rerere',
 	'reset',
 	'rev-list',

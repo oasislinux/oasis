@@ -41,6 +41,7 @@ config/grep.adoc
 config/gui.adoc
 config/guitool.adoc
 config/help.adoc
+config/hook.adoc
 config/http.adoc
 config/i18n.adoc
 config/imap.adoc
@@ -71,6 +72,7 @@ config/reftable.adoc
 config/remote.adoc
 config/remotes.adoc
 config/repack.adoc
+config/replay.adoc
 config/rerere.adoc
 config/revert.adoc
 config/safe.adoc

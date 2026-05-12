@@ -42,6 +42,7 @@ git-describe.adoc
 git-diagnose.adoc
 git-diff-files.adoc
 git-diff-index.adoc
+git-diff-pairs.adoc
 git-diff-tree.adoc
 git-diff.adoc
 git-difftool.adoc
@@ -63,6 +64,7 @@ git-grep.adoc
 git-gui.adoc
 git-hash-object.adoc
 git-help.adoc
+git-history.adoc
 git-hook.adoc
 git-http-backend.adoc
 git-http-fetch.adoc
@@ -73,6 +75,7 @@ git-init-db.adoc
 git-init.adoc
 git-instaweb.adoc
 git-interpret-trailers.adoc
+git-last-modified.adoc
 git-log.adoc
 git-ls-files.adoc
 git-ls-remote.adoc
@@ -116,6 +119,7 @@ git-remote.adoc
 git-repack.adoc
 git-replace.adoc
 git-replay.adoc
+git-repo.adoc
 git-request-pull.adoc
 git-rerere.adoc
 git-reset.adoc
@@ -168,6 +172,7 @@ gitcli.adoc
 gitcore-tutorial.adoc
 gitcredentials.adoc
 gitcvs-migration.adoc
+gitdatamodel.adoc
 gitdiffcore.adoc
 giteveryday.adoc
 gitfaq.adoc
@@ -175,6 +180,7 @@ gitformat-bundle.adoc
 gitformat-chunk.adoc
 gitformat-commit-graph.adoc
 gitformat-index.adoc
+gitformat-loose.adoc
 gitformat-pack.adoc
 gitformat-signature.adoc
 gitglossary.adoc
