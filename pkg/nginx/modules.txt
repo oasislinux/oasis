@@ -1,3 +1,11 @@
+core
+errlog
+conf
+
+events
+event_core
+epoll
+
 openssl
 openssl_cache
 regex

@@ -1,31 +1,9 @@
-BEGIN {
-	while (getline < sources) {
-		if ($0 ~ /^(#|$)/)
-			continue
-		all_modules[++n] = $1
-	}
-
-	enabled["core"] = 1
-	enabled["errlog"] = 1
-	enabled["conf"] = 1
-
-	enabled["events"] = 1
-	enabled["event_core"] = 1
-	enabled["epoll"] = 1
-}
-
 /^(#|$)/ { next }
 {
-	enabled[$0] = 1
+	modules[++m] = $0
 }
 
 END {
-	for (i = 1; i <= n; ++i) {
-		module = all_modules[i]
-		if (enabled[module])
-			modules[++m] = module
-	}
-
 	print "#include <ngx_config.h>"
 	print "#include <ngx_core.h>"
 

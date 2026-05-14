@@ -49,12 +49,10 @@ if modules['stream'] then
 	cflags{'-I $srcdir/src/stream'}
 end
 
-build('awk', '$outdir/ngx_modules.c', {'$dir/modules.txt', '|', '$dir/modules.awk', '$dir/sources.txt'}, {
-	expr='-f $dir/modules.awk -v sources=$dir/sources.txt'
-})
+build('awk', '$outdir/ngx_modules.c', {'$dir/modules.txt', '|', '$dir/modules.awk'}, {expr='-f $dir/modules.awk'})
 cc('$outdir/ngx_modules.c', {'$gendir/deps', '$dir/fetch'})
 
-local sources = paths[[src/(
+local srcs = paths[[src/(
 	core/(
 		nginx.c
 		ngx_log.c
@@ -131,18 +129,13 @@ local sources = paths[[src/(
 		ngx_linux_sendfile_chain.c
 	)
 )]]
-for line in iterlines('sources.txt') do
-	local i = line:find(' ', 1, true)
-	if modules[line:sub(1, i and i - 1)] then
-		while i do
-			local j = line:find(' ', i + 1, true)
-			table.insert(sources, 'src/'..line:sub(i + 1, j and j - 1))
-			i = j
-		end
+for mod, modsrcs in pairs(load 'sources.lua') do
+	if modules[mod] then
+		table.insert(srcs, expand{'src/', modsrcs})
 	end
 end
 
-exe('nginx', {sources, 'ngx_modules.c.o', libs})
+exe('nginx', {srcs, 'ngx_modules.c.o', libs})
 file('bin/nginx', '755', '$outdir/nginx')
 file('share/nginx/mime.types', '644', '$srcdir/conf/mime.types')
 
