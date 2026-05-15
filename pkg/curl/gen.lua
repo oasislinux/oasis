@@ -45,10 +45,12 @@ lib('libcurl.a', [[
 		asyn-thrdd.c
 		bufq.c
 		bufref.c
+		cf-dns.c
 		cf-h1-proxy.c
 		cf-h2-proxy.c
 		cf-haproxy.c
 		cf-https-connect.c
+		cf-ip-happy.c
 		cf-socket.c
 		cfilters.c
 		conncache.c
@@ -57,24 +59,25 @@ lib('libcurl.a', [[
 		cookie.c
 		cshutdn.c
 		curl_addrinfo.c
-		curl_des.c
 		curl_endian.c
 		curl_fnmatch.c
+		curl_fopen.c
 		curl_get_line.c
 		curl_gethostname.c
 		curl_gssapi.c
 		curl_memrchr.c
 		curl_ntlm_core.c
 		curl_range.c
-		curl_rtmp.c
 		curl_sasl.c
 		curl_sha512_256.c
+		curl_share.c
 		curl_sspi.c
 		curl_threads.c
 		curl_trc.c
 		cw-out.c
 		cw-pause.c
 		dict.c
+		dnscache.c
 		doh.c
 		dynhds.c
 		easy.c
@@ -84,7 +87,6 @@ lib('libcurl.a', [[
 		fake_addrinfo.c
 		file.c
 		fileinfo.c
-		fopen.c
 		formdata.c
 		ftp.c
 		ftplistparser.c
@@ -111,8 +113,6 @@ lib('libcurl.a', [[
 		idn.c
 		if2ip.c
 		imap.c
-		inet_ntop.c
-		krb5.c
 		ldap.c
 		llist.c
 		macos.c
@@ -124,6 +124,7 @@ lib('libcurl.a', [[
 		mqtt.c
 		multi.c
 		multi_ev.c
+		multi_ntfy.c
 		netrc.c
 		noproxy.c
 		openldap.c
@@ -131,16 +132,16 @@ lib('libcurl.a', [[
 		pingpong.c
 		pop3.c
 		progress.c
+		protocol.c
 		psl.c
 		rand.c
-		rename.c
+		ratelimit.c
 		request.c
 		rtsp.c
 		select.c
 		sendf.c
 		setopt.c
 		sha256.c
-		share.c
 		slist.c
 		smb.c
 		smtp.c
@@ -148,15 +149,15 @@ lib('libcurl.a', [[
 		socks.c
 		socks_gssapi.c
 		socks_sspi.c
-		speedcheck.c
 		splay.c
 		strcase.c
-		strdup.c
 		strequal.c
 		strerror.c
 		system_win32.c
 		telnet.c
 		tftp.c
+		thrdpool.c
+		thrdqueue.c
 		transfer.c
 		uint-bset.c
 		uint-hash.c
@@ -168,14 +169,22 @@ lib('libcurl.a', [[
 		ws.c
 		curlx/(
 			base64.c
+			basename.c
 			dynbuf.c
+			fopen.c
+			inet_ntop.c
 			inet_pton.c
 			multibyte.c
 			nonblock.c
+			snprintf.c
+			strcopy.c
+			strdup.c
+			strerr.c
 			strparse.c
 			timediff.c
 			timeval.c
 			version_win32.c
+			wait.c
 			warnless.c
 			winapi.c
 		)
@@ -195,18 +204,17 @@ lib('libcurl.a', [[
 			vauth.c
 		)
 		vtls/(
+			apple.c
 			bearssl.c
 			cipher_suite.c
 			gtls.c
 			hostcheck.c
 			keylog.c
 			mbedtls.c
-			mbedtls_threadlock.c
 			openssl.c
 			rustls.c
 			schannel.c
 			schannel_verify.c
-			sectransp.c
 			vtls.c
 			vtls_scache.c
 			vtls_spack.c
@@ -214,9 +222,7 @@ lib('libcurl.a', [[
 			x509asn1.c
 		)
 		vquic/(
-			curl_msh3.c
 			curl_ngtcp2.c
-			curl_osslq.c
 			curl_quiche.c
 			vquic.c
 			vquic-tls.c
@@ -224,8 +230,7 @@ lib('libcurl.a', [[
 		vssh/(
 			libssh.c
 			libssh2.c
-			curl_path.c
-			wolfssh.c
+			vssh.c
 		)
 	)
 	$builddir/pkg/bearssl/libbearssl.a
@@ -238,7 +243,6 @@ exe('curl', [[
 		config2setopts.c
 		slist_wc.c
 		terminal.c
-		tool_bname.c
 		tool_cb_dbg.c
 		tool_cb_hdr.c
 		tool_cb_prg.c
@@ -268,10 +272,8 @@ exe('curl', [[
 		tool_parsecfg.c
 		tool_progress.c
 		tool_setopt.c
-		tool_sleep.c
 		tool_ssls.c
 		tool_stderr.c
-		tool_strdup.c
 		tool_urlglob.c
 		tool_util.c
 		tool_vms.c
@@ -279,10 +281,11 @@ exe('curl', [[
 		tool_writeout_json.c
 		tool_xattr.c
 		var.c
+		toolx/(tool_time.c)
 	)
 	libcurl.a.d
 ]])
 
 file('bin/curl', '755', '$outdir/curl')
 
-fetch 'curl'
+fetch 'git'
