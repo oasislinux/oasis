@@ -59,7 +59,9 @@
 #define HAVE_ALARM 1
 /* #undef HAVE_ARC4RANDOM */
 #define HAVE_ARPA_INET_H 1
+#ifndef __STDC_NO_ATOMICS__
 #define HAVE_ATOMIC 1
+#endif
 #define HAVE_BASENAME 1
 #define HAVE_BOOL_T 1
 /* #undef HAVE_BROTLI */
@@ -190,7 +192,9 @@
 /* #undef HAVE_SSL_SET1_ECH_CONFIG_LIST */
 /* #undef HAVE_SSL_SET_QUIC_TLS_CBS */
 /* #undef HAVE_SSL_SET_QUIC_USE_LEGACY_CODEPOINT */
+#ifndef __STDC_NO_ATOMICS__
 #define HAVE_STDATOMIC_H 1
+#endif
 #define HAVE_STDBOOL_H 1
 #define HAVE_STDINT_H 1
 #define HAVE_STDIO_H 1
