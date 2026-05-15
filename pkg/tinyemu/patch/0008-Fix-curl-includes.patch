@@ -1,0 +1,31 @@
+From 6fd967b999a02df035446b90c9969ff4d8330a55 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 15 May 2026 01:54:02 -0700
+Subject: [PATCH] Fix curl includes
+
+curl-8.16.0 replaces curl_multi_setopt with a type-checking macro.
+However, since curl/multi.h includes curl/curl.h, the macro is
+defined before curl_multi_setopt is declared.
+
+The comment in curl/multi.h suggests that applications are expected
+to include curl/curl.h, so do that.
+---
+ fs_wget.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs_wget.c b/fs_wget.c
+index 5a36dbc..3b080d7 100644
+--- a/fs_wget.c
++++ b/fs_wget.c
+@@ -39,7 +39,7 @@
+ #if defined(EMSCRIPTEN)
+ #include <emscripten.h>
+ #else
+-#include <curl/multi.h>
++#include <curl/curl.h>
+ #endif
+ 
+ /***********************************************/
+-- 
+2.54.0
+
