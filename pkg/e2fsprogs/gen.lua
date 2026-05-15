@@ -1,3 +1,5 @@
+local probe = require 'probe'
+
 set('version', '1.46.4')
 cflags{
 	'-Wall',
@@ -15,9 +17,9 @@ cflags{
 }
 
 build('cat', '$outdir/config.h', {
-	'$builddir/probe/HAVE__THREAD_LOCAL',
-	'$builddir/probe/SIZEOF_LONG',
-	'$builddir/probe/SIZEOF_TIME_T',
+	probe.HAVE__THREAD_LOCAL,
+	probe.SIZEOF_LONG,
+	probe.SIZEOF_TIME_T,
 	'$dir/config.h',
 })
 

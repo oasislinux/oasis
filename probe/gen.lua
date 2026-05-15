@@ -1,5 +1,7 @@
+local M = {}
+
 local function probe(var)
-	build('probe', '$outdir/'..var, {'$dir/'..var, '|', '$basedir/scripts/probe.sh'}, {var=var})
+	M[var] = build('probe', pkg.outdir..'/'..var, {'$dir/'..var, '|', '$basedir/scripts/probe.sh'}, {var=var})
 end
 
 probe('HAVE_EMMINTRIN_H')
@@ -18,9 +20,11 @@ probe('HAVE___BUILTIN_POPCOUNT')
 probe('PIC')
 
 local function probesize(var)
-	build('probe-size', '$outdir/'..var, {'$dir/'..var, '|', '$basedir/scripts/probe-size.sh'}, {var=var})
+	M[var] = build('probe-size', pkg.outdir..'/'..var, {'$dir/'..var, '|', '$basedir/scripts/probe-size.sh'}, {var=var})
 end
 
 probesize('SIZEOF_LONG')
 probesize('SIZEOF_SIZE_T')
 probesize('SIZEOF_TIME_T')
+
+return M
