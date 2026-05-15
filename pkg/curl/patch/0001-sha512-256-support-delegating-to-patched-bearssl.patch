@@ -1,0 +1,121 @@
+From d1d4f8d4effdb9729bcdca711910bd418651f3fe Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 15 May 2026 03:02:00 -0700
+Subject: [PATCH] sha512-256: support delegating to (patched) bearssl
+
+---
+ lib/curl_sha512_256.c | 81 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 77 insertions(+), 4 deletions(-)
+
+diff --git a/lib/curl_sha512_256.c b/lib/curl_sha512_256.c
+index 75a7765931..2ac9002ea6 100644
+--- a/lib/curl_sha512_256.c
++++ b/lib/curl_sha512_256.c
+@@ -31,10 +31,10 @@
+  * 1. USE_OPENSSL
+  * 2. USE_WOLFSSL
+  * 3. USE_GNUTLS
+- * 4. USE_MBEDTLS (TBD)
+- * 5. USE_RUSTLS (TBD)
+- * 6. USE_WIN32_CRYPTO (TBD)
+- * 7. USE_BEARSSL (TBD)
++ * 4. USE_BEARSSL
++ * 5. USE_MBEDTLS (TBD)
++ * 6. USE_RUSTLS (TBD)
++ * 7. USE_WIN32_CRYPTO (TBD)
+  * Skip the backend if it does not support the required algorithm */
+ 
+ #ifdef USE_OPENSSL
+@@ -79,9 +79,16 @@
+ #  include <nettle/sha.h>
+ #  ifdef SHA512_256_DIGEST_SIZE
+ #    define USE_GNUTLS_SHA512_256           1
++#    define HAS_SHA512_256_IMPLEMENTATION   1
+ #  endif
+ #endif /* !HAS_SHA512_256_IMPLEMENTATION && USE_GNUTLS */
+ 
++#if !defined(HAS_SHA512_256_IMPLEMENTATION) && defined(USE_BEARSSL)
++#  include <bearssl.h>
++#  define USE_BEARSSL_SHA512_256            1
++#  define HAS_SHA512_256_IMPLEMENTATION     1
++#endif /* !HAS_SHA512_256_IMPLEMENTATION && USE_BEARSSL */
++
+ #ifdef USE_OPENSSL_SHA512_256
+ 
+ /* OpenSSL does not provide macros for SHA-512/256 sizes */
+@@ -288,6 +295,72 @@ static CURLcode Curl_sha512_256_finish(unsigned char *digest, void *context)
+   return CURLE_OK;
+ }
+ 
++#elif defined(USE_BEARSSL_SHA512_256)
++
++#define CURL_SHA512_256_BLOCK_SIZE  128
++#define CURL_SHA512_256_DIGEST_SIZE br_sha512_256_SIZE
++
++/**
++ * Context type used for SHA-512/256 calculations
++ */
++typedef br_sha512_256_context Curl_sha512_256_ctx;
++
++/**
++ * Initialise structure for SHA-512/256 calculation.
++ *
++ * @param context the calculation context
++ * @return always CURLE_OK
++ */
++static CURLcode Curl_sha512_256_init(void *context)
++{
++  Curl_sha512_256_ctx * const ctx = (Curl_sha512_256_ctx *)context;
++
++  /* Check whether the header and this file use the same numbers */
++  DEBUGASSERT(CURL_SHA512_256_DIGEST_LENGTH == CURL_SHA512_256_DIGEST_SIZE);
++
++  br_sha512_256_init(ctx);
++
++  return CURLE_OK;
++}
++
++/**
++ * Process portion of bytes.
++ *
++ * @param context the calculation context
++ * @param data bytes to add to hash
++ * @param length number of bytes in @a data
++ * @return always CURLE_OK
++ */
++static CURLcode Curl_sha512_256_update(void *context,
++                                       const unsigned char *data,
++                                       size_t length)
++{
++  Curl_sha512_256_ctx * const ctx = (Curl_sha512_256_ctx *)context;
++
++  DEBUGASSERT((data != NULL) || (length == 0));
++
++  br_sha512_256_update(ctx, data, length);
++
++  return CURLE_OK;
++}
++
++/**
++ * Finalise SHA-512/256 calculation, return digest.
++ *
++ * @param context the calculation context
++ * @param[out] digest set to the hash, must be #CURL_SHA512_256_DIGEST_SIZE
++ *             bytes
++ * @return always CURLE_OK
++ */
++static CURLcode Curl_sha512_256_finish(unsigned char *digest, void *context)
++{
++  Curl_sha512_256_ctx * const ctx = (Curl_sha512_256_ctx *)context;
++
++  br_sha512_256_out(ctx, digest);
++
++  return CURLE_OK;
++}
++
+ #else /* No system or TLS backend SHA-512/256 implementation available */
+ 
+ /* ** This implementation of SHA-512/256 hash calculation was originally ** *
+-- 
+2.54.0
+

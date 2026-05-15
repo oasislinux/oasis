@@ -43,6 +43,7 @@
 [submodule "pkg/curl/src"]
 	path = pkg/curl/src
 	url = https://github.com/oasislinux/curl.git
+	ignore = all
 [submodule "pkg/dav1d/src"]
 	path = pkg/dav1d/src
 	url = https://github.com/videolan/dav1d.git
