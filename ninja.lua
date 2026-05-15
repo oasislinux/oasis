@@ -225,6 +225,7 @@ function build(rule, outputs, inputs, bindings)
 	if bindings then
 		let(bindings)
 	end
+	return outputs
 end
 
 --

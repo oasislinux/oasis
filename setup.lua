@@ -42,7 +42,7 @@ distdir=%s
 ]], shellpath(basedir, '$PWD'), shellpath(config.builddir, '$PWD'), shellpath(config.distdir, '$basedir')))
 f:close()
 
-local function gen(gendir)
+local function gen(gendir, chunk)
 	local dir = basedir..'/'..gendir
 	local outdir = config.builddir..'/'..gendir
 	pkg={
@@ -54,7 +54,7 @@ local function gen(gendir)
 		inputs={
 			index={},
 			fspec={},
-			gen={},
+			gen={'$dir/gen.lua'},
 			fetch={},
 		},
 		fspec={},
@@ -67,9 +67,7 @@ local function gen(gendir)
 		set('outdir', '$builddir/$gendir')
 		set('srcdir', '$dir/src')
 	end
-	load('gen.lua')
-
-	build('phony', '$gendir/gen', pkg.inputs.gen)
+	local result = chunk()
 
 	if pkg.hdrs then
 		phony('headers', pkg.hdrs)
@@ -128,12 +126,36 @@ local function gen(gendir)
 	else
 		build('empty', '$outdir/tree.fspec')
 	end
-	build('phony', '$dir/root', pkg.inputs.root)
+	build('phony', '$gendir/gen', pkg.inputs.gen)
 	io.close()
 	os.rename(gendir..'/local.ninja.tmp', gendir..'/local.ninja')
 	if gendir == '.' then
 		os.execute('exec ln -sf local.ninja build.ninja')
 	end
+	return result
+end
+
+local function loader(mod, data)
+	local oldpkg, oldout = pkg, io.output()
+	if mod ~= '.' then
+		mod = mod:gsub('%.', '/')
+	end
+	local result = gen(mod, data.chunk)
+	pkg = oldpkg
+	io.output(oldout)
+	return result
+end
+
+package.searchers[2] = function(mod)
+	local path, fail = package.searchpath(mod, basedir..'/?/gen.lua')
+	if not path then
+		return fail
+	end
+	local chunk, fail = loadfile(path)
+	if not chunk then
+		return fail
+	end
+	return loader, {chunk=chunk, path=path}
 end
 
 function subgen(dir)
@@ -142,13 +164,12 @@ function subgen(dir)
 	table.insert(pkg.inputs.gen, '$gendir/'..dir..'/gen')
 	table.insert(pkg.inputs.index, '$outdir/'..dir..'/root.index')
 	table.insert(pkg.inputs.fspec, '$outdir/'..dir..'/tree.fspec')
-	local oldpkg, oldout = pkg, io.output()
+	local mod = dir
 	if pkg.gendir ~= '.' then
-		dir = pkg.gendir..'/'..dir
+		mod = pkg.gendir..'.'..mod
 	end
-	gen(dir)
-	pkg = oldpkg
-	io.output(oldout)
+	require(mod)
 end
 
-gen('.')
+pkg = {}
+require '.'
