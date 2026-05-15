@@ -1,0 +1,234 @@
+From 4f6c794c471789bed5e078bb0330ff08bb5936ac Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 15 May 2026 02:59:18 -0700
+Subject: [PATCH] Add br_sha512_256
+
+---
+ inc/bearssl_hash.h | 132 +++++++++++++++++++++++++++++++++++++++++----
+ src/hash/sha2big.c |  42 +++++++++++++++
+ 2 files changed, 164 insertions(+), 10 deletions(-)
+
+diff --git a/inc/bearssl_hash.h b/inc/bearssl_hash.h
+index ca4fa26..769e7ac 100644
+--- a/inc/bearssl_hash.h
++++ b/inc/bearssl_hash.h
+@@ -156,15 +156,16 @@ extern "C" {
+  *
+  * Implemented hash functions are:
+  *
+- * | Function  | Name    | Output length | State length |
+- * | :-------- | :------ | :-----------: | :----------: |
+- * | MD5       | md5     |     16        |     16       |
+- * | SHA-1     | sha1    |     20        |     20       |
+- * | SHA-224   | sha224  |     28        |     32       |
+- * | SHA-256   | sha256  |     32        |     32       |
+- * | SHA-384   | sha384  |     48        |     64       |
+- * | SHA-512   | sha512  |     64        |     64       |
+- * | MD5+SHA-1 | md5sha1 |     36        |     36       |
++ * | Function    | Name       | Output length | State length |
++ * | :---------- | :--------- | :-----------: | :----------: |
++ * | MD5         | md5        |     16        |     16       |
++ * | SHA-1       | sha1       |     20        |     20       |
++ * | SHA-224     | sha224     |     28        |     32       |
++ * | SHA-256     | sha256     |     32        |     32       |
++ * | SHA-384     | sha384     |     48        |     64       |
++ * | SHA-512     | sha512     |     64        |     64       |
++ * | SHA-512/256 | sha512_256 |     32        |     64       |
++ * | MD5+SHA-1   | md5sha1    |     36        |     36       |
+  *
+  * (MD5+SHA-1 is the concatenation of MD5 and SHA-1 computed over the
+  * same input; in the implementation, the internal data buffer is
+@@ -359,7 +360,7 @@ struct br_hash_class_ {
+  * -- First field is called 'vtable' and is a pointer to a
+  *    const-qualified br_hash_class instance (pointer is set by init()).
+  * -- SHA-224 and SHA-256 contexts are identical.
+- * -- SHA-384 and SHA-512 contexts are identical.
++ * -- SHA-384, SHA-512, and SHA-512/256 contexts are identical.
+  *
+  * Thus, contexts can be moved and cloned to capture the hash function
+  * current state; and there is no need for any explicit "release" function.
+@@ -961,6 +962,117 @@ void br_sha512_set_state(br_sha512_context *ctx,
+ #define br_sha512_set_state   br_sha384_set_state
+ #endif
+ 
++/**
++ * \brief Symbolic identifier for SHA-512/256.
++ *
++ * SHA-512/256 is the truncation of SHA-512 to 32 bytes with a
++ * special IV. It is not one of the functions identified in TLS,
++ * so we give it a symbolic identifier of value 0.
++ */
++#define br_sha512_256_ID     0
++
++/**
++ * \brief SHA-512 output size (in bytes).
++ */
++#define br_sha512_256_SIZE   32
++
++/**
++ * \brief Constant vtable for SHA-512/256.
++ */
++extern const br_hash_class br_sha512_256_vtable;
++
++#ifdef BR_DOXYGEN_IGNORE
++/**
++ * \brief SHA-512/256 context.
++ *
++ * First field is a pointer to the vtable; it is set by the initialisation
++ * function. Other fields are not supposed to be accessed by user code.
++ */
++typedef struct {
++	/**
++	 * \brief Pointer to vtable for this context.
++	 */
++	const br_hash_class *vtable;
++} br_sha512_256_context;
++#else
++typedef br_sha384_context br_sha512_256_context;
++#endif
++
++/**
++ * \brief SHA-512/256 context initialisation.
++ *
++ * This function initialises or resets a context for a new SHA-512/256
++ * computation. It also sets the vtable pointer.
++ *
++ * \param ctx   pointer to the context structure.
++ */
++void br_sha512_256_init(br_sha512_256_context *ctx);
++
++#ifdef BR_DOXYGEN_IGNORE
++/**
++ * \brief Inject some data bytes in a running SHA-512/256 computation.
++ *
++ * The provided context is updated with some data bytes. If the number
++ * of bytes (`len`) is zero, then the data pointer (`data`) is ignored
++ * and may be `NULL`, and this function does nothing.
++ *
++ * \param ctx    pointer to the context structure.
++ * \param data   pointer to the injected data.
++ * \param len    injected data length (in bytes).
++ */
++void br_sha512_256_update(br_sha512_256_context *ctx, const void *data, size_t len);
++#else
++#define br_sha512_256_update   br_sha384_update
++#endif
++
++/**
++ * \brief Compute SHA-512/256 output.
++ *
++ * The SHA-512/256 output for the concatenation of all bytes injected
++ * in the provided context since the last initialisation or reset
++ * call, is computed and written in the buffer pointed to by `out`.
++ * The context itself is not modified, so extra bytes may be injected
++ * afterwards to continue that computation.
++ *
++ * \param ctx   pointer to the context structure.
++ * \param out   destination buffer for the hash output.
++ */
++void br_sha512_256_out(const br_sha512_256_context *ctx, void *out);
++
++#ifdef BR_DOXYGEN_IGNORE
++/**
++ * \brief Save SHA-512/256 running state.
++ *
++ * The running state for SHA-512/256 (output of the last internal
++ * block processing) is written in the buffer pointed to by `out`.
++ * The number of bytes injected since the last initialisation or
++ * reset call is returned. The context is not modified.
++ *
++ * \param ctx   pointer to the context structure.
++ * \param out   destination buffer for the running state.
++ * \return  the injected total byte length.
++ */
++uint64_t br_sha512_256_state(const br_sha512_256_context *ctx, void *out);
++#else
++#define br_sha512_256_state   br_sha384_state
++#endif
++
++#ifdef BR_DOXYGEN_IGNORE
++/**
++ * \brief Restore SHA-512/256 running state.
++ *
++ * The running state for SHA-512/256 is set to the provided values.
++ *
++ * \param ctx     pointer to the context structure.
++ * \param stb     source buffer for the running state.
++ * \param count   the injected total byte length.
++ */
++void br_sha512_256_set_state(br_sha512_256_context *ctx,
++	const void *stb, uint64_t count);
++#else
++#define br_sha512_256_set_state   br_sha384_set_state
++#endif
++
+ /*
+  * "md5sha1" is a special hash function that computes both MD5 and SHA-1
+  * on the same input, and produces a 36-byte output (MD5 and SHA-1
+diff --git a/src/hash/sha2big.c b/src/hash/sha2big.c
+index 5be92ed..a8b930c 100644
+--- a/src/hash/sha2big.c
++++ b/src/hash/sha2big.c
+@@ -48,6 +48,13 @@ static const uint64_t IV512[8] = {
+ 	0x1F83D9ABFB41BD6B, 0x5BE0CD19137E2179
+ };
+ 
++static const uint64_t IV512_256[8] = {
++	0x22312194FC2BF72C, 0x9F555FA3C84C64C2,
++	0x2393B86B6F53B151, 0x963877195940EABD,
++	0x96283EE2A88EFFE3, 0xBE5E1E2553863992,
++	0x2B0199FC2C85B8AA, 0x0EB72DDC81C52CA2
++};
++
+ static const uint64_t K[80] = {
+ 	0x428A2F98D728AE22, 0x7137449123EF65CD,
+ 	0xB5C0FBCFEC4D3B2F, 0xE9B5DBA58189DBBC,
+@@ -246,6 +253,22 @@ br_sha512_out(const br_sha512_context *cc, void *dst)
+ 	sha2big_out(cc, dst, 8);
+ }
+ 
++/* see bearssl.h */
++void
++br_sha512_256_init(br_sha512_context *cc)
++{
++	cc->vtable = &br_sha512_256_vtable;
++	memcpy(cc->val, IV512_256, sizeof IV512_256);
++	cc->count = 0;
++}
++
++/* see bearssl.h */
++void
++br_sha512_256_out(const br_sha512_context *cc, void *dst)
++{
++	sha2big_out(cc, dst, 4);
++}
++
+ /* see bearssl.h */
+ const br_hash_class br_sha384_vtable = {
+ 	sizeof(br_sha384_context),
+@@ -283,3 +306,22 @@ const br_hash_class br_sha512_vtable = {
+ 	(void (*)(const br_hash_class **, const void *, uint64_t))
+ 		&br_sha512_set_state
+ };
++
++/* see bearssl.h */
++const br_hash_class br_sha512_256_vtable = {
++	sizeof(br_sha512_256_context),
++	BR_HASHDESC_ID(br_sha512_ID)
++		| BR_HASHDESC_OUT(32)
++		| BR_HASHDESC_STATE(64)
++		| BR_HASHDESC_LBLEN(7)
++		| BR_HASHDESC_MD_PADDING
++		| BR_HASHDESC_MD_PADDING_BE
++		| BR_HASHDESC_MD_PADDING_128,
++	(void (*)(const br_hash_class **))&br_sha512_256_init,
++	(void (*)(const br_hash_class **, const void *, size_t))
++		&br_sha512_256_update,
++	(void (*)(const br_hash_class *const *, void *))&br_sha512_256_out,
++	(uint64_t (*)(const br_hash_class *const *, void *))&br_sha512_256_state,
++	(void (*)(const br_hash_class **, const void *, uint64_t))
++		&br_sha512_256_set_state
++};
+-- 
+2.54.0
+
