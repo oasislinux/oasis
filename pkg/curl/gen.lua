@@ -287,5 +287,6 @@ exe('curl', [[
 ]])
 
 file('bin/curl', '755', '$outdir/curl')
+man{'docs/cmdline-opts/curl.1'}
 
 fetch 'git'
