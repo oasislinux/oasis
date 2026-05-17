@@ -1,0 +1,90 @@
+From 5b3ea9cb586e4a30bf86779e91928d30f5ff3384 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 31 Jan 2020 13:51:55 -0800
+Subject: [PATCH] Use byte swap macros from endian.h
+
+---
+ src/efivar_endian.h               | 39 ++++++++++---------------------
+ src/include/efivar/efivar-types.h |  8 ++-----
+ 2 files changed, 14 insertions(+), 33 deletions(-)
+
+diff --git a/src/efivar_endian.h b/src/efivar_endian.h
+index 4607784..1b02849 100644
+--- a/src/efivar_endian.h
++++ b/src/efivar_endian.h
+@@ -9,33 +9,18 @@
+ 
+ #include <endian.h>
+ 
+-#if __BYTE_ORDER == __LITTLE_ENDIAN
+-#define cpu_to_le16(x) (x)
+-#define cpu_to_le32(x) (x)
+-#define cpu_to_le64(x) ((uint64_t)x)
+-#define le16_to_cpu(x) (x)
+-#define le32_to_cpu(x) (x)
+-#define le64_to_cpu(x) ((uint64_t)x)
+-#define cpu_to_be16(x) __builtin_bswap16(x)
+-#define cpu_to_be32(x) __builtin_bswap32(x)
+-#define cpu_to_be64(x) ((uint64_t)__builtin_bswap64(x))
+-#define be16_to_cpu(x) __builtin_bswap16(x)
+-#define be32_to_cpu(x) __builtin_bswap32(x)
+-#define be64_to_cpu(x) ((uint64_t)__builtin_bswap64(x))
+-#else
+-#define cpu_to_be16(x) (x)
+-#define cpu_to_be32(x) (x)
+-#define cpu_to_be64(x) ((uint64_t)x)
+-#define be16_to_cpu(x) (x)
+-#define be32_to_cpu(x) (x)
+-#define be64_to_cpu(x) ((uint64_t)x)
+-#define cpu_to_le16(x) __builtin_bswap16(x)
+-#define cpu_to_le32(x) __builtin_bswap32(x)
+-#define cpu_to_le64(x) ((uint64_t)__builtin_bswap64(x))
+-#define le16_to_cpu(x) __builtin_bswap16(x)
+-#define le32_to_cpu(x) __builtin_bswap32(x)
+-#define le64_to_cpu(x) ((uint64_t)__builtin_bswap64(x))
+-#endif
++#define cpu_to_le16(x) htole16(x)
++#define cpu_to_le32(x) htole32(x)
++#define cpu_to_le64(x) htole64(x)
++#define le16_to_cpu(x) le16toh(x)
++#define le32_to_cpu(x) le32toh(x)
++#define le64_to_cpu(x) le64toh(x)
++#define cpu_to_be16(x) htobe16(x)
++#define cpu_to_be32(x) htobe32(x)
++#define cpu_to_be64(x) htobe64(x)
++#define be16_to_cpu(x) be16toh(x)
++#define be32_to_cpu(x) be32toh(x)
++#define be64_to_cpu(x) be64toh(x)
+ 
+ #endif /* _EFIVAR_ENDIAN_H */
+ 
+diff --git a/src/include/efivar/efivar-types.h b/src/include/efivar/efivar-types.h
+index 34b333f..1a5fa64 100644
+--- a/src/include/efivar/efivar-types.h
++++ b/src/include/efivar/efivar-types.h
+@@ -9,6 +9,7 @@
+ #define EFI_TYPES_H 1
+ 
+ #include <stdint.h>
++#include <endian.h>
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -22,13 +23,8 @@ typedef struct {
+ 	uint8_t		e[6];
+ } efi_guid_t __attribute__((__aligned__(1)));
+ 
+-#if BYTE_ORDER == LITTLE_ENDIAN
+ #define EFI_GUID(a,b,c,d,e0,e1,e2,e3,e4,e5) \
+-((efi_guid_t) {(a), (b), (c), __builtin_bswap16(d), { (e0), (e1), (e2), (e3), (e4), (e5) }})
+-#else
+-#define EFI_GUID(a,b,c,d,e0,e1,e2,e3,e4,e5) \
+-((efi_guid_t) {(a), (b), (c), (d), { (e0), (e1), (e2), (e3), (e4), (e5) }})
+-#endif
++((efi_guid_t) {(a), (b), (c), htobe16(d), { (e0), (e1), (e2), (e3), (e4), (e5) }})
+ 
+ #define EFI_GLOBAL_GUID EFI_GUID(0x8be4df61,0x93ca,0x11d2,0xaa0d,0x00,0xe0,0x98,0x03,0x2b,0x8c)
+ 
+-- 
+2.54.0
+
