@@ -316,7 +316,7 @@
 	url = git://git.suckless.org/sinit
 [submodule "pkg/sndio/src"]
 	path = pkg/sndio/src
-	url = https://caoua.org/git/sndio
+	url = https://github.com/ratchov/sndio.git
 	ignore = all
 [submodule "pkg/snes9x/src"]
 	path = pkg/snes9x/src
