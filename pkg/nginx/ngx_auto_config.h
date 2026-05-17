@@ -1,10 +1,12 @@
 #define NGX_CONFIGURE ""
 
 /* auto/cc/conf */
+#ifdef __GNUC__
 #define NGX_HAVE_GCC_ATOMIC 1
+#define NGX_HAVE_GCC_BSWAP64 1
+#endif
 #define NGX_HAVE_C99_VARIADIC_MACROS 1
 #define NGX_HAVE_GCC_VARIADIC_MACROS 1
-#define NGX_HAVE_GCC_BSWAP64 1
 
 /* auto/os/linux */
 #define NGX_HAVE_EPOLL 1
