@@ -82,9 +82,6 @@
 #define NGX_HAVE_OPENAT 1
 #define NGX_HAVE_GETADDRINFO 1
 
-/* auto/threads */
-#define NGX_THREADS 1
-
 /* auto/modules */
 #define NGX_HTTP_CACHE 1
 #define NGX_HTTP_V2 1

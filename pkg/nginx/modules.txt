@@ -10,8 +10,6 @@ openssl
 openssl_cache
 regex
 
-thread_pool
-
 http
 http_core
 http_log
