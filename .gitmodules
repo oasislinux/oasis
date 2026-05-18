@@ -297,7 +297,7 @@
 	url = git://git.suckless.org/quark
 [submodule "pkg/rc/src"]
 	path = pkg/rc/src
-	url = git://shithub.us/cinap_lenrek/rc
+	url = https://github.com/oasislinux/rc.git
 	ignore = all
 [submodule "pkg/samurai/src"]
 	path = pkg/samurai/src
