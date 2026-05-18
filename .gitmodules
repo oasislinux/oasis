@@ -87,7 +87,7 @@
 	url = git://git.suckless.org/farbfeld
 [submodule "pkg/ffmpeg/src"]
 	path = pkg/ffmpeg/src
-	url = https://git.ffmpeg.org/ffmpeg.git
+	url = https://github.com/ffmpeg/ffmpeg.git
 	ignore = all
 [submodule "pkg/file/src"]
 	path = pkg/file/src
