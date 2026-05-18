@@ -9,6 +9,7 @@ cflags{
 	'-I $outdir/internal',
 	'-I $srcdir',
 	'-I $srcdir/libavcodec',
+	'-isystem $builddir/pkg/linux-headers/include',
 }
 nasmflags{
 	'-i $srcdir/',
@@ -28,6 +29,7 @@ pkg.deps = {
 	'$outdir/config.h',
 	'$outdir/config_components.h',
 	'$gendir/headers',
+	'pkg/linux-headers/headers',
 }
 
 local probe = {
