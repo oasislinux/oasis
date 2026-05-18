@@ -15,7 +15,7 @@ build('awk', '$outdir/caps.h', {
 	'|', '$dir/caps.awk',
 }, {expr='-f $dir/caps.awk'})
 
-build('cc', '$outdir/caps.c.o', {'$dir/caps.c', '|', '$outdir/caps.h'}, {cflags='-I $outdir'})
+build('cc', '$outdir/caps.c.o', {'$dir/caps.c', '|', '$outdir/caps.h'}, {cflags='$cflags -I $outdir'})
 
 exe('bwrap', {
 	'bubblewrap.c',
