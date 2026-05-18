@@ -1,0 +1,44 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: build cache entries
+      id: cache-entries
+      run: python .github/cache.py
+    - uses: oasislinux/cache-multi-action@main
+      with:
+        entries: ${{ steps.cache-entries.outputs.entries }}
+    - uses: oasislinux/musl-toolchain-action@main
+      with:
+        target: x86_64-linux-musl
+    - name: fetch sources
+      run: git submodule update --init --checkout --depth 1
+    - name: write config.lua
+      run: |
+        cat >config.lua <<'EOF'
+        return {
+        	builddir='out',
+        	fs={exclude={}},
+        	target={
+        		platform='x86_64-linux-musl',
+        		cflags='-Os -fPIE -pipe',
+        		ldflags='-s -static-pie',
+        		pie=true,
+        	},
+        	host={cflags='-pipe', ldflags=''},
+        	repo={path='$builddir/root.git', flags='--bare', tag='tree', branch='main'},
+        }
+        EOF
+    - name: setup
+      run: |
+        sudo apt install lua5.4 nasm libwayland-bin
+        git config --global user.name oasis
+        git config --global user.email oasis
+        lua setup.lua
+    - name: build
+      run: ninja
