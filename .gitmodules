@@ -94,7 +94,7 @@
 	url = https://github.com/file/file.git
 [submodule "pkg/freetype/src"]
 	path = pkg/freetype/src
-	url = git://git.sv.nongnu.org/freetype/freetype2.git
+	url = https://gitlab.freedesktop.org/freetype/freetype.git
 [submodule "pkg/fribidi/src"]
 	path = pkg/fribidi/src
 	url = https://github.com/fribidi/fribidi.git
