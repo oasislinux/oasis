@@ -2,272 +2,350 @@
 	path = pkg/acpid/src
 	url = https://git.code.sf.net/p/acpid2/code
 	ignore = all
+	shallow = true
 [submodule "pkg/alsa-lib/src"]
 	path = pkg/alsa-lib/src
 	url = https://github.com/alsa-project/alsa-lib.git
 	ignore = all
+	shallow = true
 [submodule "pkg/atinout/src"]
 	path = pkg/atinout/src
 	url = https://git.code.sf.net/p/atinout/code
+	shallow = true
 [submodule "pkg/awk/src"]
 	path = pkg/awk/src
 	url = https://github.com/onetrueawk/awk.git
+	shallow = true
 [submodule "pkg/b3sum/src"]
 	path = pkg/b3sum/src
 	url = https://git.sr.ht/~mcf/b3sum
+	shallow = true
 [submodule "pkg/bearssl/src"]
 	path = pkg/bearssl/src
 	url = https://www.bearssl.org/git/BearSSL
 	ignore = all
+	shallow = true
 [submodule "pkg/blind/src"]
 	path = pkg/blind/src
 	url = git://git.suckless.org/blind
 	ignore = all
+	shallow = true
 [submodule "pkg/bubblewrap/src"]
 	path = pkg/bubblewrap/src
 	url = https://github.com/containers/bubblewrap.git
 	ignore = all
+	shallow = true
 [submodule "pkg/bzip2/src"]
 	path = pkg/bzip2/src
 	url = git://sourceware.org/git/bzip2.git
+	shallow = true
 [submodule "pkg/catgirl/src"]
 	path = pkg/catgirl/src
 	url = https://git.causal.agency/catgirl
 	ignore = all
+	shallow = true
 [submodule "pkg/cmark/src"]
 	path = pkg/cmark/src
 	url = https://github.com/commonmark/cmark.git
+	shallow = true
 [submodule "pkg/cproc/src"]
 	path = pkg/cproc/src
 	url = https://git.sr.ht/~mcf/cproc
+	shallow = true
 [submodule "pkg/curl/src"]
 	path = pkg/curl/src
 	url = https://github.com/oasislinux/curl.git
 	ignore = all
+	shallow = true
 [submodule "pkg/dav1d/src"]
 	path = pkg/dav1d/src
 	url = https://github.com/videolan/dav1d.git
 	ignore = all
+	shallow = true
 [submodule "pkg/dmenu/src"]
 	path = pkg/dmenu/src
 	url = git://git.suckless.org/dmenu
 	ignore = all
+	shallow = true
 [submodule "pkg/dosfstools/src"]
 	path = pkg/dosfstools/src
 	url = https://github.com/dosfstools/dosfstools.git
 	ignore = all
+	shallow = true
 [submodule "pkg/dnssec-rr/src"]
 	path = pkg/dnssec-rr/src
 	url = https://git.sr.ht/~mcf/dnssec-rr
+	shallow = true
 [submodule "pkg/e2fsprogs/src"]
 	path = pkg/e2fsprogs/src
 	url = https://git.kernel.org/pub/scm/fs/ext2/e2fsprogs.git
 	ignore = all
+	shallow = true
 [submodule "pkg/efibootmgr/src"]
 	path = pkg/efibootmgr/src
 	url = https://github.com/rhinstaller/efibootmgr.git
 	ignore = all
+	shallow = true
 [submodule "pkg/efivar/src"]
 	path = pkg/efivar/src
 	url = https://github.com/rhinstaller/efivar.git
 	ignore = all
+	shallow = true
 [submodule "pkg/elftoolchain/elftoolchain"]
 	path = pkg/elftoolchain/src
 	url = https://github.com/elftoolchain/elftoolchain.git
 	ignore = all
+	shallow = true
 [submodule "pkg/expat/src"]
 	path = pkg/expat/src
 	url = https://github.com/libexpat/libexpat.git
+	shallow = true
 [submodule "pkg/f2fs-tools/src"]
 	path = pkg/f2fs-tools/src
 	url = https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git
 	ignore = all
+	shallow = true
 [submodule "pkg/farbfeld/src"]
 	path = pkg/farbfeld/src
 	url = git://git.suckless.org/farbfeld
+	shallow = true
 [submodule "pkg/ffmpeg/src"]
 	path = pkg/ffmpeg/src
 	url = https://github.com/ffmpeg/ffmpeg.git
 	ignore = all
+	shallow = true
 [submodule "pkg/file/src"]
 	path = pkg/file/src
 	url = https://github.com/file/file.git
+	shallow = true
 [submodule "pkg/freetype/src"]
 	path = pkg/freetype/src
 	url = https://gitlab.freedesktop.org/freetype/freetype.git
+	shallow = true
 [submodule "pkg/fribidi/src"]
 	path = pkg/fribidi/src
 	url = https://github.com/fribidi/fribidi.git
+	shallow = true
 [submodule "pkg/fspec-sync/src"]
 	path = pkg/fspec-sync/src
 	url = https://github.com/oasislinux/fspec-sync.git
+	shallow = true
 [submodule "pkg/fuse/src"]
 	path = pkg/fuse/src
 	url = https://github.com/libfuse/libfuse.git
 	ignore = all
+	shallow = true
 [submodule "pkg/git/src"]
 	path = pkg/git/src
 	url = https://github.com/git/git.git
 	ignore = untracked
+	shallow = true
 [submodule "pkg/hotplugd/src"]
 	path = pkg/hotplugd/src
 	url = https://github.com/oasislinux/hotplugd.git
+	shallow = true
 [submodule "pkg/ii/src"]
 	path = pkg/ii/src
 	url = git://git.suckless.org/ii
+	shallow = true
 [submodule "pkg/iproute2/src"]
 	path = pkg/iproute2/src
 	url = https://git.kernel.org/pub/scm/linux/kernel/git/shemminger/iproute2.git
 	ignore = all
+	shallow = true
 [submodule "pkg/jbig2dec/src"]
 	path = pkg/jbig2dec/src
 	url = git://git.ghostscript.com/jbig2dec.git
+	shallow = true
 [submodule "pkg/libass/src"]
 	path = pkg/libass/src
 	url = https://github.com/libass/libass.git
 	ignore = all
+	shallow = true
 [submodule "pkg/libcbor/src"]
 	path = pkg/libcbor/src
 	url = https://github.com/PJK/libcbor.git
+	shallow = true
 [submodule "pkg/libdrm/src"]
 	path = pkg/libdrm/src
 	url = https://gitlab.freedesktop.org/mesa/drm.git
+	shallow = true
 [submodule "pkg/libevdev/src"]
 	path = pkg/libevdev/src
 	url = https://gitlab.freedesktop.org/libevdev/libevdev.git
 	ignore = all
+	shallow = true
 [submodule "pkg/libevent/src"]
 	path = pkg/libevent/src
 	url = https://github.com/libevent/libevent.git
+	shallow = true
 [submodule "pkg/libffi/src"]
 	path = pkg/libffi/src
 	url = https://github.com/libffi/libffi.git
 	ignore = all
+	shallow = true
 [submodule "pkg/libfido2/src"]
 	path = pkg/libfido2/src
 	url = https://github.com/oasislinux/libfido2.git
+	shallow = true
 [submodule "pkg/libgpiod/src"]
 	path = pkg/libgpiod/src
 	url = https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git
+	shallow = true
 [submodule "pkg/libinput/src"]
 	path = pkg/libinput/src
 	url = https://github.com/oasislinux/libinput.git
+	shallow = true
 [submodule "pkg/libjpeg-turbo/src"]
 	path = pkg/libjpeg-turbo/src
 	url = https://github.com/libjpeg-turbo/libjpeg-turbo.git
+	shallow = true
 [submodule "pkg/libliftoff/src"]
 	path = pkg/libliftoff/src
 	url = https://gitlab.freedesktop.org/emersion/libliftoff.git
+	shallow = true
 [submodule "pkg/libnl/src"]
 	path = pkg/libnl/src
 	url = https://github.com/thom311/libnl.git
 	ignore = all
+	shallow = true
 [submodule "pkg/libpciaccess/src"]
 	path = pkg/libpciaccess/src
 	url = https://gitlab.freedesktop.org/xorg/lib/libpciaccess.git
+	shallow = true
 [submodule "pkg/libplacebo/src"]
 	path = pkg/libplacebo/src
 	url = https://code.videolan.org/videolan/libplacebo.git
+	shallow = true
 [submodule "pkg/libpng/src"]
 	path = pkg/libpng/src
 	url = https://github.com/glennrp/libpng.git
 	ignore = all
+	shallow = true
 [submodule "pkg/libtirpc/src"]
 	path = pkg/libtirpc/src
 	url = git://git.linux-nfs.org/projects/steved/libtirpc.git
+	shallow = true
 [submodule "pkg/libtls-bearssl/src"]
 	path = pkg/libtls-bearssl/src
 	url = https://git.sr.ht/~mcf/libtls-bearssl
 	ignore = all
+	shallow = true
 [submodule "pkg/libutp/src"]
 	path = pkg/libutp/src
 	url = https://github.com/oasislinux/libutp.git
+	shallow = true
 [submodule "pkg/libxkbcommon/src"]
 	path = pkg/libxkbcommon/src
 	url = https://github.com/xkbcommon/libxkbcommon.git
 	ignore = all
+	shallow = true
 [submodule "pkg/luaposix/src"]
 	path = pkg/luaposix/src
 	url = https://github.com/luaposix/luaposix.git
+	shallow = true
 [submodule "pkg/mblaze/src"]
 	path = pkg/mblaze/src
 	url = https://github.com/leahneukirchen/mblaze.git
+	shallow = true
 [submodule "pkg/mgba/src"]
 	path = pkg/mgba/src
 	url = https://github.com/mgba-emu/mgba.git
 	ignore = all
+	shallow = true
 [submodule "pkg/mpv/src"]
 	path = pkg/mpv/src
 	url = https://github.com/mpv-player/mpv.git
 	ignore = all
+	shallow = true
 [submodule "pkg/msmtp/src"]
 	path = pkg/msmtp/src
 	url = https://github.com/marlam/msmtp-mirror.git
+	shallow = true
 [submodule "pkg/mupdf/src"]
 	path = pkg/mupdf/src
 	url = https://github.com/oasislinux/mupdf.git
+	shallow = true
 [submodule "pkg/muon/src"]
 	path = pkg/muon/src
 	url = https://git.sr.ht/~lattis/muon
+	shallow = true
 [submodule "pkg/musl/src"]
 	path = pkg/musl/src
 	url = git://git.musl-libc.org/musl
 	ignore = all
+	shallow = true
 [submodule "pkg/ncompress/src"]
 	path = pkg/ncompress/src
 	url = https://github.com/vapier/ncompress.git
 	ignore = all
+	shallow = true
 [submodule "pkg/netbsd-curses/src"]
 	path = pkg/netbsd-curses/src
 	url = https://github.com/oasislinux/netbsd-curses.git
 	ignore = all
+	shallow = true
 [submodule "pkg/netsurf/src"]
 	path = pkg/netsurf/src
 	url = https://github.com/oasislinux/netsurf.git
+	shallow = true
 [submodule "pkg/netsurf/libcss/src"]
 	path = pkg/netsurf/libcss/src
 	url = git://git.netsurf-browser.org/libcss.git
 	ignore = all
+	shallow = true
 [submodule "pkg/netsurf/libdom/src"]
 	path = pkg/netsurf/libdom/src
 	url = git://git.netsurf-browser.org/libdom.git
 	ignore = all
+	shallow = true
 [submodule "pkg/netsurf/libhubbub/src"]
 	path = pkg/netsurf/libhubbub/src
 	url = git://git.netsurf-browser.org/libhubbub.git
+	shallow = true
 [submodule "pkg/netsurf/libnsbmp/src"]
 	path = pkg/netsurf/libnsbmp/src
 	url = git://git.netsurf-browser.org/libnsbmp.git
+	shallow = true
 [submodule "pkg/netsurf/libnsgif/src"]
 	path = pkg/netsurf/libnsgif/src
 	url = git://git.netsurf-browser.org/libnsgif.git
+	shallow = true
 [submodule "pkg/netsurf/libnsutils/src"]
 	path = pkg/netsurf/libnsutils/src
 	url = git://git.netsurf-browser.org/libnsutils.git
+	shallow = true
 [submodule "pkg/netsurf/libparserutils/src"]
 	path = pkg/netsurf/libparserutils/src
 	url = git://git.netsurf-browser.org/libparserutils.git
+	shallow = true
 [submodule "pkg/netsurf/libsvgtiny/src"]
 	path = pkg/netsurf/libsvgtiny/src
 	url = git://git.netsurf-browser.org/libsvgtiny.git
 	ignore = all
+	shallow = true
 [submodule "pkg/netsurf/libwapcaplet/src"]
 	path = pkg/netsurf/libwapcaplet/src
 	url = git://git.netsurf-browser.org/libwapcaplet.git
 	ignore = all
+	shallow = true
 [submodule "pkg/nginx/src"]
 	path = pkg/nginx/src
 	url = https://github.com/nginx/nginx.git
+	shallow = true
 [submodule "pkg/oksh/src"]
 	path = pkg/oksh/src
 	url = https://github.com/ibara/oksh.git
 	ignore = all
+	shallow = true
 [submodule "pkg/openssh/src"]
 	path = pkg/openssh/src
 	url = https://github.com/oasislinux/openssh.git
+	shallow = true
 [submodule "pkg/pax/src"]
 	path = pkg/pax/src
 	url = https://git.sr.ht/~mcf/pax
+	shallow = true
 [submodule "pkg/pciutils/src"]
 	path = pkg/pciutils/src
 	url = https://git.kernel.org/pub/scm/utils/pciutils/pciutils.git
@@ -282,26 +360,33 @@
 	path = pkg/pixman/src
 	url = https://gitlab.freedesktop.org/pixman/pixman.git
 	ignore = all
+	shallow = true
 [submodule "pkg/pounce/src"]
 	path = pkg/pounce/src
 	url = https://git.causal.agency/pounce
+	shallow = true
 [submodule "pkg/pwgen/src"]
 	path = pkg/pwgen/src
 	url = https://github.com/tytso/pwgen.git
+	shallow = true
 [submodule "pkg/qbe/src"]
 	path = pkg/qbe/src
 	url = git://c9x.me/qbe.git
 	ignore = all
+	shallow = true
 [submodule "pkg/quark/src"]
 	path = pkg/quark/src
 	url = git://git.suckless.org/quark
+	shallow = true
 [submodule "pkg/rc/src"]
 	path = pkg/rc/src
 	url = https://github.com/oasislinux/rc.git
 	ignore = all
+	shallow = true
 [submodule "pkg/samurai/src"]
 	path = pkg/samurai/src
 	url = https://github.com/michaelforney/samurai.git
+	shallow = true
 [submodule "pkg/sbase/src"]
 	path = pkg/sbase/src
 	url = https://github.com/michaelforney/sbase.git
@@ -321,89 +406,115 @@
 [submodule "pkg/snes9x/src"]
 	path = pkg/snes9x/src
 	url = https://github.com/libretro/snes9x2010.git
+	shallow = true
 [submodule "pkg/squashfs-tools-ng/src"]
 	path = pkg/squashfs-tools-ng/src
 	url = https://github.com/AgentD/squashfs-tools-ng.git
+	shallow = true
 [submodule "pkg/sshfs/src"]
 	path = pkg/sshfs/src
 	url = https://github.com/libfuse/sshfs.git
 	ignore = all
+	shallow = true
 [submodule "pkg/st/src"]
 	path = pkg/st/src
 	url = git://git.suckless.org/st
 	ignore = all
+	shallow = true
 [submodule "pkg/swc/src"]
 	path = pkg/swc/src
 	url = https://github.com/michaelforney/swc.git
+	shallow = true
 [submodule "pkg/syslogd/src"]
 	path = pkg/syslogd/src
 	url = https://github.com/oasislinux/syslogd.git
+	shallow = true
 [submodule "pkg/the_silver_searcher/src"]
 	path = pkg/the_silver_searcher/src
 	url = https://github.com/ggreer/the_silver_searcher.git
 	ignore = all
+	shallow = true
 [submodule "pkg/tinyalsa/src"]
 	path = pkg/tinyalsa/src
 	url = https://github.com/tinyalsa/tinyalsa.git
 	ignore = all
+	shallow = true
 [submodule "pkg/tz/src"]
 	path = pkg/tz/src
 	url = https://github.com/eggert/tz.git
+	shallow = true
 [submodule "pkg/ubase/src"]
 	path = pkg/ubase/src
 	url = https://github.com/michaelforney/ubase.git
+	shallow = true
 [submodule "pkg/u-config/src"]
 	path = pkg/u-config/src
 	url = https://github.com/skeeto/u-config.git
 	ignore = all
+	shallow = true
 [submodule "pkg/unbound/src"]
 	path = pkg/unbound/src
 	url = https://github.com/NLnetlabs/unbound.git
 	ignore = all
+	shallow = true
 [submodule "pkg/usbids/src"]
 	path = pkg/usbids/src
 	url = https://github.com/usbids/usbids.git
+	shallow = true
 [submodule "pkg/utf8proc/src"]
 	path = pkg/utf8proc/src
 	url = https://github.com/JuliaLang/utf8proc.git
+	shallow = true
 [submodule "pkg/velox/src"]
 	path = pkg/velox/src
 	url = https://github.com/michaelforney/velox.git
+	shallow = true
 [submodule "pkg/vis/src"]
 	path = pkg/vis/src
 	url = https://github.com/martanne/vis.git
 	ignore = all
+	shallow = true
 [submodule "pkg/wayland-protocols/src"]
 	path = pkg/wayland-protocols/src
 	url = https://gitlab.freedesktop.org/wayland/wayland-protocols.git
+	shallow = true
 [submodule "pkg/wayland/src"]
 	path = pkg/wayland/src
 	url = https://gitlab.freedesktop.org/wayland/wayland.git
 	ignore = all
+	shallow = true
 [submodule "pkg/wireguard-tools/src"]
 	path = pkg/wireguard-tools/src
 	url = https://git.zx2c4.com/wireguard-tools
 	ignore = all
+	shallow = true
 [submodule "pkg/wl9/src"]
 	path = pkg/wl9/src
 	url = https://git.sr.ht/~mcf/wl9
+	shallow = true
 [submodule "pkg/wld/src"]
 	path = pkg/wld/src
 	url = https://github.com/michaelforney/wld.git
+	shallow = true
 [submodule "pkg/x509cert/src"]
 	path = pkg/x509cert/src
 	url = https://git.sr.ht/~mcf/x509cert
+	shallow = true
 [submodule "pkg/xkeyboard-config/src"]
 	path = pkg/xkeyboard-config/src
 	url = https://gitlab.freedesktop.org/xkeyboard-config/xkeyboard-config.git
+	shallow = true
 [submodule "pkg/xz/src"]
 	path = pkg/xz/src
 	url = https://github.com/tukaani-project/xz.git
 	ignore = all
+	shallow = true
 [submodule "pkg/zlib/src"]
 	path = pkg/zlib/src
 	url = https://github.com/madler/zlib.git
+	shallow = true
 [submodule "pkg/zstd/src"]
 	path = pkg/zstd/src
 	url = https://github.com/facebook/zstd.git
 	ignore = all
+	shallow = true
