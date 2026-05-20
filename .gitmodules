@@ -56,7 +56,7 @@
 	path = pkg/dosfstools/src
 	url = https://github.com/dosfstools/dosfstools.git
 	ignore = all
-[submodule "pkg/dnssec-tools/src"]
+[submodule "pkg/dnssec-rr/src"]
 	path = pkg/dnssec-rr/src
 	url = https://git.sr.ht/~mcf/dnssec-rr
 [submodule "pkg/e2fsprogs/src"]
