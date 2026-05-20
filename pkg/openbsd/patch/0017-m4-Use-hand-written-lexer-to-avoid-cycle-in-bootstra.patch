@@ -1,4 +1,4 @@
-From edf250c633bef40e7e37dafc9fc393dd2ad9074f Mon Sep 17 00:00:00 2001
+From 6409a0c0efb552c6cbb8b8da17328bb65dd3473d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Tue, 10 Apr 2018 13:37:14 -0700
 Subject: [PATCH] m4: Use hand-written lexer to avoid cycle in bootstrap
@@ -209,12 +209,12 @@ index 00000000000..fa19fc65035
 +}
 diff --git a/usr.bin/m4/tokenizer.l b/usr.bin/m4/tokenizer.l
 deleted file mode 100644
-index 94f02fb6085..00000000000
+index 36f9b58853c..00000000000
 --- a/usr.bin/m4/tokenizer.l
 +++ /dev/null
 @@ -1,109 +0,0 @@
 -%{
--/* $OpenBSD: tokenizer.l,v 1.10 2017/06/17 01:55:16 bcallah Exp $ */
+-/* $OpenBSD: tokenizer.l,v 1.11 2025/11/05 17:10:45 tb Exp $ */
 -/*
 - * Copyright (c) 2004 Marc Espie <espie@cvs.openbsd.org>
 - *
@@ -276,7 +276,7 @@ index 94f02fb6085..00000000000
 -%%
 -
 -int32_t
--number()
+-number(void)
 -{
 -	long l;
 -
@@ -289,7 +289,7 @@ index 94f02fb6085..00000000000
 -}
 -
 -int32_t
--parse_radix()
+-parse_radix(void)
 -{
 -	long base;
 -	char *next;
@@ -323,5 +323,5 @@ index 94f02fb6085..00000000000
 -}
 -
 -- 
-2.17.0
+2.54.0
 

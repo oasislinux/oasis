@@ -1,4 +1,4 @@
-From 4da7b308eb6d8c7947d3ea0106a49c8ab6e3481a Mon Sep 17 00:00:00 2001
+From bcaddae8de94a8d2d448a287b42a75a7306999b7 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 17 May 2026 01:40:40 -0700
 Subject: [PATCH] nc: Use explicit cast for pointer sign conversion
@@ -8,10 +8,10 @@ Subject: [PATCH] nc: Use explicit cast for pointer sign conversion
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index 74d18595309..bb170967d8e 100644
+index 982b65592fe..82f1686fa6f 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
-@@ -1751,7 +1751,7 @@ save_peer_cert(struct tls *tls_ctx, FILE *fp)
+@@ -1763,7 +1763,7 @@ save_peer_cert(struct tls *tls_ctx, FILE *fp)
  	const char *pem;
  	size_t plen;
  

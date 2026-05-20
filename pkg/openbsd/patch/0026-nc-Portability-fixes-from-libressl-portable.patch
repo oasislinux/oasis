@@ -1,17 +1,28 @@
-From 941679ac1af45e3359fa28172cd9339727c08a17 Mon Sep 17 00:00:00 2001
+From 36bb1d71b1e6963feb61fdf13c3e2f1cd55b0f5c Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 2 Dec 2019 21:11:04 -0800
 Subject: [PATCH] nc: Portability fixes from libressl-portable
 
 ---
- usr.bin/nc/netcat.c | 55 +++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 48 insertions(+), 7 deletions(-)
+ usr.bin/nc/netcat.c | 59 +++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 52 insertions(+), 7 deletions(-)
 
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index e3c9c939e24..9d182198089 100644
+index 9361ff50cd9..4fd399a6f89 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
-@@ -93,9 +93,13 @@ int	zflag;					/* Port Scan Flag */
+@@ -73,6 +73,10 @@
+ #define TLS_CCERT	(1 << 3)
+ #define TLS_MUSTSTAPLE	(1 << 4)
+ 
++#ifndef IPTOS_DSCP_VA
++#define IPTOS_DSCP_VA	0xb0
++#endif
++
+ /* Command Line Options */
+ int	dflag;					/* detached, no stdin */
+ int	Fflag;					/* fdpass sock to stdout */
+@@ -93,9 +97,13 @@ int	zflag;					/* Port Scan Flag */
  int	Dflag;					/* sodebug */
  int	Iflag;					/* TCP receive buffer size */
  int	Oflag;					/* TCP send buffer size */
@@ -25,7 +36,7 @@ index e3c9c939e24..9d182198089 100644
  
  int	usetls;					/* use TLS */
  const char    *Cflag;				/* Public cert file */
-@@ -271,12 +275,14 @@ main(int argc, char *argv[])
+@@ -271,12 +279,14 @@ main(int argc, char *argv[])
  		case 'u':
  			uflag = 1;
  			break;
@@ -40,7 +51,7 @@ index e3c9c939e24..9d182198089 100644
  		case 'v':
  			vflag = 1;
  			break;
-@@ -323,9 +329,11 @@ main(int argc, char *argv[])
+@@ -323,9 +333,11 @@ main(int argc, char *argv[])
  		case 'o':
  			oflag = optarg;
  			break;
@@ -52,7 +63,7 @@ index e3c9c939e24..9d182198089 100644
  		case 'T':
  			errstr = NULL;
  			errno = 0;
-@@ -349,9 +357,11 @@ main(int argc, char *argv[])
+@@ -349,9 +361,11 @@ main(int argc, char *argv[])
  	argc -= optind;
  	argv += optind;
  
@@ -64,7 +75,7 @@ index e3c9c939e24..9d182198089 100644
  
  	/* Cruft to make sure options are clean, and used properly. */
  	if (argc == 1 && family == AF_UNIX) {
-@@ -928,7 +938,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
+@@ -930,7 +944,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
      char *ipaddr)
  {
  	struct addrinfo *res, *res0;
@@ -76,7 +87,7 @@ index e3c9c939e24..9d182198089 100644
  
  	if ((error = getaddrinfo(host, port, &hints, &res0)))
  		errx(1, "getaddrinfo for host \"%s\" port %s: %s", host,
-@@ -943,8 +956,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
+@@ -945,8 +962,10 @@ remote_connect(const char *host, const char *port, struct addrinfo hints,
  		if (sflag || pflag) {
  			struct addrinfo ahints, *ares;
  
@@ -87,7 +98,7 @@ index e3c9c939e24..9d182198089 100644
  			memset(&ahints, 0, sizeof(struct addrinfo));
  			ahints.ai_family = res->ai_family;
  			ahints.ai_socktype = uflag ? SOCK_DGRAM : SOCK_STREAM;
-@@ -1036,8 +1051,11 @@ int
+@@ -1038,8 +1057,11 @@ int
  local_listen(const char *host, const char *port, struct addrinfo hints)
  {
  	struct addrinfo *res, *res0;
@@ -100,7 +111,7 @@ index e3c9c939e24..9d182198089 100644
  
  	/* Allow nodename to be null. */
  	hints.ai_flags |= AI_PASSIVE;
-@@ -1057,9 +1075,11 @@ local_listen(const char *host, const char *port, struct addrinfo hints)
+@@ -1059,9 +1081,11 @@ local_listen(const char *host, const char *port, struct addrinfo hints)
  		    res->ai_protocol)) == -1)
  			continue;
  
@@ -112,7 +123,7 @@ index e3c9c939e24..9d182198089 100644
  
  		set_common_sockopts(s, res->ai_family);
  
-@@ -1564,11 +1584,13 @@ set_common_sockopts(int s, int af)
+@@ -1571,11 +1595,13 @@ set_common_sockopts(int s, int af)
  {
  	int x = 1;
  
@@ -126,7 +137,7 @@ index e3c9c939e24..9d182198089 100644
  	if (Dflag) {
  		if (setsockopt(s, SOL_SOCKET, SO_DEBUG,
  		    &x, sizeof(x)) == -1)
-@@ -1579,9 +1601,16 @@ set_common_sockopts(int s, int af)
+@@ -1586,9 +1612,16 @@ set_common_sockopts(int s, int af)
  		    IP_TOS, &Tflag, sizeof(Tflag)) == -1)
  			err(1, "set IP ToS");
  
@@ -143,7 +154,7 @@ index e3c9c939e24..9d182198089 100644
  	}
  	if (Iflag) {
  		if (setsockopt(s, SOL_SOCKET, SO_RCVBUF,
-@@ -1605,13 +1634,17 @@ set_common_sockopts(int s, int af)
+@@ -1612,13 +1645,17 @@ set_common_sockopts(int s, int af)
  	}
  
  	if (minttl != -1) {
@@ -162,7 +173,7 @@ index e3c9c939e24..9d182198089 100644
  	}
  }
  
-@@ -1841,14 +1874,22 @@ help(void)
+@@ -1849,14 +1886,22 @@ help(void)
  	\t-P proxyuser\tUsername for proxy authentication\n\
  	\t-p port\t	Specify local port for remote connects\n\
  	\t-R CAfile	CA bundle\n\
@@ -190,5 +201,5 @@ index e3c9c939e24..9d182198089 100644
  	\t-W recvlimit	Terminate after receiving a number of packets\n\
  	\t-w timeout	Timeout for connects and final net reads\n\
 -- 
-2.49.0
+2.54.0
 

@@ -1,4 +1,4 @@
-From 6abdd6eef47b5ff9a34536acbec947d2c9a3cebc Mon Sep 17 00:00:00 2001
+From 4ad4ffcb7c731ae48c97b93760d7625724a991bc Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 23:14:16 -0700
 Subject: [PATCH] acme-client: Port to BearSSL
@@ -8,9 +8,9 @@ Subject: [PATCH] acme-client: Port to BearSSL
  usr.sbin/acme-client/certproc.c   |   5 -
  usr.sbin/acme-client/key.c        | 329 ++++++++++++++++++++++++------
  usr.sbin/acme-client/key.h        |  22 +-
- usr.sbin/acme-client/keyproc.c    | 198 ++++++------------
- usr.sbin/acme-client/revokeproc.c | 260 +++++++++++------------
- 6 files changed, 566 insertions(+), 546 deletions(-)
+ usr.sbin/acme-client/keyproc.c    | 192 ++++++-----------
+ usr.sbin/acme-client/revokeproc.c | 319 +++++++++++------------------
+ 6 files changed, 568 insertions(+), 597 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
 index 9e97a8bb760..8d66dac49d9 100644
@@ -951,7 +951,7 @@ index 272d36eb09a..12abdec813c 100644
  
  #endif /* ! KEY_H */
 diff --git a/usr.sbin/acme-client/keyproc.c b/usr.sbin/acme-client/keyproc.c
-index f0df9f292d4..fc7de74b616 100644
+index 4360156b9c0..19b8077a8fb 100644
 --- a/usr.sbin/acme-client/keyproc.c
 +++ b/usr.sbin/acme-client/keyproc.c
 @@ -18,55 +18,18 @@
@@ -1013,40 +1013,41 @@ index f0df9f292d4..fc7de74b616 100644
  /*
   * Create an X509 certificate from the private key we have on file.
   * To do this, we first open the key file, then jail ourselves.
-@@ -77,18 +40,20 @@ int
- keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
-     enum keytype keytype)
+@@ -76,19 +39,20 @@ add_ext(STACK_OF(X509_EXTENSION) *sk, int nid, const char *value)
+ int
+ keyproc(int netsock, struct domain_c *domain)
  {
 -	char		*der64 = NULL;
 -	unsigned char	*der = NULL, *dercp;
 -	char		*sans = NULL, *san = NULL;
 -	FILE		*f;
--	size_t		 i, sansz;
+-	size_t		 sansz;
 -	void		*pp;
 -	EVP_PKEY	*pkey = NULL;
 -	X509_REQ	*x = NULL;
--	X509_NAME	*name = NULL;
--	int		 len, rc = 0, cc, nid, newkey = 0;
+-	int		 len, rc = 0, cc, nid, newkey = 0, first;
 -	mode_t		 prev;
 -	STACK_OF(X509_EXTENSION) *exts = NULL;
+-	struct altname_c	 *ac;
+-	const char	*keyfile = domain->key;
 +	char			*der64 = NULL;
 +	unsigned char		*der = NULL;
 +	FILE			*f;
-+	size_t			 i;
 +	struct key		*pkey = NULL;
 +	struct x509cert_req	 req;
 +	struct x509cert_skey	 skey;
 +	struct x509cert_dn	 dn;
-+	struct x509cert_rdn	 rdn;
 +	struct x509cert_item	 item;
-+	int			 len, rc = 0, newkey = 0;
++	int			 len, rc = 0, newkey = 0, i;
 +	mode_t			 prev;
++	struct altname_c	*ac;
++	const char		*keyfile = domain->key;
 +
 +	req.alts = NULL;
  
  	/*
  	 * First, open our private key file read-only or write-only if
-@@ -110,8 +75,6 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+@@ -110,8 +74,6 @@ keyproc(int netsock, struct domain_c *domain)
  
  	/* File-system, user, and sandbox jail. */
  
@@ -1055,7 +1056,7 @@ index f0df9f292d4..fc7de74b616 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -145,102 +108,61 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+@@ -145,98 +107,65 @@ keyproc(int netsock, struct domain_c *domain)
  	 * Then set it as the X509 requester's key.
  	 */
  
@@ -1081,29 +1082,6 @@ index f0df9f292d4..fc7de74b616 100644
 +		break;
  	}
  
- 	/* Now specify the common name that we'll request. */
- 
--	if ((name = X509_NAME_new()) == NULL) {
--		warnx("X509_NAME_new");
--		goto out;
--	} else if (!X509_NAME_add_entry_by_txt(name, "CN",
--		MBSTRING_ASC, (u_char *)alts[0], -1, -1, 0)) {
--		warnx("X509_NAME_add_entry_by_txt: CN=%s", alts[0]);
--		goto out;
--	} else if (!X509_REQ_set_subject_name(x, name)) {
--		warnx("X509_req_set_issuer_name");
--		goto out;
--	}
-+	rdn.oid = x509cert_oid_CN;
-+	rdn.val.tag = X509CERT_ASN1_UTF8STRING;
-+	rdn.val.val = alts[0];
-+	rdn.val.len = strlen(alts[0]);
-+	rdn.val.enc = NULL;
-+	dn.rdn = &rdn;
-+	dn.rdn_len = 1;
-+	req.subject.enc = x509cert_dn_encoder;
-+	req.subject.val = &dn;
- 
 -	/*
 -	 * Now add the SAN extensions.
 -	 * This was lifted more or less directly from demos/x509/mkreq.c
@@ -1111,22 +1089,29 @@ index f0df9f292d4..fc7de74b616 100644
 -	 * (The zeroth altname is the domain name.)
 -	 * TODO: is this the best way of doing this?
 -	 */
-+	/* Now add the SAN extension. */
++	/* Use an empty subject. */
  
 -	nid = NID_subject_alt_name;
 -	if ((exts = sk_X509_EXTENSION_new_null()) == NULL) {
 -		warnx("sk_X509_EXTENSION_new_null");
-+	req.alts_len = altsz;
-+	req.alts = calloc(altsz, sizeof(req.alts[0]));
+-		goto out;
+-	}
+-	/* Initialise to empty string. */
+-	if ((sans = strdup("")) == NULL) {
+-		warn("strdup");
++	dn.rdn = NULL;
++	dn.rdn_len = 0;
++	req.subject.enc = x509cert_dn_encoder;
++	req.subject.val = &dn;
++
++	/* Now add the SAN extension. */
++
++	req.alts_len = domain->altname_count;
++	req.alts = calloc(domain->altname_count, sizeof(req.alts[0]));
 +	if (req.alts == NULL) {
 +		warn("calloc");
  		goto out;
  	}
--	/* Initialise to empty string. */
--	if ((sans = strdup("")) == NULL) {
--		warn("strdup");
--		goto out;
--	}
 -	sansz = strlen(sans) + 1;
  
 -	/*
@@ -1136,9 +1121,23 @@ index f0df9f292d4..fc7de74b616 100644
 -	 */
 +	/* Add a dNSName SAN entry for each alternate name. */
  
- 	for (i = 0; i < altsz; i++) {
--		cc = asprintf(&san, "%sDNS:%s",
--		    i ? "," : "", alts[i]);
+-	first = 1;
++	i = 0;
+ 	TAILQ_FOREACH(ac, &domain->altname_list, entry) {
+ 		switch (ac->idtype) {
+ 		case ID_DNS:
+-			cc = asprintf(&san, "%sDNS:%s", first ? "" : ",",
+-			    ac->domain);
++			req.alts[i].tag = X509CERT_SAN_DNSNAME;
++			req.alts[i].val = ac->domain;
++			req.alts[i].len = strlen(ac->domain);
+ 			break;
+ 		case ID_IP:
+-			cc = asprintf(&san, "%sIP:%s", first ? "" : ",",
+-			    ac->domain);
+-			break;
+-		}
+-		first = 0;
 -		if (cc == -1) {
 -			warn("asprintf");
 -			goto out;
@@ -1146,8 +1145,9 @@ index f0df9f292d4..fc7de74b616 100644
 -		pp = recallocarray(sans, sansz, sansz + strlen(san), 1);
 -		if (pp == NULL) {
 -			warn("recallocarray");
--			goto out;
--		}
++			warnx("ID_IP is not supported");
+ 			goto out;
+ 		}
 -		sans = pp;
 -		sansz += strlen(san);
 -		strlcat(sans, san, sansz);
@@ -1169,9 +1169,7 @@ index f0df9f292d4..fc7de74b616 100644
 -	if (!X509_REQ_sign(x, pkey, EVP_sha256())) {
 -		warnx("X509_sign");
 -		goto out;
-+		req.alts[i].tag = X509CERT_SAN_DNSNAME;
-+		req.alts[i].val = alts[i];
-+		req.alts[i].len = strlen(alts[i]);
++		i++;
  	}
  
 -	/* Now, serialise to DER, then base64. */
@@ -1196,14 +1194,13 @@ index f0df9f292d4..fc7de74b616 100644
  		goto out;
  	} else if ((der64 = base64buf_url(der, len)) == NULL) {
  		warnx("base64buf_url");
-@@ -265,12 +187,8 @@ out:
+@@ -261,11 +190,8 @@ out:
  		fclose(f);
  	free(der);
  	free(der64);
 -	free(sans);
 -	free(san);
 -	X509_REQ_free(x);
--	X509_NAME_free(name);
 -	EVP_PKEY_free(pkey);
 -	ERR_print_errors_fp(stderr);
 -	ERR_free_strings();
@@ -1213,10 +1210,19 @@ index f0df9f292d4..fc7de74b616 100644
  	return rc;
  }
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index 493a9ea9752..82e31792f3b 100644
+index c0963a278fb..2109d7a8799 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
-@@ -22,73 +22,53 @@
+@@ -15,8 +15,6 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
+-#include <sys/socket.h>
+-#include <arpa/inet.h>
+ #include <assert.h>
+ #include <ctype.h>
+ #include <err.h>
+@@ -24,71 +22,54 @@
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
@@ -1291,18 +1297,17 @@ index 493a9ea9752..82e31792f3b 100644
  
  int
  revokeproc(int fd, const char *certfile, int force,
-     int revocate, const char *const *alts, size_t altsz)
+     int revocate, struct domain_c *domain)
  {
 -	GENERAL_NAMES			*sans = NULL;
 -	unsigned char			*der = NULL, *dercp;
 -	char				*der64 = NULL;
--	char				*san = NULL, *str, *tok;
--	int				 rc = 0, cc, i, len;
--	size_t				*found = NULL;
+-	int				 rc = 0, cc, sanidx, len, j, k;
+-	int				*found_altnames = NULL;
 +	static const unsigned char	 dnsname[] = {0, 2};
 +	char				 buf[8192], *pos, *sans = NULL, *der64 = NULL;
-+	int				 rc = 0, cc, state, err;
-+	size_t				 i, j, n, len = 0, altlen, altmax, eltsz;
++	int				 rc = 0, cc, i, eltsz, state, err;
++	size_t				 n, len = 0, altlen, altmax;
  	FILE				*f = NULL;
 -	X509				*x = NULL;
 +	br_pem_decoder_context		 pc;
@@ -1315,11 +1320,11 @@ index 493a9ea9752..82e31792f3b 100644
  	enum revokeop			 op, rop;
  	time_t				 notafter, notbefore, cert_validity;
  	time_t				 remaining_validity, renew_allow;
--	size_t				 j;
++	struct altname_c		*ac;
  
  	/*
  	 * First try to open the certificate before we drop privileges
-@@ -103,8 +83,6 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -103,8 +84,6 @@ revokeproc(int fd, const char *certfile, int force,
  
  	/* File-system and sandbox jailing. */
  
@@ -1328,7 +1333,7 @@ index 493a9ea9752..82e31792f3b 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -128,44 +106,88 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -128,45 +107,89 @@ revokeproc(int fd, const char *certfile, int force,
  		goto out;
  	}
  
@@ -1397,12 +1402,13 @@ index 493a9ea9752..82e31792f3b 100644
 +	br_x509_decoder_get_notbefore(&xd, &days, &secs);
 +	notbefore = 86400ll * (days - 719528) + 86400;
 +
-+	for (i = 0, altmax = 0; i < altsz; ++i) {
-+		altlen = strlen(alts[i]) + 1;
++	altmax = 0;
++	TAILQ_FOREACH(ac, &domain->altname_list, entry) {
++		altlen = strlen(ac->domain) + 1;
 +		if (altlen > altmax)
 +			altmax = altlen;
 +	}
-+	eltsz = altsz + 1;
++	eltsz = domain->altname_count + 1;
 +	if ((elts = calloc(eltsz, sizeof(elts[0]))) == NULL ||
 +	    (sans = calloc(eltsz, altmax)) == NULL) {
 +		warn("calloc");
@@ -1426,7 +1432,8 @@ index 493a9ea9752..82e31792f3b 100644
 -	/* An array of buckets: the number of entries found. */
 +	/* Extract list of SAN entries from the certificate. */
  
--	if ((found = calloc(altsz, sizeof(size_t))) == NULL) {
+-	if ((found_altnames = (int *)calloc(domain->altname_count,
+-	    sizeof(int))) == NULL) {
 -		warn("calloc");
 +	br_x509_minimal_init(&xc, &br_sha256_vtable, NULL, 0);
 +	br_x509_minimal_set_hash(&xc, br_sha256_ID, &br_sha256_vtable);
@@ -1443,90 +1450,147 @@ index 493a9ea9752..82e31792f3b 100644
  		goto out;
  	}
  
-@@ -174,63 +196,37 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -175,121 +198,37 @@ revokeproc(int fd, const char *certfile, int force,
  	 * configuration file and that all domains are represented only once.
  	 */
  
--	for (i = 0; i < sk_GENERAL_NAME_num(sans); i++) {
+-	for (sanidx = 0; sanidx < sk_GENERAL_NAME_num(sans); sanidx++) {
 -		GENERAL_NAME		*gen_name;
--		const ASN1_IA5STRING	*name;
--		const unsigned char	*name_buf;
+-		char			*name_buf = NULL;
 -		int			 name_len;
--		int			 name_type;
+-		struct altname_c	*ac;
 -
--		gen_name = sk_GENERAL_NAME_value(sans, i);
+-		gen_name = sk_GENERAL_NAME_value(sans, sanidx);
 -		assert(gen_name != NULL);
 -
--		name = GENERAL_NAME_get0_value(gen_name, &name_type);
--		if (name_type != GEN_DNS)
+-		if (gen_name->type == GEN_IPADD) {
+-			char		 ip_buf[INET6_ADDRSTRLEN];
+-			const char	*ip;
+-
+-			name_len = ASN1_STRING_length(gen_name->d.iPAddress);
+-			switch (name_len) {
+-			case 4:
+-				ip = inet_ntop(AF_INET,
+-				    ASN1_STRING_get0_data(gen_name->d.iPAddress),
+-				    ip_buf, INET6_ADDRSTRLEN);
+-				break;
+-			case 16:
+-				ip = inet_ntop(AF_INET6,
+-				    ASN1_STRING_get0_data(gen_name->d.iPAddress),
+-				    ip_buf, INET6_ADDRSTRLEN);
+-				break;
+-			default:
+-				ip = NULL;
++	TAILQ_FOREACH(ac, &domain->altname_list, entry) {
++		for (i = 0; i < eltsz; i++) {
++			if (elts[i].status == 1 &&
++			    strcmp(ac->domain, elts[i].buf) == 0) {
++				elts[i].status = 0;
+ 				break;
+ 			}
+-			if (ip == NULL) {
+-				warnx("invalid IP address");
+-				continue;
+-			}
+-			name_len = asprintf(&name_buf, "%s", ip);
+-		} else if (gen_name->type == GEN_DNS) {
+-			name_len = ASN1_STRING_length(gen_name->d.dNSName);
+-			name_len = asprintf(&name_buf, "%.*s",
+-			    name_len,
+-			    ASN1_STRING_get0_data(gen_name->d.dNSName));
+-		} else
 -			continue;
 -
--		/* name_buf isn't a C string and could contain embedded NULs. */
--		name_buf = ASN1_STRING_get0_data(name);
--		name_len = ASN1_STRING_length(name);
+-		if (name_len == -1) {
+-			warn("asprintf");
+-			continue;
+ 		}
 -
--		for (j = 0; j < altsz; j++) {
--			if ((size_t)name_len != strlen(alts[j]))
--				continue;
--			if (memcmp(name_buf, alts[j], name_len) == 0)
-+	for (i = 0; i < altsz; i++) {
-+		for (j = 0; j < eltsz; j++) {
-+			if (elts[j].status == 1 &&
-+			    strcmp(alts[i], elts[j].buf) == 0) {
-+				elts[j].status = 0;
- 				break;
+-		j = 0;
+-		TAILQ_FOREACH(ac, &domain->altname_list, entry) {
+-			if (strcmp(name_buf, ac->domain) == 0) {
+-				found_altnames[j]++;
+-				break;
+-			}
+-			/* increment if didn't match */
+-			j++;
 -		}
--		if (j == altsz) {
+-		if (j >= domain->altname_count) {
+-			/* we haven't matched any */
 -			if (revocate) {
 -				char *visbuf;
 -
 -				visbuf = calloc(4, name_len + 1);
 -				if (visbuf == NULL) {
--					warn("%s: unexpected SAN", certfile);
+-					warn("%s: unexpected SAN in "
+-					    "certificate", certfile);
+-					free(name_buf);
 -					goto out;
 -				}
 -				strvisx(visbuf, name_buf, name_len, VIS_SAFE);
--				warnx("%s: unexpected SAN entry: %s",
--				    certfile, visbuf);
+-				warnx("%s: unexpected SAN entry in "
+-				    "certificate: %s", certfile, visbuf);
 -				free(visbuf);
+-				free(name_buf);
 -				goto out;
- 			}
+-			}
 -			force = 2;
 -			continue;
- 		}
--		if (found[j]++) {
-+		if (j == eltsz) {
+-		}
+-		/* should not reach here if j is out of bounds */
+-		if (found_altnames[j] > 1) {
++		if (i == eltsz) {
  			if (revocate) {
--				warnx("%s: duplicate SAN entry: %.*s",
--				    certfile, name_len, name_buf);
-+				warnx("%s: domain not listed: %s", certfile, alts[i]);
+-				char *visbuf;
+-				visbuf = calloc(4, name_len + 1);
+-				if (visbuf == NULL) {
+-					warn("%s: duplicate SAN in "
+-					    "certificate", certfile);
+-					free(name_buf);
+-					goto out;
+-				}
+-				warnx("%s: duplicate SAN entry in "
+-				    "certificate: %s", certfile, visbuf);
+-				free(name_buf);
+-				free(visbuf);
++				warnx("%s: domain not listed: %s", certfile, ac->domain);
  				goto out;
  			}
  			force = 2;
  		}
+-
+-		free(name_buf);
  	}
  
--	for (j = 0; j < altsz; j++) {
--		if (found[j])
+-	for (j = 0; j < domain->altname_count; j++) {
+-		struct altname_c	*ac;
+-
+-		if (found_altnames[j])
 +	for (i = 0; i < eltsz; i++) {
 +		if (elts[i].status == 0)
  			continue;
  		if (revocate) {
--			warnx("%s: domain not listed: %s", certfile, alts[j]);
+-			k = 0;
+-			TAILQ_FOREACH(ac, &domain->altname_list, entry) {
+-				if (j == k)
+-					break;
+-				k++;
 +			char *visbuf;
 +
 +			if (elts[i].status != 1 ||
 +			    stravis(&visbuf, elts[i].buf, VIS_SAFE) < 0) {
 +				warnx("%s: unexpected SAN", certfile);
 +				goto out;
-+			}
+ 			}
+-			warnx("%s: domain not listed: %s", certfile,
+-			    ac->domain);
 +			warnx("%s: unexpected SAN entry: %s",
 +			    certfile, visbuf);
 +			free(visbuf);
  			goto out;
  		}
  		force = 2;
-@@ -256,16 +252,7 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -315,16 +254,7 @@ revokeproc(int fd, const char *certfile, int force,
  		if (cc <= 0)
  			goto out;
  
@@ -1544,14 +1608,14 @@ index 493a9ea9752..82e31792f3b 100644
  			warnx("base64buf_url");
  			goto out;
  		} else if (writestr(fd, COMM_CSR, der64) >= 0)
-@@ -339,12 +326,9 @@ out:
+@@ -398,12 +328,9 @@ out:
  	close(fd);
  	if (f != NULL)
  		fclose(f);
 -	X509_free(x);
 -	GENERAL_NAMES_free(sans);
 -	free(der);
--	free(found);
+-	free(found_altnames);
 +	free(cert.data);
 +	free(sans);
 +	free(elts);
@@ -1561,5 +1625,5 @@ index 493a9ea9752..82e31792f3b 100644
  	return rc;
  }
 -- 
-2.49.0
+2.54.0
 

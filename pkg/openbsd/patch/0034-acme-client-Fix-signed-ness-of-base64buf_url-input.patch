@@ -1,4 +1,4 @@
-From d287356e4da2f2bc232df9bc13821738ffbe5299 Mon Sep 17 00:00:00 2001
+From 0f55823084233ab6980c6c1beb9a2fedadc7a5ee Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 20:10:05 -0700
 Subject: [PATCH] acme-client: Fix signed-ness of base64buf_url input
@@ -9,8 +9,8 @@ This make most of the pointer casts unnecessary.
  usr.sbin/acme-client/base64.c     |  2 +-
  usr.sbin/acme-client/extern.h     |  2 +-
  usr.sbin/acme-client/keyproc.c    |  5 +++--
- usr.sbin/acme-client/revokeproc.c |  6 ++++--
- 5 files changed, 18 insertions(+), 14 deletions(-)
+ usr.sbin/acme-client/revokeproc.c |  5 +++--
+ 5 files changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
 index da3d49107ae..9e97a8bb760 100644
@@ -96,10 +96,10 @@ index 2b6377f0d81..0d84ad4b458 100644
  	size_t	 i, sz;
  	char	*buf;
 diff --git a/usr.sbin/acme-client/extern.h b/usr.sbin/acme-client/extern.h
-index 46a1387f5bc..37820e6cfb6 100644
+index 8b500561744..990c784f706 100644
 --- a/usr.sbin/acme-client/extern.h
 +++ b/usr.sbin/acme-client/extern.h
-@@ -244,7 +244,7 @@ int		 checkexit_ext(int *, pid_t, enum comp);
+@@ -241,7 +241,7 @@ int		 checkexit_ext(int *, pid_t, enum comp);
   * Returns a buffer or NULL on allocation error.
   */
  size_t		 base64len(size_t);
@@ -109,20 +109,20 @@ index 46a1387f5bc..37820e6cfb6 100644
  /*
   * JSON parsing routines.
 diff --git a/usr.sbin/acme-client/keyproc.c b/usr.sbin/acme-client/keyproc.c
-index a3b6666c279..f0df9f292d4 100644
+index bab74c2b385..4360156b9c0 100644
 --- a/usr.sbin/acme-client/keyproc.c
 +++ b/usr.sbin/acme-client/keyproc.c
-@@ -77,7 +77,8 @@ int
- keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
-     enum keytype keytype)
+@@ -76,7 +76,8 @@ add_ext(STACK_OF(X509_EXTENSION) *sk, int nid, const char *value)
+ int
+ keyproc(int netsock, struct domain_c *domain)
  {
 -	char		*der64 = NULL, *der = NULL, *dercp;
 +	char		*der64 = NULL;
 +	unsigned char	*der = NULL, *dercp;
  	char		*sans = NULL, *san = NULL;
  	FILE		*f;
- 	size_t		 i, sansz;
-@@ -238,7 +239,7 @@ keyproc(int netsock, const char *keyfile, const char **alts, size_t altsz,
+ 	size_t		 sansz;
+@@ -234,7 +235,7 @@ keyproc(int netsock, struct domain_c *domain)
  	} else if ((der = dercp = malloc(len)) == NULL) {
  		warn("malloc");
  		goto out;
@@ -132,21 +132,20 @@ index a3b6666c279..f0df9f292d4 100644
  		goto out;
  	} else if ((der64 = base64buf_url(der, len)) == NULL) {
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index 65170078226..493a9ea9752 100644
+index 6fe34043129..c0963a278fb 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
-@@ -77,7 +77,9 @@ revokeproc(int fd, const char *certfile, int force,
-     int revocate, const char *const *alts, size_t altsz)
+@@ -79,7 +79,8 @@ revokeproc(int fd, const char *certfile, int force,
+     int revocate, struct domain_c *domain)
  {
  	GENERAL_NAMES			*sans = NULL;
 -	char				*der = NULL, *dercp, *der64 = NULL;
 +	unsigned char			*der = NULL, *dercp;
 +	char				*der64 = NULL;
-+	char				*san = NULL, *str, *tok;
- 	int				 rc = 0, cc, i, len;
- 	size_t				*found = NULL;
+ 	int				 rc = 0, cc, sanidx, len, j, k;
+ 	int				*found_altnames = NULL;
  	FILE				*f = NULL;
-@@ -260,7 +262,7 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -320,7 +321,7 @@ revokeproc(int fd, const char *certfile, int force,
  		} else if ((der = dercp = malloc(len)) == NULL) {
  			warn("malloc");
  			goto out;
@@ -156,5 +155,5 @@ index 65170078226..493a9ea9752 100644
  			goto out;
  		} else if ((der64 = base64buf_url(der, len)) == NULL) {
 -- 
-2.49.0
+2.54.0
 

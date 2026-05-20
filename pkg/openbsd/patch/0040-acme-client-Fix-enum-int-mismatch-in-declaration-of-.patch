@@ -1,4 +1,4 @@
-From 87c6da40a600a00d331d1d7f8968fd4ee933377a Mon Sep 17 00:00:00 2001
+From ef9e08a9597e02425f9da0f43486e0cdfa1a4a1e Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Wed, 4 Mar 2026 15:27:54 -0800
 Subject: [PATCH] acme-client: Fix enum/int mismatch in declaration of
@@ -9,10 +9,10 @@ Subject: [PATCH] acme-client: Fix enum/int mismatch in declaration of
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/usr.sbin/acme-client/extern.h b/usr.sbin/acme-client/extern.h
-index 37820e6cfb6..3c780ebf777 100644
+index 990c784f706..32127182548 100644
 --- a/usr.sbin/acme-client/extern.h
 +++ b/usr.sbin/acme-client/extern.h
-@@ -252,7 +252,7 @@ char		*base64buf_url(const unsigned char *, size_t);
+@@ -249,7 +249,7 @@ char		*base64buf_url(const unsigned char *, size_t);
   */
  struct jsmnn	*json_parse(const char *, size_t);
  void		 json_free(struct jsmnn *);
@@ -22,5 +22,5 @@ index 37820e6cfb6..3c780ebf777 100644
  int		 json_parse_challenge(struct jsmnn *, struct chng *);
  void		 json_free_order(struct order *);
 -- 
-2.49.0
+2.54.0
 

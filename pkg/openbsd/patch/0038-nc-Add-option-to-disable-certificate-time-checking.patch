@@ -1,4 +1,4 @@
-From 0b4249dea4ec148875be7a7fedc8ec0873043c71 Mon Sep 17 00:00:00 2001
+From e3267bbd5f0e3f8ea9caf07c92f58b046100901a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 20 May 2021 13:44:35 -0700
 Subject: [PATCH] nc: Add option to disable certificate time checking
@@ -22,7 +22,7 @@ index 2ffdcd1ea60..ecff109e395 100644
  which requires a client certificate on incoming connections; or
  .Cm muststaple ,
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index 9d182198089..74d18595309 100644
+index 4fd399a6f89..982b65592fe 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
 @@ -70,8 +70,9 @@
@@ -35,9 +35,9 @@ index 9d182198089..74d18595309 100644
 +#define TLS_CCERT	(1 << 4)
 +#define TLS_MUSTSTAPLE	(1 << 5)
  
- /* Command Line Options */
- int	dflag;					/* detached, no stdin */
-@@ -551,6 +552,8 @@ main(int argc, char *argv[])
+ #ifndef IPTOS_DSCP_VA
+ #define IPTOS_DSCP_VA	0xb0
+@@ -557,6 +558,8 @@ main(int argc, char *argv[])
  			errx(1, "clientcert is only valid with -l");
  		if (TLSopt & TLS_NONAME)
  			tls_config_insecure_noverifyname(tls_cfg);
@@ -46,7 +46,7 @@ index 9d182198089..74d18595309 100644
  		if (TLSopt & TLS_NOVERIFY) {
  			if (tls_expecthash != NULL)
  				errx(1, "-H and -T noverify may not be used "
-@@ -1712,6 +1715,7 @@ process_tls_opt(char *s, int *flags)
+@@ -1724,6 +1727,7 @@ process_tls_opt(char *s, int *flags)
  		{ "clientcert",		TLS_CCERT,		NULL },
  		{ "muststaple",		TLS_MUSTSTAPLE,		NULL },
  		{ "noname",		TLS_NONAME,		NULL },
@@ -55,5 +55,5 @@ index 9d182198089..74d18595309 100644
  		{ "protocols",		-1,			&tls_protocols },
  		{ NULL,			-1,			NULL },
 -- 
-2.49.0
+2.54.0
 

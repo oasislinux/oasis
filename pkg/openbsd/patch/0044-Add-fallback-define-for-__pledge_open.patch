@@ -1,0 +1,27 @@
+From 62369cc52d95e6998078951d9fcb633b2c013954 Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Wed, 20 May 2026 01:56:37 -0700
+Subject: [PATCH] Add fallback define for __pledge_open
+
+---
+ lib/libc/gen/readpassphrase.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/lib/libc/gen/readpassphrase.c b/lib/libc/gen/readpassphrase.c
+index c3bf85fb3eb..47f9c5707b5 100644
+--- a/lib/libc/gen/readpassphrase.c
++++ b/lib/libc/gen/readpassphrase.c
+@@ -36,6 +36,10 @@
+ #define TCSASOFT 0
+ #endif
+ 
++#ifndef __OpenBSD__
++#define __pledge_open open
++#endif
++
+ static volatile sig_atomic_t signo[_NSIG];
+ 
+ static void handler(int);
+-- 
+2.54.0
+
