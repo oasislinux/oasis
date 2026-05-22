@@ -1,0 +1,24 @@
+From 9e6cb399fc18b308ada1a76b46d92c9f366c698a Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Fri, 22 May 2026 14:56:02 -0700
+Subject: [PATCH] Include libgen.h for basename
+
+---
+ lib/core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/core.c b/lib/core.c
+index 35dcd8e..0d5cdaa 100644
+--- a/lib/core.c
++++ b/lib/core.c
+@@ -21,6 +21,7 @@
+ #include <sys/sysmacros.h>
+ #include <sys/types.h>
+ #include <unistd.h>
++#include <libgen.h>
+ 
+ /*
+  * These are symbols first available in linux v5.5. In order to allow to build
+-- 
+2.54.0
+
