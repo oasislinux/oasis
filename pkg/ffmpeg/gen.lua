@@ -7,7 +7,6 @@ local arch = config.target.platform:match('[^-]*')
 local targ = targets[arch]
 if not targ then return end
 
-local arch = 'x86'
 cflags{
 	'-Wno-deprecated-declarations',
 	'-Wno-discarded-qualifiers',
@@ -129,11 +128,8 @@ for line in iterlines('sources.txt', 1) do
 	end
 end
 -- combination option in libavutil/x86/Makefile
--- probe false positive on riscv64
-if arch == 'x86_64' then
 if not options.HAVE_MMX_INLINE and options.HAVE_MMX_EXTERNAL and not options.HAVE_MM_EMPTY then
 	sources.libavutil['libavutil/x86/emms.asm'] = true
-end
 end
 for lib, srcs in pairs(sources) do
 	sources[lib] = table.keys(srcs)
