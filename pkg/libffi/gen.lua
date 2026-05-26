@@ -1,6 +1,6 @@
 local targets = {
 	aarch64={name='AARCH64', dir='aarch64'},
-	riscv64={name='RISCV', dir='riscv64'},
+	riscv64={name='RISCV', dir='riscv'},
 	x86_64={name='X86_64', dir='x86'},
 }
 local arch = config.target.platform:match('[^-]*')
