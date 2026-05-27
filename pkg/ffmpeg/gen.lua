@@ -48,7 +48,8 @@ local probe = {
 
 build('cat', '$outdir/config.h', {'$dir/config-head.h', probe, '$dir/config.h', '$dir/config-tail.h'})
 build('copy', '$outdir/config_components.h', '$dir/config_components.h')
-build('sed', '$outdir/config.asm', {probe, '$dir/config.h'}, {
+build('unifdef', '$outdir/config.h.tmp', '$dir/config.h', {flags='-D__x86_64__'})
+build('sed', '$outdir/config.asm', {probe, '$outdir/config.h.tmp'}, {
 	expr=[[-n -e 's,^# *,%,p']],
 })
 build('awk', '$outdir/config.texi', '$dir/config.h', {
@@ -396,6 +397,7 @@ lib('libavutil.a', {
 				float_dsp.asm
 				imgutils.asm
 				lls.asm
+				tx_float_init.c
 				tx_float.asm
 			)
 
