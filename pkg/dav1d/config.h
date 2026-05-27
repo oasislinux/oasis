@@ -1,15 +1,15 @@
 #define ARCH_AARCH64 0
 #define ARCH_ARM 0
 #define ARCH_PPC64LE 0
+
+#ifdef __x86_64__
+#define ARCH_X86 1
+#define ARCH_X86_32 0
+#define ARCH_X86_64 1
+#else
 #define ARCH_X86 0
 #define ARCH_X86_32 0
 #define ARCH_X86_64 0
-
-#ifdef __x86_64__
-#undef ARCH_X86
-#undef ARCH_X86_64
-#define ARCH_X86 1
-#define ARCH_X86_64 1
 #endif
 
 #define CONFIG_16BPC 1
