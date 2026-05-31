@@ -12,7 +12,7 @@ shift
 cd "$distdir"
 
 if ! sh "$basedir/scripts/checksum.sh" -c "$basedir/$dir/sha256" 2>/dev/null ; then
-	curl -L -K "$basedir/$dir/url" -O
+	curl -fL -K "$basedir/$dir/url" -O
 	sh "$basedir/scripts/checksum.sh" -c "$basedir/$dir/sha256"
 fi
 
