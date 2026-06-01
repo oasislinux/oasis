@@ -7,6 +7,7 @@ cc('util.c')
 
 exe('cproc', {'driver.c', 'util.c.o'})
 exe('cproc-qbe', {
+	'attr.c',
 	'decl.c',
 	'eval.c',
 	'expr.c',
@@ -17,7 +18,6 @@ exe('cproc-qbe', {
 	'qbe.c',
 	'scan.c',
 	'scope.c',
-	'siphash.c',
 	'stmt.c',
 	'targ.c',
 	'token.c',
