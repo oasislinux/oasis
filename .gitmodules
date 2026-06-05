@@ -191,6 +191,7 @@
 [submodule "pkg/libgpiod/src"]
 	path = pkg/libgpiod/src
 	url = https://git.kernel.org/pub/scm/libs/libgpiod/libgpiod.git
+	ignore = all
 	shallow = true
 [submodule "pkg/libinput/src"]
 	path = pkg/libinput/src
