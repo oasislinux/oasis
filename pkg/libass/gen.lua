@@ -1,7 +1,6 @@
 cflags{
 	'-I $dir',
 	'-isystem $builddir/pkg/freetype/include',
-	'-isystem $builddir/pkg/fribidi/include',
 }
 nasmflags{
 	'-D ARCH_X86_64=1',
@@ -16,7 +15,6 @@ nasmflags{
 pkg.hdrs = copy('$outdir/include/ass', '$srcdir/libass', {'ass.h', 'ass_types.h'})
 pkg.deps = {
 	'pkg/freetype/headers',
-	'pkg/fribidi/headers',
 	'$outdir/PIC.asm',
 }
 
@@ -39,7 +37,6 @@ lib('libass.a', [[
 		)
 	)
 	$builddir/pkg/freetype/libfreetype.a.d
-	$builddir/pkg/fribidi/libfribidi.a
 ]])
 
 fetch 'git'
