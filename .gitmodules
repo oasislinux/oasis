@@ -373,7 +373,6 @@
 [submodule "pkg/qbe/src"]
 	path = pkg/qbe/src
 	url = git://c9x.me/qbe.git
-	ignore = all
 	shallow = true
 [submodule "pkg/quark/src"]
 	path = pkg/quark/src
