@@ -55,6 +55,7 @@ return {
 		'nasm',
 		'qbe',
 		'strace',
+		'unifdef',
 		'wayland',
 	},
 	media={
