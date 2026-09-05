@@ -1,15 +1,15 @@
-From b610594f76f11d6f4708f0aeb541959d6e7a65e4 Mon Sep 17 00:00:00 2001
+From a0a9ff9411b1a6dc5d2ffc0449607a523941c0d6 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Mon, 4 Jul 2016 16:14:18 -0700
 Subject: [PATCH] Disable use of ctypes and dynamic loading
 
 ---
  yt_dlp/cookies.py      | 104 -----------------------------------------
- yt_dlp/utils/_utils.py |  85 +--------------------------------
- 2 files changed, 2 insertions(+), 187 deletions(-)
+ yt_dlp/utils/_utils.py |  79 +------------------------------
+ 2 files changed, 2 insertions(+), 181 deletions(-)
 
 diff --git a/yt_dlp/cookies.py b/yt_dlp/cookies.py
-index 831b3a2c8..5c79b3c25 100644
+index 08fde2cd2..ded7a8c36 100644
 --- a/yt_dlp/cookies.py
 +++ b/yt_dlp/cookies.py
 @@ -430,8 +430,6 @@ def decrypt(self, encrypted_value):
@@ -145,10 +145,10 @@ index 831b3a2c8..5c79b3c25 100644
      return os.environ.get('XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
  
 diff --git a/yt_dlp/utils/_utils.py b/yt_dlp/utils/_utils.py
-index 74bb6dcdb..8dc79958a 100644
+index 03c743a35..3a13373f8 100644
 --- a/yt_dlp/utils/_utils.py
 +++ b/yt_dlp/utils/_utils.py
-@@ -1523,64 +1523,7 @@ def __init__(self):
+@@ -1528,64 +1528,7 @@ def __init__(self):
          super().__init__(self.msg)
  
  
@@ -214,7 +214,7 @@ index 74bb6dcdb..8dc79958a 100644
      try:
          import fcntl
  
-@@ -1934,31 +1877,7 @@ def fix_xml_ampersands(xml_str):
+@@ -1946,25 +1889,7 @@ def fix_xml_ampersands(xml_str):
  
  
  def setproctitle(title):
@@ -230,14 +230,8 @@ index 74bb6dcdb..8dc79958a 100644
 -        libc = ctypes.cdll.LoadLibrary('libc.so.6')
 -    except OSError:
 -        return
--    except TypeError:
--        # LoadLibrary in Windows Python 2.7.13 only expects
--        # a bytestring, but since unicode_literals turns
--        # every string into a unicode string, it fails.
--        return
--    title_bytes = title.encode()
--    buf = ctypes.create_string_buffer(len(title_bytes))
--    buf.value = title_bytes
+-
+-    buf = ctypes.create_string_buffer(title.encode())
 -    try:
 -        # PR_SET_NAME = 15      Ref: /usr/include/linux/prctl.h
 -        libc.prctl(15, buf, 0, 0, 0)
@@ -248,5 +242,5 @@ index 74bb6dcdb..8dc79958a 100644
  
  def remove_start(s, start):
 -- 
-2.49.0
+2.54.0
 
