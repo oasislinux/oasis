@@ -1,83 +1,87 @@
-From 61ad7f5ec78d4c80a99ac71820d9bc8b62c3fbae Mon Sep 17 00:00:00 2001
+From 3d3b232e1359e189884cac83095b06312e3c82e0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sat, 15 May 2021 22:48:13 -0700
 Subject: [PATCH] Add BearSSL implementation of _hashlib
 
 ---
- Modules/_hashbearssl.c          | 1126 +++++++++++++++++++++++++++++++
- Modules/clinic/_hashbearssl.c.h | 1113 ++++++++++++++++++++++++++++++
- 2 files changed, 2239 insertions(+)
+ Modules/_hashbearssl.c          | 1129 +++++++++++++++++++++++++
+ Modules/clinic/_hashbearssl.c.h | 1401 +++++++++++++++++++++++++++++++
+ 2 files changed, 2530 insertions(+)
  create mode 100644 Modules/_hashbearssl.c
  create mode 100644 Modules/clinic/_hashbearssl.c.h
 
 diff --git a/Modules/_hashbearssl.c b/Modules/_hashbearssl.c
 new file mode 100644
-index 0000000000..2d1a76296d
+index 00000000000..543fb2c0813
 --- /dev/null
 +++ b/Modules/_hashbearssl.c
-@@ -0,0 +1,1126 @@
+@@ -0,0 +1,1129 @@
 +/* Module that wraps all BearSSL hash algorithms */
-+#define PY_SSIZE_T_CLEAN
++#ifndef Py_BUILD_CORE_BUILTIN
++#  define Py_BUILD_CORE_MODULE 1
++#endif
 +#include "Python.h"
++#include "pycore_strhex.h"               // _Py_strhex()
 +#include "hashlib.h"
-+#include "pystrhex.h"
 +
 +#include <bearssl.h>
 +
 +static PyModuleDef _hashlibmodule;
-+static PyTypeObject Hash_Type;
-+static PyTypeObject SHAKE_Type;
++static PyTypeObject HASH_Type;
++static PyTypeObject HASHXOF_Type;
 +static PyTypeObject HMAC_Type;
 +
-+typedef struct {
-+    PyObject_HEAD
-+    br_hash_compat_context ctx;
-+    PyThread_type_lock lock;
-+} Hash;
++// --- Module objects ---------------------------------------------------------
 +
 +typedef struct {
-+    PyObject_HEAD
++    HASHLIB_OBJECT_HEAD
++    br_hash_compat_context ctx;
++} HASH;
++
++typedef struct {
++    HASHLIB_OBJECT_HEAD
 +    br_hmac_context ctx;
 +    br_hmac_key_context key;
-+    PyThread_type_lock lock;
 +} HMAC;
 +
 +typedef struct {
-+    PyObject_HEAD
++    HASHLIB_OBJECT_HEAD
 +    br_shake_context ctx;
 +    int bits;
-+    PyThread_type_lock lock;
-+} SHAKE;
++} HASHXOF;
 +
-+#include "clinic/_hashbearssl.c.h"
++// --- Module clinic configuration --------------------------------------------
++
 +/*[clinic input]
 +module _hashlib
-+class _hashlib.Hash "Hash *" "Hash_Type"
++class _hashlib.HASH "HASH *" "HASH_Type"
++class _hashlib.HASHXOF "HASHXOF *" "HASHXOF_Type"
 +class _hashlib.HMAC "HMAC *" "HMAC_Type"
-+class _hashlib.SHAKE "SHAKE *" "SHAKE_Type"
 +[clinic start generated code]*/
-+/*[clinic end generated code: output=da39a3ee5e6b4b0d input=7a269412ec77c79a]*/
++/*[clinic end generated code: output=da39a3ee5e6b4b0d input=213641e4849871ea]*/
++
++#include "clinic/_hashbearssl.c.h"
 +
 +static const br_hash_class *
 +py_hash_by_name(const char *name)
 +{
-+    if (strcmp(name, "md5") == 0)
++    if (PyOS_stricmp(name, "md5") == 0)
 +        return &br_md5_vtable;
-+    else if (strcmp(name, "sha1") == 0)
++    else if (PyOS_stricmp(name, "sha1") == 0)
 +        return &br_sha1_vtable;
-+    else if (strcmp(name, "sha224") == 0)
++    else if (PyOS_stricmp(name, "sha224") == 0)
 +        return &br_sha224_vtable;
-+    else if (strcmp(name, "sha256") == 0)
++    else if (PyOS_stricmp(name, "sha256") == 0)
 +        return &br_sha256_vtable;
-+    else if (strcmp(name, "sha384") == 0)
++    else if (PyOS_stricmp(name, "sha384") == 0)
 +        return &br_sha384_vtable;
-+    else if (strcmp(name, "sha512") == 0)
++    else if (PyOS_stricmp(name, "sha512") == 0)
 +        return &br_sha512_vtable;
 +    return NULL;
 +}
 +
-+PyDoc_STRVAR(Hash_doc,
-+"Hash(name, string=b\'\')\n"
++PyDoc_STRVAR(HASH_doc,
++"HASH(name, string=b\'\')\n"
 +"--\n"
 +"\n"
 +"A hash is an object used to calculate a checksum of a string of information.\n"
@@ -95,15 +99,13 @@ index 0000000000..2d1a76296d
 +"digest_size -- number of bytes in this hashes output");
 +
 +static void
-+Hash_dealloc(Hash *self)
++HASH_dealloc(HASH *self)
 +{
-+    if (self->lock)
-+        PyThread_free_lock(self->lock);
 +    PyObject_Free(self);
 +}
 +
 +/*[clinic input]
-+_hashlib.Hash.update as Hash_update
++_hashlib.HASH.update as HASH_update
 +
 +    data: Py_buffer
 +    /
@@ -112,89 +114,82 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+Hash_update_impl(Hash *self, Py_buffer *data)
-+/*[clinic end generated code: output=eed11f7503e289a3 input=0547d16ba3981abf]*/
++HASH_update_impl(HASH *self, Py_buffer *data)
++/*[clinic end generated code: output=e7371e3b82c78813 input=8d134669e7bfa813]*/
 +{
-+    if (!self->lock && data->len >= HASHLIB_GIL_MINSIZE)
-+        self->lock = PyThread_allocate_lock();
-+    if (self->lock) {
-+        Py_BEGIN_ALLOW_THREADS
-+        PyThread_acquire_lock(self->lock, 1);
-+        self->ctx.vtable->update(&self->ctx.vtable, data->buf, data->len);
-+        PyThread_release_lock(self->lock);
-+        Py_END_ALLOW_THREADS
-+    } else {
-+        self->ctx.vtable->update(&self->ctx.vtable, data->buf, data->len);
-+    }
++    HASHLIB_EXTERNAL_INSTRUCTIONS_LOCKED(
++        self, data->len,
++        self->ctx.vtable->update(&self->ctx.vtable, data->buf, data->len)
++    );
 +    Py_RETURN_NONE;
 +}
 +
 +/*[clinic input]
-+_hashlib.Hash.digest as Hash_digest
++_hashlib.HASH.digest as HASH_digest
 +
 +Return the digest value as a bytes object.
 +[clinic start generated code]*/
 +
 +static PyObject *
-+Hash_digest_impl(Hash *self)
-+/*[clinic end generated code: output=b3eafdc9f37cf341 input=6d4afcd832edc55a]*/
++HASH_digest_impl(HASH *self)
++/*[clinic end generated code: output=b48bf00fd5875e49 input=9279858aec58f77a]*/
 +{
 +    char digest[64];
 +    Py_ssize_t digest_size;
 +
-+    ENTER_HASHLIB(self)
++    HASHLIB_ACQUIRE_LOCK(self);
 +    self->ctx.vtable->out(&self->ctx.vtable, digest);
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +    digest_size = (self->ctx.vtable->desc >> BR_HASHDESC_OUT_OFF) & BR_HASHDESC_OUT_MASK;
 +
 +    return PyBytes_FromStringAndSize(digest, digest_size);
 +}
 +
 +/*[clinic input]
-+_hashlib.Hash.hexdigest as Hash_hexdigest
++_hashlib.HASH.hexdigest as HASH_hexdigest
 +
 +Return the digest value as a string of hexadecimal digits.
 +[clinic start generated code]*/
 +
 +static PyObject *
-+Hash_hexdigest_impl(Hash *self)
-+/*[clinic end generated code: output=eff810494302910a input=6b224236fad6ff65]*/
++HASH_hexdigest_impl(HASH *self)
++/*[clinic end generated code: output=c94a721f9bd8a703 input=2947eb48a8cb30b8]*/
 +{
 +    char digest[64];
 +    Py_ssize_t digest_size;
 +
-+    ENTER_HASHLIB(self)
++    HASHLIB_ACQUIRE_LOCK(self);
 +    self->ctx.vtable->out(&self->ctx.vtable, digest);
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +    digest_size = (self->ctx.vtable->desc >> BR_HASHDESC_OUT_OFF) & BR_HASHDESC_OUT_MASK;
 +
 +    return _Py_strhex(digest, digest_size);
 +}
 +
 +/*[clinic input]
-+_hashlib.Hash.copy as Hash_copy
++_hashlib.HASH.copy as HASH_copy
 +
 +Return a copy of the hash object.
 +[clinic start generated code]*/
 +
 +static PyObject *
-+Hash_copy_impl(Hash *self)
-+/*[clinic end generated code: output=e97863340f55061b input=b830c9d949d08256]*/
++HASH_copy_impl(HASH *self)
++/*[clinic end generated code: output=83f55894ab63fa16 input=648c01014857e870]*/
 +{
-+    Hash *newobj;
++    HASH *newobj;
 +
-+    newobj = PyObject_New(Hash, &Hash_Type);
++    newobj = PyObject_New(HASH, &HASH_Type);
 +    if (!newobj)
 +        return NULL;
-+    newobj->lock = NULL;
-+    ENTER_HASHLIB(self)
++    HASHLIB_INIT_MUTEX(newobj);
++    HASHLIB_ACQUIRE_LOCK(self);
 +    newobj->ctx = self->ctx;
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +
 +    return (PyObject *)newobj;
 +}
 +
-+static PyMethodDef Hash_methods[] = {
++static PyMethodDef HASH_methods[] = {
 +    HASH_UPDATE_METHODDEF
 +    HASH_DIGEST_METHODDEF
 +    HASH_HEXDIGEST_METHODDEF
@@ -203,7 +198,7 @@ index 0000000000..2d1a76296d
 +};
 +
 +static PyObject *
-+Hash_get_digest_size(Hash *self, void *closure)
++HASH_get_digest_size(HASH *self, void *closure)
 +{
 +    long digest_size;
 +
@@ -212,7 +207,7 @@ index 0000000000..2d1a76296d
 +}
 +
 +static PyObject *
-+Hash_get_block_size(Hash *self, void *closure)
++HASH_get_block_size(HASH *self, void *closure)
 +{
 +    long block_size;
 +
@@ -221,7 +216,7 @@ index 0000000000..2d1a76296d
 +}
 +
 +static PyObject *
-+Hash_get_name(Hash *self, void *closure)
++HASH_get_name(HASH *self, void *closure)
 +{
 +    const char *name = NULL;
 +
@@ -237,26 +232,40 @@ index 0000000000..2d1a76296d
 +    return PyUnicode_FromString(name);
 +}
 +
-+static PyGetSetDef Hash_getset[] = {
-+    {"digest_size", (getter)Hash_get_digest_size, NULL, NULL, NULL},
-+    {"block_size", (getter)Hash_get_block_size, NULL, NULL, NULL},
-+    {"name", (getter)Hash_get_name, NULL, NULL, NULL},
++static PyGetSetDef HASH_getset[] = {
++    {"digest_size", (getter)HASH_get_digest_size, NULL, NULL, NULL},
++    {"block_size", (getter)HASH_get_block_size, NULL, NULL, NULL},
++    {"name", (getter)HASH_get_name, NULL, NULL, NULL},
 +    {0}
 +};
 +
-+static PyTypeObject Hash_Type = {
++static PyObject *
++HASH_repr(HASH *self)
++{
++    PyObject *name = HASH_get_name(self, NULL);
++    if (name == NULL) {
++        return NULL;
++    }
++    PyObject *repr = PyUnicode_FromFormat("<%U %T object @ %p>",
++                                          name, self, self);
++    Py_DECREF(name);
++    return repr;
++}
++
++static PyTypeObject HASH_Type = {
 +    PyVarObject_HEAD_INIT(NULL, 0)
-+    .tp_name = "_hashlib.Hash",
-+    .tp_dealloc = (destructor)Hash_dealloc,
-+    .tp_doc = Hash_doc,
-+    .tp_basicsize = sizeof(Hash),
++    .tp_name = "_hashlib.HASH",
++    .tp_dealloc = (destructor)HASH_dealloc,
++    .tp_repr = (reprfunc)HASH_repr,
++    .tp_doc = HASH_doc,
++    .tp_basicsize = sizeof(HASH),
 +    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION | Py_TPFLAGS_IMMUTABLETYPE,
-+    .tp_methods = Hash_methods,
-+    .tp_getset = Hash_getset,
++    .tp_methods = HASH_methods,
++    .tp_getset = HASH_getset,
 +};
 +
-+PyDoc_STRVAR(SHAKE_doc,
-+"SHAKE(name, string=b\'\')\n"
++PyDoc_STRVAR(HASHXOF_doc,
++"HASHXOF(name, string=b\'\')\n"
 +"--\n"
 +"\n"
 +"A hash is an object used to calculate a checksum of a string of information.\n"
@@ -274,15 +283,13 @@ index 0000000000..2d1a76296d
 +"digest_size -- number of bytes in this hashes output");
 +
 +static void
-+SHAKE_dealloc(SHAKE *self)
++HASHXOF_dealloc(HASHXOF *self)
 +{
-+    if (self->lock)
-+        PyThread_free_lock(self->lock);
 +    PyObject_Free(self);
 +}
 +
 +/*[clinic input]
-+_hashlib.SHAKE.update as SHAKE_update
++_hashlib.HASHXOF.update as HASHXOF_update
 +
 +    data: Py_buffer
 +    /
@@ -291,34 +298,27 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+SHAKE_update_impl(SHAKE *self, Py_buffer *data)
-+/*[clinic end generated code: output=b7f5cd67459e2fb3 input=87a80642380b615f]*/
++HASHXOF_update_impl(HASHXOF *self, Py_buffer *data)
++/*[clinic end generated code: output=284c614570e39dcf input=8f56a60e5e1d5126]*/
 +{
-+    if (!self->lock && data->len >= HASHLIB_GIL_MINSIZE)
-+        self->lock = PyThread_allocate_lock();
-+    if (self->lock) {
-+        Py_BEGIN_ALLOW_THREADS
-+        PyThread_acquire_lock(self->lock, 1);
-+        br_shake_inject(&self->ctx, data->buf, data->len);
-+        PyThread_release_lock(self->lock);
-+        Py_END_ALLOW_THREADS
-+    } else {
-+        br_shake_inject(&self->ctx, data->buf, data->len);
-+    }
++    HASHLIB_EXTERNAL_INSTRUCTIONS_LOCKED(
++        self, data->len,
++        br_shake_inject(&self->ctx, data->buf, data->len)
++    );
 +    Py_RETURN_NONE;
 +}
 +
 +/*[clinic input]
-+_hashlib.SHAKE.digest as SHAKE_digest
++_hashlib.HASHXOF.digest as HASHXOF_digest
 +
-+  length: Py_ssize_t
++  length: Py_ssize_t(allow_negative=False)
 +
 +Return the digest value as a bytes object.
 +[clinic start generated code]*/
 +
 +static PyObject *
-+SHAKE_digest_impl(SHAKE *self, Py_ssize_t length)
-+/*[clinic end generated code: output=4235ee593cba0b23 input=9e31587954f5e87a]*/
++HASHXOF_digest_impl(HASHXOF *self, Py_ssize_t length)
++/*[clinic end generated code: output=4acfde5485438ea1 input=57648448f97345a9]*/
 +{
 +    br_shake_context ctx;
 +    PyObject *bytes;
@@ -327,9 +327,9 @@ index 0000000000..2d1a76296d
 +    if (!bytes)
 +        return NULL;
 +
-+    ENTER_HASHLIB(self)
++    HASHLIB_ACQUIRE_LOCK(self);
 +    ctx = self->ctx;
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +    br_shake_flip(&ctx);
 +    br_shake_produce(&ctx, PyBytes_AS_STRING(bytes), length);
 +
@@ -337,16 +337,16 @@ index 0000000000..2d1a76296d
 +}
 +
 +/*[clinic input]
-+_hashlib.SHAKE.hexdigest as SHAKE_hexdigest
++_hashlib.HASHXOF.hexdigest as HASHXOF_hexdigest
 +
-+    length: Py_ssize_t
++    length: Py_ssize_t(allow_negative=False)
 +
 +Return the digest value as a string of hexadecimal digits.
 +[clinic start generated code]*/
 +
 +static PyObject *
-+SHAKE_hexdigest_impl(SHAKE *self, Py_ssize_t length)
-+/*[clinic end generated code: output=fd9a7905a89a1509 input=2c43a9638ca1db5e]*/
++HASHXOF_hexdigest_impl(HASHXOF *self, Py_ssize_t length)
++/*[clinic end generated code: output=6ca89e7ccb71e4fc input=c341a60302ee6e78]*/
 +{
 +    br_shake_context ctx;
 +    char *bytes;
@@ -358,9 +358,9 @@ index 0000000000..2d1a76296d
 +        return NULL;
 +    }
 +
-+    ENTER_HASHLIB(self)
++    HASHLIB_ACQUIRE_LOCK(self);
 +    ctx = self->ctx;
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +    br_shake_flip(&ctx);
 +    br_shake_produce(&ctx, bytes, length);
 +
@@ -370,51 +370,51 @@ index 0000000000..2d1a76296d
 +}
 +
 +/*[clinic input]
-+_hashlib.SHAKE.copy as SHAKE_copy
++_hashlib.HASHXOF.copy as HASHXOF_copy
 +
-+Return a copy of the SHAKE object.
++Return a copy of the HASHXOF object.
 +[clinic start generated code]*/
 +
 +static PyObject *
-+SHAKE_copy_impl(SHAKE *self)
-+/*[clinic end generated code: output=19cff23538f29dc6 input=34c8368c5c9e910c]*/
++HASHXOF_copy_impl(HASHXOF *self)
++/*[clinic end generated code: output=26a3ae2ab4f72986 input=c7ae6f5b7497f72e]*/
 +{
-+    SHAKE *newobj;
++    HASHXOF *newobj;
 +
-+    newobj = PyObject_New(SHAKE, &SHAKE_Type);
++    newobj = PyObject_New(HASHXOF, &HASHXOF_Type);
 +    if (!newobj)
 +        return NULL;
-+    newobj->lock = NULL;
-+    ENTER_HASHLIB(self)
++    HASHLIB_INIT_MUTEX(newobj);
++    HASHLIB_ACQUIRE_LOCK(self);
 +    newobj->ctx = self->ctx;
 +    newobj->bits = self->bits;
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +
 +    return (PyObject *)newobj;
 +}
 +
-+static PyMethodDef SHAKE_methods[] = {
-+    SHAKE_UPDATE_METHODDEF
-+    SHAKE_DIGEST_METHODDEF
-+    SHAKE_HEXDIGEST_METHODDEF
-+    SHAKE_COPY_METHODDEF
++static PyMethodDef HASHXOF_methods[] = {
++    HASHXOF_UPDATE_METHODDEF
++    HASHXOF_DIGEST_METHODDEF
++    HASHXOF_HEXDIGEST_METHODDEF
++    HASHXOF_COPY_METHODDEF
 +    {0}
 +};
 +
 +static PyObject *
-+SHAKE_get_digest_size(SHAKE *self, void *closure)
++HASHXOF_get_digest_size(HASHXOF *self, void *closure)
 +{
 +    return PyLong_FromLong(0);
 +}
 +
 +static PyObject *
-+SHAKE_get_block_size(SHAKE *self, void *closure)
++HASHXOF_get_block_size(HASHXOF *self, void *closure)
 +{
 +    return PyLong_FromLong(self->ctx.rate);
 +}
 +
 +static PyObject *
-+SHAKE_get_name(SHAKE *self, void *closure)
++HASHXOF_get_name(HASHXOF *self, void *closure)
 +{
 +    const char *name = NULL;
 +
@@ -426,22 +426,36 @@ index 0000000000..2d1a76296d
 +    return PyUnicode_FromString(name);
 +}
 +
-+static PyGetSetDef SHAKE_getset[] = {
-+    {"digest_size", (getter)SHAKE_get_digest_size, NULL, NULL, NULL},
-+    {"block_size", (getter)SHAKE_get_block_size, NULL, NULL, NULL},
-+    {"name", (getter)SHAKE_get_name, NULL, NULL, NULL},
++static PyGetSetDef HASHXOF_getset[] = {
++    {"digest_size", (getter)HASHXOF_get_digest_size, NULL, NULL, NULL},
++    {"block_size", (getter)HASHXOF_get_block_size, NULL, NULL, NULL},
++    {"name", (getter)HASHXOF_get_name, NULL, NULL, NULL},
 +    {0}
 +};
 +
-+static PyTypeObject SHAKE_Type = {
++static PyObject *
++HASHXOF_repr(HASHXOF *self)
++{
++    PyObject *name = HASHXOF_get_name(self, NULL);
++    if (name == NULL) {
++        return NULL;
++    }
++    PyObject *repr = PyUnicode_FromFormat("<%U %T object @ %p>",
++                                          name, self, self);
++    Py_DECREF(name);
++    return repr;
++}
++
++static PyTypeObject HASHXOF_Type = {
 +    PyVarObject_HEAD_INIT(NULL, 0)
-+    .tp_name = "_hashlib.SHAKE",
-+    .tp_dealloc = (destructor)SHAKE_dealloc,
-+    .tp_doc = SHAKE_doc,
-+    .tp_basicsize = sizeof(SHAKE),
++    .tp_name = "_hashlib.HASHXOF",
++    .tp_dealloc = (destructor)HASHXOF_dealloc,
++    .tp_repr = (reprfunc)HASHXOF_repr,
++    .tp_doc = HASHXOF_doc,
++    .tp_basicsize = sizeof(HASHXOF),
 +    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION | Py_TPFLAGS_IMMUTABLETYPE,
-+    .tp_methods = SHAKE_methods,
-+    .tp_getset = SHAKE_getset,
++    .tp_methods = HASHXOF_methods,
++    .tp_getset = HASHXOF_getset,
 +};
 +
 +PyDoc_STRVAR(HMAC_doc,
@@ -462,10 +476,9 @@ index 0000000000..2d1a76296d
 +static void
 +HMAC_dealloc(HMAC *self)
 +{
-+    if (self->lock)
-+        PyThread_free_lock(self->lock);
 +    PyObject_Free(self);
 +}
++
 +/*[clinic input]
 +_hashlib.HMAC.copy as HMAC_copy
 +
@@ -481,11 +494,11 @@ index 0000000000..2d1a76296d
 +    newobj = PyObject_New(HMAC, &HMAC_Type);
 +    if (!newobj)
 +        return NULL;
-+    newobj->lock = NULL;
-+    ENTER_HASHLIB(self)
++    HASHLIB_INIT_MUTEX(newobj);
++    HASHLIB_ACQUIRE_LOCK(self);
 +    newobj->ctx = self->ctx;
 +    newobj->key = self->key;
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +
 +    return (PyObject *)newobj;
 +}
@@ -503,17 +516,10 @@ index 0000000000..2d1a76296d
 +HMAC_update_impl(HMAC *self, Py_buffer *data)
 +/*[clinic end generated code: output=d3520ecffa6cc3ab input=827e77e990887267]*/
 +{
-+    if (!self->lock && data->len >= HASHLIB_GIL_MINSIZE)
-+        self->lock = PyThread_allocate_lock();
-+    if (self->lock) {
-+        Py_BEGIN_ALLOW_THREADS
-+        PyThread_acquire_lock(self->lock, 1);
++    HASHLIB_EXTERNAL_INSTRUCTIONS_LOCKED(
++        self, data->len,
 +        br_hmac_update(&self->ctx, data->buf, data->len);
-+        PyThread_release_lock(self->lock);
-+        Py_END_ALLOW_THREADS
-+    } else {
-+        br_hmac_update(&self->ctx, data->buf, data->len);
-+    }
++    );
 +    Py_RETURN_NONE;
 +}
 +
@@ -530,14 +536,15 @@ index 0000000000..2d1a76296d
 +    char digest[64];
 +    Py_ssize_t digest_size;
 +
-+    ENTER_HASHLIB(self)
++    HASHLIB_ACQUIRE_LOCK(self);
 +    digest_size = br_hmac_out(&self->ctx, digest);
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +
 +    return PyBytes_FromStringAndSize(digest, digest_size);
 +}
 +
 +/*[clinic input]
++@permit_long_summary
 +_hashlib.HMAC.hexdigest as HMAC_hexdigest
 +
 +Return hexadecimal digest of the bytes passed to the update() method so far.
@@ -548,14 +555,14 @@ index 0000000000..2d1a76296d
 +
 +static PyObject *
 +HMAC_hexdigest_impl(HMAC *self)
-+/*[clinic end generated code: output=9bb0c7abb6940bab input=2471f22b8dba7433]*/
++/*[clinic end generated code: output=9bb0c7abb6940bab input=60d407178aa9b38b]*/
 +{
 +    char digest[64];
 +    Py_ssize_t digest_size;
 +
-+    ENTER_HASHLIB(self)
++    HASHLIB_ACQUIRE_LOCK(self);
 +    digest_size = br_hmac_out(&self->ctx, digest);
-+    LEAVE_HASHLIB(self)
++    HASHLIB_RELEASE_LOCK(self);
 +
 +    return _Py_strhex(digest, digest_size);
 +}
@@ -616,10 +623,24 @@ index 0000000000..2d1a76296d
 +    {0}
 +};
 +
++static PyObject *
++HMAC_repr(HASH *self)
++{
++    PyObject *name = HASH_get_name(self, NULL);
++    if (name == NULL) {
++        return NULL;
++    }
++    PyObject *repr = PyUnicode_FromFormat("<%U %T object @ %p>",
++                                          name, self, self);
++    Py_DECREF(name);
++    return repr;
++}
++
 +static PyTypeObject HMAC_Type = {
 +    PyVarObject_HEAD_INIT(NULL, 0)
 +    .tp_name = "_hashlib.HMAC",
 +    .tp_dealloc = (destructor)HMAC_dealloc,
++    .tp_repr = (reprfunc)HMAC_repr,
 +    .tp_doc = HMAC_doc,
 +    .tp_basicsize = sizeof(HMAC),
 +    .tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_DISALLOW_INSTANTIATION | Py_TPFLAGS_IMMUTABLETYPE,
@@ -628,47 +649,39 @@ index 0000000000..2d1a76296d
 +};
 +
 +static PyObject *
-+Hash_new_vtable(PyObject *module, const br_hash_class *hc,
-+                Py_buffer *string, int usedforsecurity)
++HASH_new_vtable(PyObject *module, const br_hash_class *hc,
++                Py_buffer *data, int usedforsecurity)
 +{
-+    Hash *self;
++    HASH *self;
 +
-+    self = PyObject_New(Hash, &Hash_Type);
++    self = PyObject_New(HASH, &HASH_Type);
 +    if (!self)
 +        return NULL;
-+    self->lock = NULL;
 +    hc->init(&self->ctx.vtable);
-+
-+    if (string->len >= HASHLIB_GIL_MINSIZE) {
-+        Py_BEGIN_ALLOW_THREADS
-+        hc->update(&self->ctx.vtable, string->buf, string->len);
-+        Py_END_ALLOW_THREADS
-+    } else {
-+        hc->update(&self->ctx.vtable, string->buf, string->len);
-+    }
++    HASHLIB_INIT_MUTEX(self);
++    HASHLIB_EXTERNAL_INSTRUCTIONS_UNLOCKED(
++        data->len,
++        hc->update(&self->ctx.vtable, data->buf, data->len);
++    );
 +
 +    return (PyObject *)self;
 +}
 +
 +static PyObject *
-+SHAKE_new(PyObject *module, int bits, Py_buffer *string, int usedforsecurity)
++HASHXOF_new(PyObject *module, int bits, Py_buffer *data, int usedforsecurity)
 +{
-+    SHAKE *self;
++    HASHXOF *self;
 +
-+    self = PyObject_New(SHAKE, &SHAKE_Type);
++    self = PyObject_New(HASHXOF, &HASHXOF_Type);
 +    if (!self)
 +        return NULL;
-+    self->lock = NULL;
 +    self->bits = bits;
 +    br_shake_init(&self->ctx, bits);
-+
-+    if (string->len >= HASHLIB_GIL_MINSIZE) {
-+        Py_BEGIN_ALLOW_THREADS
-+        br_shake_inject(&self->ctx, string->buf, string->len);
-+        Py_END_ALLOW_THREADS
-+    } else {
-+        br_shake_inject(&self->ctx, string->buf, string->len);
-+    }
++    HASHLIB_INIT_MUTEX(self);
++    HASHLIB_EXTERNAL_INSTRUCTIONS_UNLOCKED(
++        data->len,
++        br_shake_inject(&self->ctx, data->buf, data->len);
++    );
 +
 +    return (PyObject *)self;
 +}
@@ -677,7 +690,7 @@ index 0000000000..2d1a76296d
 +_hashlib.new
 +
 +    name: str
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -690,9 +703,9 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_new_impl(PyObject *module, const char *name, Py_buffer *string,
++_hashlib_new_impl(PyObject *module, const char *name, Py_buffer *data,
 +                  int usedforsecurity)
-+/*[clinic end generated code: output=5459beb11946eb8d input=c7e3a9928c6af923]*/
++/*[clinic end generated code: output=f3016644a1db3557 input=025e0e84c253e3cc]*/
 +{
 +    const br_hash_class *hc = NULL;
 +    int shake = 0;
@@ -710,15 +723,15 @@ index 0000000000..2d1a76296d
 +    }
 +
 +    if (hc)
-+        return Hash_new_vtable(module, hc, string, usedforsecurity);
++        return HASH_new_vtable(module, hc, data, usedforsecurity);
 +    if (shake)
-+        return SHAKE_new(module, shake, string, usedforsecurity);
++        return HASHXOF_new(module, shake, data, usedforsecurity);
 +}
 +
 +/*[clinic input]
 +_hashlib.openssl_md5
 +
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -726,17 +739,17 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_openssl_md5_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_md5_impl(PyObject *module, Py_buffer *data,
 +                          int usedforsecurity)
-+/*[clinic end generated code: output=bf0df21c3ecd9d85 input=75e59cc38a292e51]*/
++/*[clinic end generated code: output=6d004e8d482f12c6 input=724269f0762d2fd4]*/
 +{
-+    return Hash_new_vtable(module, &br_md5_vtable, string, usedforsecurity);
++    return HASH_new_vtable(module, &br_md5_vtable, data, usedforsecurity);
 +}
 +
 +/*[clinic input]
 +_hashlib.openssl_sha1
 +
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -744,17 +757,17 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_openssl_sha1_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha1_impl(PyObject *module, Py_buffer *data,
 +                           int usedforsecurity)
-+/*[clinic end generated code: output=9c468cf3cfdd2e57 input=0f8ad0fa5d988be8]*/
++/*[clinic end generated code: output=8e06eb1aeb33b307 input=88c8091b662a132d]*/
 +{
-+    return Hash_new_vtable(module, &br_sha1_vtable, string, usedforsecurity);
++    return HASH_new_vtable(module, &br_sha1_vtable, data, usedforsecurity);
 +}
 +
 +/*[clinic input]
 +_hashlib.openssl_sha224
 +
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -762,17 +775,17 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_openssl_sha224_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha224_impl(PyObject *module, Py_buffer *data,
 +                             int usedforsecurity)
-+/*[clinic end generated code: output=9b3fea17aacc8dfe input=21aacab0e6949431]*/
++/*[clinic end generated code: output=a90080c8e4a51352 input=96ec3828e64ac9e6]*/
 +{
-+    return Hash_new_vtable(module, &br_sha224_vtable, string, usedforsecurity);
++    return HASH_new_vtable(module, &br_sha224_vtable, data, usedforsecurity);
 +}
 +
 +/*[clinic input]
 +_hashlib.openssl_sha256
 +
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -780,17 +793,17 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_openssl_sha256_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha256_impl(PyObject *module, Py_buffer *data,
 +                             int usedforsecurity)
-+/*[clinic end generated code: output=2c0585ccc6dfa22a input=81dd291675e0f6c9]*/
++/*[clinic end generated code: output=5c7518b7915f17ef input=e95702979596ee26]*/
 +{
-+    return Hash_new_vtable(module, &br_sha256_vtable, string, usedforsecurity);
++    return HASH_new_vtable(module, &br_sha256_vtable, data, usedforsecurity);
 +}
 +
 +/*[clinic input]
 +_hashlib.openssl_sha384
 +
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -798,17 +811,17 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_openssl_sha384_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha384_impl(PyObject *module, Py_buffer *data,
 +                             int usedforsecurity)
-+/*[clinic end generated code: output=196d8d7558cfd155 input=eed0b0128dd67969]*/
++/*[clinic end generated code: output=4492199f69d4124c input=6e9480f8c631a66a]*/
 +{
-+    return Hash_new_vtable(module, &br_sha384_vtable, string, usedforsecurity);
++    return HASH_new_vtable(module, &br_sha384_vtable, data, usedforsecurity);
 +}
 +
 +/*[clinic input]
 +_hashlib.openssl_sha512
 +
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -816,17 +829,18 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_openssl_sha512_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha512_impl(PyObject *module, Py_buffer *data,
 +                             int usedforsecurity)
-+/*[clinic end generated code: output=7349b37b20ff6f75 input=da1228b585897043]*/
++/*[clinic end generated code: output=e6cdcd262498123f input=696e89c85ed8fb93]*/
 +{
-+    return Hash_new_vtable(module, &br_sha512_vtable, string, usedforsecurity);
++    return HASH_new_vtable(module, &br_sha512_vtable, data, usedforsecurity);
 +}
 +
 +/*[clinic input]
++@permit_long_summary
 +_hashlib.openssl_shake_128
 +
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -834,17 +848,18 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_openssl_shake_128_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_shake_128_impl(PyObject *module, Py_buffer *data,
 +                                int usedforsecurity)
-+/*[clinic end generated code: output=e51cc0e4bded887e input=fb6dce24fc91d53d]*/
++/*[clinic end generated code: output=4659f2817328725e input=348d765e70cfeb51]*/
 +{
-+    return SHAKE_new(module, 128, string, usedforsecurity);
++    return HASHXOF_new(module, 128, data, usedforsecurity);
 +}
 +
 +/*[clinic input]
++@permit_long_summary
 +_hashlib.openssl_shake_256
 +
-+    string: Py_buffer = None
++    data: Py_buffer = NULL
 +    *
 +    usedforsecurity: bool = True
 +
@@ -852,11 +867,11 @@ index 0000000000..2d1a76296d
 +[clinic start generated code]*/
 +
 +static PyObject *
-+_hashlib_openssl_shake_256_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_shake_256_impl(PyObject *module, Py_buffer *data,
 +                                int usedforsecurity)
-+/*[clinic end generated code: output=983a76ff0796751b input=9eb2a133d11e34dc]*/
++/*[clinic end generated code: output=7b9e5bfe8c1d042e input=45671e5e1ef81b49]*/
 +{
-+    return SHAKE_new(module, 256, string, usedforsecurity);
++    return HASHXOF_new(module, 256, data, usedforsecurity);
 +}
 +
 +static int
@@ -903,7 +918,7 @@ index 0000000000..2d1a76296d
 +
 +static PyObject *
 +_hashlib_compare_digest_impl(PyObject *module, PyObject *a, PyObject *b)
-+/*[clinic end generated code: output=6f1c13927480aed9 input=f9cc6da970b1b1d5]*/
++/*[clinic end generated code: output=6f1c13927480aed9 input=9c40c6e566ca12f5]*/
 +{
 +    int rc;
 +
@@ -987,7 +1002,7 @@ index 0000000000..2d1a76296d
 +    {0}
 +};
 +
-+/* Fast HMAC for hmac.digest() */
++// --- One-shot HMAC interface ------------------------------------------------
 +
 +/*[clinic input]
 +_hashlib.hmac_digest as _hashlib_hmac_singleshot
@@ -1015,19 +1030,13 @@ index 0000000000..2d1a76296d
 +        PyErr_SetString(PyExc_ValueError, "unsupported hash type");
 +        return NULL;
 +    }
-+    if (msg->len >= HASHLIB_GIL_MINSIZE) {
-+        Py_BEGIN_ALLOW_THREADS
-+        br_hmac_key_init(&keyctx, hc, key->buf, key->len);
-+        br_hmac_init(&ctx, &keyctx, 0);
++    br_hmac_key_init(&keyctx, hc, key->buf, key->len);
++    br_hmac_init(&ctx, &keyctx, 0);
++    HASHLIB_EXTERNAL_INSTRUCTIONS_UNLOCKED(
++        msg->len,
 +        br_hmac_update(&ctx, msg->buf, msg->len);
-+        br_hmac_out(&ctx, buf);
-+        Py_END_ALLOW_THREADS
-+    } else {
-+        br_hmac_key_init(&keyctx, hc, key->buf, key->len);
-+        br_hmac_init(&ctx, &keyctx, 0);
-+        br_hmac_update(&ctx, msg->buf, msg->len);
-+        br_hmac_out(&ctx, buf);
-+    }
++    );
++    br_hmac_out(&ctx, buf);
 +    buf_len = br_hmac_size(&ctx);
 +
 +    return PyBytes_FromStringAndSize(buf, buf_len);
@@ -1037,7 +1046,7 @@ index 0000000000..2d1a76296d
 +_hashlib.hmac_new
 +
 +    key: Py_buffer
-+    msg: Py_buffer = None
++    msg: Py_buffer = NULL
 +    digestmod: str(c_default="NULL") = None
 +
 +Return a new hmac object.
@@ -1046,12 +1055,10 @@ index 0000000000..2d1a76296d
 +static PyObject *
 +_hashlib_hmac_new_impl(PyObject *module, Py_buffer *key, Py_buffer *msg,
 +                       const char *digestmod)
-+/*[clinic end generated code: output=5733a8600554bba2 input=b0125f4222a0d06d]*/
++/*[clinic end generated code: output=5733a8600554bba2 input=76547bd3e681ea5e]*/
 +{
 +    HMAC *self;
 +    const br_hash_class *hc;
-+
-+    printf("hmac new\n");
 +
 +    if (!digestmod || !digestmod[0]) {
 +        PyErr_SetString(
@@ -1066,17 +1073,13 @@ index 0000000000..2d1a76296d
 +    self = PyObject_New(HMAC, &HMAC_Type);
 +    if (!self)
 +        return NULL;
-+    self->lock = NULL;
 +    br_hmac_key_init(&self->key, hc, key->buf, key->len);
 +    br_hmac_init(&self->ctx, &self->key, 0);
-+
-+    if (msg->len >= HASHLIB_GIL_MINSIZE) {
-+        Py_BEGIN_ALLOW_THREADS
++    HASHLIB_INIT_MUTEX(self);
++    HASHLIB_EXTERNAL_INSTRUCTIONS_UNLOCKED(
++        msg->len,
 +        br_hmac_update(&self->ctx, msg->buf, msg->len);
-+        Py_END_ALLOW_THREADS
-+    } else {
-+        br_hmac_update(&self->ctx, msg->buf, msg->len);
-+    }
++    );
 +
 +    return (PyObject *)self;
 +}
@@ -1112,9 +1115,9 @@ index 0000000000..2d1a76296d
 +    m = PyModule_Create(&_hashlibmodule);
 +    if (!m)
 +        goto err;
-+    if (PyModule_AddType(m, &Hash_Type) < 0)
++    if (PyModule_AddType(m, &HASH_Type) < 0)
 +        goto err;
-+    if (PyModule_AddType(m, &SHAKE_Type) < 0)
++    if (PyModule_AddType(m, &HASHXOF_Type) < 0)
 +        goto err;
 +    if (PyModule_AddType(m, &HMAC_Type) < 0)
 +        goto err;
@@ -1144,28 +1147,35 @@ index 0000000000..2d1a76296d
 +}
 diff --git a/Modules/clinic/_hashbearssl.c.h b/Modules/clinic/_hashbearssl.c.h
 new file mode 100644
-index 0000000000..49bf8f9287
+index 00000000000..5fa0c88da6b
 --- /dev/null
 +++ b/Modules/clinic/_hashbearssl.c.h
-@@ -0,0 +1,1113 @@
+@@ -0,0 +1,1401 @@
 +/*[clinic input]
 +preserve
 +[clinic start generated code]*/
 +
-+PyDoc_STRVAR(Hash_update__doc__,
++#if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++#  include "pycore_gc.h"          // PyGC_Head
++#  include "pycore_runtime.h"     // _Py_ID()
++#endif
++#include "pycore_abstract.h"      // _PyNumber_Index()
++#include "pycore_modsupport.h"    // _PyArg_BadArgument()
++
++PyDoc_STRVAR(HASH_update__doc__,
 +"update($self, data, /)\n"
 +"--\n"
 +"\n"
 +"Update this hash object\'s state with the provided string.");
 +
 +#define HASH_UPDATE_METHODDEF    \
-+    {"update", (PyCFunction)Hash_update, METH_O, Hash_update__doc__},
++    {"update", (PyCFunction)HASH_update, METH_O, HASH_update__doc__},
 +
 +static PyObject *
-+Hash_update_impl(Hash *self, Py_buffer *data);
++HASH_update_impl(HASH *self, Py_buffer *data);
 +
 +static PyObject *
-+Hash_update(Hash *self, PyObject *arg)
++HASH_update(PyObject *self, PyObject *arg)
 +{
 +    PyObject *return_value = NULL;
 +    Py_buffer data = {NULL, NULL};
@@ -1173,11 +1183,7 @@ index 0000000000..49bf8f9287
 +    if (PyObject_GetBuffer(arg, &data, PyBUF_SIMPLE) != 0) {
 +        goto exit;
 +    }
-+    if (!PyBuffer_IsContiguous(&data, 'C')) {
-+        _PyArg_BadArgument("update", "argument", "contiguous buffer", arg);
-+        goto exit;
-+    }
-+    return_value = Hash_update_impl(self, &data);
++    return_value = HASH_update_impl((HASH *)self, &data);
 +
 +exit:
 +    /* Cleanup for data */
@@ -1188,74 +1194,74 @@ index 0000000000..49bf8f9287
 +    return return_value;
 +}
 +
-+PyDoc_STRVAR(Hash_digest__doc__,
++PyDoc_STRVAR(HASH_digest__doc__,
 +"digest($self, /)\n"
 +"--\n"
 +"\n"
 +"Return the digest value as a bytes object.");
 +
 +#define HASH_DIGEST_METHODDEF    \
-+    {"digest", (PyCFunction)Hash_digest, METH_NOARGS, Hash_digest__doc__},
++    {"digest", (PyCFunction)HASH_digest, METH_NOARGS, HASH_digest__doc__},
 +
 +static PyObject *
-+Hash_digest_impl(Hash *self);
++HASH_digest_impl(HASH *self);
 +
 +static PyObject *
-+Hash_digest(Hash *self, PyObject *Py_UNUSED(ignored))
++HASH_digest(PyObject *self, PyObject *Py_UNUSED(ignored))
 +{
-+    return Hash_digest_impl(self);
++    return HASH_digest_impl((HASH *)self);
 +}
 +
-+PyDoc_STRVAR(Hash_hexdigest__doc__,
++PyDoc_STRVAR(HASH_hexdigest__doc__,
 +"hexdigest($self, /)\n"
 +"--\n"
 +"\n"
 +"Return the digest value as a string of hexadecimal digits.");
 +
 +#define HASH_HEXDIGEST_METHODDEF    \
-+    {"hexdigest", (PyCFunction)Hash_hexdigest, METH_NOARGS, Hash_hexdigest__doc__},
++    {"hexdigest", (PyCFunction)HASH_hexdigest, METH_NOARGS, HASH_hexdigest__doc__},
 +
 +static PyObject *
-+Hash_hexdigest_impl(Hash *self);
++HASH_hexdigest_impl(HASH *self);
 +
 +static PyObject *
-+Hash_hexdigest(Hash *self, PyObject *Py_UNUSED(ignored))
++HASH_hexdigest(PyObject *self, PyObject *Py_UNUSED(ignored))
 +{
-+    return Hash_hexdigest_impl(self);
++    return HASH_hexdigest_impl((HASH *)self);
 +}
 +
-+PyDoc_STRVAR(Hash_copy__doc__,
++PyDoc_STRVAR(HASH_copy__doc__,
 +"copy($self, /)\n"
 +"--\n"
 +"\n"
 +"Return a copy of the hash object.");
 +
 +#define HASH_COPY_METHODDEF    \
-+    {"copy", (PyCFunction)Hash_copy, METH_NOARGS, Hash_copy__doc__},
++    {"copy", (PyCFunction)HASH_copy, METH_NOARGS, HASH_copy__doc__},
 +
 +static PyObject *
-+Hash_copy_impl(Hash *self);
++HASH_copy_impl(HASH *self);
 +
 +static PyObject *
-+Hash_copy(Hash *self, PyObject *Py_UNUSED(ignored))
++HASH_copy(PyObject *self, PyObject *Py_UNUSED(ignored))
 +{
-+    return Hash_copy_impl(self);
++    return HASH_copy_impl((HASH *)self);
 +}
 +
-+PyDoc_STRVAR(SHAKE_update__doc__,
++PyDoc_STRVAR(HASHXOF_update__doc__,
 +"update($self, data, /)\n"
 +"--\n"
 +"\n"
 +"Update this hash object\'s state with the provided string.");
 +
-+#define SHAKE_UPDATE_METHODDEF    \
-+    {"update", (PyCFunction)SHAKE_update, METH_O, SHAKE_update__doc__},
++#define HASHXOF_UPDATE_METHODDEF    \
++    {"update", (PyCFunction)HASHXOF_update, METH_O, HASHXOF_update__doc__},
 +
 +static PyObject *
-+SHAKE_update_impl(SHAKE *self, Py_buffer *data);
++HASHXOF_update_impl(HASHXOF *self, Py_buffer *data);
 +
 +static PyObject *
-+SHAKE_update(SHAKE *self, PyObject *arg)
++HASHXOF_update(PyObject *self, PyObject *arg)
 +{
 +    PyObject *return_value = NULL;
 +    Py_buffer data = {NULL, NULL};
@@ -1263,11 +1269,7 @@ index 0000000000..49bf8f9287
 +    if (PyObject_GetBuffer(arg, &data, PyBUF_SIMPLE) != 0) {
 +        goto exit;
 +    }
-+    if (!PyBuffer_IsContiguous(&data, 'C')) {
-+        _PyArg_BadArgument("update", "argument", "contiguous buffer", arg);
-+        goto exit;
-+    }
-+    return_value = SHAKE_update_impl(self, &data);
++    return_value = HASHXOF_update_impl((HASHXOF *)self, &data);
 +
 +exit:
 +    /* Cleanup for data */
@@ -1278,39 +1280,60 @@ index 0000000000..49bf8f9287
 +    return return_value;
 +}
 +
-+PyDoc_STRVAR(SHAKE_digest__doc__,
++PyDoc_STRVAR(HASHXOF_digest__doc__,
 +"digest($self, /, length)\n"
 +"--\n"
 +"\n"
 +"Return the digest value as a bytes object.");
 +
-+#define SHAKE_DIGEST_METHODDEF    \
-+    {"digest", (PyCFunction)(void(*)(void))SHAKE_digest, METH_FASTCALL|METH_KEYWORDS, SHAKE_digest__doc__},
++#define HASHXOF_DIGEST_METHODDEF    \
++    {"digest", _PyCFunction_CAST(HASHXOF_digest), METH_FASTCALL|METH_KEYWORDS, HASHXOF_digest__doc__},
 +
 +static PyObject *
-+SHAKE_digest_impl(SHAKE *self, Py_ssize_t length);
++HASHXOF_digest_impl(HASHXOF *self, Py_ssize_t length);
 +
 +static PyObject *
-+SHAKE_digest(SHAKE *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
++HASHXOF_digest(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 1
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(length), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
 +    static const char * const _keywords[] = {"length", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "digest", 0};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "digest",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[1];
 +    Py_ssize_t length;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 1, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 1, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
-+        goto exit;
-+    }
-+    if (PyFloat_Check(args[0])) {
-+        PyErr_SetString(PyExc_TypeError,
-+                        "integer argument expected, got float" );
 +        goto exit;
 +    }
 +    {
 +        Py_ssize_t ival = -1;
-+        PyObject *iobj = PyNumber_Index(args[0]);
++        PyObject *iobj = _PyNumber_Index(args[0]);
 +        if (iobj != NULL) {
 +            ival = PyLong_AsSsize_t(iobj);
 +            Py_DECREF(iobj);
@@ -1319,46 +1342,72 @@ index 0000000000..49bf8f9287
 +            goto exit;
 +        }
 +        length = ival;
++        if (length < 0) {
++            PyErr_SetString(PyExc_ValueError,
++                            "length cannot be negative");
++            goto exit;
++        }
 +    }
-+    return_value = SHAKE_digest_impl(self, length);
++    return_value = HASHXOF_digest_impl((HASHXOF *)self, length);
 +
 +exit:
 +    return return_value;
 +}
 +
-+PyDoc_STRVAR(SHAKE_hexdigest__doc__,
++PyDoc_STRVAR(HASHXOF_hexdigest__doc__,
 +"hexdigest($self, /, length)\n"
 +"--\n"
 +"\n"
 +"Return the digest value as a string of hexadecimal digits.");
 +
-+#define SHAKE_HEXDIGEST_METHODDEF    \
-+    {"hexdigest", (PyCFunction)(void(*)(void))SHAKE_hexdigest, METH_FASTCALL|METH_KEYWORDS, SHAKE_hexdigest__doc__},
++#define HASHXOF_HEXDIGEST_METHODDEF    \
++    {"hexdigest", _PyCFunction_CAST(HASHXOF_hexdigest), METH_FASTCALL|METH_KEYWORDS, HASHXOF_hexdigest__doc__},
 +
 +static PyObject *
-+SHAKE_hexdigest_impl(SHAKE *self, Py_ssize_t length);
++HASHXOF_hexdigest_impl(HASHXOF *self, Py_ssize_t length);
 +
 +static PyObject *
-+SHAKE_hexdigest(SHAKE *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
++HASHXOF_hexdigest(PyObject *self, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 1
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(length), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
 +    static const char * const _keywords[] = {"length", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "hexdigest", 0};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "hexdigest",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[1];
 +    Py_ssize_t length;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 1, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 1, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
-+        goto exit;
-+    }
-+    if (PyFloat_Check(args[0])) {
-+        PyErr_SetString(PyExc_TypeError,
-+                        "integer argument expected, got float" );
 +        goto exit;
 +    }
 +    {
 +        Py_ssize_t ival = -1;
-+        PyObject *iobj = PyNumber_Index(args[0]);
++        PyObject *iobj = _PyNumber_Index(args[0]);
 +        if (iobj != NULL) {
 +            ival = PyLong_AsSsize_t(iobj);
 +            Py_DECREF(iobj);
@@ -1367,29 +1416,34 @@ index 0000000000..49bf8f9287
 +            goto exit;
 +        }
 +        length = ival;
++        if (length < 0) {
++            PyErr_SetString(PyExc_ValueError,
++                            "length cannot be negative");
++            goto exit;
++        }
 +    }
-+    return_value = SHAKE_hexdigest_impl(self, length);
++    return_value = HASHXOF_hexdigest_impl((HASHXOF *)self, length);
 +
 +exit:
 +    return return_value;
 +}
 +
-+PyDoc_STRVAR(SHAKE_copy__doc__,
++PyDoc_STRVAR(HASHXOF_copy__doc__,
 +"copy($self, /)\n"
 +"--\n"
 +"\n"
-+"Return a copy of the SHAKE object.");
++"Return a copy of the HASHXOF object.");
 +
-+#define SHAKE_COPY_METHODDEF    \
-+    {"copy", (PyCFunction)SHAKE_copy, METH_NOARGS, SHAKE_copy__doc__},
-+
-+static PyObject *
-+SHAKE_copy_impl(SHAKE *self);
++#define HASHXOF_COPY_METHODDEF    \
++    {"copy", (PyCFunction)HASHXOF_copy, METH_NOARGS, HASHXOF_copy__doc__},
 +
 +static PyObject *
-+SHAKE_copy(SHAKE *self, PyObject *Py_UNUSED(ignored))
++HASHXOF_copy_impl(HASHXOF *self);
++
++static PyObject *
++HASHXOF_copy(PyObject *self, PyObject *Py_UNUSED(ignored))
 +{
-+    return SHAKE_copy_impl(self);
++    return HASHXOF_copy_impl((HASHXOF *)self);
 +}
 +
 +PyDoc_STRVAR(HMAC_copy__doc__,
@@ -1405,9 +1459,9 @@ index 0000000000..49bf8f9287
 +HMAC_copy_impl(HMAC *self);
 +
 +static PyObject *
-+HMAC_copy(HMAC *self, PyObject *Py_UNUSED(ignored))
++HMAC_copy(PyObject *self, PyObject *Py_UNUSED(ignored))
 +{
-+    return HMAC_copy_impl(self);
++    return HMAC_copy_impl((HMAC *)self);
 +}
 +
 +PyDoc_STRVAR(HMAC_update__doc__,
@@ -1423,7 +1477,7 @@ index 0000000000..49bf8f9287
 +HMAC_update_impl(HMAC *self, Py_buffer *data);
 +
 +static PyObject *
-+HMAC_update(HMAC *self, PyObject *arg)
++HMAC_update(PyObject *self, PyObject *arg)
 +{
 +    PyObject *return_value = NULL;
 +    Py_buffer data = {NULL, NULL};
@@ -1431,11 +1485,7 @@ index 0000000000..49bf8f9287
 +    if (PyObject_GetBuffer(arg, &data, PyBUF_SIMPLE) != 0) {
 +        goto exit;
 +    }
-+    if (!PyBuffer_IsContiguous(&data, 'C')) {
-+        _PyArg_BadArgument("update", "argument", "contiguous buffer", arg);
-+        goto exit;
-+    }
-+    return_value = HMAC_update_impl(self, &data);
++    return_value = HMAC_update_impl((HMAC *)self, &data);
 +
 +exit:
 +    /* Cleanup for data */
@@ -1459,9 +1509,9 @@ index 0000000000..49bf8f9287
 +HMAC_digest_impl(HMAC *self);
 +
 +static PyObject *
-+HMAC_digest(HMAC *self, PyObject *Py_UNUSED(ignored))
++HMAC_digest(PyObject *self, PyObject *Py_UNUSED(ignored))
 +{
-+    return HMAC_digest_impl(self);
++    return HMAC_digest_impl((HMAC *)self);
 +}
 +
 +PyDoc_STRVAR(HMAC_hexdigest__doc__,
@@ -1480,13 +1530,13 @@ index 0000000000..49bf8f9287
 +HMAC_hexdigest_impl(HMAC *self);
 +
 +static PyObject *
-+HMAC_hexdigest(HMAC *self, PyObject *Py_UNUSED(ignored))
++HMAC_hexdigest(PyObject *self, PyObject *Py_UNUSED(ignored))
 +{
-+    return HMAC_hexdigest_impl(self);
++    return HMAC_hexdigest_impl((HMAC *)self);
 +}
 +
 +PyDoc_STRVAR(_hashlib_new__doc__,
-+"new($module, /, name, string=None, *, usedforsecurity=True)\n"
++"new($module, /, name, data=<unrepresentable>, *, usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Return a new hash object using the named algorithm.\n"
@@ -1497,25 +1547,51 @@ index 0000000000..49bf8f9287
 +"The MD5 and SHA1 algorithms are always supported.");
 +
 +#define _HASHLIB_NEW_METHODDEF    \
-+    {"new", (PyCFunction)(void(*)(void))_hashlib_new, METH_FASTCALL|METH_KEYWORDS, _hashlib_new__doc__},
++    {"new", _PyCFunction_CAST(_hashlib_new), METH_FASTCALL|METH_KEYWORDS, _hashlib_new__doc__},
 +
 +static PyObject *
-+_hashlib_new_impl(PyObject *module, const char *name, Py_buffer *string,
++_hashlib_new_impl(PyObject *module, const char *name, Py_buffer *data,
 +                  int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_new(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"name", "string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "new", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 3
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(name), &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"name", "data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "new",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[3];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 1;
 +    const char *name;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 1, 2, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 1, /*maxpos*/ 2, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -1536,11 +1612,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[1]) {
-+        if (PyObject_GetBuffer(args[1], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("new", "argument 'string'", "contiguous buffer", args[1]);
++        if (PyObject_GetBuffer(args[1], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -1556,42 +1628,68 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_new_impl(module, name, &string, usedforsecurity);
++    return_value = _hashlib_new_impl(module, name, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
 +}
 +
 +PyDoc_STRVAR(_hashlib_openssl_md5__doc__,
-+"openssl_md5($module, /, string=None, *, usedforsecurity=True)\n"
++"openssl_md5($module, /, data=<unrepresentable>, *, usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Returns a md5 hash object; optionally initialized with a string.");
 +
 +#define _HASHLIB_OPENSSL_MD5_METHODDEF    \
-+    {"openssl_md5", (PyCFunction)(void(*)(void))_hashlib_openssl_md5, METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_md5__doc__},
++    {"openssl_md5", _PyCFunction_CAST(_hashlib_openssl_md5), METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_md5__doc__},
 +
 +static PyObject *
-+_hashlib_openssl_md5_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_md5_impl(PyObject *module, Py_buffer *data,
 +                          int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_openssl_md5(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "openssl_md5", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 2
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "openssl_md5",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[2];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 0;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 0, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 0, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -1599,11 +1697,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[0]) {
-+        if (PyObject_GetBuffer(args[0], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("openssl_md5", "argument 'string'", "contiguous buffer", args[0]);
++        if (PyObject_GetBuffer(args[0], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -1619,42 +1713,69 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_openssl_md5_impl(module, &string, usedforsecurity);
++    return_value = _hashlib_openssl_md5_impl(module, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
 +}
 +
 +PyDoc_STRVAR(_hashlib_openssl_sha1__doc__,
-+"openssl_sha1($module, /, string=None, *, usedforsecurity=True)\n"
++"openssl_sha1($module, /, data=<unrepresentable>, *,\n"
++"             usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Returns a sha1 hash object; optionally initialized with a string.");
 +
 +#define _HASHLIB_OPENSSL_SHA1_METHODDEF    \
-+    {"openssl_sha1", (PyCFunction)(void(*)(void))_hashlib_openssl_sha1, METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha1__doc__},
++    {"openssl_sha1", _PyCFunction_CAST(_hashlib_openssl_sha1), METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha1__doc__},
 +
 +static PyObject *
-+_hashlib_openssl_sha1_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha1_impl(PyObject *module, Py_buffer *data,
 +                           int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_openssl_sha1(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "openssl_sha1", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 2
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "openssl_sha1",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[2];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 0;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 0, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 0, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -1662,11 +1783,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[0]) {
-+        if (PyObject_GetBuffer(args[0], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("openssl_sha1", "argument 'string'", "contiguous buffer", args[0]);
++        if (PyObject_GetBuffer(args[0], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -1682,42 +1799,69 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_openssl_sha1_impl(module, &string, usedforsecurity);
++    return_value = _hashlib_openssl_sha1_impl(module, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
 +}
 +
 +PyDoc_STRVAR(_hashlib_openssl_sha224__doc__,
-+"openssl_sha224($module, /, string=None, *, usedforsecurity=True)\n"
++"openssl_sha224($module, /, data=<unrepresentable>, *,\n"
++"               usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Returns a sha224 hash object; optionally initialized with a string.");
 +
 +#define _HASHLIB_OPENSSL_SHA224_METHODDEF    \
-+    {"openssl_sha224", (PyCFunction)(void(*)(void))_hashlib_openssl_sha224, METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha224__doc__},
++    {"openssl_sha224", _PyCFunction_CAST(_hashlib_openssl_sha224), METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha224__doc__},
 +
 +static PyObject *
-+_hashlib_openssl_sha224_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha224_impl(PyObject *module, Py_buffer *data,
 +                             int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_openssl_sha224(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "openssl_sha224", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 2
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "openssl_sha224",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[2];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 0;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 0, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 0, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -1725,11 +1869,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[0]) {
-+        if (PyObject_GetBuffer(args[0], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("openssl_sha224", "argument 'string'", "contiguous buffer", args[0]);
++        if (PyObject_GetBuffer(args[0], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -1745,42 +1885,69 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_openssl_sha224_impl(module, &string, usedforsecurity);
++    return_value = _hashlib_openssl_sha224_impl(module, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
 +}
 +
 +PyDoc_STRVAR(_hashlib_openssl_sha256__doc__,
-+"openssl_sha256($module, /, string=None, *, usedforsecurity=True)\n"
++"openssl_sha256($module, /, data=<unrepresentable>, *,\n"
++"               usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Returns a sha256 hash object; optionally initialized with a string.");
 +
 +#define _HASHLIB_OPENSSL_SHA256_METHODDEF    \
-+    {"openssl_sha256", (PyCFunction)(void(*)(void))_hashlib_openssl_sha256, METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha256__doc__},
++    {"openssl_sha256", _PyCFunction_CAST(_hashlib_openssl_sha256), METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha256__doc__},
 +
 +static PyObject *
-+_hashlib_openssl_sha256_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha256_impl(PyObject *module, Py_buffer *data,
 +                             int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_openssl_sha256(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "openssl_sha256", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 2
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "openssl_sha256",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[2];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 0;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 0, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 0, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -1788,11 +1955,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[0]) {
-+        if (PyObject_GetBuffer(args[0], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("openssl_sha256", "argument 'string'", "contiguous buffer", args[0]);
++        if (PyObject_GetBuffer(args[0], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -1808,42 +1971,69 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_openssl_sha256_impl(module, &string, usedforsecurity);
++    return_value = _hashlib_openssl_sha256_impl(module, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
 +}
 +
 +PyDoc_STRVAR(_hashlib_openssl_sha384__doc__,
-+"openssl_sha384($module, /, string=None, *, usedforsecurity=True)\n"
++"openssl_sha384($module, /, data=<unrepresentable>, *,\n"
++"               usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Returns a sha384 hash object; optionally initialized with a string.");
 +
 +#define _HASHLIB_OPENSSL_SHA384_METHODDEF    \
-+    {"openssl_sha384", (PyCFunction)(void(*)(void))_hashlib_openssl_sha384, METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha384__doc__},
++    {"openssl_sha384", _PyCFunction_CAST(_hashlib_openssl_sha384), METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha384__doc__},
 +
 +static PyObject *
-+_hashlib_openssl_sha384_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha384_impl(PyObject *module, Py_buffer *data,
 +                             int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_openssl_sha384(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "openssl_sha384", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 2
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "openssl_sha384",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[2];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 0;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 0, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 0, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -1851,11 +2041,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[0]) {
-+        if (PyObject_GetBuffer(args[0], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("openssl_sha384", "argument 'string'", "contiguous buffer", args[0]);
++        if (PyObject_GetBuffer(args[0], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -1871,42 +2057,69 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_openssl_sha384_impl(module, &string, usedforsecurity);
++    return_value = _hashlib_openssl_sha384_impl(module, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
 +}
 +
 +PyDoc_STRVAR(_hashlib_openssl_sha512__doc__,
-+"openssl_sha512($module, /, string=None, *, usedforsecurity=True)\n"
++"openssl_sha512($module, /, data=<unrepresentable>, *,\n"
++"               usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Returns a sha512 hash object; optionally initialized with a string.");
 +
 +#define _HASHLIB_OPENSSL_SHA512_METHODDEF    \
-+    {"openssl_sha512", (PyCFunction)(void(*)(void))_hashlib_openssl_sha512, METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha512__doc__},
++    {"openssl_sha512", _PyCFunction_CAST(_hashlib_openssl_sha512), METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_sha512__doc__},
 +
 +static PyObject *
-+_hashlib_openssl_sha512_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_sha512_impl(PyObject *module, Py_buffer *data,
 +                             int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_openssl_sha512(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "openssl_sha512", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 2
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "openssl_sha512",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[2];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 0;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 0, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 0, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -1914,11 +2127,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[0]) {
-+        if (PyObject_GetBuffer(args[0], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("openssl_sha512", "argument 'string'", "contiguous buffer", args[0]);
++        if (PyObject_GetBuffer(args[0], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -1934,42 +2143,69 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_openssl_sha512_impl(module, &string, usedforsecurity);
++    return_value = _hashlib_openssl_sha512_impl(module, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
 +}
 +
 +PyDoc_STRVAR(_hashlib_openssl_shake_128__doc__,
-+"openssl_shake_128($module, /, string=None, *, usedforsecurity=True)\n"
++"openssl_shake_128($module, /, data=<unrepresentable>, *,\n"
++"                  usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Returns a shake-128 variable hash object; optionally initialized with a string.");
 +
 +#define _HASHLIB_OPENSSL_SHAKE_128_METHODDEF    \
-+    {"openssl_shake_128", (PyCFunction)(void(*)(void))_hashlib_openssl_shake_128, METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_shake_128__doc__},
++    {"openssl_shake_128", _PyCFunction_CAST(_hashlib_openssl_shake_128), METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_shake_128__doc__},
 +
 +static PyObject *
-+_hashlib_openssl_shake_128_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_shake_128_impl(PyObject *module, Py_buffer *data,
 +                                int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_openssl_shake_128(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "openssl_shake_128", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 2
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "openssl_shake_128",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[2];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 0;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 0, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 0, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -1977,11 +2213,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[0]) {
-+        if (PyObject_GetBuffer(args[0], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("openssl_shake_128", "argument 'string'", "contiguous buffer", args[0]);
++        if (PyObject_GetBuffer(args[0], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -1997,42 +2229,69 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_openssl_shake_128_impl(module, &string, usedforsecurity);
++    return_value = _hashlib_openssl_shake_128_impl(module, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
 +}
 +
 +PyDoc_STRVAR(_hashlib_openssl_shake_256__doc__,
-+"openssl_shake_256($module, /, string=None, *, usedforsecurity=True)\n"
++"openssl_shake_256($module, /, data=<unrepresentable>, *,\n"
++"                  usedforsecurity=True)\n"
 +"--\n"
 +"\n"
 +"Returns a shake-256 variable hash object; optionally initialized with a string.");
 +
 +#define _HASHLIB_OPENSSL_SHAKE_256_METHODDEF    \
-+    {"openssl_shake_256", (PyCFunction)(void(*)(void))_hashlib_openssl_shake_256, METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_shake_256__doc__},
++    {"openssl_shake_256", _PyCFunction_CAST(_hashlib_openssl_shake_256), METH_FASTCALL|METH_KEYWORDS, _hashlib_openssl_shake_256__doc__},
 +
 +static PyObject *
-+_hashlib_openssl_shake_256_impl(PyObject *module, Py_buffer *string,
++_hashlib_openssl_shake_256_impl(PyObject *module, Py_buffer *data,
 +                                int usedforsecurity);
 +
 +static PyObject *
 +_hashlib_openssl_shake_256(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
-+    static const char * const _keywords[] = {"string", "usedforsecurity", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "openssl_shake_256", 0};
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 2
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(data), &_Py_ID(usedforsecurity), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
++    static const char * const _keywords[] = {"data", "usedforsecurity", NULL};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "openssl_shake_256",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[2];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 0;
-+    Py_buffer string = {NULL, NULL};
++    Py_buffer data = {NULL, NULL};
 +    int usedforsecurity = 1;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 0, 1, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 0, /*maxpos*/ 1, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
@@ -2040,11 +2299,7 @@ index 0000000000..49bf8f9287
 +        goto skip_optional_pos;
 +    }
 +    if (args[0]) {
-+        if (PyObject_GetBuffer(args[0], &string, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&string, 'C')) {
-+            _PyArg_BadArgument("openssl_shake_256", "argument 'string'", "contiguous buffer", args[0]);
++        if (PyObject_GetBuffer(args[0], &data, PyBUF_SIMPLE) != 0) {
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -2060,12 +2315,12 @@ index 0000000000..49bf8f9287
 +        goto exit;
 +    }
 +skip_optional_kwonly:
-+    return_value = _hashlib_openssl_shake_256_impl(module, &string, usedforsecurity);
++    return_value = _hashlib_openssl_shake_256_impl(module, &data, usedforsecurity);
 +
 +exit:
-+    /* Cleanup for string */
-+    if (string.obj) {
-+       PyBuffer_Release(&string);
++    /* Cleanup for data */
++    if (data.obj) {
++       PyBuffer_Release(&data);
 +    }
 +
 +    return return_value;
@@ -2088,7 +2343,7 @@ index 0000000000..49bf8f9287
 +"types and lengths of a and b--but not their values.");
 +
 +#define _HASHLIB_COMPARE_DIGEST_METHODDEF    \
-+    {"compare_digest", (PyCFunction)(void(*)(void))_hashlib_compare_digest, METH_FASTCALL, _hashlib_compare_digest__doc__},
++    {"compare_digest", _PyCFunction_CAST(_hashlib_compare_digest), METH_FASTCALL, _hashlib_compare_digest__doc__},
 +
 +static PyObject *
 +_hashlib_compare_digest_impl(PyObject *module, PyObject *a, PyObject *b);
@@ -2118,7 +2373,7 @@ index 0000000000..49bf8f9287
 +"Single-shot HMAC.");
 +
 +#define _HASHLIB_HMAC_SINGLESHOT_METHODDEF    \
-+    {"hmac_digest", (PyCFunction)(void(*)(void))_hashlib_hmac_singleshot, METH_FASTCALL|METH_KEYWORDS, _hashlib_hmac_singleshot__doc__},
++    {"hmac_digest", _PyCFunction_CAST(_hashlib_hmac_singleshot), METH_FASTCALL|METH_KEYWORDS, _hashlib_hmac_singleshot__doc__},
 +
 +static PyObject *
 +_hashlib_hmac_singleshot_impl(PyObject *module, Py_buffer *key,
@@ -2128,29 +2383,47 @@ index 0000000000..49bf8f9287
 +_hashlib_hmac_singleshot(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 3
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(key), &_Py_ID(msg), &_Py_ID(digest), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
 +    static const char * const _keywords[] = {"key", "msg", "digest", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "hmac_digest", 0};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "hmac_digest",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[3];
 +    Py_buffer key = {NULL, NULL};
 +    Py_buffer msg = {NULL, NULL};
 +    const char *digest;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 3, 3, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 3, /*maxpos*/ 3, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
 +    if (PyObject_GetBuffer(args[0], &key, PyBUF_SIMPLE) != 0) {
 +        goto exit;
 +    }
-+    if (!PyBuffer_IsContiguous(&key, 'C')) {
-+        _PyArg_BadArgument("hmac_digest", "argument 'key'", "contiguous buffer", args[0]);
-+        goto exit;
-+    }
 +    if (PyObject_GetBuffer(args[1], &msg, PyBUF_SIMPLE) != 0) {
-+        goto exit;
-+    }
-+    if (!PyBuffer_IsContiguous(&msg, 'C')) {
-+        _PyArg_BadArgument("hmac_digest", "argument 'msg'", "contiguous buffer", args[1]);
 +        goto exit;
 +    }
 +    if (!PyUnicode_Check(args[2])) {
@@ -2182,13 +2455,13 @@ index 0000000000..49bf8f9287
 +}
 +
 +PyDoc_STRVAR(_hashlib_hmac_new__doc__,
-+"hmac_new($module, /, key, msg=None, digestmod=None)\n"
++"hmac_new($module, /, key, msg=<unrepresentable>, digestmod=None)\n"
 +"--\n"
 +"\n"
 +"Return a new hmac object.");
 +
 +#define _HASHLIB_HMAC_NEW_METHODDEF    \
-+    {"hmac_new", (PyCFunction)(void(*)(void))_hashlib_hmac_new, METH_FASTCALL|METH_KEYWORDS, _hashlib_hmac_new__doc__},
++    {"hmac_new", _PyCFunction_CAST(_hashlib_hmac_new), METH_FASTCALL|METH_KEYWORDS, _hashlib_hmac_new__doc__},
 +
 +static PyObject *
 +_hashlib_hmac_new_impl(PyObject *module, Py_buffer *key, Py_buffer *msg,
@@ -2198,23 +2471,45 @@ index 0000000000..49bf8f9287
 +_hashlib_hmac_new(PyObject *module, PyObject *const *args, Py_ssize_t nargs, PyObject *kwnames)
 +{
 +    PyObject *return_value = NULL;
++    #if defined(Py_BUILD_CORE) && !defined(Py_BUILD_CORE_MODULE)
++
++    #define NUM_KEYWORDS 3
++    static struct {
++        PyGC_Head _this_is_not_used;
++        PyObject_VAR_HEAD
++        Py_hash_t ob_hash;
++        PyObject *ob_item[NUM_KEYWORDS];
++    } _kwtuple = {
++        .ob_base = PyVarObject_HEAD_INIT(&PyTuple_Type, NUM_KEYWORDS)
++        .ob_hash = -1,
++        .ob_item = { &_Py_ID(key), &_Py_ID(msg), &_Py_ID(digestmod), },
++    };
++    #undef NUM_KEYWORDS
++    #define KWTUPLE (&_kwtuple.ob_base.ob_base)
++
++    #else  // !Py_BUILD_CORE
++    #  define KWTUPLE NULL
++    #endif  // !Py_BUILD_CORE
++
 +    static const char * const _keywords[] = {"key", "msg", "digestmod", NULL};
-+    static _PyArg_Parser _parser = {NULL, _keywords, "hmac_new", 0};
++    static _PyArg_Parser _parser = {
++        .keywords = _keywords,
++        .fname = "hmac_new",
++        .kwtuple = KWTUPLE,
++    };
++    #undef KWTUPLE
 +    PyObject *argsbuf[3];
 +    Py_ssize_t noptargs = nargs + (kwnames ? PyTuple_GET_SIZE(kwnames) : 0) - 1;
 +    Py_buffer key = {NULL, NULL};
 +    Py_buffer msg = {NULL, NULL};
 +    const char *digestmod = NULL;
 +
-+    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser, 1, 3, 0, argsbuf);
++    args = _PyArg_UnpackKeywords(args, nargs, NULL, kwnames, &_parser,
++            /*minpos*/ 1, /*maxpos*/ 3, /*minkw*/ 0, /*varpos*/ 0, argsbuf);
 +    if (!args) {
 +        goto exit;
 +    }
 +    if (PyObject_GetBuffer(args[0], &key, PyBUF_SIMPLE) != 0) {
-+        goto exit;
-+    }
-+    if (!PyBuffer_IsContiguous(&key, 'C')) {
-+        _PyArg_BadArgument("hmac_new", "argument 'key'", "contiguous buffer", args[0]);
 +        goto exit;
 +    }
 +    if (!noptargs) {
@@ -2222,10 +2517,6 @@ index 0000000000..49bf8f9287
 +    }
 +    if (args[1]) {
 +        if (PyObject_GetBuffer(args[1], &msg, PyBUF_SIMPLE) != 0) {
-+            goto exit;
-+        }
-+        if (!PyBuffer_IsContiguous(&msg, 'C')) {
-+            _PyArg_BadArgument("hmac_new", "argument 'msg'", "contiguous buffer", args[1]);
 +            goto exit;
 +        }
 +        if (!--noptargs) {
@@ -2260,7 +2551,7 @@ index 0000000000..49bf8f9287
 +
 +    return return_value;
 +}
-+/*[clinic end generated code: output=b4705bad5ece43e9 input=a9049054013a1b77]*/
++/*[clinic end generated code: output=6b2c621573a26c54 input=a9049054013a1b77]*/
 -- 
-2.32.0
+2.54.0
 
