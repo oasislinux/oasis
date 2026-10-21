@@ -41,7 +41,8 @@ build('sed', '$outdir/include/dav1d/version.h', '$srcdir/include/dav1d/version.h
 build('awk', '$outdir/vcs_version.h', '$dir/ver', {
 	expr=[['{printf "#define DAV1D_VERSION \"%s\"\n", $$1}']],
 })
-build('awk', '$outdir/config.asm', '$dir/config.h', {
+build('unifdef', '$outdir/config.h.tmp', '$dir/config.h', {flags='-D__x86_64__'})
+build('awk', '$outdir/config.asm', '$outdir/config.h.tmp', {
 	expr=[['$$1 == "#define" {print "%define " substr($$0, length("#define ") + 1)} END {print "%define private_prefix dav1d"}']],
 })
 build('touch', '$outdir/cli_config.h')
