@@ -1,4 +1,4 @@
-From e76fda424564544bc8298fb5be7cda966451497d Mon Sep 17 00:00:00 2001
+From c5f80115a04b3714b73e1f4dc1359b8e51ae8aa0 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 17:12:56 -0800
 Subject: [PATCH] Remove getpass definition
@@ -9,10 +9,10 @@ It is a legacy function and musl already provides an implementation.
  1 file changed, 2 insertions(+), 10 deletions(-)
 
 diff --git a/lib/libc/gen/readpassphrase.c b/lib/libc/gen/readpassphrase.c
-index a50eaf003..57c6dc527 100644
+index 01bff7d306c..f9d91263bc8 100644
 --- a/lib/libc/gen/readpassphrase.c
 +++ b/lib/libc/gen/readpassphrase.c
-@@ -183,16 +183,8 @@ restart:
+@@ -198,16 +198,8 @@ restart:
  }
  DEF_WEAK(readpassphrase);
  
@@ -32,5 +32,5 @@ index a50eaf003..57c6dc527 100644
  	signo[s] = 1;
  }
 -- 
-2.12.2
+2.54.0
 

@@ -1,4 +1,4 @@
-From d74af6c05b11f5d000f0a4aae3c287b6d4e2829f Mon Sep 17 00:00:00 2001
+From bd8db951717def72440051dae7dc0a8b71489a1a Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Thu, 2 Apr 2026 17:02:47 -0700
 Subject: [PATCH] Explicitly cast arguments to functions expecting char pointer
@@ -11,7 +11,7 @@ Subject: [PATCH] Explicitly cast arguments to functions expecting char pointer
  3 files changed, 22 insertions(+), 21 deletions(-)
 
 diff --git a/usr.bin/diff/diffreg.c b/usr.bin/diff/diffreg.c
-index 3470f54c337..c36765a44c8 100644
+index f3af03bc232..aab4a3b9fc8 100644
 --- a/usr.bin/diff/diffreg.c
 +++ b/usr.bin/diff/diffreg.c
 @@ -1269,19 +1269,19 @@ match_function(const long *f, int pos, FILE *fp)
@@ -130,10 +130,10 @@ index 1f1fb96e2af..37a18f191f2 100644
  		/* Headers continue until we hit an empty line */
  		for (r = 0; r < HTTP_MAXHDRS; r++) {
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index 8d66dac49d9..6bc647c6009 100644
+index 2a3c7babb12..e2ef3607b24 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
-@@ -215,7 +215,8 @@ op_sign(int fd, struct key *key, enum acctop op)
+@@ -211,7 +211,8 @@ op_sign(int fd, struct key *key, enum acctop op)
  
  	/* Base64-encode the payload. */
  
@@ -144,5 +144,5 @@ index 8d66dac49d9..6bc647c6009 100644
  		goto out;
  	}
 -- 
-2.49.0
+2.54.0
 

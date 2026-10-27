@@ -1,4 +1,4 @@
-From 0f55823084233ab6980c6c1beb9a2fedadc7a5ee Mon Sep 17 00:00:00 2001
+From d29604bf36c2364b8d0a752e6753a345f2e431af Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 20:10:05 -0700
 Subject: [PATCH] acme-client: Fix signed-ness of base64buf_url input
@@ -13,10 +13,10 @@ This make most of the pointer casts unnecessary.
  5 files changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index da3d49107ae..9e97a8bb760 100644
+index f98826ab698..7a0b9811990 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
-@@ -42,8 +42,9 @@
+@@ -43,8 +43,9 @@
  static char *
  bn2string(const BIGNUM *bn)
  {
@@ -28,7 +28,7 @@ index da3d49107ae..9e97a8bb760 100644
  
  	/* Extract big-endian representation of BIGNUM. */
  
-@@ -51,7 +52,7 @@ bn2string(const BIGNUM *bn)
+@@ -52,7 +53,7 @@ bn2string(const BIGNUM *bn)
  	if ((buf = malloc(len)) == NULL) {
  		warn("malloc");
  		return NULL;
@@ -37,7 +37,7 @@ index da3d49107ae..9e97a8bb760 100644
  		warnx("BN_bn2bin");
  		free(buf);
  		return NULL;
-@@ -167,7 +168,7 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
+@@ -168,7 +169,7 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
  		warnx("EVP_Digest");
  		goto out;
  	}
@@ -46,7 +46,7 @@ index da3d49107ae..9e97a8bb760 100644
  		warnx("base64buf_url");
  		goto out;
  	}
-@@ -281,7 +282,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -278,7 +279,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* Base64-encode the payload. */
  
@@ -55,7 +55,7 @@ index da3d49107ae..9e97a8bb760 100644
  		warnx("base64buf_url");
  		goto out;
  	}
-@@ -324,7 +325,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -325,7 +326,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* The header combined with the nonce, base64. */
  
@@ -64,7 +64,7 @@ index da3d49107ae..9e97a8bb760 100644
  		warnx("base64buf_url");
  		goto out;
  	}
-@@ -363,7 +364,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -364,7 +365,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	switch (EVP_PKEY_base_id(pkey)) {
  	case EVP_PKEY_RSA:
@@ -73,7 +73,7 @@ index da3d49107ae..9e97a8bb760 100644
  			warnx("base64buf_url");
  			goto out;
  		}
-@@ -402,7 +403,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -403,7 +404,7 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  			goto out;
  		}
  
@@ -83,10 +83,10 @@ index da3d49107ae..9e97a8bb760 100644
  			goto out;
  		}
 diff --git a/usr.sbin/acme-client/base64.c b/usr.sbin/acme-client/base64.c
-index 2b6377f0d81..0d84ad4b458 100644
+index a665143e74f..b3ea459abac 100644
 --- a/usr.sbin/acme-client/base64.c
 +++ b/usr.sbin/acme-client/base64.c
-@@ -39,7 +39,7 @@ base64len(size_t len)
+@@ -40,7 +40,7 @@ base64len(size_t len)
   * Returns NULL on allocation failure (not logged).
   */
  char *
@@ -96,18 +96,18 @@ index 2b6377f0d81..0d84ad4b458 100644
  	size_t	 i, sz;
  	char	*buf;
 diff --git a/usr.sbin/acme-client/extern.h b/usr.sbin/acme-client/extern.h
-index 8b500561744..990c784f706 100644
+index 352e90a77db..b1d697412ed 100644
 --- a/usr.sbin/acme-client/extern.h
 +++ b/usr.sbin/acme-client/extern.h
-@@ -241,7 +241,7 @@ int		 checkexit_ext(int *, pid_t, enum comp);
+@@ -243,7 +243,7 @@ int		 checkexit_ext(int *, pid_t, enum comp);
   * Returns a buffer or NULL on allocation error.
   */
  size_t		 base64len(size_t);
 -char		*base64buf_url(const char *, size_t);
 +char		*base64buf_url(const unsigned char *, size_t);
+ int		 unbase64buf_url(const unsigned char *, unsigned char **);
  
  /*
-  * JSON parsing routines.
 diff --git a/usr.sbin/acme-client/keyproc.c b/usr.sbin/acme-client/keyproc.c
 index bab74c2b385..4360156b9c0 100644
 --- a/usr.sbin/acme-client/keyproc.c
@@ -132,10 +132,10 @@ index bab74c2b385..4360156b9c0 100644
  		goto out;
  	} else if ((der64 = base64buf_url(der, len)) == NULL) {
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index 6fe34043129..c0963a278fb 100644
+index b001c96cb3a..081a68786f2 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
-@@ -79,7 +79,8 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -87,7 +87,8 @@ revokeproc(int fd, const char *certfile, int force,
      int revocate, struct domain_c *domain)
  {
  	GENERAL_NAMES			*sans = NULL;
@@ -145,7 +145,7 @@ index 6fe34043129..c0963a278fb 100644
  	int				 rc = 0, cc, sanidx, len, j, k;
  	int				*found_altnames = NULL;
  	FILE				*f = NULL;
-@@ -320,7 +321,7 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -328,7 +329,7 @@ revokeproc(int fd, const char *certfile, int force,
  		} else if ((der = dercp = malloc(len)) == NULL) {
  			warn("malloc");
  			goto out;

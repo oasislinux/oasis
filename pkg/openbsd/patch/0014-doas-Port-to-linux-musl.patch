@@ -1,4 +1,4 @@
-From cca6c84b472255c4d015d7d97225791796f61392 Mon Sep 17 00:00:00 2001
+From ce3fbebc0e4fba14f5af877b8c0bdd91bf9e5d4b Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 26 Feb 2017 16:50:55 -0800
 Subject: [PATCH] doas: Port to linux/musl
@@ -10,8 +10,6 @@ Use timestamp files in /run/doas instead of TIOC*VERAUTH to implement
 persist.
 
 Use initgroups/setgid/setuid instead of setusercontext.
-
-Provide UID_MAX and GID_MAX defaults.
 
 Use LOGIN_NAME_MAX instead of _PW_NAME_LEN.
 
@@ -27,12 +25,12 @@ Simplify handling of PATH in the environment since we don't have
 login.conf with per-user default PATH.
 ---
  usr.bin/doas/doas.1    |   9 ---
- usr.bin/doas/doas.c    | 168 +++++++++++++----------------------------
+ usr.bin/doas/doas.c    | 160 ++++++++++++-----------------------------
  usr.bin/doas/doas.h    |   6 +-
  usr.bin/doas/env.c     |  17 ++---
  usr.bin/doas/parse.y   |   1 +
- usr.bin/doas/persist.c | 133 ++++++++++++++++++++++++++++++++
- 6 files changed, 198 insertions(+), 136 deletions(-)
+ usr.bin/doas/persist.c | 133 ++++++++++++++++++++++++++++++++++
+ 6 files changed, 190 insertions(+), 136 deletions(-)
  create mode 100644 usr.bin/doas/persist.c
 
 diff --git a/usr.bin/doas/doas.1 b/usr.bin/doas/doas.1
@@ -63,7 +61,7 @@ index 25827cc7104..3542680faf5 100644
  Parse and check the configuration file
  .Ar config ,
 diff --git a/usr.bin/doas/doas.c b/usr.bin/doas/doas.c
-index 3999b2e2f64..32532359267 100644
+index cb4a8616a92..f6c184338fa 100644
 --- a/usr.bin/doas/doas.c
 +++ b/usr.bin/doas/doas.c
 @@ -20,8 +20,6 @@
@@ -75,7 +73,7 @@ index 3999b2e2f64..32532359267 100644
  #include <readpassphrase.h>
  #include <string.h>
  #include <stdio.h>
-@@ -33,13 +31,22 @@
+@@ -33,13 +31,14 @@
  #include <syslog.h>
  #include <errno.h>
  #include <fcntl.h>
@@ -83,14 +81,6 @@ index 3999b2e2f64..32532359267 100644
  
  #include "doas.h"
  
-+#ifndef UID_MAX
-+#define UID_MAX 65535
-+#endif
-+
-+#ifndef GID_MAX
-+#define GID_MAX 65535
-+#endif
-+
  static void __dead
  usage(void)
  {
@@ -99,7 +89,7 @@ index 3999b2e2f64..32532359267 100644
  	    " command [arg ...]\n");
  	exit(1);
  }
-@@ -203,16 +210,28 @@ checkconfig(const char *confpath, int argc, char **argv,
+@@ -203,16 +202,28 @@ checkconfig(const char *confpath, int argc, char **argv,
  }
  
  static int
@@ -135,7 +125,7 @@ index 3999b2e2f64..32532359267 100644
  	if (!challenge) {
  		char host[HOST_NAME_MAX + 1];
  
-@@ -225,14 +244,12 @@ authuser_checkpass(char *myname, char *login_style)
+@@ -225,14 +236,12 @@ authuser_checkpass(char *myname, char *login_style)
  	response = readpassphrase(challenge, rbuf, sizeof(rbuf),
  	    RPP_REQUIRE_TTY);
  	if (response == NULL && errno == ENOTTY) {
@@ -153,7 +143,7 @@ index 3999b2e2f64..32532359267 100644
  		warnx("Authentication failed");
  		return AUTH_FAILED;
  	}
-@@ -241,79 +258,36 @@ authuser_checkpass(char *myname, char *login_style)
+@@ -241,79 +250,36 @@ authuser_checkpass(char *myname, char *login_style)
  }
  
  static void
@@ -241,7 +231,7 @@ index 3999b2e2f64..32532359267 100644
  	struct passwd mypwstore, targpwstore;
  	struct passwd *mypw, *targpw;
  	const struct rule *rule;
-@@ -326,28 +300,20 @@ main(int argc, char **argv)
+@@ -326,28 +292,20 @@ main(int argc, char **argv)
  	int nflag = 0;
  	char cwdpath[PATH_MAX];
  	const char *cwd;
@@ -273,7 +263,7 @@ index 3999b2e2f64..32532359267 100644
  		case 'u':
  			if (parseuid(optarg, &target) != 0)
  				errx(1, "unknown user");
-@@ -418,50 +384,30 @@ main(int argc, char **argv)
+@@ -418,50 +376,30 @@ main(int argc, char **argv)
  	rv = permit(uid, groups, ngroups, &rule, target, cmd,
  	    (const char **)argv + 1);
  	if (rv != 0) {
@@ -334,7 +324,7 @@ index 3999b2e2f64..32532359267 100644
  
  	if (pledge("stdio rpath exec", NULL) == -1)
  		err(1, "pledge");
-@@ -475,23 +421,17 @@ main(int argc, char **argv)
+@@ -475,23 +413,17 @@ main(int argc, char **argv)
  		err(1, "pledge");
  
  	if (!(rule->options & NOLOG)) {
@@ -577,5 +567,5 @@ index 00000000000..4ad1bf1efbf
 +	return 0;
 +}
 -- 
-2.49.0
+2.54.0
 

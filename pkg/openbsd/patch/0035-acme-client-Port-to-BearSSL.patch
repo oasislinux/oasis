@@ -1,22 +1,22 @@
-From 4ad4ffcb7c731ae48c97b93760d7625724a991bc Mon Sep 17 00:00:00 2001
+From 1c035ffeee5beaaef9907f7b1a17c64e384085b5 Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Fri, 23 Apr 2021 23:14:16 -0700
 Subject: [PATCH] acme-client: Port to BearSSL
 
 ---
- usr.sbin/acme-client/acctproc.c   | 298 +++++++++------------------
+ usr.sbin/acme-client/acctproc.c   | 322 ++++++++++-------------------
  usr.sbin/acme-client/certproc.c   |   5 -
  usr.sbin/acme-client/key.c        | 329 ++++++++++++++++++++++++------
  usr.sbin/acme-client/key.h        |  22 +-
  usr.sbin/acme-client/keyproc.c    | 192 ++++++-----------
- usr.sbin/acme-client/revokeproc.c | 319 +++++++++++------------------
- 6 files changed, 568 insertions(+), 597 deletions(-)
+ usr.sbin/acme-client/revokeproc.c | 327 +++++++++++------------------
+ 6 files changed, 580 insertions(+), 617 deletions(-)
 
 diff --git a/usr.sbin/acme-client/acctproc.c b/usr.sbin/acme-client/acctproc.c
-index 9e97a8bb760..8d66dac49d9 100644
+index 7a0b9811990..adbe6e8c2ab 100644
 --- a/usr.sbin/acme-client/acctproc.c
 +++ b/usr.sbin/acme-client/acctproc.c
-@@ -19,73 +19,29 @@
+@@ -19,74 +19,29 @@
  
  #include <err.h>
  #include <errno.h>
@@ -29,6 +29,7 @@ index 9e97a8bb760..8d66dac49d9 100644
 -#include <openssl/bn.h>
 -#include <openssl/ec.h>
 -#include <openssl/evp.h>
+-#include <openssl/hmac.h>
 -#include <openssl/rsa.h>
 -#include <openssl/err.h>
 +#include <bearssl.h>
@@ -97,7 +98,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  	else if ((json = json_fmt_thumb_rsa(exp, mod)) == NULL)
  		warnx("json_fmt_thumb_rsa");
  
-@@ -99,31 +55,23 @@ op_thumb_rsa(EVP_PKEY *pkey)
+@@ -100,31 +55,23 @@ op_thumb_rsa(EVP_PKEY *pkey)
   * thumbprint from them.
   */
  static char *
@@ -139,7 +140,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  	free(x);
  	free(y);
  	return json;
-@@ -133,26 +81,26 @@ op_thumb_ec(EVP_PKEY *pkey)
+@@ -134,26 +81,26 @@ op_thumb_ec(EVP_PKEY *pkey)
   * The thumbprint operation is used for the challenge sequence.
   */
  static int
@@ -175,7 +176,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  		goto out;
  	}
  
-@@ -163,12 +111,10 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
+@@ -164,12 +111,10 @@ op_thumbprint(int fd, EVP_PKEY *pkey)
  	 * it up in the read loop).
  	 */
  
@@ -192,22 +193,18 @@ index 9e97a8bb760..8d66dac49d9 100644
  		warnx("base64buf_url");
  		goto out;
  	}
-@@ -183,11 +129,10 @@ out:
+@@ -184,20 +129,17 @@ out:
  }
  
  static int
--op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
-+op_sign_rsa(char **prot, struct key *key, const char *nonce, const char *url)
+-op_sign_rsa(char **jwk, EVP_PKEY *pkey)
++op_sign_rsa(char **jwk, struct key *key)
  {
  	char	*exp = NULL, *mod = NULL;
  	int	rc = 0;
 -	RSA	*r;
  
- 	*prot = NULL;
- 
-@@ -196,12 +141,10 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
- 	 * Finally, format the header combined with the nonce.
- 	 */
+ 	*jwk = NULL;
  
 -	if ((r = EVP_PKEY_get0_RSA(pkey)) == NULL)
 -		warnx("EVP_PKEY_get0_RSA");
@@ -219,15 +216,15 @@ index 9e97a8bb760..8d66dac49d9 100644
 +		warnx("base64buf_url");
 +	else if ((exp = base64buf_url(key->rsa.pk.e, key->rsa.pk.elen)) == NULL)
 +		warnx("base64buf_url");
- 	else if ((*prot = json_fmt_protected_rsa(exp, mod, nonce, url)) == NULL)
- 		warnx("json_fmt_protected_rsa");
+ 	else if ((*jwk = json_fmt_jwk_rsa(exp, mod)) == NULL)
+ 		warnx("json_fmt_jwk_rsa");
  	else
-@@ -213,35 +156,27 @@ op_sign_rsa(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+@@ -209,35 +151,27 @@ op_sign_rsa(char **jwk, EVP_PKEY *pkey)
  }
  
  static int
--op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
-+op_sign_ec(char **prot, struct key *key, const char *nonce, const char *url)
+-op_sign_ec(char **jwk, EVP_PKEY *pkey)
++op_sign_ec(char **jwk, struct key *key)
  {
 -	BIGNUM	*X = NULL, *Y = NULL;
 -	EC_KEY	*ec = NULL;
@@ -235,7 +232,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  	char	*x = NULL, *y = NULL;
  	int	rc = 0;
  
- 	*prot = NULL;
+ 	*jwk = NULL;
  
 -	if ((ec = EVP_PKEY_get0_EC_KEY(pkey)) == NULL)
 -		warnx("EVP_PKEY_get0_EC_KEY");
@@ -258,8 +255,8 @@ index 9e97a8bb760..8d66dac49d9 100644
 +		warnx("base64buf_url");
 +	else if ((y = base64buf_url(key->ec.pk.q + 1 + len, len)) == NULL)
 +		warnx("base64buf_url");
- 	else if ((*prot = json_fmt_protected_ec(x, y, nonce, url)) == NULL)
- 		warnx("json_fmt_protected_ec");
+ 	else if ((*jwk = json_fmt_jwk_ec(x, y)) == NULL)
+ 		warnx("json_fmt_jwk_ec");
  	else
  		rc = 1;
  
@@ -268,7 +265,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  	free(x);
  	free(y);
  	return rc;
-@@ -252,20 +187,18 @@ op_sign_ec(char **prot, EVP_PKEY *pkey, const char *nonce, const char *url)
+@@ -248,21 +182,19 @@ op_sign_ec(char **jwk, EVP_PKEY *pkey)
   * This requires the sender ("fd") to provide the payload and a nonce.
   */
  static int
@@ -288,6 +285,7 @@ index 9e97a8bb760..8d66dac49d9 100644
 -	char			*sign = NULL, *dig64 = NULL, *fin = NULL;
 +	char			*sign = NULL, *sig64 = NULL, *fin = NULL;
  	char			*url = NULL, *kid = NULL, *alg = NULL;
+ 	char			*jwk = NULL;
 -	const unsigned char	*digp;
 -	unsigned char		*dig = NULL, *buf = NULL;
 -	size_t			 digsz;
@@ -297,7 +295,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  
  	/* Read our payload and nonce from the requestor. */
  
-@@ -282,19 +215,22 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -279,19 +211,22 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* Base64-encode the payload. */
  
@@ -326,22 +324,22 @@ index 9e97a8bb760..8d66dac49d9 100644
  		break;
  	default:
  		warnx("unknown account key type");
-@@ -308,17 +244,17 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -305,17 +240,17 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  			goto out;
  		}
  	} else {
 -		switch (EVP_PKEY_base_id(pkey)) {
 -		case EVP_PKEY_RSA:
--			if (!op_sign_rsa(&prot, pkey, nonce, url))
+-			if (!op_sign_rsa(&jwk, pkey))
 +		switch (key->type) {
 +		case BR_KEYTYPE_RSA:
-+			if (!op_sign_rsa(&prot, key, nonce, url))
++			if (!op_sign_rsa(&jwk, key))
  				goto out;
  			break;
 -		case EVP_PKEY_EC:
--			if (!op_sign_ec(&prot, pkey, nonce, url))
+-			if (!op_sign_ec(&jwk, pkey))
 +		case BR_KEYTYPE_EC:
-+			if (!op_sign_ec(&prot, key, nonce, url))
++			if (!op_sign_ec(&jwk, key))
  				goto out;
  			break;
  		default:
@@ -349,8 +347,8 @@ index 9e97a8bb760..8d66dac49d9 100644
 +			warnx("unknown key type");
  			goto out;
  		}
- 	}
-@@ -341,76 +277,34 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+ 
+@@ -342,76 +277,34 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	/* Sign the message. */
  
@@ -402,13 +400,8 @@ index 9e97a8bb760..8d66dac49d9 100644
 -		digp = dig;
 -		if ((ec_sig = d2i_ECDSA_SIG(NULL, &digp, digsz)) == NULL) {
 -			warnx("d2i_ECDSA_SIG");
-+	case BR_KEYTYPE_EC:
-+		sigsz = br_ecdsa_sign_raw_get_default()(br_ec_get_default(),
-+		    ctx.vtable, dig, &key->ec.sk, sig);
-+		if (sigsz == 0 || sigsz % 2 != 0) {
-+			warnx("br_ecdsa_sign_raw");
- 			goto out;
- 		}
+-			goto out;
+-		}
 -
 -		if ((ec_sig_r = ECDSA_SIG_get0_r(ec_sig)) == NULL ||
 -		    (ec_sig_s = ECDSA_SIG_get0_s(ec_sig)) == NULL) {
@@ -423,8 +416,13 @@ index 9e97a8bb760..8d66dac49d9 100644
 -
 -		if ((buf = calloc(2, bn_len)) == NULL) {
 -			warnx("calloc");
--			goto out;
--		}
++	case BR_KEYTYPE_EC:
++		sigsz = br_ecdsa_sign_raw_get_default()(br_ec_get_default(),
++		    ctx.vtable, dig, &key->ec.sk, sig);
++		if (sigsz == 0 || sigsz % 2 != 0) {
++			warnx("br_ecdsa_sign_raw");
+ 			goto out;
+ 		}
 -
 -		if (BN_bn2binpad(ec_sig_r, buf, bn_len) != bn_len ||
 -		    BN_bn2binpad(ec_sig_s, buf + bn_len, bn_len) != bn_len) {
@@ -444,7 +442,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  		goto out;
  	}
  
-@@ -420,7 +314,11 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -421,7 +314,11 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  	 * when we next enter the read loop).
  	 */
  
@@ -457,7 +455,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  		warnx("json_fmt_signed");
  		goto out;
  	} else if (writestr(fd, COMM_REQ, fin) < 0)
-@@ -428,8 +326,6 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
+@@ -429,8 +326,6 @@ op_sign(int fd, EVP_PKEY *pkey, enum acctop op)
  
  	rc = 1;
  out:
@@ -466,7 +464,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  	free(pay);
  	free(sign);
  	free(pay64);
-@@ -438,10 +334,9 @@ out:
+@@ -440,15 +335,14 @@ out:
  	free(kid);
  	free(prot);
  	free(prot64);
@@ -479,8 +477,65 @@ index 9e97a8bb760..8d66dac49d9 100644
  	return rc;
  }
  
-@@ -449,7 +344,7 @@ int
- acctproc(int netsock, const char *acctkey, enum keytype keytype)
+ static int
+-op_eab(int fd, EVP_PKEY *pkey, const char *eab_kid,
++op_eab(int fd, struct key *pkey, const char *eab_kid,
+     const unsigned char *eab_key, int eab_key_len)
+ {
+ 	char			*url = NULL;
+@@ -456,9 +350,11 @@ op_eab(int fd, EVP_PKEY *pkey, const char *eab_kid,
+ 	char			*jwk = NULL, *pay64 = NULL;
+ 	char			*sign = NULL;
+ 	char			*dig64 = NULL, *fin = NULL;
+-	unsigned char		dig[EVP_MAX_MD_SIZE];
++	unsigned char		dig[64];
+ 	unsigned int		digsz;
+ 	int			sign_len, rc = 0;
++	br_hmac_key_context	kc;
++	br_hmac_context		hc;
+ 
+ 	if ((url = readstr(fd, COMM_URL)) == NULL)
+ 		goto out;
+@@ -475,17 +371,17 @@ op_eab(int fd, EVP_PKEY *pkey, const char *eab_kid,
+ 	}
+ 
+ 	/* payload component: account public key */
+-	switch (EVP_PKEY_base_id(pkey)) {
+-	case EVP_PKEY_RSA:
++	switch (pkey->type) {
++	case BR_KEYTYPE_RSA:
+ 		if (!op_sign_rsa(&jwk, pkey))
+ 			goto out;
+ 		break;
+-	case EVP_PKEY_EC:
++	case BR_KEYTYPE_EC:
+ 		if (!op_sign_ec(&jwk, pkey))
+ 			goto out;
+ 		break;
+ 	default:
+-		warnx("EVP_PKEY_base_id");
++		warnx("unknown key type");
+ 		goto out;
+ 	}
+ 
+@@ -502,11 +398,10 @@ op_eab(int fd, EVP_PKEY *pkey, const char *eab_kid,
+ 	}
+ 	
+ 	/* sign with the EAB key */
+-	if (HMAC(EVP_sha256(), eab_key, eab_key_len, sign, sign_len, dig,
+-	    &digsz) == NULL) {
+-		warnx("HMAC");
+-		goto out;
+-	}
++	br_hmac_key_init(&kc, &br_sha256_vtable, eab_key, eab_key_len);
++	br_hmac_init(&hc, &kc, 0);
++	br_hmac_update(&hc, sign, sign_len);
++	digsz = br_hmac_out(&hc, dig);
+ 
+ 	if ((dig64 = base64buf_url((char *)dig, digsz)) == NULL) {
+ 		warnx("base64buf_url");
+@@ -539,7 +434,7 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype,
+     const char *eab_kid, const unsigned char *eab_key, int eab_key_len)
  {
  	FILE		*f = NULL;
 -	EVP_PKEY	*pkey = NULL;
@@ -488,7 +543,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  	long		 lval;
  	enum acctop	 op;
  	int		 rc = 0, cc, newacct = 0;
-@@ -475,8 +370,6 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype)
+@@ -565,8 +460,6 @@ acctproc(int netsock, const char *acctkey, enum keytype keytype,
  
  	/* File-system, user, and sandbox jailing. */
  
@@ -497,7 +552,7 @@ index 9e97a8bb760..8d66dac49d9 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -554,8 +447,7 @@ out:
+@@ -650,8 +543,7 @@ out:
  	close(netsock);
  	if (f != NULL)
  		fclose(f);
@@ -1210,7 +1265,7 @@ index 4360156b9c0..19b8077a8fb 100644
  	return rc;
  }
 diff --git a/usr.sbin/acme-client/revokeproc.c b/usr.sbin/acme-client/revokeproc.c
-index c0963a278fb..2109d7a8799 100644
+index 081a68786f2..785d8aea346 100644
 --- a/usr.sbin/acme-client/revokeproc.c
 +++ b/usr.sbin/acme-client/revokeproc.c
 @@ -15,8 +15,6 @@
@@ -1222,7 +1277,7 @@ index c0963a278fb..2109d7a8799 100644
  #include <assert.h>
  #include <ctype.h>
  #include <err.h>
-@@ -24,71 +22,54 @@
+@@ -24,79 +22,54 @@
  #include <stdio.h>
  #include <stdlib.h>
  #include <string.h>
@@ -1241,13 +1296,13 @@ index c0963a278fb..2109d7a8799 100644
 -/*
 - * Convert the X509's notAfter time into a time_t value.
 - */
--static time_t
--X509notafter(X509 *x)
+-static int
+-X509notafter(const X509 *x, time_t *notafter)
 -{
--	ASN1_TIME	*atim;
+-	const ASN1_TIME	*atim;
 -	struct tm	 t;
 -
--	if ((atim = X509_getm_notAfter(x)) == NULL)
+-	if ((atim = X509_get0_notAfter(x)) == NULL)
 -		return -1;
 -
 -	memset(&t, 0, sizeof(t));
@@ -1255,21 +1310,25 @@ index c0963a278fb..2109d7a8799 100644
 -	if (!ASN1_TIME_to_tm(atim, &t))
 -		return -1;
 -
--	return timegm(&t);
+-	t.tm_wday = -1;		/* sentinel for error */
+-	if ((*notafter = timegm(&t)) == -1 && t.tm_wday == -1)
+-		return -1;
+-
+-	return 0;
 -}
 -
 -/*
 - * Convert the X509's notBefore time into a time_t value.
 - */
--static time_t
--X509notbefore(X509 *x)
+-static int
+-X509notbefore(const X509 *x, time_t *notbefore)
 +static void
 +append_cert(void *ctx, const void *buf, size_t len)
  {
--	ASN1_TIME	*atim;
+-	const ASN1_TIME	*atim;
 -	struct tm	 t;
 -
--	if ((atim = X509_getm_notBefore(x)) == NULL)
+-	if ((atim = X509_get0_notBefore(x)) == NULL)
 -		return -1;
 -
 -	memset(&t, 0, sizeof(t));
@@ -1277,7 +1336,11 @@ index c0963a278fb..2109d7a8799 100644
 -	if (!ASN1_TIME_to_tm(atim, &t))
 -		return -1;
 -
--	return timegm(&t);
+-	t.tm_wday = -1;		/* sentinel for error */
+-	if ((*notbefore = timegm(&t)) == -1 && t.tm_wday == -1)
+-		return -1;
+-
+-	return 0;
 +	br_x509_certificate *cert = ctx;
 +	size_t newlen;
 +	unsigned char *newdata;
@@ -1324,7 +1387,7 @@ index c0963a278fb..2109d7a8799 100644
  
  	/*
  	 * First try to open the certificate before we drop privileges
-@@ -103,8 +84,6 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -111,8 +84,6 @@ revokeproc(int fd, const char *certfile, int force,
  
  	/* File-system and sandbox jailing. */
  
@@ -1333,7 +1396,7 @@ index c0963a278fb..2109d7a8799 100644
  	if (pledge("stdio", NULL) == -1) {
  		warn("pledge");
  		goto out;
-@@ -128,45 +107,89 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -136,45 +107,89 @@ revokeproc(int fd, const char *certfile, int force,
  		goto out;
  	}
  
@@ -1386,7 +1449,7 @@ index c0963a278fb..2109d7a8799 100644
  
  	/* Read out the expiration date. */
  
--	if ((notafter = X509notafter(x)) == -1) {
+-	if (X509notafter(x, &notafter) == -1) {
 -		warnx("X509notafter");
 +	br_x509_decoder_init(&xd, NULL, NULL);
 +	br_x509_decoder_push(&xd, cert.data, cert.data_len);
@@ -1395,7 +1458,7 @@ index c0963a278fb..2109d7a8799 100644
  		goto out;
  	}
 -
--	if ((notbefore = X509notbefore(x)) == -1) {
+-	if (X509notbefore(x, &notbefore) == -1) {
 -		warnx("X509notbefore");
 +	br_x509_decoder_get_notafter(&xd, &days, &secs);
 +	notafter = 86400ll * (days - 719528) + 86400;
@@ -1450,7 +1513,7 @@ index c0963a278fb..2109d7a8799 100644
  		goto out;
  	}
  
-@@ -175,121 +198,37 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -183,121 +198,37 @@ revokeproc(int fd, const char *certfile, int force,
  	 * configuration file and that all domains are represented only once.
  	 */
  
@@ -1481,13 +1544,8 @@ index c0963a278fb..2109d7a8799 100644
 -				break;
 -			default:
 -				ip = NULL;
-+	TAILQ_FOREACH(ac, &domain->altname_list, entry) {
-+		for (i = 0; i < eltsz; i++) {
-+			if (elts[i].status == 1 &&
-+			    strcmp(ac->domain, elts[i].buf) == 0) {
-+				elts[i].status = 0;
- 				break;
- 			}
+-				break;
+-			}
 -			if (ip == NULL) {
 -				warnx("invalid IP address");
 -				continue;
@@ -1504,14 +1562,19 @@ index c0963a278fb..2109d7a8799 100644
 -		if (name_len == -1) {
 -			warn("asprintf");
 -			continue;
- 		}
+-		}
 -
 -		j = 0;
 -		TAILQ_FOREACH(ac, &domain->altname_list, entry) {
 -			if (strcmp(name_buf, ac->domain) == 0) {
 -				found_altnames[j]++;
--				break;
--			}
++	TAILQ_FOREACH(ac, &domain->altname_list, entry) {
++		for (i = 0; i < eltsz; i++) {
++			if (elts[i].status == 1 &&
++			    strcmp(ac->domain, elts[i].buf) == 0) {
++				elts[i].status = 0;
+ 				break;
+ 			}
 -			/* increment if didn't match */
 -			j++;
 -		}
@@ -1536,7 +1599,7 @@ index c0963a278fb..2109d7a8799 100644
 -			}
 -			force = 2;
 -			continue;
--		}
+ 		}
 -		/* should not reach here if j is out of bounds */
 -		if (found_altnames[j] > 1) {
 +		if (i == eltsz) {
@@ -1590,7 +1653,7 @@ index c0963a278fb..2109d7a8799 100644
  			goto out;
  		}
  		force = 2;
-@@ -315,16 +254,7 @@ revokeproc(int fd, const char *certfile, int force,
+@@ -323,16 +254,7 @@ revokeproc(int fd, const char *certfile, int force,
  		if (cc <= 0)
  			goto out;
  
@@ -1608,7 +1671,7 @@ index c0963a278fb..2109d7a8799 100644
  			warnx("base64buf_url");
  			goto out;
  		} else if (writestr(fd, COMM_CSR, der64) >= 0)
-@@ -398,12 +328,9 @@ out:
+@@ -406,12 +328,9 @@ out:
  	close(fd);
  	if (f != NULL)
  		fclose(f);

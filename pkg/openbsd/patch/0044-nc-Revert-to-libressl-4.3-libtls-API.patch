@@ -1,0 +1,28 @@
+From 6aa6476b05becacf50fab5371eb8764337c87e7f Mon Sep 17 00:00:00 2001
+From: Michael Forney <mforney@mforney.org>
+Date: Tue, 27 Oct 2026 11:44:18 -0700
+Subject: [PATCH] nc: Revert to libressl-4.3 libtls API
+
+Until we sync libtls-bearssl with libressl-4.4, we don't have
+tls_peer_cert_unverified_bundle_pem. Revert to tls_peer_cert_chain_pem
+for now.
+---
+ usr.bin/nc/netcat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
+index 5a8cbbaee7b..1a1a612b103 100644
+--- a/usr.bin/nc/netcat.c
++++ b/usr.bin/nc/netcat.c
+@@ -1763,7 +1763,7 @@ save_peer_cert(struct tls *tls_ctx, FILE *fp)
+ 	const char *pem;
+ 	size_t plen;
+ 
+-	if ((pem = (char *)tls_peer_cert_unverified_bundle_pem(tls_ctx, &plen)) == NULL)
++	if ((pem = (char *)tls_peer_cert_chain_pem(tls_ctx, &plen)) == NULL)
+ 		errx(1, "Can't get peer certificate");
+ 	if (fprintf(fp, "%.*s", (int)plen, pem) < 0)
+ 		err(1, "unable to save peer cert");
+-- 
+2.54.0
+

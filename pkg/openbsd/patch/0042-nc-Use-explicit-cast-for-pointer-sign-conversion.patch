@@ -1,4 +1,4 @@
-From bcaddae8de94a8d2d448a287b42a75a7306999b7 Mon Sep 17 00:00:00 2001
+From 2945d5ff85734cad7ade43f5ea00d9cbf1f4295d Mon Sep 17 00:00:00 2001
 From: Michael Forney <mforney@mforney.org>
 Date: Sun, 17 May 2026 01:40:40 -0700
 Subject: [PATCH] nc: Use explicit cast for pointer sign conversion
@@ -8,15 +8,15 @@ Subject: [PATCH] nc: Use explicit cast for pointer sign conversion
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/usr.bin/nc/netcat.c b/usr.bin/nc/netcat.c
-index 982b65592fe..82f1686fa6f 100644
+index 6ce6eecfa15..5a8cbbaee7b 100644
 --- a/usr.bin/nc/netcat.c
 +++ b/usr.bin/nc/netcat.c
 @@ -1763,7 +1763,7 @@ save_peer_cert(struct tls *tls_ctx, FILE *fp)
  	const char *pem;
  	size_t plen;
  
--	if ((pem = tls_peer_cert_chain_pem(tls_ctx, &plen)) == NULL)
-+	if ((pem = (char *)tls_peer_cert_chain_pem(tls_ctx, &plen)) == NULL)
+-	if ((pem = tls_peer_cert_unverified_bundle_pem(tls_ctx, &plen)) == NULL)
++	if ((pem = (char *)tls_peer_cert_unverified_bundle_pem(tls_ctx, &plen)) == NULL)
  		errx(1, "Can't get peer certificate");
  	if (fprintf(fp, "%.*s", (int)plen, pem) < 0)
  		err(1, "unable to save peer cert");
