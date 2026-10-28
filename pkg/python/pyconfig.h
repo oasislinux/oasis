@@ -428,7 +428,7 @@
 #define HAVE_SPLICE 1
 #define HAVE_SSIZE_T 1
 #define HAVE_STATVFS 1
-#define HAVE_STATX 1
+/* probe HAVE_STATX */
 #define HAVE_STAT_TV_NSEC 1
 /* #undef HAVE_STAT_TV_NSEC2 */
 #define HAVE_STDINT_H 1

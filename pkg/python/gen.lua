@@ -1,7 +1,7 @@
 cflags{
 	'-std=c11',  -- otherwise Modules/mathmodule.c tries to use C23 issubnormal
 	'-D NDEBUG',
-	'-I $dir',
+	'-I $outdir',
 	'-I $srcdir',
 	'-I $srcdir/Include',
 	'-I $srcdir/Include/internal',
@@ -11,7 +11,15 @@ cflags{
 	'-isystem $builddir/pkg/linux-headers/include',
 }
 
-pkg.deps = {'pkg/linux-headers/headers'}
+build('cat', '$outdir/pyconfig.h', {
+	'$builddir/probe/HAVE_STATX',
+	'$dir/pyconfig.h',
+})
+
+pkg.deps = {
+	'$outdir/pyconfig.h',
+	'pkg/linux-headers/headers'
+}
 local libs = {}
 local modules = load 'modules.lua'
 

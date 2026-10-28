@@ -1,0 +1,7 @@
+#define _GNU_SOURCE
+#include <fcntl.h>
+#include <sys/stat.h>
+int main(void) {
+	struct statx stx;
+	return statx(AT_FDCWD, "/dev/null", 0, STATX_BASIC_STATS, &stx) != 0;
+}
