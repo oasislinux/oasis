@@ -12,6 +12,8 @@ cflags{
 }
 
 build('cat', '$outdir/pyconfig.h', {
+	'$builddir/probe/HAVE_PREADV2',
+	'$builddir/probe/HAVE_PWRITEV2',
 	'$builddir/probe/HAVE_STATX',
 	'$dir/pyconfig.h',
 })

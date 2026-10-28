@@ -1,0 +1,5 @@
+#define _GNU_SOURCE
+#include <sys/uio.h>
+int main(void) {
+	return pwritev2(1, 0, 0, -1, 0) != 0;
+}

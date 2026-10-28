@@ -1,0 +1,5 @@
+#define _GNU_SOURCE
+#include <sys/uio.h>
+int main(void) {
+	return preadv2(0, 0, 0, -1, 0) != 0;
+}

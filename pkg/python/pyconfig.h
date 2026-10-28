@@ -326,7 +326,7 @@
 #define HAVE_PPOLL 1
 #define HAVE_PREAD 1
 #define HAVE_PREADV 1
-#define HAVE_PREADV2 1
+/* probe HAVE_PREADV2 */
 #define HAVE_PRLIMIT 1
 /* #undef HAVE_PROCESS_H */
 #define HAVE_PROCESS_VM_READV 1
@@ -351,7 +351,7 @@
 #define HAVE_PTY_H 1
 #define HAVE_PWRITE 1
 #define HAVE_PWRITEV 1
-#define HAVE_PWRITEV2 1
+/* probe HAVE_PWRITEV2 */
 /* #undef HAVE_READLINE_READLINE_H */
 #define HAVE_READLINK 1
 #define HAVE_READLINKAT 1
