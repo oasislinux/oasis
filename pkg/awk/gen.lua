@@ -19,7 +19,7 @@ rule('maketab', '$outdir/maketab $in >$out')
 build('maketab', '$outdir/proctab.c', {'$outdir/awkgram.tab.h', '|', '$outdir/maketab'})
 
 exe('awk', [[
-	b.c main.c parse.c tran.c lib.c run.c lex.c
+	b.c main.c parse.c tran.c lib.c run.c lex.c math.c
 	$outdir/(awkgram.tab.c proctab.c)
 ]])
 file('bin/awk', '755', '$outdir/awk')
