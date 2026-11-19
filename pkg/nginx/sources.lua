@@ -57,6 +57,7 @@ return {
 		'http/v2/ngx_http_v2_module.c',
 		'http/ngx_http_huff_decode.c',
 		'http/ngx_http_huff_encode.c',
+		'http/ngx_http_priority.c',
 	},
 	http_v3={
 		'http/v3/ngx_http_v3.c',
@@ -83,6 +84,7 @@ return {
 	http_realip={'http/modules/ngx_http_realip_module.c'},
 	http_status={'http/modules/ngx_http_status_module.c'},
 	http_geo={'http/modules/ngx_http_geo_module.c'},
+	http_json={'http/modules/ngx_http_json_module.c'},
 	http_geoip={'http/modules/ngx_http_geoip_module.c'},
 	http_map={'http/modules/ngx_http_map_module.c'},
 	http_split_clients={'http/modules/ngx_http_split_clients_module.c'},

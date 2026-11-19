@@ -70,6 +70,7 @@ local srcs = paths[[src/(
 		ngx_file.c
 		ngx_crc32.c
 		ngx_murmurhash.c
+		ngx_siphash.c
 		ngx_md5.c
 		ngx_sha1.c
 		ngx_rbtree.c
@@ -87,6 +88,10 @@ local srcs = paths[[src/(
 		ngx_resolver.c
 		ngx_open_file_cache.c
 		ngx_crypt.c
+		ngx_data.c
+		ngx_json.c
+		ngx_json_parse.c
+		ngx_json_unescape.c
 		ngx_proxy_protocol.c
 		ngx_syslog.c
 	)

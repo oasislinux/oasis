@@ -22,7 +22,6 @@
 #define NGX_HAVE_CAPABILITIES 1
 #define NGX_HAVE_GNU_CRYPT_R 1
 #define NGX_HAVE_BPF 1
-#define NGX_HAVE_SO_COOKIE 1
 #define NGX_HAVE_UDP_SEGMENT 1
 
 /* auto/os/conf */
