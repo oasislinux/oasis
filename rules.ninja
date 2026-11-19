@@ -74,6 +74,10 @@ rule yacc
   command = yacc $yaccflags $in
   description = 	YACC	$out
 
+rule unifdef
+  command = unifdef -x2 $flags $in > $out
+  description = 	UNIFDEF	$out
+
 rule sed
   command = sed $expr $in >$out
   description = 	SED	$out
